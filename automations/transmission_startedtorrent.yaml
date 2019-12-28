@@ -1,0 +1,18 @@
+---
+alias: Transmission (Torrents) - Torrent Started
+trigger:
+  - platform: event
+    event_type: transmission_started_torrent
+action:
+  service: notify.slack
+  data_template:
+    message: ""
+    target: "#tbsmarthome"
+    data:
+      attachments:
+        - color: >
+            #800400
+          title: >
+            Transmission - Torrent Started
+          text: |
+            "{{trigger.event.data.name}}"

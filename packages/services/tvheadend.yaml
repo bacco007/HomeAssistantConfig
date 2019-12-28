@@ -1,0 +1,62 @@
+---
+# https://github.com/dave-p/TVH-API-docs/wiki/status
+# http://192.168.1.20:9981/api/channel/list
+
+sensor:
+  - platform: rest
+    name: TVHeadend Version
+    json_attributes:
+      - name
+      - api_version
+    value_template: '{{ value_json["sw_version"] }}'
+    resource: !secret tvheadend_version_url
+
+  - platform: rest
+    name: TVHeadend Subscriptions
+    json_attributes:
+      - totalCount
+    value_template: '{{ value_json["totalCount"] }}'
+    resource: !secret tvheadend_subscriptions_url
+
+  - platform: rest
+    name: TVHeadend Connections
+    json_attributes:
+      - totalCount
+      - entries
+    value_template: '{{ value_json["totalCount"] }}'
+    resource: !secret tvheadend_connections_url
+
+  - platform: rest
+    name: TVHeadend Upcoming Recordings
+    json_attributes:
+      - total
+    value_template: '{{ value_json["total"] }}'
+    resource: !secret tvheadend_upcoming_recordings_url
+
+  - platform: rest
+    name: TVHeadend Finished Recordings
+    json_attributes:
+      - total
+    value_template: '{{ value_json["total"] }}'
+    resource: !secret tvheadend_finished_recordings_url
+
+  - platform: rest
+    name: TVHeadend Failed Recordings
+    json_attributes:
+      - total
+    value_template: '{{ value_json["total"] }}'
+    resource: !secret tvheadend_failed_recordings_url
+
+  - platform: rest
+    name: TVHeadend Inputs
+    json_attributes:
+      - totalCount
+    value_template: '{{ value_json["totalCount"] }}'
+    resource: !secret tvheadend_inputs_url
+
+  - platform: rest
+    name: TVHeadend Services
+    json_attributes:
+      - total
+    value_template: '{{ value_json["total"] }}'
+    resource: !secret tvheadend_services_url

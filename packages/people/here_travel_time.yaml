@@ -1,0 +1,34 @@
+---
+sensor:
+  - platform: here_travel_time
+    entity_namespace: here_travel
+    name: Home to Work (Car)
+    app_id: !secret here_appid
+    app_code: !secret here_appcode
+    origin_entity_id: zone.home
+    destination_entity_id: zone.trc
+    mode: car
+  - platform: here_travel_time
+    entity_namespace: here_travel
+    name: Home to Work (Walk)
+    app_id: !secret here_appid
+    app_code: !secret here_appcode
+    origin_entity_id: zone.home
+    destination_entity_id: zone.trc
+    mode: pedestrian
+  - platform: here_travel_time
+    entity_namespace: here_travel
+    name: Tom to Home
+    app_id: !secret here_appid
+    app_code: !secret here_appcode
+    origin_entity_id: device_tracker.tbiphone11
+    destination_entity_id: zone.home
+    mode: car
+  - platform: here_travel_time
+    entity_namespace: here_travel
+    name: Tom to Work
+    app_id: !secret here_appid
+    app_code: !secret here_appcode
+    origin_entity_id: device_tracker.tbiphone11
+    destination_entity_id: zone.trc
+    mode: car

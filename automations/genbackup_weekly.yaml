@@ -1,0 +1,27 @@
+---
+alias: Generational Backup - Weekly
+trigger:
+  platform: time
+  at: "02:30:00"
+condition:
+  condition: time
+  weekday:
+    - mon
+action:
+  - service: auto_backup.snapshot_full
+    data_template:
+      name: "WeeklyBackup: {{ now().strftime('%A, %B %-d, %Y') }}"
+      keep_days: 28
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              Home Assistant - Weekly Backup
+            text: |
+              New Home Assistant Weekly Backup has been created
+              "WeeklyBackup: {{ now().strftime('%A, %B %-d, %Y') }}"

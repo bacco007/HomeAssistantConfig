@@ -1,0 +1,41 @@
+---
+sensor:
+  - platform: sonarr
+    api_key: !secret sonarr_apikey
+    host: !secret sonarr_host
+    port: !secret sonarr_port
+    monitored_conditions:
+      - upcoming
+      - queue
+      - series
+      - wanted
+      - status
+    days: 50
+
+binary_sensor:
+  - platform: template
+    sensors:
+      lovelace_sonarr_wanted:
+        entity_id: sensor.sonarr_wanted
+        value_template: >-
+          {% if states('sensor.sonarr_wanted')|float > 0 %}
+          true
+          {% else %}
+          false
+          {% endif %}
+      lovelace_sonarr_queue:
+        entity_id: sensor.sonarr_queue
+        value_template: >-
+          {% if states('sensor.sonarr_queue')|float > 0 %}
+          true
+          {% else %}
+          false
+          {% endif %}
+      lovelace_sonarr_upcoming:
+        entity_id: sensor.sonarr_upcoming
+        value_template: >-
+          {% if states('sensor.sonarr_upcoming')|float > 0 %}
+          true
+          {% else %}
+          false
+          {% endif %}

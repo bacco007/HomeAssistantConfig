@@ -1,0 +1,26 @@
+---
+homeassistant:
+  customize:
+    sensor.fuelcheck_caltex_tamworth_orana_p98:
+      friendly_name: Caltex Vortex98 (White Street)
+      icon: mdi:fuel
+
+    sensor.fuelcheck_bp_tamworth_p98:
+      friendly_name: BP Ultimate98 (Viaduct)
+      icon: mdi:fuel
+
+sensor:
+  ###
+  ## Fuelcheck BP Viaduct
+  ###
+  - platform: nsw_fuel_station
+    entity_namespace: fuelcheck
+    fuel_types: P98
+    station_id: 1145
+  ###
+  ## Fuelcheck Caltex White St
+  ###
+  - platform: nsw_fuel_station
+    entity_namespace: fuelcheck
+    fuel_types: P98
+    station_id: 16921

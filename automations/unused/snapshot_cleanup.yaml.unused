@@ -1,0 +1,22 @@
+---
+alias: Admin - Snapshot Cleanup
+initial_state: 'on'
+trigger:
+  - platform: time
+    at: '05:00:00'
+condition: []
+action:
+  - service: clean_up_snapshots_service.clean_up
+  - delay: '00:30:00'
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              Snapshot Cleanup Undertaken
+            text: |
+              Snapshot Cleanup Undertaken

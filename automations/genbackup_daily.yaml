@@ -1,0 +1,32 @@
+---
+alias: Generational Backup - Daily
+trigger:
+  platform: time
+  at: "02:30:00"
+condition:
+  condition: time
+  weekday:
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+action:
+  - service: auto_backup.snapshot_full
+    data_template:
+      name: "DailyBackup: {{ now().strftime('%A, %B %-d, %Y') }}"
+      keep_days: 7
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              Home Assistant - Daily Backup
+            text: |
+              New Home Assistant Daily Backup has been created
+              "DailyBackup: {{ now().strftime('%A, %B %-d, %Y') }}"

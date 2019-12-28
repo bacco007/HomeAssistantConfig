@@ -1,0 +1,60 @@
+---
+homeassistant:
+  customize:
+    sensor.aud_to_usd:
+      icon: mdi:currency-usd
+    sensor.aud_usd:
+      hidden: true
+    sensor.aud_to_gbp:
+      icon: mdi:currency-gbp
+    sensor.aud_gbp:
+      hidden: true
+    sensor.aud_to_nzd:
+      icon: mdi:currency-usd
+    sensor.aud_nzd:
+      hidden: true
+    sensor.aud_to_eur:
+      icon: mdi:currency-eur
+    sensor.aud_eur:
+      hidden: true
+
+sensor:
+  - platform: alpha_vantage
+    scan_interval: 2400
+    api_key: !secret alphavantage_apikey
+    foreign_exchange:
+      - name: AUD_EUR
+        from: AUD
+        to: EUR
+      - name: AUD_GBP
+        from: AUD
+        to: GBP
+      - name: AUD_NZD
+        from: AUD
+        to: NZD
+      - name: AUD_USD
+        from: AUD
+        to: USD
+
+  - platform: template
+    sensors:
+      aud_to_gbp:
+        unit_of_measurement: 'GBP'
+        value_template: "{{ states.sensor.aud_gbp.state|round(3) }}"
+        friendly_name: 'AUD to GBP'
+        entity_id: sensor.aud_gbp
+      aud_to_usd:
+        unit_of_measurement: 'USD'
+        value_template: "{{ states.sensor.aud_usd.state|round(3) }}"
+        friendly_name: 'AUD to USD'
+        entity_id: sensor.aud_usd
+      aud_to_nzd:
+        unit_of_measurement: 'NZD'
+        value_template: "{{ states.sensor.aud_nzd.state|round(3) }}"
+        friendly_name: 'AUD to NZD'
+        entity_id: sensor.aud_nzd
+      aud_to_eur:
+        unit_of_measurement: 'EUR'
+        value_template: "{{ states.sensor.aud_eur.state|round(3) }}"
+        friendly_name: 'AUD to EUR'
+        entity_id: sensor.aud_eur

@@ -1,0 +1,9 @@
+---
+alias: Admin - Generate README.md
+initial_state: 'on'
+trigger:
+  - platform: time
+    at: '05:00:00'
+condition: []
+action:
+  - service: readme.generate

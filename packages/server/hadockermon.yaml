@@ -1,0 +1,19 @@
+---
+binary_sensor:
+  - platform: hadockermon
+    entity_namespace: vmTBSH01
+    host: !secret vmTBSH01_ipaddress
+    port: !secret hadm_port
+    stats: true
+
+  - platform: hadockermon
+    entity_namespace: vmTBSH02
+    host: !secret vmTBSH02_ipaddress
+    port: !secret hadm_port
+    stats: true
+
+  - platform: hadockermon
+    entity_namespace: TBSH01
+    host: !secret TBSH01_ipaddress
+    port: !secret hadm_port
+    stats: true

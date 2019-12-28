@@ -1,0 +1,44 @@
+---
+homeassistant:
+  customize:
+    package.node_anchors:
+      settings: &settings
+        switch: false
+        sensors:
+          - status
+          - uptime
+          - image
+          - cpu_percentage_usage
+          - memory_usage
+          - memory_percentage_usage
+          - network_total_up
+          - network_total_down
+
+docker_monitor:
+  hosts:
+    - url: tcp://192.168.1.61:2375
+      name: vmTBSH01
+      event: false
+      containers:
+        duplicati:
+          <<: *settings
+        radarr:
+          <<: *settings
+        sonarr:
+          <<: *settings
+
+    - url: tcp://192.168.1.62:2375
+      name: vmTBSH02
+      event: false
+      containers:
+        duplicati:
+          <<: *settings
+        homeassistant:
+          <<: *settings
+
+    - url: tcp://192.168.1.20:2375
+      name: TBSH01
+      event: false
+      containers:
+        duplicati:
+          <<: *settings
