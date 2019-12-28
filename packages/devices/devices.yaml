@@ -1,0 +1,148 @@
+---
+homeassistant:
+  customize:
+    device_tracker.vmtbsh01:
+      name: vmTBSH01 (App Server)
+      icon: mdi:server
+
+binary_sensor:
+  - platform: template
+    sensors:
+      networkstatus_router:
+        friendly_name: Router (UniFi USG)
+        entity_id: device_tracker.usg
+        value_template: "{{ is_state('device_tracker.usg', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.usg', 'home') %}
+            mdi:router-wireless
+          {% else %}
+            mdi:router-wireless
+          {% endif %}
+      networkstatus_wifi:
+        friendly_name: WiFi (UniFi AP-AC-Lite)
+        entity_id: device_tracker.ufo
+        value_template: "{{ is_state('device_tracker.ufo', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.ufo', 'home') %}
+            mdi:access-point
+          {% else %}
+            mdi:access-point
+          {% endif %}
+      networkstatus_switch:
+        friendly_name: Switch (UniFi Switch 8 60W)
+        entity_id: device_tracker.hateful8
+        value_template: "{{ is_state('device_tracker.hateful8', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.hateful8', 'home') %}
+            mdi:switch
+          {% else %}
+            mdi:switch
+          {% endif %}
+      networkstatus_nas_thecube2:
+        friendly_name: NAS (TheCube2)
+        entity_id: device_tracker.thecube2
+        value_template: "{{ is_state('device_tracker.thecube2', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.hecube2', 'home') %}
+            mdi:nas
+          {% else %}
+            mdi:nas
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.thecube2.attributes['ip'] }}"
+      networkstatus_hdhomerun:
+        friendly_name: HDHomeRun
+        entity_id: device_tracker.hdhomerun
+        value_template: "{{ is_state('device_tracker.hdhomerun', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.hdhomerun', 'home') %}
+            mdi:television-box
+          {% else %}
+            mdi:television-box
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.hdhomerun.attributes['ip'] }}"
+      networkstatus_googlenesthub:
+        friendly_name: Google Home - Nest Hub
+        entity_id: device_tracker.google_home_hub
+        value_template: "{{ is_state('device_tracker.google_home_hub', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.google_home_hub', 'home') %}
+            mdi:google-home
+          {% else %}
+            mdi:google-home
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.google_home_hub.attributes['ip'] }}"
+      networkstatus_harmonyhub:
+        friendly_name: Harmony Hub
+        entity_id: device_tracker.harmonyhub
+        value_template: "{{ is_state('device_tracker.harmonyhub', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.harmonyhub', 'home') %}
+            mdi:remote
+          {% else %}
+            mdi:remote
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.harmonyhub.attributes['ip'] }}"
+      networkstatus_amazonalexaplus:
+        friendly_name: Amazon Alexa Plus
+        entity_id: device_tracker.amazon_alexa_plus
+        value_template: "{{ is_state('device_tracker.amazon_alexa_plus', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.amazon_alexa_plus', 'home') %}
+            mdi:amazon-alexa
+          {% else %}
+            mdi:amazon-alexa
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.amazon_alexa_plus.attributes['ip'] }}"
+      networkstatus_netatmoweather:
+        friendly_name: Netatmo Weather Station
+        entity_id: device_tracker.netatmo_personal_weather_statio
+        value_template: "{{ is_state('device_tracker.netatmo_personal_weather_statio', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.netatmo_personal_weather_statio', 'home') %}
+            mdi:weather-cloudy-alert
+          {% else %}
+            mdi:weather-cloudy-alert
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.netatmo_personal_weather_statio.attributes['ip'] }}"
+      networkstatus_sonos:
+        friendly_name: Sonos Play:1 (Bedroom)
+        entity_id: device_tracker.sonos_lounge_room
+        value_template: "{{ is_state('device_tracker.sonos_lounge_room', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.sonos_lounge_room', 'home') %}
+            mdi:speaker
+          {% else %}
+            mdi:speaker
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.sonos_lounge_room.attributes['ip'] }}"
+      networkstatus_appletv:
+        friendly_name: Apple TV (Bedroom)
+        entity_id: device_tracker.appletvbedroom
+        value_template: "{{ is_state('device_tracker.appletvbedroom', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.appletvbedroom', 'home') %}
+            mdi:airplay
+          {% else %}
+            mdi:airplay
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.appletvbedroom.attributes['ip'] }}"
+      networkstatus_amazonfirestick:
+        friendly_name: Amazon Fire Stick
+        entity_id: device_tracker.amazon_fire_stick
+        value_template: "{{ is_state('device_tracker.amazon_fire_stick', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.amazon_fire_stick', 'home') %}
+            mdi:amazon
+          {% else %}
+            mdi:amazon
+          {% endif %}
+        attribute_templates:
+          ip_address: "{{ states.device_tracker.amazon_fire_stick.attributes['ip'] }}"

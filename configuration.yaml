@@ -1,0 +1,69 @@
+---
+homeassistant:
+  name: !secret ha_name
+  latitude: !secret zone_home_latitude
+  longitude: !secret zone_home_longitude
+  elevation: 430
+  unit_system: metric
+  time_zone: !secret ha_timezone
+  packages: !include_dir_named packages
+  customize: !include customize.yaml
+  whitelist_external_dirs:
+    - /config
+  auth_providers:
+    - type: trusted_networks
+      trusted_networks:
+        - 127.0.0.1
+        - ::1
+        - 192.168.1.0/24
+    - type: homeassistant
+
+automation: !include_dir_list automations
+
+breaking_changes:
+
+cloud:
+
+config:
+
+conversation:
+
+discovery:
+
+frontend:
+  javascript_version: latest
+  themes: !include_dir_merge_named themes
+
+group: !include groups.yaml
+
+# hassio_info:
+
+history:
+
+http:
+  base_url: !secret http_base_url
+  server_port: !secret httpserver_port
+
+ios:
+
+lovelace:
+  mode: yaml
+
+map:
+
+mobile_app:
+
+script: !include scripts.yaml
+
+ssdp:
+
+system_health:
+
+tts:
+  - platform: google_translate
+
+updater:
+  reporting: true
+  include_used_components: true
+
+zeroconf:

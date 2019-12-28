@@ -1,0 +1,5 @@
+---
+hacs:
+  token: !secret github_accesstoken
+  sidepanel_title: "HACS"
+  appdaemon: true

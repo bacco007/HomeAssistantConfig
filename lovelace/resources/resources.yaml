@@ -1,0 +1,9 @@
+---
+# HACS
+
+
+# CSS
+- url: https://fonts.googleapis.com/css?family=Raleway
+  type: css
+- url: https://fonts.googleapis.com/css?family=Oswald
+  type: css

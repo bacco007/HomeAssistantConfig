@@ -1,0 +1,5 @@
+---
+title: tbSmartHome
+resources:
+  !include lovelace/resources/resources.yaml
+views: !include_dir_list lovelace/views/

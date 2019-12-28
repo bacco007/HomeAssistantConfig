@@ -1,0 +1,9 @@
+---
+title: Home
+path: home
+icon: mdi:home
+cards:
+  - type: entities
+    entities:
+      - sensor.hacs
+      - sensor.daylight
