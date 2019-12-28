@@ -1,0 +1,46 @@
+---
+openuv:
+  api_key: !secret openuv_apikey
+
+sensor:
+  - platform: template
+    sensors:
+      uvindex_level_current:
+        friendly_name: Current UV Index Level
+        icon_template: mdi:sun
+        entity_id: sensor.current_uv_index
+        value_template: >
+          {% set index = states('sensor.current_uv_index') | float(-1) %}
+          {% if index > 11 %}
+            Extreme
+          {% elif index > 8 %}
+            Very High
+          {% elif index > 6 %}
+            High
+          {% elif index > 3 %}
+            Moderate
+          {% elif index >= 0 %}
+            Low
+          {% else %}
+            Unavailable
+          {% endif %}
+
+      uvindex_level_max:
+        friendly_name: Max UV Index Level
+        icon_template: mdi:sun
+        entity_id: sensor.max_uv_index
+        value_template: >
+          {% set index = states('sensor.max_uv_index') | float(-1) %}
+          {% if index > 11 %}
+            Extreme
+          {% elif index > 8 %}
+            Very High
+          {% elif index > 6 %}
+            High
+          {% elif index > 3 %}
+            Moderate
+          {% elif index >= 0 %}
+            Low
+          {% else %}
+            Unavailable
+          {% endif %}

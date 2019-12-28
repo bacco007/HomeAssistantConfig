@@ -1,6 +1,9 @@
 ---
 # HACS
-
+- url: /community_plugin/bom-weather-card/bom-weather-card.js
+  type: module
+- url: /community_plugin/decluttering-card/decluttering-card.js
+  type: module
 
 # CSS
 - url: https://fonts.googleapis.com/css?family=Raleway

@@ -1,0 +1,12 @@
+---
+default:
+  - entities:
+      - sensor.your_entity_here
+  - rows: 10
+card:
+  type: custom:list-card
+  columns:
+    - {add_link: link, field: title, title: ''}
+  entity: '[[entities]]'
+  row_limit: '[[rows]]'
+  feed_attribute: entries

@@ -1,0 +1,31 @@
+---
+alias: HACS - New Repository Added
+trigger:
+  - platform: event
+    event_type: hacs/repository
+    event_data:
+      action: registration
+condition:
+  - condition: template
+    value_template: "{{ trigger.event.data.repository is defined }}"
+action:
+  - service: persistent_notification.create
+    data_template:
+      title: "HACS - New Repository Added"
+      message: >-
+        {% set repo = trigger.event.data.repository %}
+        {% set id = trigger.event.data.repository_id %}
+        [{{ repo }}](/hacs/repository/{{ id }})
+        was just added to HACS.
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              HACS - New Repository Added
+            text: |
+              New repository added to HACS - See Persistant Notification for more details

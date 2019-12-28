@@ -1,0 +1,65 @@
+---
+sensor:
+  # Chaffey Dam
+  - platform: waternsw
+    name: Chaffey Dam Volume
+    site_id: 419069
+    from_variable: 130.00
+    to_variable: 136.00
+    unit_of_measure: ML
+  - platform: waternsw
+    name: Chaffey Dam Water Level
+    site_id: 419069
+    from_variable: 130.00
+    to_variable: 130.00
+    unit_of_measure: m
+  - platform: waternsw
+    name: Chaffey Dam Storage
+    site_id: 419069
+    from_variable: 130.00
+    to_variable: 448.00
+    unit_of_measure: "%"
+
+  # Keepit Dam
+  - platform: waternsw
+    name: Keepit Dam Volume
+    site_id: 419041
+    from_variable: 130.00
+    to_variable: 136.00
+    unit_of_measure: ML
+  - platform: waternsw
+    name: Keepit Dam Water Level
+    site_id: 419041
+    from_variable: 130.00
+    to_variable: 130.00
+    unit_of_measure: m
+  - platform: waternsw
+    name: Keepit Dam Storage
+    site_id: 419041
+    from_variable: 130.00
+    to_variable: 448.00
+    unit_of_measure: "%"
+
+  - platform: template
+    sensors:
+      waternsw_chaffey_dam:
+        friendly_name: "Chaffey Dam"
+        icon_template: "mdi:water"
+        value_template: 419069
+        attribute_templates:
+          dead_water_level: 518.649
+          spillway_level: 525.100
+          capacity: 102000
+          latitude: -31.348147000
+          longitude: 151.13947000
+
+      waternsw_keepit_dam:
+        friendly_name: "Keepit Dam"
+        icon_template: "mdi:water"
+        value_template: 419041
+        attribute_templates:
+          dead_water_level: 304.570
+          spillway_level: 318.590
+          capacity: 420000
+          latitude: -30.879200000
+          longitude: 150.49280000

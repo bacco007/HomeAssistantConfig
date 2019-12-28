@@ -3,7 +3,61 @@ title: Home
 path: home
 icon: mdi:home
 cards:
+  - type: custom:decluttering-card
+    template: time-card
   - type: entities
     entities:
       - sensor.hacs
       - sensor.daylight
+  - type: custom:bom-weather-card
+    title: BOM Weather
+    entity_current_conditions: sensor.bom_tamworth_icon_0
+    entity_temperature: sensor.bom_tamworth_air_temp_c
+    entity_forecast_high_temp_1: sensor.bom_tamworth_max_temp_c_1
+    entity_forecast_high_temp_2: sensor.bom_tamworth_max_temp_c_2
+    entity_forecast_high_temp_3: sensor.bom_tamworth_max_temp_c_3
+    entity_forecast_high_temp_4: sensor.bom_tamworth_max_temp_c_4
+    entity_forecast_high_temp_5: sensor.bom_tamworth_max_temp_c_5
+    entity_forecast_icon_1: sensor.bom_tamworth_icon_1
+    entity_forecast_icon_2: sensor.bom_tamworth_icon_2
+    entity_forecast_icon_3: sensor.bom_tamworth_icon_3
+    entity_forecast_icon_4: sensor.bom_tamworth_icon_4
+    entity_forecast_icon_5: sensor.bom_tamworth_icon_5
+    entity_forecast_low_temp_1: sensor.bom_tamworth_min_temp_c_1
+    entity_forecast_low_temp_2: sensor.bom_tamworth_min_temp_c_2
+    entity_forecast_low_temp_3: sensor.bom_tamworth_min_temp_c_3
+    entity_forecast_low_temp_4: sensor.bom_tamworth_min_temp_c_4
+    entity_forecast_low_temp_5: sensor.bom_tamworth_min_temp_c_5
+    entity_summary_1: sensor.bom_tamworth_summary_1
+    entity_summary_2: sensor.bom_tamworth_summary_2
+    entity_summary_3: sensor.bom_tamworth_summary_3
+    entity_summary_4: sensor.bom_tamworth_summary_4
+    entity_summary_5: sensor.bom_tamworth_summary_5
+    entity_sun: sun.sun
+    entity_visibility: sensor.bom_tamworth_visability_km
+    entity_daytime_high: sensor.bom_today_max
+    entity_daytime_low: sensor.bom_today_min
+    entity_wind_bearing: sensor.bom_tamworth_wind_direction
+    entity_wind_speed: sensor.bom_tamworth_wind_speed_kmh
+    entity_humidity: sensor.bom_tamworth_relative_humidity
+    entity_pressure: sensor.bom_tamworth_pressure_mb
+    entity_apparent_temp: sensor.bom_tamworth_feels_like_c
+    entity_daily_summary: sensor.bom_tamworth_detailed_summary_0
+    entity_pop: sensor.bom_tamworth_chance_of_rain_0
+    entity_pop_intensity: sensor.bom_tamworth_rain_today
+    entity_possible_today: sensor.bom_tamworth_possible_rainfall_0
+    entity_pos_1: sensor.bom_tamworth_possible_rainfall_1
+    entity_pos_2: sensor.bom_tamworth_possible_rainfall_2
+    entity_pos_3: sensor.bom_tamworth_possible_rainfall_3
+    entity_pos_4: sensor.bom_tamworth_possible_rainfall_4
+    entity_pos_5: sensor.bom_tamworth_possible_rainfall_5
+    entity_pop_1: sensor.bom_tamworth_chance_of_rain_1
+    entity_pop_2: sensor.bom_tamworth_chance_of_rain_2
+    entity_pop_3: sensor.bom_tamworth_chance_of_rain_3
+    entity_pop_4: sensor.bom_tamworth_chance_of_rain_4
+    entity_pop_5: sensor.bom_tamworth_chance_of_rain_5
+    # entity_current_text: sensor.bom_current_text
+    entity_uv_alert: sensor.bom_uv_alert
+    entity_fire_danger: sensor.bom_fire_danger
+    entity_uv_alert_summary: sensor.bom_uv_alert_summary
+    entity_fire_danger_summary: sensor.bom_fire_danger_summary

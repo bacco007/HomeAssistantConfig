@@ -9,6 +9,7 @@ www/custom-lovelace/upcoming-media-card
 icloud
 notebooks
 node-red
+tts
 
 # Ignore File Extensions
 *.conf

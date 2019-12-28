@@ -1,0 +1,20 @@
+---
+default:
+  - entity: sensor.entity
+  - opponent: sensor.opponent
+card:
+  type: 'custom:button-card'
+  color: auto
+  layout: icon_state_name2nd
+  entity: '[[entity]]'
+  name: >
+    [[[
+      return states['[[opponent]]'].state;
+    ]]]
+  show_state: true
+  show_entity_picture: true
+  size: 90px
+  styles:
+    card:
+      - width: auto
+      - height: 150px

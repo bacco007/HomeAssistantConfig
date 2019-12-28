@@ -1,0 +1,40 @@
+---
+default:
+  - entities:
+      - sensor.your_entity_here
+  - name: cardnamehere
+  - hours_to_show: 168
+  - hour24: true
+  - points_per_hour: 2
+  - font_size: 70
+  - height: 20
+  - graph: line
+  - line_width: 3
+  - decimals: 1
+  - fill: fade
+  - extrema: false
+  - average: false
+  - animate: true
+  - icon: true
+card:
+  type: 'custom:mini-graph-card'
+  # style: |
+  #   ha-card {
+
+  #   }
+  entities: '[[entities]]'
+  hours_to_show: '[[hours_to_show]]'
+  points_per_hour: '[[points_per_hour]]'
+  line_width: '[[line_width]]'
+  hour24: '[[hour24]]'
+  animate: '[[animate]]'
+  decimals: '[[decimals]]'
+  font_size: '[[font_size]]'
+  height: '[[height]]'
+  show:
+    graph: '[[graph]]'
+    icon: '[[icon]]'
+    fill: '[[fill]]'
+    extrema: '[[extrema]]'
+    average: '[[average]]'
+  name: '[[name]]'

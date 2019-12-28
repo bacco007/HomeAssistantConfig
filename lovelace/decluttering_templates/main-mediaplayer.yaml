@@ -1,0 +1,24 @@
+---
+card:
+  type: 'custom:auto-entities'
+  filter:
+    exclude:
+      - state: 'off'
+      - state: 'unavailable'
+      - state: 'paused'
+      - state: 'standby'
+      - state: 'idle'
+    include:
+      - entity_id: media_player.*
+        options:
+          type: 'custom:mini-media-player'
+          artwork: cover
+          hide: {power_state: false, source: true, volume: true}
+  sort:
+    method: name
+  card:
+    type: entities
+    style: |
+      div#states {
+        padding: 0px !important;
+      }

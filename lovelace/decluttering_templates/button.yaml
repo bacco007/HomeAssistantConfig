@@ -1,0 +1,34 @@
+---
+default:
+  - url: https://homeassistant.tbsmartho.me
+  - icon: /local/avatar_thomas.jpg
+card:
+  type: 'custom:button-card'
+  color: auto
+  # size: 30%
+  entity: '[[entity]]'
+  # aspect_ratio: 1/1
+  show_state: false
+  name: '[[name]]'
+  show_label: true
+  show_entity_picture: true
+  tap_action:
+    action: url
+    url_path: '[[url]]'
+  hold_action:
+    action: more-info
+    haptic: success
+  entity_picture: '[[icon]]'
+  styles:
+    card:
+      - height: 110px
+      - width: auto
+      - background-color: var(--primary-background-color)
+    name:
+      - font-weight: bold
+      - font-size: 15px
+      - padding: 5px 5px
+    label:
+      - font-size: 15px
+    state:
+      - font-size: 12px

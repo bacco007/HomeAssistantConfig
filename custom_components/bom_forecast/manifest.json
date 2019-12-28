@@ -1,0 +1,8 @@
+{
+	"domain": "bom_forecast",
+	"name": "BOM Forecast",
+	"documentation": "https://github.com/davidfw1960/bom_forecast",
+	"dependencies": [],
+	"codeowners": ["@davidfw1960"],
+	"requirements": []
+}

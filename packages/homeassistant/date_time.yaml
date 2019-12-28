@@ -1,0 +1,48 @@
+---
+homeassistant:
+  customize:
+    sensor.date:
+      friendly_name: Current Date
+    sensor.time:
+      friendly_name: Current Time - Home
+    sensor.time_utc:
+      friendly_name: Current Time - UTC
+    sensor.time_london:
+      friendly_name: Current Time - UK (London)
+    sensor.time_new_york:
+      friendly_name: Current Time - US (New York)
+
+sensor:
+  ###
+  ## Local Time
+  ###
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'time_utc'
+  ###
+  ## World Time - London
+  ###
+  - platform: worldclock
+    time_zone: Europe/London
+    name: Time - London
+  ###
+  ## World Time - New York
+  ###
+  - platform: worldclock
+    time_zone: America/New_York
+    name: Time - New York
+
+  - platform: template
+    sensors:
+      date_long_format:
+        friendly_name: 'Date Long Format'
+        entity_id: sensor.date
+        value_template: >
+          {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
+          {% set month = months[now().strftime('%m') | int -1] %}
+          {% set days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]  %}
+          {% set day = days[now().strftime('%w') | int] %}
+          {{ day + ' ' + now().strftime('%d') + ' ' + month + ' ' + now().strftime('%Y') }}

@@ -1,0 +1,50 @@
+---
+sun:
+  elevation: !secret zone_home_elevation
+
+sensor:
+  - platform: template
+    sensors:
+      sun_state:
+        friendly_name: Sun State
+        value_template: >-
+          {% if is_state('sun.sun', 'above_horizon') %}
+            Day
+          {% else %}
+            Night
+          {% endif %}
+        icon_template: >-
+          {% if is_state('sun.sun', 'above_horizon') %}
+            mdi:weather-sunny
+          {% else %}
+            mdi:weather-night
+          {% endif %}
+      sun_nextdawn:
+        friendly_name: Next Dawn
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dawn) | timestamp_custom('%a %H:%m') }}"
+        icon_template: mdi:weather-sunset-up
+      sun_nextdusk:
+        friendly_name: Next Dusk
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dusk) | timestamp_custom('%a %H:%m') }}"
+        icon_template: mdi:weather-sunset-down
+      sun_nextmidnight:
+        friendly_name: Next Midnight
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_midnight) | timestamp_custom('%a %H:%m') }}"
+        icon_template: mdi:weather-night
+      sun_nextnoon:
+        friendly_name: Next Noon
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_noon) | timestamp_custom('%a %H:%m') }}"
+        icon_template: mdi:weather-sunny
+      sun_nextrising:
+        friendly_name: Next Rising
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%a %H:%m') }}"
+        icon_template: mdi:weather-sunset-up
+      sun_nextsetting:
+        friendly_name: Next Setting
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%a %H:%m') }}"
+        icon_template: mdi:weather-sunset-down
+      sun_solarangle:
+        friendly_name: "Sun Angle"
+        unit_of_measurement: '°'
+        value_template: "{{ '%+.1f'|format(state_attr('sun.sun', 'elevation')) }}"
+        icon_template: mdi:weather-sunny

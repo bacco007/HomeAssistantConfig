@@ -2,4 +2,6 @@
 title: tbSmartHome
 resources:
   !include lovelace/resources/resources.yaml
+decluttering_templates:
+  !include_dir_named lovelace/decluttering_templates/
 views: !include_dir_list lovelace/views/

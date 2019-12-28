@@ -1,0 +1,34 @@
+---
+card:
+  type: markdown
+  content: |
+    ## {{ states('sensor.time') }}
+
+    ### {{ states('sensor.date_long_format') }}
+  style: |
+    ha-card {
+      #background-color: rgba(255,255,255,0.4);
+      text-align: center;
+      box-shadow: none !important;
+    }
+    h2 {
+      font-family: var(--paper-font-headline_-_font-family);
+      -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
+      font-size: 3em;
+      font-weight: var(--paper-font-headline_-_font-weight);
+      letter-spacing: var(--paper-font-headline_-_letter-spacing);
+      line-height: 1em;
+      text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
+      margin: 0;
+    }
+    h3 {
+      color: var(--accent-color);
+      font-family: var(--paper-font-headline_-_font-family);
+      -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
+      font-size: 1.3em !important;
+      font-weight: var(--paper-font-headline_-_font-weight);
+      letter-spacing: var(--paper-font-headline_-_letter-spacing);
+      line-height: var(--paper-font-headline_-_line-height);
+      text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
+      margin: 0;
+    }

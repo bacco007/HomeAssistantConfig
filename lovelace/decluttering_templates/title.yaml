@@ -1,0 +1,16 @@
+---
+default:
+  - title: inserttitlehere
+card:
+  type: markdown
+  style: |
+    ha-card {
+      font-size: 20px;
+      font-family: Oswald;
+      height: 30px;
+      background: none;
+      margin-top: -0.9em;
+      margin-left: -10px;
+      margin-bottom: 0.9em;
+    }
+  content: '[[title]]'
