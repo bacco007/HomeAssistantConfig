@@ -1,0 +1,6 @@
+---
+notify:
+  - name: Slack
+    platform: slack
+    api_key: !secret slack_apikey
+    default_channel: '#tbsmarthome'

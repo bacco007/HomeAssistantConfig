@@ -1,0 +1,21 @@
+---
+glances:
+  - host: !secret TBSH01_ipaddress
+    name: TBSH01
+    version: 3
+
+  - host: !secret vmTBSH01_ipaddress
+    name: vmTBSH01
+    version: 3
+
+  - host: !secret vmTBSH02_ipaddress
+    name: vmTBSH02
+    version: 3
+
+  - host: !secret piserv_ipaddress
+    name: piServ
+    version: 3
+
+  - host: !secret pveTBSH_ipaddress
+    name: pveTBSH
+    version: 3

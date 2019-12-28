@@ -1,0 +1,23 @@
+---
+alias: 'Python Script - Update Date Countdown'
+trigger:
+  - event: start
+    platform: homeassistant
+  - platform: time
+    at: "00:00:01"
+action:
+  - service: python_script.date_countdown
+    data:
+      name: !secret date1_name
+      type: Birthday
+      date: !secret date1_date
+  - service: python_script.date_countdown
+    data:
+      name: !secret date2_name
+      type: Birthday
+      date: !secret date2_date
+  - service: python_script.date_countdown
+    data:
+      name: !secret date3_name
+      type: Birthday
+      date: !secret date3_date

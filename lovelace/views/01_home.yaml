@@ -9,6 +9,22 @@ cards:
     entities:
       - sensor.hacs
       - sensor.daylight
+  - type: entities
+    show_header_toggle: false
+    title: Our Events
+    entities:
+      - entity: sensor.birthday_thomas
+        name: My Birthday
+        secondary_info: '[[ {entity}.attributes.nextoccur ]]  ([[ {entity}.attributes.years ]])'
+        type: 'custom:secondaryinfo-entity-row'
+      - entity: sensor.birthday_henry
+        name: Henry's Birthday
+        secondary_info: '[[ {entity}.attributes.nextoccur ]]  ([[ {entity}.attributes.years ]])'
+        type: 'custom:secondaryinfo-entity-row'
+      - entity: sensor.birthday_thomas_work
+        name: My Work Birthday
+        secondary_info: '[[ {entity}.attributes.nextoccur ]]  ([[ {entity}.attributes.years ]])'
+        type: 'custom:secondaryinfo-entity-row'
   - type: custom:bom-weather-card
     title: BOM Weather
     entity_current_conditions: sensor.bom_tamworth_icon_0

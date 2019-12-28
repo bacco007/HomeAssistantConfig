@@ -2,8 +2,12 @@
 # HACS
 - url: /community_plugin/bom-weather-card/bom-weather-card.js
   type: module
+- url: /community_plugin/lovelace-card-tools/card-tools.js
+  type: module
 - url: /community_plugin/decluttering-card/decluttering-card.js
   type: module
+- url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
+  type: js
 
 # CSS
 - url: https://fonts.googleapis.com/css?family=Raleway

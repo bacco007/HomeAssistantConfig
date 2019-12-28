@@ -1,0 +1,6 @@
+---
+media_player:
+  - platform: spotify
+    client_id: !secret spotify_clientid
+    client_secret: !secret spotify_clientsecret
+    name: Spotify

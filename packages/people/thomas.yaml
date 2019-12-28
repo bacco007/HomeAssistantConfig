@@ -1,0 +1,24 @@
+---
+sensor:
+  - platform: template
+    sensors:
+      thomas_status:
+        entity_id: device_tracker.tbiphone11
+        value_template: >-
+          {% if is_state('device_tracker.tbiphone11', 'home') %}
+            Home
+          {% elif is_state('device_tracker.tbiphone11', 'trc') %}
+            Work
+          {% else %}
+            Away
+          {% endif %}
+        icon_template: >-
+          {% if is_state('device_tracker.tbiphone11', 'home') %}
+            mdi:house
+          {% elif is_state('device_tracker.tbiphone11', 'trc') %}
+            mdi:work
+          {% else %}
+            mdi:car
+          {% endif %}
+        friendly_name: 'Thomas'
+        entity_picture_template: /local/avatar_thomas.jpg
