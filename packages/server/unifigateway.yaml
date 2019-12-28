@@ -1,0 +1,103 @@
+---
+sensor:
+  - platform: unifigateway
+    host: !secret unifi_ipaddress
+    username: !secret unifi_username
+    password: !secret unifi_password
+
+  - platform: template
+    sensors:
+      unifi_gateway_lan_user:
+        friendly_name: 'LAN Users'
+        value_template: "{{ states.sensor.unifi_gateway_lan.attributes['num_user'] }}"
+        unit_of_measurement: Users
+        icon_template: mdi:lan
+        entity_id: sensor.unifi_gateway_lan
+      unifi_gateway_lan_sw:
+        friendly_name: 'LAN Switch Count'
+        value_template: "{{ states.sensor.unifi_gateway_lan.attributes['num_sw'] }}"
+        unit_of_measurement: Switches
+        icon_template: mdi:lan
+        entity_id: sensor.unifi_gateway_lan
+      unifi_gateway_wlan_user:
+        friendly_name: 'WiFi Users'
+        value_template: "{{ states.sensor.unifi_gateway_wlan.attributes['num_user'] }}"
+        unit_of_measurement: Users
+        icon_template: mdi:wifi
+        entity_id: sensor.unifi_gateway_wlan
+      unifi_gateway_wlan_ap:
+        friendly_name: 'WiFi AP Count'
+        value_template: "{{ states.sensor.unifi_gateway_wlan.attributes['num_ap'] }}"
+        unit_of_measurement: APs
+        icon_template: mdi:wifi
+        entity_id: sensor.unifi_gateway_wlan
+      unifi_gateway_wan_cpu:
+        friendly_name: 'CPU percentage'
+        value_template: "{{ states.sensor.unifi_gateway_wan.attributes['gw_system-stats']['cpu'] }}"
+        unit_of_measurement: percentage
+        entity_id: sensor.unifi_gateway_wan
+      unifi_gateway_wan_mem:
+        friendly_name: 'Memory percentage'
+        value_template: "{{ states.sensor.unifi_gateway_wan.attributes['gw_system-stats']['mem'] }}"
+        unit_of_measurement: percentage
+        entity_id: sensor.unifi_gateway_wan
+      unifi_gateway_wan_ip:
+        friendly_name: 'WAN IP'
+        value_template: '{{ states.sensor.unifi_gateway_wan.attributes.wan_ip }}'
+        entity_id: sensor.unifi_gateway_wan
+      unifi_gateway_www_uptime:
+        friendly_name: 'Internet Uptime'
+        entity_id: sensor.unifi_gateway_www
+        value_template: >
+          {%- set time = states.sensor.unifi_gateway_www.attributes.uptime | int %}
+          {%- set minutes = ((time % 3600) // 60) %}
+          {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+          {%- set hours = ((time % 86400) // 3600) %}
+          {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+          {%- set days = (time // 86400) %}
+          {%- set days = '{}d '.format(days) if days > 0 else '' %}
+          {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+binary_sensor:
+  - platform: template
+    sensors:
+      unifi_status_lan:
+        friendly_name: UniFi LAN
+        entity_id: sensor.unifi_gateway_lan
+        value_template: "{{ is_state('sensor.unifi_gateway_lan', 'OK') }}"
+        icon_template: >-
+          {% if is_state('sensor.unifi_gateway_lan', 'OK') %}
+            mdi:lan
+          {% else %}
+            mdi:lan
+          {% endif %}
+      unifi_status_wlan:
+        friendly_name: UniFi WiFi
+        entity_id: sensor.unifi_gateway_wlan
+        value_template: "{{ is_state('sensor.unifi_gateway_wlan', 'OK') }}"
+        icon_template: >-
+          {% if is_state('sensor.unifi_gateway_wlan', 'OK') %}
+            mdi:wifi
+          {% else %}
+            mdi:wifi
+          {% endif %}
+      unifi_status_wan:
+        friendly_name: UniFi USG - WAN
+        entity_id: sensor.unifi_gateway_wan
+        value_template: "{{ is_state('sensor.unifi_gateway_wan', 'OK') }}"
+        icon_template: >-
+          {% if is_state('sensor.unifi_gateway_wan', 'OK') %}
+            mdi:wan
+          {% else %}
+            mdi:wan
+          {% endif %}
+      unifi_status_www:
+        friendly_name: UniFi USG - Internet
+        entity_id: sensor.unifi_gateway_www
+        value_template: "{{ is_state('sensor.unifi_gateway_www', 'OK') }}"
+        icon_template: >-
+          {% if is_state('sensor.unifi_gateway_www', 'OK') %}
+            mdi:web
+          {% else %}
+            mdi:web
+          {% endif %}

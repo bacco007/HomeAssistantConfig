@@ -1,0 +1,206 @@
+---
+sensor:
+  - platform: snmp
+    host: 192.168.1.1
+    name: USG Uptime
+    baseoid: 1.3.6.1.2.1.1.3.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    host: 192.168.1.100
+    name: TheCube2 Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    name: 'USG WAN in'
+    host: 192.168.1.1
+    baseoid: 1.3.6.1.2.1.31.1.1.1.6.2
+    community: 'public'
+    version: '2c'
+    scan_interval: 10
+  - platform: snmp
+    name: 'USG WAN out'
+    host: 192.168.1.1
+    baseoid: 1.3.6.1.2.1.31.1.1.1.10.2
+    community: 'public'
+    version: '2c'
+    scan_interval: 10
+  - platform: statistics
+    name: 'USG WAN in Stats'
+    entity_id: sensor.usg_wan_in
+    sampling_size: 4
+    max_age:
+      hours: 24
+  - platform: statistics
+    name: 'USG WAN out Stats'
+    entity_id: sensor.usg_wan_out
+    sampling_size: 4
+    max_age:
+      hours: 24
+  - platform: template
+    sensors:
+      usg_wan_in_mbps:
+        value_template: "{{ (state_attr('sensor.usg_wan_in_stats','change_rate')|float*8*(state_attr('sensor.usg_wan_in_stats', 'sampling_size')-1)/1000000)|round(2) }}"
+        unit_of_measurement: 'MBps'
+        entity_id: sensor.usg_wan_in_stats
+      usg_wan_out_mbps:
+        value_template: "{{ (state_attr('sensor.usg_wan_out_stats','change_rate')|float*8*(state_attr('sensor.usg_wan_out_stats', 'sampling_size')-1)/1000000)|round(2) }}"
+        unit_of_measurement: 'MBps'
+        entity_id: sensor.usg_wan_out_stats
+
+  - platform: snmp
+    name: 'USG LAN in'
+    host: 192.168.1.1
+    baseoid: 1.3.6.1.2.1.31.1.1.1.6.3
+    community: 'public'
+    version: '2c'
+    scan_interval: 10
+  - platform: snmp
+    name: 'USG LAN out'
+    host: 192.168.1.1
+    baseoid: 1.3.6.1.2.1.31.1.1.1.10.3
+    community: 'public'
+    version: '2c'
+    scan_interval: 10
+  - platform: statistics
+    name: 'USG LAN in Stats'
+    entity_id: sensor.usg_lan_in
+    sampling_size: 4
+    max_age:
+      hours: 24
+  - platform: statistics
+    name: 'USG LAN out Stats'
+    entity_id: sensor.usg_lan_out
+    sampling_size: 4
+    max_age:
+      hours: 24
+  - platform: template
+    sensors:
+      usg_lan_in_mbps:
+        value_template: "{{ (state_attr('sensor.usg_lan_in_stats','change_rate')|float*8*(state_attr('sensor.usg_lan_in_stats', 'sampling_size')-1)/1000000)|round(2) }}"
+        unit_of_measurement: 'MBps'
+        entity_id: sensor.usg_lan_in_stats
+      usg_lan_out_mbps:
+        value_template: "{{ (state_attr('sensor.usg_lan_out_stats','change_rate')|float*8*(state_attr('sensor.usg_lan_out_stats', 'sampling_size')-1)/1000000)|round(2) }}"
+        unit_of_measurement: 'MBps'
+        entity_id: sensor.usg_lan_out_stats
+
+  - platform: snmp
+    host: 192.168.1.44
+    name: Hateful8 Uptime
+    baseoid: 1.3.6.1.2.1.1.3.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    host: 192.168.1.27
+    name: UFO Uptime
+    baseoid: 1.3.6.1.2.1.1.3.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    host: 192.168.1.60
+    name: pveTBSH Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+  - platform: snmp
+    host: 192.168.1.61
+    name: vmTBSH01 Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+  - platform: snmp
+    host: 192.168.1.62
+    name: vmTBSH02 Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+  - platform: snmp
+    host: 192.168.1.20
+    name: TBSH01 Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+  - platform: snmp
+    host: 192.168.1.40
+    name: piServ Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    host: 192.168.1.27
+    name: UFO Model
+    baseoid: 1.3.6.1.4.1.41112.1.6.3.3.0
+  - platform: snmp
+    host: 192.168.1.27
+    name: UFO Firmware Version
+    baseoid: 1.3.6.1.4.1.41112.1.6.3.6.0

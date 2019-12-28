@@ -1,0 +1,55 @@
+---
+homeassistant:
+  customize:
+    sensor.plex_lanbandwidth:
+      icon: mdi:lan
+    sensor.plex_wanbandwidth:
+      icon: mdi:wan
+    sensor.plex_totalbandwidth:
+      icon: mdi:lan-pending
+
+sensor:
+  - platform: tautulli
+    api_key: !secret plex_tautulli_apikey
+    host: !secret plex_tautulli_host
+    port: !secret plex_tautulli_port
+    monitored_conditions:
+      - lan_bandwidth
+      - wan_bandwidth
+      - total_bandwidth
+      - library_name
+      - full_title
+      - tagline
+      - title
+      - progress_percent
+      - summary
+      - container
+      - indexes
+      - libraries
+      - media_type
+  - platform: template
+    sensors:
+      plex_topmovie:
+        friendly_name: Plex Top Movie
+        value_template: "{{state_attr('sensor.tautulli', 'Top Movie')}}"
+      plex_toptvshow:
+        friendly_name: Plex Top TV Show
+        value_template: "{{state_attr('sensor.tautulli', 'Top TV Show')}}"
+      plex_topuser:
+        friendly_name: Plex Top User
+        value_template: "{{state_attr('sensor.tautulli', 'Top User')}}"
+      plex_lanbandwidth:
+        value_template: '{{ (states.sensor.tautulli.attributes.lan_bandwidth / 1024) | round(2) }}'
+        entity_id: sensor.tautulli
+        unit_of_measurement: 'Mbps'
+        friendly_name: 'Plex LAN Bandwidth'
+      plex_wanbandwidth:
+        value_template: '{{ (states.sensor.tautulli.attributes.wan_bandwidth / 1024) | round(2) }}'
+        entity_id: sensor.tautulli
+        unit_of_measurement: 'Mbps'
+        friendly_name: 'Plex WAN Bandwidth'
+      plex_totalbandwidth:
+        value_template: '{{ (states.sensor.tautulli.attributes.total_bandwidth / 1024) | round(2) }}'
+        entity_id: sensor.tautulli
+        unit_of_measurement: 'Mbps'
+        friendly_name: 'Plex Total Bandwidth'

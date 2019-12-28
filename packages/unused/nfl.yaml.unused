@@ -1,0 +1,12 @@
+---
+sensor:
+  - platform: rest
+    resource: https://feeds.nfl.com/feeds-rs/scores.json
+    name: nfl_game_time
+    value_template: >
+      {% for game in value_json.gameScores %}
+        {% if game.gameSchedule.homeTeamAbbr == 'NE' or game.gameSchedule.visitorTeamAbbr == 'NE' %}
+          {{ game.gameSchedule.isoTime }}
+        {% else %}
+        {% endif %}
+      {% endfor %}

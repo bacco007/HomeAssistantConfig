@@ -1,0 +1,15 @@
+---
+homeassistant:
+  customize:
+    sensor.chaffey_dam:
+      icon: mdi:water
+
+sensor:
+  - platform: scrape
+    resource: https://www.waternsw.com.au/supply/visit/chaffey-dam
+    name: Chaffey Dam
+    select: '.curr-pc'
+    unit_of_measurement: '%'
+    scan_interval: 3600
+    headers:
+      User-Agent: Mozilla/5.0

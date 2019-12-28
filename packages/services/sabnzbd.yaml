@@ -1,0 +1,15 @@
+---
+sabnzbd:
+  api_key: !secret sabnzbd_apikey
+  host: !secret sabnzbd_host
+  port: !secret sabnzbd_port
+  sensors:
+    - current_status
+    - speed
+    - queue_size
+    - queue_remaining
+    - queue_count
+    - day_size
+    - week_size
+    - month_size
+    - total_size

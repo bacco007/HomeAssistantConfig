@@ -1,0 +1,18 @@
+geo_location:
+  - platform: geo_json_events
+      url: https://northerntablelands.myroadinfo.com.au/livetraffic/incident.json
+      entity_namespace: 'livetraffic_incidents'
+
+# sensor:
+#     - platform: geo_rss_events
+#       name: DEA Hotspots
+#       url: https://hotspots.dea.ga.gov.au/geoserver/wfs?service=WFS&request=getfeature&typeNames=public:hotspots_three_days
+#       unit_of_measurement: 'Hotspots'
+#     - platform: geo_rss_events
+#       name: Sentinel Hotspots
+#       url: https://sentinel.ga.gov.au/geoserver/wms/reflect?layers=hotspot_current&format=application/atom+xml
+#       unit_of_measurement: 'Hotspots'
+#     - platform: geo_rss_events
+#       name: Earthquakes@GA
+#       url: https://earthquakes.ga.gov.au/geoserver/earthquakes/wfs?service=WFS&request=getfeature&typeNames=earthquakes:earthquakes_seven_days&format=rss&CQL_FILTER=display_flag=%27Y%27
+#       unit_of_measurement: 'Earthquakes'

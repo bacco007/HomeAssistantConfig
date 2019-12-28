@@ -1,0 +1,11 @@
+---
+media_player:
+  - platform: androidtv
+    name: Fire Stick
+    host: 192.168.1.55
+    adb_server_ip: 127.0.0.1
+  - platform: androidtv
+    name: Lounge TV
+    host: 192.168.1.36
+    adb_server_ip: 127.0.0.1
+    # apps:
