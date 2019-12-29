@@ -1,0 +1,190 @@
+---
+# lovelace_gen
+title: Rooms
+path: rooms
+icon: mdi:floor-plan
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    rtl: true
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Bedroom
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.xiaomibedroom_min_temp
+                      - sensor.xiaomibedroom_max_temp
+                      - sensor.xiaomibedroom_change_temp
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature
+                  - entities:
+                      - sensor.bedroom_multisensor_temperature
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature Change
+                  - entities:
+                      - sensor.xiaomibedroom_change_temp
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Humidity
+                      - entities:
+                          - sensor.bedroom_multisensor_humidity
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Pressure
+                      - entities:
+                          - sensor.bedroom_multisensor_pressure
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Lounge
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.xiaomilounge_min_temp
+                      - sensor.xiaomilounge_max_temp
+                      - sensor.xiaomilounge_change_temp
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature
+                  - entities:
+                      - sensor.lounge_multisensor_temperature
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature Change
+                  - entities:
+                      - sensor.xiaomilounge_change_temp
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Humidity
+                      - entities:
+                          - sensor.lounge_multisensor_humidity
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Pressure
+                      - entities:
+                          - sensor.lounge_multisensor_pressure
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Office
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: binary_sensor.office_presence
+                        name: Presence Detected?
+                      - entity: sensor.office_lightlevel
+                        name: Lumination
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Lumination
+                  - entities:
+                      - sensor.office_lightlevel
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true

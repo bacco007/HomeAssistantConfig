@@ -19,6 +19,10 @@ card:
   card:
     type: entities
     style: |
+      ha-card {
+        border: solid 1px var(--border-color);
+        font-family: Raleway;
+      }
       div#states {
-        padding: 0px !important;
+        padding: 5px !important;
       }

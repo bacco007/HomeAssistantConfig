@@ -23,7 +23,8 @@ card:
     card:
       - height: 110px
       - width: auto
-      - background-color: var(--primary-background-color)
+      - background-color: var(--card-background-color)
+      - border: solid 1px var(--border-color)
     name:
       - font-weight: bold
       - font-size: 15px

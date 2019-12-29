@@ -1,0 +1,53 @@
+---
+# lovelace_gen
+title: Test
+path: test
+icon: mdi:football-australian
+cards:
+  - type: custom:decluttering-card
+    template: time-card
+  - type: vertical-stack
+    cards:
+    - type: custom:decluttering-card
+      template: title
+      variables:
+        - title: Testing
+  - type: entities
+    style: !include ../includes/style.yaml
+    entities:
+      - sensor.hacs
+      - sensor.daylight
+  - type: entities
+    show_header_toggle: false
+    title: Our Events
+    style: !include ../includes/style.yaml
+    entities:
+      - entity: sensor.datetracking_mybirthday
+        name: My Birthday
+        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+        type: "custom:secondaryinfo-entity-row"
+      - entity: sensor.datetracking_henrybirthday
+        name: Henry's Birthday
+        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+        type: "custom:secondaryinfo-entity-row"
+      - entity: sensor.datetracking_patrickbirthday
+        name: Patrick's Birthday
+        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+        type: "custom:secondaryinfo-entity-row"
+      - entity: sensor.datetracking_myworkbirthday
+        name: My Work Birthday
+        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+        type: "custom:secondaryinfo-entity-row"
+  - type: entities
+    title: Dyson Fan
+    entities:
+      - climate.bedroom
+      - fan.bedroom
+      - sensor.bedroom_aqi
+      - sensor.bedroom_dust
+      - sensor.bedroom_filter_life
+      - sensor.bedroom_humidity
+      - sensor.bedroom_temperature
+
+  - type: thermostat
+    entity: climate.bedroom

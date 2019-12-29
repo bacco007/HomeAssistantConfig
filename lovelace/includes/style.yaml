@@ -1,0 +1,6 @@
+---
+  |
+  ha-card {
+    border: solid 1px var(--border-color);
+    font-family: Raleway;
+  }

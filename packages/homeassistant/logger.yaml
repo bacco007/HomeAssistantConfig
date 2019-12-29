@@ -1,0 +1,5 @@
+---
+logger:
+  default: error
+  logs:
+    xiaomi_aqara: debug

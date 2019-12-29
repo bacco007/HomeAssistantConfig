@@ -1,0 +1,277 @@
+---
+# lovelace_gen
+title: Home Assistant
+path: homeassistant
+icon: mdi:home-assistant
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: vertical
+    max_columns: 3
+    rtl: true
+    cards:
+      # Column 1 (Right)
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Home Assistant Uptime
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.last_boot
+                        name: HA Server - Uptime
+                      - entity: sensor.ha_uptime_hours
+                        name: HA Instance - Uptime
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: HA Community Store
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.hacs
+                        name: Updates Available?
+              - type: custom:gap-card
+                height: 5
+              - type: custom:list-card
+                feed_attributes: repositories
+                entity: sensor.hacs
+                columns:
+                  - field: name
+                    title: Name
+                  - field: installed version
+                    title: Installed
+                  - field: available version
+                    title: Latest
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Configuration Tools
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - script.check_config
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Restart Home Assistant
+                        service: homeassistant.restart
+                        type: call-service
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Generate README.md
+                        service: readme.generate
+                        type: call-service
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Reload Core Config
+                        service: homeassistant.reload_core_config
+                        type: call-service
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Reload Groups
+                        service: group.reload
+                        type: call-service
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Reload Automations
+                        service: automation.reload
+                        type: call-service
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Reload Scripts
+                        service: script.reload
+                        type: call-service
+                      - sensor.config_result
+              - type: markdown
+                content: |
+                  {{ sensor.config_result.attributes.detail }}
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Broken/Unknown Components
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  show_header_toggle: false
+                  style: |
+                    state-badge {
+                      margin: 0 !important;
+                    }
+                    .entities {
+                      padding-top: 2px !important;
+                    }
+                filter:
+                  include:
+                    - { state: unknown }
+                  exclude:
+                    - { domain: group }
+                sort:
+                  method: entity_id
+      - break
+
+      # Column 2 (Middle)
+      - type: custom:gap-card
+        height: 5
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Home Assistant Versions
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.ha_current_version
+                      - sensor.ha_latest_version
+                      - type: section
+                      - sensor.hass_current_beta_version
+                      - sensor.hass_current_dev_version
+                      - sensor.hass_current_supervisor_version
+                      - type: section
+                      - sensor.potential_breaking_changes
+                      - type: section
+                      - sensor.ha_overview
+                      - type: section
+                      - entity: sensor.ssl_certificate_expiry
+                        name: HA SSL Cert Expiry
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Component Counts
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: glance
+                  columns: 4
+                filter:
+                  include:
+                    - { entity_id: sensor.count_* }
+                sort:
+                  method: entity_id
+
+      - break
+
+      # Column 3 (Left)
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: HA Database
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.ha_db_size
+                        name: HASS DB Size
+                      - sensor.ha_db_events
+                      - sensor.ha_db_states
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Database Size
+                  - entities:
+                      - sensor.ha_db_size
+                  - height: 60
+                  - hours_to_show: 168
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: No. Events in DB
+                  - entities:
+                      - sensor.ha_db_events
+                  - height: 40
+                  - hours_to_show: 168
+                  - points_per_hour: 3
+                  - decimals: 0
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: No. States in DB
+                  - entities:
+                      - sensor.ha_db_states
+                  - height: 40
+                  - hours_to_show: 168
+                  - points_per_hour: 3
+                  - decimals: 0
+                  - icon: false
+                  - extrema: true
+                  - average: true
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: HomeAssistantConfig on Github
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.github_pushedat
+                      - entity: sensor.github_updatedat
+                      - entity: sensor.github_forks
+                      - entity: sensor.github_issues
+                      - entity: sensor.github_stars
+                      - entity: sensor.github_subscribers

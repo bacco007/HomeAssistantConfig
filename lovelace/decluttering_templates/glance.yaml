@@ -6,3 +6,11 @@ card:
   type: glance
   show_header_toggle: false
   entities: "[[entities]]"
+  style: |
+    ha-card {
+      border: solid 1px var(--border-color);
+      font-family: Raleway;
+    }
+    state-badge {
+      margin: 0px !important;
+    }

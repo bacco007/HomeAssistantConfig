@@ -1,0 +1,374 @@
+---
+panel: true
+icon: mdi:desktop-mac-dashboard
+path: appdashboard
+title: App Dashboard
+cards:
+  - type: custom:layout-card
+    min_columns: 1
+    max_columns: 3
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Links
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Jackett
+                  - icon: /local/dashboard-icons/jackett.png
+                  - url: !secret jackett_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Radarr
+                  - icon: /local/dashboard-icons/radarr.png
+                  - url: !secret radarr_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Sonarr
+                  - icon: /local/dashboard-icons/sonarr.png
+                  - url: !secret sonarr_url
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: SABnzbd
+                  - icon: /local/dashboard-icons/sabnzbd.png
+                  - url: !secret sabnzbd_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Transmission
+                  - icon: /local/dashboard-icons/transmission.png
+                  - url: !secret transmission_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: TVHeadend
+                  - icon: /local/dashboard-icons/tvheadend.jpg
+                  - url: !secret tvheadend_url
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: NZBHydra
+                  - icon: /local/dashboard-icons/nzbhydra.png
+                  - url: !secret nzbhydra_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name:
+                  - icon:
+                  - url:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name:
+                  - icon:
+                  - url:
+
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: TheCube2 (Electric Boogaloo)
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Plex
+                  - icon: /local/dashboard-icons/plex.png
+                  - url: !secret plex_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Synology DSM
+                  - icon: /local/dashboard-icons/synology.png
+                  - url: !secret thecube2_dsm_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Tautulli
+                  - icon: /local/dashboard-icons/tautulli.png
+                  - url: !secret plex_tautulli_url
+
+      - type: vertical-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: pveTBSH - System
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Proxmox
+                      - icon: /local/dashboard-icons/proxmox.png
+                      - url: !secret pvetbsh_proxmox_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Netdata
+                      - icon: /local/dashboard-icons/netdata.png
+                      - url: !secret pvetbsh_netdata_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name:
+                      - icon:
+                      - url:
+
+          - type: vertical-stack
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: TBSH01 - System
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Duplicati
+                      - icon: /local/dashboard-icons/duplicati.png
+                      - url: !secret tbsh01_duplicati_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Glances
+                      - icon: /local/dashboard-icons/glances.png
+                      - url: !secret tbsh01_glances_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Portainer
+                      - icon: /local/dashboard-icons/portainer.png
+                      - url: !secret tbsh01_portainer_url
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Netdata
+                      - icon: /local/dashboard-icons/netdata.png
+                      - url: !secret tbsh01_netdata_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Webmin
+                      - icon: /local/dashboard-icons/webmin.png
+                      - url: !secret tbsh01_webmin_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name:
+                      - icon:
+                      - url:
+
+          - type: vertical-stack
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: vmTBSH01 - System
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Duplicati
+                      - icon: /local/dashboard-icons/duplicati.png
+                      - url: !secret vmtbsh01_duplicati_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Glances
+                      - icon: /local/dashboard-icons/glances.png
+                      - url: !secret vmtbsh01_glances_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Portainer
+                      - icon: /local/dashboard-icons/portainer.png
+                      - url: !secret vmtbsh01_portainer_url
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Netdata
+                      - icon: /local/dashboard-icons/netdata.png
+                      - url: !secret vmtbsh01_netdata_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Webmin
+                      - icon: /local/dashboard-icons/webmin.png
+                      - url: !secret vmtbsh01_webmin_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name:
+                      - icon:
+                      - url:
+
+          - type: vertical-stack
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: vmTBSH02 - System
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Duplicati
+                      - icon: /local/dashboard-icons/duplicati.png
+                      - url: !secret vmtbsh02_duplicati_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Glances
+                      - icon: /local/dashboard-icons/glances.png
+                      - url: !secret vmtbsh02_glances_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Portainer
+                      - icon: /local/dashboard-icons/portainer.png
+                      - url: !secret vmtbsh02_portainer_url
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Netdata
+                      - icon: /local/dashboard-icons/netdata.png
+                      - url: !secret vmtbsh02_netdata_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Webmin
+                      - icon: /local/dashboard-icons/webmin.png
+                      - url: !secret vmtbsh02_webmin_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name:
+                      - icon:
+                      - url:
+                      
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: PiServ
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Webmin
+                  - icon: /local/dashboard-icons/webmin.png
+                  - url: !secret vmtbsh02_webmin_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name:
+                  - icon:
+                  - url:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name:
+                  - icon:
+                  - url:
+
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: System
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: LibreNMS
+                  - icon: /local/dashboard-icons/librenms.png
+                  - url: !secret librenms_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Pi-Hole
+                  - icon: /local/dashboard-icons/pihole.png
+                  - url: !secret pihole_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: UniFi
+                  - icon: /local/dashboard-icons/ubnt.png
+                  - url: !secret unifi_url
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Nginx Proxy
+                  - icon: /local/dashboard-icons/nginx.png
+                  - url: !secret nginx_proxy_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Guacamole
+                  - icon: /local/dashboard-icons/guacamole.png
+                  - url: !secret guacamole_url
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name:
+                  - icon:
+                  - url:
+
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Other
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Github HAConfig
+                  - icon: /local/dashboard-icons/github.png
+                  - url: https://github.com/bacco007/HomeAssistantConfig
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: deCONZ
+                  - icon: /local/dashboard-icons/deconz.jpg
+                  - url: http://192.168.1.62:40850/pwa/index.html
+              - type: custom:decluttering-card
+                template: button
+                variables:
+                  - name: Statping
+                  - icon: /local/dashboard-icons/statping.jpg
+                  - url: !secret status_url

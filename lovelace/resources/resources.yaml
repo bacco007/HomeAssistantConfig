@@ -2,11 +2,35 @@
 # HACS
 - url: /community_plugin/bom-weather-card/bom-weather-card.js
   type: module
-- url: /community_plugin/lovelace-card-tools/card-tools.js
+- url: /community_plugin/button-card/button-card.js
+  type: module
+- url: /community_plugin/custom-header/custom-header.js
   type: module
 - url: /community_plugin/decluttering-card/decluttering-card.js
   type: module
+- url: /community_plugin/list-card/list-card.js
+  type: js
+- url: /community_plugin/lovelace-auto-entities/auto-entities.js
+  type: module
+- url: /community_plugin/lovelace-card-mod/card-mod.js
+  type: module
+- url: /community_plugin/lovelace-card-tools/card-tools.js
+  type: module
+- url: /community_plugin/lovelace-gap-card/gap-card.js
+  type: module
+- url: /community_plugin/lovelace-layout-card/layout-card.js
+  type: module
+- url: /community_plugin/lovelace-multiple-entity-row/multiple-entity-row.js
+  type: js
+- url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
+  type: module
+- url: /community_plugin/mini-media-player/mini-media-player-bundle.js
+  type: module
 - url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
+  type: js
+- url: /community_plugin/upcoming-media-card/upcoming-media-card.js
+  type: js
+- url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
   type: js
 
 # CSS

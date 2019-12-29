@@ -1,0 +1,21 @@
+---
+# lovelace_gen
+title: Weather Radar
+path: radar
+panel: true
+icon: mdi:radar
+cards:
+  - type: custom:layout-card
+    min_columns: 1
+    max_columns: 2
+    min_width: 45%
+    cards:
+      - entity: camera.namoi128km
+        name: Namoi Radar (128km Coverage)
+        type: picture-entity
+      - entity: camera.moree256km
+        name: Moree Radar (256km Coverage)
+        type: picture-entity
+      - entity: camera.bom_satellite
+        name: Satellite
+        type: picture-entity

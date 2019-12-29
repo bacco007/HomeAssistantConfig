@@ -1,0 +1,11 @@
+---
+anniversaries:
+  sensors:
+    - name: !secret date1_name
+      date: !secret date1_date
+    - name: !secret date2_name
+      date: !secret date2_date
+    - name: !secret date3_name
+      date: !secret date3_date
+    - name: !secret date4_name
+      date: !secret date4_date

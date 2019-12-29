@@ -46,6 +46,8 @@ http:
 
 ios:
 
+lovelace_gen:
+
 lovelace:
   mode: yaml
 
