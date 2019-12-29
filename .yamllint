@@ -4,9 +4,8 @@ ignore: |
   custom_components/
   www/
   themes/
-  themes_bu/
   handy-code/
-  lovelace2/
+  lovelace/includes/style.yaml
   fake_secrets.yaml
   secrets.yaml
   known_devices.yaml

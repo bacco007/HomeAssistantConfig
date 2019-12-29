@@ -1,3 +1,4 @@
+---
 type: custom:bom-weather-card
 title: BOM Weather
 style: !include ../includes/style.yaml

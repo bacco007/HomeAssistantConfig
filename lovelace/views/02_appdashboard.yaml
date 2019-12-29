@@ -277,7 +277,7 @@ cards:
                       - name:
                       - icon:
                       - url:
-                      
+
       - type: vertical-stack
         cards:
           - type: custom:decluttering-card

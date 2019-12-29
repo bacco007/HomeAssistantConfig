@@ -31,11 +31,11 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                    - binary_sensor.fire_ban_today
-                    - sensor.fire_danger_level_today
-                    - type: section
-                    - binary_sensor.fire_ban_tomorrow
-                    - sensor.fire_danger_level_tomorrow
+                      - binary_sensor.fire_ban_today
+                      - sensor.fire_danger_level_today
+                      - type: section
+                      - binary_sensor.fire_ban_tomorrow
+                      - sensor.fire_danger_level_tomorrow
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
