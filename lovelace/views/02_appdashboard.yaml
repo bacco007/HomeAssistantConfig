@@ -5,9 +5,15 @@ path: appdashboard
 title: App Dashboard
 cards:
   - type: custom:layout-card
-    min_columns: 1
+    layout: auto
     max_columns: 3
+    rtl: true
     cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
       - type: vertical-stack
         cards:
           - type: custom:decluttering-card

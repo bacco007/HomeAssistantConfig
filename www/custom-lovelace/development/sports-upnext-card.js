@@ -29,6 +29,7 @@ class SportsUpNextCard extends HTMLElement {
     style.textContent = `
       ha-card {
         /* css */
+        padding-bottom: 5px;
       }
       body {
         margin: 0;
@@ -43,22 +44,24 @@ class SportsUpNextCard extends HTMLElement {
         grid-column-end: 3;
         text-align: left;
         text-indent: 0.3em;
-        font-size: 1.8em;
+        font-size: 1.4em;
         font-weight: 300;
         padding: .2em .2em;
         background-color: var(--background-color);
         text-color: var(--text-color);
+        font-family: Oswald;
       }
       .date {
         grid-column-start: 3;
         grid-column-end: 4;
         background-color: #FFFFFF;
         text-align: right;
-        font-size: 1.7em;
+        font-size: 1.4em;
         font-weight: 300;
         background-color: var(--background-color);
         text-color: var(--text-color);
         padding: .2em .2em;
+        font-family: Oswald;
       }
       .icon {
         grid-row-start: 2;
@@ -68,14 +71,15 @@ class SportsUpNextCard extends HTMLElement {
         justify-items: center;
         align-items: center;
         display: grid;
-        width: 5em;
+        width: 3em;
+        min-height: 6em;
       }
       .icon img {
         display: block;
         margin-left: auto;
         margin-right: auto;
-        height: 5em;
-        width: auto;
+        # height: 6em;
+        width: 4em;
         padding: .5em;
       }
       .nextOpponent {
@@ -86,8 +90,9 @@ class SportsUpNextCard extends HTMLElement {
         text-align: right;
         line-height: 1;
         padding: .2em .2em;
-        font-size: 1.5em;
+        font-size: 1.25em;
         margin: auto;
+        font-family: Raleway;
       }
     `;
 

@@ -1,0 +1,81 @@
+---
+# lovelace_gen
+title: Fire
+path: fire
+icon: mdi:fire
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: vertical
+    min_columns: 1
+    max_columns: 2
+    column_width: [70%, 30%]
+    rtl: true
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Bush Fire Warnings
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                    - binary_sensor.fire_ban_today
+                    - sensor.fire_danger_level_today
+                    - type: section
+                    - binary_sensor.fire_ban_tomorrow
+                    - sensor.fire_danger_level_tomorrow
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Fires Near Me
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  show_header_toggle: false
+                  style: |
+                    .card-content div {
+                        margin: 0 !important;
+                    }
+                    #states {
+                      padding-top: 0px !important;
+                      padding-bottom: 0px !important;
+                    }
+                    .secondary {
+                      color: darkgray !important;
+                      margin-left: 2px !important;
+                    }
+                show_empty: true
+                sort:
+                  method: state
+                  numeric: true
+                filter:
+                  include:
+                    - entity_id: geo_location.nswrfs_*
+      - break
+
+      - type: map
+        show_header_toggle: false
+        entities:
+          - zone.home
+          - person.thomas_baxter
+        geo_location_sources:
+          - nsw_rural_fire_service_feed
+          - wwlln

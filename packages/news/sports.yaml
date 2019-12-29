@@ -2,7 +2,7 @@
 homeassistant:
   customize:
     sensor.sport_anaducks_date:
-      entity_picture: /local/sportlogos/anaducks.jpg
+      entity_picture: /local/sportlogos/Anaheim_Ducks.svg
     sensor.sport_manu_date:
       entity_picture: /local/sportlogos/manu.png
     sensor.sport_newengpats_date:
@@ -10,7 +10,7 @@ homeassistant:
     sensor.sport_supercars_date:
       entity_picture: /local/sportlogos/supercars.png
     sensor.sport_nascar_date:
-      entity_picture: /local/sportlogos/nascar.png
+      entity_picture: /local/sportlogos/nascar.svg
     sensor.sport_indycar_date:
       entity_picture: /local/sportlogos/indycar.png
     sensor.sport_yankees_date:
@@ -18,11 +18,11 @@ homeassistant:
     sensor.sport_sydswans_date:
       entity_picture: /local/sportlogos/sydswans.png
     sensor.sport_newknights_date:
-      entity_picture: /local/sportlogos/newknights.png
+      entity_picture: /local/sportlogos/newknights.svg
     sensor.sport_cricket_date:
       entity_picture: /local/sportlogos/cricket.png
     sensor.sport_f1_date:
-      entity_picture: /local/sportlogos/f1.png
+      entity_picture: /local/sportlogos/F1.svg
     sensor.sport_sydfc_date:
       entity_picture: /local/sportlogos/sydfc.png
     sensor.sport_wec_date:

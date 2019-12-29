@@ -33,6 +33,10 @@
 - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
   type: js
 
+# Local
+- url: !file /local/custom-lovelace/development/sports-upnext-card.js
+  type: js
+
 # CSS
 - url: https://fonts.googleapis.com/css?family=Raleway
   type: css
