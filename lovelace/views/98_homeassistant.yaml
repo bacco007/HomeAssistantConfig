@@ -55,15 +55,21 @@ cards:
               - type: custom:gap-card
                 height: 5
               - type: custom:list-card
-                feed_attributes: repositories
+                feed_attribute: repositories
                 entity: sensor.hacs
                 columns:
                   - field: name
                     title: Name
+                    style:
+                      - text-align: center
                   - field: installed version
-                    title: Installed
+                    title: Current
+                    style:
+                      - text-align: center
                   - field: available version
                     title: Latest
+                    style:
+                      - text-align: center
       - type: custom:gap-card
         height: 10
       - type: vertical-stack
