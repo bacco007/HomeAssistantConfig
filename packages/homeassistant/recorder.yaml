@@ -74,6 +74,7 @@ recorder:
       - sensor.usg_wan_out_stats
       - sensor.usg_wan_out_mbps
       - sun.sun
+      - sensor.iss_location
       - sensor.piserv_containers_active
       - sensor.piserv_containers_cpu_used
       - sensor.piserv_containers_ram_used

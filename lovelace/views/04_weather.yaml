@@ -159,51 +159,67 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                      - entity: sensor.weather_bom_maxtemp_lastyr
+                      - entity: sensor.weather_bom_tempmax_lastyr
                         name: BOM - Max Temp (Last 365 Days)
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.weather_bom_maxtemp_lastyr
+                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: max
                           name: Max
                         secondary:
-                          entity: sensor.weather_bom_maxtemp_lastyr
+                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: min
                           name: Min
                         tertiary:
-                          entity: sensor.weather_bom_maxtemp_lastyr
+                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: avg
                           name: Avg
-                      - entity: sensor.weather_bom_mintemp_lastyr
+                        info:
+                          entity: sensor.weather_bom_tempmax_lastyr
+                          attribute: datestring
+                          name: false
+                      - entity: sensor.weather_bom_tempmin_lastyr
                         name: BOM - Min Temp (Last 365 Days)
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.weather_bom_mintemp_lastyr
+                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: max
                           name: Max
                         secondary:
-                          entity: sensor.weather_bom_mintemp_lastyr
+                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: min
                           name: Min
                         tertiary:
-                          entity: sensor.weather_bom_mintemp_lastyr
+                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: avg
                           name: Avg
                         info:
-                          entity: sensor.weather_bom_mintemp_lastyr
+                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: datestring
                           name: false
                       - type: section
                       - entity: sensor.weather_bom_totalrain_lastyr
                         name: BOM - Total Rain (Last 365 Days)
+                        type: custom:multiple-entity-row
+                        info:
+                          entity: sensor.weather_bom_totalrain_lastyr
+                          attribute: countstring
+                          name: false
                       - entity: sensor.weather_bom_maxrain_lastyr
                         name: BOM - Highest Rainfall (Last 365 Days)
-              - type: iframe
-                url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&theme=dark&panelId=2
-              - type: iframe
-                url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&panelId=3&theme=dark
+                        type: custom:multiple-entity-row
+                        info:
+                          entity: sensor.weather_bom_maxrain_lastyr
+                          attribute: date
+                          name: false
+              # - type: iframe
+              #   url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&theme=dark&panelId=2
+              # - type: iframe
+              #   url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&panelId=4
+              # - type: iframe
+              #   url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&panelId=3&theme=dark
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

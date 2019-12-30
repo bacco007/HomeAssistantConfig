@@ -5,6 +5,7 @@ default:
   - rows: 10
 card:
   type: custom:list-card
+  style: !include ../includes/style.yaml
   columns:
     - {add_link: link, field: title, title: ''}
   entity: '[[entities]]'

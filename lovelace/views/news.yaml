@@ -1,0 +1,303 @@
+---
+# lovelace_gen
+title: News
+path: news
+icon: mdi:newspaper
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    rtl: true
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+
+      - type: vertical-stack
+        cards:
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: SpaceX Launches
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: custom:decluttering-card
+                    template: entities-no-header
+                    variables:
+                      - entities:
+                          - sensor.spacex_next_launch_day
+                          - sensor.spacex_next_launch_time
+                          - sensor.spacex_next_rocket
+                          - sensor.spacex_next_launch_site
+                          - sensor.spacex_next_mission_name
+          - type: custom:gap-card
+            height: 10
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: International Space Station
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: custom:decluttering-card
+                    template: entities-no-header
+                    variables:
+                      - entities:
+                          - binary_sensor.iss
+                          - sensor.iss_peopleinspace
+                  - type: map
+                    default_zoom: 4
+                    entities:
+                      - sensor.iss_location
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Fuel Prices (NSW FuelWatch)
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.fuelcheck_bp_tamworth_p98
+                      - sensor.fuelcheck_caltex_tamworth_orana_p98
+                      - type: section
+                      - entity: sensor.fuel_bpviaduct_stats365
+                        name: BP Ultimate98 (Viaduct) - Last 365 Days
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.fuel_bpviaduct_stats365
+                          attribute: max
+                          name: Max
+                        secondary:
+                          entity: sensor.fuel_bpviaduct_stats365
+                          attribute: min
+                          name: Min
+                        tertiary:
+                          entity: sensor.fuel_bpviaduct_stats365
+                          attribute: avg
+                          name: Avg
+                        info:
+                          entity: sensor.fuel_bpviaduct_stats365
+                          attribute: datestring
+                          name: false
+                      - entity: sensor.fuel_caltexwhite_stats365
+                        name: Caltex Vortex98 (White St) - Last 365 Days
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.fuel_caltexwhite_stats365
+                          attribute: max
+                          name: Max
+                        secondary:
+                          entity: sensor.fuel_caltexwhite_stats365
+                          attribute: min
+                          name: Min
+                        tertiary:
+                          entity: sensor.fuel_caltexwhite_stats365
+                          attribute: avg
+                          name: Avg
+                        info:
+                          entity: sensor.fuel_caltexwhite_stats365
+                          attribute: datestring
+                          name: false
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: BP Viaduct
+                      - entities:
+                          - sensor.fuelcheck_bp_tamworth_p98
+                      - height: 60
+                      - decimals: 1
+                      - icon: false
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Caltex White St
+                      - entities:
+                          - sensor.fuelcheck_caltex_tamworth_orana_p98
+                      - height: 60
+                      - decimals: 1
+                      - icon: false
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Exchange Rates (Alpha Vantage)
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: AUD -> USD
+                      - entities:
+                          - sensor.aud_to_usd
+                      - height: 60
+                      - decimals: 3
+                      - icon: false
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: AUD -> GBP
+                      - entities:
+                          - sensor.aud_to_gbp
+                      - height: 60
+                      - decimals: 3
+                      - icon: false
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: AUD -> EUR
+                      - entities:
+                          - sensor.aud_to_eur
+                      - height: 60
+                      - decimals: 3
+                      - icon: false
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: AUD -> NZD
+                      - entities:
+                          - sensor.aud_to_nzd
+                      - height: 60
+                      - decimals: 3
+                      - icon: false
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Sky News UK
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_sky_news_uk
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Sky Sports UK
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_sky_sports_uk
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Sydney Morning Herald
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_sydney_morning_herald
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: news.com.au
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_news_com_au
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: CNN
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_cnn
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Fox Sports Australia
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_fox_sports
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: The Guardian - Australia
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_the_guardian_au
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: The Guardian - United Kingdom
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_the_guardian_uk
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Northern Daily Leader
+          - type: custom:decluttering-card
+            template: rssfeed-table
+            variables:
+              - entities:
+                  - sensor.rssfeed_northern_daily_leader
