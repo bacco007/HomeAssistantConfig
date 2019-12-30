@@ -59,11 +59,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 15:20, Sunday 29 December 2019_
+_Stats as at 04:59, Monday 30 December 2019_
 
 HA Version | No. Integrations | No. Entities | No. Sensors | No. Automations
 -- | -- | -- | -- | --
-0.103.4 | 199 | 894 | 694 | 19
+0.103.4 | 198 | 886 | 686 | 19
 
 ---
 
@@ -238,7 +238,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission)
 - [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi)
 - [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway)
-- [sensor.upnp](https://www.home-assistant.io/components/sensor.upnp)
 - [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime)
 - [sensor.version](https://www.home-assistant.io/components/sensor.version)
 - [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi)

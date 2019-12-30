@@ -24,14 +24,14 @@ sensor:
   - platform: statistics
     name: today_temp_netatmoindoor
     sampling_size: 150
-    entity_id: sensor.netatmo_indoor_temperature
+    entity_id: sensor.netatmo_brisbane_street_indoor_temperature
     max_age:
       hours: 24
 
   - platform: statistics
     name: today_temp_netatmooutdoor
     sampling_size: 150
-    entity_id: sensor.netatmo_outdoor_temperature
+    entity_id: sensor.netatmo_brisbane_street_outdoor_temperature
     max_age:
       hours: 24
 
