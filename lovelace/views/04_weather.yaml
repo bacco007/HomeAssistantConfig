@@ -191,6 +191,10 @@ cards:
                           entity: sensor.weather_bom_mintemp_lastyr
                           attribute: avg
                           name: Avg
+                        info:
+                          entity: sensor.weather_bom_mintemp_lastyr
+                          attribute: datestring
+                          name: false
                       - type: section
                       - entity: sensor.weather_bom_totalrain_lastyr
                         name: BOM - Total Rain (Last 365 Days)
