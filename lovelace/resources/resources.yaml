@@ -16,6 +16,8 @@
   type: module
 - url: /community_plugin/lovelace-card-tools/card-tools.js
   type: module
+- url: /community_plugin/lovelace-fold-entity-row/fold-entity-row.js
+  type: module
 - url: /community_plugin/lovelace-gap-card/gap-card.js
   type: module
 - url: /community_plugin/lovelace-layout-card/layout-card.js
