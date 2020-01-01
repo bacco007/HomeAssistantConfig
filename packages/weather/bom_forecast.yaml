@@ -10,17 +10,17 @@ sensor:
     forecast_days: 6
     rest_of_today: true
     friendly: false
-    friendly_state_format: '{min} to {max}, {summary}'
+    friendly_state_format: "{min} to {max}, {summary}"
     monitored_conditions:
-      - 'max'
-      - 'min'
-      - 'chance_of_rain'
-      - 'possible_rainfall'
-      - 'summary'
-      - 'detailed_summary'
-      - 'icon'
-      - 'uv_alert'
-      - 'fire_danger'
+      - "max"
+      - "min"
+      - "chance_of_rain"
+      - "possible_rainfall"
+      - "summary"
+      - "detailed_summary"
+      - "icon"
+      - "uv_alert"
+      - "fire_danger"
 
   - platform: template
     sensors:

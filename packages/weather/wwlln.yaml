@@ -1,4 +1,8 @@
 ---
+homeassistant:
+  customize_glob:
+    "geo_location.wwlln_*":
+      icon: mdi:flash
 wwlln:
   radius: 50
   window: 10

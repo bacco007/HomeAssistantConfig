@@ -3,3 +3,4 @@ logger:
   default: error
   logs:
     xiaomi_aqara: debug
+    hassio_info: info

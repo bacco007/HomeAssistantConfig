@@ -46,7 +46,7 @@ cards:
                   - extrema: true
                   - average: true
               - type: custom:decluttering-card
-                template: mini-graph
+                template: mini-graph-colorthresholds
                 variables:
                   - name: Temperature Change
                   - entities:
@@ -58,10 +58,17 @@ cards:
                   - icon: false
                   - extrema: true
                   - average: true
+                  - color_thresholds:
+                    - value: 0.01
+                      color: "#00b59d"
+                    - value: 0
+                      color: black
+                    - value: -0.01
+                      color: "#b50018"
               - type: horizontal-stack
                 cards:
                   - type: custom:decluttering-card
-                    template: mini-graph
+                    template: mini-graph-colorthresholds
                     variables:
                       - name: Humidity
                       - entities:
@@ -73,8 +80,15 @@ cards:
                       - icon: false
                       - extrema: true
                       - average: true
+                      - color_thresholds:
+                        - value: 70
+                          color: "#e74c3c"
+                        - value: 40
+                          color: "#1db954"
+                        - value: 0
+                          color: "#3498db"
                   - type: custom:decluttering-card
-                    template: mini-graph
+                    template: mini-graph-colorthresholds
                     variables:
                       - name: Pressure
                       - entities:
@@ -86,6 +100,13 @@ cards:
                       - icon: false
                       - extrema: true
                       - average: true
+                      - color_thresholds:
+                        - value: 70
+                          color: "#e74c3c"
+                        - value: 40
+                          color: "#1db954"
+                        - value: 0
+                          color: "#3498db"
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -117,7 +138,7 @@ cards:
                   - extrema: true
                   - average: true
               - type: custom:decluttering-card
-                template: mini-graph
+                template: mini-graph-colorthresholds
                 variables:
                   - name: Temperature Change
                   - entities:
@@ -129,10 +150,17 @@ cards:
                   - icon: false
                   - extrema: true
                   - average: true
+                  - color_thresholds:
+                    - value: 0.01
+                      color: "#00b59d"
+                    - value: 0
+                      color: black
+                    - value: -0.01
+                      color: "#b50018"
               - type: horizontal-stack
                 cards:
                   - type: custom:decluttering-card
-                    template: mini-graph
+                    template: mini-graph-colorthresholds
                     variables:
                       - name: Humidity
                       - entities:
@@ -144,8 +172,15 @@ cards:
                       - icon: false
                       - extrema: true
                       - average: true
+                      - color_thresholds:
+                        - value: 70
+                          color: "#e74c3c"
+                        - value: 40
+                          color: "#1db954"
+                        - value: 0
+                          color: "#3498db"
                   - type: custom:decluttering-card
-                    template: mini-graph
+                    template: mini-graph-colorthresholds
                     variables:
                       - name: Pressure
                       - entities:
@@ -157,6 +192,13 @@ cards:
                       - icon: false
                       - extrema: true
                       - average: true
+                      - color_thresholds:
+                        - value: 70
+                          color: "#e74c3c"
+                        - value: 40
+                          color: "#1db954"
+                        - value: 0
+                          color: "#3498db"
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -176,15 +218,26 @@ cards:
                       - entity: sensor.office_lightlevel
                         name: Lumination
               - type: custom:decluttering-card
-                template: mini-graph
+                template: mini-graph-colorthresholds
                 variables:
                   - name: Lumination
                   - entities:
                       - sensor.office_lightlevel
-                  - height: 60
+                  - height: 80
                   - hours_to_show: 48
-                  - points_per_hour: 3
-                  - decimals: 2
+                  - points_per_hour: 6
+                  - decimals: 0
                   - icon: false
                   - extrema: true
                   - average: true
+                  - color_thresholds:
+                    - value: 200
+                      color: "#FFFF00"
+                    - value: 100
+                      color: "#FFFACD"
+                    - value: 50
+                      color: "#FFFFE0"
+                    - value: 10
+                      color: "#3498db"
+                    - value: 0
+                      color: black

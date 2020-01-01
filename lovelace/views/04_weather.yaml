@@ -214,12 +214,70 @@ cards:
                           entity: sensor.weather_bom_maxrain_lastyr
                           attribute: date
                           name: false
-              # - type: iframe
-              #   url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&theme=dark&panelId=2
-              # - type: iframe
-              #   url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&panelId=4
-              # - type: iframe
-              #   url: https://homeassistant.tbsmartho.me/api/hassio_ingress/egG_7i_J5-Vef7ksTifDJx7c9LQkyueGzdOxTEXWWTg/d-solo/RHI2lcYWk/weather?orgId=1&panelId=3&theme=dark
+                      - type: section
+                      - entity: sensor.weather_home_tempmax_lastyr
+                        name: Home - Max Temp (Last 365 Days)
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.weather_home_tempmax_lastyr
+                          attribute: max
+                          name: Max
+                        secondary:
+                          entity: sensor.weather_home_tempmax_lastyr
+                          attribute: min
+                          name: Min
+                        tertiary:
+                          entity: sensor.weather_home_tempmax_lastyr
+                          attribute: avg
+                          name: Avg
+                        info:
+                          entity: sensor.weather_home_tempmax_lastyr
+                          attribute: datestring
+                          name: false
+                      - entity: sensor.weather_home_tempmin_lastyr
+                        name: Home - Min Temp (Last 365 Days)
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.weather_home_tempmin_lastyr
+                          attribute: max
+                          name: Max
+                        secondary:
+                          entity: sensor.weather_home_tempmin_lastyr
+                          attribute: min
+                          name: Min
+                        tertiary:
+                          entity: sensor.weather_home_tempmin_lastyr
+                          attribute: avg
+                          name: Avg
+                        info:
+                          entity: sensor.weather_home_tempmin_lastyr
+                          attribute: datestring
+                          name: false
+                      - type: section
+                      - entity: sensor.weather_home_totalrain_lastyr
+                        name: Home - Total Rain (Last 365 Days)
+                        type: custom:multiple-entity-row
+                        info:
+                          entity: sensor.weather_home_totalrain_lastyr
+                          attribute: countstring
+                          name: false
+                      - entity: sensor.weather_home_maxrain_lastyr
+                        name: Home - Highest Rainfall (Last 365 Days)
+                        type: custom:multiple-entity-row
+                        info:
+                          entity: sensor.weather_home_maxrain_lastyr
+                          attribute: date
+                          name: false
+          - type: custom:gap-card
+            height: 10
+          - type: iframe
+            url: !secret bomtemp_panel_url
+          - type: custom:gap-card
+            height: 10
+          - type: iframe
+            url: !secret bomrain_panel_url
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

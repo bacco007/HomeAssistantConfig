@@ -1,8 +1,8 @@
 ---
 homeassistant:
-  customize:
+  customize_glob:
     "geo_location.nsw_fire_service_feed_*":
-      icon: mdi:map
+      icon: mdi:fire
 
 geo_location:
   - platform: nsw_rural_fire_service_feed

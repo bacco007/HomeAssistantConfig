@@ -57,6 +57,9 @@ cards:
                       - sensor.sun_civil_night
                       - sensor.sun_nautical_night
                       - sensor.sun_astronomical_night
+                      - type: section
+                      - sensor.sun_elevation
+                      - sensor.sun_max_elevation
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

@@ -1,0 +1,142 @@
+---
+# lovelace_gen
+title: Hass.io
+path: hassio
+icon: mdi:home-assistant
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    rtl: true
+    cards:
+      # Column 1 (Right)
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Hass.io Addons - Version
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.hassio_appdaemon
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_appdaemon
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_appdaemon
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_deconz
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_deconz
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_deconz
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_influx
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_influx
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_influx
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_mqtt
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_mqtt
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_mqtt
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_mariadb
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_mariadb
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_mariadb
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_nodered
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_nodered
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_nodered
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_sshweb
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_sshweb
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_sshweb
+                          attribute: install_version
+                          name: Installed
+                      - entity: sensor.hassio_vscode
+                        type: custom:multiple-entity-row
+                        hide_state: true
+                        primary:
+                          entity: sensor.hassio_vscode
+                          attribute: current_version
+                          name: Latest
+                        secondary:
+                          entity: sensor.hassio_vscode
+                          attribute: install_version
+                          name: Installed
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Hass.io Addons - Status
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: binary_sensor.hassio_appdaemon_available
+                      - entity: binary_sensor.hassio_deconz_available
+                      - entity: binary_sensor.hassio_influxdb_available
+                      - entity: binary_sensor.hassio_mariadb_available
+                      - entity: binary_sensor.hassio_mqtt_available
+                      - entity: binary_sensor.hassio_nodered_available
+                      - entity: binary_sensor.hassio_sshweb_available
+                      - entity: binary_sensor.hassio_vscode_available

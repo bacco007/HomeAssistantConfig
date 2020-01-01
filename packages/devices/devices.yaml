@@ -43,7 +43,7 @@ binary_sensor:
         entity_id: device_tracker.thecube2
         value_template: "{{ is_state('device_tracker.thecube2', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.hecube2', 'home') %}
+          {% if is_state('device_tracker.thecube2', 'home') %}
             mdi:nas
           {% else %}
             mdi:nas

@@ -71,9 +71,9 @@ cards:
               - type: custom:decluttering-card
                 template: button
                 variables:
-                  - name:
-                  - icon:
-                  - url:
+                  - name: Grafana
+                  - icon: /local/dashboard-icons/grafana.svg
+                  - url: !secret grafana_url
               - type: custom:decluttering-card
                 template: button
                 variables:

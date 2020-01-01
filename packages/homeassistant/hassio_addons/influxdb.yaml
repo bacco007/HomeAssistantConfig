@@ -1,0 +1,35 @@
+---
+homeassistant:
+  customize:
+    hassio_influxdb_rest:
+      hidden: true
+
+sensor:
+  - platform: rest
+    resource: http://192.168.1.62:8123/api/hassio/addons/a0d7b954_influxdb/info
+    name: hassio_influxdb_rest
+    value_template: '{{ value_json["data"]["name"] }}'
+    json_attributes:
+      - data
+    headers:
+      Content-Type: application/json
+      Authorization: !secret ha_api_llat
+
+  - platform: template
+    sensors:
+      hassio_influxdb:
+        friendly_name: "Hass.io Addon - InfluxDB"
+        icon_template: "mdi:home-assistant"
+        value_template: '{{ states.sensor.hassio_influxdb_rest.attributes.data["name"] }}'
+        attribute_templates:
+          available: '{{ states.sensor.hassio_influxdb_rest.attributes.data["available"] }}'
+          install_version: '{{ states.sensor.hassio_influxdb_rest.attributes.data["version"] }}'
+          current_version: '{{ states.sensor.hassio_influxdb_rest.attributes.data["last_version"] }}'
+
+binary_sensor:
+  - platform: template
+    sensors:
+      hassio_influxdb_available:
+        friendly_name: "Hass.io Addon - InfluxDB"
+        icon_template: "mdi:home-assistant"
+        value_template: '{{ states.sensor.hassio_influxdb_rest.attributes.data["available"] }}'

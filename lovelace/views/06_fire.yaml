@@ -69,6 +69,40 @@ cards:
                 filter:
                   include:
                     - entity_id: geo_location.nswrfs_*
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Lightning Near Me
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  show_header_toggle: false
+                  style: |
+                    .card-content div {
+                        margin: 0 !important;
+                    }
+                    #states {
+                      padding-top: 0px !important;
+                      padding-bottom: 0px !important;
+                    }
+                    .secondary {
+                      color: darkgray !important;
+                      margin-left: 2px !important;
+                    }
+                show_empty: true
+                sort:
+                  method: state
+                  numeric: true
+                filter:
+                  include:
+                    - entity_id: geo_location.wwlln_*
+
       - break
 
       - type: map

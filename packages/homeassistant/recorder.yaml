@@ -263,3 +263,11 @@ recorder:
       - sensor.vmtbsh02_total
       - sensor.vmtbsh02_uptime
       - sensor.vmtbsh02_version
+      - sensor.hassio_appdaemon_rest
+      - sensor.hassio_deconz_rest
+      - sensor.hassio_influxdb_rest
+      - sensor.hassio_mariadb_rest
+      - sensor.hassio_mqtt_rest
+      - sensor.hassio_nodered_rest
+      - sensor.hassio_sshweb_rest
+      - sensor.hassio_vscode_rest
