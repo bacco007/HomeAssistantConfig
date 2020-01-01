@@ -18,27 +18,6 @@ cards:
       - sensor.hacs
       - sensor.daylight
   - type: entities
-    show_header_toggle: false
-    title: Our Events
-    style: !include ../includes/style.yaml
-    entities:
-      - entity: sensor.datetracking_mybirthday
-        name: My Birthday
-        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
-        type: "custom:secondaryinfo-entity-row"
-      - entity: sensor.datetracking_henrybirthday
-        name: Henry's Birthday
-        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
-        type: "custom:secondaryinfo-entity-row"
-      - entity: sensor.datetracking_patrickbirthday
-        name: Patrick's Birthday
-        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
-        type: "custom:secondaryinfo-entity-row"
-      - entity: sensor.datetracking_myworkbirthday
-        name: My Work Birthday
-        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
-        type: "custom:secondaryinfo-entity-row"
-  - type: entities
     title: Dyson Fan
     entities:
       - climate.bedroom

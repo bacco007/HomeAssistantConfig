@@ -1,4 +1,3 @@
----
 secrets: /config/secrets.yaml
 log:
   logfile: STDOUT
@@ -10,7 +9,7 @@ appdaemon:
     HASS:
       type: hass
       ha_url: http://hassio/homeassistant
-      token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIyZDI3NjE1MmZiYmE0M2QyOWM1YWYyZTU1ODdmZjg2NSIsImlhdCI6MTU3NzUyNDA4NiwiZXhwIjoxODkyODg0MDg2fQ.7xBRxefCmH8oEovR_F2yUKBgBduLsE1ESch1mDfpNeM
+      token: 94a867ad73ce5463682253427e9e9e1b2b7ff03755dd75ce98f77b3ff6324ab7bc4e1b3b72fc2788bd7d69f73cf78142fbc737ec69bea93f
 hadashboard:
   dash_url: http://127.0.0.1:5050
   dash_dir: /config/appdaemon/dashboards

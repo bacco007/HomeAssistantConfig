@@ -1,0 +1,69 @@
+---
+# lovelace_gen
+title: People
+path: people
+icon: mdi:account-group
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    rtl: true
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Thomas
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.here_travel_tom_to_work
+                        name: "Current Location -> Work"
+                      - entity: sensor.here_travel_tom_to_home
+                        name: "Current Location -> Home"
+                      - entity: sensor.here_travel_home_to_work_car
+                        name: "Home <-> Work by Car"
+                      - entity: sensor.here_travel_home_to_work_walk
+                        name: "Home <-> Work on Foot"
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Birthdays etc
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.datetracking_mybirthday
+                        name: My Birthday
+                        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+                        type: "custom:secondaryinfo-entity-row"
+                      - entity: sensor.datetracking_henrybirthday
+                        name: Henry's Birthday
+                        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+                        type: "custom:secondaryinfo-entity-row"
+                      - entity: sensor.datetracking_patrickbirthday
+                        name: Patrick's Birthday
+                        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+                        type: "custom:secondaryinfo-entity-row"
+                      - entity: sensor.datetracking_myworkbirthday
+                        name: My Work Birthday
+                        secondary_info: "[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])"
+                        type: "custom:secondaryinfo-entity-row"

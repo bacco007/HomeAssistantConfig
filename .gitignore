@@ -8,7 +8,6 @@ deps
 www/custom-lovelace/upcoming-media-card
 icloud
 notebooks
-node-red/lib
 tts
 
 # Ignore File Extensions
@@ -32,5 +31,3 @@ www/images/radar_moree_256km.gif
 www/images/radar_namoi_128km.gif
 yamllinterrors.txt
 README_Dev.md
-node-red/flows_cred.json
-node-red/.flows.json.backup
