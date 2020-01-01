@@ -52,15 +52,15 @@ cards:
                           entity: sensor.hassio_deconz
                           attribute: install_version
                           name: Installed
-                      - entity: sensor.hassio_influx
+                      - entity: sensor.hassio_influxdb
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.hassio_influx
+                          entity: sensor.hassio_influxdb
                           attribute: current_version
                           name: Latest
                         secondary:
-                          entity: sensor.hassio_influx
+                          entity: sensor.hassio_influxdb
                           attribute: install_version
                           name: Installed
                       - entity: sensor.hassio_mqtt

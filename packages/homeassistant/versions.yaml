@@ -11,13 +11,16 @@ homeassistant:
       friendly_name: Uptime
       icon: mdi:home-assistant
     sensor.hass_current_beta_version:
-      friendly_name: 'Hass.io Beta Release'
+      friendly_name: "Hass.io Beta Release"
       icon: mdi:beta
     sensor.hass_current_dev_version:
-      friendly_name: 'Hass.io Dev Release'
+      friendly_name: "Hass.io Dev Release"
       icon: mdi:alpha
     sensor.hass_current_supervisor_version:
-      friendly_name: 'Hass.io Current Supervisor Version'
+      friendly_name: "Hass.io Current Supervisor Version"
+      icon: mdi:check-decagram
+    sensor.hass_beta_supervisor_version:
+      friendly_name: "Hass.io Beta Supervisor Version"
       icon: mdi:check-decagram
 
 sensor:
@@ -63,7 +66,13 @@ sensor:
     resource: https://s3.amazonaws.com/hassio-version/stable.json
     name: Hass Current Supervisor Version
     scan_interval: 7200
-    value_template: '{{ value_json.supervisor }}'
+    value_template: "{{ value_json.supervisor }}"
+
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/beta.json
+    name: Hass Beta Supervisor Version
+    scan_interval: 7200
+    value_template: "{{ value_json.supervisor }}"
 
   - platform: rest
     name: Hass Main config
@@ -98,9 +107,19 @@ sensor:
     sensors:
       count_all_components:
         entity_id: sensor.hass_main_config
-        friendly_name: 'All Components'
+        friendly_name: "All Components"
         icon_template: mdi:code-tags
         value_template: "{{ states.sensor.hass_main_config.attributes.components | count }}"
+
+binary_sensor:
+  - platform: template
+    sensors:
+      ha_update_available:
+        friendly_name: "HA Update Available"
+        icon_template: mdi:home-assistant
+        value_template: >-
+          {{ states('sensor.ha_latest_version') != 'unavailable' and
+             states('sensor.ha_latest_version') > states('sensor.ha_current_version') }}
 
 # http://192.168.1.62:8123/api/supervisor/info
 # http://192.168.1.62:8123/api/hassio/snapshots

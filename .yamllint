@@ -65,6 +65,7 @@ rules:
       themes.yaml
       switch.yaml
       fake-secrets.yaml
+      lovelace/custom_header/settings.yaml
     level: warning
     max: 400
     allow-non-breakable-words: true

@@ -4,5 +4,5 @@ sensor:
     api_key: !secret radarr_apikey
     host: !secret radarr_host
     port: !secret radarr_port
-    days: 120
-    max: 20
+    days: 360
+    max: 100

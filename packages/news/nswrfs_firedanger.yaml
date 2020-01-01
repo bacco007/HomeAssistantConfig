@@ -1,4 +1,8 @@
 ---
+homeassistant:
+  customize:
+    sensor.fire_danger_in_northern_slopes_region:
+      hidden: true
 
 sensor:
   - platform: nsw_rural_fire_service_fire_danger

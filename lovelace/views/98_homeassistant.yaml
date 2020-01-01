@@ -31,7 +31,7 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                      - entity: sensor.last_boot
+                      - entity: sensor.systemuptime
                         name: HA Server - Uptime
                       - entity: sensor.ha_uptime_hours
                         name: HA Instance - Uptime
@@ -167,12 +167,15 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
+                      - binary_sensor.ha_update_available
                       - sensor.ha_current_version
                       - sensor.ha_latest_version
                       - type: section
                       - sensor.hass_current_beta_version
                       - sensor.hass_current_dev_version
+                      - type: section
                       - sensor.hass_current_supervisor_version
+                      - sensor.hass_beta_supervisor_version
                       - type: section
                       - sensor.potential_breaking_changes
                       - type: section

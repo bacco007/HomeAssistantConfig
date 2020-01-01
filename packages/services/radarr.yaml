@@ -8,4 +8,5 @@ sensor:
       - movies
       - upcoming
       - status
-    days: 28
+      - commands
+    days: 365

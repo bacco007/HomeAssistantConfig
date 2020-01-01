@@ -1,20 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-#cd /users/server/.homeassistant
-# source /srv/homeassistant/homeassistant_venv/bin/activate
-#hass --script check_config
+WDIR=$(cd `dirname $0` && pwd)
+ROOT=$(dirname ${WDIR})
 
-#git rm -r --cached .
+# git --version>/dev/null || apk -q add git
 
-# WDIR=$(cd `dirname $0` && pwd)
-# ROOT=$(dirname ${WDIR})
-
-# . ${WDIR}/_parse_yaml.sh
-
-# eval $(parse_yaml ${ROOT}/secrets.yaml)
-
-# for i in `cut -f1 -d":" secrets.yaml`;do;echo $i: $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1);done | sed 's/_url:.*/_url: https:\/\/www.some.url.com/' > travis_secrets.yaml
-
+echo "Updating fake_secrets.yaml"
+${WDIR}/make_fake_secrets.sh
 
 git add .
 git status

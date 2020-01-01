@@ -59,12 +59,12 @@ cards:
                   - extrema: true
                   - average: true
                   - color_thresholds:
-                    - value: 0.01
-                      color: "#00b59d"
-                    - value: 0
-                      color: black
-                    - value: -0.01
-                      color: "#b50018"
+                      - value: 0.01
+                        color: "#00b59d"
+                      - value: 0
+                        color: black
+                      - value: -0.01
+                        color: "#b50018"
               - type: horizontal-stack
                 cards:
                   - type: custom:decluttering-card
@@ -81,12 +81,12 @@ cards:
                       - extrema: true
                       - average: true
                       - color_thresholds:
-                        - value: 70
-                          color: "#e74c3c"
-                        - value: 40
-                          color: "#1db954"
-                        - value: 0
-                          color: "#3498db"
+                          - value: 70
+                            color: "#e74c3c"
+                          - value: 40
+                            color: "#1db954"
+                          - value: 0
+                            color: "#3498db"
                   - type: custom:decluttering-card
                     template: mini-graph-colorthresholds
                     variables:
@@ -101,12 +101,12 @@ cards:
                       - extrema: true
                       - average: true
                       - color_thresholds:
-                        - value: 70
-                          color: "#e74c3c"
-                        - value: 40
-                          color: "#1db954"
-                        - value: 0
-                          color: "#3498db"
+                          - value: 70
+                            color: "#e74c3c"
+                          - value: 40
+                            color: "#1db954"
+                          - value: 0
+                            color: "#3498db"
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -151,12 +151,12 @@ cards:
                   - extrema: true
                   - average: true
                   - color_thresholds:
-                    - value: 0.01
-                      color: "#00b59d"
-                    - value: 0
-                      color: black
-                    - value: -0.01
-                      color: "#b50018"
+                      - value: 0.01
+                        color: "#00b59d"
+                      - value: 0
+                        color: black
+                      - value: -0.01
+                        color: "#b50018"
               - type: horizontal-stack
                 cards:
                   - type: custom:decluttering-card
@@ -173,12 +173,12 @@ cards:
                       - extrema: true
                       - average: true
                       - color_thresholds:
-                        - value: 70
-                          color: "#e74c3c"
-                        - value: 40
-                          color: "#1db954"
-                        - value: 0
-                          color: "#3498db"
+                          - value: 70
+                            color: "#e74c3c"
+                          - value: 40
+                            color: "#1db954"
+                          - value: 0
+                            color: "#3498db"
                   - type: custom:decluttering-card
                     template: mini-graph-colorthresholds
                     variables:
@@ -193,12 +193,12 @@ cards:
                       - extrema: true
                       - average: true
                       - color_thresholds:
-                        - value: 70
-                          color: "#e74c3c"
-                        - value: 40
-                          color: "#1db954"
-                        - value: 0
-                          color: "#3498db"
+                          - value: 70
+                            color: "#e74c3c"
+                          - value: 40
+                            color: "#1db954"
+                          - value: 0
+                            color: "#3498db"
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -231,13 +231,13 @@ cards:
                   - extrema: true
                   - average: true
                   - color_thresholds:
-                    - value: 200
-                      color: "#FFFF00"
-                    - value: 100
-                      color: "#FFFACD"
-                    - value: 50
-                      color: "#FFFFE0"
-                    - value: 10
-                      color: "#3498db"
-                    - value: 0
-                      color: black
+                      - value: 200
+                        color: "#FFFF00"
+                      - value: 100
+                        color: "#FFFACD"
+                      - value: 50
+                        color: "#FFFFE0"
+                      - value: 10
+                        color: "#3498db"
+                      - value: 0
+                        color: black

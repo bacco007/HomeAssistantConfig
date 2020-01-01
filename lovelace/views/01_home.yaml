@@ -16,6 +16,8 @@ cards:
         cards:
           - type: custom:decluttering-card
             template: time-card
+          - type: custom:decluttering-card
+            template: search
           - !include ../includes/bom_weather_card.yaml
 
       - break

@@ -1,0 +1,10 @@
+---
+card:
+  type: custom:search-card
+  max_results: 10
+  style: |
+    ha-card {
+      background: none;
+      font-family: Raleway;
+      box-shadow: none !important;
+    }

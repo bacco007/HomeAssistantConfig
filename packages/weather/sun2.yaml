@@ -1,4 +1,12 @@
 ---
+binary_sensor:
+  - platform: sun2
+    monitored_conditions:
+      - elevation
+      - elevation:
+          above: 25
+          name: Sun Above 25
+
 sensor:
   - platform: sun2
     entity_namespace: sun

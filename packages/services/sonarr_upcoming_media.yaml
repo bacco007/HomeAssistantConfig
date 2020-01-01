@@ -4,5 +4,5 @@ sensor:
     api_key: !secret sonarr_apikey
     host: !secret sonarr_host
     port: !secret sonarr_port
-    days: 14
-    max: 50
+    days: 100
+    max: 100

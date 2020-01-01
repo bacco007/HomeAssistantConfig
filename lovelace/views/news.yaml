@@ -24,6 +24,24 @@ cards:
               - type: custom:decluttering-card
                 template: title
                 variables:
+                  - title: Miscellaneous
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: custom:decluttering-card
+                    template: entities-no-header
+                    variables:
+                      - entities:
+                          - entity: sensor.doomsday_clock
+                            name: Doomsday Clock (Min to Midnight)
+
+      - type: vertical-stack
+        cards:
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
                   - title: SpaceX Launches
               - type: custom:vertical-stack-in-card
                 cards:

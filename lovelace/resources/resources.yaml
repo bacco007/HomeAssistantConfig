@@ -28,6 +28,8 @@
   type: module
 - url: /community_plugin/mini-media-player/mini-media-player-bundle.js
   type: module
+- url: /community_plugin/search-card/search-card.js
+  type: module
 - url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
   type: js
 - url: /community_plugin/upcoming-media-card/upcoming-media-card.js

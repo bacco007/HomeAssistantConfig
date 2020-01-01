@@ -7,7 +7,7 @@ homeassistant:
 geo_location:
   - platform: nsw_rural_fire_service_feed
     entity_namespace: "nswrfs"
-    radius: 50
+    radius: 100
     categories:
       - 'Emergency Warning'
       - 'Watch and Act'

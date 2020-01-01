@@ -17,29 +17,25 @@ default:
   - animate: true
   - icon: true
   - color_thresholds:
-    - list
+      - list
   - color_thresholds_transition: smooth
 card:
-  type: 'custom:mini-graph-card'
-  # style: |
-  #   ha-card {
-
-  #   }
-  entities: '[[entities]]'
-  hours_to_show: '[[hours_to_show]]'
-  points_per_hour: '[[points_per_hour]]'
-  line_width: '[[line_width]]'
-  hour24: '[[hour24]]'
-  animate: '[[animate]]'
-  decimals: '[[decimals]]'
-  font_size: '[[font_size]]'
-  height: '[[height]]'
+  type: "custom:mini-graph-card"
+  entities: "[[entities]]"
+  hours_to_show: "[[hours_to_show]]"
+  points_per_hour: "[[points_per_hour]]"
+  line_width: "[[line_width]]"
+  hour24: "[[hour24]]"
+  animate: "[[animate]]"
+  decimals: "[[decimals]]"
+  font_size: "[[font_size]]"
+  height: "[[height]]"
   show:
-    graph: '[[graph]]'
-    icon: '[[icon]]'
-    fill: '[[fill]]'
-    extrema: '[[extrema]]'
-    average: '[[average]]'
-  name: '[[name]]'
-  color_thresholds_transition: '[[color_thresholds_transition]]'
-  color_thresholds: '[[color_thresholds]]'
+    graph: "[[graph]]"
+    icon: "[[icon]]"
+    fill: "[[fill]]"
+    extrema: "[[extrema]]"
+    average: "[[average]]"
+  name: "[[name]]"
+  color_thresholds_transition: "[[color_thresholds_transition]]"
+  color_thresholds: "[[color_thresholds]]"

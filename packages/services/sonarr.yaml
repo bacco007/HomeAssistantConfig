@@ -10,7 +10,8 @@ sensor:
       - series
       - wanted
       - status
-    days: 50
+      - commands
+    days: 100
 
 binary_sensor:
   - platform: template

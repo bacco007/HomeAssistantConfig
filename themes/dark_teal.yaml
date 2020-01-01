@@ -1,0 +1,65 @@
+dark_teal:  
+
+  # Fonts
+  primary-font-family: 'Raleway,sans-serif'
+  paper-font-common-base_-_font-family: "var(--primary-font-family)"
+  paper-font-common-code_-_font-family: "var(--primary-font-family)"
+  paper-font-body1_-_font-family: "var(--primary-font-family)"
+  paper-font-subhead_-_font-family: "var(--primary-font-family)"
+  paper-font-headline_-_font-family: "var(--primary-font-family)"
+  paper-font-caption_-_font-family: "var(--primary-font-family)"
+  paper-font-title_-_font-family: "var(--primary-font-family)"
+
+  # Text
+  text-color: '#ffffff' 
+  primary-text-color: 'var(--text-color)'
+  text-primary-color: 'var(--text-color)'
+  secondary-text-color: "#BAC0C6"
+  text-medium-light-color: '#A0A2A8'
+  text-medium-color: '#80828A' 
+
+  # Main Colors
+  primary-color: "var(--accent-color)"
+  light-primary-color: 'var(--accent-color)' 
+  accent-color: '#00b59d'
+  accent-medium-color: 'var(--accent-color)'
+
+  # Background
+  background-color: '#3b4049' 
+  primary-background-color: 'var(--background-color)'
+  background-color-2: '#383e47' 
+  secondary-background-color: 'var(--background-color-2)'
+
+  # Card
+  card-background-color: 'var(--paper-card-background-color)'
+  paper-card-background-color: 'rgba(67, 73, 82, 1)'
+  ha-card-box-shadow: "0px 0px 0px 0px"
+  ha-card-border-radius: "3px"
+  border-color: '#333333' 
+
+  # Icons
+  paper-item-icon-color: 'var(--text-color)'    
+  paper-item-icon-active-color: 'var(--accent-color)'   
+  
+  # Left Menu
+  paper-listbox-background-color: 'rgba(69, 74, 83, 1)'
+  sidebar-icon-color: 'var(--secondary-text-color)'
+  sidebar-selected-icon-color: 'var(--accent-color)'
+
+  # Sliders
+  paper-slider-knob-color: 'var(--accent-color)'
+  paper-slider-pin-color: 'var(--accent-color)'
+  paper-slider-active-color: 'var(--accent-color)'
+  paper-slider-container-color: 'var(--border-color)'
+
+  # Toggle:
+  paper-toggle-button-checked-bar-color: 'var(--accent-color)' 
+
+  # Switch
+  switch-unchecked-color: 'var(--border-color)'
+
+  # Custom Header
+  ch-background: 'rgba(69, 74, 83, 0.8)'
+  ch-active-tab-color: 'var(--accent-color)'
+  ch-notification-dot-color: 'var(--accent-color)'
+  ch-all-tabs-color: 'var(--sidebar-icon-color)'
