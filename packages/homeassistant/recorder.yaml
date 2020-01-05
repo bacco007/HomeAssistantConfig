@@ -35,6 +35,7 @@ recorder:
       - sensor.date_long_format
       - sensor.date_time
       - sensor.ha_uptime_hours
+      - sensor.systemuptime
       - sensor.hateful8_uptime
       - sensor.rssfeed_cnn
       - sensor.rssfeed_fox_sports
@@ -271,3 +272,8 @@ recorder:
       - sensor.hassio_nodered_rest
       - sensor.hassio_sshweb_rest
       - sensor.hassio_vscode_rest
+      - sensor.plex_recently_added
+      - sensor.plex_recently_added_movies
+      - sensor.plex_recently_added_tv
+      - sensor.sonarr_upcoming_media
+      - sensor.radarr_upcoming_media

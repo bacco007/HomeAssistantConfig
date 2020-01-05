@@ -17,10 +17,10 @@ dark_teal:
   secondary-text-color: "#BAC0C6"
   text-medium-light-color: '#A0A2A8'
   text-medium-color: '#80828A' 
+  primary-color: 'var(--secondary-text-color)'
 
   # Main Colors
-  primary-color: "var(--accent-color)"
-  light-primary-color: 'var(--accent-color)' 
+  app-header-background-color: 'var(--paper-card-background-color)'
   accent-color: '#00b59d'
   accent-medium-color: 'var(--accent-color)'
 
@@ -45,21 +45,29 @@ dark_teal:
   paper-listbox-background-color: 'rgba(69, 74, 83, 1)'
   sidebar-icon-color: 'var(--secondary-text-color)'
   sidebar-selected-icon-color: 'var(--accent-color)'
+  sidebar-selected-text-color: 'var(--text-color)'
+  divider-color: 'var(--background-color)'
+  light-primary-color: 'var(--accent-color)' 
 
   # Sliders
   paper-slider-knob-color: 'var(--accent-color)'
-  paper-slider-pin-color: 'var(--accent-color)'
-  paper-slider-active-color: 'var(--accent-color)'
-  paper-slider-container-color: 'var(--border-color)'
+  paper-slider-pin-color: 'var(--border-color)'
+  paper-slider-active-color: 'var(--border-color)'
+  paper-slider-container-color: 'var(--paper-card-background-color)'
 
   # Toggle:
-  paper-toggle-button-checked-bar-color: 'var(--accent-color)' 
+  paper-toggle-button-checked-bar-color: 'var(--accent-color)'
+  mdc-theme-primary: 'var(--accent-color)' 
 
   # Switch
-  switch-unchecked-color: 'var(--border-color)'
+  switch-unchecked-color: 'var(--text-medium-color)'
+  switch-checked-button-color: 'var(--accent-color)'
+  switch-unchecked-track-color: 'var(--border-color)'
+  switch-checked-track-color: 'var(--border-color)'
 
   # Custom Header
   ch-background: 'rgba(69, 74, 83, 0.8)'
   ch-active-tab-color: 'var(--accent-color)'
   ch-notification-dot-color: 'var(--accent-color)'
   ch-all-tabs-color: 'var(--sidebar-icon-color)'
+  ch-tab-indicator-color: 'var(--accent-color)'

@@ -2,5 +2,5 @@
 logger:
   default: error
   logs:
-    xiaomi_aqara: debug
-    hassio_info: info
+    # homeassistant.components.websocket_api: debug
+    # homeassistant.components.influxdb: debug

@@ -13,7 +13,6 @@ _Please :star: this repo if you find it useful_
 ![Hits](http://hits.dwyl.io/bacco007/HomeAssistantConfig.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/bacco007/HomeAssistantConfig?style=flat-square) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bacco007/HomeAssistantConfig?style=flat-square)
 ![Licence](https://img.shields.io/badge/license-Unlicense-blue.svg?style=flat-square)
-
 ![Twitter Follow](https://img.shields.io/twitter/follow/bacco007?style=social)
 
 ---
@@ -30,9 +29,16 @@ _Please :star: this repo if you find it useful_
     - [Custom Components Used](#custom-components-used)
   - [Screenshots](#screenshots)
   - [Hass.io Addons](#hassio-addons)
+  - [Licence](#licence)
   - [Other Good HA Resources/Configs](#other-good-ha-resourcesconfigs)
 
 ---
+
+## TL;DR
+
+This is my Home Assistant config - documentation isn't my strongest skill, so if you've got any questions, hit me up
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
 
 ## Ecosystem
 
@@ -51,15 +57,19 @@ My smarthome setup seems to be ever-growing, but at this stage it's unlikely tha
 
 I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a ConBee II as the host
 
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
 ---
 
 ## Stats
 
-_Stats as at 05:00, Wednesday 01 January 2020_
+_Stats as at 04:59, Friday 03 January 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.103.4 | 200     | 922         | 711 | 19 |
+| 0.103.5 | 200     | 972         | 727 | 19 |
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
 
 ---
 
@@ -91,6 +101,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app)
 - [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv)
 - [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve)
+- [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2)
 - [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template)
 - [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod)
 - [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater)
@@ -132,11 +143,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [group](https://www.home-assistant.io/components/group)
 - [hacs](https://www.home-assistant.io/components/hacs)
 - [hassio](https://www.home-assistant.io/components/hassio)
+- [hdhomerun](https://www.home-assistant.io/components/hdhomerun)
 - [history](https://www.home-assistant.io/components/history)
 - [homeassistant](https://www.home-assistant.io/components/homeassistant)
 - [http](https://www.home-assistant.io/components/http)
 - [ifttt](https://www.home-assistant.io/components/ifttt)
-- [influxdb](https://www.home-assistant.io/components/influxdb)
 - [ios](https://www.home-assistant.io/components/ios)
 - [lifx](https://www.home-assistant.io/components/lifx)
 - [light](https://www.home-assistant.io/components/light)
@@ -152,7 +163,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
-- [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
 - [met](https://www.home-assistant.io/components/met)
@@ -293,6 +303,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Generate readme](https://github.com/custom-components/readme)
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS (Home Assistant Community Store)](https://hacs.xyz)
+- [HDHomeRun](https://github.com/burnnat/ha-hdhomerun)
 - [Lovelace Gen]()
 - [Node-RED](https://github.com/zachowj/node-red)
 - [NSW Rural Fire Service - Fire Danger]()
@@ -303,6 +314,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 </details>
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
 
 ---
 
@@ -321,26 +334,40 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 </details>
 
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
 ---
 
 ## Hass.io Addons
 
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
 
-- [ADB - Android Debug Bridge](https://github.com/hassio-addons/addon-adb)
-- [Almond]()
 - [AppDaemon](https://github.com/hassio-addons/addon-appdaemon3)
 - [deCONZ](https://github.com/home-assistant/hassio-addons/tree/master/deconz)
-- [Grafana](https://github.com/hassio-addons/addon-grafana)
-- [Home Panel]()
 - [InfluxDB](https://github.com/hassio-addons/addon-influxdb)
-- [JupyterLab Lite](https://github.com/hassio-addons/addon-jupyterlab-lite)
 - [MQTT Server & Web Client](https://github.com/hassio-addons/addon-mqtt/)
-- [MariaDB]()
+- [MariaDB](https://home-assistant.io/addons/mariadb/)
 - [Node-RED](https://github.com/hassio-addons/addon-node-red/)
-- [SQLite Web](https://github.com/hassio-addons/addon-sqlite-web/)
 - [SSH & Web Terminal](https://github.com/hassio-addons/addon-ssh/)
-- [Visual Studio Code]()
+- [Visual Studio Code](https://github.com/hassio-addons/addon-vscode)
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+## Licence
+
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute this software, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
+
+In jurisdictions that recognize copyright laws, the author or authors of this software dedicate any and all copyright interest in the software to the public domain. We make this dedication for the benefit of the public at large and to the detriment of our heirs and successors. We intend this dedication to be an overt act of relinquishment in perpetuity of all present and future rights to this software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to [https://unlicense.org](https://unlicense.org)
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
 
 ---
 
@@ -354,6 +381,8 @@ These resources have either provided inspiration or some great code that has hel
 - [JamesMcCarthy79/Home-Assistant-Config](https://github.com/JamesMcCarthy79/Home-Assistant-Config)
 - [jimz011/homeassistant](https://github.com/jimz011/homeassistant)
 - [Limych/HomeAssistantConfiguration](https://github.com/Limych/HomeAssistantConfiguration)
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
 
 ---
 

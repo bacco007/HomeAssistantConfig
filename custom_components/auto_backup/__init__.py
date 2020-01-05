@@ -67,8 +67,10 @@ SCHEMA_SNAPSHOT_FULL = SCHEMA_SNAPSHOT_FULL.extend(
     {
         vol.Optional(ATTR_KEEP_DAYS): vol.Coerce(float),
         vol.Optional(ATTR_EXCLUDE): {
-            vol.Optional(ATTR_FOLDERS): vol.All(cv.ensure_list, [cv.string]),
-            vol.Optional(ATTR_ADDONS): vol.All(cv.ensure_list, [cv.string]),
+            vol.Optional(ATTR_FOLDERS, default=[]): vol.All(
+                cv.ensure_list, [cv.string]
+            ),
+            vol.Optional(ATTR_ADDONS, default=[]): vol.All(cv.ensure_list, [cv.string]),
         },
         vol.Optional(ATTR_BACKUP_PATH): cv.isdir,
     }
@@ -101,16 +103,21 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType):
         return False
 
     # initialise AutoBackup class.
-    auto_backup = AutoBackup(
+    auto_backup = hass.data[DOMAIN] = AutoBackup(
         hass, hassio, config[CONF_AUTO_PURGE], config[CONF_BACKUP_TIMEOUT]
     )
     await auto_backup.load_snapshots_expiry()
 
+    # load the auto backup sensor.
+    hass.helpers.discovery.load_platform("sensor", DOMAIN, {}, config)
+
     # register services.
     async def snapshot_service_handler(call: ServiceCallType):
         """Handle Snapshot Creation Service Calls."""
-        await auto_backup.new_snapshot(
-            call.data.copy(), call.service == SERVICE_SNAPSHOT_FULL
+        hass.async_create_task(
+            auto_backup.new_snapshot(
+                call.data.copy(), call.service == SERVICE_SNAPSHOT_FULL
+            )
         )
 
     async def purge_service_handler(call: ServiceCallType):
@@ -146,12 +153,16 @@ class AutoBackup:
     ):
         self._hass = hass
         self._hassio = hassio
+        self._ip = os.environ.get("HASSIO", "")
         self._snapshots_store = Store(
             hass, STORAGE_VERSION, f"{DOMAIN}.{STORAGE_KEY}", encoder=JSONEncoder
         )
         self._snapshots_expiry = {}
         self._auto_purge = auto_purge
         self._backup_timeout = backup_timeout
+        self._pending_snapshots = 0
+        self.last_failure = None
+        self.update_sensor_callback = None
 
     async def load_snapshots_expiry(self):
         """Load snapshots expiry dates from home assistants storage."""
@@ -164,7 +175,7 @@ class AutoBackup:
     async def get_addons(self, only_installed=True):
         """Retrieve a list of addons from Hass.io."""
         try:
-            result = await self._hassio.send_command(COMMAND_GET_ADDONS, method="get")
+            result = await self.send_command(COMMAND_GET_ADDONS, method="get")
 
             addons = result.get("data", {}).get("addons")
             if addons is None:
@@ -175,13 +186,22 @@ class AutoBackup:
             return addons
 
         except HassioAPIError as err:
-            _LOGGER.error("Error on Hass.io API: %s", err)
+            _LOGGER.error("Failed to retrieve addons: %s", err)
 
         return None
 
-    async def _replace_addon_names(self, snapshot_addons):
+    @property
+    def snapshots_expiry(self):
+        return self._snapshots_expiry
+
+    @property
+    def pending_snapshots(self):
+        return self._pending_snapshots
+
+    async def _replace_addon_names(self, snapshot_addons, addons=None):
         """Replace addon names with their appropriate slugs."""
-        addons = await self.get_addons()
+        if not addons:
+            addons = await self.get_addons()
         if addons:
             for addon in addons:
                 for idx, snapshot_addon in enumerate(snapshot_addons):
@@ -222,29 +242,27 @@ class AutoBackup:
                 # handle exclude config.
                 command = COMMAND_SNAPSHOT_PARTIAL
 
-                excluded_addons = exclude.get(ATTR_ADDONS, [])
-                if excluded_addons:
-                    addons = await self.get_addons()
-                    if addons:
-                        snapshot_addons = []
-                        for addon in addons:
-                            if (
-                                addon["slug"] in excluded_addons
-                                or addon["name"] in excluded_addons
-                            ):
-                                continue
-                            snapshot_addons.append(addon["slug"])
-                        data[ATTR_ADDONS] = snapshot_addons
-                        data[ATTR_ADDONS] = snapshot_addons
+                # append addons.
+                addons = await self.get_addons()
+                if addons:
+                    excluded_addons = await self._replace_addon_names(
+                        exclude[ATTR_ADDONS], addons
+                    )
 
-                excluded_folders = exclude.get(ATTR_FOLDERS, [])
-                if excluded_folders:
-                    excluded_folders = self._replace_folder_names(excluded_folders)
-                    folders = []
-                    for folder in DEFAULT_SNAPSHOT_FOLDERS.values():
-                        if folder not in excluded_folders:
-                            folders.append(folder)
-                    data[ATTR_FOLDERS] = folders
+                    data[ATTR_ADDONS] = [
+                        addon["slug"]
+                        for addon in addons
+                        if addon["slug"] not in excluded_addons
+                    ]
+
+                # append folders.
+                excluded_folders = self._replace_folder_names(exclude[ATTR_FOLDERS])
+                data[ATTR_FOLDERS] = [
+                    folder
+                    for folder in DEFAULT_SNAPSHOT_FOLDERS.values()
+                    if folder not in excluded_folders
+                ]
+
         else:
             # performing partial backup.
             # replace addon names with their appropriate slugs.
@@ -255,15 +273,21 @@ class AutoBackup:
                 data[ATTR_FOLDERS] = self._replace_folder_names(data[ATTR_FOLDERS])
 
         _LOGGER.debug(
-            "New snapshot; command: %s, keep_days: %s, data: %s",
+            "New snapshot; command: %s, keep_days: %s, data: %s, timeout: %s",
             command,
             keep_days,
             data,
+            self._backup_timeout,
         )
+
+        # add to pending snapshots and update sensor.
+        self._pending_snapshots += 1
+        if self.update_sensor_callback:
+            self.update_sensor_callback()
 
         # make request to create new snapshot.
         try:
-            result = await self._hassio.send_command(
+            result = await self.send_command(
                 command, payload=data, timeout=self._backup_timeout
             )
 
@@ -271,13 +295,17 @@ class AutoBackup:
 
             slug = result.get("data", {}).get("slug")
             if slug is None:
-                raise HassioAPIError(
-                    "Backup failed. There may be a backup already in progress."
-                )
+                error = "There may be a backup already in progress."
+                if data.get("message"):
+                    error = f"{error} {data.get('message')}"
+                raise HassioAPIError(error)
 
             # snapshot creation was successful
             _LOGGER.info(
                 "Snapshot created successfully; '%s' (%s)", data[ATTR_NAME], slug
+            )
+            self._hass.bus.async_fire(
+                f"{DOMAIN}.snapshot_successful", {"name": data[ATTR_NAME], "slug": slug}
             )
 
             if keep_days is not None:
@@ -288,33 +316,26 @@ class AutoBackup:
                 # write snapshot expiry to storage
                 await self._snapshots_store.async_save(self._snapshots_expiry)
 
-            # copy backup to location if specified
+            # copy snapshot to location if specified
             if backup_path:
-                # ensure the name is a valid filename.
-                name = data[ATTR_NAME]
-                if name:
-                    filename = slugify(name, lowercase=False, separator="_")
-                else:
-                    filename = slug
-
-                # ensure the filename is a tar file.
-                if not filename.endswith(".tar"):
-                    filename += ".tar"
-
-                destination = join(backup_path, filename)
-
-                # check if file already exists
-                if isfile(destination):
-                    destination = join(backup_path, f"{slug}.tar")
-
-                await self.download_snapshot(slug, destination)
-
-            # purging old snapshots
-            if self._auto_purge:
-                await self.purge_snapshots()
+                await self.copy_snapshot(data[ATTR_NAME], slug, backup_path)
 
         except HassioAPIError as err:
-            _LOGGER.error("Error on Hass.io API: %s", err)
+            _LOGGER.error("Error during backup. %s", err)
+            self._hass.bus.async_fire(
+                f"{DOMAIN}.snapshot_failed",
+                {"name": data[ATTR_NAME], "error": str(err)},
+            )
+            self.last_failure = data[ATTR_NAME]
+
+        # remove from pending snapshots and update sensor.
+        self._pending_snapshots -= 1
+        if self.update_sensor_callback:
+            self.update_sensor_callback()
+
+        # purging old snapshots
+        if self._auto_purge:
+            await self.purge_snapshots()
 
     async def purge_snapshots(self):
         """Purge expired snapshots from Hass.io."""
@@ -335,15 +356,31 @@ class AutoBackup:
                 tuple(snapshots_purged),
             )
 
+        if len(snapshots_purged) > 0:
+            self._hass.bus.async_fire(
+                f"{DOMAIN}.purged_snapshots", {"snapshots": snapshots_purged}
+            )
+
+            # update sensor after purge.
+            if self.update_sensor_callback:
+                self.update_sensor_callback()
+        else:
+            _LOGGER.debug("No snapshots required purging.")
+
     async def _purge_snapshot(self, slug):
         """Purge an individual snapshot from Hass.io."""
         _LOGGER.debug("Attempting to remove snapshot: %s", slug)
         command = COMMAND_SNAPSHOT_REMOVE.format(slug=slug)
 
         try:
-            result = await self._hassio.send_command(command, timeout=300)
+            result = await self.send_command(command, timeout=300)
 
-            _LOGGER.debug("Snapshot remove result: %s", result)
+            if result["result"] == "error":
+                _LOGGER.debug("Purge result: %s", result)
+                _LOGGER.warning(
+                    "Issue purging snapshot (%s), assuming it was already deleted.",
+                    slug,
+                )
 
             # remove snapshot expiry.
             del self._snapshots_expiry[slug]
@@ -351,9 +388,30 @@ class AutoBackup:
             await self._snapshots_store.async_save(self._snapshots_expiry)
 
         except HassioAPIError as err:
-            _LOGGER.error("Error on Hass.io API: %s", err)
+            _LOGGER.error("Failed to purge snapshot: %s", err)
             return False
         return True
+
+    async def copy_snapshot(self, name, slug, backup_path):
+        """Download snapshot to the specified location."""
+
+        # ensure the name is a valid filename.
+        if name:
+            filename = slugify(name, lowercase=False, separator="_")
+        else:
+            filename = slug
+
+        # ensure the filename is a tar file.
+        if not filename.endswith(".tar"):
+            filename += ".tar"
+
+        destination = join(backup_path, filename)
+
+        # check if file already exists
+        if isfile(destination):
+            destination = join(backup_path, f"{slug}.tar")
+
+        await self.download_snapshot(slug, destination)
 
     async def download_snapshot(self, slug, output_path):
         """Download and save a snapshot from Hass.io."""
@@ -363,8 +421,9 @@ class AutoBackup:
             with async_timeout.timeout(self._backup_timeout):
                 request = await self._hassio.websession.request(
                     "get",
-                    f"http://{self._hassio._ip}{command}",
+                    f"http://{self._ip}{command}",
                     headers={X_HASSIO: os.environ.get("HASSIO_TOKEN", "")},
+                    timeout=None,
                 )
 
                 if request.status not in (200, 400):
@@ -385,5 +444,35 @@ class AutoBackup:
 
         except IOError:
             _LOGGER.error("Failed to download snapshot '%s' to '%s'", slug, output_path)
+
+        raise HassioAPIError("Snapshot download failed.")
+
+    async def send_command(self, command, method="post", payload=None, timeout=10):
+        """Send API command to Hass.io.
+
+        This method is a coroutine.
+        """
+        try:
+            with async_timeout.timeout(timeout):
+                request = await self._hassio.websession.request(
+                    method,
+                    f"http://{self._ip}{command}",
+                    json=payload,
+                    headers={X_HASSIO: os.environ.get("HASSIO_TOKEN", "")},
+                    timeout=None,
+                )
+
+                if request.status not in (200, 400):
+                    _LOGGER.error("%s return code %d.", command, request.status)
+                    raise HassioAPIError()
+
+                answer = await request.json()
+                return answer
+
+        except asyncio.TimeoutError:
+            _LOGGER.error("Timeout on %s request", command)
+
+        except aiohttp.ClientError as err:
+            _LOGGER.error("Client error on %s request %s", command, err)
 
         raise HassioAPIError()

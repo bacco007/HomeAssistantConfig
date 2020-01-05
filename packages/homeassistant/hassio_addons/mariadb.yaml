@@ -1,8 +1,8 @@
 ---
-homeassistant:
-  customize:
-    hassio_mariadb_rest:
-      hidden: true
+# homeassistant:
+#   customize:
+#     sensor.hassio_mariadb_rest:
+#       hidden: true
 
 sensor:
   - platform: rest

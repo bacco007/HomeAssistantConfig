@@ -78,6 +78,22 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
+              - title: Home Assistant Auto Backups
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.auto_backup
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
               - title: Configuration Tools
           - type: custom:vertical-stack-in-card
             cards:
@@ -213,7 +229,7 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
-              - title: HA Database
+              - title: HA Database (MariaDB)
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:decluttering-card
@@ -221,7 +237,7 @@ cards:
                 variables:
                   - entities:
                       - entity: sensor.ha_db_size
-                        name: HASS DB Size
+                        name: HA Database Size (MariaDB)
                       - sensor.ha_db_events
                       - sensor.ha_db_states
               - type: custom:decluttering-card
@@ -260,6 +276,36 @@ cards:
                   - hours_to_show: 168
                   - points_per_hour: 3
                   - decimals: 0
+                  - icon: false
+                  - extrema: true
+                  - average: true
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: HA Database (InfluxDB)
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.influxdb_size
+                        name: HA Database Size (InfluxDB)
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Database Size
+                  - entities:
+                      - sensor.influxdb_size
+                  - height: 60
+                  - hours_to_show: 168
+                  - points_per_hour: 3
+                  - decimals: 2
                   - icon: false
                   - extrema: true
                   - average: true

@@ -1,0 +1,44 @@
+---
+compact_mode: true
+locale: en-gb
+split_mode: true
+shadow: true
+footer_mode: true
+background: "rgba(69, 74, 83, 1)"
+voice_hide: true
+hide_help: true
+hide_config: true
+chevrons: false
+active_tab_color: "var(--accent-color)"
+notification_dot_color: "var(--accent-color)"
+all_tabs_color: "var(--sidebar-icon-color)"
+all_buttons_color: "var(--sidebar-icon-color)"
+tabs_color:
+  # Tab 4 - Sun
+  # Tab 7 - Fire
+  # Tab 11 - HA
+  4: "{% if states.binary_sensor.protection_window.state == 'on' %}yellow{% else %}var(--sidebar-icon-color){% endif %}"
+  7: "{% if states.binary_sensor.fire_ban_today.state == 'on' %}yellow{% else %}var(--sidebar-icon-color){% endif %}"
+  11: "{% if is_state('sensor.hacs', '0') %}var(--sidebar-icon-color){% else %}yellow{% endif %}"
+# header_text: >-
+#   <style>
+#   #flipper {color:#999;}
+#   #flip {height:24px;overflow:hidden;font-family: Raleway;}
+#   #flip > div > div {color:#fff;height:24px;margin-bottom:24px;display:inline-block;}
+#   #flip div:first-child {animation: show 10s linear infinite;}
+#   @keyframes show {
+#   0% {margin-top:-144px;}
+#   5% {margin-top:-96px;}
+#   33% {margin-top:-96px;}
+#   38% {margin-top:-48px;}
+#   66% {margin-top:-48px;}
+#   76% {margin-top:0px;}
+#   100% {margin-top:0px;}}
+#   #flipper p {position:fixed;color:#999;}
+#   </style>
+#   <div id=flipper><div id=flip><div><div>
+#   <ha-icon icon='mdi:weather-cloudy-alert'></ha-icon> {{ states('sensor.bom_tamworth_air_temp_c') }}°C (F/L: {{ states('sensor.bom_tamworth_feels_like_c') }}°C) - R: {{ states('sensor.bom_tamworth_chance_of_rain_0') }}% - H: {{ states('sensor.bom_tamworth_relative_humidity') }}% - W: {% if is_state('sensor.bom_tamworth_wind_direction', 'CALM') %} CALM {% else %} {{ states('sensor.bom_tamworth_wind_direction') }} {{ states('sensor.bom_tamworth_wind_speed_kmh') }} km/h {% endif %}</div></div><div><div>
+#   <ha-icon icon='mdi:newspaper'></ha-icon> NDL: {{ states.sensor.rssfeed_northern_daily_leader.attributes.entries[0]['title'] }}</div></div><div><div>
+#   <ha-icon icon='mdi:newspaper'></ha-icon> SMH: {{ states.sensor.rssfeed_sydney_morning_herald.attributes.entries[0]['title'] }}</div></div><div><div>
+#   <ha-icon icon='mdi:newspaper'></ha-icon> FoxSports: {{ states.sensor.rssfeed_fox_sports.attributes.entries[0]['title'] }}</div></div><div><div>
+#   <ha-icon icon='mdi:newspaper'></ha-icon> Guardian: {{ states.sensor.rssfeed_the_guardian_au.attributes.entries[0]['title'] }}</div></div><div><div>

@@ -19,6 +19,12 @@ cards:
           - type: custom:decluttering-card
             template: search
           - !include ../includes/bom_weather_card.yaml
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - entity: sensor.fires_near_me
+                    name: Bushfires Near Me (100km)
 
       - break
 

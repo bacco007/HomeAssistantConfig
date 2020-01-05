@@ -1,8 +1,8 @@
 ---
-homeassistant:
-  customize:
-    hassio_deconz_rest:
-      hidden: true
+# homeassistant:
+#   customize:
+#     sensor.hassio_deconz_rest:
+#       hidden: true
 
 sensor:
   - platform: rest
