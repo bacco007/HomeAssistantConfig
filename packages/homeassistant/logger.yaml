@@ -1,6 +1,6 @@
 ---
 logger:
   default: error
-  logs:
+  # logs:
     # homeassistant.components.websocket_api: debug
     # homeassistant.components.influxdb: debug

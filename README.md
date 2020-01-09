@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Friday 03 January 2020_
+_Stats as at 04:59, Thursday, 09 January 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.103.5 | 200     | 972         | 727 | 19 |
+| 0.103.5 | 203     | 959         | 725 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -143,12 +143,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [group](https://www.home-assistant.io/components/group)
 - [hacs](https://www.home-assistant.io/components/hacs)
 - [hassio](https://www.home-assistant.io/components/hassio)
-- [hdhomerun](https://www.home-assistant.io/components/hdhomerun)
 - [history](https://www.home-assistant.io/components/history)
 - [homeassistant](https://www.home-assistant.io/components/homeassistant)
 - [http](https://www.home-assistant.io/components/http)
 - [ifttt](https://www.home-assistant.io/components/ifttt)
+- [influxdb](https://www.home-assistant.io/components/influxdb)
 - [ios](https://www.home-assistant.io/components/ios)
+- [kodi](https://www.home-assistant.io/components/kodi)
 - [lifx](https://www.home-assistant.io/components/lifx)
 - [light](https://www.home-assistant.io/components/light)
 - [light.deconz](https://www.home-assistant.io/components/light.deconz)
@@ -162,6 +163,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [media_player.apple_tv_mrp](https://www.home-assistant.io/components/media_player.apple_tv_mrp)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
+- [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
@@ -199,6 +201,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media)
 - [sensor.alpha_vantage](https://www.home-assistant.io/components/sensor.alpha_vantage)
 - [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries)
+- [sensor.auto_backup](https://www.home-assistant.io/components/sensor.auto_backup)
 - [sensor.bom](https://www.home-assistant.io/components/sensor.bom)
 - [sensor.bom_forecast](https://www.home-assistant.io/components/sensor.bom_forecast)
 - [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes)
@@ -344,7 +347,6 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 
 - [AppDaemon](https://github.com/hassio-addons/addon-appdaemon3)
 - [deCONZ](https://github.com/home-assistant/hassio-addons/tree/master/deconz)
-- [InfluxDB](https://github.com/hassio-addons/addon-influxdb)
 - [MQTT Server & Web Client](https://github.com/hassio-addons/addon-mqtt/)
 - [MariaDB](https://home-assistant.io/addons/mariadb/)
 - [Node-RED](https://github.com/hassio-addons/addon-node-red/)

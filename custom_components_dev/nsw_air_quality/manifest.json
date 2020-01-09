@@ -1,0 +1,8 @@
+{
+  "domain": "nsw_air_quality",
+  "name": "NSW Air Quality",
+  "documentation": "https://github.com/bacco007/sensor.waternsw",
+  "dependencies": [],
+  "codeowners": ["@bacco007"],
+  "requirements": ["scrapy"]
+}

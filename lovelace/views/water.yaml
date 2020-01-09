@@ -46,12 +46,72 @@ cards:
                         name: Current Volume
                       - entity: sensor.waternsw_keepit_dam_water_level
                         name: Current Water Level
+                      - entity: sensor.waternsw_keepit_dam_rainfall
+                        name: Rainfall (24hrs)
+                      - entity: sensor.waternsw_keepit_dam_net_inflow_24hrs
+                        name: Net Inflow (24hrs)
+                      - entity: sensor.waternsw_keepit_dam_releases_24hrs
+                        name: Releases (24hrs)
+                      - entity: sensor.waternsw_keepit_dam_evaporation_24hrs
+                        name: Evaporation (24hrs)
               - type: custom:decluttering-card
                 template: mini-graph
                 variables:
                   - name: Current Storage %
                   - entities:
                       - sensor.waternsw_keepit_dam_storage
+                  - height: 60
+                  - hours_to_show: 72
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Split Rock Dam
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - type: custom:decluttering-card
+                        template: entity-multirow-psi
+                        variables:
+                          - entity: sensor.waternsw_split_rock_dam
+                          - name: Stats
+                          - primary_attribute: spillway_level
+                          - primary_name: S/W Lev
+                          - secondary_attribute: dead_water_level
+                          - secondary_name: D/W Lev
+                          - info_attribute: capacity
+                          - info_name: "Capacity (ML): "
+                      - entity: sensor.waternsw_split_rock_dam_storage
+                        name: Current Storage %
+                      - entity: sensor.waternsw_split_rock_dam_volume
+                        name: Current Volume
+                      - entity: sensor.waternsw_split_rock_dam_water_level
+                        name: Current Water Level
+                      - entity: sensor.waternsw_split_rock_dam_rainfall
+                        name: Rainfall (24hrs)
+                      - entity: sensor.waternsw_split_rock_dam_net_inflow_24hrs
+                        name: Net Inflow (24hrs)
+                      - entity: sensor.waternsw_split_rock_dam_releases_24hrs
+                        name: Releases (24hrs)
+                      - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
+                        name: Evaporation (24hrs)
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Current Storage %
+                  - entities:
+                      - sensor.waternsw_split_rock_dam_storage
                   - height: 60
                   - hours_to_show: 72
                   - points_per_hour: 3
@@ -90,6 +150,14 @@ cards:
                         name: Current Volume
                       - entity: sensor.waternsw_chaffey_dam_water_level
                         name: Current Water Level
+                      - entity: sensor.waternsw_chaffey_dam_rainfall
+                        name: Rainfall (24hrs)
+                      - entity: sensor.waternsw_chaffey_dam_net_inflow_24hrs
+                        name: Net Inflow (24hrs)
+                      - entity: sensor.waternsw_chaffey_dam_releases_24hrs
+                        name: Releases (24hrs)
+                      - entity: sensor.waternsw_chaffey_dam_evaporation_24hrs
+                        name: Evaporation (24hrs)
               - type: custom:decluttering-card
                 template: mini-graph
                 variables:

@@ -39,13 +39,13 @@ sensor:
     sensors:
       date_long_format:
         friendly_name: "Date Long Format"
-        entity_id: sensor.calendar_today
+        entity_id: sensor.date
         value_template: >
           {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
           {% set month = months[now().strftime('%m') | int -1] %}
           {% set days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]  %}
           {% set day = days[now().strftime('%w') | int] %}
-          {{ day + ' ' + now().strftime('%d') + ' ' + month + ' ' + now().strftime('%Y') }}
+          {{ day + ', ' + now().strftime('%d') + ' ' + month + ' ' + now().strftime('%Y') }}
 
       date_friendly:
         friendly_name: Date

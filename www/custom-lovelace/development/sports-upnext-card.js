@@ -128,11 +128,16 @@ class SportsUpNextCard extends HTMLElement {
       <div class="nextOpponent" id="nextOpponent">
         ${nextOppSensor.value}
       </div>
+      </div>
     `;
 
     root.lastChild.hass = hass;
     root.getElementById("content").innerHTML = card_content;
   }
+
+  // setConfig(config) {
+  //   this.config = config;
+  // }
 
   getCardSize() {
     return 1;

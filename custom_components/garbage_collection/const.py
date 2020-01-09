@@ -7,7 +7,7 @@ from homeassistant.const import CONF_NAME, WEEKDAYS, CONF_ENTITIES
 # Base component constants
 DOMAIN = "garbage_collection"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "2.12"
+VERSION = "2.13"
 PLATFORM = "sensor"
 ISSUE_URL = "https://github.com/bruxy70/Garbage-Collection/issues"
 ATTRIBUTION = "Data from this is provided by garbage_collection."
@@ -61,8 +61,8 @@ DEFAULT_ICON_TOMORROW = "mdi:delete-circle"
 ICON = DEFAULT_ICON_NORMAL
 
 # States
-STATE_TODAY = "Today"
-STATE_TOMORROW = "Tomorrow"
+STATE_TODAY = "today"
+STATE_TOMORROW = "tomorrow"
 
 FREQUENCY_OPTIONS = [
     "weekly",
