@@ -32,6 +32,9 @@ cards:
                       - sensor.xiaomibedroom_min_temp
                       - sensor.xiaomibedroom_max_temp
                       - sensor.xiaomibedroom_change_temp
+                      - type: section
+                      - sensor.bedroom_iaq_index
+                      - sensor.bedroom_iaq_level
               - type: custom:decluttering-card
                 template: mini-graph
                 variables:
@@ -124,6 +127,9 @@ cards:
                       - sensor.xiaomilounge_min_temp
                       - sensor.xiaomilounge_max_temp
                       - sensor.xiaomilounge_change_temp
+                      - type: section
+                      - sensor.lounge_iaq_index
+                      - sensor.lounge_iaq_level
               - type: custom:decluttering-card
                 template: mini-graph
                 variables:
