@@ -47,3 +47,37 @@ jobs:
         uses: 'docker://homeassistant/home-assistant:stable'
         with:
           args: python -m homeassistant --config . --script check_config --info all
+  # home_assistant_beta:
+  #   name: 'Home Assistant - Beta'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Getting configuration from GitHub
+  #       uses: actions/checkout@master
+  #     - name: Create secrets.yaml
+  #       run: mv fake_secrets.yaml secrets.yaml
+  #     - name: Home Assistant Version
+  #       uses: 'docker://homeassistant/home-assistant:beta'
+  #       with:
+  #         args: |
+  #           python -m homeassistant --version
+  #     - name: Home Assistant Check Latest
+  #       uses: 'docker://homeassistant/home-assistant:beta'
+  #       with:
+  #         args: python -m homeassistant --config . --script check_config --info all
+  # home_assistant_dev:
+  #   name: 'Home Assistant - Dev'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Getting configuration from GitHub
+  #       uses: actions/checkout@master
+  #     - name: Create secrets.yaml
+  #       run: mv fake_secrets.yaml secrets.yaml
+  #     - name: Home Assistant Version
+  #       uses: 'docker://homeassistant/home-assistant:dev'
+  #       with:
+  #         args: |
+  #           python -m homeassistant --version
+  #     - name: Home Assistant Check Latest
+  #       uses: 'docker://homeassistant/home-assistant:dev'
+  #       with:
+  #         args: python -m homeassistant --config . --script check_config --info all

@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.17.1",
+   "version": "0.19.1",
    "local": false,
    "nodes": {
     "server": {
@@ -961,7 +961,7 @@
   },
   "node-red-dashboard": {
    "name": "node-red-dashboard",
-   "version": "2.19.2",
+   "version": "2.19.3",
    "local": false,
    "nodes": {
     "ui_base": {

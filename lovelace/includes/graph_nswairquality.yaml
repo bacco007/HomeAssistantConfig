@@ -1,0 +1,32 @@
+---
+type: custom:mini-graph-card
+name: NSW DoE Air Quality (Last 72 Hours)
+entities:
+  - entity: sensor.nsw_air_quality_tamworth
+    name: AQI
+animate: true
+decimals: 0
+hours_to_show: 72
+points_per_hour: 6
+group_by: hour
+line_width: 3
+font_size: 70
+lower_bound: 0
+height: 70
+show:
+  extrema: true
+  average: true
+  fill: fade
+color_thresholds:
+  - value: 301
+    color: maroon
+  - value: 201
+    color: purple
+  - value: 151
+    color: red
+  - value: 101
+    color: orange
+  - value: 51
+    color: yellow
+  - value: 0
+    color: green

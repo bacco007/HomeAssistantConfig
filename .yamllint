@@ -5,6 +5,7 @@ ignore: |
   www/
   themes/
   handy-code/
+  .github/workflows/
   lovelace/includes/style.yaml
   fake_secrets.yaml
   secrets.yaml

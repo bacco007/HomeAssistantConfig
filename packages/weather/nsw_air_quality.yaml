@@ -1,0 +1,4 @@
+---
+sensor:
+  - platform: nsw_air_quality
+    name: Tamworth

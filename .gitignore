@@ -9,6 +9,7 @@ www/custom-lovelace/upcoming-media-card
 icloud
 notebooks
 tts
+custom_components_dev
 
 # Ignore File Extensions
 *.conf
