@@ -15,7 +15,6 @@ class SportsUpNextCard extends HTMLElement {
 
     style.textContent = `
       ha-card {
-        /* css */
         padding-bottom: 5px;
       }
       body {
@@ -97,7 +96,7 @@ class SportsUpNextCard extends HTMLElement {
   set hass(hass) {
     const config = this._config;
     const root = this.shadowRoot;
-    const card = root.lastChild;
+    // const card = root.lastChild;
     this.myhass = hass;
 
     const name = config.name || "";
@@ -120,14 +119,14 @@ class SportsUpNextCard extends HTMLElement {
 
     let card_content = `
       <div class="grid-container">
-      <div class="name">${name}</div>
-      <div class="date">${nextdateSensor.value}</div>
-      <div class="icon" id="icon">
-        <img src="${logo}"></img>
-      </div>
-      <div class="nextOpponent" id="nextOpponent">
-        ${nextOppSensor.value}
-      </div>
+        <div class="name">${name}</div>
+        <div class="date">${nextdateSensor.value}</div>
+        <div class="icon" id="icon">
+          <img src="${logo}"></img>
+        </div>
+        <div class="nextOpponent" id="nextOpponent">
+          ${nextOppSensor.value}
+        </div>
       </div>
     `;
 

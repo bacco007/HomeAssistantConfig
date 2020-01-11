@@ -1,0 +1,20 @@
+---
+sensor:
+  - platform: waternsw
+    name: Peel @ Chaffey Dam Rainfall
+    site_id: 419069
+    from_variable: 10.00
+    to_variable: 10.00
+    unit_of_measure: mm
+  - platform: waternsw
+    name: Peel @ Taroona Rainfall
+    site_id: 419081
+    from_variable: 10.00
+    to_variable: 10.00
+    unit_of_measure: mm
+  - platform: waternsw
+    name: Goonoo Goonoo @ Timbumburi Rainfall
+    site_id: 419035
+    from_variable: 10.00
+    to_variable: 10.00
+    unit_of_measure: mm

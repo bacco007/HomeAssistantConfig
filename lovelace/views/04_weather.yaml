@@ -164,112 +164,92 @@ cards:
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: max
                           name: Max
                         secondary:
-                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: min
                           name: Min
                         tertiary:
-                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: avg
                           name: Avg
                         info:
-                          entity: sensor.weather_bom_tempmax_lastyr
                           attribute: datestring
-                          name: false
+                          name: D
                       - entity: sensor.weather_bom_tempmin_lastyr
                         name: BOM - Min Temp (Last 365 Days)
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: max
                           name: Max
                         secondary:
-                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: min
                           name: Min
                         tertiary:
-                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: avg
                           name: Avg
                         info:
-                          entity: sensor.weather_bom_tempmin_lastyr
                           attribute: datestring
-                          name: false
+                          name: D
                       - type: section
                       - entity: sensor.weather_bom_totalrain_lastyr
                         name: BOM - Total Rain (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
-                          entity: sensor.weather_bom_totalrain_lastyr
                           attribute: countstring
-                          name: false
+                          name: N
                       - entity: sensor.weather_bom_maxrain_lastyr
                         name: BOM - Highest Rainfall (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
-                          entity: sensor.weather_bom_maxrain_lastyr
                           attribute: date
-                          name: false
+                          name: D
                       - type: section
                       - entity: sensor.weather_home_tempmax_lastyr
                         name: Home - Max Temp (Last 365 Days)
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.weather_home_tempmax_lastyr
                           attribute: max
                           name: Max
                         secondary:
-                          entity: sensor.weather_home_tempmax_lastyr
                           attribute: min
                           name: Min
                         tertiary:
-                          entity: sensor.weather_home_tempmax_lastyr
                           attribute: avg
                           name: Avg
                         info:
-                          entity: sensor.weather_home_tempmax_lastyr
                           attribute: datestring
-                          name: false
+                          name: D
                       - entity: sensor.weather_home_tempmin_lastyr
                         name: Home - Min Temp (Last 365 Days)
                         type: custom:multiple-entity-row
                         hide_state: true
                         primary:
-                          entity: sensor.weather_home_tempmin_lastyr
                           attribute: max
                           name: Max
                         secondary:
-                          entity: sensor.weather_home_tempmin_lastyr
                           attribute: min
                           name: Min
                         tertiary:
-                          entity: sensor.weather_home_tempmin_lastyr
                           attribute: avg
                           name: Avg
                         info:
-                          entity: sensor.weather_home_tempmin_lastyr
                           attribute: datestring
-                          name: false
+                          name: D
                       - type: section
                       - entity: sensor.weather_home_totalrain_lastyr
                         name: Home - Total Rain (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
-                          entity: sensor.weather_home_totalrain_lastyr
                           attribute: countstring
-                          name: false
+                          name: N
                       - entity: sensor.weather_home_maxrain_lastyr
                         name: Home - Highest Rainfall (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
-                          entity: sensor.weather_home_maxrain_lastyr
                           attribute: date
-                          name: false
+                          name: D
           - type: custom:gap-card
             height: 10
           - type: iframe

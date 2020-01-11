@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Thursday, 09 January 2020_
+_Stats as at 04:59, Saturday, 11 January 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.103.5 | 203     | 959         | 725 | 20 |
+| 0.103.5 | 205     | 989         | 760 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -146,6 +146,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [history](https://www.home-assistant.io/components/history)
 - [homeassistant](https://www.home-assistant.io/components/homeassistant)
 - [http](https://www.home-assistant.io/components/http)
+- [iaquk](https://www.home-assistant.io/components/iaquk)
 - [ifttt](https://www.home-assistant.io/components/ifttt)
 - [influxdb](https://www.home-assistant.io/components/influxdb)
 - [ios](https://www.home-assistant.io/components/ios)
@@ -217,6 +218,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.glances](https://www.home-assistant.io/components/sensor.glances)
 - [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs)
 - [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time)
+- [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk)
 - [sensor.ios](https://www.home-assistant.io/components/sensor.ios)
 - [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app)
 - [sensor.moon](https://www.home-assistant.io/components/sensor.moon)
@@ -307,6 +309,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS (Home Assistant Community Store)](https://hacs.xyz)
 - [HDHomeRun](https://github.com/burnnat/ha-hdhomerun)
+- [IAQ UK](https://github.com/Limych/ha-iaquk)
 - [Lovelace Gen]()
 - [Node-RED](https://github.com/zachowj/node-red)
 - [NSW Rural Fire Service - Fire Danger]()
