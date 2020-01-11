@@ -1,15 +1,12 @@
 {
-    "files.associations": {
-      "*.yaml": "home-assistant"
-    },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "spellright.language": [
-      "en"
-    ],
-    "spellright.documentTypes": [
-      "latex",
-      "plaintext"
-    ]
+  "files.associations": {
+    "*.yaml": "home-assistant"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "spellright.language": ["en"],
+  "spellright.documentTypes": ["latex", "plaintext"],
+  "[home-assistant]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
-  
+}

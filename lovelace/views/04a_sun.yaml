@@ -5,101 +5,101 @@ path: sun-uv
 icon: mdi:shield-sun-outline
 panel: true
 cards:
-  - type: custom:layout-card
-    layout: auto
-    max_columns: 3
-    rtl: true
-    cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
-
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Sun
-          - type: custom:vertical-stack-in-card
+    - type: custom:layout-card
+      layout: auto
+      max_columns: 3
+      rtl: true
+      cards:
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
             cards:
-              - type: custom:decluttering-card
-                template: entities-no-header
-                variables:
-                  - entities:
-                      - sensor.sun_state
-                      - sensor.sun_solarangle
-                      - sensor.sun_nextrising
-                      - sensor.sun_nextdawn
-                      - sensor.sun_nextnoon
-                      - sensor.sun_nextdusk
-                      - sensor.sun_nextsetting
-                      - sensor.sun_nextmidnight
-                      - type: section
-                      - sensor.sun_solar_midnight
-                      - sensor.sun_astronomical_dawn
-                      - sensor.sun_nautical_dawn
-                      - sensor.sun_dawn
-                      - sensor.sun_sunrise
-                      - sensor.sun_solar_noon
-                      - sensor.sun_sunset
-                      - sensor.sun_dusk
-                      - sensor.sun_nautical_dusk
-                      - sensor.sun_astronomical_dusk
-                      - type: section
-                      - sensor.sun_daylight
-                      - sensor.sun_civil_daylight
-                      - sensor.sun_nautical_daylight
-                      - sensor.sun_astronomical_daylight
-                      - sensor.sun_night
-                      - sensor.sun_civil_night
-                      - sensor.sun_nautical_night
-                      - sensor.sun_astronomical_night
-                      - type: section
-                      - sensor.sun_elevation
-                      - sensor.sun_max_elevation
+                - type: custom:decluttering-card
+                  template: time-card
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: UV Index
-          - type: custom:vertical-stack-in-card
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
             cards:
-              - type: custom:decluttering-card
-                template: entities-no-header
-                variables:
-                  - entities:
-                      - binary_sensor.protection_window
-                      - sensor.current_uv_index
-                      - sensor.max_uv_index
-                      - sensor.current_uv_level
-                      - sensor.current_ozone_level
-                      - sensor.skin_type_1_safe_exposure_time
-                      - sensor.skin_type_2_safe_exposure_time
-                      - sensor.skin_type_3_safe_exposure_time
-                      - sensor.skin_type_4_safe_exposure_time
-                      - sensor.skin_type_5_safe_exposure_time
-              - !include ../includes/graph_uvindex.yaml
+                - type: custom:decluttering-card
+                  template: title
+                  variables:
+                      - title: Sun
+                - type: custom:vertical-stack-in-card
+                  cards:
+                      - type: custom:decluttering-card
+                        template: entities-no-header
+                        variables:
+                            - entities:
+                                  - sensor.sun_state
+                                  - sensor.sun_solarangle
+                                  - sensor.sun_nextrising
+                                  - sensor.sun_nextdawn
+                                  - sensor.sun_nextnoon
+                                  - sensor.sun_nextdusk
+                                  - sensor.sun_nextsetting
+                                  - sensor.sun_nextmidnight
+                                  - type: section
+                                  - sensor.sun_solar_midnight
+                                  - sensor.sun_astronomical_dawn
+                                  - sensor.sun_nautical_dawn
+                                  - sensor.sun_dawn
+                                  - sensor.sun_sunrise
+                                  - sensor.sun_solar_noon
+                                  - sensor.sun_sunset
+                                  - sensor.sun_dusk
+                                  - sensor.sun_nautical_dusk
+                                  - sensor.sun_astronomical_dusk
+                                  - type: section
+                                  - sensor.sun_daylight
+                                  - sensor.sun_civil_daylight
+                                  - sensor.sun_nautical_daylight
+                                  - sensor.sun_astronomical_daylight
+                                  - sensor.sun_night
+                                  - sensor.sun_civil_night
+                                  - sensor.sun_nautical_night
+                                  - sensor.sun_astronomical_night
+                                  - type: section
+                                  - sensor.sun_elevation
+                                  - sensor.sun_max_elevation
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Air Quality
-          - type: custom:vertical-stack-in-card
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
             cards:
-              - type: custom:decluttering-card
-                template: entities-no-header
-                variables:
-                  - entities:
-                      - sensor.waqi_tamworth_max_aqi
-                      - sensor.waqi_tamworth_min_aqi
-                      - sensor.waqi_tamworth_change_aqi
-              - !include ../includes/graph_airquality.yaml
+                - type: custom:decluttering-card
+                  template: title
+                  variables:
+                      - title: UV Index
+                - type: custom:vertical-stack-in-card
+                  cards:
+                      - type: custom:decluttering-card
+                        template: entities-no-header
+                        variables:
+                            - entities:
+                                  - binary_sensor.protection_window
+                                  - sensor.current_uv_index
+                                  - sensor.max_uv_index
+                                  - sensor.current_uv_level
+                                  - sensor.current_ozone_level
+                                  - sensor.skin_type_1_safe_exposure_time
+                                  - sensor.skin_type_2_safe_exposure_time
+                                  - sensor.skin_type_3_safe_exposure_time
+                                  - sensor.skin_type_4_safe_exposure_time
+                                  - sensor.skin_type_5_safe_exposure_time
+                      - !include ../includes/graph_uvindex.yaml
+
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+                - type: custom:decluttering-card
+                  template: title
+                  variables:
+                      - title: Air Quality
+                - type: custom:vertical-stack-in-card
+                  cards:
+                      - type: custom:decluttering-card
+                        template: entities-no-header
+                        variables:
+                            - entities:
+                                  - sensor.waqi_tamworth_max_aqi
+                                  - sensor.waqi_tamworth_min_aqi
+                                  - sensor.waqi_tamworth_change_aqi
+                      - !include ../includes/graph_airquality.yaml
