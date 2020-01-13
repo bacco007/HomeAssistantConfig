@@ -2,14 +2,14 @@
   "nodes": {
     "bb0c36dc_4f7d88": {
       "lastPayload": {
-        "state": 23.929,
+        "state": 22.211,
         "attributes": {
-          "max": 27.9,
-          "min": 21.7,
-          "avg": 23.929,
-          "mindate": "10 Jan 2020",
-          "maxdate": "11 Jan 2020",
-          "datestring": "Min: 10 Jan 2020 - Max: 11 Jan 2020"
+          "max": 25.1,
+          "min": 17.6,
+          "avg": 22.211,
+          "mindate": "13 Jan 2020",
+          "maxdate": "05 Jan 2020",
+          "datestring": "Min: 13 Jan 2020 - Max: 05 Jan 2020"
         }
       }
     },
@@ -35,27 +35,27 @@
     },
     "1777533_24f10ad": {
       "lastPayload": {
-        "state": 42.057,
+        "state": 40.878,
         "attributes": {
           "max": 46.9,
-          "min": 34.6,
-          "avg": 42.057,
-          "mindate": "11 Jan 2020",
+          "min": 32,
+          "avg": 40.878,
+          "mindate": "12 Jan 2020",
           "maxdate": "05 Jan 2020",
-          "datestring": "Min: 11 Jan 2020 - Max: 05 Jan 2020"
+          "datestring": "Min: 12 Jan 2020 - Max: 05 Jan 2020"
         }
       }
     },
     "5f38fb64_d46bf4": {
       "lastPayload": {
-        "state": 23.9,
+        "state": 21.933,
         "attributes": {
-          "max": 29,
-          "min": 21.4,
-          "avg": 23.9,
-          "mindate": "10 Jan 2020",
-          "maxdate": "11 Jan 2020",
-          "datestring": "Min: 10 Jan 2020 - Max: 11 Jan 2020"
+          "max": 24.7,
+          "min": 17,
+          "avg": 21.933,
+          "mindate": "13 Jan 2020",
+          "maxdate": "05 Jan 2020",
+          "datestring": "Min: 13 Jan 2020 - Max: 05 Jan 2020"
         }
       }
     },
@@ -69,14 +69,14 @@
     },
     "e663f7e9_a5b388": {
       "lastPayload": {
-        "state": 37.771,
+        "state": 36.433,
         "attributes": {
           "max": 41.3,
-          "min": 34,
-          "avg": 37.771,
-          "mindate": "11 Jan 2020",
+          "min": 30.1,
+          "avg": 36.433,
+          "mindate": "12 Jan 2020",
           "maxdate": "05 Jan 2020",
-          "datestring": "Min: 11 Jan 2020 - Max: 05 Jan 2020"
+          "datestring": "Min: 12 Jan 2020 - Max: 05 Jan 2020"
         }
       }
     },
@@ -116,7 +116,7 @@
     },
     "eb1efc91_55f2b": {
       "lastPayload": {
-        "state": 115.82,
+        "state": 150.24,
         "attributes": {}
       }
     }

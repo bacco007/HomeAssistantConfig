@@ -1,7 +1,7 @@
 """Support for HDHomeRun devices."""
 import logging
 
-from hdhr.adapter import HdhrUtility, HdhrDeviceQuery
+from hdhr.adapter import HdhrUtility, HdhrDeviceQuery, OperationRejectedError
 
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.helpers.entity import Entity
@@ -62,12 +62,31 @@ class TunerSensor(Entity):
         self._device_info = parent_info
         self._adapter = HdhrDeviceQuery(
             HdhrUtility.device_create_from_str(device_str))
+        self._use_vstatus = True
         self._state = None
 
     async def async_update(self):
-        _LOGGER.debug('Fetching status for tuner: ' + self._id)
-        (vstatus, raw_data) = self._adapter.get_tuner_vstatus()
-        self._state = vstatus
+        try:
+            channel = self.fetch_channel()
+        except OperationRejectedError:
+            if self._use_vstatus:
+                _LOGGER.debug('Operation vstatus not supported, falling back to status for tuner: ' + self._id)
+                self._use_vstatus = False
+                channel = self.fetch_channel()
+            else:
+                raise
+
+        self._state = channel
+
+    def fetch_channel(self):
+        _LOGGER.debug('Fetching ' + ('vstatus' if self._use_vstatus else 'status') + ' for tuner: ' + self._id)
+
+        if self._use_vstatus:
+            (vstatus, raw_data) = self._adapter.get_tuner_vstatus()
+            return vstatus.nice_vchannel
+        else:
+            (status, raw_data) = self._adapter.get_tuner_status()
+            return status.nice_channel
 
     @property
     def name(self):
@@ -81,7 +100,7 @@ class TunerSensor(Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self._state.nice_vchannel if self._state else None
+        return self._state
 
     @property
     def device_info(self):

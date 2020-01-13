@@ -29,7 +29,10 @@ card:
       - font-weight: bold
       - font-size: 15px
       - padding: 5px 5px
+      - font-family: var(--primary-font-family)
     label:
       - font-size: 15px
+      - font-family: var(--primary-font-family)
     state:
       - font-size: 12px
+      - font-family: var(--primary-font-family)

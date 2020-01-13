@@ -21,7 +21,7 @@ card:
     style: |
       ha-card {
         border: solid 1px var(--border-color);
-        font-family: Raleway;
+        font-family: var(--primary-font-family);
       }
       div#states {
         padding: 5px !important;

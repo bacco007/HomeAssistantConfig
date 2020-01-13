@@ -18,10 +18,10 @@ default:
   - icon: true
 card:
   type: 'custom:mini-graph-card'
-  # style: |
-  #   ha-card {
-
-  #   }
+  style: |
+    ha-card {
+      font-family: var(--primary-font-family);
+    }
   entities: '[[entities]]'
   hours_to_show: '[[hours_to_show]]'
   points_per_hour: '[[points_per_hour]]'

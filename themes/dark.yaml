@@ -1,7 +1,9 @@
 ---
 dark:
   # Fonts
-  primary-font-family: "Raleway,sans-serif"
+  primary-font-family: "IBM Plex Sans,sans-serif"
+  title-font-family: "IBM Plex Sans Condensed,sans-serif"
+  time-font-family: "Montserrat"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
@@ -71,3 +73,7 @@ dark:
   ch-notification-dot-color: "var(--accent-color)"
   ch-all-tabs-color: "var(--sidebar-icon-color)"
   ch-tab-indicator-color: "var(--accent-color)"
+
+  # Popup Backdrop Filter
+  iron-overlay-backdrop-filter: 'blur(10px) grayscale(50%)'
+  iron-overlay-backdrop-background-color: 'rgba(0,0,0,0.25)'

@@ -6,7 +6,9 @@ card:
   style: |
     ha-card {
       font-size: 20px;
-      font-family: Oswald;
+      font-family: var(--title-font-family);
+      font-weight: 500;
+      opacity: 0.7;
       height: 30px;
       background: none;
       margin-top: -0.9em;

@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, 11 January 2020_
+_Stats as at 04:59, Monday, January 13th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.103.5 | 205     | 989         | 760 | 20 |
+| 0.103.6 | 213     | 985         | 760 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -89,11 +89,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [almond](https://www.home-assistant.io/components/almond)
 - [anniversaries](https://www.home-assistant.io/components/anniversaries)
 - [api](https://www.home-assistant.io/components/api)
-- [apple_tv_mrp](https://www.home-assistant.io/components/apple_tv_mrp)
+- [apple_tv](https://www.home-assistant.io/components/apple_tv)
 - [auth](https://www.home-assistant.io/components/auth)
 - [auto_backup](https://www.home-assistant.io/components/auto_backup)
 - [automation](https://www.home-assistant.io/components/automation)
 - [binary_sensor](https://www.home-assistant.io/components/binary_sensor)
+- [binary_sensor.browser_mod](https://www.home-assistant.io/components/binary_sensor.browser_mod)
 - [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud)
 - [binary_sensor.deconz](https://www.home-assistant.io/components/binary_sensor.deconz)
 - [binary_sensor.hadockermon](https://www.home-assistant.io/components/binary_sensor.hadockermon)
@@ -106,10 +107,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod)
 - [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater)
 - [breaking_changes](https://www.home-assistant.io/components/breaking_changes)
+- [browser_mod](https://www.home-assistant.io/components/browser_mod)
 - [calendar](https://www.home-assistant.io/components/calendar)
 - [calendar.google](https://www.home-assistant.io/components/calendar.google)
 - [camera](https://www.home-assistant.io/components/camera)
 - [camera.bom](https://www.home-assistant.io/components/camera.bom)
+- [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod)
 - [camera.generic](https://www.home-assistant.io/components/camera.generic)
 - [cast](https://www.home-assistant.io/components/cast)
 - [cert_expiry](https://www.home-assistant.io/components/cert_expiry)
@@ -153,6 +156,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [kodi](https://www.home-assistant.io/components/kodi)
 - [lifx](https://www.home-assistant.io/components/lifx)
 - [light](https://www.home-assistant.io/components/light)
+- [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod)
 - [light.deconz](https://www.home-assistant.io/components/light.deconz)
 - [light.lifx](https://www.home-assistant.io/components/light.lifx)
 - [logger](https://www.home-assistant.io/components/logger)
@@ -161,11 +165,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
-- [media_player.apple_tv_mrp](https://www.home-assistant.io/components/media_player.apple_tv_mrp)
+- [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
+- [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod)
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
 - [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
+- [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
 - [met](https://www.home-assistant.io/components/met)
@@ -191,7 +197,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [readme](https://www.home-assistant.io/components/readme)
 - [recorder](https://www.home-assistant.io/components/recorder)
 - [remote](https://www.home-assistant.io/components/remote)
-- [remote.apple_tv_mrp](https://www.home-assistant.io/components/remote.apple_tv_mrp)
+- [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv)
 - [remote.harmony](https://www.home-assistant.io/components/remote.harmony)
 - [sabnzbd](https://www.home-assistant.io/components/sabnzbd)
 - [scene](https://www.home-assistant.io/components/scene)
@@ -206,6 +212,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.bom](https://www.home-assistant.io/components/sensor.bom)
 - [sensor.bom_forecast](https://www.home-assistant.io/components/sensor.bom_forecast)
 - [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes)
+- [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod)
 - [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry)
 - [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line)
 - [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz)
@@ -225,6 +232,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.netatmo](https://www.home-assistant.io/components/sensor.netatmo)
 - [sensor.netdata](https://www.home-assistant.io/components/sensor.netdata)
 - [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered)
+- [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality)
 - [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station)
 - [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger)
 - [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv)
@@ -296,10 +304,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 - [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
-- [Apple tv](https://www.home-assistant.io/components/apple_tv)
+- [Apple TV](https://www.home-assistant.io/integrations/apple_tv)
 - [Auto Backup](https://github.com/jcwillox/hass-auto-backup)
 - [BOM Forecast](https://github.com/davidfw1960/bom_forecast)
 - [Breaking Changes](https://github.com/custom-components/breaking_changes)
+- [Browser mod]()
 - [Docker Monitor](https://github.com/Sanderhuisman/docker_monitor)
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
 - [Favicon changer]()
@@ -312,6 +321,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [IAQ UK](https://github.com/Limych/ha-iaquk)
 - [Lovelace Gen]()
 - [Node-RED](https://github.com/zachowj/node-red)
+- [NSW Air Quality]()
 - [NSW Rural Fire Service - Fire Danger]()
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)

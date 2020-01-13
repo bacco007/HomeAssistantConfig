@@ -6,5 +6,7 @@ custom_header:
   !include lovelace/custom_header/settings.yaml
 decluttering_templates:
   !include_dir_named lovelace/decluttering_templates/
+button_card_templates:
+  !include_dir_named lovelace/buttoncard_templates/
 views:
   !include_dir_list lovelace/views/

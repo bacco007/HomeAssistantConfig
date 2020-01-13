@@ -9,7 +9,7 @@ card:
   style: |
     ha-card {
       background: none;
-      font-family: Oswald;
+      font-family: var(--time-font-family);
       text-align: right;
       box-shadow: none !important;
     }
@@ -17,7 +17,7 @@ card:
       padding-top: 0px !important;
     }
     h2 {
-      font-family: var(--paper-font-headline_-_font-family);
+      font-family: var(--time-font-family);
       -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
       font-size: 5em;
       font-weight: var(--paper-font-headline_-_font-weight);
@@ -25,10 +25,12 @@ card:
       line-height: 1em;
       text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
       margin: 0;
+      opacity: 0.7;
     }
     h3 {
       color: var(--accent-color);
-      font-family: var(--paper-font-headline_-_font-family);
+      font-family: var(--time-font-family);
+      font-weight: 200;
       -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
       font-size: 2em !important;
       font-weight: var(--paper-font-headline_-_font-weight);
@@ -36,9 +38,11 @@ card:
       line-height: var(--paper-font-headline_-_line-height);
       text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
       margin: 0;
+      opacity: 0.7;
     }
     h4 {
-      font-family: var(--paper-font-headline_-_font-family);
+      font-family: var(--time-font-family);
+      font-weight: 200;
       -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
       font-size: 1em;
       font-weight: var(--paper-font-headline_-_font-weight);
@@ -46,4 +50,5 @@ card:
       line-height: 1em;
       text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
       margin: 0;
+      opacity: 0.7;
     }

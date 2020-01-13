@@ -9,7 +9,7 @@ card:
   style: |
     ha-card {
       border: solid 1px var(--border-color);
-      font-family: Raleway;
+      font-family: var(--primary-font-family);
     }
     state-badge {
       margin: 0px !important;

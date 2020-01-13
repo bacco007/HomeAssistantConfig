@@ -101,6 +101,11 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
+                      - action_name: GO!
+                        icon: "mdi:cube-send"
+                        name: Reload Themes
+                        service: frontend.reload_themes
+                        type: call-service
                       - script.check_config
                       - action_name: GO!
                         icon: "mdi:cube-send"

@@ -295,3 +295,40 @@ cards:
                   - icon: false
                   - extrema: true
                   - average: true
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: DPI Calala AWS
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.waternsw_dpi_calala_air_temperature
+                        name: Temperature
+                      - entity: sensor.waternsw_dpi_calala_aws_rainfall
+                        name: Rainfall
+                      - entity: sensor.waternsw_dpi_calala_rel_humidity
+                        name: Humidity
+                      - entity: sensor.waternsw_dpi_calala_aws_baro_pressure
+                        name: Pressure
+                      - entity: sensor.waternsw_dpi_calala_aws_avg_wind_speed
+                        name: Avg Wind Speed
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature
+                  - entities:
+                      - entity: sensor.waternsw_dpi_calala_air_temperature
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true

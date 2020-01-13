@@ -1,5 +1,0 @@
----
-apple_tv_mrp:
-  - name: Bedroom Apple TV
-    host: 192.168.1.23
-    port: 49153

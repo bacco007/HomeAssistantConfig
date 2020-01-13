@@ -2,5 +2,6 @@
   |
   ha-card {
     border: solid 1px var(--border-color);
-    font-family: Raleway;
+    font-family: var(--primary-font-family);
+    font-weight: 400 !important;
   }

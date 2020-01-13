@@ -5,6 +5,6 @@ card:
   style: |
     ha-card {
       background: none;
-      font-family: Raleway;
+      font-family: var(--primary-font-family);
       box-shadow: none !important;
     }

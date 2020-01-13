@@ -28,6 +28,8 @@
   type: module
 - url: /community_plugin/mini-media-player/mini-media-player-bundle.js
   type: module
+- url: /community_plugin/popup-backdrop-filter/popup-backdrop-filter.js
+  type: module
 - url: /community_plugin/search-card/search-card.js
   type: module
 - url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
@@ -42,7 +44,17 @@
   type: js
 
 # CSS
-- url: https://fonts.googleapis.com/css?family=Raleway
+# - url: https://fonts.googleapis.com/css?family=Raleway
+#   type: css
+# - url: https://fonts.googleapis.com/css?family=Oswald
+#   type: css
+# - url: 'https://fonts.googleapis.com/css?family=Quicksand'
+#   type: css
+- url: 'https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700'
   type: css
-- url: https://fonts.googleapis.com/css?family=Oswald
+- url: 'https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed:400,500,600,700'
   type: css
+- url: 'https://fonts.googleapis.com/css?family=Montserrat:200,300,400'
+  type: css
+# - url: 'https://sf.abarba.me/font.css'
+#   type: css

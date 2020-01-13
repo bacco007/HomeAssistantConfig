@@ -18,7 +18,7 @@ style: |
   }
   ha-card {
     border: solid 1px var(--border-color);
-    font-family: Raleway;
+    font-family: var(--primary-font-family);
     margin-top: 10px;
     height: 500px;
     overflow: scroll;
