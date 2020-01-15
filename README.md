@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Monday, January 13th 2020_
+_Stats as at 04:59, Wednesday, January 15th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.103.6 | 213     | 985         | 760 | 20 |
+| 0.103.6 | 212     | 991         | 763 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -171,7 +171,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
 - [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
-- [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
 - [met](https://www.home-assistant.io/components/met)

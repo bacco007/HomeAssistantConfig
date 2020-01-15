@@ -1,0 +1,8 @@
+{
+  "domain": "tvh_rec",
+  "name": "Tvheadend recordings sensor",
+  "documentation": "https://github.com/kodi1/tvh_rec",
+  "dependencies": [],
+  "codeowners": ["@kodi1"],
+  "requirements": []
+}

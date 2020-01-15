@@ -6,102 +6,88 @@ icon: mdi:football
 cards:
   - type: horizontal-stack
     cards:
-      - type: "custom:button-card"
+      - type: 'custom:button-card'
         template: dash_button
         entity: sensor.binday_date
         show_name: false
         show_state: true
-      - type: "custom:button-card"
+      - type: 'custom:button-card'
         template: dash_button
         entity: sensor.binday_redbin
         name: Waste Bin
-        icon: "mdi:trash-can"
+        icon: 'mdi:trash-can'
         show_name: true
         show_state: false
         styles:
           card:
-            - background-color: '[[[ if (states["sensor.binday_redbin"].state == "Next Week") return "var(--accent-color)";
-                                else return "var(--accent-color)"; ]]]'
+            - background-color:
+                '[[[ if (states["sensor.binday_redbin"].state == "Next Week") return "var(--accent-color)";
+                else return "var(--accent-color)"; ]]]'
           icon:
             - color: red
-      - type: "custom:button-card"
+      - type: 'custom:button-card'
         template: dash_button
         entity: sensor.binday_yellowbin
         name: Recycle Bin
-        icon: "mdi:trash-can"
+        icon: 'mdi:trash-can'
         show_name: true
         show_state: false
         styles:
           card:
-            - background-color: '[[[ if (states["sensor.binday_yellowbin"].state == "Next Week") return "var(--accent-color)";
-                                else return "var(--accent-color)"; ]]]'
+            - background-color:
+                '[[[ if (states["sensor.binday_yellowbin"].state == "Next Week") return "var(--accent-color)";
+                else return "var(--accent-color)"; ]]]'
           icon:
             - color: yellow
-      - type: "custom:button-card"
+      - type: 'custom:button-card'
         template: dash_button
         entity: sensor.binday_greenbin
         name: Greenwaste Bin
-        icon: "mdi:trash-can"
+        icon: 'mdi:trash-can'
         show_name: true
         show_state: false
         styles:
           card:
-            - background-color: '[[[ if (states["sensor.binday_greenbin"].state == "Next Week") return "var(--accent-color)";
-                                else return "var(--accent-color)"; ]]]'
+            - background-color:
+                '[[[ if (states["sensor.binday_greenbin"].state == "Next Week") return "var(--accent-color)";
+                else return "var(--accent-color)"; ]]]'
           icon:
             - color: green
-  - type: markdown
-    content: |
-      ## {{states('sensor.time')}}
-
-      ### {{states('sensor.date_long_format')}}
-      #### UTC {{states('sensor.time_utc')}} - London {{states('sensor.time_london')}} - New York {{states('sensor.time_new_york')}}
-    style: |
-      ha-card {
-        background: none;
-        font-family: SF Display;
-        text-align: right;
-        box-shadow: none !important;
-      }
-      ha-markdown {
-        padding-top: 0px !important;
-      }
-      h2 {
-        font-family: SF Text;
-        font-weight: 300 !important;
-        color: rgba(255, 255, 255, 0.7) !important;
-        -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
-        font-size: 5.41vw;
-        font-weight: var(--paper-font-headline_-_font-weight);
-        letter-spacing: '-0.05vw';
-        line-height: 1em;
-        text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
-        margin: 0;
-      }
-      h3 {
-        color: var(--accent-color);
-        font-family: SF Display;
-        opacity: 0.65;
-        font-weight: 400 !important;
-        -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
-        font-size: 2em !important;
-        font-weight: var(--paper-font-headline_-_font-weight);
-        letter-spacing: var(--paper-font-headline_-_letter-spacing);
-        line-height: var(--paper-font-headline_-_line-height);
-        text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
-        margin: 0;
-      }
-      h4 {
-        font-family: SF Display;
-        font-weight: 200 !important;
-        -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
-        font-size: 1em;
-        font-weight: var(--paper-font-headline_-_font-weight);
-        letter-spacing: var(--paper-font-headline_-_letter-spacing);
-        line-height: 1em;
-        text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
-        margin: 0;
-      }
+  - type: vertical-stack
+    cards:
+      - type: custom:decluttering-card
+        template: time-card
+      - type: custom:mod-card
+        style: |
+          ha-card {
+            padding-right: 15px !important;
+          }
+        card:
+          type: horizontal-stack
+          cards:
+            - type: 'custom:button-card'
+              color_type: blank-card
+            - type: 'custom:button-card'
+              color_type: blank-card
+            - type: 'custom:button-card'
+              color_type: blank-card
+            - type: 'custom:button-card'
+              color_type: blank-card
+            - type: 'custom:button-card'
+              # color_type: card
+              icon: mdi:settings
+              # color: rgb(28, 128, 199)
+              tap_action:
+                action: navigate
+                navigation_path: /lovelace/0
+              size: 50px
+              styles:
+                card:
+                  - background: var(--background-color)
+                  - height: 36px
+                  - width: 36px
+                icon:
+                  - color: rgba(255, 255, 255, 0.7)
 
   - type: vertical-stack
     cards:
@@ -113,7 +99,6 @@ cards:
     style: |
       ha-card {
         border: solid 1px var(--border-color);
-        font-family: SF Display;
       }
     entities:
       - sensor.hacs

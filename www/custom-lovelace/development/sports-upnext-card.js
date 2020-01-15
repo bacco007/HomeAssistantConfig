@@ -1,19 +1,19 @@
 class SportsUpNextCard extends HTMLElement {
-    constructor() {
-        super()
-        this.attachShadow({ mode: 'open' })
-    }
+  constructor() {
+    super()
+    this.attachShadow({ mode: 'open' })
+  }
 
-    setConfig(config) {
-        const root = this.shadowRoot
-        if (root.lastChild) root.removeChild(root.lastChild)
+  setConfig(config) {
+    const root = this.shadowRoot
+    if (root.lastChild) root.removeChild(root.lastChild)
 
-        const cardConfig = Object.assign({}, config)
-        const card = document.createElement('ha-card')
-        const content = document.createElement('div')
-        const style = document.createElement('style')
+    const cardConfig = Object.assign({}, config)
+    const card = document.createElement('ha-card')
+    const content = document.createElement('div')
+    const style = document.createElement('style')
 
-        style.textContent = `
+    style.textContent = `
       ha-card {
         padding-bottom: 5px;
       }
@@ -35,7 +35,7 @@ class SportsUpNextCard extends HTMLElement {
         padding: .2em .2em;
         background-color: var(--background-color);
         text-color: var(--text-color);
-        font-family: Oswald;
+        font-family: var(--title-font-family);
       }
       .date {
         grid-column-start: 3;
@@ -47,7 +47,7 @@ class SportsUpNextCard extends HTMLElement {
         background-color: var(--background-color);
         text-color: var(--text-color);
         padding: .2em .2em;
-        font-family: Oswald;
+        font-family: var(--title-font-family);
       }
       .icon {
         grid-row-start: 2;
@@ -78,56 +78,56 @@ class SportsUpNextCard extends HTMLElement {
         padding: .2em .2em;
         font-size: 1.25em;
         margin: auto;
-        font-family: Raleway;
+        font-family: var(--primary-font-family);
       }
     `
 
-        content.innerHTML = `
+    content.innerHTML = `
     <div id='content'>
     </div>
     `
 
-        card.appendChild(content)
-        card.appendChild(style)
-        root.appendChild(card)
-        this._config = cardConfig
+    card.appendChild(content)
+    card.appendChild(style)
+    root.appendChild(card)
+    this._config = cardConfig
+  }
+
+  set hass(hass) {
+    const config = this._config
+    const root = this.shadowRoot
+    // const card = root.lastChild;
+    this.myhass = hass
+
+    const name = config.name || ''
+    const nextdateSensor = {
+      name: 'nextdateSensor',
+      config: config.nextDate || '',
+      value: 'No Date',
     }
+    const nextOppSensor = {
+      name: 'nextOppSensor',
+      config: config.nextOpponent || '',
+      value: 'Not Set',
+    }
+    const SensorList = [nextdateSensor, nextOppSensor]
+    const logo =
+      hass.states[nextdateSensor.config].attributes['entity_picture'] ||
+      '/local/avatar_thomas.jpg'
 
-    set hass(hass) {
-        const config = this._config
-        const root = this.shadowRoot
-        // const card = root.lastChild;
-        this.myhass = hass
-
-        const name = config.name || ''
-        const nextdateSensor = {
-            name: 'nextdateSensor',
-            config: config.nextDate || '',
-            value: 'No Date',
+    SensorList.forEach(sensor => {
+      if (sensor.config.split('.')[0] == 'sensor') {
+        try {
+          sensor.value = hass.states[sensor.config].state
+        } catch (err) {
+          console.log('Error in sensor: ${sensor.name}')
         }
-        const nextOppSensor = {
-            name: 'nextOppSensor',
-            config: config.nextOpponent || '',
-            value: 'Not Set',
-        }
-        const SensorList = [nextdateSensor, nextOppSensor]
-        const logo =
-            hass.states[nextdateSensor.config].attributes['entity_picture'] ||
-            '/local/avatar_thomas.jpg'
+      } else {
+        sensor.value = 0
+      }
+    })
 
-        SensorList.forEach(sensor => {
-            if (sensor.config.split('.')[0] == 'sensor') {
-                try {
-                    sensor.value = hass.states[sensor.config].state
-                } catch (err) {
-                    console.log('Error in sensor: ${sensor.name}')
-                }
-            } else {
-                sensor.value = 0
-            }
-        })
-
-        let card_content = `
+    let card_content = `
       <div class="grid-container">
         <div class="name">${name}</div>
         <div class="date">${nextdateSensor.value}</div>
@@ -140,17 +140,13 @@ class SportsUpNextCard extends HTMLElement {
       </div>
     `
 
-        root.lastChild.hass = hass
-        root.getElementById('content').innerHTML = card_content
-    }
+    root.lastChild.hass = hass
+    root.getElementById('content').innerHTML = card_content
+  }
 
-    // setConfig(config) {
-    //   this.config = config;
-    // }
-
-    getCardSize() {
-        return 1
-    }
+  getCardSize() {
+    return 1
+  }
 }
 
 customElements.define('sports-upnext-card', SportsUpNextCard)
