@@ -112,3 +112,4 @@ cards:
                         icon: mdi:television
                       - entity: sensor.tvheadend_failed_recordings
                         icon: mdi:television
+          - !include ../includes/upcomingmedia_tvheadend.yaml
