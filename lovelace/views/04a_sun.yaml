@@ -23,6 +23,9 @@ cards:
             template: title
             variables:
               - title: Sun
+          - type: custom:sun-card
+            name:
+            meridiem: true
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:decluttering-card
@@ -105,9 +108,11 @@ cards:
                         primary:
                           attribute: pm10
                           name: PM10
+                          unit: AQI
                         secondary:
                           attribute: pm25
                           name: PM2.5
+                          unit: AQI
               - !include ../includes/graph_nswairquality.yaml
 
       - type: vertical-stack
@@ -123,6 +128,17 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
+                      - entity: sensor.waqi_tamworth_north_west_slopes_australia
+                        name: Tamworth AQI (wAQI)
+                        type: custom:multiple-entity-row
+                        primary:
+                          attribute: pm_10
+                          name: PM10
+                          unit: AQI
+                        secondary:
+                          attribute: pm_2_5
+                          name: PM2.5
+                          unit: AQI
                       - sensor.waqi_tamworth_max_aqi
                       - sensor.waqi_tamworth_min_aqi
                       - sensor.waqi_tamworth_change_aqi

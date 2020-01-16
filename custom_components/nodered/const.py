@@ -2,7 +2,7 @@
 # Base component constants
 DOMAIN = "nodered"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "0.1.1"
+VERSION = "0.2.0"
 REQUIRED_FILES = [
     ".translations/en.json",
     "binary_sensor.py",
@@ -23,6 +23,7 @@ CONF_BINARY_SENSOR = "binary_sensor"
 CONF_COMPONENT = "component"
 CONF_CONFIG = "config"
 CONF_CONNECTION = "connection"
+CONF_DEVICE_INFO = "device_info"
 CONF_ENABLED = "enabled"
 CONF_NAME = "name"
 CONF_NODE_ID = "node_id"

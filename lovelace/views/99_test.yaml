@@ -77,9 +77,6 @@ cards:
               # color_type: card
               icon: mdi:settings
               # color: rgb(28, 128, 199)
-              tap_action:
-                action: navigate
-                navigation_path: /lovelace/0
               size: 50px
               styles:
                 card:
@@ -88,6 +85,45 @@ cards:
                   - width: 36px
                 icon:
                   - color: rgba(255, 255, 255, 0.7)
+              tap_action:
+                action: call-service
+                service: browser_mod.popup
+                service_data:
+                  deviceID:
+                    - this
+                  title: Settings
+                  large: true
+                  card:
+                    type: 'custom:layout-card'
+                    layout: vertical
+                    max_columns: 3
+                    cards:
+                      - type: entities
+                        entities:
+                          - sensor.hacs
+                          - sensor.daylight
+                      - break
+                      - type: entities
+                        title: Dyson Fan
+                        entities:
+                          - climate.bedroom
+                          - fan.bedroom
+                          - sensor.bedroom_aqi
+                          - sensor.bedroom_dust
+                          - sensor.bedroom_filter_life
+                          - sensor.bedroom_humidity
+                          - sensor.bedroom_temperature
+                      - break
+                      - type: entities
+                        title: Dyson Fan
+                        entities:
+                          - climate.bedroom
+                          - fan.bedroom
+                          - sensor.bedroom_aqi
+                          - sensor.bedroom_dust
+                          - sensor.bedroom_filter_life
+                          - sensor.bedroom_humidity
+                          - sensor.bedroom_temperature
 
   - type: vertical-stack
     cards:

@@ -7,6 +7,7 @@ https://github.com/zachowj/hass-node-red
 import asyncio
 import logging
 import os
+from typing import Any, Dict, Optional, Union
 
 from integrationhelper.const import CC_STARTUP_VERSION
 
@@ -27,6 +28,7 @@ from homeassistant.helpers.entity import Entity
 from .const import (
     CONF_COMPONENT,
     CONF_CONFIG,
+    CONF_DEVICE_INFO,
     CONF_NAME,
     CONF_NODE_ID,
     CONF_REMOVE,
@@ -121,10 +123,12 @@ class NodeRedEntity(Entity):
     """nodered Sensor class."""
 
     def __init__(self, hass, config):
+        """Initialize the entity."""
         self.hass = hass
         self.attr = {}
         self._config = config[CONF_CONFIG]
         self._component = None
+        self._device_info = config.get(CONF_DEVICE_INFO)
         self._state = None
         self._server_id = config[CONF_SERVER_ID]
         self._node_id = config[CONF_NODE_ID]
@@ -134,44 +138,57 @@ class NodeRedEntity(Entity):
     @property
     def should_poll(self) -> bool:
         """Return True if entity has to be polled for state.
+
         False if entity pushes its state to HA.
         """
         return False
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> Optional[str]:
         """Return a unique ID to use for this sensor."""
         return f"{DOMAIN}-{self._server_id}-{self._node_id}"
 
     @property
-    def device_class(self):
+    def device_class(self) -> Optional[str]:
         """Return the class of this binary_sensor."""
         return self._config.get(CONF_DEVICE_CLASS)
 
     @property
-    def name(self):
+    def name(self) -> Optional[str]:
         """Return the name of the sensor."""
         return self._config.get(CONF_NAME, f"{DEFAULT_NAME} {self._node_id}")
 
     @property
-    def state(self):
+    def state(self) -> Union[None, str, int, float]:
         """Return the state of the sensor."""
         return self._state
 
     @property
-    def icon(self):
+    def icon(self) -> Optional[str]:
         """Return the icon of the sensor."""
         return self._config.get(CONF_ICON)
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> Optional[str]:
         """Return the unit this state is expressed in."""
         return self._config.get(CONF_UNIT_OF_MEASUREMENT)
 
     @property
-    def device_state_attributes(self):
+    def device_state_attributes(self) -> Optional[Dict[str, Any]]:
         """Return the state attributes."""
         return self.attr
+
+    @property
+    def device_info(self) -> Optional[Dict[str, Any]]:
+        """Return device specific attributes."""
+        info = None
+        if self._device_info is not None and "id" in self._device_info:
+            # Use the id property to create the device identifier then delete it
+            info = {"identifiers": {(DOMAIN, self._device_info["id"])}}
+            del self._device_info["id"]
+            info.update(self._device_info)
+
+        return info
 
     @callback
     def handle_entity_update(self, msg):
@@ -183,7 +200,7 @@ class NodeRedEntity(Entity):
 
     @callback
     def handle_discovery_update(self, msg, connection):
-        """Update entity config"""
+        """Update entity config."""
         if CONF_REMOVE not in msg:
             self._config = msg[CONF_CONFIG]
             self.async_write_ha_state()
@@ -194,7 +211,7 @@ class NodeRedEntity(Entity):
             # recreate entity if component type changed
             @callback
             def recreate_entity():
-                """Create entity with new type"""
+                """Create entity with new type."""
                 del msg[CONF_REMOVE]
                 async_dispatcher_send(
                     self.hass,

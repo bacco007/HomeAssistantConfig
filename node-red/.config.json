@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.19.3",
+   "version": "0.19.4",
    "local": false,
    "nodes": {
     "server": {
@@ -1318,7 +1318,7 @@
   },
   "node-red-node-rbe": {
    "name": "node-red-node-rbe",
-   "version": "0.2.6",
+   "version": "0.2.8",
    "local": false,
    "nodes": {
     "rbe": {

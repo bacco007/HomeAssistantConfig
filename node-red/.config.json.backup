@@ -414,7 +414,7 @@
   },
   "node-red-contrib-cast": {
    "name": "node-red-contrib-cast",
-   "version": "0.2.12",
+   "version": "0.2.13",
    "local": false,
    "nodes": {
     "cast-to-client": {
@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.19.1",
+   "version": "0.19.3",
    "local": false,
    "nodes": {
     "server": {
@@ -1195,7 +1195,7 @@
   },
   "node-red-node-email": {
    "name": "node-red-node-email",
-   "version": "1.7.3",
+   "version": "1.7.4",
    "local": false,
    "nodes": {
     "email": {

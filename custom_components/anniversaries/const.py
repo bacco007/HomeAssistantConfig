@@ -8,7 +8,7 @@ from homeassistant.const import CONF_NAME
 # Base component constants
 DOMAIN = "anniversaries"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 PLATFORM = "sensor"
 ISSUE_URL = "https://github.com/pinkywafer/Anniversaries/issues"
 ATTRIBUTION = "Data from this is provided by Anniversaries"
@@ -45,6 +45,10 @@ DEFAULT_SOON = 1
 def check_date(value):
     try:
         return datetime.strptime(value, "%Y-%m-%d").date().strftime("%Y-%m-%d")
+    except ValueError:
+        pass
+    try:
+        return datetime.strptime(value, "%m-%d").date().strftime("%m-%d")
     except ValueError:
         raise vol.Invalid(f"Invalid date: {value}")
 

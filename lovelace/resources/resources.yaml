@@ -34,6 +34,8 @@
   type: module
 - url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
   type: js
+- url: /community_plugin/sun-card/sun-card.js
+  type: module
 - url: /community_plugin/upcoming-media-card/upcoming-media-card.js
   type: js
 - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js

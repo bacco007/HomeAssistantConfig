@@ -174,7 +174,7 @@ cards:
                           name: Avg
                         info:
                           attribute: datestring
-                          name: D
+                          name:
                       - entity: sensor.weather_bom_tempmin_lastyr
                         name: BOM - Min Temp (Last 365 Days)
                         type: custom:multiple-entity-row
@@ -190,20 +190,20 @@ cards:
                           name: Avg
                         info:
                           attribute: datestring
-                          name: D
+                          name:
                       - type: section
                       - entity: sensor.weather_bom_totalrain_lastyr
                         name: BOM - Total Rain (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
                           attribute: countstring
-                          name: N
+                          name:
                       - entity: sensor.weather_bom_maxrain_lastyr
                         name: BOM - Highest Rainfall (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
                           attribute: date
-                          name: D
+                          name:
                       - type: section
                       - entity: sensor.weather_home_tempmax_lastyr
                         name: Home - Max Temp (Last 365 Days)
@@ -220,7 +220,7 @@ cards:
                           name: Avg
                         info:
                           attribute: datestring
-                          name: D
+                          name:
                       - entity: sensor.weather_home_tempmin_lastyr
                         name: Home - Min Temp (Last 365 Days)
                         type: custom:multiple-entity-row
@@ -236,20 +236,20 @@ cards:
                           name: Avg
                         info:
                           attribute: datestring
-                          name: D
+                          name:
                       - type: section
                       - entity: sensor.weather_home_totalrain_lastyr
                         name: Home - Total Rain (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
                           attribute: countstring
-                          name: N
+                          name:
                       - entity: sensor.weather_home_maxrain_lastyr
                         name: Home - Highest Rainfall (Last 365 Days)
                         type: custom:multiple-entity-row
                         info:
                           attribute: date
-                          name: D
+                          name:
           - type: custom:gap-card
             height: 10
           - type: iframe

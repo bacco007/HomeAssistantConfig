@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Wednesday, January 15th 2020_
+_Stats as at 04:59, Thursday, January 16th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.103.6 | 212     | 991         | 763 | 20 |
+| 0.103.6 | 214     | 987         | 763 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -148,6 +148,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [hassio](https://www.home-assistant.io/components/hassio)
 - [history](https://www.home-assistant.io/components/history)
 - [homeassistant](https://www.home-assistant.io/components/homeassistant)
+- [homekit](https://www.home-assistant.io/components/homekit)
 - [http](https://www.home-assistant.io/components/http)
 - [iaquk](https://www.home-assistant.io/components/iaquk)
 - [ifttt](https://www.home-assistant.io/components/ifttt)
@@ -256,6 +257,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.template](https://www.home-assistant.io/components/sensor.template)
 - [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date)
 - [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission)
+- [sensor.tvh_rec](https://www.home-assistant.io/components/sensor.tvh_rec)
 - [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi)
 - [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway)
 - [sensor.upnp](https://www.home-assistant.io/components/sensor.upnp)
@@ -326,6 +328,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
+- [Tvheadend recordings sensor](https://github.com/kodi1/tvh_rec)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 </details>
