@@ -30,6 +30,8 @@ cards:
                 - entity_id: remote.*
                   options:
                     type: entities
+              exclude:
+                - state: 'unavailable'
             sort:
               method: name
             card:
@@ -49,6 +51,8 @@ cards:
                 - entity_id: media_player.*
                   options:
                     type: 'custom:mini-media-player'
+              exclude:
+                - state: 'unavailable'
             sort:
               method: name
             card:

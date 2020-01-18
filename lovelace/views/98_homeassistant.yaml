@@ -170,6 +170,35 @@ cards:
                     - { domain: group }
                 sort:
                   method: entity_id
+      - type: custom:gap-card
+        height: 10
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Unavailable Components
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  show_header_toggle: false
+                  style: |
+                    state-badge {
+                      margin: 0 !important;
+                    }
+                    .entities {
+                      padding-top: 2px !important;
+                    }
+                filter:
+                  include:
+                    - { state: unavailable }
+                  exclude:
+                    - { domain: group }
+                sort:
+                  method: entity_id
       - break
 
       # Column 2 (Middle)

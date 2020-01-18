@@ -74,6 +74,10 @@ dark:
   ch-all-tabs-color: "var(--sidebar-icon-color)"
   ch-tab-indicator-color: "var(--accent-color)"
 
+  # Custom Colors
+  custom-red: 'rgba(255,102,102,0.5)'
+  custom-teal: 'rgba(0,196,172,0.5)'
+
   # Popup Backdrop Filter
   iron-overlay-backdrop-filter: 'blur(10px) grayscale(50%)'
   iron-overlay-backdrop-background-color: 'rgba(0,0,0,0.25)'

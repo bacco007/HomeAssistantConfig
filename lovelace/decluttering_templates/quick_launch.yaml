@@ -1,0 +1,89 @@
+---
+card:
+  type: custom:mod-card
+  style: |
+    ha-card {
+      padding-right: 15px !important;
+    }
+  card:
+    type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        color_type: blank-card
+      - type: 'custom:button-card'
+        color_type: blank-card
+      - type: 'custom:button-card'
+        color_type: blank-card
+      - type: 'custom:button-card'
+        icon: mdi:trash-can
+        size: 50px
+        styles:
+          card:
+            - background: var(--background-color)
+            - height: 36px
+            - width: 36px
+          icon:
+            - color:
+                '[[[ if (states["sensor.binday_date"].state == "Today") return "rgba(255, 255, 0, 0.8)";
+                else return "rgba(255, 255, 255, 0.7)"; ]]]'
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID:
+              - this
+            title: Bin Day
+            large: false
+            card: !include ../popup_cards/binday.yaml
+
+      - type: 'custom:button-card'
+        # color_type: card
+        icon: mdi:settings
+        # color: rgb(28, 128, 199)
+        size: 50px
+        styles:
+          card:
+            - background: var(--background-color)
+            - height: 36px
+            - width: 36px
+          icon:
+            - color: rgba(255, 255, 255, 0.7)
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID:
+              - this
+            title: Settings
+            large: true
+            card:
+              type: 'custom:layout-card'
+              layout: vertical
+              max_columns: 4
+              cards:
+                - type: entities
+                  entities:
+                    - sensor.hacs
+                    - sensor.daylight
+                - break
+                - type: entities
+                  title: Dyson Fan
+                  entities:
+                    - climate.bedroom
+                    - fan.bedroom
+                    - sensor.bedroom_aqi
+                    - sensor.bedroom_dust
+                    - sensor.bedroom_filter_life
+                    - sensor.bedroom_humidity
+                    - sensor.bedroom_temperature
+                - break
+                - type: entities
+                  title: Dyson Fan
+                  entities:
+                    - climate.bedroom
+                    - fan.bedroom
+                    - sensor.bedroom_aqi
+                    - sensor.bedroom_dust
+                    - sensor.bedroom_filter_life
+                    - sensor.bedroom_humidity
+                    - sensor.bedroom_temperature

@@ -195,6 +195,9 @@ cards:
                       - entity: sensor.weather_bom_totalrain_lastyr
                         name: BOM - Total Rain (Last 365 Days)
                         type: custom:multiple-entity-row
+                        secondary:
+                          attribute: average
+                          name: Avg
                         info:
                           attribute: countstring
                           name:
@@ -241,6 +244,9 @@ cards:
                       - entity: sensor.weather_home_totalrain_lastyr
                         name: Home - Total Rain (Last 365 Days)
                         type: custom:multiple-entity-row
+                        secondary:
+                          attribute: average
+                          name: Avg
                         info:
                           attribute: countstring
                           name:

@@ -82,7 +82,7 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
-              - title: Fuel Prices (NSW FuelWatch)
+              - title: Fuel Prices (NSW FuelCheck)
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:decluttering-card
@@ -90,7 +90,12 @@ cards:
                 variables:
                   - entities:
                       - sensor.fuelcheck_bp_tamworth_p98
+                      - sensor.fuelcheck_bp_nemingha_p98
+                      - sensor.fuelcheck_bp_tamworth_p98_2
+                      - type: section
                       - sensor.fuelcheck_caltex_tamworth_orana_p98
+                      - sensor.fuelcheck_caltex_tamworth_p98
+                      - sensor.fuelcheck_caltex_woolworths_tamworth_p98
                       - type: section
                       - entity: sensor.fuel_bpviaduct_stats365
                         name: BP Ultimate98 (Viaduct) - Last 365 Days
@@ -132,23 +137,27 @@ cards:
                           entity: sensor.fuel_caltexwhite_stats365
                           attribute: datestring
                           name: false
-              - type: horizontal-stack
+              - type: vertical-stack
                 cards:
                   - type: custom:decluttering-card
                     template: mini-graph
                     variables:
-                      - name: BP Viaduct
+                      - name: BP Ultimate98
                       - entities:
                           - sensor.fuelcheck_bp_tamworth_p98
+                          - sensor.fuelcheck_bp_nemingha_p98
+                          - sensor.fuelcheck_bp_tamworth_p98_2
                       - height: 60
                       - decimals: 1
                       - icon: false
                   - type: custom:decluttering-card
                     template: mini-graph
                     variables:
-                      - name: Caltex White St
+                      - name: Caltex Vortex98
                       - entities:
                           - sensor.fuelcheck_caltex_tamworth_orana_p98
+                          - sensor.fuelcheck_caltex_tamworth_p98
+                          - sensor.fuelcheck_caltex_woolworths_tamworth_p98
                       - height: 60
                       - decimals: 1
                       - icon: false

@@ -30,9 +30,13 @@ cards:
                 variables:
                   - entities:
                       - entity: sensor.here_travel_tom_to_work
+                        type: "custom:secondaryinfo-entity-row"
                         name: "Current Location -> Work"
+                        secondary_info: "Arrive by [[ sensor.here_travel_tom_to_work_arrivetime.state ]]"
                       - entity: sensor.here_travel_tom_to_home
+                        type: "custom:secondaryinfo-entity-row"
                         name: "Current Location -> Home"
+                        secondary_info: "Arrive by [[ sensor.here_travel_tom_to_home_arrivetime.state ]]"
                       - entity: sensor.here_travel_home_to_work_car
                         name: "Home <-> Work by Car"
                       - entity: sensor.here_travel_home_to_work_walk
