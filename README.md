@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, January 18th 2020_
+_Stats as at 15:58, Sunday, January 26th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.104.0 | 216     | 980         | 769 | 20 |
+| 0.104.3 | 218     | 1252         | 995 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -128,6 +128,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [deconz](https://www.home-assistant.io/components/deconz)
 - [device_automation](https://www.home-assistant.io/components/device_automation)
 - [device_tracker](https://www.home-assistant.io/components/device_tracker)
+- [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud)
 - [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app)
 - [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi)
 - [discovery](https://www.home-assistant.io/components/discovery)
@@ -136,6 +137,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [fan](https://www.home-assistant.io/components/fan)
 - [fan.dyson](https://www.home-assistant.io/components/fan.dyson)
 - [favicon](https://www.home-assistant.io/components/favicon)
+- [fontawesome](https://www.home-assistant.io/components/fontawesome)
 - [frontend](https://www.home-assistant.io/components/frontend)
 - [garbage_collection](https://www.home-assistant.io/components/garbage_collection)
 - [geo_location](https://www.home-assistant.io/components/geo_location)
@@ -173,7 +175,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
 - [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
-- [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
 - [met](https://www.home-assistant.io/components/met)
@@ -228,6 +229,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs)
 - [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time)
 - [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk)
+- [sensor.icloud](https://www.home-assistant.io/components/sensor.icloud)
 - [sensor.ios](https://www.home-assistant.io/components/sensor.ios)
 - [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app)
 - [sensor.moon](https://www.home-assistant.io/components/sensor.moon)
@@ -316,6 +318,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
 - [Favicon changer]()
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
+- [Fontawesome icons]()
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
@@ -346,9 +349,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>More Screenshots Here</summary>
 
+![Screenshot - App Dashboard](./.assets/screencapture-appdashboard.png?raw=True)
+
+![Screenshot - Rooms](./.assets/screencapture-rooms.png?raw=True)
+
 ![Screenshot - System](./.assets/screencapture-system.png?raw=True)
 
-![Screenshot - Fire](./assets/screencapture-fire.png?raw=True)
+![Screenshot - Server](./.assets/screencapture-server.png?raw=True)
+
+![Screenshot - Fire](./.assets/screencapture-fire.png?raw=True)
 
 ![Screenshot - HA](./.assets/screencapture-homeassistant.png?raw=True)
 

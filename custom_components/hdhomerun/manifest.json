@@ -5,5 +5,5 @@
   "documentation": "https://github.com/burnnat/ha-hdhomerun",
   "dependencies": [],
   "codeowners": [],
-  "requirements": ["hdhr==0.0.6"]
+  "requirements": ["hdhr==0.0.7"]
 }

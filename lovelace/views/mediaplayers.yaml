@@ -17,6 +17,59 @@ cards:
           - type: custom:decluttering-card
             template: time-card
 
+      - type: custom:layout-card
+        min_columns: 4
+        max_columns: 4
+        justify_content: start
+        layout: horizontal
+        cards:
+          # Row 1
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name: Volume
+              - label: down
+              - icon: mdi:volume-low
+              - service: media_player.volume_down
+              - service_entity: media_player.apple_tv_bedroom
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name: Volume
+              - label: Up
+              - icon: mdi:volume-high
+              - service: media_player.volume_up
+              - service_entity: media_player.apple_tv_bedroom
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name: Volume
+              - label: Mute
+              - icon: mdi:volume-off
+              - service: media_player.volume_mute
+              - service_entity: media_player.apple_tv_bedroom
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name:
+          # Row 2
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name:
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name:
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name:
+          - type: custom:decluttering-card
+            template: button-service
+            variables:
+              - name:
+
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:

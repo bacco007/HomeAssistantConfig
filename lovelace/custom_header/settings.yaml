@@ -1,9 +1,11 @@
 ---
+view_css: 'padding-top: 84px !important'
 compact_mode: true
+hide_header: false
 locale: en-gb
-split_mode: true
+split_mode: false
 shadow: true
-footer_mode: true
+footer_mode: false
 background: "rgba(69, 74, 83, 1)"
 voice_hide: true
 hide_help: true

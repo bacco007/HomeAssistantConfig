@@ -1,0 +1,495 @@
+---
+#lovelace_gen
+title: Server Status
+path: serverstatus
+panel: true
+icon: mdi:server-network
+
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    rtl: true
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: time-card
+          - type: custom:gap-card
+            height: 10
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:decluttering-card
+            template: markdown-header
+            variables:
+              - header: pveTBSH
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - entity: sensor.pvetbsh_uptime
+                    name: Server Uptime
+                    icon: mdi:server
+                  - type: section
+                  - entity: binary_sensor.pvetbsh_vmtbsh01_running
+                    name: vmTBSH01 - Running
+                    icon: mdi:server
+                  - entity: binary_sensor.pvetbsh_vmtbsh02_running
+                    name: vmTBSH02 - Running
+                    icon: mdi:server
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.pvetbsh_system_cpu_idle
+                max: 100
+                min: 0
+                name: CPU Idle
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.pvetbsh_ram_used_percent
+                max: 100
+                min: 0
+                name: RAM Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.pvetbsh_disk_used_percent
+                max: 100
+                min: 0
+                name: HDD Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:decluttering-card
+            template: markdown-header
+            variables:
+              - header: piServ
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - entity: sensor.piserv_uptime
+                    name: Server Uptime
+                    icon: mdi:server
+                  - type: section
+                  - binary_sensor.servicestatus_pihole
+                  - switch.pihole_switch
+                  - type: section
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.piserv_cpu_used
+                max: 100
+                min: 0
+                name: CPU Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.piserv_ram_used_percent
+                max: 100
+                min: 0
+                name: RAM Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.piserv_disk_used_percent
+                max: 100
+                min: 0
+                name: HDD Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:decluttering-card
+            template: markdown-header
+            variables:
+              - header: TBSH01
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - entity: sensor.tbsh01_uptime
+                    name: Server Uptime
+                    icon: mdi:server
+                  - entity: sensor.tbsh01_version
+                    name: Docker Version
+                  - sensor.tbsh01_containers_total
+                  - sensor.tbsh01_containers_running
+                  - sensor.tbsh01_containers_paused
+                  - sensor.tbsh01_containers_stopped
+                  - sensor.tbsh01_images_total
+                  - entity: sensor.tbsh01_containers_active
+                    type: custom:secondaryinfo-entity-row
+                    name: Docker Containers Running
+                    icon: mdi:docker
+                    secondary_info: 'CPU Used: [[ sensor.tbsh01_containers_cpu_used.state ]]%, Mem Used: [[ sensor.tbsh01_containers_ram_used.state ]]MiB'
+                  - type: section
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: DB (MariaDB)
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_db
+                      - autoentity: sensor.tbsh01_db
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Duplicati
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_duplicati
+                      - autoentity: sensor.tbsh01_duplicati
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Glances
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_glances
+                      - autoentity: sensor.tbsh01_glances
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Guacamole
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_guacamole
+                      - autoentity: sensor.tbsh01_guacamole
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Netdata
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_netdata
+                      - autoentity: sensor.tbsh01_netdata
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: nginx Proxy Manager
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_nginxproxymanager
+                      - autoentity: sensor.tbsh01_nginxproxymanager
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Ouroboros
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_ouroboros
+                      - autoentity: sensor.tbsh01_ouroboros
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Portainer
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_portainer
+                      - autoentity: sensor.tbsh01_portainer
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: UniFi Controller
+                      - server: TBSH01
+                      - status: binary_sensor.tbsh01_ha_dockermon_unifi
+                      - autoentity: sensor.tbsh01_unifi
+
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.tbsh01_cpu_used
+                max: 100
+                min: 0
+                name: CPU Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.tbsh01_ram_used_percent
+                max: 100
+                min: 0
+                name: RAM Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.tbsh01_disk_used_percent
+                max: 100
+                min: 0
+                name: HDD Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:decluttering-card
+            template: markdown-header
+            variables:
+              - header: vmTBSH01
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - entity: sensor.vmtbsh01_uptime
+                    name: Server Uptime
+                    icon: mdi:server
+                  - entity: sensor.vmtbsh01_containers_active
+                    type: custom:secondaryinfo-entity-row
+                    name: Docker Containers Running
+                    icon: mdi:docker
+                    secondary_info: 'CPU Used: [[ sensor.vmtbsh01_containers_cpu_used.state ]]%, Mem Used: [[ sensor.vmtbsh01_containers_ram_used.state ]]MiB'
+                  - type: section
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Duplicati
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_duplicati
+                      - autoentity: sensor.vmtbsh01_duplicati
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Glances
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_glances
+                      - autoentity: sensor.vmtbsh01_glances
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Grafana
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_grafana
+                      - autoentity: sensor.vmtbsh01_grafana
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Jackett
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_jackett
+                      - autoentity: sensor.vmtbsh01_jackett
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Netdata
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_netdata
+                      - autoentity: sensor.vmtbsh01_netdata
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: NZBHydra2
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_nzbhydra2
+                      - autoentity: sensor.vmtbsh01_nzbhydra2
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Ouroboros
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_ouroboros
+                      - autoentity: sensor.vmtbsh01_ouroboros
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Portainer
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_portainer
+                      - autoentity: sensor.vmtbsh01_portainer
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Radarr
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_radarr
+                      - autoentity: sensor.vmtbsh01_radarr
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: SABnzbd
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_sabnzbd
+                      - autoentity: sensor.vmtbsh01_sabnzbd
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Sonarr
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_sonarr
+                      - autoentity: sensor.vmtbsh01_sonarr
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Tautulli
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_tautulli
+                      - autoentity: sensor.vmtbsh01_tautulli
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Transmission
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_transmission
+                      - autoentity: sensor.vmtbsh01_transmission
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: TBHeadend
+                      - server: vmTBSH01
+                      - status: binary_sensor.vmtbsh01_ha_dockermon_tvheadend
+                      - autoentity: sensor.vmtbsh01_tvheadend
+
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.vmtbsh01_cpu_used
+                max: 100
+                min: 0
+                name: CPU Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.vmtbsh01_ram_used_percent
+                max: 100
+                min: 0
+                name: RAM Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.vmtbsh01_disk_used_percent
+                max: 100
+                min: 0
+                name: HDD Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:decluttering-card
+            template: markdown-header
+            variables:
+              - header: vmTBSH02
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - entity: sensor.vmtbsh02_uptime
+                    name: Server Uptime
+                    icon: mdi:server
+                  - entity: sensor.vmtbsh02_containers_active
+                    type: custom:secondaryinfo-entity-row
+                    name: Docker Containers Running
+                    icon: mdi:docker
+                    secondary_info: 'CPU Used: [[ sensor.vmtbsh02_containers_cpu_used.state ]]%, Mem Used: [[ sensor.vmtbsh02_containers_ram_used.state ]]MiB'
+                  - type: section
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Chronograf
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_chronograf
+                      - autoentity: sensor.vmtbsh02_chronograf
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Duplicati
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_duplicati
+                      - autoentity: sensor.vmtbsh02_duplicati
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Glances
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_glances
+                      - autoentity: sensor.vmtbsh02_glances
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Hass.io Supervisor
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_hassio_supervisor
+                      - autoentity: sensor.vmtbsh02_hassio_supervisor
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Home Assistant
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_homeassistant
+                      - autoentity: sensor.vmtbsh02_homeassistant
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: InfluxDB
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_influxdb
+                      - autoentity: sensor.vmtbsh02_influxdb
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Kapacitor
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_kapacitor
+                      - autoentity: sensor.vmtbsh02_kapacitor
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Netdata
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_netdata
+                      - autoentity: sensor.vmtbsh02_netdata
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Ouroboros
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_ouroboros
+                      - autoentity: sensor.vmtbsh02_ouroboros
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Portainer
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_portainer
+                      - autoentity: sensor.vmtbsh02_portainer
+                  - type: custom:decluttering-card
+                    template: docker-autoentities
+                    variables:
+                      - name: Telegraf
+                      - server: vmTBSH02
+                      - status: binary_sensor.vmtbsh02_ha_dockermon_telegraf
+                      - autoentity: sensor.vmtbsh02_telegraf
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.vmtbsh02_cpu_used
+                max: 100
+                min: 0
+                name: CPU Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.vmtbsh02_ram_used_percent
+                max: 100
+                min: 0
+                name: RAM Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.vmtbsh02_disk_used_percent
+                max: 100
+                min: 0
+                name: HDD Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'

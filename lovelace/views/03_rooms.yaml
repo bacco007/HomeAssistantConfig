@@ -29,6 +29,59 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
+                      - type: custom:slider-entity-row
+                        entity: light.lamp
+                        name: Bedroom Light
+                        toggle: true
+                      - type: custom:rgb-light-card
+                        entity: light.lamp
+                        colors:
+                          - rgb_color:
+                              - 241
+                              - 224
+                              - 181
+                          - rgb_color:
+                              - 239
+                              - 210
+                              - 117
+                          - rgb_color:
+                              - 245
+                              - 250
+                              - 246
+                          - icon_color: '#D72AE0'
+                            rgb_color:
+                              - 255
+                              - 127
+                              - 255
+                          - icon_color: '#E02A2A'
+                            rgb_color:
+                              - 255
+                              - 0
+                              - 0
+                          - rgb_color:
+                            - 255
+                            - 255
+                            - 255
+                            brightness: 255
+                            icon_color: '#FFFFFF'
+                          - rgb_color:
+                            - 51
+                            - 102
+                            - 204
+                            brightness: 255
+                            icon_color: '#3366CC'
+                          - rgb_color:
+                            - 51
+                            - 204
+                            - 51
+                            brightness: 255
+                            icon_color: '#33CC33'
+                          - rgb_color:
+                            - 255
+                            - 0
+                            - 255
+                            brightness: 255
+                            icon_color: '#FF00FF'
                       - sensor.xiaomibedroom_min_temp
                       - sensor.xiaomibedroom_max_temp
                       - sensor.xiaomibedroom_change_temp

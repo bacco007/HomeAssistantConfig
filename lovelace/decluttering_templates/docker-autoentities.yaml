@@ -1,0 +1,22 @@
+---
+default:
+  - name: Docker Container
+  - server: vmTBSHXX
+  - status: binary_sensor.temp
+  - autoentity: sensor.docker_container
+card:
+  type: custom:auto-entities
+  filter:
+    include:
+      - entity_id: '[[autoentity]]*'
+  card:
+    head:
+      entity: '[[status]]'
+      type: custom:secondaryinfo-entity-row
+      secondary_info: '[[ {entity}.attributes.status ]]'
+      name: '[[name]] ([[server]], Docker)'
+    type: custom:fold-entity-row
+    group_config:
+      secondary_info: last-changed
+    sort:
+      method: name

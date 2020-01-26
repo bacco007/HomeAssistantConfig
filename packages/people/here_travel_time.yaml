@@ -39,10 +39,10 @@ sensor:
         entity_id: sensor.time
         value_template: >
           {% set minutes = states('sensor.here_travel_tom_to_work') | int %}
-          {{ (as_timestamp(now()) + (minutes * 60)) | timestamp_custom('%H:%M') }} 
+          {{ (as_timestamp(now()) + (minutes * 60)) | timestamp_custom('%H:%M') }}
       here_travel_tom_to_home_arrivetime:
         friendly_name: Tom arrival time (Home)
         entity_id: sensor.time
         value_template: >
           {% set minutes = states('sensor.here_travel_tom_to_home') | int %}
-          {{ (as_timestamp(now()) + (minutes * 60)) | timestamp_custom('%H:%M') }} 
+          {{ (as_timestamp(now()) + (minutes * 60)) | timestamp_custom('%H:%M') }}

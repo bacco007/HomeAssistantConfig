@@ -139,22 +139,22 @@ else:
          }
 
       _data = self._data
+      card_json = [
+        {
+          'title_default': '$title',
+          'line1_default': '$episode',
+          'line2_default': '$studio $release',
+          'line3_default': '$runtime $date $time',
+          'line4_default': '$number',
+          'icon': 'mdi:arrow-down-bold'
+        }
+      ]
+
       if 'ent' in _data.keys():
-        default = {}
-        card_json = []
-        default['title_default'] = '$title'
-        default['line1_default'] = '$episode'
-        default['line2_default'] = '$studio $release'
-        default['line3_default'] = '$runtime $date $time'
-        default['line4_default'] = '$number'
-        default['icon'] = 'mdi:arrow-down-bold'
-
-        card_json.append(default)
-
         for d in _data.pop('ent'):
           card_item = {}
           card_item['airdate'] = d['start']
-          card_item['title'] = d['disp_title']
+          card_item['title'] = d['disp_title'][:23]
           card_item['episode'] = d['disp_subtitle']
           card_item['number'] = d['episode_disp']
           card_item['runtime'] = d['duration'] // 60
@@ -170,8 +170,8 @@ else:
 
           card_json.append(card_item)
 
-        attr.update(_data)
-        attr['data'] = j.dumps(card_json)
+      attr.update(_data)
+      attr['data'] = j.dumps(card_json)
 
       return attr
 

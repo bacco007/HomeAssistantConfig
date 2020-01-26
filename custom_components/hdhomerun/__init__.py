@@ -1,5 +1,5 @@
 """The HDHomeRun component."""
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv

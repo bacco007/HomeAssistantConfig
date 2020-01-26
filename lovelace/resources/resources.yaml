@@ -24,12 +24,16 @@
   type: module
 - url: /community_plugin/lovelace-multiple-entity-row/multiple-entity-row.js
   type: js
+- url: /community_plugin/lovelace-slider-entity-row/slider-entity-row.js
+  type: module
 - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
   type: module
 - url: /community_plugin/mini-media-player/mini-media-player-bundle.js
   type: module
 - url: /community_plugin/popup-backdrop-filter/popup-backdrop-filter.js
   type: module
+- url: /community_plugin/rgb-light-card/card.js
+  type: js
 - url: /community_plugin/search-card/search-card.js
   type: module
 - url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js

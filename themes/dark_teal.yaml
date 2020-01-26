@@ -71,3 +71,20 @@ dark_teal:
   ch-notification-dot-color: 'var(--accent-color)'
   ch-all-tabs-color: 'var(--sidebar-icon-color)'
   ch-tab-indicator-color: 'var(--accent-color)'
+
+  # Card Theme Colors
+  card-color-on: 'rgba(255, 255, 255, 1.0)'
+  area-color-on: 'Gray'
+  icon-color-on: 'Gray'
+  label-color-on: 'Gray'
+  lock-color-on: 'Gray'
+  name-color-on: 'Black'
+  state-color-on: 'Black'
+
+  card-color-off: 'linear-gradient(to bottom right, #555555, #444444)'
+  area-color-off: 'AliceBlue'
+  icon-color-off: 'AliceBlue'
+  label-color-off: 'AliceBlue'
+  lock-color-off: 'AliceBlue'
+  name-color-off: 'AliceBlue'
+  state-color-off: 'AliceBlue'

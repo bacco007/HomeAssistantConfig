@@ -1,6 +1,8 @@
 """Support for HDHomeRun devices."""
 import logging
 
+from enum import IntEnum
+
 from hdhr.adapter import HdhrUtility, HdhrDeviceQuery, OperationRejectedError
 
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
@@ -53,6 +55,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     return True
 
+class StatusApi(IntEnum):
+    # Note that these APIs are in fallback order
+    VSTATUS = 1
+    STREAMINFO = 2
+    STATUS = 3
+
 class TunerSensor(Entity):
     """Representation of a Sensor."""
 
@@ -62,31 +70,61 @@ class TunerSensor(Entity):
         self._device_info = parent_info
         self._adapter = HdhrDeviceQuery(
             HdhrUtility.device_create_from_str(device_str))
-        self._use_vstatus = True
+        self._status_api = StatusApi(1)
         self._state = None
 
     async def async_update(self):
-        try:
-            channel = self.fetch_channel()
-        except OperationRejectedError:
-            if self._use_vstatus:
-                _LOGGER.debug('Operation vstatus not supported, falling back to status for tuner: ' + self._id)
-                self._use_vstatus = False
-                channel = self.fetch_channel()
-            else:
-                raise
-
-        self._state = channel
+        self._state = self.fetch_channel()
 
     def fetch_channel(self):
-        _LOGGER.debug('Fetching ' + ('vstatus' if self._use_vstatus else 'status') + ' for tuner: ' + self._id)
+        while True:
+            try:
+                return self.fetch_channel_raw()
+            except OperationRejectedError:
+                has_fallback = self.switch_fallback_api()
 
-        if self._use_vstatus:
+                if not has_fallback:
+                    raise
+
+    def switch_fallback_api(self):
+        try:
+            next_api = StatusApi(self._status_api + 1)
+            _LOGGER.debug(
+                'Operation %s not supported, falling back to %s for tuner: %s',
+                self._status_api.name,
+                next_api.name,
+                self._id)
+            self._status_api = next_api
+            return True
+        except ValueError:
+            return False
+
+    def fetch_channel_raw(self):
+        _LOGGER.debug(
+            'Fetching %s for tuner: %s',
+            self._status_api.name,
+            self._id)
+
+        if self._status_api == StatusApi.VSTATUS:
             (vstatus, raw_data) = self._adapter.get_tuner_vstatus()
             return vstatus.nice_vchannel
-        else:
+        
+        elif self._status_api == StatusApi.STREAMINFO:
+            streaminfo = self._adapter.get_tuner_streaminfo()
+
+            if not streaminfo:
+                return None
+
+            program = self._adapter.get_tuner_program()
+            active = next(x for x in streaminfo if x.program == program)
+            return active.vchannel
+
+        elif self._status_api == StatusApi.STATUS:
             (status, raw_data) = self._adapter.get_tuner_status()
             return status.nice_channel
+        
+        else:
+            raise 'Unknown status API: ' + self._status_api
 
     @property
     def name(self):
