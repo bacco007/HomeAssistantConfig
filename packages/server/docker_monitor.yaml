@@ -19,82 +19,82 @@ docker_monitor:
     - url: tcp://192.168.1.61:2375
       name: vmTBSH01
       event: false
-      containers:
-        duplicati:
-          <<: *settings
-        glances:
-          <<: *settings
-        grafana:
-          <<: *settings
-        jackett:
-          <<: *settings
-        netdata:
-          <<: *settings
-        nzbhydra2:
-          <<: *settings
-        ouroboros:
-          <<: *settings
-        portainer:
-          <<: *settings
-        radarr:
-          <<: *settings
-        sabnzbd:
-          <<: *settings
-        sonarr:
-          <<: *settings
-        tautulli:
-          <<: *settings
-        transmission:
-          <<: *settings
-        tvheadend:
-          <<: *settings
+      # containers:
+        # duplicati:
+        #   <<: *settings
+        # glances:
+        #   <<: *settings
+        # grafana:
+        #   <<: *settings
+        # jackett:
+        #   <<: *settings
+        # netdata:
+        #   <<: *settings
+        # nzbhydra2:
+        #   <<: *settings
+        # ouroboros:
+        #   <<: *settings
+        # portainer:
+        #   <<: *settings
+        # radarr:
+        #   <<: *settings
+        # sabnzbd:
+        #   <<: *settings
+        # sonarr:
+        #   <<: *settings
+        # tautulli:
+        #   <<: *settings
+        # transmission:
+        #   <<: *settings
+        # tvheadend:
+        #   <<: *settings
 
     - url: tcp://192.168.1.62:2375
       name: vmTBSH02
       event: false
-      containers:
-        cronograf:
-          <<: *settings
-        duplicati:
-          <<: *settings
-        glances:
-          <<: *settings
-        hassio_supervisor:
-          <<: *settings
-        homeassistant:
-          <<: *settings
-        influxdb:
-          <<: *settings
-        kapacitor:
-          <<: *settings
-        netdata:
-          <<: *settings
-        ouroboros:
-          <<: *settings
-        portainer:
-          <<: *settings
-        telegraf:
-          <<: *settings
+      # containers:
+      #   cronograf:
+      #     <<: *settings
+      #   duplicati:
+      #     <<: *settings
+      #   glances:
+      #     <<: *settings
+      #   hassio_supervisor:
+      #     <<: *settings
+      #   homeassistant:
+      #     <<: *settings
+      #   influxdb:
+      #     <<: *settings
+      #   kapacitor:
+      #     <<: *settings
+      #   netdata:
+      #     <<: *settings
+      #   ouroboros:
+      #     <<: *settings
+      #   portainer:
+      #     <<: *settings
+      #   telegraf:
+      #     <<: *settings
 
     - url: tcp://192.168.1.20:2375
       name: TBSH01
       event: false
-      containers:
-        db:
-          <<: *settings
-        duplicati:
-          <<: *settings
-        glances:
-          <<: *settings
-        guacamole:
-          <<: *settings
-        netdata:
-          <<: *settings
-        nginxproxymanager:
-          <<: *settings
-        ouroboros:
-          <<: *settings
-        portainer:
-          <<: *settings
-        unifi:
-          <<: *settings
+      # containers:
+      #   db:
+      #     <<: *settings
+      #   duplicati:
+      #     <<: *settings
+      #   glances:
+      #     <<: *settings
+      #   guacamole:
+      #     <<: *settings
+      #   netdata:
+      #     <<: *settings
+      #   nginxproxymanager:
+      #     <<: *settings
+      #   ouroboros:
+      #     <<: *settings
+      #   portainer:
+      #     <<: *settings
+      #   unifi:
+      #     <<: *settings

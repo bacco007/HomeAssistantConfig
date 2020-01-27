@@ -9,7 +9,6 @@ binary_sensor:
 
 sensor:
   - platform: sun2
-    entity_namespace: sun
     monitored_conditions:
       - solar_midnight
       - astronomical_dawn

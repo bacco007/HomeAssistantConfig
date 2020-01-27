@@ -59,27 +59,27 @@ cards:
                               - 0
                               - 0
                           - rgb_color:
-                            - 255
-                            - 255
-                            - 255
+                              - 255
+                              - 255
+                              - 255
                             brightness: 255
                             icon_color: '#FFFFFF'
                           - rgb_color:
-                            - 51
-                            - 102
-                            - 204
+                              - 51
+                              - 102
+                              - 204
                             brightness: 255
                             icon_color: '#3366CC'
                           - rgb_color:
-                            - 51
-                            - 204
-                            - 51
+                              - 51
+                              - 204
+                              - 51
                             brightness: 255
                             icon_color: '#33CC33'
                           - rgb_color:
-                            - 255
-                            - 0
-                            - 255
+                              - 255
+                              - 0
+                              - 255
                             brightness: 255
                             icon_color: '#FF00FF'
                       - sensor.xiaomibedroom_min_temp
@@ -116,11 +116,11 @@ cards:
                   - average: true
                   - color_thresholds:
                       - value: 0.01
-                        color: "#00b59d"
+                        color: '#00b59d'
                       - value: 0
                         color: black
                       - value: -0.01
-                        color: "#b50018"
+                        color: '#b50018'
               - type: horizontal-stack
                 cards:
                   - type: custom:decluttering-card
@@ -138,11 +138,11 @@ cards:
                       - average: true
                       - color_thresholds:
                           - value: 70
-                            color: "#e74c3c"
+                            color: '#e74c3c'
                           - value: 40
-                            color: "#1db954"
+                            color: '#1db954'
                           - value: 0
-                            color: "#3498db"
+                            color: '#3498db'
                   - type: custom:decluttering-card
                     template: mini-graph-colorthresholds
                     variables:
@@ -158,11 +158,11 @@ cards:
                       - average: true
                       - color_thresholds:
                           - value: 70
-                            color: "#e74c3c"
+                            color: '#e74c3c'
                           - value: 40
-                            color: "#1db954"
+                            color: '#1db954'
                           - value: 0
-                            color: "#3498db"
+                            color: '#3498db'
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -211,11 +211,11 @@ cards:
                   - average: true
                   - color_thresholds:
                       - value: 0.01
-                        color: "#00b59d"
+                        color: '#00b59d'
                       - value: 0
                         color: black
                       - value: -0.01
-                        color: "#b50018"
+                        color: '#b50018'
               - type: horizontal-stack
                 cards:
                   - type: custom:decluttering-card
@@ -233,11 +233,11 @@ cards:
                       - average: true
                       - color_thresholds:
                           - value: 70
-                            color: "#e74c3c"
+                            color: '#e74c3c'
                           - value: 40
-                            color: "#1db954"
+                            color: '#1db954'
                           - value: 0
-                            color: "#3498db"
+                            color: '#3498db'
                   - type: custom:decluttering-card
                     template: mini-graph-colorthresholds
                     variables:
@@ -253,11 +253,11 @@ cards:
                       - average: true
                       - color_thresholds:
                           - value: 70
-                            color: "#e74c3c"
+                            color: '#e74c3c'
                           - value: 40
-                            color: "#1db954"
+                            color: '#1db954'
                           - value: 0
-                            color: "#3498db"
+                            color: '#3498db'
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -291,12 +291,12 @@ cards:
                   - average: true
                   - color_thresholds:
                       - value: 200
-                        color: "#FFFF00"
+                        color: '#FFFF00'
                       - value: 100
-                        color: "#FFFACD"
+                        color: '#FFFACD'
                       - value: 50
-                        color: "#FFFFE0"
+                        color: '#FFFFE0'
                       - value: 10
-                        color: "#3498db"
+                        color: '#3498db'
                       - value: 0
                         color: black

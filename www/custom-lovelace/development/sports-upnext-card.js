@@ -36,6 +36,7 @@ class SportsUpNextCard extends HTMLElement {
         background-color: var(--background-color);
         text-color: var(--text-color);
         font-family: var(--title-font-family);
+        font-weight: 600 !important;
       }
       .date {
         grid-column-start: 3;
@@ -48,6 +49,7 @@ class SportsUpNextCard extends HTMLElement {
         text-color: var(--text-color);
         padding: .2em .2em;
         font-family: var(--title-font-family);
+        font-weight: 400 !important;
       }
       .icon {
         grid-row-start: 2;

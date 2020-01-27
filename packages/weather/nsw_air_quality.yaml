@@ -2,3 +2,67 @@
 sensor:
   - platform: nsw_air_quality
     name: Tamworth
+
+  - platform: statistics
+    name: nsw_air_quality_tamworth_stats
+    sampling_size: 150
+    entity_id: sensor.nsw_air_quality_tamworth
+    max_age:
+      hours: 24
+
+  - platform: template
+    sensors:
+      nsw_air_quality_tamworth_airpollev:
+        friendly_name: Air Quality Level
+        icon_template: mdi:chemical-weapon
+        entity_id: sensor.nsw_air_quality_tamworth
+        value_template: >
+          {% set index = states('sensor.nsw_air_quality_tamworth') | float(-1) %}
+          {% if index > 200 %}
+            Hazardous
+          {% elif index > 150 %}
+            Very Poor
+          {% elif index > 100 %}
+            Poor
+          {% elif index > 67 %}
+            Fair
+          {% elif index > 34 %}
+            Good
+          {% elif index >= 0 %}
+            Very Good
+          {% else %}
+            Unavailable
+          {% endif %}
+      nsw_air_quality_tamworth_min_aqi:
+        friendly_name: 'Min AQI (Last 24hrs)'
+        icon_template: mdi:chart-bubble
+        value_template: "{{ states.sensor.nsw_air_quality_tamworth_stats.attributes['min_value']}}"
+        # icon_template: ndi:thermometer-chevron-down
+        entity_id: sensor.nsw_air_quality_tamworth_stats
+        unit_of_measurement: "AQI"
+      nsw_air_quality_tamworth_max_aqi:
+        friendly_name: 'Max AQI (Last 24hrs)'
+        icon_template: mdi:chart-bubble
+        value_template: "{{ states.sensor.nsw_air_quality_tamworth_stats.attributes['max_value']}}"
+        # icon_template: mdi:thermometer-chevron-up
+        entity_id: sensor.nsw_air_quality_tamworth_stats
+        unit_of_measurement: "AQI"
+      nsw_air_quality_tamworth_change_aqi:
+        friendly_name: 'AQI Change (Last 24hrs)'
+        icon_template: mdi:chart-bubble
+        value_template: "{{ states.sensor.nsw_air_quality_tamworth_stats.attributes['change']}}"
+        # icon_template: mdi:thermometer-lines
+        entity_id: sensor.nsw_air_quality_tamworth_stats
+        unit_of_measurement: "AQI"
+      nsw_air_quality_tamworth_pm10:
+        friendly_name: "AQI - PM10"
+        value_template: "{{ state_attr('sensor.nsw_air_quality_tamworth', 'pm10') }}"
+        icon_template: mdi:cloud
+        entity_id: sensor.nsw_air_quality_tamworth
+        unit_of_measurement: "AQI"
+      nsw_air_quality_tamworth_pm25:
+        friendly_name: "AQI - PM2.5"
+        value_template: "{{ state_attr('sensor.nsw_air_quality_tamworth', 'pm25') }}"
+        icon_template: mdi:cloud
+        entity_id: sensor.nsw_air_quality_tamworth
+        unit_of_measurement: "AQI"

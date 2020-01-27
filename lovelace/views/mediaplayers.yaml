@@ -57,6 +57,8 @@ cards:
             template: button-service
             variables:
               - name:
+              - icon: mdi:menu-left
+              - service: media_player.apple_tv_bedroom
           - type: custom:decluttering-card
             template: button-service
             variables:

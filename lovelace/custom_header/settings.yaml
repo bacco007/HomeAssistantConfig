@@ -16,9 +16,9 @@ notification_dot_color: "var(--accent-color)"
 all_tabs_color: "var(--sidebar-icon-color)"
 all_buttons_color: "var(--sidebar-icon-color)"
 tabs_color:
-  # Tab 4 - Sun
-  # Tab 7 - Fire
-  # Tab 11 - HA
-  4: "{% if states.binary_sensor.protection_window.state == 'on' %}yellow{% else %}var(--sidebar-icon-color){% endif %}"
-  7: "{% if states.binary_sensor.fire_ban_today.state == 'on' %}yellow{% else %}var(--sidebar-icon-color){% endif %}"
-  11: "{% if is_state('sensor.hacs', '0') %}var(--sidebar-icon-color){% else %}yellow{% endif %}"
+  # Sun
+  6: "{% if states.binary_sensor.protection_window.state == 'on' %}yellow{% else %}var(--sidebar-icon-color){% endif %}"
+  # Fire
+  9: "{% if states.binary_sensor.fire_ban_today.state == 'on' %}yellow{% else %}var(--sidebar-icon-color){% endif %}"
+  # HA
+  14: "{% if is_state('sensor.hacs', '0') %}var(--sidebar-icon-color){% else %}yellow{% endif %}"

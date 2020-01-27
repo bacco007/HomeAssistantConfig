@@ -31,13 +31,13 @@ class CheckConfig(hass.Hass):
 		if "token" in self.config["plugins"]["HASS"]:
 			self.auth = "token"
 			if self.folder_watcher == False:
-				self.listen_state(self.check_config, "script.check_config")
+				self.listen_state(self.check_config, "script.check_config", attribute="last_triggered")
 			else:
 				self.listen_event(self.config_throttle, "folder_watcher", file="configuration.yaml")
 		elif "ha_key" in self.config["plugins"]["HASS"]:
 			self.auth = "key"
 			if self.folder_watcher == False:
-				self.listen_state(self.check_config, "script.check_config")
+				self.listen_state(self.check_config, "script.check_config", attribute="last_triggered")
 			else:
 				self.listen_event(self.config_throttle, "folder_watcher", file="configuration.yaml")
 		else:
@@ -65,7 +65,6 @@ class CheckConfig(hass.Hass):
 			
 	def config_throttle(self, event_name, data, kwargs):
 		#throttle function to ensure that we don't call check multiple times
-		self.log("File update event triggered")
 		self.cancel_timer(self.throttle_timer)
 		self.throttle_timer = self.run_in(self.auto_check_config, 3)
 

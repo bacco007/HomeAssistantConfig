@@ -4,6 +4,8 @@
   type: module
 - url: /community_plugin/button-card/button-card.js
   type: module
+- url: /community_plugin/button-entity-row/button-entity-row.js
+  type: module
 - url: /community_plugin/custom-header/custom-header.js
   type: module
 - url: /community_plugin/decluttering-card/decluttering-card.js

@@ -13,21 +13,41 @@ card:
       - type: 'custom:button-card'
         color_type: blank-card
       - type: 'custom:button-card'
-        color_type: blank-card
-      - type: 'custom:button-card'
-        icon: mdi:trash-can
-        size: 50px
+        icon: mdi:information-outline
+        size: 40px
         styles:
           card:
             - background: var(--background-color)
-            - height: 36px
-            - width: 36px
+            - height: 30px
+            - width: 30px
+          icon:
+            - color: "rgba(255, 255, 255, 0.7)"
+        tap_action:
+          action: call-service
+          haptic: heavy
+          service: browser_mod.popup
+          service_data:
+            deviceID:
+              - this
+            title: Information
+            large: true
+            card: !include ../popup_cards/info.yaml
+            
+      - type: 'custom:button-card'
+        icon: mdi:trash-can
+        size: 40px
+        styles:
+          card:
+            - background: var(--background-color)
+            - height: 30px
+            - width: 30px
           icon:
             - color:
                 '[[[ if (states["sensor.binday_date"].state == "Today") return "rgba(255, 255, 0, 0.8)";
                 else return "rgba(255, 255, 255, 0.7)"; ]]]'
         tap_action:
           action: call-service
+          haptic: heavy
           service: browser_mod.popup
           service_data:
             deviceID:
@@ -37,19 +57,18 @@ card:
             card: !include ../popup_cards/binday.yaml
 
       - type: 'custom:button-card'
-        # color_type: card
         icon: mdi:settings
-        # color: rgb(28, 128, 199)
-        size: 50px
+        size: 40px
         styles:
           card:
             - background: var(--background-color)
-            - height: 36px
-            - width: 36px
+            - height: 30px
+            - width: 30px
           icon:
             - color: rgba(255, 255, 255, 0.7)
         tap_action:
           action: call-service
+          haptic: heavy
           service: browser_mod.popup
           service_data:
             deviceID:

@@ -32,8 +32,8 @@ image_style: fanart
 all_shadows: none
 title_size: 0.5em
 line_size: 0.25em
-title_text: "$title"
-line1_text: "$number - $episode"
-line2_text: "$runtime"
-line3_text: "Released: $aired"
-line4_text: "Added: $release"
+title_text: '$title'
+line1_text: '$episode'
+line2_text: '$number, Runtime: $runtime'
+line3_text: 'Aired: $release, $studio'
+line4_text: '$empty'

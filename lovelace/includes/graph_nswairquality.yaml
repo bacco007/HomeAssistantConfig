@@ -18,15 +18,15 @@ show:
   average: true
   fill: fade
 color_thresholds:
-  - value: 301
-    color: maroon
-  - value: 201
-    color: purple
-  - value: 151
-    color: red
-  - value: 101
-    color: orange
-  - value: 51
-    color: yellow
+  - value: 200
+    color: '#d04730'
+  - value: 150
+    color: '#782d49'
+  - value: 100
+    color: '#ec783a'
+  - value: 67
+    color: '#ffd236'
+  - value: 34
+    color: '#99b964'
   - value: 0
-    color: green
+    color: '#31add3'

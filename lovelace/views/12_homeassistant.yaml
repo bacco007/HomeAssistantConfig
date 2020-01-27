@@ -149,13 +149,17 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
-              - title: Broken/Unknown Components
+              - title: Broken/Unknown/Unavailable Components
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:auto-entities
                 card:
-                  type: entities
-                  show_header_toggle: false
+                  type: custom:fold-entity-row
+                  head:
+                    type: section
+                    label: Broken / Unknown States
+                  group_config:
+                    secondary_info: last-changed
                   style: |
                     state-badge {
                       margin: 0 !important;
@@ -170,21 +174,14 @@ cards:
                     - { domain: group }
                 sort:
                   method: entity_id
-      - type: custom:gap-card
-        height: 10
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Unavailable Components
-          - type: custom:vertical-stack-in-card
-            cards:
               - type: custom:auto-entities
                 card:
-                  type: entities
-                  show_header_toggle: false
+                  type: custom:fold-entity-row
+                  head:
+                    type: section
+                    label: Unavailable States
+                  group_config:
+                    secondary_info: last-changed
                   style: |
                     state-badge {
                       margin: 0 !important;
@@ -287,32 +284,32 @@ cards:
                   - icon: false
                   - extrema: true
                   - average: true
-              - type: custom:decluttering-card
-                template: mini-graph
-                variables:
-                  - name: No. Events in DB
-                  - entities:
-                      - sensor.ha_db_events
-                  - height: 40
-                  - hours_to_show: 168
-                  - points_per_hour: 3
-                  - decimals: 0
-                  - icon: false
-                  - extrema: true
-                  - average: true
-              - type: custom:decluttering-card
-                template: mini-graph
-                variables:
-                  - name: No. States in DB
-                  - entities:
-                      - sensor.ha_db_states
-                  - height: 40
-                  - hours_to_show: 168
-                  - points_per_hour: 3
-                  - decimals: 0
-                  - icon: false
-                  - extrema: true
-                  - average: true
+              # - type: custom:decluttering-card
+              #   template: mini-graph
+              #   variables:
+              #     - name: No. Events in DB
+              #     - entities:
+              #         - sensor.ha_db_events
+              #     - height: 40
+              #     - hours_to_show: 168
+              #     - points_per_hour: 3
+              #     - decimals: 0
+              #     - icon: false
+              #     - extrema: true
+              #     - average: true
+              # - type: custom:decluttering-card
+              #   template: mini-graph
+              #   variables:
+              #     - name: No. States in DB
+              #     - entities:
+              #         - sensor.ha_db_states
+              #     - height: 40
+              #     - hours_to_show: 168
+              #     - points_per_hour: 3
+              #     - decimals: 0
+              #     - icon: false
+              #     - extrema: true
+              #     - average: true
       - type: custom:gap-card
         height: 10
       - type: vertical-stack
