@@ -2,11 +2,11 @@
   "nodes": {
     "bb0c36dc_4f7d88": {
       "lastPayload": {
-        "state": 20.735,
+        "state": 21.141,
         "attributes": {
           "max": 25.1,
           "min": 17,
-          "avg": 20.735,
+          "avg": 21.141,
           "mindate": "22 Jan 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 22 Jan 2020 - Max: 05 Jan 2020"
@@ -35,11 +35,11 @@
     },
     "1777533_24f10ad": {
       "lastPayload": {
-        "state": 38.639,
+        "state": 39.648,
         "attributes": {
           "max": 46.9,
           "min": 26,
-          "avg": 38.639,
+          "avg": 39.648,
           "mindate": "18 Jan 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 18 Jan 2020 - Max: 05 Jan 2020"
@@ -48,11 +48,11 @@
     },
     "5f38fb64_d46bf4": {
       "lastPayload": {
-        "state": 20.752,
+        "state": 21.189,
         "attributes": {
           "max": 25,
           "min": 16.6,
-          "avg": 20.752,
+          "avg": 21.189,
           "mindate": "22 Jan 2020",
           "maxdate": "23 Jan 2020",
           "datestring": "Min: 22 Jan 2020 - Max: 23 Jan 2020"
@@ -69,11 +69,11 @@
     },
     "e663f7e9_a5b388": {
       "lastPayload": {
-        "state": 34.343,
+        "state": 34.863,
         "attributes": {
           "max": 41.3,
           "min": 24.3,
-          "avg": 34.343,
+          "avg": 34.863,
           "mindate": "18 Jan 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 18 Jan 2020 - Max: 05 Jan 2020"
@@ -90,11 +90,11 @@
     },
     "e133678a_067db8": {
       "lastPayload": {
-        "state": 163.31,
+        "state": 163.16,
         "attributes": {
           "max": 163.9,
           "min": 161.9,
-          "avg": 163.31,
+          "avg": 163.16,
           "mindate": "23 Jan 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 Jan 2020 - Max: 05 Jan 2020"
@@ -103,14 +103,14 @@
     },
     "1423d97d_559027": {
       "lastPayload": {
-        "state": 162.9,
+        "state": 162.68,
         "attributes": {
           "max": 162.9,
-          "min": 162.9,
-          "avg": 162.9,
-          "mindate": "05 Jan 2020",
+          "min": 160.9,
+          "avg": 162.68,
+          "mindate": "28 Jan 2020",
           "maxdate": "05 Jan 2020",
-          "datestring": "Min: 05 Jan 2020 - Max: 05 Jan 2020"
+          "datestring": "Min: 28 Jan 2020 - Max: 05 Jan 2020"
         }
       }
     },

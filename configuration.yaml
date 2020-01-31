@@ -43,6 +43,8 @@ history:
 http:
   base_url: !secret http_base_url
   server_port: !secret httpserver_port
+  # trusted_proxies:
+  #   - 192.168.1.20
 
 ios:
 

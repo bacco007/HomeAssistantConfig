@@ -137,7 +137,13 @@ cards:
                           entity: sensor.fuel_caltexwhite_stats365
                           attribute: datestring
                           name: false
-              - type: vertical-stack
+              - type: custom:swipe-card
+                parameters:
+                  effect: 'coverflow'
+                  allowTouchMove: true
+                  grabCursor: true
+                  autoplay:
+                    disableOnInteraction: true
                 cards:
                   - type: custom:decluttering-card
                     template: mini-graph
@@ -171,7 +177,13 @@ cards:
               - title: Exchange Rates (Alpha Vantage)
           - type: custom:vertical-stack-in-card
             cards:
-              - type: horizontal-stack
+              - type: custom:swipe-card
+                parameters:
+                  effect: 'coverflow'
+                  allowTouchMove: true
+                  grabCursor: true
+                  autoplay:
+                    disableOnInteraction: true
                 cards:
                   - type: custom:decluttering-card
                     template: mini-graph
@@ -191,8 +203,6 @@ cards:
                       - height: 60
                       - decimals: 3
                       - icon: false
-              - type: horizontal-stack
-                cards:
                   - type: custom:decluttering-card
                     template: mini-graph
                     variables:
@@ -212,119 +222,133 @@ cards:
                       - decimals: 3
                       - icon: false
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
+      - type: custom:swipe-card
+        parameters:
+          effect: 'coverflow'
+          allowTouchMove: true
+          grabCursor: true
+          coverflowEffect:
+            rotate: 50
+            stretch: 0
+            depth: 100
+            modifier: 1
+            slideShadows: true
+          autoplay:
+            disableOnInteraction: true
         cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Sky News UK
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_sky_news_uk
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Sky News UK
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_sky_news_uk
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Sky Sports UK
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_sky_sports_uk
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Sky Sports UK
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_sky_sports_uk
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Sydney Morning Herald
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_sydney_morning_herald
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Sydney Morning Herald
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_sydney_morning_herald
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: news.com.au
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_news_com_au
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: news.com.au
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_news_com_au
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: CNN
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_cnn
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: CNN
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_cnn
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Fox Sports Australia
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_fox_sports
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Fox Sports Australia
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_fox_sports
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: The Guardian - Australia
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_the_guardian_au
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: The Guardian - Australia
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_the_guardian_au
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: The Guardian - United Kingdom
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_the_guardian_uk
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: The Guardian - United Kingdom
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_the_guardian_uk
 
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Northern Daily Leader
-          - type: custom:decluttering-card
-            template: rssfeed-table
-            variables:
-              - entities:
-                  - sensor.rssfeed_northern_daily_leader
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Northern Daily Leader
+              - type: custom:decluttering-card
+                template: rssfeed-table
+                variables:
+                  - entities:
+                      - sensor.rssfeed_northern_daily_leader

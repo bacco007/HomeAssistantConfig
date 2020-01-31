@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Monday, January 27th 2020_
+_Stats as at 04:59, Friday, January 31st 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.104.3 | 218     | 1257         | 1002 | 20 |
+| 0.104.3 | 211     | 964         | 744 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -81,8 +81,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Integrations List</summary>
 
 
-- [air_quality](https://www.home-assistant.io/components/air_quality)
-- [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson)
 - [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel)
 - [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media)
 - [alexa_media](https://www.home-assistant.io/components/alexa_media)
@@ -118,7 +116,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [cert_expiry](https://www.home-assistant.io/components/cert_expiry)
 - [climate](https://www.home-assistant.io/components/climate)
 - [climate.deconz](https://www.home-assistant.io/components/climate.deconz)
-- [climate.dyson](https://www.home-assistant.io/components/climate.dyson)
 - [cloud](https://www.home-assistant.io/components/cloud)
 - [config](https://www.home-assistant.io/components/config)
 - [configurator](https://www.home-assistant.io/components/configurator)
@@ -134,8 +131,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [discovery](https://www.home-assistant.io/components/discovery)
 - [docker_monitor](https://www.home-assistant.io/components/docker_monitor)
 - [dyson](https://www.home-assistant.io/components/dyson)
-- [fan](https://www.home-assistant.io/components/fan)
-- [fan.dyson](https://www.home-assistant.io/components/fan.dyson)
 - [favicon](https://www.home-assistant.io/components/favicon)
 - [fontawesome](https://www.home-assistant.io/components/fontawesome)
 - [frontend](https://www.home-assistant.io/components/frontend)
@@ -221,7 +216,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz)
 - [sensor.docker_monitor](https://www.home-assistant.io/components/sensor.docker_monitor)
 - [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock)
-- [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson)
 - [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser)
 - [sensor.filter](https://www.home-assistant.io/components/sensor.filter)
 - [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection)
@@ -269,6 +263,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.version](https://www.home-assistant.io/components/sensor.version)
 - [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi)
 - [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw)
+- [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time)
 - [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock)
 - [sonos](https://www.home-assistant.io/components/sonos)
 - [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet)
@@ -290,8 +285,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [unifi](https://www.home-assistant.io/components/unifi)
 - [updater](https://www.home-assistant.io/components/updater)
 - [upnp](https://www.home-assistant.io/components/upnp)
-- [vacuum](https://www.home-assistant.io/components/vacuum)
-- [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson)
 - [weather](https://www.home-assistant.io/components/weather)
 - [weather.met](https://www.home-assistant.io/components/weather.met)
 - [webhook](https://www.home-assistant.io/components/webhook)
@@ -353,9 +346,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ![Screenshot - Rooms](./.assets/screencapture-rooms.png?raw=True)
 
-![Screenshot - System](./.assets/screencapture-system.png?raw=True)
+![Screenshot - Weather](./.assets/screencapture-weather.png?raw=True)
 
-![Screenshot - Server](./.assets/screencapture-server.png?raw=True)
+![Screenshot - SunUV](./.assets/screencapture-sunuv.png?raw=True)
+
+![Screenshot - System](./.assets/screencapture-system.png?raw=True)
 
 ![Screenshot - Fire](./.assets/screencapture-fire.png?raw=True)
 

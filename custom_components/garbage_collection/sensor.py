@@ -150,35 +150,31 @@ class GarbageCollection(Entity):
             prov = config.get(CONF_PROV)
             state = config.get(CONF_STATE)
             observed = config.get(CONF_OBSERVED, True)
-            if state is None or state == "":
-                if prov is None or prov == "":
-                    hol = holidays.CountryHoliday(
-                        country_holidays, years=years, observed=observed
-                    ).items()
-                else:
-                    hol = holidays.CountryHoliday(
-                        country_holidays, years=years, prov=prov, observed=observed
-                    ).items()
-            else:
-                if prov is None or prov == "":
-                    hol = holidays.CountryHoliday(
-                        country_holidays, years=years, state=state, observed=observed
-                    ).items()
-                else:
-                    hol = holidays.CountryHoliday(
-                        country_holidays,
-                        years=years,
-                        state=state,
-                        prov=prov,
-                        observed=observed,
-                    ).items()
+            _LOGGER.debug(
+                "(%s) Country Holidays with parameters: country: %s, prov: %s, state: %s, observed: %s",
+                self.__name,
+                country_holidays,
+                prov,
+                state,
+                observed,
+            )
+            kwargs = {"years": years}
+            if state is not None and state != "":
+                kwargs["state"] = state
+            if prov is not None and prov != "":
+                kwargs["prov"] = prov
+            if observed is not None and type(observed) == bool and observed == False:
+                kwargs["observed"] = observed
+            hol = holidays.CountryHoliday(country_holidays, **kwargs).items()
             try:
                 for date, name in hol:
                     if date >= today:
                         self.__holidays.append(date)
                         holidays_log += f"\n  {date}: {name}"
             except KeyError:
-                _LOGGER.error("Invalid country code (%s)", country_holidays)
+                _LOGGER.error(
+                    "(%s) Invalid country code (%s)", self.__name, country_holidays
+                )
             _LOGGER.debug("(%s) Found these holidays: %s", self.__name, holidays_log)
         self.__period = config.get(CONF_PERIOD)
         self.__first_week = config.get(CONF_FIRST_WEEK)

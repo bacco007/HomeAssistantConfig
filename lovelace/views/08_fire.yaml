@@ -101,7 +101,7 @@ cards:
                   numeric: true
                 filter:
                   include:
-                    - entity_id: geo_location.wwlln_*
+                    - entity_id: geo_location.lightning_strike_*
 
       - break
 

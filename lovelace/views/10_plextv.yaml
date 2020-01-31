@@ -53,7 +53,7 @@ cards:
                   - entities:
                       - entity: binary_sensor.vmtbsh01_ha_dockermon_tautulli
                         type: custom:secondaryinfo-entity-row
-                        secondary_info: "[[ binary_sensor.vmtbsh01_ha_dockermon_tautulli.attributes.status ]]"
+                        secondary_info: '[[ binary_sensor.vmtbsh01_ha_dockermon_tautulli.attributes.status ]]'
                         name: Tautulli (vmtbsh01, Docker)
                       - type: section
                       - sensor.plex_the_cube_2_electric_boogaloo
@@ -93,7 +93,7 @@ cards:
                   - entities:
                       - entity: binary_sensor.vmtbsh01_ha_dockermon_tvheadend
                         type: custom:secondaryinfo-entity-row
-                        secondary_info: "[[ binary_sensor.vmtbsh01_ha_dockermon_tvheadend.attributes.status ]]"
+                        secondary_info: '[[ binary_sensor.vmtbsh01_ha_dockermon_tvheadend.attributes.status ]]'
                         name: TVHeadend (vmtbsh01, Docker)
                       - type: section
                       - entity: sensor.tvheadend_version

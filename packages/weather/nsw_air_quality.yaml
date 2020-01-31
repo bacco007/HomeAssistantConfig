@@ -39,30 +39,30 @@ sensor:
         value_template: "{{ states.sensor.nsw_air_quality_tamworth_stats.attributes['min_value']}}"
         # icon_template: ndi:thermometer-chevron-down
         entity_id: sensor.nsw_air_quality_tamworth_stats
-        unit_of_measurement: "AQI"
+        unit_of_measurement: 'AQI'
       nsw_air_quality_tamworth_max_aqi:
         friendly_name: 'Max AQI (Last 24hrs)'
         icon_template: mdi:chart-bubble
         value_template: "{{ states.sensor.nsw_air_quality_tamworth_stats.attributes['max_value']}}"
         # icon_template: mdi:thermometer-chevron-up
         entity_id: sensor.nsw_air_quality_tamworth_stats
-        unit_of_measurement: "AQI"
+        unit_of_measurement: 'AQI'
       nsw_air_quality_tamworth_change_aqi:
         friendly_name: 'AQI Change (Last 24hrs)'
         icon_template: mdi:chart-bubble
         value_template: "{{ states.sensor.nsw_air_quality_tamworth_stats.attributes['change']}}"
         # icon_template: mdi:thermometer-lines
         entity_id: sensor.nsw_air_quality_tamworth_stats
-        unit_of_measurement: "AQI"
+        unit_of_measurement: 'AQI'
       nsw_air_quality_tamworth_pm10:
-        friendly_name: "AQI - PM10"
+        friendly_name: 'AQI - PM10'
         value_template: "{{ state_attr('sensor.nsw_air_quality_tamworth', 'pm10') }}"
         icon_template: mdi:cloud
         entity_id: sensor.nsw_air_quality_tamworth
-        unit_of_measurement: "AQI"
+        unit_of_measurement: 'AQI'
       nsw_air_quality_tamworth_pm25:
-        friendly_name: "AQI - PM2.5"
+        friendly_name: 'AQI - PM2.5'
         value_template: "{{ state_attr('sensor.nsw_air_quality_tamworth', 'pm25') }}"
         icon_template: mdi:cloud
         entity_id: sensor.nsw_air_quality_tamworth
-        unit_of_measurement: "AQI"
+        unit_of_measurement: 'AQI'

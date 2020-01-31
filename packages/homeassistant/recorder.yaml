@@ -10,6 +10,8 @@ recorder:
       - camera
       - device_tracker
       - group
+      - geo_location
+      - light
       - media_player
       - persistent_notification
       - switch
@@ -31,6 +33,45 @@ recorder:
       - script_started
       - timer_out_of_sync
     entities:
+      - binary_sensor.iss
+      - binary_sensor.tbsh01_ha_dockermon_db
+      - binary_sensor.tbsh01_ha_dockermon_duplicati
+      - binary_sensor.tbsh01_ha_dockermon_glances
+      - binary_sensor.tbsh01_ha_dockermon_guacamole
+      - binary_sensor.tbsh01_ha_dockermon_ha_dockermon
+      - binary_sensor.tbsh01_ha_dockermon_netdata
+      - binary_sensor.tbsh01_ha_dockermon_nginxproxymanager
+      - binary_sensor.tbsh01_ha_dockermon_ouroboros
+      - binary_sensor.tbsh01_ha_dockermon_portainer
+      - binary_sensor.tbsh01_ha_dockermon_unifi
+      - binary_sensor.vmtbsh01_ha_dockermon_duplicati
+      - binary_sensor.vmtbsh01_ha_dockermon_glances
+      - binary_sensor.vmtbsh01_ha_dockermon_grafana
+      - binary_sensor.vmtbsh01_ha_dockermon_ha_dockermon
+      - binary_sensor.vmtbsh01_ha_dockermon_jackett
+      - binary_sensor.vmtbsh01_ha_dockermon_netdata
+      - binary_sensor.vmtbsh01_ha_dockermon_nzbhydra2
+      - binary_sensor.vmtbsh01_ha_dockermon_ouroboros
+      - binary_sensor.vmtbsh01_ha_dockermon_portainer
+      - binary_sensor.vmtbsh01_ha_dockermon_radarr
+      - binary_sensor.vmtbsh01_ha_dockermon_sabnzbd
+      - binary_sensor.vmtbsh01_ha_dockermon_sonarr
+      - binary_sensor.vmtbsh01_ha_dockermon_tautulli
+      - binary_sensor.vmtbsh01_ha_dockermon_transmission
+      - binary_sensor.vmtbsh01_ha_dockermon_tvheadend
+      - binary_sensor.vmtbsh02_ha_dockermon_chronograf
+      - binary_sensor.vmtbsh02_ha_dockermon_duplicati
+      - binary_sensor.vmtbsh02_ha_dockermon_glances
+      - binary_sensor.vmtbsh02_ha_dockermon_ha_dockermon
+      - binary_sensor.vmtbsh02_ha_dockermon_hassio_dns
+      - binary_sensor.vmtbsh02_ha_dockermon_hassio_supervisor
+      - binary_sensor.vmtbsh02_ha_dockermon_homeassistant
+      - binary_sensor.vmtbsh02_ha_dockermon_influxdb
+      - binary_sensor.vmtbsh02_ha_dockermon_kapacitor
+      - binary_sensor.vmtbsh02_ha_dockermon_netdata
+      - binary_sensor.vmtbsh02_ha_dockermon_ouroboros
+      - binary_sensor.vmtbsh02_ha_dockermon_portainer
+      - binary_sensor.vmtbsh02_ha_dockermon_telegraf
       - sensor.date
       - sensor.date_long_format
       - sensor.date_time
@@ -277,3 +318,7 @@ recorder:
       - sensor.plex_recently_added_tv
       - sensor.sonarr_upcoming_media
       - sensor.radarr_upcoming_media
+      - sensor.time_friendly
+      - sensor.time_long
+      - sensor.here_travel_tom_to_work_arrivetime
+      - sensor.here_travel_tom_to_home_arrivetime

@@ -171,3 +171,21 @@ cards:
                   - icon: false
                   - extrema: true
                   - average: true
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Rainfall
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                    - sensor.waternsw_chaffey_dam_rainfall
+                    - sensor.waternsw_goonoo_goonoo_timbumburi_rainfall
+                    - sensor.waternsw_peel_taroona_rainfall
+                    - sensor.waternsw_peel_chaffey_dam_rainfall

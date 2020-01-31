@@ -20,35 +20,34 @@ docker_monitor:
       name: vmTBSH01
       event: false
       # containers:
-        # duplicati:
-        #   <<: *settings
-        # glances:
-        #   <<: *settings
-        # grafana:
-        #   <<: *settings
-        # jackett:
-        #   <<: *settings
-        # netdata:
-        #   <<: *settings
-        # nzbhydra2:
-        #   <<: *settings
-        # ouroboros:
-        #   <<: *settings
-        # portainer:
-        #   <<: *settings
-        # radarr:
-        #   <<: *settings
-        # sabnzbd:
-        #   <<: *settings
-        # sonarr:
-        #   <<: *settings
-        # tautulli:
-        #   <<: *settings
-        # transmission:
-        #   <<: *settings
-        # tvheadend:
-        #   <<: *settings
-
+      # duplicati:
+      #   <<: *settings
+      # glances:
+      #   <<: *settings
+      # grafana:
+      #   <<: *settings
+      # jackett:
+      #   <<: *settings
+      # netdata:
+      #   <<: *settings
+      # nzbhydra2:
+      #   <<: *settings
+      # ouroboros:
+      #   <<: *settings
+      # portainer:
+      #   <<: *settings
+      # radarr:
+      #   <<: *settings
+      # sabnzbd:
+      #   <<: *settings
+      # sonarr:
+      #   <<: *settings
+      # tautulli:
+      #   <<: *settings
+      # transmission:
+      #   <<: *settings
+      # tvheadend:
+      #   <<: *settings
     - url: tcp://192.168.1.62:2375
       name: vmTBSH02
       event: false
@@ -75,7 +74,6 @@ docker_monitor:
       #     <<: *settings
       #   telegraf:
       #     <<: *settings
-
     - url: tcp://192.168.1.20:2375
       name: TBSH01
       event: false

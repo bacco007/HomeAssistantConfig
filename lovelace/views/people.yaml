@@ -41,6 +41,10 @@ cards:
                         name: 'Home <-> Work by Car'
                       - entity: sensor.here_travel_home_to_work_walk
                         name: 'Home <-> Work on Foot'
+                      - type: section
+                      - sensor.waze_travel_home_to_work
+                      - sensor.waze_travel_tom_to_work
+                      - sensor.waze_travel_tom_to_home
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

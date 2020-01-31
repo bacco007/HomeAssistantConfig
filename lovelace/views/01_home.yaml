@@ -25,6 +25,8 @@ cards:
               - entities:
                   - entity: sensor.fires_near_me
                     name: Bushfires Near Me (100km)
+                  - entity: sensor.lightning_near_me
+                    name: Lightning Strikes Near Me (50km)
 
       - break
 

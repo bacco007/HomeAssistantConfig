@@ -61,15 +61,15 @@ cards:
                   - field: name
                     title: Name
                     style:
-                      - text-align: center
-                  - field: installed version
+                      - text-align: right
+                  - field: "installed version"
                     title: Current
                     style:
-                      - text-align: center
-                  - field: available version
+                      - text-align: right
+                  - field: "available version"
                     title: Latest
                     style:
-                      - text-align: center
+                      - text-align: right
       - type: custom:gap-card
         height: 10
       - type: vertical-stack
@@ -102,38 +102,38 @@ cards:
                 variables:
                   - entities:
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Reload Themes
                         service: frontend.reload_themes
                         type: call-service
                       - script.check_config
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Restart Home Assistant
                         service: homeassistant.restart
                         type: call-service
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Generate README.md
                         service: readme.generate
                         type: call-service
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Reload Core Config
                         service: homeassistant.reload_core_config
                         type: call-service
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Reload Groups
                         service: group.reload
                         type: call-service
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Reload Automations
                         service: automation.reload
                         type: call-service
                       - action_name: GO!
-                        icon: "mdi:cube-send"
+                        icon: 'mdi:cube-send'
                         name: Reload Scripts
                         service: script.reload
                         type: call-service

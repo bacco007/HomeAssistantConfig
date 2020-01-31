@@ -21,7 +21,7 @@ card:
             - height: 30px
             - width: 30px
           icon:
-            - color: "rgba(255, 255, 255, 0.7)"
+            - color: 'rgba(255, 255, 255, 0.7)'
         tap_action:
           action: call-service
           haptic: heavy
@@ -32,7 +32,7 @@ card:
             title: Information
             large: true
             card: !include ../popup_cards/info.yaml
-            
+
       - type: 'custom:button-card'
         icon: mdi:trash-can
         size: 40px
@@ -78,7 +78,7 @@ card:
             card:
               type: 'custom:layout-card'
               layout: vertical
-              max_columns: 4
+              column_num: 2
               cards:
                 - type: entities
                   entities:
