@@ -39,7 +39,7 @@ cards:
                           - secondary_attribute: dead_water_level
                           - secondary_name: D/W Lev
                           - info_attribute: capacity
-                          - info_name: "Capacity (ML): "
+                          - info_name: 'Capacity (ML): '
                       - entity: sensor.waternsw_keepit_dam_storage
                         name: Current Storage %
                       - entity: sensor.waternsw_keepit_dam_volume
@@ -91,7 +91,7 @@ cards:
                           - secondary_attribute: dead_water_level
                           - secondary_name: D/W Lev
                           - info_attribute: capacity
-                          - info_name: "Capacity (ML): "
+                          - info_name: 'Capacity (ML): '
                       - entity: sensor.waternsw_split_rock_dam_storage
                         name: Current Storage %
                       - entity: sensor.waternsw_split_rock_dam_volume
@@ -143,7 +143,7 @@ cards:
                           - secondary_attribute: dead_water_level
                           - secondary_name: D/W Lev
                           - info_attribute: capacity
-                          - info_name: "Capacity (ML): "
+                          - info_name: 'Capacity (ML): '
                       - entity: sensor.waternsw_chaffey_dam_storage
                         name: Current Storage %
                       - entity: sensor.waternsw_chaffey_dam_volume
@@ -185,7 +185,7 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                    - sensor.waternsw_chaffey_dam_rainfall
-                    - sensor.waternsw_goonoo_goonoo_timbumburi_rainfall
-                    - sensor.waternsw_peel_taroona_rainfall
-                    - sensor.waternsw_peel_chaffey_dam_rainfall
+                      - sensor.waternsw_chaffey_dam_rainfall
+                      - sensor.waternsw_goonoo_goonoo_timbumburi_rainfall
+                      - sensor.waternsw_peel_taroona_rainfall
+                      - sensor.waternsw_peel_chaffey_dam_rainfall

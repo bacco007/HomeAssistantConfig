@@ -10,6 +10,8 @@
   type: module
 - url: /community_plugin/decluttering-card/decluttering-card.js
   type: module
+- type: module
+  url: '/community_plugin/harmony-card/harmony-card.js'
 - url: /community_plugin/list-card/list-card.js
   type: js
 - url: /community_plugin/lovelace-auto-entities/auto-entities.js

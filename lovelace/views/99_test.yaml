@@ -23,6 +23,29 @@ cards:
         border: solid 1px var(--border-color);
       }
     entities:
+      - sensor.opennem_nsw1_battery_charging
+      - sensor.opennem_nsw1_battery_discharging
+      - sensor.opennem_nsw1_biomass
+      - sensor.opennem_nsw1_black_coal
+      - sensor.opennem_nsw1_brown_coal
+      - sensor.opennem_nsw1_current_price
+      - sensor.opennem_nsw1_distillate
+      - sensor.opennem_nsw1_electricity_demand
+      - sensor.opennem_nsw1_electricity_generation
+      - sensor.opennem_nsw1_exported_power
+      - sensor.opennem_nsw1_gas_ccgt
+      - sensor.opennem_nsw1_gas_ocgt
+      - sensor.opennem_nsw1_gas_recip
+      - sensor.opennem_nsw1_gas_steam
+      - sensor.opennem_nsw1_gen_from_fossil_fuels
+      - sensor.opennem_nsw1_gen_from_renewables
+      - sensor.opennem_nsw1_hydro
+      - sensor.opennem_nsw1_imported_power
+      - sensor.opennem_nsw1_pumps
+      - sensor.opennem_nsw1_solar_rooftop
+      - sensor.opennem_nsw1_solar_utility
+      - sensor.opennem_nsw1_temperature
+      - sensor.opennem_nsw1_wind
       - sensor.hacs
       - sensor.daylight
   - type: entities

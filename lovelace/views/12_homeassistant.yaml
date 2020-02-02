@@ -62,11 +62,11 @@ cards:
                     title: Name
                     style:
                       - text-align: right
-                  - field: "installed version"
+                  - field: 'installed version'
                     title: Current
                     style:
                       - text-align: right
-                  - field: "available version"
+                  - field: 'available version'
                     title: Latest
                     style:
                       - text-align: right
@@ -284,32 +284,40 @@ cards:
                   - icon: false
                   - extrema: true
                   - average: true
-              # - type: custom:decluttering-card
-              #   template: mini-graph
-              #   variables:
-              #     - name: No. Events in DB
-              #     - entities:
-              #         - sensor.ha_db_events
-              #     - height: 40
-              #     - hours_to_show: 168
-              #     - points_per_hour: 3
-              #     - decimals: 0
-              #     - icon: false
-              #     - extrema: true
-              #     - average: true
-              # - type: custom:decluttering-card
-              #   template: mini-graph
-              #   variables:
-              #     - name: No. States in DB
-              #     - entities:
-              #         - sensor.ha_db_states
-              #     - height: 40
-              #     - hours_to_show: 168
-              #     - points_per_hour: 3
-              #     - decimals: 0
-              #     - icon: false
-              #     - extrema: true
-              #     - average: true
+              - type: custom:swipe-card
+                parameters:
+                  effect: 'coverflow'
+                  allowTouchMove: true
+                  grabCursor: true
+                  autoplay:
+                    disableOnInteraction: true
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: No. Events in DB
+                      - entities:
+                          - sensor.ha_db_events
+                      - height: 40
+                      - hours_to_show: 168
+                      - points_per_hour: 3
+                      - decimals: 0
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: No. States in DB
+                      - entities:
+                          - sensor.ha_db_states
+                      - height: 40
+                      - hours_to_show: 168
+                      - points_per_hour: 3
+                      - decimals: 0
+                      - icon: false
+                      - extrema: true
+                      - average: true
       - type: custom:gap-card
         height: 10
       - type: vertical-stack

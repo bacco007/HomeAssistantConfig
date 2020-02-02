@@ -822,7 +822,8 @@ const nt = new WeakMap(),
       this.cooldownEnd || ["touchend", "touchcancel"].includes(e.type) && void 0 === this.timer ? t.isRepeating && this.repeatTimeout && (clearInterval(this.repeatTimeout), t.isRepeating = !1) : (clearTimeout(this.timer), t.isRepeating && this.repeatTimeout && clearInterval(this.repeatTimeout), t.isRepeating = !1, this.stopAnimation(), this.timer = void 0, this.held ? t.repeat || t.dispatchEvent(new Event("ha-hold")) : t.hasDblClick ? 0 === this.nbClicks ? (this.nbClicks += 1, this.dblClickTimeout = window.setTimeout(() => {
         1 === this.nbClicks && (this.nbClicks = 0, t.dispatchEvent(new Event("ha-click")));
       }, 250)) : (this.nbClicks = 0, clearTimeout(this.dblClickTimeout), t.dispatchEvent(new Event("ha-dblclick"))) : t.dispatchEvent(new Event("ha-click")), this.cooldownEnd = !0, window.setTimeout(() => this.cooldownEnd = !1, 100));
-    };t.addEventListener("touchstart", e, { passive: !0 }), t.addEventListener("touchend", n), t.addEventListener("touchcancel", n), "MacIntel" === navigator.platform && navigator.maxTouchPoints > 1 && !window.MSStream || (t.addEventListener("mousedown", e, { passive: !0 }), t.addEventListener("click", n));
+    };t.addEventListener("touchstart", e, { passive: !0 }), t.addEventListener("touchend", n), t.addEventListener("touchcancel", n);const i = "MacIntel" === navigator.platform && navigator.maxTouchPoints > 1 && !window.MSStream,
+          s = /iPad|iPhone|iPod/.test(navigator.platform);i || s || (t.addEventListener("mousedown", e, { passive: !0 }), t.addEventListener("click", n));
   }startAnimation(t, e) {
     Object.assign(this.style, { left: `${t}px`, top: `${e}px`, display: null }), this.ripple.holdDown = !0, this.ripple.simulatedRipple();
   }stopAnimation() {
@@ -1427,7 +1428,7 @@ const nt = new WeakMap(),
       height: 100%;
     }
   }
-`;console.info("%c  BUTTON-CARD  \n%c Version 3.1.0 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let re = class extends et {
+`;console.info("%c  BUTTON-CARD  \n%c Version 3.1.1 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let re = class extends et {
   disconnectedCallback() {
     super.disconnectedCallback(), this._clearInterval();
   }connectedCallback() {

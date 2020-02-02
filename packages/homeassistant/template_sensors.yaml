@@ -1,0 +1,8 @@
+---
+sensor:
+  - platform: template
+    sensors:
+      zero:
+        entity_id: sensor.date_time
+        friendly_name: 'Zero'
+        value_template: 0
