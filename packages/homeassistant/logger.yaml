@@ -2,6 +2,6 @@
 logger:
   default: error
   # logs:
-    # homeassistant.components.websocket_api: debug
-    # homeassistant.components.influxdb: debug
-    # custom_components.opennem: debug
+  # homeassistant.components.websocket_api: debug
+  # homeassistant.components.influxdb: debug
+  # custom_components.opennem: debug

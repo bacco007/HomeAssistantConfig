@@ -1,4 +1,23 @@
 ---
+homeassistant:
+  customize:
+    sensor.datetracking_mybirthday:
+      friendly_name: My Birthday
+    sensor.datetracking_henrybirthday:
+      friendly_name: Henry's Birthday
+    sensor.datetracking_patrickbirthday:
+      friendly_name: Henry's Birthday
+    sensor.datetracking_mumbirthday:
+      friendly_name: Mum's Birthday
+    sensor.datetracking_dadbirthday:
+      friendly_name: Dad's Birthday
+    sensor.datetracking_marleybirthday:
+      friendly_name: Marley's Birthday
+    sensor.datetracking_myworkbirthday:
+      friendly_name: My Work Birthday
+    sensor.datetracking_katebirthday:
+      friendly_name: Kate's Birthday
+
 anniversaries:
   sensors:
     - name: !secret date1_name

@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, February 2nd 2020_
+_Stats as at 05:00, Sunday, February 9th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.104.3 | 221     | 969         | 747 | 20 |
+| 0.105.1 | 225     | 992         | 760 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -100,6 +100,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [binary_sensor.hadockermon](https://www.home-assistant.io/components/binary_sensor.hadockermon)
 - [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss)
 - [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app)
+- [binary_sensor.netatmo](https://www.home-assistant.io/components/binary_sensor.netatmo)
 - [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv)
 - [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve)
 - [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2)
@@ -114,11 +115,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [camera.bom](https://www.home-assistant.io/components/camera.bom)
 - [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod)
 - [camera.generic](https://www.home-assistant.io/components/camera.generic)
+- [camera.netatmo](https://www.home-assistant.io/components/camera.netatmo)
 - [cast](https://www.home-assistant.io/components/cast)
 - [cert_expiry](https://www.home-assistant.io/components/cert_expiry)
 - [climate](https://www.home-assistant.io/components/climate)
 - [climate.deconz](https://www.home-assistant.io/components/climate.deconz)
 - [climate.dyson](https://www.home-assistant.io/components/climate.dyson)
+- [climate.netatmo](https://www.home-assistant.io/components/climate.netatmo)
 - [cloud](https://www.home-assistant.io/components/cloud)
 - [config](https://www.home-assistant.io/components/config)
 - [configurator](https://www.home-assistant.io/components/configurator)
@@ -175,7 +178,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
 - [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
-- [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
 - [met](https://www.home-assistant.io/components/met)
@@ -208,6 +210,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [scene.deconz](https://www.home-assistant.io/components/scene.deconz)
 - [scene.homeassistant](https://www.home-assistant.io/components/scene.homeassistant)
 - [script](https://www.home-assistant.io/components/script)
+- [search](https://www.home-assistant.io/components/search)
 - [sensor](https://www.home-assistant.io/components/sensor)
 - [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media)
 - [sensor.alpha_vantage](https://www.home-assistant.io/components/sensor.alpha_vantage)
@@ -275,6 +278,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock)
 - [sonos](https://www.home-assistant.io/components/sonos)
 - [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet)
+- [spotify](https://www.home-assistant.io/components/spotify)
 - [ssdp](https://www.home-assistant.io/components/ssdp)
 - [stt](https://www.home-assistant.io/components/stt)
 - [sun](https://www.home-assistant.io/components/sun)
@@ -332,7 +336,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Node-RED](https://github.com/zachowj/node-red)
 - [NSW Air Quality]()
 - [NSW Rural Fire Service - Fire Danger]()
-- [OpenNEM](https://github.com/bacco007/sensor.waternsw)
+- [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)

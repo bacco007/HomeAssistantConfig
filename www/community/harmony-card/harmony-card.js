@@ -2893,6 +2893,80 @@ fecha.parse = function (dateStr, format, i18nSettings) {
 
 var a=function(){try{(new Date).toLocaleDateString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleDateString(t,{year:"numeric",month:"long",day:"numeric"})}:function(t){return fecha.format(t,"mediumDate")},n=function(){try{(new Date).toLocaleString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleString(t,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"haDateTime")},r=function(){try{(new Date).toLocaleTimeString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleTimeString(t,{hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"shortTime")};function d(e){return e.substr(0,e.indexOf("."))}var R=["closed","locked","off"],A=function(e,t,a,n){n=n||{},a=null==a?{}:a;var r=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return r.detail=a,e.dispatchEvent(r),r};var F=function(){var e=document.querySelector("home-assistant");if(e=(e=(e=(e=(e=(e=(e=(e=e&&e.shadowRoot)&&e.querySelector("home-assistant-main"))&&e.shadowRoot)&&e.querySelector("app-drawer-layout partial-panel-resolver"))&&e.shadowRoot||e)&&e.querySelector("ha-panel-lovelace"))&&e.shadowRoot)&&e.querySelector("hui-root")){var t=e.lovelace;return t.current_view=e.___curView,t}return null},U=function(e){A(window,"haptic",e);},V=function(e,t,a){void 0===a&&(a=!1),a?history.replaceState(null,"",t):history.pushState(null,"",t),A(window,"location-changed",{replace:a});},W=function(e,t,a){void 0===a&&(a=!0);var n,r=d(t),i="group"===r?"homeassistant":r;switch(r){case"lock":n=a?"unlock":"lock";break;case"cover":n=a?"open_cover":"close_cover";break;default:n=a?"turn_on":"turn_off";}return e.callService(i,n,{entity_id:t})},Y=function(e,t){var a=R.includes(e.states[t].state);return W(e,t,a)},G=function(e,t,a,n){var r;if("double_tap"===n&&a.double_tap_action?r=a.double_tap_action:"hold"===n&&a.hold_action?r=a.hold_action:"tap"===n&&a.tap_action&&(r=a.tap_action),r||(r={action:"more-info"}),!r.confirmation||r.confirmation.exemptions&&r.confirmation.exemptions.some(function(e){return e.user===t.user.id})||(U("warning"),confirm(r.confirmation.text||"Are you sure you want to "+r.action+"?")))switch(r.action){case"more-info":(a.entity||a.camera_image)&&A(e,"hass-more-info",{entityId:a.entity?a.entity:a.camera_image});break;case"navigate":r.navigation_path&&V(0,r.navigation_path);break;case"url":r.url_path&&window.open(r.url_path);break;case"toggle":a.entity&&(Y(t,a.entity),U("success"));break;case"call-service":if(!r.service)return void U("failure");var i=r.service.split(".",2);t.callService(i[0],i[1],r.service_data),U("success");}};function J(e){return void 0!==e&&"none"!==e.action}//# sourceMappingURL=index.m.js.map
 
+/**
+ * @license
+ * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+/**
+ * Stores the StyleInfo object applied to a given AttributePart.
+ * Used to unset existing values when a new StyleInfo object is applied.
+ */
+const styleMapCache = new WeakMap();
+/**
+ * A directive that applies CSS properties to an element.
+ *
+ * `styleMap` can only be used in the `style` attribute and must be the only
+ * expression in the attribute. It takes the property names in the `styleInfo`
+ * object and adds the property values as CSS propertes. Property names with
+ * dashes (`-`) are assumed to be valid CSS property names and set on the
+ * element's style object using `setProperty()`. Names without dashes are
+ * assumed to be camelCased JavaScript property names and set on the element's
+ * style object using property assignment, allowing the style object to
+ * translate JavaScript-style names to CSS property names.
+ *
+ * For example `styleMap({backgroundColor: 'red', 'border-top': '5px', '--size':
+ * '0'})` sets the `background-color`, `border-top` and `--size` properties.
+ *
+ * @param styleInfo {StyleInfo}
+ */
+const styleMap = directive((styleInfo) => (part) => {
+    if (!(part instanceof AttributePart) || (part instanceof PropertyPart) ||
+        part.committer.name !== 'style' || part.committer.parts.length > 1) {
+        throw new Error('The `styleMap` directive must be used in the style attribute ' +
+            'and must be the only part in the attribute.');
+    }
+    const { committer } = part;
+    const { style } = committer.element;
+    // Handle static styles the first time we see a Part
+    if (!styleMapCache.has(part)) {
+        style.cssText = committer.strings.join(' ');
+    }
+    // Remove old properties that no longer exist in styleInfo
+    const oldInfo = styleMapCache.get(part);
+    for (const name in oldInfo) {
+        if (!(name in styleInfo)) {
+            if (name.indexOf('-') === -1) {
+                // tslint:disable-next-line:no-any
+                style[name] = null;
+            }
+            else {
+                style.removeProperty(name);
+            }
+        }
+    }
+    // Add or update properties
+    for (const name in styleInfo) {
+        if (name.indexOf('-') === -1) {
+            // tslint:disable-next-line:no-any
+            style[name] = styleInfo[name];
+        }
+        else {
+            style.setProperty(name, styleInfo[name]);
+        }
+    }
+    styleMapCache.set(part, styleInfo);
+});
+//# sourceMappingURL=style-map.js.map
+
 class FaIcon extends LitElement {
   static get properties() {
     return {
@@ -3017,10 +3091,11 @@ const sharedStyle = css `
 
   .activities {
       display: flex;
+      flex-wrap: wrap;
   }
 
   .activities>mwc-button:not(:first-child) {
-    flex: 1;
+    flex-grow: 1;
   }
 
   .remote {
@@ -3042,6 +3117,7 @@ const sharedStyle = css `
 
   .volume-controls {
       display: flex;
+      justify-content: center;
   }
 
   .volume-controls>paper-slider {
@@ -3510,7 +3586,103 @@ const actionHandler = directive((options = {}) => (part) => {
     actionHandlerBind(part.committer.element, options);
 });
 
-const CARD_VERSION = '0.6.0';
+const CARD_VERSION = '0.10.0';
+const DEFAULT_BUTTONS = {
+    'volume_down': {
+        command: 'VolumeDown',
+        icon: 'mdi:volume-medium',
+        hide: false
+    },
+    'volume_up': {
+        command: 'VolumeUp',
+        icon: 'mdi:volume-high',
+        hide: false
+    },
+    'volume_mute': {
+        command: 'Mute',
+        icon: 'mdi:volume-off',
+        hide: false
+    },
+    'skip_back': {
+        command: 'SkipBack',
+        icon: 'mdi:skip-previous',
+        hide: false
+    },
+    'play': {
+        command: 'Play',
+        icon: 'mdi:play',
+        hide: false
+    },
+    'pause': {
+        command: 'Pause',
+        icon: 'mdi:pause',
+        hide: false
+    },
+    'skip_forward': {
+        command: 'SkipForward',
+        icon: 'mdi:skip-next',
+        hide: false
+    },
+    'dpad_up': {
+        command: 'DirectionUp',
+        icon: 'mdi:chevron-up-circle',
+        hide: false
+    },
+    'dpad_down': {
+        command: 'DirectionDown',
+        icon: 'mdi:chevron-down-circle',
+        hide: false
+    },
+    'dpad_left': {
+        command: 'DirectionLeft',
+        icon: 'mdi:chevron-left-circle',
+        hide: false
+    },
+    'dpad_right': {
+        command: 'DirectionRight',
+        icon: 'mdi:chevron-right-circle',
+        hide: false
+    },
+    'dpad_center': {
+        command: 'OK',
+        icon: 'mdi:checkbox-blank-circle',
+        hide: false
+    },
+    'xbox': {
+        command: 'Xbox',
+        icon: 'mdi:xbox',
+        hide: false
+    },
+    'back': {
+        command: 'Back',
+        icon: 'mdi:undo-variant',
+        hide: false
+    },
+    'a': {
+        command: 'A',
+        icon: 'mdi:alpha-a-circle',
+        hide: false,
+        color: '#2d9f1c'
+    },
+    'b': {
+        command: 'B',
+        icon: 'mdi:alpha-b-circle',
+        hide: false,
+        color: '#e43308'
+    },
+    'x': {
+        command: 'X',
+        icon: 'mdi:alpha-x-circle',
+        hide: false,
+        color: '#003bbd'
+    },
+    'y': {
+        command: 'Y',
+        icon: 'mdi:alpha-y-circle',
+        hide: false,
+        color: '#f1c70f'
+    }
+};
 
 var common = {
 	version: "Version",
@@ -3564,6 +3736,138 @@ function localize(string, search = '', replace = '') {
     }
     return tranlated;
 }
+
+var isMergeableObject = function isMergeableObject(value) {
+	return isNonNullObject(value)
+		&& !isSpecial(value)
+};
+
+function isNonNullObject(value) {
+	return !!value && typeof value === 'object'
+}
+
+function isSpecial(value) {
+	var stringValue = Object.prototype.toString.call(value);
+
+	return stringValue === '[object RegExp]'
+		|| stringValue === '[object Date]'
+		|| isReactElement(value)
+}
+
+// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+function isReactElement(value) {
+	return value.$$typeof === REACT_ELEMENT_TYPE
+}
+
+function emptyTarget(val) {
+	return Array.isArray(val) ? [] : {}
+}
+
+function cloneUnlessOtherwiseSpecified(value, options) {
+	return (options.clone !== false && options.isMergeableObject(value))
+		? deepmerge(emptyTarget(value), value, options)
+		: value
+}
+
+function defaultArrayMerge(target, source, options) {
+	return target.concat(source).map(function(element) {
+		return cloneUnlessOtherwiseSpecified(element, options)
+	})
+}
+
+function getMergeFunction(key, options) {
+	if (!options.customMerge) {
+		return deepmerge
+	}
+	var customMerge = options.customMerge(key);
+	return typeof customMerge === 'function' ? customMerge : deepmerge
+}
+
+function getEnumerableOwnPropertySymbols(target) {
+	return Object.getOwnPropertySymbols
+		? Object.getOwnPropertySymbols(target).filter(function(symbol) {
+			return target.propertyIsEnumerable(symbol)
+		})
+		: []
+}
+
+function getKeys(target) {
+	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
+}
+
+function propertyIsOnObject(object, property) {
+	try {
+		return property in object
+	} catch(_) {
+		return false
+	}
+}
+
+// Protects from prototype poisoning and unexpected merging up the prototype chain.
+function propertyIsUnsafe(target, key) {
+	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
+}
+
+function mergeObject(target, source, options) {
+	var destination = {};
+	if (options.isMergeableObject(target)) {
+		getKeys(target).forEach(function(key) {
+			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+		});
+	}
+	getKeys(source).forEach(function(key) {
+		if (propertyIsUnsafe(target, key)) {
+			return
+		}
+
+		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
+			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
+		} else {
+			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+		}
+	});
+	return destination
+}
+
+function deepmerge(target, source, options) {
+	options = options || {};
+	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+	// cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
+	// implementations can use it. The caller may not replace it.
+	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
+
+	var sourceIsArray = Array.isArray(source);
+	var targetIsArray = Array.isArray(target);
+	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+	if (!sourceAndTargetTypesMatch) {
+		return cloneUnlessOtherwiseSpecified(source, options)
+	} else if (sourceIsArray) {
+		return options.arrayMerge(target, source, options)
+	} else {
+		return mergeObject(target, source, options)
+	}
+}
+
+deepmerge.all = function deepmergeAll(array, options) {
+	if (!Array.isArray(array)) {
+		throw new Error('first argument should be an array')
+	}
+
+	return array.reduce(function(prev, next) {
+		return deepmerge(prev, next, options)
+	}, {})
+};
+
+var deepmerge_1 = deepmerge;
+
+var cjs = deepmerge_1;
 
 /* eslint no-console: 0 */
 console.info(`%c  HARMONY-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
@@ -3654,16 +3958,15 @@ let HarmonyCard = class HarmonyCard extends LitElement {
         </ha-card>
       `;
         }
-        var hub_state = this.hass.states[this._config.entity];
-        var hub_power_state = hub_state.state;
-        var current_activity = hub_state.attributes.current_activity;
-        var volume_state = this.hass.states[this._config.volume_entity];
-        var volume = volume_state.attributes.volume_level;
-        var muted = volume_state.attributes.is_volume_muted;
-        var current_activity_config = this._config.activities.find(activity => activity.name === current_activity);
-        var current_device = (_a = current_activity_config) === null || _a === void 0 ? void 0 : _a.device;
+        var hubState = this.hass.states[this._config.entity];
+        var hubPowerState = hubState.state;
+        var currentActivity = hubState.attributes.current_activity;
+        var currentActivityConfig = this._config.activities.find(activity => activity.name === currentActivity);
+        var currentDevice = (_a = currentActivityConfig) === null || _a === void 0 ? void 0 : _a.device;
+        var buttonConfig = this.computeButtonConfig(this._config, currentActivityConfig);
         return html `
       <ha-card
+        style=${this.computeStyles()}
         .header=${this._config.name}
         @action=${this._handleAction}
         .actionHandler=${actionHandler({
@@ -3676,16 +3979,83 @@ let HarmonyCard = class HarmonyCard extends LitElement {
       >
         <div class="card-content">
             <div class="activities">
-                <mwc-button ?outlined="${hub_power_state === "off"}" label="Off" @click="${e => this.harmonyCommand(e, 'turn_off')}" @touchstart="${e => this.preventBubbling(e)}"></mwc-button>
+                <mwc-button ?outlined="${hubPowerState === "off"}" label="Off" @click="${e => this.harmonyCommand(e, 'turn_off')}" @touchstart="${e => this.preventBubbling(e)}"></mwc-button>
                 
                 ${this._config.activities.map(activity => html `
-                    <mwc-button ?outlined="${current_activity === activity.name}" label=${activity.name} @click="${e => this.harmonyCommand(e, activity.name)}" @touchstart="${e => this.preventBubbling(e)}"></mwc-button>
+                    <mwc-button ?outlined="${currentActivity === activity.name}" label=${activity.name} @click="${e => this.harmonyCommand(e, activity.name)}" @touchstart="${e => this.preventBubbling(e)}"></mwc-button>
                 `)}
             </div>
 
+            ${this.renderVolumeControls(this.hass, this._config, buttonConfig, currentActivityConfig)}
+
+            <div class="play-pause">
+                ${this.renderIconButton(buttonConfig['skip_back'], currentDevice)}
+                ${this.renderIconButton(buttonConfig['play'], currentDevice)}
+                ${this.renderIconButton(buttonConfig['pause'], currentDevice)}
+                ${this.renderIconButton(buttonConfig['skip_forward'], currentDevice)}
+            </div>
+
+            <div class="remote">
+                ${this.renderIconButton(buttonConfig['dpad_left'], currentDevice, { 'grid-column': '1', 'grid-row': '2' })}
+                ${this.renderIconButton(buttonConfig['dpad_right'], currentDevice, { 'grid-column': '3', 'grid-row': '2' })}
+                ${this.renderIconButton(buttonConfig['dpad_up'], currentDevice, { 'grid-column': '2', 'grid-row': '1' })}
+                ${this.renderIconButton(buttonConfig['dpad_down'], currentDevice, { 'grid-column': '2', 'grid-row': '3' })}
+                ${this.renderIconButton(buttonConfig['dpad_center'], currentDevice, { 'grid-column': '2', 'grid-row': '2' })}        
+            </div>        
+
+            <div class="xbox-buttons">
+                ${this.renderIconButton(buttonConfig['xbox'], currentDevice, { 'grid-column': '1', 'grid-row': '2' })}
+                ${this.renderIconButton(buttonConfig['back'], currentDevice, { 'grid-column': '2', 'grid-row': '2' })}
+                ${this.renderIconButton(buttonConfig['a'], currentDevice, { 'grid-column': '4', 'grid-row': '2' })}
+                ${this.renderIconButton(buttonConfig['b'], currentDevice, { 'grid-column': '5', 'grid-row': '2' })}
+                ${this.renderIconButton(buttonConfig['x'], currentDevice, { 'grid-column': '6', 'grid-row': '2' })}        
+                ${this.renderIconButton(buttonConfig['y'], currentDevice, { 'grid-column': '7', 'grid-row': '2' })}        
+            </div>
+        </div>
+      </ha-card>
+    `;
+    }
+    renderIconButton(buttonConfig, device, styles) {
+        if (buttonConfig.hide === true) {
+            return html ``;
+        }
+        var buttonStyles = Object.assign(styles || {}, { color: buttonConfig.color });
+        return html `
+            <paper-icon-button 
+                icon="${buttonConfig.icon}" 
+                style="${styleMap(buttonStyles)}"
+                @click="${e => this.deviceCommand(e, buttonConfig.device || device, buttonConfig.command || '')}" 
+                @touchstart="${e => this.preventBubbling(e)}">
+            </paper-icon-button>
+        `;
+    }
+    renderVolumeControls(hass, config, buttonConfig, currentActivityConfig) {
+        var _a, _b, _c, _d;
+        if ((_a = currentActivityConfig) === null || _a === void 0 ? void 0 : _a.volume_entity) {
+            return this.renderMediaPlayerVolumeControls(hass, (_b = currentActivityConfig) === null || _b === void 0 ? void 0 : _b.volume_entity, buttonConfig);
+        }
+        else if ((_c = currentActivityConfig) === null || _c === void 0 ? void 0 : _c.volume_device) {
+            return this.renderDeviceVolumeControls((_d = currentActivityConfig) === null || _d === void 0 ? void 0 : _d.volume_device, buttonConfig);
+        }
+        else if (config.volume_entity) {
+            return this.renderMediaPlayerVolumeControls(hass, config.volume_entity, buttonConfig);
+        }
+        else if (config.volume_device) {
+            return this.renderDeviceVolumeControls(config.volume_device, buttonConfig);
+        }
+        return html ``;
+    }
+    renderMediaPlayerVolumeControls(hass, volumeMediaPlayer, buttonConfig) {
+        var volume_state = hass.states[volumeMediaPlayer];
+        var volume = volume_state.attributes.volume_level;
+        var muted = volume_state.attributes.is_volume_muted;
+        var volumeDownStyle = Object.assign({}, { color: buttonConfig['volume_down'].color });
+        var volumeUpStyle = Object.assign({}, { color: buttonConfig['volume_up'].color });
+        var volumeMuteStyle = Object.assign({}, { color: buttonConfig['volume_mute'].color });
+        return html `
             <div class="volume-controls">
-                <paper-icon-button icon="mdi:volume-medium" @click="${e => this.volumeCommand(e, 'volume_down')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:volume-high" @click="${e => this.volumeCommand(e, 'volume_up')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
+                <paper-icon-button style="${styleMap(volumeDownStyle)}" icon="${buttonConfig['volume_down'].icon}" @click="${e => this.volumeCommand(e, 'volume_down')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
+                <paper-icon-button style="${styleMap(volumeUpStyle)}" icon="${buttonConfig['volume_up'].icon}" @click="${e => this.volumeCommand(e, 'volume_up')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
                 <paper-slider           
                     @change=${e => this.volumeCommand(e, 'volume_set', { volume_level: e.target.value / 100 })}
                     @click=${e => e.stopPropagation()}
@@ -3697,41 +4067,36 @@ let HarmonyCard = class HarmonyCard extends LitElement {
                     ignore-bar-touch pin>
                 </paper-slider>
                 
-                <paper-icon-button icon="mdi:volume-off" @click="${e => this.volumeCommand(e, 'volume_mute', { is_volume_muted: true })}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-            </div>
+                <paper-icon-button style="${styleMap(volumeMuteStyle)}" icon="${buttonConfig['volume_mute'].icon}" @click="${e => this.volumeCommand(e, 'volume_mute', { is_volume_muted: true })}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
+            </div>`;
+    }
+    renderDeviceVolumeControls(device, buttonConfig) {
+        return html `
+            <div class="volume-controls">
+                ${this.renderIconButton(buttonConfig['volume_down'], device)}
+                ${this.renderIconButton(buttonConfig['volume_up'], device)}
 
-            <div class="play-pause">
-                <paper-icon-button icon="mdi:skip-previous" @click="${e => this.deviceCommand(e, current_device, 'SkipBack')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:play" @click="${e => this.deviceCommand(e, current_device, 'Play')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:pause" @click="${e => this.deviceCommand(e, current_device, 'Pause')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:skip-next" @click="${e => this.deviceCommand(e, current_device, 'SkipForward')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-            </div>
-
-            <div class="remote">
-                <paper-icon-button icon="mdi:chevron-left-circle" style="grid-column: 1; grid-row: 2;" @click="${e => this.deviceCommand(e, current_device, 'DirectionLeft')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:chevron-right-circle" style="grid-column: 3; grid-row: 2;" @click="${e => this.deviceCommand(e, current_device, 'DirectionRight')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:chevron-up-circle" style="grid-column: 2; grid-row: 1;" @click="${e => this.deviceCommand(e, current_device, 'DirectionUp')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:chevron-down-circle" style="grid-column: 2; grid-row: 3;" @click="${e => this.deviceCommand(e, current_device, 'DirectionDown')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button icon="mdi:checkbox-blank-circle" style="grid-column: 2; grid-row: 2;" @click="${e => this.deviceCommand(e, current_device, 'OK')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-            </div>        
-
-            <div class="xbox-buttons">
-                <paper-icon-button style="grid-column: 1; grid-row: 2;" icon="mdi:xbox" @click="${e => this.deviceCommand(e, current_device, 'Xbox')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button style="grid-column: 2; grid-row: 2;" icon="mdi:undo-variant" @click="${e => this.deviceCommand(e, current_device, 'Back')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-
-                <paper-icon-button style="grid-column: 4; grid-row: 2; color: #2d9f1c;" icon="mdi:alpha-a-circle" @click="${e => this.deviceCommand(e, current_device, 'A')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button style="grid-column: 5; grid-row: 2; color: #e43308;" icon="mdi:alpha-b-circle" @click="${e => this.deviceCommand(e, current_device, 'B')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button style="grid-column: 6; grid-row: 2; color: #003bbd;" icon="mdi:alpha-x-circle" @click="${e => this.deviceCommand(e, current_device, 'X')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-                <paper-icon-button style="grid-column: 7; grid-row: 2; color: #f1c70f;" icon="mdi:alpha-y-circle" @click="${e => this.deviceCommand(e, current_device, 'Y')}" @touchstart="${e => this.preventBubbling(e)}"></paper-icon-button>
-            </div>
-        </div>
-      </ha-card>
-    `;
+                ${this.renderIconButton(buttonConfig['volume_mute'], device)}
+            </div>`;
     }
     _handleAction(ev) {
         if (this.hass && this._config && ev.detail.action) {
             G(this, this.hass, this._config, ev.detail.action);
         }
+    }
+    computeStyles() {
+        var _a;
+        var scale = ((_a = this._config) === null || _a === void 0 ? void 0 : _a.scale) || 1;
+        return styleMap({ '--mmp-unit': `${40 * scale}px` });
+    }
+    computeButtonConfig(config, currentActivityConfig) {
+        // overwrite in the card button config
+        let buttonConfig = cjs(DEFAULT_BUTTONS, config.buttons || {});
+        // layer in the activity button config
+        if (currentActivityConfig) {
+            buttonConfig = cjs(buttonConfig, currentActivityConfig.buttons || {});
+        }
+        return buttonConfig;
     }
     static get styles() {
         return [

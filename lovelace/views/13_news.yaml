@@ -82,6 +82,117 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
+              - title: National Electricity Market
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.opennem_nsw1_current_price
+                        name: Current Price
+                      - entity: sensor.opennem_nsw1_temperature
+                        name: Average Temperature
+                      - entity: sensor.opennem_nsw1_electricity_demand
+                        name: Current Demand
+                      - entity: sensor.opennem_nsw1_imported_power
+                        name: Import from other Regions
+                      - entity: sensor.opennem_nsw1_exported_power
+                        name: Export to other Regions
+                      - type: custom:fold-entity-row
+                        head:
+                          entity: sensor.opennem_nsw1_electricity_generation
+                          name: Current Generation
+                        open: false
+                        entities:
+                          - entity: sensor.opennem_nsw1_battery_charging
+                            name: Battery (Charging)
+                          - entity: sensor.opennem_nsw1_battery_discharging
+                            name: Battery (Discharging)
+                          - entity: sensor.opennem_nsw1_biomass
+                            name: Biomass
+                          - entity: sensor.opennem_nsw1_black_coal
+                            name: Black Coal
+                          - entity: sensor.opennem_nsw1_brown_coal
+                            name: Brown Coal
+                          - entity: sensor.opennem_nsw1_distillate
+                            name: Distillate
+                          - entity: sensor.opennem_nsw1_gas_ccgt
+                            name: Gas (CCGT)
+                          - entity: sensor.opennem_nsw1_gas_ocgt
+                            name: Gas (OCGT)
+                          - entity: sensor.opennem_nsw1_gas_recip
+                            name: Gas (Recip)
+                          - entity: sensor.opennem_nsw1_gas_steam
+                            name: Gas (Steam)
+                          - entity: sensor.opennem_nsw1_hydro
+                            name: Hydro
+                          - entity: sensor.opennem_nsw1_pumps
+                            name: Pumps
+                          - entity: sensor.opennem_nsw1_solar_rooftop
+                            name: Solar (Rooftop)
+                          - entity: sensor.opennem_nsw1_solar_utility
+                            name: Solar (Utility)
+                          - entity: sensor.opennem_nsw1_wind
+                            name: Wind
+                      - type: section
+                      - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+                        name: Electricity Gen from Fossil Fuels
+                      - entity: sensor.opennem_nsw1_gen_from_renewables
+                        name: Electricity Gen from Renewables
+              - type: custom:swipe-card
+                parameters:
+                  effect: 'coverflow'
+                  allowTouchMove: true
+                  grabCursor: true
+                  autoplay:
+                    disableOnInteraction: true
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Price
+                      - entities:
+                          - entity: sensor.opennem_nsw1_current_price
+                      - height: 60
+                      - decimals: 2
+                      - icon: false
+                      - hours_to_show: 24
+                      - points_per_hour: 4
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Generation Type
+                      - entities:
+                          - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+                            name: Fossil Fuels
+                          - entity: sensor.opennem_nsw1_gen_from_renewables
+                            name: Renewables
+                      - height: 60
+                      - decimals: 1
+                      - icon: false
+                      - hours_to_show: 24
+                      - points_per_hour: 4
+                  - type: custom:decluttering-card
+                    template: mini-graph
+                    variables:
+                      - name: Generation vs Demand
+                      - entities:
+                          - entity: sensor.opennem_nsw1_electricity_demand
+                            name: Demand
+                          - entity: sensor.opennem_nsw1_electricity_generation
+                            name: Generation
+                      - height: 60
+                      - decimals: 1
+                      - icon: false
+                      - hours_to_show: 24
+                      - points_per_hour: 4
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
               - title: Fuel Prices (NSW FuelCheck)
           - type: custom:vertical-stack-in-card
             cards:

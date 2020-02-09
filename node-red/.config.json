@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.19.4",
+   "version": "0.19.5",
    "local": false,
    "nodes": {
     "server": {
@@ -1195,7 +1195,7 @@
   },
   "node-red-node-email": {
    "name": "node-red-node-email",
-   "version": "1.7.4",
+   "version": "1.7.6",
    "local": false,
    "nodes": {
     "email": {

@@ -17,7 +17,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 import homeassistant.util.dt as dt_util
 
-__version__: '0.1'
+__version__: '0.3'
 
 _RESOURCE = "http://data.opennem.org.au/power/{}.json"
 _LOGGER = logging.getLogger(__name__)
@@ -182,6 +182,14 @@ class OpenNEMCurrentData:
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
+        ftype = None
+        units = None
+        last_update = None
+        value = None
+        ffvalue = None
+        renvalue = None
+        genvalue = None
+
         if not self.should_update():
             _LOGGER.debug("OpenNEM was last updated %s minutes ago, skipping update", (dt_util_utcnow() - self.last_updated))
             return
@@ -200,11 +208,28 @@ class OpenNEMCurrentData:
                 # DATA[ftype][1]=config.get(CONF_REGION)
                 DATA[ftype][2]=units
                 DATA[ftype][3]=last_update
-                DATA[ftype][4]=round(value,2)
+                if value:
+                    DATA[ftype][4]=round(value,2)
+                else:
+                    DATA[ftype][4]=0
 
-            DATA['fossilfuel'][4] = round(DATA['black_coal'][4] + DATA["distillate"][4] + DATA["brown_coal"][4] + DATA["gas_ccgt"][4] + DATA["gas_ocgt"][4] + DATA["gas_recip"][4] + DATA["gas_steam"][4],2)
-            DATA['renewables'][4] = round(DATA['biomass'][4]+DATA["hydro"][4]+DATA["solar"][4]+DATA["wind"][4]+DATA["rooftop_solar"][4],2)
-            DATA['generation'][4] = round(DATA['fossilfuel'][4]+DATA['renewables'][4],2)
+            ffvalue = DATA['black_coal'][4] + DATA["distillate"][4] + DATA["brown_coal"][4] + DATA["gas_ccgt"][4] + DATA["gas_ocgt"][4] + DATA["gas_recip"][4] + DATA["gas_steam"][4]
+            if ffvalue:
+                DATA['fossilfuel'][4] = round(ffvalue,2)
+            else:
+                DATA['fossilfuel'][4] = 0
+
+            renvalue = DATA['biomass'][4]+DATA["hydro"][4]+DATA["solar"][4]+DATA["wind"][4]+DATA["rooftop_solar"][4]
+            if renvalue:
+                DATA['renewables'][4] = round(renvalue,2)
+            else:
+                DATA['renewables'][4] = 0
+
+            genvalue = DATA['fossilfuel'][4]+DATA['renewables'][4]
+            if genvalue:
+                DATA['generation'][4] = round(genvalue,2)
+            else:
+                DATA['generation'][4] = 0
 
             self._data = DATA
             self.last_updated = dt_util.as_utc(datetime.datetime.strptime(str(self._data['demand'][3]), "%Y-%m-%dT%H:%M+1000"))

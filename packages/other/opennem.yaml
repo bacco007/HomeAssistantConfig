@@ -26,9 +26,3 @@ sensor:
       - solar
       - temperature
       - wind
-
-  - platform: opennem
-    region: vic1
-    name: test
-    monitored_conditions:
-      - brown_coal
