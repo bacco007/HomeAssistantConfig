@@ -3,6 +3,7 @@
 .cloud
 .androidkeys
 .google.token
+.backup
 __pycache__
 deps
 www/custom-lovelace/upcoming-media-card

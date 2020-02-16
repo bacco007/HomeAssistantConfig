@@ -18,10 +18,11 @@ sensor:
   ###
   - platform: time_date
     display_options:
-      - "time"
-      - "date"
-      - "date_time"
-      - "time_utc"
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'time_utc'
+      - 'beat'
   ###
   ## World Time - London
   ###
@@ -38,7 +39,7 @@ sensor:
   - platform: template
     sensors:
       date_long_format:
-        friendly_name: "Date Long Format"
+        friendly_name: 'Date Long Format'
         entity_id: sensor.date
         value_template: >
           {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}

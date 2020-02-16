@@ -11,6 +11,19 @@ cards:
       - type: custom:decluttering-card
         template: quick_launch
 
+  - type: custom:flex-table-card
+    sort_by: name+
+    clickable: true
+    entities:
+      include: binary_sensor.tbsh01_ha_dockermon*
+    columns:
+      - name: Name
+        prop: name
+      - name: State
+        attr: status
+      - name: Mem
+        attr: memory
+
   - type: vertical-stack
     cards:
       - type: custom:decluttering-card

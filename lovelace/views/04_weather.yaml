@@ -35,13 +35,25 @@ cards:
                         name: Current Outdoor Temperature
                       - type: section
                       - entity: sensor.netatmoindoor_max_temp
-                        name: Indoor - Today's Max Temperature
-                      - entity: sensor.netatmoindoor_min_temp
-                        name: Indoor - Today's Min Temperature
+                        name: Indoor - 24hr Temp Extremes
+                        type: custom:multiple-entity-row
+                        icon: mdi:thermometer-alert
+                        show_state: false
+                        entities:
+                          - entity: sensor.netatmoindoor_max_temp
+                            name: Max
+                          - entity: sensor.netatmoindoor_min_temp
+                            name: Min
                       - entity: sensor.netatmooutdoor_max_temp
-                        name: Outdoor - Today's Max Temperature
-                      - entity: sensor.netatmooutdoor_min_temp
-                        name: Outdoor - Today's Min Temperature
+                        name: Outdoor - 24hr Temp Extremes
+                        type: custom:multiple-entity-row
+                        icon: mdi:thermometer-alert
+                        show_state: false
+                        entities:
+                          - entity: sensor.netatmooutdoor_max_temp
+                            name: Max
+                          - entity: sensor.netatmooutdoor_min_temp
+                            name: Min
                       - type: section
                       - entity: sensor.netatmo_brisbane_street_indoor_pressure
                         name: Current Pressure
@@ -110,9 +122,15 @@ cards:
                         name: Current Feels Like Temperature
                       - type: section
                       - entity: sensor.bom_max_temp
-                        name: Today's Max Temperature
-                      - entity: sensor.bom_min_temp
-                        name: Today's Min Temperature
+                        name: 24hr Temp Extremes
+                        icon: mdi:thermometer-alert
+                        type: custom:multiple-entity-row
+                        show_state: false
+                        entities:
+                          - entity: sensor.bom_max_temp
+                            name: Max
+                          - entity: sensor.bom_min_temp
+                            name: Min
                       - type: section
                       - entity: sensor.bom_tamworth_wind_gust_kmh
                         name: Current Wind Gust
@@ -147,123 +165,190 @@ cards:
                   - average: true
 
       - type: vertical-stack
-        style: !include ../includes/style.yaml
         cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Last 365 Days
-          - type: custom:vertical-stack-in-card
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
             cards:
               - type: custom:decluttering-card
-                template: entities-no-header
+                template: title
                 variables:
-                  - entities:
-                      - entity: sensor.weather_bom_tempmax_lastyr
-                        name: BOM - Max Temp (Last 365 Days)
+                  - title: Rain History (Rolling)
+              - type: custom:vertical-stack-in-card
+                cards:
+                - type: custom:decluttering-card
+                  template: entities-no-header
+                  variables:
+                    - entities:
+                      - entity: sensor.weather_bom_rain_last7days
+                        name: Airport - This Week
                         type: custom:multiple-entity-row
-                        hide_state: true
-                        primary:
-                          attribute: max
-                          name: Max
-                        secondary:
-                          attribute: min
-                          name: Min
-                        tertiary:
-                          attribute: avg
-                          name: Avg
-                        info:
-                          attribute: datestring
-                          name:
-                      - entity: sensor.weather_bom_tempmin_lastyr
-                        name: BOM - Min Temp (Last 365 Days)
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
+                          attribute: countstring
+                          name: false
+                      - entity: sensor.weather_bom_rain_last30days
+                        name: Airport - This Month
                         type: custom:multiple-entity-row
-                        hide_state: true
-                        primary:
-                          attribute: max
-                          name: Max
-                        secondary:
-                          attribute: min
-                          name: Min
-                        tertiary:
-                          attribute: avg
-                          name: Avg
-                        info:
-                          attribute: datestring
-                          name:
-                      - type: section
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
+                          attribute: countstring
+                          name: false
                       - entity: sensor.weather_bom_totalrain_lastyr
-                        name: BOM - Total Rain (Last 365 Days)
+                        name: Airport - This Year
                         type: custom:multiple-entity-row
-                        secondary:
-                          attribute: average
-                          name: Avg
-                        info:
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
                           attribute: countstring
                           name:
                       - entity: sensor.weather_bom_maxrain_lastyr
-                        name: BOM - Highest Rainfall (Last 365 Days)
+                        name: Airport - Highest Rainfall (This Year)
                         type: custom:multiple-entity-row
-                        info:
+                        secondary_info:
                           attribute: date
                           name:
                       - type: section
-                      - entity: sensor.weather_home_tempmax_lastyr
-                        name: Home - Max Temp (Last 365 Days)
+                      - entity: sensor.weather_home_rain_last7days
+                        name: Home - This Week
                         type: custom:multiple-entity-row
-                        hide_state: true
-                        primary:
-                          attribute: max
-                          name: Max
-                        secondary:
-                          attribute: min
-                          name: Min
-                        tertiary:
-                          attribute: avg
-                          name: Avg
-                        info:
-                          attribute: datestring
-                          name:
-                      - entity: sensor.weather_home_tempmin_lastyr
-                        name: Home - Min Temp (Last 365 Days)
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
+                          attribute: countstring
+                          name: false
+                      - entity: sensor.weather_home_rain_prior7days
+                        name: Home - Last Week
                         type: custom:multiple-entity-row
-                        hide_state: true
-                        primary:
-                          attribute: max
-                          name: Max
-                        secondary:
-                          attribute: min
-                          name: Min
-                        tertiary:
-                          attribute: avg
-                          name: Avg
-                        info:
-                          attribute: datestring
-                          name:
-                      - type: section
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
+                          attribute: countstring
+                          name: false
+                      - entity: sensor.weather_home_rain_last30days
+                        name: Home - This Month
+                        type: custom:multiple-entity-row
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
+                          attribute: countstring
+                          name: false
                       - entity: sensor.weather_home_totalrain_lastyr
-                        name: Home - Total Rain (Last 365 Days)
+                        name: Home - This Year
                         type: custom:multiple-entity-row
-                        secondary:
-                          attribute: average
-                          name: Avg
-                        info:
+                        entities:
+                          - attribute: average
+                            name: Avg
+                          - attribute: highest
+                            name: High
+                        secondary_info:
                           attribute: countstring
                           name:
                       - entity: sensor.weather_home_maxrain_lastyr
-                        name: Home - Highest Rainfall (Last 365 Days)
+                        name: Home - Highest Rainfall (This Year)
                         type: custom:multiple-entity-row
-                        info:
+                        secondary_info:
                           attribute: date
                           name:
-          - type: custom:gap-card
-            height: 10
-          - type: iframe
-            url: !secret bomtemp_panel_url
-          - type: custom:gap-card
-            height: 10
-          - type: iframe
-            url: !secret bomrain_panel_url
+
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Last 365 Days
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: custom:decluttering-card
+                    template: entities-no-header
+                    variables:
+                      - entities:
+                          - entity: sensor.weather_bom_tempmax_lastyr
+                            name: BOM - Max Temp (Last 365 Days)
+                            type: custom:multiple-entity-row
+                            show_state: false
+                            entities:
+                              - attribute: max
+                                name: Max
+                              - attribute: min
+                                name: Min
+                              - attribute: avg
+                                name: Avg
+                            secondary_info:
+                              attribute: datestring
+                              name:
+                          - entity: sensor.weather_bom_tempmin_lastyr
+                            name: BOM - Min Temp (Last 365 Days)
+                            type: custom:multiple-entity-row
+                            show_state: false
+                            entities:
+                              - attribute: max
+                                name: Max
+                              - attribute: min
+                                name: Min
+                              - attribute: avg
+                                name: Avg
+                            secondary_info:
+                              attribute: datestring
+                              name:
+                          - type: section
+                          - entity: sensor.weather_home_tempmax_lastyr
+                            name: Home - Max Temp (Last 365 Days)
+                            type: custom:multiple-entity-row
+                            show_state: false
+                            entities:
+                              - attribute: max
+                                name: Max
+                              - attribute: min
+                                name: Min
+                              - attribute: avg
+                                name: Avg
+                            secondary_info:
+                              attribute: datestring
+                              name:
+                          - entity: sensor.weather_home_tempmin_lastyr
+                            name: Home - Min Temp (Last 365 Days)
+                            type: custom:multiple-entity-row
+                            show_state: false
+                            entities:
+                              - attribute: max
+                                name: Max
+                              - attribute: min
+                                name: Min
+                              - attribute: avg
+                                name: Avg
+                            secondary_info:
+                              attribute: datestring
+                              name:
+
+              - type: custom:gap-card
+                height: 10
+              - type: iframe
+                url: !secret bomtemp_panel_url
+              - type: custom:gap-card
+                height: 10
+              - type: iframe
+                url: !secret bomrain_panel_url
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

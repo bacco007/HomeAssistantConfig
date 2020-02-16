@@ -10,6 +10,8 @@
   type: module
 - url: /community_plugin/decluttering-card/decluttering-card.js
   type: module
+- url: /community_plugin/flex-table-card/flex-table-card.js
+  type: js
 - type: module
   url: '/community_plugin/harmony-card/harmony-card.js'
 - url: /community_plugin/list-card/list-card.js
@@ -20,6 +22,8 @@
   type: module
 - url: /community_plugin/lovelace-card-tools/card-tools.js
   type: module
+- url: /community_plugin/lovelace-dummy-entity-row/dummy-entity-row.js
+  type: module
 - url: /community_plugin/lovelace-fold-entity-row/fold-entity-row.js
   type: module
 - url: /community_plugin/lovelace-gap-card/gap-card.js
@@ -29,6 +33,8 @@
 - url: /community_plugin/lovelace-multiple-entity-row/multiple-entity-row.js
   type: js
 - url: /community_plugin/lovelace-slider-entity-row/slider-entity-row.js
+  type: module
+- url: /community_plugin/lovelace-state-switch/state-switch.js
   type: module
 - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
   type: module

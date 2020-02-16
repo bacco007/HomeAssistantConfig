@@ -157,17 +157,15 @@ cards:
                 - entity_id: 'binary_sensor.tbsh01_ha_dockermon*'
                   options:
                     type: custom:multiple-entity-row
-                    hide_state: true
-                    primary:
-                      attribute: memory
-                      name: Mem
-                    secondary:
-                      attribute: network_rx_total
-                      name: NetRX
-                    tertiary:
-                      attribute: network_tx_total
-                      name: NetTX
-                    info:
+                    show_state: false
+                    entities:
+                      - attribute: memory
+                        name: Mem
+                      - attribute: network_rx_total
+                        name: NetRX
+                      - attribute: network_tx_total
+                        name: NetTX
+                    secondary_info:
                       attribute: status
                       name:
               sort:
@@ -240,17 +238,15 @@ cards:
                 - entity_id: 'binary_sensor.vmtbsh01_ha_dockermon*'
                   options:
                     type: custom:multiple-entity-row
-                    hide_state: true
-                    primary:
-                      attribute: memory
-                      name: Mem
-                    secondary:
-                      attribute: network_rx_total
-                      name: NetRX
-                    tertiary:
-                      attribute: network_tx_total
-                      name: NetTX
-                    info:
+                    show_state: false
+                    entities:
+                      - attribute: memory
+                        name: Mem
+                      - attribute: network_rx_total
+                        name: NetRX
+                      - attribute: network_tx_total
+                        name: NetTX
+                    secondary_info:
                       attribute: status
                       name:
               sort:
@@ -324,17 +320,15 @@ cards:
                 - entity_id: 'binary_sensor.vmtbsh02_ha_dockermon*'
                   options:
                     type: custom:multiple-entity-row
-                    hide_state: true
-                    primary:
-                      attribute: memory
-                      name: Mem
-                    secondary:
-                      attribute: network_rx_total
-                      name: NetRX
-                    tertiary:
-                      attribute: network_tx_total
-                      name: NetTX
-                    info:
+                    show_state: false
+                    entities:
+                      - attribute: memory
+                        name: Mem
+                      - attribute: network_rx_total
+                        name: NetRX
+                      - attribute: network_tx_total
+                        name: NetTX
+                    secondary_info:
                       attribute: status
                       name:
               sort:

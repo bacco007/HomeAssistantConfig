@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, February 9th 2020_
+_Stats as at 04:59, Sunday, February 16th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.105.1 | 225     | 992         | 760 | 20 |
+| 0.105.4 | 228     | 996         | 766 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -178,6 +178,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
 - [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
+- [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
 - [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify)
 - [met](https://www.home-assistant.io/components/met)
@@ -206,6 +207,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv)
 - [remote.harmony](https://www.home-assistant.io/components/remote.harmony)
 - [sabnzbd](https://www.home-assistant.io/components/sabnzbd)
+- [samsungtv](https://www.home-assistant.io/components/samsungtv)
 - [scene](https://www.home-assistant.io/components/scene)
 - [scene.deconz](https://www.home-assistant.io/components/scene.deconz)
 - [scene.homeassistant](https://www.home-assistant.io/components/scene.homeassistant)
@@ -294,6 +296,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [system_log](https://www.home-assistant.io/components/system_log)
 - [transmission](https://www.home-assistant.io/components/transmission)
 - [tts](https://www.home-assistant.io/components/tts)
+- [uilogs](https://www.home-assistant.io/components/uilogs)
 - [unifi](https://www.home-assistant.io/components/unifi)
 - [updater](https://www.home-assistant.io/components/updater)
 - [upnp](https://www.home-assistant.io/components/upnp)
@@ -342,6 +345,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [Tvheadend recordings sensor](https://github.com/kodi1/tvh_rec)
+- [UI Logs](https://github.com/custom-components/uilogs)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 </details>

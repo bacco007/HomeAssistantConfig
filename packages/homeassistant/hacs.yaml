@@ -1,5 +1,6 @@
 ---
 hacs:
   token: !secret github_accesstoken
-  sidepanel_title: "HACS"
+  sidepanel_title: 'HACS'
+  sidepanel_icon: 'hacs:hacs'
   appdaemon: true

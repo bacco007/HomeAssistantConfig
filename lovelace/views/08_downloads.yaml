@@ -62,10 +62,17 @@ cards:
                       - sensor.sabnzbd_queue
                       - sensor.sabnzbd_queue_count
                       - sensor.sabnzbd_left
-                      - sensor.sabnzbd_daily_total
-                      - sensor.sabnzbd_weekly_total
-                      - sensor.sabnzbd_monthly_total
-                      - sensor.sabnzbd_total
+                      - entity: sensor.sabnzbd_total
+                        type: custom:multiple-entity-row
+                        name: Download Totals
+                        state_header: All
+                        entities:
+                          - entity: sensor.sabnzbd_daily_total
+                            name: Day
+                          - entity: sensor.sabnzbd_weekly_total
+                            name: Wk
+                          - entity: sensor.sabnzbd_monthly_total
+                            name: Mth
               - type: custom:decluttering-card
                 template: mini-graph
                 variables:
@@ -109,11 +116,23 @@ cards:
                         icon: mdi:transfer-down
                       - type: section
                       - sensor.transmission_status
-                      - sensor.transmission_active_torrents
-                      - sensor.transmission_completed_torrents
-                      - sensor.transmission_paused_torrents
-                      - sensor.transmission_started_torrents
-                      - sensor.transmission_total_torrents
+                      - entity: sensor.transmission_total_torrents
+                        type: custom:multiple-entity-row
+                        name: Torrents
+                        state_header: All
+                        entities:
+                          - entity: sensor.transmission_active_torrents
+                            name: Act
+                            unit: " "
+                          - entity: sensor.transmission_completed_torrents
+                            name: Comp
+                            unit: " "
+                          - entity: sensor.transmission_paused_torrents
+                            name: Pse
+                            unit: " "
+                          - entity: sensor.transmission_started_torrents
+                            name: Sta
+                            unit: " "
                       - sensor.transmission_down_speed
                       - sensor.transmission_up_speed
               - type: custom:decluttering-card

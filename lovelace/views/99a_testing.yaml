@@ -1,0 +1,53 @@
+---
+# lovelace_gen
+icon: 'mdi:laptop'
+id: 'testlayout'
+panel: true
+path: 'testlayout'
+title: 'Test Layout'
+cards:
+  # - type: custom:state-switch
+  #   entity: mediaquery
+  #   states:
+  #     "(min-width: 1000px)": !include
+  #       - ../partials/test.yaml
+  #       - colNum: 5
+  #       - cardcount: 10
+  #     "(min-width: 500px)":
+  #       type: markdown
+  #       content: 500 to 1000 px
+  #     "all":
+  #       type: markdown
+  #       content: "Small"
+  - type: custom:layout-card
+    layout: vertical
+    column_width: 100%
+    cards:
+    - type: markdown
+      content: "# Grid"
+    - type: custom:layout-card
+      layout: grid
+      gridrows: 180px 200px auto
+      gridcols: 180px auto 180px
+      cards:
+        - type: glance
+          entities:
+            - sun.sun
+          gridrow: 1 / 2
+          gridcol: 1 / 2
+          style: "ha-card { height: 100%; }"
+        - type: entities
+          entities: &ents
+            - light.lamp
+          gridrow: 1 / 3
+          gridcol: 2 / 4
+          style: "ha-card { height: 100%; }"
+        - type: markdown
+          content: test
+          gridrow: 2 / 4
+          gridcol: 1 / 2
+          style: "ha-card { height: 100%; }"
+        - type: entities
+          entities: *ents
+          gridrow: 3 / 4
+          gridcol: 2 / 3

@@ -211,40 +211,36 @@ cards:
                       - entity: sensor.fuel_bpviaduct_stats365
                         name: BP Ultimate98 (Viaduct) - Last 365 Days
                         type: custom:multiple-entity-row
-                        hide_state: true
-                        primary:
-                          entity: sensor.fuel_bpviaduct_stats365
-                          attribute: max
-                          name: Max
-                        secondary:
-                          entity: sensor.fuel_bpviaduct_stats365
-                          attribute: min
-                          name: Min
-                        tertiary:
-                          entity: sensor.fuel_bpviaduct_stats365
-                          attribute: avg
-                          name: Avg
-                        info:
+                        show_state: false
+                        entities:
+                          - entity: sensor.fuel_bpviaduct_stats365
+                            attribute: max
+                            name: Max
+                          - entity: sensor.fuel_bpviaduct_stats365
+                            attribute: min
+                            name: Min
+                          - entity: sensor.fuel_bpviaduct_stats365
+                            attribute: avg
+                            name: Avg
+                        secondary_info:
                           entity: sensor.fuel_bpviaduct_stats365
                           attribute: datestring
                           name: false
                       - entity: sensor.fuel_caltexwhite_stats365
                         name: Caltex Vortex98 (White St) - Last 365 Days
                         type: custom:multiple-entity-row
-                        hide_state: true
-                        primary:
-                          entity: sensor.fuel_caltexwhite_stats365
-                          attribute: max
-                          name: Max
-                        secondary:
-                          entity: sensor.fuel_caltexwhite_stats365
-                          attribute: min
-                          name: Min
-                        tertiary:
-                          entity: sensor.fuel_caltexwhite_stats365
-                          attribute: avg
-                          name: Avg
-                        info:
+                        show_state: false
+                        entities:
+                          - entity: sensor.fuel_caltexwhite_stats365
+                            attribute: max
+                            name: Max
+                          - entity: sensor.fuel_caltexwhite_stats365
+                            attribute: min
+                            name: Min
+                          - entity: sensor.fuel_caltexwhite_stats365
+                            attribute: avg
+                            name: Avg
+                        secondary_info:
                           entity: sensor.fuel_caltexwhite_stats365
                           attribute: datestring
                           name: false

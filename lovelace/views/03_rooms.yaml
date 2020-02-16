@@ -82,9 +82,17 @@ cards:
                               - 255
                             brightness: 255
                             icon_color: '#FF00FF'
-                      - sensor.xiaomibedroom_min_temp
-                      - sensor.xiaomibedroom_max_temp
-                      - sensor.xiaomibedroom_change_temp
+                      - entity: sensor.xiaomibedroom_change_temp
+                        type: custom:multiple-entity-row
+                        name: Temperature (24hrs)
+                        show_state: false
+                        entities:
+                          - entity: sensor.xiaomibedroom_min_temp
+                            name: Min
+                          - entity: sensor.xiaomibedroom_max_temp
+                            name: Max
+                          - entity: sensor.xiaomibedroom_change_temp
+                            name: 24hr Chg
                       - type: section
                       - sensor.bedroom_iaq_index
                       - sensor.bedroom_iaq_level
@@ -177,9 +185,17 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                      - sensor.xiaomilounge_min_temp
-                      - sensor.xiaomilounge_max_temp
-                      - sensor.xiaomilounge_change_temp
+                      - entity: sensor.xiaomilounge_change_temp
+                        type: custom:multiple-entity-row
+                        name: Temperature (24hrs)
+                        show_state: false
+                        entities:
+                          - entity: sensor.xiaomilounge_min_temp
+                            name: Min
+                          - entity: sensor.xiaomilounge_max_temp
+                            name: Max
+                          - entity: sensor.xiaomilounge_change_temp
+                            name: 24hr Chg
                       - type: section
                       - sensor.lounge_iaq_index
                       - sensor.lounge_iaq_level
