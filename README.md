@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, February 16th 2020_
+_Stats as at 04:59, Sunday, February 23rd 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.105.4 | 228     | 996         | 766 | 20 |
+| 0.105.5 | 229     | 1020         | 777 | 20 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -160,7 +160,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [ifttt](https://www.home-assistant.io/components/ifttt)
 - [influxdb](https://www.home-assistant.io/components/influxdb)
 - [ios](https://www.home-assistant.io/components/ios)
-- [kodi](https://www.home-assistant.io/components/kodi)
 - [lifx](https://www.home-assistant.io/components/lifx)
 - [light](https://www.home-assistant.io/components/light)
 - [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod)
@@ -172,11 +171,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
+- [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv)
 - [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod)
 - [media_player.cast](https://www.home-assistant.io/components/media_player.cast)
-- [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi)
 - [media_player.plex](https://www.home-assistant.io/components/media_player.plex)
 - [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv)
 - [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos)
@@ -291,11 +290,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [switch.docker_monitor](https://www.home-assistant.io/components/switch.docker_monitor)
 - [switch.template](https://www.home-assistant.io/components/switch.template)
 - [switch.transmission](https://www.home-assistant.io/components/switch.transmission)
+- [switch.tuya](https://www.home-assistant.io/components/switch.tuya)
 - [switch.unifi](https://www.home-assistant.io/components/switch.unifi)
 - [system_health](https://www.home-assistant.io/components/system_health)
 - [system_log](https://www.home-assistant.io/components/system_log)
 - [transmission](https://www.home-assistant.io/components/transmission)
 - [tts](https://www.home-assistant.io/components/tts)
+- [tuya](https://www.home-assistant.io/components/tuya)
 - [uilogs](https://www.home-assistant.io/components/uilogs)
 - [unifi](https://www.home-assistant.io/components/unifi)
 - [updater](https://www.home-assistant.io/components/updater)

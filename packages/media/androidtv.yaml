@@ -1,0 +1,8 @@
+---
+media_player:
+  - platform: androidtv
+    name: Foxtel Now Box
+    host: 192.168.1.70
+    adb_server_ip: 127.0.0.1
+    adb_server_port: 5037
+    adbkey: "/config/.androidkeys/adbkey"

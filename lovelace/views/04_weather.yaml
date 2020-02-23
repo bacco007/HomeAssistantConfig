@@ -270,6 +270,107 @@ cards:
                           attribute: date
                           name:
 
+      - type: vertical-stack
+        cards:
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: custom:decluttering-card
+                template: title
+                variables:
+                  - title: Rain Intensity
+              - type: custom:vertical-stack-in-card
+                cards:
+                - type: custom:decluttering-card
+                  template: entities-no-header
+                  variables:
+                    - entities:
+                      - entity: sensor.aep_5min_weekly
+                        type: custom:multiple-entity-row
+                        name: Home - 5min (This Week)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+                      - entity: sensor.aep_20min_weekly
+                        type: custom:multiple-entity-row
+                        name: Home - 20min (This Week)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+                      - entity: sensor.aep_1hour_weekly
+                        type: custom:multiple-entity-row
+                        name: Home - 1hr (This Week)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+                      - entity: sensor.aep_2hour_weekly
+                        type: custom:multiple-entity-row
+                        name: Home - 2hr (This Week)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+                      - entity: sensor.aep_6hour_weekly
+                        type: custom:multiple-entity-row
+                        name: Home - 6hr (This Week)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+                      - type: section
+                      - entity: sensor.aep_6hour_yearly
+                        type: custom:multiple-entity-row
+                        name: Home - 6hr (Last 365 Days)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+                      - entity: sensor.aep_20min_yearly
+                        type: custom:multiple-entity-row
+                        name: Home - 20min (Last 365 Days)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
+
           - type: vertical-stack
             style: !include ../includes/style.yaml
             cards:
@@ -349,7 +450,7 @@ cards:
                 height: 10
               - type: iframe
                 url: !secret bomrain_panel_url
-
+ 
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:

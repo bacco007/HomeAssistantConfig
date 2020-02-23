@@ -34,11 +34,9 @@ class SearchCard extends ct.LitElement {
     this.config = config;
 
     this.active_actions = [];
-    if (!this.config.max_results) {
-      this.config.max_results = 10;
-    }
+    this.max_results = this.config.max_results || 10;
 
-    this.config.actions = BUILTIN_ACTIONS.concat(this.config.actions || []);
+    this.actions = BUILTIN_ACTIONS.concat(this.config.actions || []);
   }
 
   getCardSize() {
@@ -46,7 +44,7 @@ class SearchCard extends ct.LitElement {
   }
 
   render() {
-      var results = this.results.slice(0, this.config.max_results).sort();
+      var results = this.results.slice(0, this.max_results).sort();
       var rows = results.map((entity_id) => this._createResultRow(entity_id));
       var actions = this.active_actions.map((x) => this._createActionRow(x[0], x[1]));
       return ct.LitHtml `
@@ -142,7 +140,7 @@ class SearchCard extends ct.LitElement {
   _getActivatedActions(searchText) {
     var active = [];
 
-    for (const action of this.config.actions) {
+    for (const action of this.actions) {
       if (this._serviceExists(action.service)) {
         var matches = searchText.match(action.matches);
         if (matches != null) {

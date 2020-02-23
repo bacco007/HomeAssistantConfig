@@ -862,3 +862,4 @@ style() {
 // ##### Register the card as a customElement
 // #####
 customElements.define('bom-weather-card', BOMWeatherCard);
+

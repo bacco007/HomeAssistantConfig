@@ -23,7 +23,7 @@ class RGBLightCard extends HTMLElement {
         for (const color of this.config.colors) {
             const element = document.createElement('div');
             element.className = 'color-circle';
-            element.style = `background:${RGBLightCard.getCSSColor(color)}`;
+            element.style.background = RGBLightCard.getCSSColor(color);
             element.addEventListener('click', () => this.applyColor(color));
             this.content.appendChild(element);
         }
@@ -35,7 +35,7 @@ class RGBLightCard extends HTMLElement {
         style.textContent = `
         .wrapper { justify-content: ${RGBLightCard.getJustify(this.config.justify)}; margin-bottom: -${s / 8}px; }
         .color-circle {  width: ${s}px; height: ${s}px; margin: ${s / 8}px ${s / 4}px ${s / 4}px; }
-        `;
+        `.replace(/\s\s+/g, ' ');
         return style;
     }
 
@@ -50,38 +50,44 @@ class RGBLightCard extends HTMLElement {
         .color-circle:hover {
             box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12)
         }
-        `;
+        `.replace(/\s\s+/g, ' ');
         return style;
     }
 
     setConfig(config) {
+        config = RGBLightCard.ensureBackwardCompatibility(config);
+
         // Colors must be a defined array
         if (!Array.isArray(config.colors)) {
             throw new Error('You need to define an array of colors');
         }
         // If root entity is defined, it can only be a light
         if (config.entity && config.entity.indexOf('light.') !== 0) {
-            throw new Error(`entity '${config.entity}' must be a light`);
+            throw new Error(`Entity '${config.entity}' must be a light`);
         }
         // Validate each color
         for (const c in config.colors) {
             const color = config.colors[c];
             const type = color.type || 'light';
             // Check if type is valid
-            if (['light', 'script', 'scene'].indexOf(type) === -1) {
+            if (['light', 'call-service'].indexOf(type) === -1) {
                 throw new Error(`Invalid type '${type}' for colors[${c}]`);
             }
             // If root entity is not defined, ensure light entity_id is defined
             if (type === 'light' && !config.entity && !color.entity_id) {
                 throw new Error(`You need to define entity or colors[${c}].entity_id`);
             }
-            // If scene or script, ensure entity_id is defined
-            if (type !== 'light' && !color.entity_id) {
-                throw new Error(`You need to define colors[${c}].entity_id`);
+            // If entity_id is defined, check that it's a valid light
+            if (type === 'light' && color.entity_id && color.entity_id.indexOf('light.') !== 0) {
+                throw new Error(`colors[${c}].entity_id '${color.entity_id}' must be a valid light entity`);
             }
-            // Check that entity_id is valid
-            if (color.entity_id && color.entity_id.indexOf(type + '.') !== 0) {
-                throw new Error(`colors[${c}].entity_id '${color.entity_id}' must be a ${type}`);
+            // If call-service, ensure service is defined
+            if (type === 'call-service' && !color.service) {
+                throw new Error(`You need to define colors[${c}].service`);
+            }
+            // Check that service is valid
+            if (type === 'call-service' && color.service.split('.').length !== 2) {
+                throw new Error(`colors[${c}].service '${color.service}' must be a valid service`);
             }
         }
 
@@ -93,8 +99,36 @@ class RGBLightCard extends HTMLElement {
     }
 
     applyColor(color) {
+        if (color.type === 'call-service') {
+            const [domain, service] = color.service.split('.');
+            this._hass.callService(domain, service, color.service_data || {});
+            return;
+        }
         const serviceData = { entity_id: this.config.entity, ...color, icon_color: undefined, type: undefined };
-        this._hass.callService(color.type || 'light', 'turn_on', serviceData);
+        this._hass.callService('light', 'turn_on', serviceData);
+    }
+
+    // Transform a deprecated config into a more recent one
+    static ensureBackwardCompatibility(config) {
+        if (!config.colors || !Array.isArray(config.colors)) {
+            return config;
+        }
+        config.colors = config.colors.map((color, c) => {
+            if (color && ['script', 'scene'].indexOf(color.type) > -1) {
+                if (!color.entity_id) {
+                    throw new Error(`You need to define colors[${c}].entity_id`);
+                }
+                if (color.entity_id && color.entity_id.indexOf(color.type + '.') !== 0) {
+                    throw new Error(`colors[${c}].entity_id '${color.entity_id}' must be a ${color.type}`);
+                }
+                color.service = `${color.type}.turn_on`;
+                color.service_data = { entity_id: color.entity_id };
+                color.type = 'call-service';
+                color.entity_id = undefined;
+            }
+            return color;
+        });
+        return config;
     }
 
     static getCSSColor(color) {
@@ -127,3 +161,10 @@ class RGBLightCard extends HTMLElement {
 }
 
 customElements.define('rgb-light-card', RGBLightCard);
+
+console.info(
+    '\n %c RGB Light Card %c v1.4.0 %c \n',
+    'background-color: #555;color: #fff;padding: 4px 2px 4px 4px;border-radius: 3px 0 0 3px;font-family: DejaVu Sans,Verdana,Geneva,sans-serif;text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3)',
+    'background-color: #bc81e0;background-image: linear-gradient(90deg, #b65cff, #11cbfa);color: #fff;padding: 4px 4px 4px 2px;border-radius: 0 3px 3px 0;font-family: DejaVu Sans,Verdana,Geneva,sans-serif;text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3)',
+    'background-color: transparent'
+);

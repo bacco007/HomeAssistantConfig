@@ -30,15 +30,15 @@ def fetch_data(a, url, recs):
     s['ent'] = []
     for e in r.json()['entries']:
       _s = {
-        'status': e['status'],
-        'channelname': e['channelname'],
-        'disp_title': e['disp_title'],
-        'disp_subtitle': e['disp_subtitle'],
-        'channel_icon': e['channel_icon'],
-        'start': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(e['start'])),
-        'duration': e['duration'],
-        'episode_disp': e['episode_disp'],
-        'image': e['image'],
+        'status': e.get('status'),
+        'channelname': e.get('channelname'),
+        'disp_title': e.get('disp_title'),
+        'disp_subtitle': e.get('disp_subtitle'),
+        'channel_icon': e.get('channel_icon'),
+        'start': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(e.get('start'))),
+        'duration': e.get('duration'),
+        'episode_disp': e.get('episode_disp'),
+        'image': e.get('image'),
       }
       s['ent'].append(_s)
   else:
