@@ -22,32 +22,32 @@ sensor:
 
       sun_nextdawn:
         friendly_name: Next Dawn
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dawn) | timestamp_custom('%a %H:%m') }}"
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dawn) | timestamp_custom('%a %H:%M') }}"
         icon_template: mdi:weather-sunset-up
 
       sun_nextdusk:
         friendly_name: Next Dusk
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dusk) | timestamp_custom('%a %H:%m') }}"
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dusk) | timestamp_custom('%a %H:%M') }}"
         icon_template: mdi:weather-sunset-down
 
       sun_nextmidnight:
         friendly_name: Next Midnight
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_midnight) | timestamp_custom('%a %H:%m') }}"
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_midnight) | timestamp_custom('%a %H:%M') }}"
         icon_template: mdi:weather-night
 
       sun_nextnoon:
         friendly_name: Next Noon
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_noon) | timestamp_custom('%a %H:%m') }}"
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_noon) | timestamp_custom('%a %H:%M') }}"
         icon_template: mdi:weather-sunny
 
       sun_nextrising:
         friendly_name: Next Rising
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%a %H:%m') }}"
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%a %H:%M') }}"
         icon_template: mdi:weather-sunset-up
 
       sun_nextsetting:
         friendly_name: Next Setting
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%a %H:%m') }}"
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%a %H:%M') }}"
         icon_template: mdi:weather-sunset-down
 
       sun_solarangle:
