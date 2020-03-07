@@ -179,54 +179,54 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                    - type: custom:auto-entities
-                      card:
-                        type: custom:fold-entity-row
-                        head:
-                          type: custom:dummy-entity-row
-                          entity: sun.sun
-                          icon: mdi:home-assistant
-                          name: Broken / Unknown States
-                        group_config:
-                          secondary_info: last-changed
-                        style: |
-                          state-badge {
-                            margin: 0 !important;
-                          }
-                          .entities {
-                            padding-top: 2px !important;
-                          }
-                      filter:
-                        include:
-                          - { state: unknown }
-                        exclude:
-                          - { domain: group }
-                      sort:
-                        method: entity_id
-                    - type: custom:auto-entities
-                      card:
-                        type: custom:fold-entity-row
-                        head:
-                          type: custom:dummy-entity-row
-                          entity: sun.sun
-                          icon: mdi:home-assistant
-                          name: Unavailable States
-                        group_config:
-                          secondary_info: last-changed
-                        style: |
-                          state-badge {
-                            margin: 0 !important;
-                          }
-                          .entities {
-                            padding-top: 2px !important;
-                          }
-                      filter:
-                        include:
-                          - { state: unavailable }
-                        exclude:
-                          - { domain: group }
-                      sort:
-                        method: entity_id
+                      - type: custom:auto-entities
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            type: custom:dummy-entity-row
+                            entity: sun.sun
+                            icon: mdi:home-assistant
+                            name: Broken / Unknown States
+                          group_config:
+                            secondary_info: last-changed
+                          style: |
+                            state-badge {
+                              margin: 0 !important;
+                            }
+                            .entities {
+                              padding-top: 2px !important;
+                            }
+                        filter:
+                          include:
+                            - { state: unknown }
+                          exclude:
+                            - { domain: group }
+                        sort:
+                          method: entity_id
+                      - type: custom:auto-entities
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            type: custom:dummy-entity-row
+                            entity: sun.sun
+                            icon: mdi:home-assistant
+                            name: Unavailable States
+                          group_config:
+                            secondary_info: last-changed
+                          style: |
+                            state-badge {
+                              margin: 0 !important;
+                            }
+                            .entities {
+                              padding-top: 2px !important;
+                            }
+                        filter:
+                          include:
+                            - { state: unavailable }
+                          exclude:
+                            - { domain: group }
+                        sort:
+                          method: entity_id
       - break
 
       # Column 2 (Middle)
@@ -404,3 +404,40 @@ cards:
                       - entity: sensor.github_issues
                       - entity: sensor.github_stars
                       - entity: sensor.github_subscribers
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Home Assistant Supervisor
+          - type: custom:vertical-stack-in-card
+            cards:
+              # - type: custom:decluttering-card
+              #   template: entities-no-header
+              #   variables:
+              #     - entities:
+              #         - entity: sensor.vmtbsh02_uptime
+              #           name: Server Uptime
+              #           icon: mdi:server
+              - type: custom:flex-table-card
+                style: >
+                  font-family: { var(--primary-font-family);}
+                  font-weight: {400 !important;}
+                sort_by: name+
+                clickable: true
+                css:
+                  table+: 'border: 0; padding-left: 16px; padding-right: 16px'
+                entities:
+                  include: sensor.hasupervisor_addon_*
+                columns:
+                  - name: Name
+                    prop: name
+                  - name: State
+                    prop: state
+                  - name: Inst
+                    attr: version
+                    align: right
+                  - name: Curr
+                    attr: last_version
+                    align: right

@@ -19,34 +19,29 @@ cards:
   #     "all":
   #       type: markdown
   #       content: "Small"
-  - type: custom:layout-card
-    layout: vertical
-    column_width: 100%
-    cards:
-    - type: markdown
-      content: "# Grid"
+
     - type: custom:layout-card
       layout: grid
       gridrows: 180px 200px auto
-      gridcols: 180px auto 180px
+      gridcols: 200px auto 200px
       cards:
-        - type: glance
+        - type: entities
           entities:
             - sun.sun
-          gridrow: 1 / 2
+          gridrow: 1 / 4
           gridcol: 1 / 2
-          style: "ha-card { height: 100%; }"
+          style: 'ha-card { height: 100%; margin-top: 4px !important;} '
         - type: entities
           entities: &ents
             - light.lamp
           gridrow: 1 / 3
           gridcol: 2 / 4
-          style: "ha-card { height: 100%; }"
+          style: 'ha-card { height: 100%; }'
         - type: markdown
           content: test
-          gridrow: 2 / 4
+          gridrow: 4 / 5
           gridcol: 1 / 2
-          style: "ha-card { height: 100%; }"
+          style: 'ha-card { height: 100%; }'
         - type: entities
           entities: *ents
           gridrow: 3 / 4

@@ -17,6 +17,52 @@ cards:
             template: time-card
 
       - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Coronavirus
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.worldwide_confirmed
+                        name: COVID-19 - Worldwide
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.worldwide_confirmed
+                            name: Confirmed
+                            unit: " "
+                          - entity: sensor.worldwide_recovered
+                            name: Recovered
+                            unit: " "
+                          - entity: sensor.worldwide_deaths
+                            name: Deaths
+                            unit: " "
+                      - entity: sensor.australia_confirmed
+                        name: COVID-19 - Australia
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.australia_confirmed
+                            name: Confirmed
+                            unit: " "
+                          - entity: sensor.australia_recovered
+                            name: Recovered
+                            unit: " "
+                          - entity: sensor.australia_deaths
+                            name: Deaths
+                            unit: " "
+
+      - type: vertical-stack
         cards:
           - type: vertical-stack
             style: !include ../includes/style.yaml

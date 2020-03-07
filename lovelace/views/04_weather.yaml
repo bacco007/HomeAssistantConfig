@@ -297,6 +297,18 @@ cards:
                         secondary_info:
                           attribute: time
                           name:
+                      - entity: sensor.aep_10min_weekly
+                        type: custom:multiple-entity-row
+                        name: Home - 10min (This Week)
+                        state_header: max
+                        entities:
+                          - attribute: aep
+                            name: "AEP %"
+                          - attribute: ey
+                            name: EY
+                        secondary_info:
+                          attribute: time
+                          name:
                       - entity: sensor.aep_20min_weekly
                         type: custom:multiple-entity-row
                         name: Home - 20min (This Week)

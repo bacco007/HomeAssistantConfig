@@ -63,11 +63,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, February 23rd 2020_
+_Stats as at 04:59, Saturday, March 7th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.105.5 | 229     | 1020         | 777 | 20 |
+| 0.106.5 | 236     | 1125         | 851 | 21 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -97,6 +97,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [binary_sensor.browser_mod](https://www.home-assistant.io/components/binary_sensor.browser_mod)
 - [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud)
 - [binary_sensor.deconz](https://www.home-assistant.io/components/binary_sensor.deconz)
+- [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome)
 - [binary_sensor.hadockermon](https://www.home-assistant.io/components/binary_sensor.hadockermon)
 - [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss)
 - [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app)
@@ -126,6 +127,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [config](https://www.home-assistant.io/components/config)
 - [configurator](https://www.home-assistant.io/components/configurator)
 - [conversation](https://www.home-assistant.io/components/conversation)
+- [coronavirus](https://www.home-assistant.io/components/coronavirus)
 - [cover](https://www.home-assistant.io/components/cover)
 - [cover.deconz](https://www.home-assistant.io/components/cover.deconz)
 - [deconz](https://www.home-assistant.io/components/deconz)
@@ -137,13 +139,16 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [discovery](https://www.home-assistant.io/components/discovery)
 - [docker_monitor](https://www.home-assistant.io/components/docker_monitor)
 - [dyson](https://www.home-assistant.io/components/dyson)
+- [esphome](https://www.home-assistant.io/components/esphome)
 - [fan](https://www.home-assistant.io/components/fan)
 - [fan.dyson](https://www.home-assistant.io/components/fan.dyson)
 - [favicon](https://www.home-assistant.io/components/favicon)
 - [fontawesome](https://www.home-assistant.io/components/fontawesome)
 - [frontend](https://www.home-assistant.io/components/frontend)
 - [garbage_collection](https://www.home-assistant.io/components/garbage_collection)
+- [gdacs](https://www.home-assistant.io/components/gdacs)
 - [geo_location](https://www.home-assistant.io/components/geo_location)
+- [geo_location.gdacs](https://www.home-assistant.io/components/geo_location.gdacs)
 - [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed)
 - [geo_location.wwlln](https://www.home-assistant.io/components/geo_location.wwlln)
 - [glances](https://www.home-assistant.io/components/glances)
@@ -171,7 +176,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
-- [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv)
 - [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod)
@@ -223,13 +227,16 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod)
 - [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry)
 - [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line)
+- [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus)
 - [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz)
 - [sensor.docker_monitor](https://www.home-assistant.io/components/sensor.docker_monitor)
 - [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock)
 - [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson)
+- [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome)
 - [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser)
 - [sensor.filter](https://www.home-assistant.io/components/sensor.filter)
 - [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection)
+- [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs)
 - [sensor.glances](https://www.home-assistant.io/components/sensor.glances)
 - [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs)
 - [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time)
@@ -288,9 +295,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [switch.command_line](https://www.home-assistant.io/components/switch.command_line)
 - [switch.deconz](https://www.home-assistant.io/components/switch.deconz)
 - [switch.docker_monitor](https://www.home-assistant.io/components/switch.docker_monitor)
+- [switch.esphome](https://www.home-assistant.io/components/switch.esphome)
 - [switch.template](https://www.home-assistant.io/components/switch.template)
 - [switch.transmission](https://www.home-assistant.io/components/switch.transmission)
-- [switch.tuya](https://www.home-assistant.io/components/switch.tuya)
 - [switch.unifi](https://www.home-assistant.io/components/switch.unifi)
 - [system_health](https://www.home-assistant.io/components/system_health)
 - [system_log](https://www.home-assistant.io/components/system_log)

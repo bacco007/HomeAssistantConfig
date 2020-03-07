@@ -1,0 +1,12 @@
+---
+mqtt:
+  broker: 127.0.0.1
+  username: mqtt
+  password: mqtt
+  discovery: true
+  birth_message:
+    topic: 'ha/status'
+    payload: 'online'
+  will_message:
+    topic: 'ha/status'
+    payload: 'offline'

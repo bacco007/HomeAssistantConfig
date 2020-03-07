@@ -6,7 +6,7 @@ homeassistant:
     sensor.datetracking_henrybirthday:
       friendly_name: Henry's Birthday
     sensor.datetracking_patrickbirthday:
-      friendly_name: Henry's Birthday
+      friendly_name: Patrick's Birthday
     sensor.datetracking_mumbirthday:
       friendly_name: Mum's Birthday
     sensor.datetracking_dadbirthday:

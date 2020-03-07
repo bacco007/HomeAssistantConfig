@@ -16,18 +16,7 @@ cards:
         cards:
           - type: custom:decluttering-card
             template: time-card
-      - type: custom:harmony-card
-        entity: remote.harmony_hub
-        volume_entity: media_player.apple_tv_bedroom
-        activities:
-          - name: 'Watch TV'
-            device: Samsung TV
-          - name: 'Watch Apple TV'
-            device: Apple TV
-          - name: 'Watch Smart TV'
-            device: Samsung TV
-          - name: 'Watch Roku'
-            device: Telstra TV 2
+
       - type: custom:layout-card
         min_columns: 4
         max_columns: 4

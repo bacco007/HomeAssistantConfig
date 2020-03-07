@@ -96,6 +96,35 @@ cards:
                       - type: section
                       - sensor.bedroom_iaq_index
                       - sensor.bedroom_iaq_level
+                      - type: section
+                      - entity: binary_sensor.switchmonusb_01_status
+                        type: custom:multiple-entity-row
+                        name: Switch 1 (Left)
+                        icon: mdi:toggle-switch
+                        show_state: false
+                        entities:
+                          - entity: sensor.switchmonusb_01_current
+                            name: Current
+                          - entity: sensor.switchmonusb_01_voltage
+                            name: Voltage
+                          - entity: sensor.switchmonusb_01_wattage
+                            name: Wattage
+                          - entity: sensor.switchmonusb_01_daily_energy
+                            name: Energy
+                      - entity: binary_sensor.switchmonusb_02_status
+                        type: custom:multiple-entity-row
+                        name: Switch 2 (Right)
+                        icon: mdi:toggle-switch
+                        show_state: false
+                        entities:
+                          - entity: sensor.switchmonusb_02_current
+                            name: Current
+                          - entity: sensor.switchmonusb_02_voltage
+                            name: Voltage
+                          - entity: sensor.switchmonusb_02_wattage
+                            name: Wattage
+                          - entity: sensor.switchmonusb_02_daily_energy
+                            name: Energy
               - type: custom:decluttering-card
                 template: mini-graph
                 variables:

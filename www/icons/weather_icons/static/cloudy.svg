@@ -1,33 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- (c) ammap.com | SVG weather icons -->
-<svg
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="64"
-    height="64"
-    viewbox="0 0 64 64">
-    <defs>
-        <filter id="blur" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-            <feOffset dx="0" dy="4" result="offsetblur"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.05"/>
-            </feComponentTransfer>
-            <feMerge> 
-                <feMergeNode/>
-                <feMergeNode in="SourceGraphic"/> 
-            </feMerge>
-        </filter>
-    </defs>
-    <g filter="url(#blur)" id="cloudy">
-        <g transform="translate(20,10)">
-            <g class="am-weather-cloud-1">
-                <path d="M47.7,35.4     c0-4.6-3.7-8.2-8.2-8.2c-1,0-1.9,0.2-2.8,0.5c-0.3-3.4-3.1-6.2-6.6-6.2c-3.7,0-6.7,3-6.7,6.7c0,0.8,0.2,1.6,0.4,2.3     c-0.3-0.1-0.7-0.1-1-0.1c-3.7,0-6.7,3-6.7,6.7c0,3.6,2.9,6.6,6.5,6.7l17.2,0C44.2,43.3,47.7,39.8,47.7,35.4z" fill="#91C0F8" stroke="white" stroke-linejoin="round" stroke-width="1.2" transform="translate(-10,-8), scale(0.6)"/>
-            </g>
-            <g class="am-weather-cloud-2">
-                <path d="M47.7,35.4     c0-4.6-3.7-8.2-8.2-8.2c-1,0-1.9,0.2-2.8,0.5c-0.3-3.4-3.1-6.2-6.6-6.2c-3.7,0-6.7,3-6.7,6.7c0,0.8,0.2,1.6,0.4,2.3     c-0.3-0.1-0.7-0.1-1-0.1c-3.7,0-6.7,3-6.7,6.7c0,3.6,2.9,6.6,6.5,6.7l17.2,0C44.2,43.3,47.7,39.8,47.7,35.4z" fill="#57A0EE" stroke="#FFFFFF" stroke-linejoin="round" stroke-width="1.2" transform="translate(-20,-11)"/>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0"?>
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <style>
+  <![CDATA[#exkj448c93ak3_to {animation: exkj448c93ak3_to__to 9000ms linear infinite normal forwards}@keyframes exkj448c93ak3_to__to { 0% {transform: translate(0px,0px)} 22.222222% {transform: translate(0px,0px)} 44.444444% {transform: translate(96px,0px)} 66.666667% {transform: translate(96px,0px)} 88.888889% {transform: translate(0px,0px)} 100% {transform: translate(0px,0px)} }]]>
+ </style>
+ <g class="layer">
+  <title>Layer 1</title>
+  <g id="exkj448c93ak3_to"/>
+  <g id="svg_1">
+   <path d="m556.864,338.032c-14.944,-74.016 -79.776,-128.032 -156.864,-128.032c-64.032,0 -121.504,38.112 -146.688,96.032c-60.512,1.44 -109.312,51.104 -109.312,111.968c0,61.76 50.24,112 112,112l304,0c52.928,0 96,-43.072 96,-96c0,-53.984 -45.536,-97.344 -99.136,-95.968z" fill="#C6DEFF" id="exkj448c93ak2"/>
+   <path d="m480,466c-1.408,0 -2.784,0.032 -4.128,0.096c-14.24,-55.808 -64.864,-96.096 -123.872,-96.096c-45.6,0 -87.968,24.8 -110.752,64c-0.416,0 -0.832,0 -1.248,0c-52.928,0 -96,43.072 -96,96c0,52.928 43.072,96 96,96l240,0c44.128,0 80,-35.872 80,-80c0,-44.128 -35.872,-80 -80,-80z" fill="#57A0EE" id="exkj448c93ak3"/>
+  </g>
+ </g>
 </svg>

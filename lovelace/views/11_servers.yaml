@@ -60,7 +60,7 @@ cards:
                     theme: default
                     type: gauge
                     unit: '%'
-                  - entity: sensor.pvetbsh_disk_used_percent
+                  - entity: sensor.pvetbsh_used_percent
                     max: 100
                     min: 0
                     name: HDD Used
@@ -107,7 +107,7 @@ cards:
                     theme: default
                     type: gauge
                     unit: '%'
-                  - entity: sensor.piserv_disk_used_percent
+                  - entity: sensor.piserv_used_percent
                     max: 100
                     min: 0
                     name: HDD Used
@@ -205,7 +205,7 @@ cards:
                     theme: default
                     type: gauge
                     unit: '%'
-                  - entity: sensor.tbsh01_disk_used_percent
+                  - entity: sensor.tbsh01_etc_hostname_used_percent
                     max: 100
                     min: 0
                     name: HDD Used
@@ -303,7 +303,7 @@ cards:
                     theme: default
                     type: gauge
                     unit: '%'
-                  - entity: sensor.vmtbsh01_disk_used_percent
+                  - entity: sensor.vmtbsh01_etc_hostname_used_percent
                     max: 100
                     min: 0
                     name: HDD Used
@@ -401,7 +401,7 @@ cards:
                     theme: default
                     type: gauge
                     unit: '%'
-                  - entity: sensor.vmtbsh02_disk_used_percent
+                  - entity: sensor.vmtbsh02_etc_hostname_used_percent
                     max: 100
                     min: 0
                     name: HDD Used

@@ -53,8 +53,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 
-async def async_setup_platform(hass, config, async_add_entities,
-                               discovery_info=None):
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the device."""
     from pydockermon.api import API
 
@@ -73,9 +72,9 @@ async def async_setup_platform(hass, config, async_add_entities,
     await api.list_containers()
     for container in api.all_containers['data']:
         if not containers or container in containers:
-            if not container.startswith("addon_"):
-                devices.append(HADockermonSwitch(api, device_name, stats,
-                                                 container, host))
+            # if not container.startswith("addon_"):
+            devices.append(HADockermonSwitch(api, device_name, stats,
+            container, host))
 
     async_add_entities(devices, True)
 
@@ -122,7 +121,10 @@ class HADockermonSwitch(BinarySensorDevice):
 
             if data:
                 memory_usage = data['memory_stats']['usage']/1024/1024
-                self._memory_usage = str(round(memory_usage, 2)) + 'MB'
+                if memory_usage:
+                    self._memory_usage = str(round(memory_usage, 2)) + 'MB'
+                else:
+                    self._memory_usage = str(0) + 'MB'
 
                 if 'networks' in data:
                     self._network_stats = 'available'
@@ -131,6 +133,15 @@ class HADockermonSwitch(BinarySensorDevice):
                     net_tx_total = stats_eth0['tx_bytes']/1024/1024
                     self._network_rx_total = str(round(net_rx_total, 2)) + 'MB'
                     self._network_tx_total = str(round(net_tx_total, 2)) + 'MB'
+                else:
+                    self._network_stats = 'available'
+                    self._network_rx_total = str(0) + 'MB'
+                    self._network_tx_total = str(0) + 'MB'
+            else:
+                self._memory_usage = str(0) + 'MB'
+                self._network_stats = 'available'
+                self._network_rx_total = str(0) + 'MB'
+                self._network_tx_total = str(0) + 'MB'
 
 
     @property

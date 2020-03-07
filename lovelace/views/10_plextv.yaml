@@ -61,6 +61,15 @@ cards:
                       - sensor.plex_toptvshow
                       - sensor.plex_topuser
                       - type: section
+                      - entity: sensor.plexstats_moviecount
+                        name: Plex - No. Movies
+                      - entity: sensor.plexstats_tvshowcount
+                        name: Plex - No. TV Shows
+                      - entity: sensor.plexstats_tvseasoncount
+                        name: Plex - No. TV Seasons
+                      - entity: sensor.plexstats_tvepisodecount
+                        name: Plex - No. TV Episodes
+                      - type: section
                       - sensor.plex_lanbandwidth
                       - sensor.plex_wanbandwidth
               - type: custom:decluttering-card

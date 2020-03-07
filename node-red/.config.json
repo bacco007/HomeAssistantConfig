@@ -414,7 +414,7 @@
   },
   "node-red-contrib-cast": {
    "name": "node-red-contrib-cast",
-   "version": "0.2.13",
+   "version": "0.2.14",
    "local": false,
    "nodes": {
     "cast-to-client": {
@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.19.5",
+   "version": "0.20.2",
    "local": false,
    "nodes": {
     "server": {
@@ -961,7 +961,7 @@
   },
   "node-red-dashboard": {
    "name": "node-red-dashboard",
-   "version": "2.19.3",
+   "version": "2.19.4",
    "local": false,
    "nodes": {
     "ui_base": {
@@ -1195,7 +1195,7 @@
   },
   "node-red-node-email": {
    "name": "node-red-node-email",
-   "version": "1.7.6",
+   "version": "1.7.7",
    "local": false,
    "nodes": {
     "email": {
