@@ -71,11 +71,11 @@
     },
     "e663f7e9_a5b388": {
       "lastPayload": {
-        "state": 30.783,
+        "state": 30.794,
         "attributes": {
           "max": 41.3,
-          "min": 20.8,
-          "avg": 30.783,
+          "min": 21.6,
+          "avg": 30.794,
           "mindate": "14 Mar 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 14 Mar 2020 - Max: 05 Jan 2020"
