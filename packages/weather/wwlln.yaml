@@ -6,7 +6,6 @@ homeassistant:
 
 wwlln:
   radius: 50
-  window: 10
 
 sensor:
   - platform: template
