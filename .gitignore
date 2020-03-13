@@ -1,7 +1,6 @@
 # Ignore Folders
 .storage
 .cloud
-.androidkeys
 .google.token
 .backup
 __pycache__
@@ -16,12 +15,21 @@ custom_components_dev
 *.conf
 *.pickle
 *.pyc
+*.crt
+*.csr
+*.key
+
+# Temporary files
+*.db-journal
+*.pid
 
 # Ignore Specific Files
 ._*
 .DS_Store
 .spotify-token-cache
 .uuid
+.androidkeys/adbkey
+.androidkeys/adbkey.pub
 secrets.yaml
 known_devices.yaml
 home-assistant_v2.db
@@ -34,3 +42,5 @@ www/images/radar_namoi_128km.gif
 yamllinterrors.txt
 README_Dev.md
 zigbee.db
+
+!.androidkeys/fake_adbkey

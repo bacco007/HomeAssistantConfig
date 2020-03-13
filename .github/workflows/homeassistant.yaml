@@ -38,6 +38,8 @@ jobs:
         uses: actions/checkout@master
       - name: Create secrets.yaml
         run: mv fake_secrets.yaml secrets.yaml
+      - name: Move ADBKey
+        run: mv .androidkeys/fake_adbkey .androidkeys/adbkey
       - name: Home Assistant Version
         uses: 'docker://homeassistant/home-assistant:stable'
         with:
@@ -55,6 +57,8 @@ jobs:
         uses: actions/checkout@master
       - name: Create secrets.yaml
         run: mv fake_secrets.yaml secrets.yaml
+      - name: Move ADBKey
+        run: mv .androidkeys/fake_adbkey .androidkeys/adbkey
       - name: Home Assistant Version
         uses: 'docker://homeassistant/home-assistant:beta'
         with:
