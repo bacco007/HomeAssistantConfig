@@ -15,6 +15,8 @@ _Please :star: this repo if you find it useful_
 ![Licence](https://img.shields.io/badge/license-Unlicense-blue.svg?style=flat-square)
 ![Twitter Follow](https://img.shields.io/twitter/follow/bacco007?style=social)
 
+[![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
+
 ---
 
 ## Table of Contents
@@ -63,11 +65,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, March 7th 2020_
+_Stats as at 10:23, Saturday, March 14th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.106.5 | 236     | 1125         | 851 | 21 |
+| 0.106.6 | 226     | 1153         | 865 | 21 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -81,8 +83,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Integrations List</summary>
 
 
-- [air_quality](https://www.home-assistant.io/components/air_quality)
-- [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson)
 - [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel)
 - [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media)
 - [alexa_media](https://www.home-assistant.io/components/alexa_media)
@@ -121,7 +121,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [cert_expiry](https://www.home-assistant.io/components/cert_expiry)
 - [climate](https://www.home-assistant.io/components/climate)
 - [climate.deconz](https://www.home-assistant.io/components/climate.deconz)
-- [climate.dyson](https://www.home-assistant.io/components/climate.dyson)
 - [climate.netatmo](https://www.home-assistant.io/components/climate.netatmo)
 - [cloud](https://www.home-assistant.io/components/cloud)
 - [config](https://www.home-assistant.io/components/config)
@@ -133,15 +132,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [deconz](https://www.home-assistant.io/components/deconz)
 - [device_automation](https://www.home-assistant.io/components/device_automation)
 - [device_tracker](https://www.home-assistant.io/components/device_tracker)
-- [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud)
 - [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app)
 - [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi)
 - [discovery](https://www.home-assistant.io/components/discovery)
 - [docker_monitor](https://www.home-assistant.io/components/docker_monitor)
 - [dyson](https://www.home-assistant.io/components/dyson)
 - [esphome](https://www.home-assistant.io/components/esphome)
-- [fan](https://www.home-assistant.io/components/fan)
-- [fan.dyson](https://www.home-assistant.io/components/fan.dyson)
 - [favicon](https://www.home-assistant.io/components/favicon)
 - [fontawesome](https://www.home-assistant.io/components/fontawesome)
 - [frontend](https://www.home-assistant.io/components/frontend)
@@ -231,7 +227,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz)
 - [sensor.docker_monitor](https://www.home-assistant.io/components/sensor.docker_monitor)
 - [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock)
-- [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson)
 - [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome)
 - [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser)
 - [sensor.filter](https://www.home-assistant.io/components/sensor.filter)
@@ -241,7 +236,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs)
 - [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time)
 - [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk)
-- [sensor.icloud](https://www.home-assistant.io/components/sensor.icloud)
 - [sensor.ios](https://www.home-assistant.io/components/sensor.ios)
 - [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app)
 - [sensor.moon](https://www.home-assistant.io/components/sensor.moon)
@@ -308,8 +302,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [unifi](https://www.home-assistant.io/components/unifi)
 - [updater](https://www.home-assistant.io/components/updater)
 - [upnp](https://www.home-assistant.io/components/upnp)
-- [vacuum](https://www.home-assistant.io/components/vacuum)
-- [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson)
 - [weather](https://www.home-assistant.io/components/weather)
 - [weather.met](https://www.home-assistant.io/components/weather.met)
 - [webhook](https://www.home-assistant.io/components/webhook)
@@ -340,7 +332,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
-- [HACS (Home Assistant Community Store)](https://hacs.xyz)
+- [HACS (Home Assistant Community Store)](https://hacs.xyz/docs/configuration/start)
 - [HDHomeRun](https://github.com/burnnat/ha-hdhomerun)
 - [IAQ UK](https://github.com/Limych/ha-iaquk)
 - [Lovelace Gen]()
@@ -437,3 +429,6 @@ These resources have either provided inspiration or some great code that has hel
 ---
 
 Generated by the [custom readme integration](https://github.com/custom-components/readme)
+
+[buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
+[buymeacoffee]: https://www.buymeacoffee.com/bacco007

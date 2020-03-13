@@ -1,0 +1,70 @@
+---
+sensor:
+  - platform: rest
+    resource: http://192.168.1.120/discover.json
+    name: HDHomeRun Info
+    json_attributes:
+      - FriendlyName
+      - ModelNumber
+      - FirmwareName
+      - FirmwareVersion
+      - DeviceID
+      - DeviceAuth
+      - UpgradeAvailable
+      - BaseURL
+      - LineupURL
+      - TunerCount
+      - ConditionalAccess
+    value_template: 'OK'
+  - platform: rest
+    resource: http://192.168.1.120/status.json
+    name: HDHomeRun - Tuner 0
+    json_attributes_path: "$..[?(@.Resource=='tuner0')]"
+    json_attributes:
+      - Resource
+      - VctNumber
+      - VctName
+      - Frequency
+      - SignalStrengthPercent
+      - SymbolQualityPercent
+      - TargetIP
+    value_template: 'OK'
+  - platform: rest
+    resource: http://192.168.1.120/status.json
+    name: HDHomeRun - Tuner 1
+    json_attributes_path: "$..[?(@.Resource=='tuner1')]"
+    json_attributes:
+      - Resource
+      - VctNumber
+      - VctName
+      - Frequency
+      - SignalStrengthPercent
+      - SymbolQualityPercent
+      - TargetIP
+    value_template: 'OK'
+  - platform: rest
+    resource: http://192.168.1.120/status.json
+    name: HDHomeRun - Tuner 2
+    json_attributes_path: "$..[?(@.Resource=='tuner2')]"
+    json_attributes:
+      - Resource
+      - VctNumber
+      - VctName
+      - Frequency
+      - SignalStrengthPercent
+      - SymbolQualityPercent
+      - TargetIP
+    value_template: 'OK'
+  - platform: rest
+    resource: http://192.168.1.120/status.json
+    name: HDHomeRun - Tuner 3
+    json_attributes_path: "$..[?(@.Resource=='tuner3')]"
+    json_attributes:
+      - Resource
+      - VctNumber
+      - VctName
+      - Frequency
+      - SignalStrengthPercent
+      - SymbolQualityPercent
+      - TargetIP
+    value_template: 'OK'

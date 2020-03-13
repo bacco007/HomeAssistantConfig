@@ -2,7 +2,7 @@
 homeassistant:
   customize:
     sensor.hasupervisor_addon_vscode:
-      friendly_name: 'deCONZ'
+      friendly_name: 'Visual Studio Code'
       icon: 'mdi:home-assistant'
 
 sensor:

@@ -175,100 +175,100 @@ cards:
                   - title: Rain History (Rolling)
               - type: custom:vertical-stack-in-card
                 cards:
-                - type: custom:decluttering-card
-                  template: entities-no-header
-                  variables:
-                    - entities:
-                      - entity: sensor.weather_bom_rain_last7days
-                        name: Airport - This Week
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name: false
-                      - entity: sensor.weather_bom_rain_last30days
-                        name: Airport - This Month
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name: false
-                      - entity: sensor.weather_bom_totalrain_lastyr
-                        name: Airport - This Year
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name:
-                      - entity: sensor.weather_bom_maxrain_lastyr
-                        name: Airport - Highest Rainfall (This Year)
-                        type: custom:multiple-entity-row
-                        secondary_info:
-                          attribute: date
-                          name:
-                      - type: section
-                      - entity: sensor.weather_home_rain_last7days
-                        name: Home - This Week
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name: false
-                      - entity: sensor.weather_home_rain_prior7days
-                        name: Home - Last Week
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name: false
-                      - entity: sensor.weather_home_rain_last30days
-                        name: Home - This Month
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name: false
-                      - entity: sensor.weather_home_totalrain_lastyr
-                        name: Home - This Year
-                        type: custom:multiple-entity-row
-                        entities:
-                          - attribute: average
-                            name: Avg
-                          - attribute: highest
-                            name: High
-                        secondary_info:
-                          attribute: countstring
-                          name:
-                      - entity: sensor.weather_home_maxrain_lastyr
-                        name: Home - Highest Rainfall (This Year)
-                        type: custom:multiple-entity-row
-                        secondary_info:
-                          attribute: date
-                          name:
+                  - type: custom:decluttering-card
+                    template: entities-no-header
+                    variables:
+                      - entities:
+                          - entity: sensor.weather_bom_rain_last7days
+                            name: Airport - This Week
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name: false
+                          - entity: sensor.weather_bom_rain_last30days
+                            name: Airport - This Month
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name: false
+                          - entity: sensor.weather_bom_totalrain_lastyr
+                            name: Airport - This Year
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name:
+                          - entity: sensor.weather_bom_maxrain_lastyr
+                            name: Airport - Highest Rainfall (This Year)
+                            type: custom:multiple-entity-row
+                            secondary_info:
+                              attribute: date
+                              name:
+                          - type: section
+                          - entity: sensor.weather_home_rain_last7days
+                            name: Home - This Week
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name: false
+                          - entity: sensor.weather_home_rain_prior7days
+                            name: Home - Last Week
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name: false
+                          - entity: sensor.weather_home_rain_last30days
+                            name: Home - This Month
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name: false
+                          - entity: sensor.weather_home_totalrain_lastyr
+                            name: Home - This Year
+                            type: custom:multiple-entity-row
+                            entities:
+                              - attribute: average
+                                name: Avg
+                              - attribute: highest
+                                name: High
+                            secondary_info:
+                              attribute: countstring
+                              name:
+                          - entity: sensor.weather_home_maxrain_lastyr
+                            name: Home - Highest Rainfall (This Year)
+                            type: custom:multiple-entity-row
+                            secondary_info:
+                              attribute: date
+                              name:
 
       - type: vertical-stack
         cards:
@@ -281,107 +281,107 @@ cards:
                   - title: Rain Intensity
               - type: custom:vertical-stack-in-card
                 cards:
-                - type: custom:decluttering-card
-                  template: entities-no-header
-                  variables:
-                    - entities:
-                      - entity: sensor.aep_5min_weekly
-                        type: custom:multiple-entity-row
-                        name: Home - 5min (This Week)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - entity: sensor.aep_10min_weekly
-                        type: custom:multiple-entity-row
-                        name: Home - 10min (This Week)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - entity: sensor.aep_20min_weekly
-                        type: custom:multiple-entity-row
-                        name: Home - 20min (This Week)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - entity: sensor.aep_1hour_weekly
-                        type: custom:multiple-entity-row
-                        name: Home - 1hr (This Week)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - entity: sensor.aep_2hour_weekly
-                        type: custom:multiple-entity-row
-                        name: Home - 2hr (This Week)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - entity: sensor.aep_6hour_weekly
-                        type: custom:multiple-entity-row
-                        name: Home - 6hr (This Week)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - type: section
-                      - entity: sensor.aep_6hour_yearly
-                        type: custom:multiple-entity-row
-                        name: Home - 6hr (Last 365 Days)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
-                      - entity: sensor.aep_20min_yearly
-                        type: custom:multiple-entity-row
-                        name: Home - 20min (Last 365 Days)
-                        state_header: max
-                        entities:
-                          - attribute: aep
-                            name: "AEP %"
-                          - attribute: ey
-                            name: EY
-                        secondary_info:
-                          attribute: time
-                          name:
+                  - type: custom:decluttering-card
+                    template: entities-no-header
+                    variables:
+                      - entities:
+                          - entity: sensor.aep_5min_weekly
+                            type: custom:multiple-entity-row
+                            name: Home - 5min (This Week)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - entity: sensor.aep_10min_weekly
+                            type: custom:multiple-entity-row
+                            name: Home - 10min (This Week)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - entity: sensor.aep_20min_weekly
+                            type: custom:multiple-entity-row
+                            name: Home - 20min (This Week)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - entity: sensor.aep_1hour_weekly
+                            type: custom:multiple-entity-row
+                            name: Home - 1hr (This Week)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - entity: sensor.aep_2hour_weekly
+                            type: custom:multiple-entity-row
+                            name: Home - 2hr (This Week)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - entity: sensor.aep_6hour_weekly
+                            type: custom:multiple-entity-row
+                            name: Home - 6hr (This Week)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - type: section
+                          - entity: sensor.aep_6hour_yearly
+                            type: custom:multiple-entity-row
+                            name: Home - 6hr (Last 365 Days)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
+                          - entity: sensor.aep_20min_yearly
+                            type: custom:multiple-entity-row
+                            name: Home - 20min (Last 365 Days)
+                            state_header: max
+                            entities:
+                              - attribute: aep
+                                name: 'AEP %'
+                              - attribute: ey
+                                name: EY
+                            secondary_info:
+                              attribute: time
+                              name:
 
           - type: vertical-stack
             style: !include ../includes/style.yaml
@@ -462,7 +462,7 @@ cards:
                 height: 10
               - type: iframe
                 url: !secret bomrain_panel_url
- 
+
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:

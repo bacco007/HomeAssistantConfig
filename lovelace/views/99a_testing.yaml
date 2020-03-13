@@ -20,29 +20,29 @@ cards:
   #       type: markdown
   #       content: "Small"
 
-    - type: custom:layout-card
-      layout: grid
-      gridrows: 180px 200px auto
-      gridcols: 200px auto 200px
-      cards:
-        - type: entities
-          entities:
-            - sun.sun
-          gridrow: 1 / 4
-          gridcol: 1 / 2
-          style: 'ha-card { height: 100%; margin-top: 4px !important;} '
-        - type: entities
-          entities: &ents
-            - light.lamp
-          gridrow: 1 / 3
-          gridcol: 2 / 4
-          style: 'ha-card { height: 100%; }'
-        - type: markdown
-          content: test
-          gridrow: 4 / 5
-          gridcol: 1 / 2
-          style: 'ha-card { height: 100%; }'
-        - type: entities
-          entities: *ents
-          gridrow: 3 / 4
-          gridcol: 2 / 3
+  - type: custom:layout-card
+    layout: grid
+    gridrows: 500px 500px
+    gridcols: 300px auto auto auto
+    cards:
+      - type: entities
+        entities:
+          - sun.sun
+        gridrow: 1 / 4
+        gridcol: 1 / 2
+        style: 'ha-card { height: 100%;} '
+      - type: entities
+        entities: &ents
+          - light.lamp
+        gridrow: 1 / 2
+        gridcol: 2 / 3
+        style: 'ha-card { height: 100%; }'
+      - type: entities
+        entities: *ents
+        gridrow: 2 / 3
+        gridcol: 2 / 3
+      - type: entities
+        entities: *ents
+        gridrow: 1 / 4
+        gridcol: 3 / 4
+        style: 'ha-card { height: 100%; }'

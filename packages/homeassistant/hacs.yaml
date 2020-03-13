@@ -4,3 +4,4 @@ hacs:
   sidepanel_title: 'HACS'
   sidepanel_icon: 'hacs:hacs'
   appdaemon: true
+  netdaemon: true

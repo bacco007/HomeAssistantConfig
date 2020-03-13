@@ -2,7 +2,7 @@
  "nodes": {
   "node-red": {
    "name": "node-red",
-   "version": "1.0.3",
+   "version": "1.0.4",
    "local": false,
    "nodes": {
     "inject": {
@@ -397,7 +397,7 @@
   },
   "node-red-contrib-bigtimer": {
    "name": "node-red-contrib-bigtimer",
-   "version": "2.2.5",
+   "version": "2.2.6",
    "local": false,
    "nodes": {
     "bigtimer": {
@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.20.2",
+   "version": "0.21.3",
    "local": false,
    "nodes": {
     "server": {
@@ -521,16 +521,6 @@
      "module": "node-red-contrib-home-assistant-websocket",
      "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/nodes/call-service/call-service.js"
     },
-    "ha-fire-event": {
-     "name": "ha-fire-event",
-     "types": [
-      "ha-fire-event"
-     ],
-     "enabled": true,
-     "local": false,
-     "module": "node-red-contrib-home-assistant-websocket",
-     "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/nodes/fire-event/fire-event.js"
-    },
     "ha-entity": {
      "name": "ha-entity",
      "types": [
@@ -540,6 +530,16 @@
      "local": false,
      "module": "node-red-contrib-home-assistant-websocket",
      "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/nodes/entity/entity.js"
+    },
+    "ha-fire-event": {
+     "name": "ha-fire-event",
+     "types": [
+      "ha-fire-event"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-home-assistant-websocket",
+     "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/nodes/fire-event/fire-event.js"
     },
     "api-current-state": {
      "name": "api-current-state",
@@ -891,7 +891,7 @@
   },
   "node-red-contrib-sunevents": {
    "name": "node-red-contrib-sunevents",
-   "version": "0.0.5",
+   "version": "2.0.2",
    "local": false,
    "nodes": {
     "node-red-contrib-sunevents": {
@@ -908,7 +908,7 @@
   },
   "node-red-contrib-time-range-switch": {
    "name": "node-red-contrib-time-range-switch",
-   "version": "0.6.3",
+   "version": "1.0.0",
    "local": false,
    "nodes": {
     "time-range-switch": {
@@ -1178,7 +1178,7 @@
   },
   "node-red-node-base64": {
    "name": "node-red-node-base64",
-   "version": "0.2.0",
+   "version": "0.2.1",
    "local": false,
    "nodes": {
     "base64": {
@@ -1247,7 +1247,7 @@
   },
   "node-red-node-msgpack": {
    "name": "node-red-node-msgpack",
-   "version": "1.2.0",
+   "version": "1.2.1",
    "local": false,
    "nodes": {
     "msgpack": {
@@ -1406,7 +1406,7 @@
   },
   "node-red-node-tail": {
    "name": "node-red-node-tail",
-   "version": "0.0.3",
+   "version": "0.1.1",
    "local": false,
    "nodes": {
     "tail": {

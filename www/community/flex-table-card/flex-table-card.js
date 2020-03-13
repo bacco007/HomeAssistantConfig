@@ -1,10 +1,10 @@
 
 /** some helper functions, mmmh, am I the only one needing those? Am I doing something wrong? */
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
-transpose = m => m[0].map((x, i) => m.map(x => x[i]));
+var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
 
 // single items -> Array with item with length == 1
-listify = obj => ((obj instanceof Array) ? obj : [obj]);
+var listify = obj => ((obj instanceof Array) ? obj : [obj]);
 
 // simply return the args, which were passed, mmh not needed anymore here...
 //pipe = (...args) => args
@@ -12,7 +12,7 @@ listify = obj => ((obj instanceof Array) ? obj : [obj]);
 // a map function, which splits args to multiple vars, python-like
 //mmap = 
 
-// omg, js is still very broken, trouble comparing strings? 80s? plain-C? wtf!
+// omg, js is still very inconvinient...
 var compare = function(a, b) {
     if (typeof a == "string")
         return a.localeCompare(b);
@@ -104,39 +104,70 @@ class DataRow {
     get_raw_data(col_cfgs) {
         this.raw_data = col_cfgs.map((col) => {			
          
-            // collect the "raw" data from the requested source(s)
-            if ("attr" in col) {
-                return ((col.attr in this.entity.attributes) ?
-                    this.entity.attributes[col.attr] : null);
+            /* collect pairs of 'column_type' and 'column_key' */
+            let col_getter = new Array();
+            if ("multi" in col) {
+                for(let item of col.multi)
+                    col_getter.push([item[0], item[1]]);
+            } else {
+                if ("attr" in col)
+                    col_getter.push(["attr", col.attr]);
+                else if ("prop" in col)
+                    col_getter.push(["prop", col.prop]);
+                else if ("attr_as_list" in col)
+                    col_getter.push(["attr_as_list", col.attr_as_list]);
+                else
+                    console.error(`no selector found for col: ${col.name} - skipping...`);
+            }
 
-            } else if ("prop" in col) {
-                // 'object_id' and 'name' not working -> make them work:
-                if (col.prop == "object_id") {
-                    return this.entity.entity_id.split(".").slice(1).join(".");
+            /* fill each result for 'col_[type,key]' pair into 'raw_content' */
+            var raw_content = new Array();
+            for (let item of col_getter) {
+                let col_type = item[0];
+                let col_key = item[1];
 
-                // 'name' automagically resolves to most verbose name
-                } else if (col.prop == "name") {
-                    if ("friendly_name" in this.entity.attributes)
-                        return this.entity.attributes.friendly_name;
-                    else if ("name" in this.entity)
-                        return this.entity.name;
-                    else if ("name" in this.entity.attributes)
-                        return this.entity.attributes.name;
-                    else
-                        return this.entity.entity_id;
+                // collect the "raw" data from the requested source(s)
+                if(col_type == "attr") {
+                    raw_content.push(((col_key in this.entity.attributes) ?
+                        this.entity.attributes[col_key] : null));
 
-                // other state properties seem to work as expected...
-                } else
-                    return ((col.prop in this.entity) ? this.entity[col.prop] : null);
+                } else if (col_type == "prop") {
+                    // 'object_id' and 'name' not working -> make them work:
+                    if (col_key == "object_id") {
+                        raw_content.push(this.entity.entity_id.split(".").slice(1).join("."));
 
-            } else if ("attr_as_list" in col) {
-                this.has_multiple = true;
-                return this.entity.attributes[col.attr_as_list];
+                    // 'name' automagically resolves to most verbose name
+                    } else if (col_key == "name") {
+                        if ("friendly_name" in this.entity.attributes)
+                            raw_content.push(this.entity.attributes.friendly_name);
+                        else if ("name" in this.entity)
+                            raw_content.push(this.entity.name);
+                        else if ("name" in this.entity.attributes)
+                            raw_content.push(this.entity.attributes.name);
+                        else
+                            raw_content.push(this.entity.entity_id);
 
-            } else 
-                console.error(`no selector found for col: ${col.name} - skipping...`);
-            return null;
+                    // other state properties seem to work as expected... (no multiples allowed!)
+                    } else
+                        raw_content.push((col_key in this.entity) ? this.entity[col_key] : null);
+
+                } else if (col_type == "attr_as_list") {
+                    this.has_multiple = true;
+                    raw_content.push(this.entity.attributes[col_key]);
+
+                } else 
+                    console.error(`no selector found for col: ${col.name} - skipping...`);
+            }
+            /* finally concat all raw_contents together using 'col.multi_delimiter' */
+            let delim = (col.multi_delimiter) ? col.multi_delimiter : " ";
+            if ("multi" in col && col.multi.length > 1)
+                // @todo: here somehow avoid that a 'null' is string-converted
+                raw_content = raw_content.map((obj) => String(obj)).join(delim);
+            else
+                raw_content = raw_content[0];
+            return raw_content;
         });
+        return null;
     }
 
     render_data(col_cfgs) {
@@ -148,7 +179,7 @@ class DataRow {
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
-            if (content === "undefined" || typeof content === "undefined" || content === null)
+            if (content === "undefined" || typeof content === "undefined" || content === null || content == "null")
                 return ((this.strict) ? null : "n/a");
 
             return new Object({

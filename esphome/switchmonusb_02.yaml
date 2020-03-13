@@ -80,7 +80,7 @@ sensor:
     ### LOWER VALUE GIVES LOWER VOLTAGE
     voltage_divider: 799
     change_mode_every: 8
-    update_interval: 5s
+    update_interval: 60s
   - platform: total_daily_energy
     name: ${name}_Daily_Energy
     power_id: ${name}_wattage

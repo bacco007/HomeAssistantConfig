@@ -61,6 +61,22 @@ cards:
                           - entity: sensor.australia_deaths
                             name: Deaths
                             unit: " "
+                      - entity: sensor.coronavirus_nsw
+                        name: COVID-19 - New South Wales
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - attribute: Confirmed
+                            name: Confirmed
+                            unit: " "
+                          - attribute: Recovered
+                            name: Recovered
+                            unit: " "
+                          - attribute: Deaths
+                            name: Deaths
+                            unit: " "
 
       - type: vertical-stack
         cards:
@@ -186,6 +202,13 @@ cards:
                         name: Electricity Gen from Fossil Fuels
                       - entity: sensor.opennem_nsw1_gen_from_renewables
                         name: Electricity Gen from Renewables
+              - type: custom:pie-chart-card
+                name: Electricity Generation
+                entities:
+                  - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+                    name: Fossil Fuels
+                  - entity: sensor.opennem_nsw1_gen_from_renewables
+                    name: Renewables
               - type: custom:swipe-card
                 parameters:
                   effect: 'coverflow'
