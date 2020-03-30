@@ -14,8 +14,8 @@ cards:
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:
-          - type: custom:decluttering-card
-            template: time-card
+          # - type: custom:decluttering-card
+          #   template: time-card
           - type: custom:decluttering-card
             template: search
           - !include ../includes/bom_weather_card.yaml
@@ -60,6 +60,10 @@ cards:
                 cards:
                   - type: custom:decluttering-card
                     template: main-mediaplayer
+          - type: custom:gap-card
+            height: 10
+          - type: media-control
+            entity: media_player.bedroom_sonos
 
       - break
 

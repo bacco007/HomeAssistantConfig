@@ -10,11 +10,11 @@ cards:
     max_columns: 3
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

@@ -48,6 +48,8 @@
   type: module
 - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
   type: js
+- url: /hacsfiles/sidebar-card/sidebar-card.js
+  type: module
 - url: /hacsfiles/sun-card/sun-card.js
   type: module
 - url: /hacsfiles/swipe-card/swipe-card.js
@@ -58,7 +60,7 @@
   type: js
 
 # Local
-- url: !file /local/custom-lovelace/development/sports-upnext-card.js
+- url: /local/custom-lovelace/development/sports-upnext-card.js
   type: js
 
 # CSS

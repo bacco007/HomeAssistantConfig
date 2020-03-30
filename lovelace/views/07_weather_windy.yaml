@@ -12,11 +12,11 @@ cards:
     column_width: [70%, 30%]
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
 
       - break
 

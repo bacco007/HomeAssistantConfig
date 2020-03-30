@@ -414,7 +414,7 @@
   },
   "node-red-contrib-cast": {
    "name": "node-red-contrib-cast",
-   "version": "0.2.14",
+   "version": "0.2.15",
    "local": false,
    "nodes": {
     "cast-to-client": {
@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.21.3",
+   "version": "0.21.5",
    "local": false,
    "nodes": {
     "server": {
@@ -891,7 +891,7 @@
   },
   "node-red-contrib-sunevents": {
    "name": "node-red-contrib-sunevents",
-   "version": "2.0.2",
+   "version": "2.0.3",
    "local": false,
    "nodes": {
     "node-red-contrib-sunevents": {

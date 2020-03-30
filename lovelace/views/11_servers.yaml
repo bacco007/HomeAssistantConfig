@@ -11,13 +11,13 @@ cards:
     max_columns: 3
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
-          - type: custom:gap-card
-            height: 10
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
+      #     - type: custom:gap-card
+      #       height: 10
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -182,7 +182,7 @@ cards:
                     modify: x.replace(" (TBSH01)", "")
                   - name: State
                     attr: status
-                    modify: x.replace(" (healthy)", "").replace("Up ","")
+                    #modify: x.replace(" (healthy)", "").replace("Up ","")
                   - name: Mem_MB
                     attr: memory
                     align: right
@@ -280,7 +280,7 @@ cards:
                     modify: x.replace(" (vmTBSH01)", "")
                   - name: State
                     attr: status
-                    modify: x.replace(" (healthy)", "").replace("Up ","")
+                    #modify: x.replace(" (healthy)", "").replace("Up ","")
                   - name: Mem_MB
                     attr: memory
                     align: right
@@ -378,7 +378,7 @@ cards:
                     modify: x.replace(" (vmTBSH02)", "")
                   - name: State
                     attr: status
-                    modify: x.replace(" (healthy)", "").replace("Up ","")
+                    #modify: x.replace(" (healthy)", "").replace("Up ","")
                   - name: Mem_MB
                     attr: memory
                     align: right

@@ -12,16 +12,16 @@ from slugify import slugify
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.hassio import (
-    DOMAIN as HASSIO_DOMAIN,
     SERVICE_SNAPSHOT_FULL,
     SERVICE_SNAPSHOT_PARTIAL,
     SCHEMA_SNAPSHOT_FULL,
     SCHEMA_SNAPSHOT_PARTIAL,
     ATTR_FOLDERS,
     ATTR_ADDONS,
+    ATTR_PASSWORD,
 )
 from homeassistant.components.hassio.const import X_HASSIO
-from homeassistant.components.hassio.handler import HassioAPIError, HassIO
+from homeassistant.components.hassio.handler import HassioAPIError
 from homeassistant.const import ATTR_NAME
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
@@ -92,24 +92,28 @@ COMMAND_GET_ADDONS = "/addons"
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType):
     """Setup"""
-    config = config[DOMAIN]
-    hassio = hass.data.get(HASSIO_DOMAIN)
-    if hassio is None:
-        _LOGGER.error("Hass.io not found, please check you have hassio installed!")
+    # Check local setup
+    for env in ("HASSIO", "HASSIO_TOKEN"):
+        if os.environ.get(env):
+            continue
+        _LOGGER.error(
+            "Missing %s environment variable. Please check you have Hass.io installed!",
+            env,
+        )
         return False
 
-    if not hassio.is_connected():
-        _LOGGER.error("Not connected with Hass.io / system to busy!")
-        return False
+    web_session = hass.helpers.aiohttp_client.async_get_clientsession()
+
+    config = config[DOMAIN]
 
     # initialise AutoBackup class.
     auto_backup = hass.data[DOMAIN] = AutoBackup(
-        hass, hassio, config[CONF_AUTO_PURGE], config[CONF_BACKUP_TIMEOUT]
+        hass, web_session, config[CONF_AUTO_PURGE], config[CONF_BACKUP_TIMEOUT]
     )
     await auto_backup.load_snapshots_expiry()
 
     # load the auto backup sensor.
-    hass.helpers.discovery.load_platform("sensor", DOMAIN, {}, config)
+    await hass.helpers.discovery.async_load_platform("sensor", DOMAIN, {}, config)
 
     # register services.
     async def snapshot_service_handler(call: ServiceCallType):
@@ -147,19 +151,21 @@ class AutoBackup:
     def __init__(
         self,
         hass: HomeAssistantType,
-        hassio: HassIO,
+        web_session,
         auto_purge: bool,
         backup_timeout: int,
     ):
         self._hass = hass
-        self._hassio = hassio
-        self._ip = os.environ.get("HASSIO", "")
+        self.web_session = web_session
+        self._ip = os.environ["HASSIO"]
+        self._auto_purge = auto_purge
+        self._backup_timeout = backup_timeout
+
         self._snapshots_store = Store(
             hass, STORAGE_VERSION, f"{DOMAIN}.{STORAGE_KEY}", encoder=JSONEncoder
         )
         self._snapshots_expiry = {}
-        self._auto_purge = auto_purge
-        self._backup_timeout = backup_timeout
+
         self._pending_snapshots = 0
         self.last_failure = None
         self.update_sensor_callback = None
@@ -272,6 +278,11 @@ class AutoBackup:
             if ATTR_FOLDERS in data:
                 data[ATTR_FOLDERS] = self._replace_folder_names(data[ATTR_FOLDERS])
 
+        # ensure password is scrubbed from logs.
+        password = data.get(ATTR_PASSWORD)
+        if password:
+            data[ATTR_PASSWORD] = "<hidden>"
+
         _LOGGER.debug(
             "New snapshot; command: %s, keep_days: %s, data: %s, timeout: %s",
             command,
@@ -279,6 +290,11 @@ class AutoBackup:
             data,
             self._backup_timeout,
         )
+
+        # re-add password if it existed.
+        if password:
+            data[ATTR_PASSWORD] = password
+            del password  # remove from memory
 
         # add to pending snapshots and update sensor.
         self._pending_snapshots += 1
@@ -419,7 +435,7 @@ class AutoBackup:
 
         try:
             with async_timeout.timeout(self._backup_timeout):
-                request = await self._hassio.websession.request(
+                request = await self.web_session.request(
                     "get",
                     f"http://{self._ip}{command}",
                     headers={X_HASSIO: os.environ.get("HASSIO_TOKEN", "")},
@@ -445,7 +461,9 @@ class AutoBackup:
         except IOError:
             _LOGGER.error("Failed to download snapshot '%s' to '%s'", slug, output_path)
 
-        raise HassioAPIError("Snapshot download failed.")
+        raise HassioAPIError(
+            "Snapshot download failed. Check the logs for more information."
+        )
 
     async def send_command(self, command, method="post", payload=None, timeout=10):
         """Send API command to Hass.io.
@@ -454,7 +472,7 @@ class AutoBackup:
         """
         try:
             with async_timeout.timeout(timeout):
-                request = await self._hassio.websession.request(
+                request = await self.web_session.request(
                     method,
                     f"http://{self._ip}{command}",
                     json=payload,
@@ -470,9 +488,9 @@ class AutoBackup:
                 return answer
 
         except asyncio.TimeoutError:
-            _LOGGER.error("Timeout on %s request", command)
+            raise HassioAPIError("Timeout on %s request" % command)
 
         except aiohttp.ClientError as err:
-            _LOGGER.error("Client error on %s request %s", command, err)
+            raise HassioAPIError("Client error on %s request %s" % (command, err))
 
-        raise HassioAPIError()
+        raise HassioAPIError("Failed to call %s" % command)

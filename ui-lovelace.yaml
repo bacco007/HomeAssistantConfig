@@ -8,5 +8,7 @@ decluttering_templates:
   !include_dir_named lovelace/decluttering_templates/
 button_card_templates:
   !include_dir_named lovelace/buttoncard_templates/
+sidebar:
+  !include lovelace/sidebar/settings.yaml
 views:
   !include_dir_list lovelace/views/

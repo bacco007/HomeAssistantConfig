@@ -7,5 +7,6 @@ dash_button:
   styles:
     card:
       - height: 70px
+      - width: 70px
       - font-size: 11px
   style: !include ../../lovelace/includes/style.yaml

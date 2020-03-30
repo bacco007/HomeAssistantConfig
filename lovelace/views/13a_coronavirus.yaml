@@ -1,0 +1,72 @@
+---
+# lovelace_gen
+title: Coronavirus
+path: covid19
+icon: mdi:biohazard
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: vertical
+    min_columns: 1
+    max_columns: 2
+    column_width: [75%, 25%]
+    rtl: true
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Coronavirus
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.worldwide_confirmed
+                        name: Worldwide
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.worldwide_confirmed
+                            name: Confirmed
+                            unit: " "
+                          - entity: sensor.worldwide_deaths
+                            name: Deaths
+                            unit: " "
+                      - entity: sensor.australia_confirmed
+                        name: Australia
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.australia_confirmed
+                            name: Confirmed
+                            unit: " "
+                          - entity: sensor.australia_deaths
+                            name: Deaths
+                            unit: " "
+                      - entity: sensor.coronavirus_nsw
+                        name: New South Wales
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - attribute: Confirmed
+                            name: Confirmed
+                            unit: " "
+                          - attribute: Deaths
+                            name: Deaths
+                            unit: " "
+
+      - break
+
+      - type: iframe
+        aspect_ratio: 120%
+        url: "https://experience.arcgis.com/experience/13d96f3e49e3476a98f71e19ac9b0859/"

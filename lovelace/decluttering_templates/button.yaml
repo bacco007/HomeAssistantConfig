@@ -22,7 +22,7 @@ card:
   styles:
     card:
       - height: 110px
-      - width: auto
+      - width: 120px
       - background-color: var(--card-background-color)
       - border: solid 1px var(--border-color)
     name:

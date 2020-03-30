@@ -10,11 +10,11 @@ cards:
     max_columns: 3
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
       - type: custom:sports-upnext-card
         name: AFL - Sydney Swans
         nextDate: sensor.sport_sydswans_date

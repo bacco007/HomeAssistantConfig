@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<airupnp>
+<common>
+<protocolInfo>
+<pcm>http-get:*:audio/L16;rate=44100;channels=2:DLNA.ORG_PN=LPCM;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=0d500000000000000000000000000000</pcm>
+<wav>http-get:*:audio/wav:DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=0d500000000000000000000000000000</wav>
+<flac>http-get:*:audio/flac:DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=0d500000000000000000000000000000</flac>
+<mp3>http-get:*:audio/mp3:DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=0d500000000000000000000000000000</mp3>
+</protocolInfo>
+<enabled>1</enabled>
+<max_volume>100</max_volume>
+<codec>flc</codec>
+<metadata>1</metadata>
+<artwork></artwork>
+<latency>1000:2000</latency>
+<drift>0</drift>
+</common>
+<main_log>info</main_log>
+<upnp_log>info</upnp_log>
+<util_log>warn</util_log>
+<raop_log>info</raop_log>
+<log_limit>-1</log_limit>
+<device>
+<udn>uuid:RINCON_7828CA23F39A01400</udn>
+<name>Bedroom Sonos+</name>
+<mac>bb:bb:68:57:68:10</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>uuid:4D454930-0300-1000-8000-A813741F0175</udn>
+<name>DMR-BWT750+</name>
+<mac>bb:bb:b3:26:e8:8e</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>uuid:97768591-f709-2c6f-0000-000038b27980</udn>
+<name>Nexus Player@ES(192.168.1.24)+</name>
+<mac>bb:bb:4c:ef:77:6a</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>uuid:23456789-1234-1010-8000-ac9b0a542362</udn>
+<name>KDL-55W800C+</name>
+<mac>bb:bb:30:ef:84:2d</mac>
+<enabled>1</enabled>
+</device>
+</airupnp>

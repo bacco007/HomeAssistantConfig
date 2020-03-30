@@ -11,11 +11,11 @@ cards:
     min_width: 50%
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
 
       - type: custom:layout-card
         min_columns: 4

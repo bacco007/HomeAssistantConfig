@@ -1,0 +1,49 @@
+---
+clock: true
+width:
+  mobile: 0
+  tablet: 17
+  desktop: 17
+breakpoints:
+  mobile: 500
+sidebarMenu:
+  - action: navigate
+    active: true
+    name: Weather
+    icon: mdi:weather-cloudy-alert
+    navigation_path: /lovelace/weather
+  - action: navigate
+    active: true
+    name: COVID-19
+    icon: mdi:biohazard
+    navigation_path: /lovelace/covid19
+style: |
+  .template li {
+    font-weight: 400 !important;
+    font-family: var(--primary-font-family);
+    margin-bottom: 5px;
+  }
+  :host {
+    --sidebar-background: #3b4049;
+    --sidebar-text-color: #fff;
+    --face-color: rgba(67, 73, 82, 1);
+    --face-border-color: #333;
+    --clock-hands-color: #fff;
+    --clock-seconds-hand-color: #00b59d;
+    --clock-middle-background: #fff;
+    --clock-middle-border: #fff;
+    --border-radius: 1px;
+  }
+template: >
+  <li>
+    {% if now().hour  < 5 %} Good Night {{'\U0001F634'}}
+    {% elif now().hour < 12 %} Good Morning {{'\u2615\uFE0F'}}
+    {% elif now().hour < 18 %} Good Afternoon {{'\U0001F44B\U0001F3FB'}}
+    {% else %} Good Evening {{'\U0001F44B\U0001F3FB'}}{% endif %}
+  </li>
+  <li></li>
+  <li>{{states('sensor.date_long_format')}}</li>
+
+  <li>UTC: {{states('sensor.time_utc')}} - LDN: {{states('sensor.time_london')}} - NYC: {{states('sensor.time_new_york')}}</li>
+  {% if "gft" in states('sensor.trash_today') %} <li>Vandaag GFT</li> {% endif
+  %}

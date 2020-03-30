@@ -13,10 +13,10 @@ cards:
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:
-          - type: custom:decluttering-card
-            template: time-card
-          - type: custom:gap-card
-            height: 10
+          # - type: custom:decluttering-card
+          #   template: time-card
+          # - type: custom:gap-card
+          #   height: 10
           - type: horizontal-stack
             cards:
               - type: custom:decluttering-card
@@ -37,6 +37,8 @@ cards:
                   - name: Sonarr
                   - icon: /local/dashboard-icons/sonarr.png
                   - url: !secret sonarr_url
+          - type: custom:gap-card
+            height: 10
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

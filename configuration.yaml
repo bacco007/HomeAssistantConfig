@@ -50,9 +50,6 @@ ios:
 
 lovelace_gen:
 
-lovelace:
-  mode: yaml
-
 map:
 
 mobile_app:

@@ -65,11 +65,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 10:23, Saturday, March 14th 2020_
+_Stats as at 04:59, Monday, March 30th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.106.6 | 226     | 1153         | 865 | 21 |
+| 0.107.7 | 227     | 1177         | 869 | 21 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -85,6 +85,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 - [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel)
 - [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media)
+- [alexa](https://www.home-assistant.io/components/alexa)
 - [alexa_media](https://www.home-assistant.io/components/alexa_media)
 - [almond](https://www.home-assistant.io/components/almond)
 - [anniversaries](https://www.home-assistant.io/components/anniversaries)
@@ -101,7 +102,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [binary_sensor.hadockermon](https://www.home-assistant.io/components/binary_sensor.hadockermon)
 - [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss)
 - [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app)
-- [binary_sensor.netatmo](https://www.home-assistant.io/components/binary_sensor.netatmo)
 - [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv)
 - [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve)
 - [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2)
@@ -139,6 +139,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [dyson](https://www.home-assistant.io/components/dyson)
 - [esphome](https://www.home-assistant.io/components/esphome)
 - [favicon](https://www.home-assistant.io/components/favicon)
+- [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol)
 - [fontawesome](https://www.home-assistant.io/components/fontawesome)
 - [frontend](https://www.home-assistant.io/components/frontend)
 - [garbage_collection](https://www.home-assistant.io/components/garbage_collection)
@@ -192,7 +193,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [notify.slack](https://www.home-assistant.io/components/notify.slack)
 - [onboarding](https://www.home-assistant.io/components/onboarding)
 - [openuv](https://www.home-assistant.io/components/openuv)
-- [panel_custom](https://www.home-assistant.io/components/panel_custom)
 - [panel_iframe](https://www.home-assistant.io/components/panel_iframe)
 - [persistent_notification](https://www.home-assistant.io/components/persistent_notification)
 - [person](https://www.home-assistant.io/components/person)
@@ -246,6 +246,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station)
 - [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger)
 - [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem)
+- [sensor.opensky](https://www.home-assistant.io/components/sensor.opensky)
 - [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv)
 - [sensor.pi_hole](https://www.home-assistant.io/components/sensor.pi_hole)
 - [sensor.plex](https://www.home-assistant.io/components/sensor.plex)
@@ -328,6 +329,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
 - [Favicon changer]()
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
+- [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
 - [Fontawesome icons]()
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)

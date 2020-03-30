@@ -10,11 +10,11 @@ cards:
     max_columns: 3
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -22,61 +22,37 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
-              - title: Coronavirus
+              - title: Flight Tracking
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:decluttering-card
                 template: entities-no-header
                 variables:
                   - entities:
-                      - entity: sensor.worldwide_confirmed
-                        name: COVID-19 - Worldwide
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - entity: sensor.worldwide_confirmed
-                            name: Confirmed
-                            unit: " "
-                          - entity: sensor.worldwide_recovered
-                            name: Recovered
-                            unit: " "
-                          - entity: sensor.worldwide_deaths
-                            name: Deaths
-                            unit: " "
-                      - entity: sensor.australia_confirmed
-                        name: COVID-19 - Australia
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - entity: sensor.australia_confirmed
-                            name: Confirmed
-                            unit: " "
-                          - entity: sensor.australia_recovered
-                            name: Recovered
-                            unit: " "
-                          - entity: sensor.australia_deaths
-                            name: Deaths
-                            unit: " "
-                      - entity: sensor.coronavirus_nsw
-                        name: COVID-19 - New South Wales
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - attribute: Confirmed
-                            name: Confirmed
-                            unit: " "
-                          - attribute: Recovered
-                            name: Recovered
-                            unit: " "
-                          - attribute: Deaths
-                            name: Deaths
-                            unit: " "
+                    - entity: sensor.opensky
+                      name: Flights within 50km of Home
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: GDACS Alerts
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: markdown
+                title: 
+                content: >-
+                  {% for state in states.geo_location %}
+                    {% if state.attributes.source=="gdacs" %}
+                  <ha-icon icon="{{ state.attributes.icon }}"></ha-icon> **<font color="{{ state.attributes.alert_level }}">{{ state.name }}</font>**
+
+                  {{ state.attributes.description }}
+
+                  *Issued: {{ state.attributes.from_date.strftime("%d.%m.%Y %H:%M") }}*
+                    {% endif %}
+                  {% endfor %}
 
       - type: vertical-stack
         cards:
@@ -202,13 +178,13 @@ cards:
                         name: Electricity Gen from Fossil Fuels
                       - entity: sensor.opennem_nsw1_gen_from_renewables
                         name: Electricity Gen from Renewables
-              - type: custom:pie-chart-card
-                name: Electricity Generation
-                entities:
-                  - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
-                    name: Fossil Fuels
-                  - entity: sensor.opennem_nsw1_gen_from_renewables
-                    name: Renewables
+              # - type: custom:pie-chart-card
+              #   name: Electricity Generation
+              #   entities:
+              #     - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+              #       name: Fossil Fuels
+              #     - entity: sensor.opennem_nsw1_gen_from_renewables
+              #       name: Renewables
               - type: custom:swipe-card
                 parameters:
                   effect: 'coverflow'

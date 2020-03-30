@@ -7,15 +7,15 @@ icon: mdi:radar
 cards:
   - type: custom:layout-card
     min_columns: 1
-    max_columns: 3
+    max_columns: 2
     min_width: 25%
     rtl: true
     cards:
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: time-card
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
 
       - type: vertical-stack
         style: !include ../includes/style.yaml

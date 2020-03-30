@@ -6,10 +6,10 @@ icon: mdi:football
 cards:
   - type: vertical-stack
     cards:
-      - type: custom:decluttering-card
-        template: time-card
-      - type: custom:decluttering-card
-        template: quick_launch
+      # - type: custom:decluttering-card
+      #   template: time-card
+      # - type: custom:decluttering-card
+      #   template: quick_launch
 
   - type: custom:flex-table-card
     sort_by: name+
