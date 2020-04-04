@@ -24,6 +24,27 @@ cards:
           - type: custom:decluttering-card
             template: title
             variables:
+              - title: Updates
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: binary_sensor.updater_supervisor
+                        name: HA Supervisor Update Available
+                      - entity: binary_sensor.updater_addons
+                        name: HA Supervisor Addon Update Available
+                      - entity: binary_sensor.updater_hacs
+                        name: HACS Update Available
+
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
               - title: Home Assistant Uptime
           - type: custom:vertical-stack-in-card
             cards:
@@ -403,40 +424,40 @@ cards:
                       - entity: sensor.github_issues
                       - entity: sensor.github_stars
                       - entity: sensor.github_subscribers
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Home Assistant Supervisor
-          - type: custom:vertical-stack-in-card
-            cards:
-              # - type: custom:decluttering-card
-              #   template: entities-no-header
-              #   variables:
-              #     - entities:
-              #         - entity: sensor.vmtbsh02_uptime
-              #           name: Server Uptime
-              #           icon: mdi:server
-              - type: custom:flex-table-card
-                style: >
-                  font-family: { var(--primary-font-family);}
-                  font-weight: {400 !important;}
-                sort_by: name+
-                clickable: true
-                css:
-                  table+: 'border: 0; padding-left: 16px; padding-right: 16px'
-                entities:
-                  include: sensor.hasupervisor_addon_*
-                columns:
-                  - name: Name
-                    prop: name
-                  - name: State
-                    prop: state
-                  - name: Inst
-                    attr: version
-                    align: right
-                  - name: Curr
-                    attr: last_version
-                    align: right
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: title
+      #       variables:
+      #         - title: Home Assistant Supervisor
+      #     - type: custom:vertical-stack-in-card
+      #       cards:
+      #         # - type: custom:decluttering-card
+      #         #   template: entities-no-header
+      #         #   variables:
+      #         #     - entities:
+      #         #         - entity: sensor.vmtbsh02_uptime
+      #         #           name: Server Uptime
+      #         #           icon: mdi:server
+      #         - type: custom:flex-table-card
+      #           style: >
+      #             font-family: { var(--primary-font-family);}
+      #             font-weight: {400 !important;}
+      #           sort_by: name+
+      #           clickable: true
+      #           css:
+      #             table+: 'border: 0; padding-left: 16px; padding-right: 16px'
+      #           entities:
+      #             include: sensor.hasupervisor_addon_*
+      #           columns:
+      #             - name: Name
+      #               prop: name
+      #             - name: State
+      #               prop: state
+      #             - name: Inst
+      #               attr: version
+      #               align: right
+      #             - name: Curr
+      #               attr: last_version
+      #               align: right

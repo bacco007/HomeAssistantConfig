@@ -16,8 +16,8 @@ cards:
         cards:
           # - type: custom:decluttering-card
           #   template: time-card
-          - type: custom:decluttering-card
-            template: search
+          # - type: custom:decluttering-card
+          #   template: search
           - !include ../includes/bom_weather_card.yaml
           - type: custom:decluttering-card
             template: entities-no-header
@@ -31,8 +31,6 @@ cards:
       - break
 
       # Column 2 (Middle)
-      - type: custom:gap-card
-        height: 5
       - type: vertical-stack
         cards:
           - type: custom:decluttering-card

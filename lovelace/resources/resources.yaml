@@ -38,14 +38,14 @@
   type: module
 - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
   type: module
-- url: /hacsfiles/pie-chart-card/pie-chart-card.js
-  type: module
+# - url: /hacsfiles/pie-chart-card/pie-chart-card.js
+#   type: module
 - url: /hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js
   type: module
 - url: /hacsfiles/rgb-light-card/card.js
   type: js
-- url: /hacsfiles/search-card/search-card.js
-  type: module
+# - url: /hacsfiles/search-card/search-card.js
+#   type: module
 - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
   type: js
 - url: /hacsfiles/sidebar-card/sidebar-card.js

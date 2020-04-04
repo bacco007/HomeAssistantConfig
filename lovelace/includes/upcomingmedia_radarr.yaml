@@ -17,10 +17,10 @@ style: |
     margin-top: 0px;
   }
   ha-card {
-    border: solid 1px var(--border-color);
+    # border: solid 1px var(--border-color);
     font-family: var(--primary-font-family);
     margin-top: 10px;
-    height: 500px;
+    # height: 200px;
     overflow: scroll;
     box-shadow:
       inset 0px -21px 8px -20px #CCC !important;

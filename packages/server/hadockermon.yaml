@@ -11,6 +11,8 @@ homeassistant:
       friendly_name: Guacamole (TBSH01)
     binary_sensor.tbsh01_ha_dockermon_ha_dockermon:
       friendly_name: HA Dockermon (TBSH01)
+    binary_sensor.tbsh01_ha_dockermon_homer:
+      friendly_name: Homer (TBSH01)
     binary_sensor.tbsh01_ha_dockermon_netdata:
       friendly_name: Netdata (TBSH01)
     binary_sensor.tbsh01_ha_dockermon_nginxproxymanager:
@@ -83,6 +85,8 @@ homeassistant:
       friendly_name: 'Addon: ESPHome (vmTBSH02)'
     binary_sensor.vmtbsh02_ha_dockermon_addon_a0d7b954_adb:
       friendly_name: 'Addon: Android Debug Bridge (vmTBSH02)'
+    binary_sensor.vmtbsh02_ha_dockermon_addon_a0d7b954_airsonos:
+      friendly_name: 'Addon: AirSonos (vmTBSH02)'
     binary_sensor.vmtbsh02_ha_dockermon_addon_a0d7b954_appdaemon:
       friendly_name: 'Addon: AppDaemon 4 (vmTBSH02)'
     binary_sensor.vmtbsh02_ha_dockermon_addon_a0d7b954_home_panel:
@@ -103,6 +107,10 @@ homeassistant:
       friendly_name: 'Addon: MariaDB (vmTBSH02)'
     binary_sensor.vmtbsh02_ha_dockermon_addon_core_mosquitto:
       friendly_name: 'Addon: Mosquitto MQTT (vmTBSH02)'
+    binary_sensor.vmtbsh02_ha_dockermon_hassio_audio:
+      friendly_name: 'Hass.io Audio (vmTBSH02)'
+    binary_sensor.vmtbsh02_ha_dockermon_hassio_cli:
+      friendly_name: 'Hass.io CLI (vmTBSH02)'
 
 binary_sensor:
   - platform: hadockermon

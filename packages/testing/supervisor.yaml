@@ -1,0 +1,120 @@
+---
+sensor:
+  # Sensor to track available updates for supervisor & addons
+  - platform: command_line
+    name: Supervisor updates
+    command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version,"addons":[.data.addons[] | select(.version != .installed)]}'''
+    value_template: '{{ value_json.addons | length }}'
+    json_attributes:
+      - newest_version
+      - current_version
+      - addons
+
+binary_sensor:
+  - platform: template
+    sensors:
+      # True if there's an update available for supervisor
+      updater_supervisor:
+        friendly_name: 'Updater - Supervisor'
+        device_class: problem
+        entity_id:
+          - sensor.supervisor_updates
+        value_template: "{{ state_attr('sensor.supervisor_updates', 'current_version') != state_attr('sensor.supervisor_updates', 'newest_version') }}"
+        availability_template: "{{ (states('sensor.supervisor_updates') | int(-1)) > -1 }}"
+
+      # True if there's updates available for any HACS components
+      updater_hacs:
+        friendly_name: 'Updater - HACS'
+        device_class: problem
+        entity_id:
+          - sensor.hacs
+        value_template: "{{ states('sensor.hacs') | int > 0 }}"
+
+      # True if there's updates available for any addons
+      updater_addons:
+        friendly_name: 'Updater - Addons'
+        device_class: problem
+        entity_id:
+          - sensor.supervisor_updates
+        value_template: "{{ states('sensor.supervisor_updates') | int > 0 }}"
+# alert:
+#   # Update is available - un-acknowledgeble, auto-dismiss, me only
+#   # Wait 5 minutes before first to give core config check time to run
+#   ha_update_available:
+#     name: HA has an update
+#     entity_id: binary_sensor.updater
+#     state: 'on'
+#     can_acknowledge: false
+#     repeat:
+#     - 5
+#     - 360
+#     title: 'Update for HA available'
+#     message: "New version is {{ state_attr('binary_sensor.updater', 'newest_version') }}. Currently on {{ states('sensor.current_version') }}"
+#     notifiers:
+#     - 'me'
+#     data:
+#       tag: 'ha-update-available'
+#       url: 'http://hassio.local/hassio/addon/core_check_config'
+#       ttl: 21600
+
+#   # Supervisor update is available - un-acknowledgeable, auto-dismiss, me only
+#   supervisor_update_available:
+#     name: Supervisor has an update
+#     entity_id: binary_sensor.updater_supervisor
+#     state: 'on'
+#     can_acknowledge: false
+#     repeat: 360
+#     title: 'Update for HA Supervisor available'
+#     message: "New version is {{ state_attr('sensor.supervisor_updates', 'newest_version') }}. Currently on {{ state_attr('sensor.supervisor_updates', 'current_version') }}"
+#     notifiers:
+#     - 'me'
+#     data:
+#       tag: 'supervisor-update-available'
+#       url: 'http://hassio.local/hassio/dashboard'
+#       ttl: 21600
+
+#   # HACS repos have updates available - unacknowledgeable, auto-dismiss, me only
+#   hacs_update_available:
+#     name: HACS repos have updates
+#     entity_id: binary_sensor.updater_hacs
+#     state: 'on'
+#     can_acknowledge: false
+#     repeat: 360
+#     title: "Updates available in {{ states('sensor.hacs') }} HACS repo{% if states('sensor.hacs') | int > 1 %}s{% endif %}"
+#     message: ""
+#     notifiers:
+#       - 'me'
+#     data:
+#       tag: 'hacs-update-available'
+#       url: 'http://hassio.local/hacs/installed'
+#       ttl: 21600
+
+#   # Addons have updates available - unacknowledgeable, auto-dismiss, me only
+#   addon_update_available:
+#     name: Addons have updates
+#     entity_id: binary_sensor.updater_addons
+#     state: 'on'
+#     can_acknowledge: false
+#     repeat: 360
+#     title: "Updates available for {{ states('sensor.supervisor_updates') }} HA addon{% if states('sensor.supervisor_updates') | int > 1 %}s{% endif %}"
+#     message: ""
+#     notifiers:
+#     - 'me'
+#     data:
+#       tag: 'addon-update-available'
+#       url: 'http://hassio.local/hassio/dashboard'
+#       ttl: 21600
+
+# automation:
+#   - id: '1585256741683'
+#     alias: Check config with update
+#     description: Starts the check config addon when an update becomes available
+#     trigger:
+#     - entity_id: binary_sensor.updater
+#       platform: state
+#       to: 'on'
+#     condition: []
+#     action:
+#     - data:
+#         addon: core_check_config
+#       service: hassio.addon_start

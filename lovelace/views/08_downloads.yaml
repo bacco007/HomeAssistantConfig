@@ -37,6 +37,8 @@ cards:
                   - name: NZBHydra
                   - icon: /local/dashboard-icons/nzbhydra.png
                   - url: !secret nzbhydra_url
+              - type: 'custom:button-card'
+                color_type: blank-card
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
