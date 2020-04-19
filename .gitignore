@@ -43,5 +43,7 @@ yamllinterrors.txt
 README_Dev.md
 zigbee.db
 airsonos.xml
+.xbox-token.json
+.pip_progress
 
 !.androidkeys/fake_adbkey

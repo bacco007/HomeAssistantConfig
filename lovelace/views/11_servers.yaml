@@ -9,7 +9,6 @@ cards:
   - type: custom:layout-card
     layout: auto
     max_columns: 3
-    rtl: true
     cards:
       # - type: vertical-stack
       #   style: !include ../includes/style.yaml
@@ -173,7 +172,7 @@ cards:
                 sort_by: name+
                 clickable: true
                 css:
-                  table+: 'border: 0; padding-left: 16px; padding-right: 16px'
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 11px !important'
                 entities:
                   include: binary_sensor.tbsh01_ha_dockermon*
                 columns:
@@ -271,7 +270,7 @@ cards:
                 sort_by: name+
                 clickable: true
                 css:
-                  table+: 'border: 0; padding-left: 16px; padding-right: 16px'
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 11px !important'
                 entities:
                   include: binary_sensor.vmtbsh01_ha_dockermon*
                 columns:
@@ -369,7 +368,7 @@ cards:
                 sort_by: name+
                 clickable: true
                 css:
-                  table+: 'border: 0; padding-left: 16px; padding-right: 16px'
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 11px !important'
                 entities:
                   include: binary_sensor.vmtbsh02_ha_dockermon*
                 columns:

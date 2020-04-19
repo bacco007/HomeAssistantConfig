@@ -47,11 +47,33 @@ cards:
                       - sensor.waze_travel_tom_to_home
 
       - type: vertical-stack
+        style: !include ../includes/style.yaml
         cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Birthdays etc
           - card:
               show_header_toggle: false
-              title: Important Dates
               type: entities
+              style: |
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+                ha-card {
+                  border: solid 1px var(--border-color);
+                  font-family: var(--primary-font-family);
+                  font-weight: 400 !important;
+                }
+
             sort:
               method: state
               numeric: true
@@ -68,49 +90,3 @@ cards:
                       {entity}.attributes.years_at_next_anniversary ]] Years)
             show_empty: true
             type: 'custom:auto-entities'
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
-        cards:
-          - type: custom:decluttering-card
-            template: title
-            variables:
-              - title: Birthdays etc
-          - type: custom:vertical-stack-in-card
-            cards:
-              - type: custom:decluttering-card
-                template: entities-no-header
-                variables:
-                  - entities:
-                      - entity: sensor.datetracking_mybirthday
-                        name: My Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - entity: sensor.datetracking_henrybirthday
-                        name: Henry's Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - entity: sensor.datetracking_patrickbirthday
-                        name: Patrick's Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - entity: sensor.datetracking_dadbirthday
-                        name: Dad's Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - entity: sensor.datetracking_mumbirthday
-                        name: Mum's Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - entity: sensor.datetracking_marleybirthday
-                        name: Marley's Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - entity: sensor.datetracking_katebirthday
-                        name: Kate's Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'
-                      - type: section
-                      - entity: sensor.datetracking_myworkbirthday
-                        name: My Work Birthday
-                        secondary_info: '[[ {entity}.attributes.date ]]  ([[ {entity}.attributes.years_at_next_anniversary ]])'
-                        type: 'custom:secondaryinfo-entity-row'

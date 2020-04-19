@@ -10,42 +10,46 @@ cards:
     max_columns: 3
     # max_width: [275px, 40%, 40%, 40%]
     cards:
-      - type: custom:vertical-stack-in-card
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
         cards:
-          - type: markdown
-            style: >
-              ha-markdown.markdown.no-header {
-                  padding-bottom: 5px !important;
-              }
-            content: |
-              ## IoT / SmartHome Network Connectivity
-          - type: entities
-            show_header_toggle: false
-            style: |
-              .card-content div {
-                margin: 0 !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
-            entities:
-              - entity: binary_sensor.networkstatus_amazonalexaplus
-                type: custom:secondaryinfo-entity-row
-                secondary_info: "IP: [[ binary_sensor.networkstatus_amazonalexaplus.attributes.ip_address ]]"
-              - entity: binary_sensor.networkstatus_amazonfirestick
-                type: custom:secondaryinfo-entity-row
-                secondary_info: "IP: [[ binary_sensor.networkstatus_amazonfirestick.attributes.ip_address ]]"
-              - entity: binary_sensor.networkstatus_appletv
-                type: custom:secondaryinfo-entity-row
-                secondary_info: "IP: [[ binary_sensor.networkstatus_appletv.attributes.ip_address ]]"
-              - entity: binary_sensor.networkstatus_googlenesthub
-                type: custom:secondaryinfo-entity-row
-                secondary_info: "IP: [[ binary_sensor.networkstatus_googlenesthub.attributes.ip_address ]]"
-              - binary_sensor.networkstatus_harmonyhub
-              - binary_sensor.networkstatus_hdhomerun
-              - binary_sensor.networkstatus_netatmoweather
-              - binary_sensor.networkstatus_sonos
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: IoT / SmartHome Network Connectivity
+          - card:
+              show_header_toggle: false
+              type: entities
+              style: |
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+                ha-card {
+                  border: solid 1px var(--border-color);
+                  font-family: var(--primary-font-family);
+                  font-weight: 400 !important;
+                }
+
+            sort:
+              method: name
+              numeric: true
+            filter:
+              include:
+                - entity_id: binary_sensor.networkstatus_*
+                  options:
+                    type: 'custom:secondaryinfo-entity-row'
+                    secondary_info: >-
+                      [[ {entity}.attributes.ip_address ]]
+            show_empty: true
+            type: 'custom:auto-entities'
 
       - type: custom:vertical-stack-in-card
         cards:
@@ -467,3 +471,31 @@ cards:
                 show:
                   # extrema: true
                   fill: true
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Folding@Home
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.foldingathome
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Gaming
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.bacco007

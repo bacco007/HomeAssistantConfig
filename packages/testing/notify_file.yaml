@@ -1,0 +1,5 @@
+---
+notify:
+  - name: 'Update found addon slugs'
+    platform: file
+    filename: 'found_addon_slugs.txt'

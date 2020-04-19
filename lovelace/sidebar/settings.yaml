@@ -16,7 +16,6 @@ sidebarMenu:
     icon: mdi:weather-cloudy-alert
     navigation_path: /lovelace/weather
   - action: navigate
-    active: true
     name: COVID-19
     icon: mdi:biohazard
     navigation_path: /lovelace/covid19
@@ -123,6 +122,12 @@ bottomCard:
                     - sensor.bedroom_humidity
                     - sensor.bedroom_temperature
 style: |
+  .sidebarMenu li.active ha-icon {
+    color: rgb(247, 217, 89);
+  }
+  .sidebarMenu li.active {
+    background-color: rgba(0,0,0,0.2);
+  }
   .template li {
     font-weight: 400 !important;
     font-family: var(--primary-font-family);

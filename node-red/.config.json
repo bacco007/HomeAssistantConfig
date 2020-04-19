@@ -2,7 +2,7 @@
  "nodes": {
   "node-red": {
    "name": "node-red",
-   "version": "1.0.4",
+   "version": "1.0.5",
    "local": false,
    "nodes": {
     "inject": {
@@ -397,7 +397,7 @@
   },
   "node-red-contrib-bigtimer": {
    "name": "node-red-contrib-bigtimer",
-   "version": "2.2.6",
+   "version": "2.3.1",
    "local": false,
    "nodes": {
     "bigtimer": {
@@ -448,7 +448,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.21.5",
+   "version": "0.22.2",
    "local": false,
    "nodes": {
     "server": {
@@ -676,7 +676,7 @@
   },
   "node-red-contrib-modbus": {
    "name": "node-red-contrib-modbus",
-   "version": "5.2.0",
+   "version": "5.10.1",
    "local": false,
    "nodes": {
     "Modbus-Client": {
@@ -961,7 +961,7 @@
   },
   "node-red-dashboard": {
    "name": "node-red-dashboard",
-   "version": "2.19.4",
+   "version": "2.20.0",
    "local": false,
    "nodes": {
     "ui_base": {
@@ -1195,7 +1195,7 @@
   },
   "node-red-node-email": {
    "name": "node-red-node-email",
-   "version": "1.7.7",
+   "version": "1.7.8",
    "local": false,
    "nodes": {
     "email": {
@@ -1264,7 +1264,7 @@
   },
   "node-red-node-pi-gpio": {
    "name": "node-red-node-pi-gpio",
-   "version": "1.0.6",
+   "version": "1.0.9",
    "local": false,
    "nodes": {
     "rpi-gpio": {
@@ -1284,7 +1284,7 @@
   },
   "node-red-node-ping": {
    "name": "node-red-node-ping",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "local": false,
    "nodes": {
     "ping": {
@@ -1352,7 +1352,7 @@
   },
   "node-red-node-serialport": {
    "name": "node-red-node-serialport",
-   "version": "0.10.0",
+   "version": "0.10.1",
    "local": false,
    "nodes": {
     "serialport": {
@@ -1389,7 +1389,7 @@
   },
   "node-red-node-suncalc": {
    "name": "node-red-node-suncalc",
-   "version": "0.0.12",
+   "version": "0.1.0",
    "local": false,
    "nodes": {
     "suncalc": {
@@ -1437,6 +1437,25 @@
      "local": false,
      "module": "node-red-node-twitter",
      "file": "/opt/node_modules/node-red-node-twitter/27-twitter.js"
+    }
+   }
+  },
+  "node-red-contrib-components": {
+   "name": "node-red-contrib-components",
+   "version": "0.1.6",
+   "local": false,
+   "nodes": {
+    "components": {
+     "name": "components",
+     "types": [
+      "component_in",
+      "component",
+      "component_out"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-components",
+     "file": "/opt/node_modules/node-red-contrib-components/components/components.js"
     }
    }
   }

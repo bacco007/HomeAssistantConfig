@@ -9,7 +9,7 @@ binary_sensor:
   - platform: template
     sensors:
       networkstatus_router:
-        friendly_name: Router (UniFi USG)
+        friendly_name: UniFi USG
         entity_id: device_tracker.usg
         value_template: "{{ is_state('device_tracker.usg', 'home') }}"
         icon_template: >-
@@ -18,8 +18,15 @@ binary_sensor:
           {% else %}
             mdi:router-wireless
           {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.usg', 'home') %}
+              IP: {{ states.device_tracker.usg.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_wifi:
-        friendly_name: WiFi (UniFi AP-AC-Lite)
+        friendly_name: UniFi WiFi - AP-AC-Lite (UFO)
         entity_id: device_tracker.ufo
         value_template: "{{ is_state('device_tracker.ufo', 'home') }}"
         icon_template: >-
@@ -28,8 +35,22 @@ binary_sensor:
           {% else %}
             mdi:access-point
           {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.ufo', 'home') %}
+              IP: {{ states.device_tracker.ufo.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.ufo', 'home') %}
+              IP: {{ states.device_tracker.ufo.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_switch:
-        friendly_name: Switch (UniFi Switch 8 60W)
+        friendly_name: UniFi Switch - 8 Port 60W (Hateful8)
         entity_id: device_tracker.hateful8
         value_template: "{{ is_state('device_tracker.hateful8', 'home') }}"
         icon_template: >-
@@ -38,8 +59,10 @@ binary_sensor:
           {% else %}
             mdi:switch
           {% endif %}
+        attribute_templates:
+          ip_address: "IP Address Not Available"
       networkstatus_nas_thecube2:
-        friendly_name: NAS (TheCube2)
+        friendly_name: Synology NAS (TheCube2)
         entity_id: device_tracker.thecube2
         value_template: "{{ is_state('device_tracker.thecube2', 'home') }}"
         icon_template: >-
@@ -49,7 +72,12 @@ binary_sensor:
             mdi:nas
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.thecube2.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.thecube2', 'home') %}
+              IP: {{ states.device_tracker.thecube2.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_hdhomerun:
         friendly_name: HDHomeRun
         entity_id: device_tracker.hdhomerun
@@ -61,7 +89,12 @@ binary_sensor:
             mdi:television-box
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.hdhomerun.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.hdhomerun', 'home') %}
+              IP: {{ states.device_tracker.hdhomerun.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_googlenesthub:
         friendly_name: Google Home - Nest Hub
         entity_id: device_tracker.google_home_hub
@@ -73,7 +106,12 @@ binary_sensor:
             mdi:google-home
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.google_home_hub.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.google_home_hub', 'home') %}
+              IP: {{ states.device_tracker.google_home_hub.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_harmonyhub:
         friendly_name: Harmony Hub
         entity_id: device_tracker.harmonyhub
@@ -85,7 +123,12 @@ binary_sensor:
             mdi:remote
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.harmonyhub.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.harmonyhub', 'home') %}
+              IP: {{ states.device_tracker.harmonyhub.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_amazonalexaplus:
         friendly_name: Amazon Alexa Plus
         entity_id: device_tracker.amazon_alexa_plus
@@ -97,19 +140,29 @@ binary_sensor:
             mdi:amazon-alexa
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.amazon_alexa_plus.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.amazon_alexa_plus', 'home') %}
+              IP: {{ states.device_tracker.amazon_alexa_plus.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_netatmoweather:
         friendly_name: Netatmo Weather Station
         entity_id: device_tracker.netatmo_personal_weather_statio
-        value_template: "{{ is_state('device_tracker.netatmo_personal_weather_statio', 'home') }}"
+        value_template: "{{ is_state('device_tracker.netatmo', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.netatmo_personal_weather_statio', 'home') %}
+          {% if is_state('device_tracker.netatmo', 'home') %}
             mdi:weather-cloudy-alert
           {% else %}
             mdi:weather-cloudy-alert
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.netatmo_personal_weather_statio.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.netatmo', 'home') %}
+              IP: {{ states.device_tracker.netatmo.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_sonos:
         friendly_name: Sonos Play:1 (Bedroom)
         entity_id: device_tracker.sonos_lounge_room
@@ -121,7 +174,12 @@ binary_sensor:
             mdi:speaker
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.sonos_lounge_room.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.sonos_lounge_room', 'home') %}
+              IP: {{ states.device_tracker.sonos_lounge_room.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_appletv:
         friendly_name: Apple TV (Bedroom)
         entity_id: device_tracker.appletvbedroom
@@ -133,7 +191,12 @@ binary_sensor:
             mdi:airplay
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.appletvbedroom.attributes['ip'] }}"
+          ip_address:  >-
+            {% if is_state('device_tracker.appletvbedroom', 'home') %}
+              IP: {{ states.device_tracker.appletvbedroom.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_amazonfirestick:
         friendly_name: Amazon Fire Stick
         entity_id: device_tracker.amazon_fire_stick
@@ -145,4 +208,60 @@ binary_sensor:
             mdi:amazon
           {% endif %}
         attribute_templates:
-          ip_address: "{{ states.device_tracker.amazon_fire_stick.attributes['ip'] }}"
+          ip_address: >-
+            {% if is_state('device_tracker.amazon_fire_stick', 'home') %}
+              IP: {{ states.device_tracker.amazon_fire_stick.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_foxtelnowbox:
+        friendly_name: Foxtel Now Box
+        entity_id: device_tracker.android_6c38e10f6ba1d4fc
+        value_template: "{{ is_state('device_tracker.android_6c38e10f6ba1d4fc', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.android_6c38e10f6ba1d4fc', 'home') %}
+            mdi:android
+          {% else %}
+            mdi:android
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.android_6c38e10f6ba1d4fc', 'home') %}
+              IP: {{ states.device_tracker.android_6c38e10f6ba1d4fc.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_googlenestmini:
+        friendly_name: Google Home - Nest Mini
+        entity_id: device_tracker.google_nest_mini
+        value_template: "{{ is_state('device_tracker.google_nest_mini', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.google_nest_mini', 'home') %}
+            mdi:google-home
+          {% else %}
+            mdi:google-home
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.google_nest_mini', 'home') %}
+              IP: {{ states.device_tracker.google_nest_mini.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_xboxone:
+        friendly_name: Xbox One
+        entity_id: device_tracker.xboxone
+        value_template: "{{ is_state('device_tracker.xboxone', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.xboxone', 'home') %}
+            mdi:gamepad-variant
+          {% else %}
+            mdi:gamepad-variant
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.xboxone', 'home') %}
+              IP: {{ states.device_tracker.xboxone.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}

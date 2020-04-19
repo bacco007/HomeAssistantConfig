@@ -1,5 +1,10 @@
 ---
 sensor:
+  - platform: covid19_nswhealth
+    name: Tamworth
+  - platform: covid19_nswhealth_tests
+    name: Tamworth
+
   - platform: rest
     timeout: 60
     scan_interval: 3600
@@ -181,6 +186,76 @@ sensor:
 
   - platform: template
     sensors:
+      covid_19_nswh_local_pct:
+        friendly_name: 'COVID-19 NSWH Local Percents'
+        unit_of_measurement: '%'
+        icon_template: mdi:biohazard
+        entity_id: sensor.date_time
+        value_template: >
+          {{ ((states.sensor.covid_19_nswh_local.attributes['hneh']/912352)*100)|round(3) }}
+        attribute_templates:
+          hneh_percent: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['hneh']/912352)*100)|round(3) }}
+          trc_percent: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['trc']/62156)*100)|round(3) }}
+          tamw_percent: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['tamw']/49072)*100)|round(3) }}
+          hneh_percent_cases: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['hneh']/(states.sensor.covid_19_esria_nsw.attributes['Cases']|int))*100)|round(3) }}
+          trc_percent_cases: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['trc']/(states.sensor.covid_19_esria_nsw.attributes['Cases']|int))*100)|round(3) }}
+          tamw_percent_cases: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['tamw']/(states.sensor.covid_19_esria_nsw.attributes['Cases']|int))*100)|round(3) }}
+          hneh_percent_casestotests: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['hneh']/(states.sensor.covid_19_nswh_local_tests.attributes['hneh']|int))*100)|round(3) }}
+          trc_percent_casestotests: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['trc']/(states.sensor.covid_19_nswh_local_tests.attributes['trc']|int))*100)|round(3) }}
+          tamw_percent_casestotests: >
+            {{ ((states.sensor.covid_19_nswh_local.attributes['tamw']/(states.sensor.covid_19_nswh_local_tests.attributes['tamw']|int))*100)|round(3) }}
+          hneh_percent_tests: >
+            {{ ((states.sensor.covid_19_nswh_local_tests.attributes['hneh']/912352)*100)|round(3) }}
+          trc_percent_tests: >
+            {{ ((states.sensor.covid_19_nswh_local_tests.attributes['trc']/62156)*100)|round(3) }}
+          tamw_percent_tests: >
+            {{ ((states.sensor.covid_19_nswh_local_tests.attributes['tamw']/49072)*100)|round(3) }}
+      covid_19_esria_aus_pct:
+        friendly_name: 'COVID-19 ESRIA AUS Percents'
+        unit_of_measurement: '%'
+        icon_template: mdi:biohazard
+        entity_id: sensor.date_time
+        value_template: >
+          {{ (((states.sensor.covid_19_esria_aus_cases.state|int)/25464100)*100)|round(3) }}
+        attribute_templates:
+          casestotests_percent: >
+            {{ (((states.sensor.covid_19_esria_aus_cases.state|int) / (states.sensor.covid_19_esria_aus_tests.state|int))*100)|round(3) }}
+          casestodeaths_percent: >
+            {{ (((states.sensor.covid_19_esria_aus_deaths.state|int) / (states.sensor.covid_19_esria_aus_cases.state|int))*100)|round(3) }}
+          casespermillion: >
+            {{ (((states.sensor.covid_19_esria_aus_cases.state|int) / 25.464))|round(0) }}
+          testspermillion: >
+            {{ (((states.sensor.covid_19_esria_aus_tests.state|int) / 25.464))|round(0) }}
+          deathspermillion: >
+            {{ (((states.sensor.covid_19_esria_aus_deaths.state|int) / 25.464))|round(0) }}
+      covid_19_esria_nsw_pct:
+        friendly_name: 'COVID-19 ESRIA NSW Percents'
+        unit_of_measurement: '%'
+        icon_template: mdi:biohazard
+        entity_id: sensor.date_time
+        value_template: >
+          {{ (((states.sensor.covid_19_esria_nsw.attributes['Cases']|int)/8118000)*100)|round(3) }}
+        attribute_templates:
+          casestotests_percent: >
+            {{ (((states.sensor.covid_19_esria_nsw.attributes['Cases']|int) / (states.sensor.covid_19_esria_nsw.attributes['Tests']|int))*100)|round(3) }}
+          casestodeaths_percent: >
+            {{ (((states.sensor.covid_19_esria_nsw.attributes['Deaths']|int) / (states.sensor.covid_19_esria_nsw.attributes['Cases']|int))*100)|round(3) }}
+          teststopopulation_percent: >
+            {{ (((states.sensor.covid_19_esria_nsw.attributes['Tests']|int)/8118000)*100)|round(3) }}
+          casespermillion: >
+            {{ (((states.sensor.covid_19_esria_nsw.attributes['Cases']|int) / 8.118))|round(0) }}
+          testspermillion: >
+            {{ (((states.sensor.covid_19_esria_nsw.attributes['Tests']|int) / 8.118))|round(0) }}
+          deathspermillion: >
+            {{ (((states.sensor.covid_19_esria_nsw.attributes['Deaths']|int) / 8.118))|round(0) }}
       covid_19_esria_aus_cases:
         friendly_name: 'COVID-19 ESRIA AUS Cases'
         value_template: >
@@ -189,13 +264,13 @@ sensor:
           + states.sensor.covid_19_esria_vic.attributes['Cases']
           + states.sensor.covid_19_esria_qld.attributes['Cases']
           + states.sensor.covid_19_esria_tas.attributes['Cases']
-          + states.sensor.covid_19_esria_act.attributes['Cases']
           + states.sensor.covid_19_esria_sa.attributes['Cases']
           + states.sensor.covid_19_esria_nt.attributes['Cases']
+          + states.sensor.covid_19_esria_wa.attributes['Cases']
           }}
         unit_of_measurement: People
         icon_template: mdi:biohazard
-        entity_id: sensor.covid_19_esria_act
+        entity_id: sensor.date_time
       covid_19_esria_aus_tests:
         friendly_name: 'COVID-19 ESRIA AUS Tests'
         value_template: >
@@ -204,12 +279,13 @@ sensor:
           + states.sensor.covid_19_esria_vic.attributes['Tests']
           + states.sensor.covid_19_esria_qld.attributes['Tests']
           + states.sensor.covid_19_esria_tas.attributes['Tests']
-          + states.sensor.covid_19_esria_act.attributes['Tests']
           + states.sensor.covid_19_esria_sa.attributes['Tests']
+          + states.sensor.covid_19_esria_nt.attributes['Tests']
+          + states.sensor.covid_19_esria_wa.attributes['Tests']
           }}
         unit_of_measurement: People
         icon_template: mdi:biohazard
-        entity_id: sensor.covid_19_esria_act
+        entity_id: sensor.date_time
       covid_19_esria_aus_deaths:
         friendly_name: 'COVID-19 ESRIA AUS Deaths'
         value_template: >
@@ -218,10 +294,10 @@ sensor:
           + states.sensor.covid_19_esria_vic.attributes['Deaths']
           + states.sensor.covid_19_esria_qld.attributes['Deaths']
           + states.sensor.covid_19_esria_tas.attributes['Deaths']
-          + states.sensor.covid_19_esria_act.attributes['Deaths']
           + states.sensor.covid_19_esria_sa.attributes['Deaths']
           + states.sensor.covid_19_esria_nt.attributes['Deaths']
+          + states.sensor.covid_19_esria_wa.attributes['Deaths']
           }}
         unit_of_measurement: People
         icon_template: mdi:biohazard
-        entity_id: sensor.covid_19_esria_act
+        entity_id: sensor.date_time

@@ -6,47 +6,14 @@ icon: mdi:biohazard
 panel: true
 cards:
   - type: custom:layout-card
-    layout: vertical
-    min_columns: 1
-    max_columns: 2
-    column_width: [60%, 40%]
-    rtl: true
+    layout: grid
+    gridrows: auto auto
+    gridcols: auto auto
     cards:
       - type: vertical-stack
         style: !include ../includes/style.yaml
-        cards:
-          # - type: custom:decluttering-card
-          #   template: time-card
-          # - type: custom:gap-card
-          #   height: 10
-          - type: horizontal-stack
-            cards:
-              - type: custom:decluttering-card
-                template: button
-                variables:
-                  - name: AusGov
-                  - icon: https://www.australia.gov.au/homepage-resources/resources/aus-gov-stacked-white.svg
-                  - url: https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert
-              - type: custom:decluttering-card
-                template: button
-                variables:
-                  - name: NSWGov
-                  - icon: https://preview.nsw.gov.au/modules/custom/dcs_favicon/images/apple-touch-icon.png
-                  - url: https://preview.nsw.gov.au/covid-19/find-facts-about-covid-19
-              - type: custom:decluttering-card
-                template: button
-                variables:
-                  - name: ESRIAust
-                  - icon: https://www.esri.com/content/dam/esrisites/en-us/common/icons/product-logos/ArcGISOnline.png
-                  - url: https://covid19-esriau.hub.arcgis.com/
-              - type: 'custom:button-card'
-                color_type: blank-card
-
-      - type: custom:gap-card
-        height: 5
-
-      - type: vertical-stack
-        style: !include ../includes/style.yaml
+        gridrow: 1 / 2
+        gridcol: 1 / 2
         cards:
           - type: custom:decluttering-card
             template: title
@@ -66,7 +33,7 @@ cards:
                         secondary_info: last-changed
                         entities:
                           - entity: sensor.worldwide_confirmed
-                            name: Confirmed
+                            name: Cases
                             unit: " "
                           - entity: sensor.worldwide_deaths
                             name: Deaths
@@ -79,7 +46,7 @@ cards:
                         secondary_info: last-changed
                         entities:
                           - entity: sensor.new_zealand_coronavirus_confirmed
-                            name: Confirmed
+                            name: Cases
                             unit: " "
                           - entity: sensor.new_zealand_coronavirus_deaths
                             name: Deaths
@@ -92,7 +59,7 @@ cards:
                         secondary_info: last-changed
                         entities:
                           - entity: sensor.united_kingdom_coronavirus_confirmed
-                            name: Confirmed
+                            name: Cases
                             unit: " "
                           - entity: sensor.united_kingdom_coronavirus_deaths
                             name: Deaths
@@ -105,7 +72,7 @@ cards:
                         secondary_info: last-changed
                         entities:
                           - entity: sensor.us_coronavirus_confirmed
-                            name: Confirmed
+                            name: Cases
                             unit: " "
                           - entity: sensor.us_coronavirus_deaths
                             name: Deaths
@@ -119,7 +86,7 @@ cards:
                         secondary_info: last-changed
                         entities:
                           - entity: sensor.australia_confirmed
-                            name: Confirmed
+                            name: Cases
                             unit: " "
                           - entity: sensor.australia_deaths
                             name: Deaths
@@ -132,17 +99,142 @@ cards:
                         secondary_info: last-changed
                         entities:
                           - attribute: Confirmed
-                            name: Confirmed
+                            name: Cases
                             unit: " "
                           - attribute: Deaths
                             name: Deaths
                             unit: " "
-
-      - type: custom:gap-card
-        height: 5
-
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: New South Wales (NSW Health)
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.covid_19_nswh_local
+                        name: Hunter New England Health Cases
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info:
+                          attribute: hneh_dates
+                        entities:
+                          - attribute: hneh
+                            name: Cases
+                            unit: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: hneh_percent
+                            name: Cases/Pop
+                            units: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: hneh_percent_cases
+                            name: Cases/NSW
+                            units: " "
+                      - entity: sensor.covid_19_nswh_local_tests
+                        name: Hunter New England Health Tests
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info:
+                          attribute: hneh_dates
+                        entities:
+                          - entity: sensor.covid_19_nswh_local_tests
+                            attribute: hneh
+                            name: Tests
+                            units: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: hneh_percent_casestotests
+                            name: Cases/Tests
+                            unit: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: hneh_percent_tests
+                            name: Tests/Pop
+                            unit: " "
+                      - entity: sensor.covid_19_nswh_local
+                        name: Tamworth Regional Council Cases
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info:
+                          attribute: trc_dates
+                        entities:
+                          - attribute: trc
+                            name: Cases
+                            unit: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: trc_percent
+                            name: Cases/Pop
+                            units: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: trc_percent_cases
+                            name: Cases/NSW
+                            units: " "
+                      - entity: sensor.covid_19_nswh_local_tests
+                        name: Tamworth Regional Council Tests
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info:
+                          attribute: trc_dates
+                        entities:
+                          - entity: sensor.covid_19_nswh_local_tests
+                            attribute: trc
+                            name: Tests
+                            units: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: trc_percent_casestotests
+                            name: Cases/Tests
+                            unit: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: trc_percent_tests
+                            name: Tests/Pop
+                            unit: " "
+                      - entity: sensor.covid_19_nswh_local
+                        name: Tamworth (2340) Cases
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info:
+                          attribute: tamw_dates
+                        entities:
+                          - attribute: tamw
+                            name: Cases
+                            unit: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: tamw_percent
+                            name: Cases/Pop
+                            units: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: tamw_percent_cases
+                            name: Cases/NSW
+                            units: " "
+                      - entity: sensor.covid_19_nswh_local_tests
+                        name: Tamworth (2340) Tests
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info:
+                          attribute: tamw_dates
+                        entities:
+                          - entity: sensor.covid_19_nswh_local_tests
+                            attribute: tamw
+                            name: Tests
+                            units: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: tamw_percent_casestotests
+                            name: Cases/Tests
+                            unit: " "
+                          - entity: sensor.covid_19_nswh_local_pct
+                            attribute: tamw_percent_tests
+                            name: Tests/Pop
+                            unit: " "
       - type: vertical-stack
         style: !include ../includes/style.yaml
+        gridrow: 1 / 2
+        gridcol: 2 / 3
         cards:
           - type: custom:decluttering-card
             template: title
@@ -170,23 +262,44 @@ cards:
                           - entity: sensor.covid_19_esria_aus_tests
                             name: Tests
                             unit: " "
-                      - type: section
-                      - entity: sensor.covid_19_esria_act
-                        name: Australian Capital Territory
+                      - entity: sensor.covid_19_esria_aus_pct
+                        name: Australia Percentages
                         type: custom:multiple-entity-row
                         icon: mdi:biohazard
                         show_state: false
                         secondary_info: last-changed
                         entities:
-                          - attribute: Cases
+                          - entity: sensor.covid_19_esria_aus_pct
+                            attribute: casestotests_percent
+                            name: Cases/Tests
+                            unit: " "
+                          - entity: sensor.covid_19_esria_aus_pct
+                            attribute: casestodeaths_percent
+                            name: Deaths/Cases
+                            unit: " "
+                          - entity: sensor.covid_19_esria_aus_pct
+                            name: Cases/Pop
+                            unit: " "
+                      - entity: sensor.covid_19_esria_aus_pct
+                        name: Australia Per Million
+                        type: custom:multiple-entity-row
+                        icon: mdi:biohazard
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.covid_19_esria_aus_pct
+                            attribute: casespermillion
                             name: Cases
                             unit: " "
-                          - attribute: Deaths
+                          - entity: sensor.covid_19_esria_aus_pct
+                            attribute: deathspermillion
                             name: Deaths
                             unit: " "
-                          - attribute: Tests
+                          - entity: sensor.covid_19_esria_aus_pct
+                            attribute: testspermillion
                             name: Tests
                             unit: " "
+                      - type: section
                       - entity: sensor.covid_19_esria_nsw
                         name: New South Wales
                         type: custom:multiple-entity-row
@@ -203,112 +316,122 @@ cards:
                           - attribute: Tests
                             name: Tests
                             unit: " "
-                      - entity: sensor.covid_19_esria_nt
-                        name: Northern Territory
+                      - entity: sensor.covid_19_esria_nsw_pct
+                        name: New South Wales Percentages
                         type: custom:multiple-entity-row
                         icon: mdi:biohazard
                         show_state: false
                         secondary_info: last-changed
                         entities:
-                          - attribute: Cases
-                            name: Cases
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            attribute: casestotests_percent
+                            name: Cases/Tests
                             unit: " "
-                          - attribute: Deaths
-                            name: Deaths
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            attribute: casestodeaths_percent
+                            name: Deaths/Cases
                             unit: " "
-                          # - attribute: Tests
-                          #   name: Tests
-                          #   unit: " "
-                      - entity: sensor.covid_19_esria_qld
-                        name: Queensland
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            name: Cases/Pop
+                            unit: " "
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            attribute: teststopopulation_percent
+                            name: Tests/Pop
+                            unit: " "
+                      - entity: sensor.covid_19_esria_nsw_pct
+                        name: New South Wales Per Million
                         type: custom:multiple-entity-row
                         icon: mdi:biohazard
                         show_state: false
                         secondary_info: last-changed
                         entities:
-                          - attribute: Cases
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            attribute: casespermillion
                             name: Cases
                             unit: " "
-                          - attribute: Deaths
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            attribute: deathspermillion
                             name: Deaths
                             unit: " "
-                          - attribute: Tests
+                          - entity: sensor.covid_19_esria_nsw_pct
+                            attribute: testspermillion
                             name: Tests
                             unit: " "
-                      - entity: sensor.covid_19_esria_sa
-                        name: South Australia
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - attribute: Cases
-                            name: Cases
-                            unit: " "
-                          - attribute: Deaths
-                            name: Deaths
-                            unit: " "
-                          - attribute: Tests
-                            name: Tests
-                            unit: " "
-                      - entity: sensor.covid_19_esria_tas
-                        name: Tasmania
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - attribute: Cases
-                            name: Cases
-                            unit: " "
-                          - attribute: Deaths
-                            name: Deaths
-                            unit: " "
-                          - attribute: Tests
-                            name: Tests
-                            unit: " "
-                      - entity: sensor.covid_19_esria_vic
-                        name: Victoria
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - attribute: Cases
-                            name: Cases
-                            unit: " "
-                          - attribute: Deaths
-                            name: Deaths
-                            unit: " "
-                          - attribute: Tests
-                            name: Tests
-                            unit: " "
-                      - entity: sensor.covid_19_esria_wa
-                        name: Western Australia
-                        type: custom:multiple-entity-row
-                        icon: mdi:biohazard
-                        show_state: false
-                        secondary_info: last-changed
-                        entities:
-                          - attribute: Cases
-                            name: Cases
-                            unit: " "
-                          - attribute: Deaths
-                            name: Deaths
-                            unit: " "
-                          - attribute: Tests
-                            name: Tests
-                            unit: " "
-      - break
+                      - type: section
+              - type: custom:flex-table-card
+                style: >
+                  font-family: { var(--primary-font-family);}
+                  font-weight: {400 !important;}
+                sort_by: NAME+
+                clickable: true
+                css:
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+                entities:
+                  include: sensor.covid_19_esria_*
+                  exclude:
+                    - sensor.covid_19_esria_*_pct
+                    - sensor.covid_19_esria_aus*
+                columns:
+                  - name: Name
+                    attr: NAME
+                  - name: Last Update
+                    attr: Last_Updated
+                    modify: new Date(x).toDateString()
+                    align: center
+                  - name: Cases
+                    attr: Cases
+                    align: right
+                  - name: Deaths
+                    attr: Deaths
+                    align: right
+                  - name: Tests
+                    attr: Tests
+                    align: right
+
       - type: vertical-stack
         style: !include ../includes/style.yaml
+        gridrow: 2 / 3
+        gridcol: 1 / 3
         cards:
+          - type: vertical-stack
+            style: !include ../includes/style.yaml
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: AusGov
+                      - icon: https://www.australia.gov.au/homepage-resources/resources/aus-gov-stacked-white.svg
+                      - url: https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: NSWGov
+                      - icon: https://preview.nsw.gov.au/modules/custom/dcs_favicon/images/apple-touch-icon.png
+                      - url: https://preview.nsw.gov.au/covid-19/find-facts-about-covid-19
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: ESRIAust
+                      - icon: https://www.esri.com/content/dam/esrisites/en-us/common/icons/product-logos/ArcGISOnline.png
+                      - url: https://covid19-esriau.hub.arcgis.com/
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Graphs
+                      - icon: /local/dashboard-icons/grafana.svg
+                      - url: https://grafana.tbsmartho.me/d/IsHE_g9Wk/coronavirus?orgId=1
+                  # - type: 'custom:button-card'
+                  #   color_type: blank-card
+                  # - type: 'custom:button-card'
+                  #   color_type: blank-card
           - type: custom:decluttering-card
             template: title
             variables:
               - title: NSW by Postcode (NSW Health)
           - type: iframe
-            aspect_ratio: 90%
+            aspect_ratio: 50%
             url: https://nswdac-np-covid-19-postcode-heatmap.azurewebsites.net/
 
       # - type: iframe

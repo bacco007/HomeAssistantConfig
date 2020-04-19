@@ -191,7 +191,7 @@ class OpenNEMCurrentData:
         genvalue = None
 
         if not self.should_update():
-            _LOGGER.debug("OpenNEM was last updated %s minutes ago, skipping update", (dt_util_utcnow() - self.last_updated))
+            _LOGGER.debug("OpenNEM was last updated %s minutes ago, skipping update", (dt_util.utcnow() - self.last_updated))
             return
 
         try:
@@ -204,7 +204,10 @@ class OpenNEMCurrentData:
                     ftype = (row['type'])
                 units = row['units']
                 last_update = row['history']['last']
-                value = row['history']['data'][-1]
+                if row['type'] == "temperature":
+                    value = row['history']['data'][-2]
+                else:
+                    value = row['history']['data'][-1]
                 # DATA[ftype][1]=config.get(CONF_REGION)
                 DATA[ftype][2]=units
                 DATA[ftype][3]=last_update

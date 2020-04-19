@@ -66,7 +66,7 @@ class NSWAQISensor(Entity):
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
 
-        url = "https://airquality.environment.nsw.gov.au/aquisnetnswphp/getPage.php?reportid=1"
+        url = "https://airquality.environment.nsw.gov.au/aquisnetnswphp/getPage.php?reportid=35"
 
         response = requests.get(url)
         tree = html.fromstring(response.content)

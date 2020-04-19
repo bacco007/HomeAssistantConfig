@@ -60,14 +60,34 @@ cards:
                     template: main-mediaplayer
           - type: custom:gap-card
             height: 10
-          - type: media-control
-            entity: media_player.bedroom_sonos
+          - type: 'custom:auto-entities'
+            filter:
+              exclude:
+                - state: 'off'
+                - state: 'unavailable'
+                - state: 'paused'
+                - state: 'standby'
+                - state: 'idle'
+              include:
+                - entity_id: media_player.*
+                  options:
+                    type: media-control
+            sort:
+              method: name
+            card:
+              type: custom:layout-card
+              style: |
+                ha-card {
+                  border: solid 1px var(--border-color);
+                  font-family: var(--primary-font-family);
+                }
+                div#states {
+                  padding: 5px !important;
+                }
 
       - break
 
       # Column 3 (Left)
-      - type: custom:gap-card
-        height: 5
       - type: vertical-stack
         cards:
           - type: custom:decluttering-card
@@ -75,3 +95,6 @@ cards:
             variables:
               - title: Latest in Plex
           - !include ../includes/upcomingmedia_plex.yaml
+      - type: custom:gap-card
+        height: 5
+      - !include ../includes/sonos_mediaplayer.yaml
