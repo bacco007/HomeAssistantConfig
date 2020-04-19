@@ -29,8 +29,8 @@ cards:
                 template: entities-no-header
                 variables:
                   - entities:
-                    - entity: sensor.opensky
-                      name: Flights within 50km of Home
+                      - entity: sensor.opensky
+                        name: Flights within 50km of Home
 
       - type: vertical-stack
         style: !include ../includes/style.yaml
@@ -42,7 +42,7 @@ cards:
           - type: custom:vertical-stack-in-card
             cards:
               - type: markdown
-                title: 
+                title:
                 content: >-
                   {% for state in states.geo_location %}
                     {% if state.attributes.source=="gdacs" %}

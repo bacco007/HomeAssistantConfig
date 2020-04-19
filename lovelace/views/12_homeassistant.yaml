@@ -38,7 +38,6 @@ cards:
                       - entity: binary_sensor.updater_hacs
                         name: HACS Update Available
 
-
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:

@@ -75,12 +75,12 @@ cards:
                 name: Download Speed - 24hr Average
                 icon: mdi:arrow-down-bold
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "Max [[ sensor.speedtest_download_max.state ]]Mbit/s, Min [[ sensor.speedtest_download_min.state ]]Mbit/s"
+                secondary_info: 'Max [[ sensor.speedtest_download_max.state ]]Mbit/s, Min [[ sensor.speedtest_download_min.state ]]Mbit/s'
               - entity: sensor.today_speedtest_upload
                 name: Upload Speed - 24hr Average
                 icon: mdi:arrow-up-bold
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "Max [[ sensor.speedtest_upload_max.state ]]Mbit/s, Min [[ sensor.speedtest_upload_min.state ]]Mbit/s"
+                secondary_info: 'Max [[ sensor.speedtest_upload_max.state ]]Mbit/s, Min [[ sensor.speedtest_upload_min.state ]]Mbit/s'
 
           - type: horizontal-stack
             cards:
@@ -97,11 +97,11 @@ cards:
                   graph: bar
                 color_thresholds:
                   - value: 20
-                    color: "#1db954"
+                    color: '#1db954'
                   - value: 30
-                    color: "#bf9540"
+                    color: '#bf9540'
                   - value: 50
-                    color: "#bf4040"
+                    color: '#bf4040'
           - type: horizontal-stack
             cards:
               - type: custom:mini-graph-card
@@ -117,9 +117,9 @@ cards:
                   fill: true
                 color_thresholds:
                   - value: 0
-                    color: "#FFFF00"
+                    color: '#FFFF00'
                   - value: 18
-                    color: "#3498db"
+                    color: '#3498db'
               - type: custom:mini-graph-card
                 entities:
                   - sensor.speedtest_upload
@@ -133,9 +133,9 @@ cards:
                   fill: true
                 color_thresholds:
                   - value: 0
-                    color: "#FFFF00"
+                    color: '#FFFF00'
                   - value: 4
-                    color: "#3498db"
+                    color: '#3498db'
 
       - type: custom:vertical-stack-in-card
         cards:
@@ -149,25 +149,25 @@ cards:
               - entities:
                   - type: weblink
                     name: TheCube2 DSM
-                    icon: "mdi:nas"
-                    url: "http://thecube2:5000"
+                    icon: 'mdi:nas'
+                    url: 'http://thecube2:5000'
                   - type: section
                   - entity: binary_sensor.networkstatus_nas_thecube2
                     type: custom:secondaryinfo-entity-row
-                    secondary_info: "Up [[ sensor.thecube2_uptime.state ]]"
+                    secondary_info: 'Up [[ sensor.thecube2_uptime.state ]]'
                   - type: section
                   - entity: sensor.thecube2_synology_dsm_status_sda
                     type: custom:secondaryinfo-entity-row
                     name: Disk 1
-                    secondary_info: "/dev/sda1"
+                    secondary_info: '/dev/sda1'
                   - entity: sensor.thecube2_synology_dsm_status_sdb
                     type: custom:secondaryinfo-entity-row
                     name: Disk 2
-                    secondary_info: "/dev/sda2"
+                    secondary_info: '/dev/sda2'
                   - entity: sensor.thecube2_synology_dsm_status_volume_1
                     type: custom:secondaryinfo-entity-row
                     name: Volume 1
-                    secondary_info: "Total: [[ sensor.thecube2_synology_dsm_total_size_volume_1.state ]], Used: [[ sensor.thecube2_synology_dsm_used_space_volume_1.state	]]"
+                    secondary_info: 'Total: [[ sensor.thecube2_synology_dsm_total_size_volume_1.state ]], Used: [[ sensor.thecube2_synology_dsm_used_space_volume_1.state	]]'
 
           - type: entities
             entities:
@@ -182,7 +182,7 @@ cards:
                 severity: { green: 0, red: 80, yellow: 30 }
                 theme: default
                 type: gauge
-                unit: "%"
+                unit: '%'
               - entity: sensor.thecube2_synology_dsm_memory_usage_real
                 max: 100
                 min: 0
@@ -190,7 +190,7 @@ cards:
                 severity: { green: 0, red: 80, yellow: 30 }
                 theme: default
                 type: gauge
-                unit: "%"
+                unit: '%'
               - entity: sensor.thecube2_synology_dsm_volume_used_volume_1
                 max: 100
                 min: 0
@@ -198,7 +198,7 @@ cards:
                 severity: { green: 0, red: 80, yellow: 30 }
                 theme: default
                 type: gauge
-                unit: "%"
+                unit: '%'
 
           - type: entities
             entities:
@@ -294,12 +294,12 @@ cards:
               - type: weblink
                 name: Pi-Hole Admin Panel
                 icon: mdi:pi-hole
-                url: "http://pihole.tbsmartho.me/admin"
+                url: 'http://pihole.tbsmartho.me/admin'
               - type: section
               - switch.pihole_switch
               - entity: binary_sensor.servicestatus_pihole
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "[[ sensor.pi_hole_domains_blocked.state ]] domains blocked"
+                secondary_info: '[[ sensor.pi_hole_domains_blocked.state ]] domains blocked'
           - type: horizontal-stack
             cards:
               - type: custom:mini-graph-card
@@ -387,30 +387,30 @@ cards:
               - type: weblink
                 name: UniFi Controller
                 icon: mdi:router-wireless-settings
-                url: "https://unifi.tbsmartho.me"
+                url: 'https://unifi.tbsmartho.me'
               - type: section
               - entity: binary_sensor.networkstatus_router
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "Up [[ sensor.usg_uptime.state ]]"
+                secondary_info: 'Up [[ sensor.usg_uptime.state ]]'
               - entity: binary_sensor.networkstatus_wifi
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "Up [[ sensor.ufo_uptime.state ]]"
+                secondary_info: 'Up [[ sensor.ufo_uptime.state ]]'
               - entity: binary_sensor.networkstatus_switch
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "Up [[ sensor.hateful8_uptime.state ]]"
+                secondary_info: 'Up [[ sensor.hateful8_uptime.state ]]'
               - type: section
               - entity: binary_sensor.unifi_status_lan
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "[[ sensor.unifi_gateway_lan_sw.state ]] Switch, [[ sensor.unifi_gateway_lan_user.state ]] Users"
+                secondary_info: '[[ sensor.unifi_gateway_lan_sw.state ]] Switch, [[ sensor.unifi_gateway_lan_user.state ]] Users'
               - entity: binary_sensor.unifi_status_wlan
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "[[ sensor.unifi_gateway_wlan_ap.state ]] AP, [[ sensor.unifi_gateway_wlan_user.state ]] Users"
+                secondary_info: '[[ sensor.unifi_gateway_wlan_ap.state ]] AP, [[ sensor.unifi_gateway_wlan_user.state ]] Users'
               - entity: binary_sensor.unifi_status_wan
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "WAN IP Address: [[ sensor.unifi_gateway_wan_ip.state ]]"
+                secondary_info: 'WAN IP Address: [[ sensor.unifi_gateway_wan_ip.state ]]'
               - entity: binary_sensor.unifi_status_www
                 type: custom:secondaryinfo-entity-row
-                secondary_info: "Up [[ sensor.unifi_gateway_www_uptime.state ]]"
+                secondary_info: 'Up [[ sensor.unifi_gateway_www_uptime.state ]]'
               - type: section
               - entity: sensor.unifi_gateway_alerts
                 name: UniFi Controller Alerts

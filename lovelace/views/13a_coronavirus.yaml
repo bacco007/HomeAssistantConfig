@@ -34,10 +34,10 @@ cards:
                         entities:
                           - entity: sensor.worldwide_confirmed
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.worldwide_deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.new_zealand_coronavirus_confirmed
                         name: New Zealand
                         type: custom:multiple-entity-row
@@ -47,10 +47,10 @@ cards:
                         entities:
                           - entity: sensor.new_zealand_coronavirus_confirmed
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.new_zealand_coronavirus_deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.united_kingdom_coronavirus_confirmed
                         name: United Kingdom
                         type: custom:multiple-entity-row
@@ -60,10 +60,10 @@ cards:
                         entities:
                           - entity: sensor.united_kingdom_coronavirus_confirmed
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.united_kingdom_coronavirus_deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.us_coronavirus_confirmed
                         name: United States of America
                         type: custom:multiple-entity-row
@@ -73,10 +73,10 @@ cards:
                         entities:
                           - entity: sensor.us_coronavirus_confirmed
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.us_coronavirus_deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                       - type: section
                       - entity: sensor.australia_confirmed
                         name: Australia
@@ -87,10 +87,10 @@ cards:
                         entities:
                           - entity: sensor.australia_confirmed
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.australia_deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.coronavirus_nsw
                         name: New South Wales
                         type: custom:multiple-entity-row
@@ -100,10 +100,10 @@ cards:
                         entities:
                           - attribute: Confirmed
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - attribute: Deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
           - type: custom:decluttering-card
             template: title
             variables:
@@ -124,15 +124,15 @@ cards:
                         entities:
                           - attribute: hneh
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: hneh_percent
                             name: Cases/Pop
-                            units: " "
+                            units: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: hneh_percent_cases
                             name: Cases/NSW
-                            units: " "
+                            units: ' '
                       - entity: sensor.covid_19_nswh_local_tests
                         name: Hunter New England Health Tests
                         type: custom:multiple-entity-row
@@ -144,15 +144,15 @@ cards:
                           - entity: sensor.covid_19_nswh_local_tests
                             attribute: hneh
                             name: Tests
-                            units: " "
+                            units: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: hneh_percent_casestotests
                             name: Cases/Tests
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: hneh_percent_tests
                             name: Tests/Pop
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.covid_19_nswh_local
                         name: Tamworth Regional Council Cases
                         type: custom:multiple-entity-row
@@ -163,15 +163,15 @@ cards:
                         entities:
                           - attribute: trc
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: trc_percent
                             name: Cases/Pop
-                            units: " "
+                            units: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: trc_percent_cases
                             name: Cases/NSW
-                            units: " "
+                            units: ' '
                       - entity: sensor.covid_19_nswh_local_tests
                         name: Tamworth Regional Council Tests
                         type: custom:multiple-entity-row
@@ -183,15 +183,15 @@ cards:
                           - entity: sensor.covid_19_nswh_local_tests
                             attribute: trc
                             name: Tests
-                            units: " "
+                            units: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: trc_percent_casestotests
                             name: Cases/Tests
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: trc_percent_tests
                             name: Tests/Pop
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.covid_19_nswh_local
                         name: Tamworth (2340) Cases
                         type: custom:multiple-entity-row
@@ -202,15 +202,15 @@ cards:
                         entities:
                           - attribute: tamw
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: tamw_percent
                             name: Cases/Pop
-                            units: " "
+                            units: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: tamw_percent_cases
                             name: Cases/NSW
-                            units: " "
+                            units: ' '
                       - entity: sensor.covid_19_nswh_local_tests
                         name: Tamworth (2340) Tests
                         type: custom:multiple-entity-row
@@ -222,15 +222,15 @@ cards:
                           - entity: sensor.covid_19_nswh_local_tests
                             attribute: tamw
                             name: Tests
-                            units: " "
+                            units: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: tamw_percent_casestotests
                             name: Cases/Tests
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_nswh_local_pct
                             attribute: tamw_percent_tests
                             name: Tests/Pop
-                            unit: " "
+                            unit: ' '
       - type: vertical-stack
         style: !include ../includes/style.yaml
         gridrow: 1 / 2
@@ -255,13 +255,13 @@ cards:
                         entities:
                           - entity: sensor.covid_19_esria_aus_cases
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_aus_deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_aus_tests
                             name: Tests
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.covid_19_esria_aus_pct
                         name: Australia Percentages
                         type: custom:multiple-entity-row
@@ -272,14 +272,14 @@ cards:
                           - entity: sensor.covid_19_esria_aus_pct
                             attribute: casestotests_percent
                             name: Cases/Tests
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_aus_pct
                             attribute: casestodeaths_percent
                             name: Deaths/Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_aus_pct
                             name: Cases/Pop
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.covid_19_esria_aus_pct
                         name: Australia Per Million
                         type: custom:multiple-entity-row
@@ -290,15 +290,15 @@ cards:
                           - entity: sensor.covid_19_esria_aus_pct
                             attribute: casespermillion
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_aus_pct
                             attribute: deathspermillion
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_aus_pct
                             attribute: testspermillion
                             name: Tests
-                            unit: " "
+                            unit: ' '
                       - type: section
                       - entity: sensor.covid_19_esria_nsw
                         name: New South Wales
@@ -309,13 +309,13 @@ cards:
                         entities:
                           - attribute: Cases
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - attribute: Deaths
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                           - attribute: Tests
                             name: Tests
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.covid_19_esria_nsw_pct
                         name: New South Wales Percentages
                         type: custom:multiple-entity-row
@@ -326,18 +326,18 @@ cards:
                           - entity: sensor.covid_19_esria_nsw_pct
                             attribute: casestotests_percent
                             name: Cases/Tests
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_nsw_pct
                             attribute: casestodeaths_percent
                             name: Deaths/Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_nsw_pct
                             name: Cases/Pop
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_nsw_pct
                             attribute: teststopopulation_percent
                             name: Tests/Pop
-                            unit: " "
+                            unit: ' '
                       - entity: sensor.covid_19_esria_nsw_pct
                         name: New South Wales Per Million
                         type: custom:multiple-entity-row
@@ -348,15 +348,15 @@ cards:
                           - entity: sensor.covid_19_esria_nsw_pct
                             attribute: casespermillion
                             name: Cases
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_nsw_pct
                             attribute: deathspermillion
                             name: Deaths
-                            unit: " "
+                            unit: ' '
                           - entity: sensor.covid_19_esria_nsw_pct
                             attribute: testspermillion
                             name: Tests
-                            unit: " "
+                            unit: ' '
                       - type: section
               - type: custom:flex-table-card
                 style: >
@@ -433,7 +433,6 @@ cards:
           - type: iframe
             aspect_ratio: 50%
             url: https://nswdac-np-covid-19-postcode-heatmap.azurewebsites.net/
-
       # - type: iframe
       #   aspect_ratio: 120%
       #   url: "https://experience.arcgis.com/experience/13d96f3e49e3476a98f71e19ac9b0859/"

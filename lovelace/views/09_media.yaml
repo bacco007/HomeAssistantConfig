@@ -19,46 +19,46 @@ cards:
           #   height: 10
           - type: vertical-stack
             cards:
-            - type: horizontal-stack
-              cards:
-                - type: custom:decluttering-card
-                  template: button
-                  variables:
-                    - name: Jackett
-                    - icon: /local/dashboard-icons/jackett.png
-                    - url: !secret jackett_url
-                - type: custom:decluttering-card
-                  template: button
-                  variables:
-                    - name: Radarr
-                    - icon: /local/dashboard-icons/radarr.png
-                    - url: !secret radarr_url
-                - type: custom:decluttering-card
-                  template: button
-                  variables:
-                    - name: Sonarr
-                    - icon: /local/dashboard-icons/sonarr.png
-                    - url: !secret sonarr_url
-            - type: horizontal-stack
-              cards:
-                - type: custom:decluttering-card
-                  template: button
-                  variables:
-                    - name: Plex
-                    - icon: /local/dashboard-icons/plex.png
-                    - url: !secret plex_url
-                - type: custom:decluttering-card
-                  template: button
-                  variables:
-                    - name: Tautulli
-                    - icon: /local/dashboard-icons/tautulli.png
-                    - url: !secret plex_tautulli_url
-                - type: custom:decluttering-card
-                  template: button
-                  variables:
-                    - name: TVHeadend
-                    - icon: /local/dashboard-icons/tvheadend.jpg
-                    - url: !secret tvheadend_url
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Jackett
+                      - icon: /local/dashboard-icons/jackett.png
+                      - url: !secret jackett_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Radarr
+                      - icon: /local/dashboard-icons/radarr.png
+                      - url: !secret radarr_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Sonarr
+                      - icon: /local/dashboard-icons/sonarr.png
+                      - url: !secret sonarr_url
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Plex
+                      - icon: /local/dashboard-icons/plex.png
+                      - url: !secret plex_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: Tautulli
+                      - icon: /local/dashboard-icons/tautulli.png
+                      - url: !secret plex_tautulli_url
+                  - type: custom:decluttering-card
+                    template: button
+                    variables:
+                      - name: TVHeadend
+                      - icon: /local/dashboard-icons/tvheadend.jpg
+                      - url: !secret tvheadend_url
 
           - type: custom:gap-card
             height: 10
@@ -78,7 +78,7 @@ cards:
                   - entities:
                       - entity: binary_sensor.vmtbsh01_ha_dockermon_sonarr
                         type: custom:secondaryinfo-entity-row
-                        secondary_info: "[[ binary_sensor.vmtbsh01_ha_dockermon_sonarr.attributes.status ]]"
+                        secondary_info: '[[ binary_sensor.vmtbsh01_ha_dockermon_sonarr.attributes.status ]]'
                         name: Sonarr (vmtbsh01, Docker)
                       - type: section
                       - entity: sensor.sonarr_status
@@ -119,7 +119,7 @@ cards:
                   - entities:
                       - entity: binary_sensor.vmtbsh01_ha_dockermon_radarr
                         type: custom:secondaryinfo-entity-row
-                        secondary_info: "[[ binary_sensor.vmtbsh01_ha_dockermon_radarr.attributes.status ]]"
+                        secondary_info: '[[ binary_sensor.vmtbsh01_ha_dockermon_radarr.attributes.status ]]'
                         name: Radarr (vmtbsh01, Docker)
                       - type: section
                       - entity: sensor.radarr_status

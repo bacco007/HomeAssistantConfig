@@ -42,13 +42,6 @@ binary_sensor:
             {% else %}
               IP Address Not Available
             {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.ufo', 'home') %}
-              IP: {{ states.device_tracker.ufo.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
       networkstatus_switch:
         friendly_name: UniFi Switch - 8 Port 60W (Hateful8)
         entity_id: device_tracker.hateful8
@@ -60,7 +53,7 @@ binary_sensor:
             mdi:switch
           {% endif %}
         attribute_templates:
-          ip_address: "IP Address Not Available"
+          ip_address: 'IP Address Not Available'
       networkstatus_nas_thecube2:
         friendly_name: Synology NAS (TheCube2)
         entity_id: device_tracker.thecube2
@@ -191,7 +184,7 @@ binary_sensor:
             mdi:airplay
           {% endif %}
         attribute_templates:
-          ip_address:  >-
+          ip_address: >-
             {% if is_state('device_tracker.appletvbedroom', 'home') %}
               IP: {{ states.device_tracker.appletvbedroom.attributes['ip'] }}
             {% else %}
