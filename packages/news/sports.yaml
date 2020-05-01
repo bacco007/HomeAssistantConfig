@@ -1,371 +1,297 @@
 ---
-homeassistant:
-  customize:
-    sensor.sport_anaducks_date:
-      entity_picture: /local/sportlogos/Anaheim_Ducks.svg
-    sensor.sport_manu_date:
-      entity_picture: /local/sportlogos/manu.png
-    sensor.sport_newengpats_date:
-      entity_picture: /local/sportlogos/newengpats.png
-    sensor.sport_supercars_date:
-      entity_picture: /local/sportlogos/supercars.png
-    sensor.sport_nascar_date:
-      entity_picture: /local/sportlogos/nascar.svg
-    sensor.sport_indycar_date:
-      entity_picture: /local/sportlogos/indycar.png
-    sensor.sport_yankees_date:
-      entity_picture: /local/sportlogos/yankees.png
-    sensor.sport_sydswans_date:
-      entity_picture: /local/sportlogos/sydswans.png
-    sensor.sport_newknights_date:
-      entity_picture: /local/sportlogos/newknights.svg
-    sensor.sport_cricket_date:
-      entity_picture: /local/sportlogos/cricket.png
-    sensor.sport_f1_date:
-      entity_picture: /local/sportlogos/F1.svg
-    sensor.sport_sydfc_date:
-      entity_picture: /local/sportlogos/sydfc.png
-    sensor.sport_wec_date:
-      entity_picture: /local/sportlogos/wec.png
-
 sensor:
   - platform: template
     sensors:
       # Manchester United
-      sport_manu_date:
+      sport_manu:
         entity_id: calendar.manchester_united_fixtures
-        friendly_name: Next Match
+        friendly_name: Manchester United
+        entity_picture_template: /local/sportlogos/manu.png
         value_template: >-
+          {% set op = state_attr('calendar.manchester_united_fixtures', 'message') %}
           {% if is_state('calendar.manchester_united_fixtures', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.manchester_united_fixtures', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_manu_opponent:
-        entity_id: calendar.manchester_united_fixtures
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.manchester_united_fixtures.attributes.message }}
 
-      # New England Patriots
-      # {{ ((as_timestamp(states.calendar.new_england_patriots.attributes.start_time)-as_timestamp(now())) | int /60/1440) | round(0) }} Days
-      sport_newengpats_date:
+      sport_newengpats:
         entity_id: calendar.new_england_patriots
-        friendly_name: Next Game
+        friendly_name: New England Patriots
+        entity_picture_template: /local/sportlogos/newengpats.png
         value_template: >-
+          {% set op = state_attr('calendar.new_england_patriots', 'message') %}
           {% if is_state('calendar.new_england_patriots', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.new_england_patriots', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_newengpats_opponent:
-        entity_id: calendar.new_england_patriots
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.new_england_patriots.attributes.message }}
 
-      # Anaheim Ducks
-      sport_anaducks_date:
+      sport_anaducks:
         entity_id: calendar.anaheim_ducks
-        friendly_name: Next Game
+        friendly_name: Anaheim (Mighty) Ducks
+        entity_picture_template: /local/sportlogos/Anaheim_Ducks.svg
         value_template: >-
+          {% set op = state_attr('calendar.anaheim_ducks', 'message') %}
           {% if is_state('calendar.anaheim_ducks', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.anaheim_ducks', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_anaducks_opponent:
-        entity_id: calendar.anaheim_ducks
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.anaheim_ducks.attributes.message }}
 
       # New York Yankees
-      sport_yankees_date:
+      sport_yankees:
         entity_id: calendar.new_york_yankees
-        friendly_name: Next Game
+        friendly_name: New York Yankees
+        entity_picture_template: /local/sportlogos/yankees.png
         value_template: >-
+          {% set op = state_attr('calendar.new_york_yankees', 'message') | replace('⚾️ ','') %}
           {% if is_state('calendar.new_york_yankees', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.new_york_yankees', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_yankees_opponent:
-        entity_id: calendar.new_york_yankees
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.new_york_yankees.attributes.message | replace('⚾️ ','') }}
 
       # Cricket
-      sport_cricket_date:
+      sport_cricket:
         entity_id: calendar.cricket_australia
-        friendly_name: Next Match
+        friendly_name: Cricket Australia (Aus/Syd6ers)
+        entity_picture_template: /local/sportlogos/cricket.png
         value_template: >-
+          {% set op = state_attr('calendar.cricket_australia', 'message') %}
           {% if is_state('calendar.cricket_australia', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.cricket_australia', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Match Scheduled
             {% endif %}
           {% endif %}
-      sport_cricket_opponent:
-        entity_id: calendar.cricket_australia
-        friendly_name: Next Match
-        value_template: >-
-          {{ states.calendar.cricket_australia.attributes.message }}
 
       # Supercars
-      sport_supercars_date:
+      sport_supercars:
         entity_id: calendar.supercars
-        friendly_name: Next Race
+        friendly_name: Supercars
+        entity_picture_template: /local/sportlogos/supercars.png
         value_template: >-
+          {% set op = state_attr('calendar.supercars', 'message') | replace('SUPERCARS: ','') %}
           {% if is_state('calendar.supercars', 'on') %}
-            Today
+            Today - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.supercars', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Race Scheduled
             {% endif %}
           {% endif %}
-      sport_supercars_race:
-        entity_id: calendar.supercars
-        friendly_name: Next Race
-        value_template: >-
-          {{ states.calendar.supercars.attributes.message | replace('SUPERCARS: ','') }}
 
       # F1
-      sport_f1_date:
+      sport_f1:
         entity_id: calendar.f1
-        friendly_name: Next Race
+        friendly_name: Formula One
+        entity_picture_template: /local/sportlogos/F1.svg
         value_template: >-
+          {% set op = state_attr('calendar.f1', 'message') %}
           {% if is_state('calendar.f1', 'on') %}
-            Today
+            Today - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.f1', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Race Scheduled
             {% endif %}
           {% endif %}
-      sport_f1_race:
-        entity_id: calendar.f1
-        friendly_name: Next Race
-        value_template: >-
-          {{ states.calendar.f1.attributes.message }}
 
-      # F1
-      sport_wec_date:
+      sport_wec:
         entity_id: calendar.lm_wec_fia_world_endurance_championship
-        friendly_name: Next Race
+        friendly_name: FIA WEC
+        entity_picture_template: /local/sportlogos/wec.png
         value_template: >-
+          {% set op = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'message') | replace('FIA WEC ', '') %}
           {% if is_state('calendar.lm_wec_fia_world_endurance_championship', 'on') %}
-            Today
+            Today - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Race Scheduled
             {% endif %}
           {% endif %}
-      sport_wec_race:
-        entity_id: calendar.lm_wec_fia_world_endurance_championship
-        friendly_name: Next Race
-        value_template: >-
-          {{ states.calendar.lm_wec_fia_world_endurance_championship.attributes.message | replace('FIA WEC ', '') }}
 
       # Nascar
-      sport_nascar_date:
+      sport_nascar:
         entity_id: calendar.nascar
-        friendly_name: Next Race
+        friendly_name: NASCAR
+        entity_picture_template: /local/sportlogos/nascar.svg
         value_template: >-
+          {% set op = state_attr('calendar.nascar', 'message') | replace('🏁 ', '') %}
           {% if is_state('calendar.nascar', 'on') %}
-            Today
+            Today - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.nascar', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Race Scheduled
             {% endif %}
           {% endif %}
-      sport_nascar_race:
-        entity_id: calendar.nascar
-        friendly_name: Next Race
-        value_template: >-
-          {{ states.calendar.nascar.attributes.message | replace('🏁 ', '') }}
 
       # Indycar
-      sport_indycar_date:
+      sport_indycar:
         entity_id: calendar.indycar
-        friendly_name: Next Race
+        friendly_name: IndyCar
+        entity_picture_template: /local/sportlogos/indycar.png
         value_template: >-
+          {% set op = state_attr('calendar.indycar', 'message') | replace('🏁 ', '') %}
           {% if is_state('calendar.indycar', 'on') %}
-            Today
+            Today - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.indycar', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Race Scheduled
             {% endif %}
           {% endif %}
-      sport_indycar_race:
-        entity_id: calendar.indycar
-        friendly_name: Next Race
-        value_template: >-
-          {{ states.calendar.indycar.attributes.message | replace('🏁 ', '') }}
 
       # Newcastle Knights
-      sport_newknights_date:
+      sport_newknights:
         entity_id: calendar.newcastle_knights
-        friendly_name: Next Game
+        friendly_name: Newcastle Knights
+        entity_picture_template: /local/sportlogos/newknights.svg
         value_template: >-
+          {% set op = state_attr('calendar.newcastle_knights', 'message') %}
           {% if is_state('calendar.newcastle_knights', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.newcastle_knights', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_newknights_opponent:
-        entity_id: calendar.newcastle_knights
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.newcastle_knights.attributes.message }}
 
-      # Sydney FC
-      sport_sydfc_date:
+      sport_sydfc:
         entity_id: calendar.sydney_fc
-        friendly_name: Next Game
+        friendly_name: Sydney FC
+        entity_picture_template: /local/sportlogos/sydfc.png
         value_template: >-
+          {% set op = state_attr('calendar.sydney_fc', 'message') | replace ('⚽️ ', '') %}
           {% if is_state('calendar.sydney_fc', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.sydney_fc', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_sydfc_opponent:
-        entity_id: calendar.sydney_fc
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.sydney_fc.attributes.message | replace ('⚽️ ', '')}}
 
-      # Sydney Swans
-      sport_sydswans_date:
+      sport_sydswans:
         entity_id: calendar.sydney_swans
-        friendly_name: Next Game
+        friendly_name: Sydney Swans
+        entity_picture_template: /local/sportlogos/sydswans.png
         value_template: >-
+          {% set op = state_attr('calendar.sydney_swans', 'message') %}
           {% if is_state('calendar.sydney_swans', 'on') %}
-            Playing Now
+            Playing Now - {{ op }}
           {% else %}
             {% set st = state_attr('calendar.sydney_swans', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
-                {{ diff }} Days
+                {{ diff }} Days - {{ op }}
               {% else %}
-                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
               {% endif %}
             {% else %}
               No Game Scheduled
             {% endif %}
           {% endif %}
-      sport_sydswans_opponent:
-        entity_id: calendar.sydney_swans
-        friendly_name: Next Opponent
-        value_template: >-
-          {{ states.calendar.sydney_swans.attributes.message }}

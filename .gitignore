@@ -45,5 +45,6 @@ zigbee.db
 airsonos.xml
 .xbox-token.json
 .pip_progress
+isort.cfg
 
 !.androidkeys/fake_adbkey

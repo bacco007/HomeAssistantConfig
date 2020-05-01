@@ -1,0 +1,44 @@
+---
+bedroom_media:
+  name: Bedroom - Media
+  entities:
+    - media_player.apple_tv_bedroom
+    - media_player.bedroom_display
+    - media_player.foxtel_now_box
+    - media_player.thomas_s_echo_plus
+    - media_player.ua40es6200_ua40es6200
+    - media_player.xbox_one
+bedroom_switch:
+  name: Bedroom - Power Switch
+  entities:
+    - binary_sensor.switchmonusb_01_status
+    - binary_sensor.switchmonusb_02_status
+office_media:
+  name: Office - Media
+  entities:
+    - media_player.bedroom_sonos
+    - media_player.googlehome3140
+lounge_media:
+  name: Lounge - Media
+  entities:
+    - media_player.sony_bravia_tv
+serverrack_device:
+  name: Server Rack - Devices
+  entities:
+    - sensor.pi_hole_status
+sport_upcoming:
+  name: Upcoming Sport
+  entities:
+    - sensor.sport_manu
+    - sensor.sport_newengpats
+    - sensor.sport_anaducks
+    - sensor.sport_cricket
+    - sensor.sport_yankees
+    - sensor.sport_supercars
+    - sensor.sport_f1
+    - sensor.sport_wec
+    - sensor.sport_nascar
+    - sensor.sport_indycar
+    - sensor.sport_newknights
+    - sensor.sport_sydfc
+    - sensor.sport_sydswans

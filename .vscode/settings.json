@@ -8,5 +8,14 @@
   "spellright.documentTypes": ["latex", "plaintext"],
   "[home-assistant]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "[python]": {
+    "editor.defaultFormatter": null,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length=99"],
+  "python.sortImports.args": ["-rc", "-sp isort.cfg"]
 }

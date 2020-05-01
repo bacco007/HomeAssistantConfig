@@ -3,7 +3,7 @@
 import logging
 from typing import Optional, Union, Dict, Any
 
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import ENTITY_ID_FORMAT
 from homeassistant.const import CONF_SENSORS, CONF_NAME
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
 
@@ -11,8 +11,6 @@ from .const import DATA_IAQUK, LEVEL_INADEQUATE, LEVEL_POOR, LEVEL_GOOD, \
     LEVEL_EXCELLENT
 
 _LOGGER = logging.getLogger(__name__)
-
-ENTITY_ID_FORMAT = SENSOR_DOMAIN + ".{}"
 
 SENSOR_INDEX = 'iaq_index'
 SENSOR_LEVEL = 'iaq_level'
@@ -54,8 +52,8 @@ class IaqukSensor(Entity):
         self._name = "%s %s" % (
             self._controller.name, SENSORS[self._sensor_type])
 
-        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT,
-                                                  self._unique_id, hass=hass)
+        self.entity_id = async_generate_entity_id(
+            ENTITY_ID_FORMAT, self._unique_id, hass=hass)
 
     async def async_added_to_hass(self):
         """Register callbacks."""

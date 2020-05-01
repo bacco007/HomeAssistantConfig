@@ -7,8 +7,9 @@ panel: true
 cards:
   - type: custom:layout-card
     layout: auto
-    max_columns: 3
-    rtl: true
+    max_columns: 2
+    column_width: [50%, 50%]
+    rtl: false
     cards:
       # - type: vertical-stack
       #   style: !include ../includes/style.yaml
@@ -30,9 +31,16 @@ cards:
                 variables:
                   - entities:
                       - entity: sensor.netatmo_brisbane_street_indoor_temperature
-                        name: Current Indoor Temperature
-                      - entity: sensor.netatmo_brisbane_street_outdoor_temperature
-                        name: Current Outdoor Temperature
+                        name: Current Temperature
+                        icon: mdi:thermometer
+                        type: custom:multiple-entity-row
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.netatmo_brisbane_street_indoor_temperature
+                            name: Indoor
+                          - entity: sensor.netatmo_brisbane_street_outdoor_temperature
+                            name: Outdoor
                       - type: section
                       - entity: sensor.netatmoindoor_max_temp
                         name: Indoor - 24hr Temp Extremes
@@ -117,9 +125,16 @@ cards:
                 variables:
                   - entities:
                       - entity: sensor.bom_tamworth_air_temp_c
-                        name: Current Air Temperature
-                      - entity: sensor.bom_tamworth_feels_like_c
-                        name: Current Feels Like Temperature
+                        name: Current Temperature
+                        icon: mdi:thermometer
+                        type: custom:multiple-entity-row
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.bom_tamworth_air_temp_c
+                            name: Air
+                          - entity: sensor.bom_tamworth_feels_like_c
+                            name: Feels Like
                       - type: section
                       - entity: sensor.bom_max_temp
                         name: 24hr Temp Extremes
@@ -133,11 +148,16 @@ cards:
                             name: Min
                       - type: section
                       - entity: sensor.bom_tamworth_wind_gust_kmh
-                        name: Current Wind Gust
+                        name: Current Wind
                         icon: mdi:weather-windy
-                      - entity: sensor.bom_tamworth_wind_speed_kmh
-                        name: Current Wind Speed
-                        icon: mdi:weather-windy
+                        type: custom:multiple-entity-row
+                        show_state: false
+                        secondary_info: last-changed
+                        entities:
+                          - entity: sensor.bom_tamworth_wind_gust_kmh
+                            name: Gust
+                          - entity: sensor.bom_tamworth_wind_speed_kmh
+                            name: Speed
                       - type: section
                       - entity: sensor.bom_tamworth_pressure_mb
                         name: Current Pressure
@@ -307,45 +327,45 @@ cards:
                       - name: Max
                         prop: state
                         align: right
-      - type: vertical-stack
-        cards:
           - type: vertical-stack
-            style: !include ../includes/style.yaml
             cards:
-              - type: custom:decluttering-card
-                template: title
-                variables:
-                  - title: Rain Intensity - Last 365 Days
-              - type: custom:vertical-stack-in-card
+              - type: vertical-stack
+                style: !include ../includes/style.yaml
                 cards:
-                  - type: custom:flex-table-card
-                    style: >
-                      font-family: { var(--primary-font-family);}
-                      font-weight: {400 !important;}
-                    sort_by: sort
-                    clickable: true
-                    css:
-                      table+: 'border: 0; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 12px;'
-                    entities:
-                      include: sensor.aep_*_yearly
-                    columns:
-                      - name: sort
-                        attr: sort
-                        hidden: true
-                      - name: Name
-                        prop: name
-                      - name: When?
-                        attr: time
-                        align: center
-                      - name: AEP %
-                        attr: aep
-                        align: right
-                      - name: EY
-                        attr: ey
-                        align: right
-                      - name: Max
-                        prop: state
-                        align: right
+                  - type: custom:decluttering-card
+                    template: title
+                    variables:
+                      - title: Rain Intensity - Last 365 Days
+                  - type: custom:vertical-stack-in-card
+                    cards:
+                      - type: custom:flex-table-card
+                        style: >
+                          font-family: { var(--primary-font-family);}
+                          font-weight: {400 !important;}
+                        sort_by: sort
+                        clickable: true
+                        css:
+                          table+: 'border: 0; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 12px;'
+                        entities:
+                          include: sensor.aep_*_yearly
+                        columns:
+                          - name: sort
+                            attr: sort
+                            hidden: true
+                          - name: Name
+                            prop: name
+                          - name: When?
+                            attr: time
+                            align: center
+                          - name: AEP %
+                            attr: aep
+                            align: right
+                          - name: EY
+                            attr: ey
+                            align: right
+                          - name: Max
+                            prop: state
+                            align: right
 
           - type: vertical-stack
             style: !include ../includes/style.yaml

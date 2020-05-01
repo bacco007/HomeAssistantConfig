@@ -6,7 +6,7 @@ homeassistant:
   elevation: 430
   unit_system: metric
   time_zone: !secret ha_timezone
-  packages: !include_dir_named packages
+  packages: !include_dir_named packages/
   customize: !include customize.yaml
   whitelist_external_dirs:
     - /config
@@ -30,9 +30,9 @@ conversation:
 
 discovery:
 
-frontend:
-  javascript_version: latest
-  themes: !include_dir_merge_named themes
+# frontend:
+#   javascript_version: latest
+#   themes: !include_dir_merge_named themes
 
 group: !include groups.yaml
 
@@ -48,7 +48,7 @@ http:
 
 ios:
 
-lovelace_gen:
+# lovelace_gen:
 
 map:
 

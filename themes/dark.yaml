@@ -1,8 +1,8 @@
 ---
 dark:
   # Fonts
-  primary-font-family: 'IBM Plex Sans,sans-serif'
-  title-font-family: 'IBM Plex Sans Condensed,sans-serif'
+  primary-font-family: 'SF Display,sans-serif'
+  title-font-family: 'SF Display,sans-serif'
   time-font-family: 'Montserrat'
   paper-font-common-base_-_font-family: 'var(--primary-font-family)'
   paper-font-common-code_-_font-family: 'var(--primary-font-family)'

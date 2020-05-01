@@ -62,6 +62,12 @@
 # Local
 - url: /local/custom-lovelace/development/sports-upnext-card.js
   type: js
+- url: /local/custom-lovelace/development/cal-display-card.js?v=3
+  type: js
+- url: /local/custom-lovelace/theme-maker.js
+  type: js
+- url: /local/custom-lovelace/dwains/dwains-flexbox-card.js
+  type: module
 
 # CSS
 # - url: https://fonts.googleapis.com/css?family=Raleway
@@ -70,11 +76,17 @@
 #   type: css
 # - url: 'https://fonts.googleapis.com/css?family=Quicksand'
 #   type: css
-- url: 'https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700'
+# - url: 'https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700'
+#   type: css
+# - url: 'https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed:400,500,600,700'
+#   type: css
+# - url: 'https://fonts.googleapis.com/css?family=Montserrat:200,300,400'
+#   type: css
+- url: 'https://sf.abarba.me/font.css'
   type: css
-- url: 'https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed:400,500,600,700'
-  type: css
-- url: 'https://fonts.googleapis.com/css?family=Montserrat:200,300,400'
-  type: css
-# - url: 'https://sf.abarba.me/font.css'
+# - url: /local/proxima-nova-font/ProximaNova-Regular.css
+#   type: css
+# - url: /local/proxima-nova-font/ProximaNova-Light.css
+#   type: css
+# - url: /local/proxima-nova-font/ProximaNova-Bold.css
 #   type: css

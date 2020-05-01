@@ -23,8 +23,9 @@ from homeassistant.util.temperature import convert as convert_temperature
 from .const import DOMAIN, VERSION, ISSUE_URL, SUPPORT_LIB_URL, CONF_SOURCES, \
     DATA_IAQUK, CONF_CO2, CONF_TEMPERATURE, CONF_HUMIDITY, CONF_TVOC, \
     LEVEL_INADEQUATE, LEVEL_POOR, LEVEL_FAIR, LEVEL_GOOD, LEVEL_EXCELLENT, \
-    CONF_NO2, CONF_PM, CONF_CO, CONF_HCHO, UNIT_PPM, UNIT_PPB, UNIT_MGM3, \
-    ATTR_SOURCES_USED, ATTR_SOURCES_SET
+    CONF_NO2, CONF_PM, CONF_CO, CONF_HCHO, CONF_RADON, UNIT_PPM, UNIT_PPB, \
+    UNIT_UGM3, UNIT_MGM3, ATTR_SOURCES_USED, ATTR_SOURCES_SET, MWEIGTH_TVOC, \
+    MWEIGTH_HCHO, MWEIGTH_CO, MWEIGTH_NO2, MWEIGTH_CO2
 from .sensor import SENSORS
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,6 +38,7 @@ SOURCES = [
     CONF_NO2,
     CONF_TVOC,
     CONF_HCHO,
+    CONF_RADON,
     CONF_PM,
 ]
 
@@ -166,7 +168,7 @@ class Iaquk:
         """Get IAQ index."""
         return self._iaq_index
 
-    # pylint: disable=r1705
+    # pylint: disable=R1705
     @property
     def iaq_level(self) -> Optional[str]:
         """Get IAQ level."""
@@ -219,9 +221,10 @@ class Iaquk:
             state is not None \
             and state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]
 
-    def _get_number_state(self, entity_id, entity_unit=None, source_type='') \
-            -> Optional[float]:
+    def _get_number_state(self, entity_id, entity_unit=None, source_type='',
+                          mweight=None) -> Optional[float]:
         """Convert value to number."""
+        target_unit = None
         if entity_unit is not None and not isinstance(entity_unit, dict):
             entity_unit = {
                 entity_unit: 1
@@ -238,19 +241,33 @@ class Iaquk:
         if not self._has_state(value):
             return None
 
-        if entity_unit is not None and unit not in entity_unit:
-            _LOGGER.error('Entity %s has inappropriate "%s" units '
-                          'for %s source. Ignored.', entity_id, unit,
-                          source_type)
-            return None
+        if entity_unit is not None:
+            target_unit = next(iter(entity_unit))
+            if unit not in entity_unit:
+                # pylint: disable=R1705
+                if mweight is None:
+                    _LOGGER.error('Entity %s has inappropriate "%s" units '
+                                  'for %s source. Ignored.', entity_id, unit,
+                                  source_type)
+                    return None
+                else:
+                    entity_unit = entity_unit.copy()
+                    if 'ppb' in (unit, target_unit):
+                        mweight /= 1000
+                    if unit in {'ppm', 'ppb'}:
+                        entity_unit[unit] = mweight / 24.45
+                    else:
+                        entity_unit[unit] = 24.45 / mweight
 
         try:
             value = float(value)
-        except:  # pylint: disable=w0702
+        except:  # pylint: disable=W0702
             return None
 
-        if entity_unit is not None:
+        if entity_unit is not None and unit != target_unit:
             value *= entity_unit[unit]
+            _LOGGER.debug('[%s] %s=%s %s (converted)', self._entity_id,
+                          entity_id, value, target_unit)
         return value
 
     @property
@@ -326,7 +343,8 @@ class Iaquk:
         if entity_id is None:
             return None
 
-        value = self._get_number_state(entity_id, UNIT_PPM, CONF_CO2)
+        value = self._get_number_state(
+            entity_id, UNIT_PPM, CONF_CO2, mweight=MWEIGTH_CO2)
         if value is None:
             return None
 
@@ -352,7 +370,8 @@ class Iaquk:
         if entity_id is None:
             return None
 
-        value = self._get_number_state(entity_id, UNIT_PPB, CONF_TVOC)
+        value = self._get_number_state(
+            entity_id, UNIT_PPB, CONF_TVOC, mweight=MWEIGTH_TVOC)
         if value is None:
             return None
 
@@ -380,7 +399,7 @@ class Iaquk:
 
         values = []
         for eid in entity_ids:
-            val = self._get_number_state(eid, UNIT_MGM3, CONF_PM)
+            val = self._get_number_state(eid, UNIT_UGM3, CONF_PM)
             if val is not None:
                 values.append(val)
         if not values:
@@ -409,7 +428,8 @@ class Iaquk:
         if entity_id is None:
             return None
 
-        value = self._get_number_state(entity_id, UNIT_PPB, CONF_NO2)
+        value = self._get_number_state(
+            entity_id, UNIT_PPB, CONF_NO2, mweight=MWEIGTH_NO2)
         if value is None:
             return None
 
@@ -431,7 +451,8 @@ class Iaquk:
         if entity_id is None:
             return None
 
-        value = self._get_number_state(entity_id, UNIT_PPM, CONF_NO2)
+        value = self._get_number_state(
+            entity_id, UNIT_PPM, CONF_CO, mweight=MWEIGTH_CO)
         if value is None:
             return None
 
@@ -453,19 +474,44 @@ class Iaquk:
         if entity_id is None:
             return None
 
-        value = self._get_number_state(entity_id, UNIT_PPM, CONF_HCHO)
+        value = self._get_number_state(
+            entity_id, UNIT_PPB, CONF_HCHO, mweight=MWEIGTH_HCHO)
         if value is None:
             return None
 
         # _LOGGER.debug('[%s] HCHO=%s', self._entity_id, value)
 
         index = 1
-        if value <= 0.024:  # ppm
+        if value <= 24:  # ppb
             index = 5
-        elif value <= 0.06:  # ppm
+        elif value <= 60:  # ppb
             index = 4
-        elif value <= 0.12:  # ppm
+        elif value <= 120:  # ppb
             index = 3
-        elif value <= 0.24:  # ppm
+        elif value <= 240:  # ppb
+            index = 2
+        return index
+
+    @property
+    def _radon_index(self):
+        """Transform indoor Radon (Rn) values to IAQ points according
+        to Indoor Air Quality UK: http://www.iaquk.org.uk/ """
+        entity_id = self._sources.get(CONF_RADON)
+
+        if entity_id is None:
+            return None
+
+        value = self._get_number_state(entity_id, 'Bq/m3')
+        if value is None:
+            return None
+
+        # _LOGGER.debug('[%s] Radon=%s', self._entity_id, value)
+
+        index = 1
+        if value == 0:  # Bq/m3
+            index = 5
+        elif value <= 20:  # Bq/m3
+            index = 3
+        elif value <= 100:  # Bq/m3
             index = 2
         return index

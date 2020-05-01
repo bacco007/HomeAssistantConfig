@@ -31,12 +31,15 @@ sensor:
     sensors:
       plex_topmovie:
         friendly_name: Plex Top Movie
+        icon_template: si:plex
         value_template: "{{state_attr('sensor.tautulli', 'Top Movie')}}"
       plex_toptvshow:
         friendly_name: Plex Top TV Show
+        icon_template: si:plex
         value_template: "{{state_attr('sensor.tautulli', 'Top TV Show')}}"
       plex_topuser:
         friendly_name: Plex Top User
+        icon_template: si:plex
         value_template: "{{state_attr('sensor.tautulli', 'Top User')}}"
       plex_lanbandwidth:
         value_template: '{{ (states.sensor.tautulli.attributes.lan_bandwidth / 1024) | round(2) }}'

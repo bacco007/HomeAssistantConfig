@@ -115,6 +115,8 @@ homeassistant:
       friendly_name: 'HASupervisor Addon: Xbox One (vmTBSH02)'
     binary_sensor.vmtbsh02_ha_dockermon_hassio_multicast:
       friendly_name: 'HASupervisor Multicast (vmTBSH02)'
+    binary_sensor.vmtbsh01_ha_dockermon_jdownloader:
+      friendly_name: 'JDownloader (vmTBSH01)'
 
 binary_sensor:
   - platform: hadockermon

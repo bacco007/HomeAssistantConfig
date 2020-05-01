@@ -33,11 +33,12 @@ async def async_setup(hass, config):
     if CONFIG_TITLE in hass.data[DOMAIN]:
         del hass.data[DOMAIN][CONFIG_TITLE]
     hass.data[DOMAIN].update(conf)
-    return apply_hooks(hass)
+    return await apply_hooks(hass)
 
 async def async_setup_entry(hass, config_entry):
     config_entry.add_update_listener(_update_listener)
-    config_entry.options = config_entry.data
+    if not config_entry.options:
+        config_entry.options = config_entry.data
     return await _update_listener(hass, config_entry)
 
 async def async_remove_entry(hass, config_entry):
@@ -50,7 +51,7 @@ async def _update_listener(hass, config_entry):
     if CONFIG_TITLE in hass.data[DOMAIN]:
         del hass.data[DOMAIN][CONFIG_TITLE]
     hass.data[DOMAIN].update(conf)
-    return apply_hooks(hass)
+    return await apply_hooks(hass)
 
 
 def find_icons(hass, path):
@@ -63,30 +64,33 @@ def find_icons(hass, path):
     localpath = "www" + path[len("/local"):]
     localpath = hass.config.path(localpath)
     _LOGGER.info("Looking for icons in: %s", localpath)
-    for fn in os.listdir(localpath):
-        if fn == "favicon.ico":
-            icons["favicon"] = os.path.join(path, fn)
-            _LOGGER.info("Found favicon: %s", os.path.join(path, fn))
-        apple = re.search(RE_APPLE, fn)
-        if apple:
-            icons["apple"] = os.path.join(path, fn)
-            _LOGGER.info("Found apple icon: %s", os.path.join(path, fn))
-        icon = re.search(RE_ICON, fn)
-        if icon:
-            manifest.append({
-                "src": os.path.join(path, fn),
-                "sizes": icon.group(1),
-                "type": "image/png",
-                })
-            _LOGGER.info("Found icon: %s", os.path.join(path, fn))
+    try:
+        for fn in os.listdir(localpath):
+            if fn == "favicon.ico":
+                icons["favicon"] = os.path.join(path, fn)
+                _LOGGER.info("Found favicon: %s", os.path.join(path, fn))
+            apple = re.search(RE_APPLE, fn)
+            if apple:
+                icons["apple"] = os.path.join(path, fn)
+                _LOGGER.info("Found apple icon: %s", os.path.join(path, fn))
+            icon = re.search(RE_ICON, fn)
+            if icon:
+                manifest.append({
+                    "src": os.path.join(path, fn),
+                    "sizes": icon.group(1),
+                    "type": "image/png",
+                    })
+                _LOGGER.info("Found icon: %s", os.path.join(path, fn))
+    except:
+        pass
 
     if manifest:
         icons["manifest"] = manifest
     return icons
 
-def apply_hooks(hass):
+async def apply_hooks(hass):
     data = hass.data.get(DOMAIN, {})
-    icons = find_icons(hass, data.get(CONFIG_ICON_PATH, None))
+    icons = await hass.loop.run_in_executor(None, find_icons, hass, data.get(CONFIG_ICON_PATH, None))
     title = data.get(CONFIG_TITLE, None)
 
     def _get_template(self):
@@ -111,6 +115,12 @@ def apply_hooks(hass):
                                 this.shadowRoot.querySelector(".menu .title").innerHTML = "{title}";
                             }}
                         }});
+
+                        window.setInterval(() => {{
+                            if(!document.title.endsWith("- {title}") && document.title !== "{title}") {{
+                                document.title = document.title.replace(/Home Assistant/, "{title}");
+                            }}
+                        }}, 1000);
                     </script>
                 """)
 
@@ -121,6 +131,9 @@ def apply_hooks(hass):
 
     if title or "favicon" in icons or "apple" in icons:
         homeassistant.components.frontend.IndexView.get_template = _get_template
+        for view in hass.http.app.router.resources():
+            if isinstance(view, homeassistant.components.frontend.IndexView):
+                view._template_cache = None
 
     homeassistant.components.frontend.MANIFEST_JSON["icons"] = data["manifest_icons"].copy()
     if "manifest" in icons:
@@ -137,7 +150,7 @@ def apply_hooks(hass):
 def remove_hooks(hass):
     data = hass.data[DOMAIN]
     homeassistant.components.frontend.IndexView.get_template = data["get_template"]
-    homeassistant.components.frontend.MANIFSET_JSON["icons"] = data["manifest_icons"].copy()
+    homeassistant.components.frontend.MANIFEST_JSON["icons"] = data["manifest_icons"].copy()
     homeassistant.components.frontend.MANIFEST_JSON["name"] = "Home Assistant"
     homeassistant.components.frontend.MANIFEST_JSON["short_name"] = "Assistant"
     return True

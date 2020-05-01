@@ -1,0 +1,24 @@
+# https://dwainscheeren.github.io/lovelace-dwains-theme/configuration/persons.html
+
+persons:
+  - name: Thomas
+    track: person.thomas_baxter
+    picture_path: 'images/persons/avatar_thomas.jpg'
+    show_map: true
+    addons:
+      - name: Hello person
+        icon: fas:puzzle-piece
+        path: 'dwains-theme/addons/persons/hello-person/page.yaml'
+        data:
+          some_data: 'This is some data parsed.'
+          some_other_data: 'and some other data.'
+#     more_entities:
+#       columns: 1 #optional
+#       entities:
+#         - entity: sensor.steps
+#         - entity: sensor.steps
+#     page_entities:
+#       columns: 2 #optional
+#       entities:
+#         - entity: sensor.steps
+#         - entity: sensor.steps

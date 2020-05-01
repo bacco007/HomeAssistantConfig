@@ -1,0 +1,4 @@
+sensor.pi_hole_status:
+  icon: mdi:pi-hole
+sensor.pi_hole_version:
+  icon: mdi:pi-hole

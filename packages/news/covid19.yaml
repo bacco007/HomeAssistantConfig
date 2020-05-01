@@ -8,7 +8,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 3600
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -21,13 +20,13 @@ sensor:
       - Confirmed
       - Deaths
       - Recovered
+      - Active
       - Last_Update
     unit_of_measurement: 'People'
 
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -47,7 +46,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -67,7 +65,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -87,7 +84,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -107,7 +103,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -127,7 +122,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -147,7 +141,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'
@@ -167,7 +160,6 @@ sensor:
   - platform: rest
     timeout: 60
     scan_interval: 1800
-    force_update: true
     method: GET
     headers:
       User-Agent: 'Home Assistant REST sensor'

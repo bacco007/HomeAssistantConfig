@@ -9,7 +9,7 @@ default:
   - font_size: 70
   - height: 20
   - graph: line
-  - line_width: 3
+  - line_width: 2
   - decimals: 1
   - fill: fade
   - extrema: false

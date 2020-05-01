@@ -1,0 +1,115 @@
+# https://dwainscheeren.github.io/lovelace-dwains-theme/configuration/rooms.html
+
+rooms:
+  - name: Bedroom
+    icon: fal:bed
+    light: light.lamp
+    climate: climate.bedroom
+    temperature: sensor.bedroom_multisensor_temperature
+    humidity: sensor.bedroom_multisensor_humidity
+    pressure: sensor.bedroom_multisensor_pressure
+    media_player: group.bedroom_media
+    device: group.bedroom_switch
+    page_entities:
+      entities:
+        - entity: sensor.bedroom_iaq_index
+        - entity: sensor.xiaomibedroom_max_temp
+        - entity: sensor.xiaomibedroom_min_temp
+
+  - name: Lounge
+    icon: fal:couch
+    media_player: group.lounge_media
+    temperature: sensor.netatmo_brisbane_street_indoor_temperature
+    humidity: sensor.netatmo_brisbane_street_indoor_humidity
+    pressure: sensor.netatmo_brisbane_street_indoor_pressure
+    page_entities:
+      entities:
+        - entity: sensor.lounge_iaq_index
+        - entity: sensor.netatmo_brisbane_street_indoor_co2
+        - entity: sensor.netatmo_brisbane_street_indoor_noise
+
+  - name: Office
+    icon: fal:briefcase
+    temperature: sensor.lounge_multisensor_temperature
+    humidity: sensor.lounge_multisensor_humidity
+    pressure: sensor.lounge_multisensor_pressure
+    media_player: group.office_media
+    motion: binary_sensor.office_presence
+    page_entities:
+      entities:
+        - entity: sensor.office_lightlevel
+    addons:
+      - name: Sonos
+        icon: fal:speaker
+        path: 'dwains-theme/addons/rooms/office/sonos/page.yaml'
+        button_path: 'dwains-theme/addons/rooms/office/sonos/button.yaml'
+        data:
+          entity: binary_sensor.networkstatus_sonos
+
+  - name: Laundry
+    icon: fal:washer
+    temperature: sensor.test_smartthings
+    motion: binary_sensor.test_smartthings
+    door: binary_sensor.test_smartthings_2
+    page_entities:
+      entities:
+        - entity: sensor.washer
+        - entity: binary_sensor.washer_error_state
+        - entity: binary_sensor.washer_wash_completed
+
+  - name: Outside
+    icon: fal:house
+    temperature: sensor.netatmo_brisbane_street_outdoor_temperature
+    humidity: sensor.netatmo_brisbane_street_outdoor_humidity
+    page_entities:
+      entities:
+        - entity: sensor.netatmo_brisbane_street_rain_sum_rain_24
+
+  - name: Garage
+    icon: fal:garage-car
+    page_entities:
+      entities:
+        - entity: sensor.fuelcheck_bp_tamworth_p98
+        - entity: sensor.fuelcheck_bp_nemingha_p98
+        - entity: sensor.fuelcheck_bp_tamworth_p98_2
+        - entity: sensor.fuelcheck_caltex_tamworth_orana_p98
+        - entity: sensor.fuelcheck_caltex_tamworth_p98
+        - entity: sensor.fuelcheck_caltex_woolworths_tamworth_p98
+
+  - name: Server Rack
+    icon: fal:server
+    device: group.serverrack_device
+    page_entities:
+      entities:
+        - entity: sensor.pvetbsh_uptime
+        - entity: sensor.tbsh01_uptime
+        - entity: sensor.thecube2_uptime
+        - entity: sensor.vmtbsh01_uptime
+        - entity: sensor.vmtbsh02_uptime
+        - entity: sensor.ufo_uptime
+        - entity: sensor.usg_uptime
+        - entity: sensor.piserv_uptime
+        - entity: sensor.hateful8_uptime
+    addons:
+      - name: Synology NAS
+        icon: mdi:nas
+        path: 'dwains-theme/addons/more_page/synology/page.yaml'
+        button_path: 'dwains-theme/addons/rooms/hello-room/button.yaml'
+        data:
+          entity: binary_sensor.networkstatus_nas_thecube2
+      - name: Ubiquiti UniFi
+        icon: fal:router
+        path: 'dwains-theme/addons/more_page/ubiquiti/unifi.yaml'
+        button_path: 'dwains-theme/addons/rooms/hello-room/button.yaml'
+        data:
+          entity: binary_sensor.tbsh01_ha_dockermon_unifi
+
+  - name: Tamworth
+    icon: fal:road
+    temperature: sensor.bom_tamworth_air_temp_c
+    humidity: sensor.bom_tamworth_relative_humidity
+    pressure: sensor.bom_tamworth_pressure_mb
+    page_entities:
+      entities:
+        - entity: sensor.bom_max_temp
+        - entity: sensor.bom_min_temp

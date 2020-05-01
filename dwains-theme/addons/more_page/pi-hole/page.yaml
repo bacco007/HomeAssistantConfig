@@ -1,0 +1,58 @@
+- type: horizontal-stack
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.pi_hole_ads_blocked_today
+      name: Ads Blocked Today (#)
+      height: 20
+      line_width: 2
+      font_size: 70
+      hours_to_show: 48
+      points_per_hour: 6
+      show:
+        fill: true
+- type: horizontal-stack
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.pi_hole_ads_percentage_blocked_today
+      name: Ads Blocked Today (%)
+      height: 20
+      line_width: 2
+      font_size: 70
+      hours_to_show: 48
+      points_per_hour: 6
+      show:
+        fill: true
+- type: horizontal-stack
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.pi_hole_dns_queries_today
+      name: DNS Queries
+      height: 50
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      show:
+        # extrema: true
+        fill: true
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.pi_hole_dns_unique_clients
+      name: Unique Clients
+      height: 50
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      show:
+        # extrema: true
+        fill: true
+- type: custom:auto-entities
+  card:
+    type: entities
+  filter:
+    include:
+      - { entity_id: sensor.pi_hole_* }

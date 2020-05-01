@@ -122,6 +122,10 @@ bottomCard:
                     - sensor.bedroom_humidity
                     - sensor.bedroom_temperature
 style: |
+  .sidebarMenu li {
+    font-family: var(--var-primary-font-family) !important;
+    font-weight: 500 !important;
+  }
   .sidebarMenu li.active ha-icon {
     color: rgb(247, 217, 89);
   }
@@ -129,15 +133,17 @@ style: |
     background-color: rgba(0,0,0,0.2);
   }
   .template li {
-    font-weight: 400 !important;
+    font-weight: 300 !important;
     font-family: var(--primary-font-family);
     margin-bottom: 5px;
+    font-size: 0.8vw;
+    text-align: center;
   }
   h2.date {
     text-align: center;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     font-family: var(--primary-font-family) !important;
-    font-size: 20px;
+    font-size: 1.3vw;
   }
   :host {
     --sidebar-background: #3b4049;t
@@ -152,13 +158,12 @@ style: |
   }
 template: >
   <li>
-    {% if now().hour  < 5 %} Good Night {{'\U0001F634'}}
-    {% elif now().hour < 12 %} Good Morning {{'\u2615\uFE0F'}}
-    {% elif now().hour < 18 %} Good Afternoon {{'\U0001F44B\U0001F3FB'}}
-    {% else %} Good Evening {{'\U0001F44B\U0001F3FB'}}{% endif %}
+    {% if now().hour  < 5 %} Good Night! {{'\U0001F634'}}
+    {% elif now().hour < 12 %} Good Morning! {{'\u2615\uFE0F'}}
+    {% elif now().hour < 18 %} Good Afternoon! {{'\U0001F44B\U0001F3FB'}}
+    {% else %} Good Evening! {{'\U0001F44B\U0001F3FB'}}{% endif %}
   </li>
   <li></li>
-  <li>{{states('sensor.date_long_format')}}</li>
 
   <li>UTC: {{states('sensor.time_utc')}} - LDN: {{states('sensor.time_london')}} - NYC: {{states('sensor.time_new_york')}}</li>
   {% if "gft" in states('sensor.trash_today') %} <li>Vandaag GFT</li> {% endif

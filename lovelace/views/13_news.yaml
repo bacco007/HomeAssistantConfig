@@ -7,8 +7,9 @@ panel: true
 cards:
   - type: custom:layout-card
     layout: auto
-    max_columns: 3
-    rtl: true
+    max_columns: 2
+    column_width: [50%, 50%]
+    rtl: false
     cards:
       # - type: vertical-stack
       #   style: !include ../includes/style.yaml

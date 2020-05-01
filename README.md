@@ -65,11 +65,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, April 19th 2020_
+_Stats as at 04:59, Saturday, May 2nd 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.108.3 | 245     | 1234         | 899 | 22 |
+| 0.109.0 | 254     | 1255         | 894 | 23 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -107,10 +107,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app)
 - [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv)
 - [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve)
+- [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors)
 - [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2)
 - [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template)
 - [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod)
 - [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater)
+- [braviatv](https://www.home-assistant.io/components/braviatv)
 - [breaking_changes](https://www.home-assistant.io/components/breaking_changes)
 - [browser_mod](https://www.home-assistant.io/components/browser_mod)
 - [calendar](https://www.home-assistant.io/components/calendar)
@@ -141,6 +143,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi)
 - [discovery](https://www.home-assistant.io/components/discovery)
 - [docker_monitor](https://www.home-assistant.io/components/docker_monitor)
+- [dwains_theme](https://www.home-assistant.io/components/dwains_theme)
 - [dyson](https://www.home-assistant.io/components/dyson)
 - [esphome](https://www.home-assistant.io/components/esphome)
 - [fan](https://www.home-assistant.io/components/fan)
@@ -169,6 +172,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [icloud](https://www.home-assistant.io/components/icloud)
 - [ifttt](https://www.home-assistant.io/components/ifttt)
 - [influxdb](https://www.home-assistant.io/components/influxdb)
+- [input_select](https://www.home-assistant.io/components/input_select)
 - [ios](https://www.home-assistant.io/components/ios)
 - [lifx](https://www.home-assistant.io/components/lifx)
 - [light](https://www.home-assistant.io/components/light)
@@ -177,7 +181,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [light.lifx](https://www.home-assistant.io/components/light.lifx)
 - [logger](https://www.home-assistant.io/components/logger)
 - [lovelace](https://www.home-assistant.io/components/lovelace)
-- [lovelace_gen](https://www.home-assistant.io/components/lovelace_gen)
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
@@ -270,7 +273,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media)
 - [sensor.rest](https://www.home-assistant.io/components/sensor.rest)
 - [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd)
+- [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape)
 - [sensor.season](https://www.home-assistant.io/components/sensor.season)
+- [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors)
 - [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp)
 - [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr)
 - [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media)
@@ -278,7 +283,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.sql](https://www.home-assistant.io/components/sensor.sql)
 - [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics)
 - [sensor.sun2](https://www.home-assistant.io/components/sensor.sun2)
-- [sensor.synologydsm](https://www.home-assistant.io/components/sensor.synologydsm)
 - [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor)
 - [sensor.tautulli](https://www.home-assistant.io/components/sensor.tautulli)
 - [sensor.template](https://www.home-assistant.io/components/sensor.template)
@@ -295,6 +299,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time)
 - [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock)
 - [sensor.xbox_live](https://www.home-assistant.io/components/sensor.xbox_live)
+- [simpleicons](https://www.home-assistant.io/components/simpleicons)
+- [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors)
 - [sonos](https://www.home-assistant.io/components/sonos)
 - [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet)
 - [spotify](https://www.home-assistant.io/components/spotify)
@@ -310,6 +316,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [switch.template](https://www.home-assistant.io/components/switch.template)
 - [switch.transmission](https://www.home-assistant.io/components/switch.transmission)
 - [switch.unifi](https://www.home-assistant.io/components/switch.unifi)
+- [synology_dsm](https://www.home-assistant.io/components/synology_dsm)
 - [system_health](https://www.home-assistant.io/components/system_health)
 - [system_log](https://www.home-assistant.io/components/system_log)
 - [transmission](https://www.home-assistant.io/components/transmission)
@@ -322,6 +329,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [vacuum](https://www.home-assistant.io/components/vacuum)
 - [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson)
 - [weather](https://www.home-assistant.io/components/weather)
+- [weather.bom](https://www.home-assistant.io/components/weather.bom)
+- [weather.darksky](https://www.home-assistant.io/components/weather.darksky)
 - [weather.met](https://www.home-assistant.io/components/weather.met)
 - [webhook](https://www.home-assistant.io/components/webhook)
 - [websocket_api](https://www.home-assistant.io/components/websocket_api)
@@ -347,6 +356,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [COVID-19 NSW Health Tests]()
 - [Docker Monitor](https://github.com/Sanderhuisman/docker_monitor)
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
+- [Dwains Theme Component]()
 - [Favicon changer]()
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
 - [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
@@ -364,6 +374,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
+- [Simple Icons]()
+- [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [Tvheadend recordings sensor](https://github.com/kodi1/tvh_rec)

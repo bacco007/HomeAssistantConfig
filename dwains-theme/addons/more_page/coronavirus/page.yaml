@@ -1,0 +1,560 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-6 col-lg-3 col-xl-3'
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.worldwide_confirmed
+          name: Cases
+          state: Cases
+        - entity: sensor.worldwide_deaths
+          name: Deaths
+          y_axis: secondary
+      name: Worldwide
+      icon: mdi:biohazard
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        # points: false
+        graph: line
+        fill: fade
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.covid_19_esria_aus_cases
+          name: Cases
+        - entity: sensor.covid_19_esria_aus_deaths
+          name: Deaths
+          y_axis: secondary
+      name: Australia
+      icon: mdi:biohazard
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        # points: false
+        graph: line
+        fill: fade
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.covid_19_esria_nsw
+          name: Cases
+      name: New South Wales
+      icon: mdi:biohazard
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        points: false
+        graph: line
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.covid_19_nswh_local
+          name: Cases
+        - entity: sensor.covid_19_nswh_local_tests
+          name: Tests
+          y_axis: secondary
+      name: Tamworth
+      icon: mdi:biohazard
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        points: false
+        graph: line
+      #   extrema: false
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  # padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Data from Johns Hopkins
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+          entities:
+            - entity: sensor.worldwide_confirmed
+              name: Worldwide
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.worldwide_confirmed
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.worldwide_current
+                  name: Current
+                  unit: ' '
+                - entity: sensor.worldwide_recovered
+                  name: Recovered
+                  unit: ' '
+                - entity: sensor.worldwide_deaths
+                  name: Deaths
+                  unit: ' '
+            - entity: sensor.new_zealand_coronavirus_confirmed
+              name: New Zealand
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.new_zealand_coronavirus_confirmed
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.new_zealand_coronavirus_current
+                  name: Current
+                  unit: ' '
+                - entity: sensor.new_zealand_coronavirus_recovered
+                  name: Recovered
+                  unit: ' '
+                - entity: sensor.new_zealand_coronavirus_deaths
+                  name: Deaths
+                  unit: ' '
+            - entity: sensor.united_kingdom_coronavirus_confirmed
+              name: United Kingdom
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.united_kingdom_coronavirus_confirmed
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.united_kingdom_coronavirus_current
+                  name: Current
+                  unit: ' '
+                - entity: sensor.united_kingdom_coronavirus_recovered
+                  name: Recovered
+                  unit: ' '
+                - entity: sensor.united_kingdom_coronavirus_deaths
+                  name: Deaths
+                  unit: ' '
+            - entity: sensor.us_coronavirus_confirmed
+              name: United States of America
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.us_coronavirus_confirmed
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.us_coronavirus_current
+                  name: Current
+                  unit: ' '
+                - entity: sensor.us_coronavirus_recovered
+                  name: Recovered
+                  unit: ' '
+                - entity: sensor.us_coronavirus_deaths
+                  name: Deaths
+                  unit: ' '
+            - type: section
+            - entity: sensor.australia_coronavirus_confirmed
+              name: Australia
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.australia_coronavirus_confirmed
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.australia_coronavirus_current
+                  name: Current
+                  unit: ' '
+                - entity: sensor.australia_coronavirus_recovered
+                  name: Recovered
+                  unit: ' '
+                - entity: sensor.australia_coronavirus_deaths
+                  name: Deaths
+                  unit: ' '
+            - entity: sensor.coronavirus_nsw
+              name: New South Wales
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - attribute: Confirmed
+                  name: Cases
+                  unit: ' '
+                - attribute: Active
+                  name: Current
+                  unit: ' '
+                - attribute: Recovered
+                  name: Recovered
+                  unit: ' '
+                - attribute: Deaths
+                  name: Deaths
+                  unit: ' '
+
+        - type: entities
+          title: Data from NSW Health
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+          entities:
+            - entity: sensor.covid_19_nswh_local
+              name: Hunter New England Health Cases
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info:
+                attribute: hneh_dates
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - attribute: hneh
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: hneh_percent
+                  name: Cases/Pop
+                  units: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: hneh_percent_cases
+                  name: Cases/NSW
+                  units: ' '
+            - entity: sensor.covid_19_nswh_local_tests
+              name: Hunter New England Health Tests
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info:
+                attribute: hneh_dates
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_nswh_local_tests
+                  attribute: hneh
+                  name: Tests
+                  units: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: hneh_percent_casestotests
+                  name: Cases/Tests
+                  unit: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: hneh_percent_tests
+                  name: Tests/Pop
+                  unit: ' '
+            - entity: sensor.covid_19_nswh_local
+              name: Tamworth Regional Council Cases
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info:
+                attribute: trc_dates
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - attribute: trc
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: trc_percent
+                  name: Cases/Pop
+                  units: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: trc_percent_cases
+                  name: Cases/NSW
+                  units: ' '
+            - entity: sensor.covid_19_nswh_local_tests
+              name: Tamworth Regional Council Tests
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info:
+                attribute: trc_dates
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_nswh_local_tests
+                  attribute: trc
+                  name: Tests
+                  units: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: trc_percent_casestotests
+                  name: Cases/Tests
+                  unit: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: trc_percent_tests
+                  name: Tests/Pop
+                  unit: ' '
+            - entity: sensor.covid_19_nswh_local
+              name: Tamworth (2340) Cases
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info:
+                attribute: tamw_dates
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - attribute: tamw
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: tamw_percent
+                  name: Cases/Pop
+                  units: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: tamw_percent_cases
+                  name: Cases/NSW
+                  units: ' '
+            - entity: sensor.covid_19_nswh_local_tests
+              name: Tamworth (2340) Tests
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info:
+                attribute: tamw_dates
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_nswh_local_tests
+                  attribute: tamw
+                  name: Tests
+                  units: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: tamw_percent_casestotests
+                  name: Cases/Tests
+                  unit: ' '
+                - entity: sensor.covid_19_nswh_local_pct
+                  attribute: tamw_percent_tests
+                  name: Tests/Pop
+                  unit: ' '
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Data from ESRI Australia / The Guardian
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+          entities:
+            - entity: sensor.covid_19_esria_aus_cases
+              name: Australia
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_esria_aus_cases
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.covid_19_esria_aus_deaths
+                  name: Deaths
+                  unit: ' '
+                - entity: sensor.covid_19_esria_aus_tests
+                  name: Tests
+                  unit: ' '
+            - entity: sensor.covid_19_esria_aus_pct
+              name: Australia Percentages
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_esria_aus_pct
+                  attribute: casestotests_percent
+                  name: Cases/Tests
+                  unit: ' '
+                - entity: sensor.covid_19_esria_aus_pct
+                  attribute: casestodeaths_percent
+                  name: Deaths/Cases
+                  unit: ' '
+                - entity: sensor.covid_19_esria_aus_pct
+                  name: Cases/Pop
+                  unit: ' '
+            - entity: sensor.covid_19_esria_aus_pct
+              name: Australia Per Million
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_esria_aus_pct
+                  attribute: casespermillion
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.covid_19_esria_aus_pct
+                  attribute: deathspermillion
+                  name: Deaths
+                  unit: ' '
+                - entity: sensor.covid_19_esria_aus_pct
+                  attribute: testspermillion
+                  name: Tests
+                  unit: ' '
+            - type: section
+            - entity: sensor.covid_19_esria_nsw
+              name: New South Wales
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - attribute: Cases
+                  name: Cases
+                  unit: ' '
+                - attribute: Deaths
+                  name: Deaths
+                  unit: ' '
+                - attribute: Tests
+                  name: Tests
+                  unit: ' '
+            - entity: sensor.covid_19_esria_nsw_pct
+              name: New South Wales Percentages
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_esria_nsw_pct
+                  attribute: casestotests_percent
+                  name: Cases/Tests
+                  unit: ' '
+                - entity: sensor.covid_19_esria_nsw_pct
+                  attribute: casestodeaths_percent
+                  name: Deaths/Cases
+                  unit: ' '
+                - entity: sensor.covid_19_esria_nsw_pct
+                  name: Cases/Pop
+                  unit: ' '
+                - entity: sensor.covid_19_esria_nsw_pct
+                  attribute: teststopopulation_percent
+                  name: Tests/Pop
+                  unit: ' '
+            - entity: sensor.covid_19_esria_nsw_pct
+              name: New South Wales Per Million
+              type: custom:multiple-entity-row
+              icon: mdi:biohazard
+              show_state: false
+              secondary_info: last-changed
+              style: |
+                div.entity { text-align: right; }
+              entities:
+                - entity: sensor.covid_19_esria_nsw_pct
+                  attribute: casespermillion
+                  name: Cases
+                  unit: ' '
+                - entity: sensor.covid_19_esria_nsw_pct
+                  attribute: deathspermillion
+                  name: Deaths
+                  unit: ' '
+                - entity: sensor.covid_19_esria_nsw_pct
+                  attribute: testspermillion
+                  name: Tests
+                  unit: ' '
+
+        - type: custom:flex-table-card
+          title: State by State
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: NAME+
+          clickable: true
+          css:
+            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+          entities:
+            include: sensor.covid_19_esria_*
+            exclude:
+              - sensor.covid_19_esria_*_pct
+              - sensor.covid_19_esria_aus*
+          columns:
+            - name: Name
+              attr: NAME
+            - name: Last Update
+              attr: Last_Updated
+              modify: new Date(x).toDateString()
+              align: center
+            - name: Cases
+              attr: Cases
+              align: right
+            - name: Deaths
+              attr: Deaths
+              align: right
+            - name: Tests
+              attr: Tests
+              align: right
+- type: iframe
+  aspect_ratio: 50%
+  url: https://nswdac-np-covid-19-postcode-heatmap.azurewebsites.net/

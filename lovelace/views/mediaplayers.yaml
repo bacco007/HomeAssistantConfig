@@ -17,32 +17,6 @@ cards:
       #     - type: custom:decluttering-card
       #       template: time-card
 
-      - type: custom:layout-card
-        min_columns: 4
-        max_columns: 4
-        justify_content: start
-        layout: horizontal
-        cards:
-          # Row 1
-          - type: custom:decluttering-card
-            template: sonos-source
-            variables:
-              - name: ABC New England North West
-              - label: down
-              - icon: mdi:volume-low
-              - service: media_player.select_source
-              - service_entity: media_player.bedroom_sonos
-              - source: "ABC New England North West"
-          - type: custom:decluttering-card
-            template: sonos-source
-            variables:
-              - name: Absolute Radio (UK)
-              - label: down
-              - icon: mdi:volume-low
-              - service: media_player.select_source
-              - service_entity: media_player.bedroom_sonos
-              - source: "Absolute Radio UK (AAC)"
-
       - type: vertical-stack
         style: !include ../includes/style.yaml
         cards:

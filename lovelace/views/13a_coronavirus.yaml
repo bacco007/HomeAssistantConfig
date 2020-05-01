@@ -1,6 +1,6 @@
 ---
 # lovelace_gen
-title: Coronavirus
+title: Coronavirus 
 path: covid19
 icon: mdi:biohazard
 panel: true
@@ -35,6 +35,12 @@ cards:
                           - entity: sensor.worldwide_confirmed
                             name: Cases
                             unit: ' '
+                          - entity: sensor.worldwide_current
+                            name: Current
+                            unit: ' '
+                          - entity: sensor.worldwide_recovered
+                            name: Recovered
+                            unit: ' '
                           - entity: sensor.worldwide_deaths
                             name: Deaths
                             unit: ' '
@@ -47,6 +53,12 @@ cards:
                         entities:
                           - entity: sensor.new_zealand_coronavirus_confirmed
                             name: Cases
+                            unit: ' '
+                          - entity: sensor.new_zealand_coronavirus_current
+                            name: Current
+                            unit: ' '
+                          - entity: sensor.new_zealand_coronavirus_recovered
+                            name: Recovered
                             unit: ' '
                           - entity: sensor.new_zealand_coronavirus_deaths
                             name: Deaths
@@ -61,6 +73,12 @@ cards:
                           - entity: sensor.united_kingdom_coronavirus_confirmed
                             name: Cases
                             unit: ' '
+                          - entity: sensor.united_kingdom_coronavirus_current
+                            name: Current
+                            unit: ' '
+                          - entity: sensor.united_kingdom_coronavirus_recovered
+                            name: Recovered
+                            unit: ' '
                           - entity: sensor.united_kingdom_coronavirus_deaths
                             name: Deaths
                             unit: ' '
@@ -74,21 +92,33 @@ cards:
                           - entity: sensor.us_coronavirus_confirmed
                             name: Cases
                             unit: ' '
+                          - entity: sensor.us_coronavirus_current
+                            name: Current
+                            unit: ' '
+                          - entity: sensor.us_coronavirus_recovered
+                            name: Recovered
+                            unit: ' '
                           - entity: sensor.us_coronavirus_deaths
                             name: Deaths
                             unit: ' '
                       - type: section
-                      - entity: sensor.australia_confirmed
+                      - entity: sensor.australia_coronavirus_confirmed
                         name: Australia
                         type: custom:multiple-entity-row
                         icon: mdi:biohazard
                         show_state: false
                         secondary_info: last-changed
                         entities:
-                          - entity: sensor.australia_confirmed
+                          - entity: sensor.australia_coronavirus_confirmed
                             name: Cases
                             unit: ' '
-                          - entity: sensor.australia_deaths
+                          - entity: sensor.australia_coronavirus_current
+                            name: Current
+                            unit: ' '
+                          - entity: sensor.australia_coronavirus_recovered
+                            name: Recovered
+                            unit: ' '
+                          - entity: sensor.australia_coronavirus_deaths
                             name: Deaths
                             unit: ' '
                       - entity: sensor.coronavirus_nsw
@@ -100,6 +130,12 @@ cards:
                         entities:
                           - attribute: Confirmed
                             name: Cases
+                            unit: ' '
+                          - attribute: Active
+                            name: Current
+                            unit: ' '
+                          - attribute: Recovered
+                            name: Recovered
                             unit: ' '
                           - attribute: Deaths
                             name: Deaths

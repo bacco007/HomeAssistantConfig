@@ -1,13 +1,17 @@
 ---
 panel_iframe:
-  mdi_index:
-    title: Icons - MDI
-    icon: mdi:vector-square
-    url: https://dev.materialdesignicons.com/icons
-  emoji:
-    title: Icons - Emoji
-    icon: mdi:sticker-emoji
-    url: http://www.unicode.org/emoji/charts/full-emoji-list.html
+  # mdi_index:
+  #   title: Icons - MDI
+  #   icon: mdi:vector-square
+  #   url: https://dev.materialdesignicons.com/icons
+  # emoji:
+  #   title: Icons - Emoji
+  #   icon: mdi:sticker-emoji
+  #   url: http://www.unicode.org/emoji/charts/full-emoji-list.html
+  # simpleicons:
+  #   title: Icons - SimpleIcons
+  #   icon: si:simpleicons
+  #   url: http://www.simpleicons.org
   jupyterlab:
     title: JupyterLab
     icon: mdi:language-python

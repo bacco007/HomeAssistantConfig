@@ -1,4 +1,9 @@
 ---
+weather:
+  - platform: bom
+    name: Tamworth
+    station: IDN60801.95762
+
 sensor:
   - platform: bom
     station: IDN60801.95762

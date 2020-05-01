@@ -11,6 +11,9 @@
     "ESPHome.esphome-vscode",
     "eamodio.gitlens",
     "esbenp.prettier-vscode",
-    "davidanson.vscode-markdownlint"
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "bierner.lit-html",
+    "runem.lit-plugin"
   ]
 }
