@@ -2,7 +2,6 @@
 recorder:
   db_url: !secret mariadb_connection
   purge_keep_days: 5
-  purge_interval: 1
   exclude:
     domains:
       - automation

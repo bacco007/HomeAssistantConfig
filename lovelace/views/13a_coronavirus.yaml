@@ -1,6 +1,6 @@
 ---
 # lovelace_gen
-title: Coronavirus 
+title: Coronavirus
 path: covid19
 icon: mdi:biohazard
 panel: true

@@ -5,8 +5,10 @@ ignore: |
   www/
   themes/
   handy-code/
+  dwains-theme/
+  packages/dwains-theme/
   .github/workflows/
-  lovelace/includes/style.yaml
+  lovelace/
   fake_secrets.yaml
   secrets.yaml
   known_devices.yaml
