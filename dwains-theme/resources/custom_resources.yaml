@@ -6,6 +6,8 @@
 #   url: /to_your_folder/filename.js
 - url: /hacsfiles/bar-card/bar-card.js
   type: module
+- url: /hacsfiles/config-template-card/config-template-card.js
+  type: module
 - url: /hacsfiles/flex-table-card/flex-table-card.js
   type: module
 - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js

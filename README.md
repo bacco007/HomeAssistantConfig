@@ -49,7 +49,7 @@ My smarthome setup seems to be ever-growing, but at this stage it's unlikely tha
 ### Hardware
 
 - Dell Optiplex 9020 SFF (i5, 24Gb RAM, 500Gb HDD) running Proxmox
-  - I run two VMs from this machine, one for Hass.IO and related elements and one for other home server stuff
+  - I run two VMs from this machine, one for Home Assistant and related elements and one for other home server stuff
 - Lenovo ThinkMachine M73 Tiny (Intel Pentium G3240T, 4Gb RAM, 500Gb HDD)
   - Ubuntu Server 18.10, this machine runs my UniFi controller and Nginx Reverse Proxy Setup
 - Raspberry Pi 3
@@ -65,11 +65,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, May 2nd 2020_
+_Stats as at 10:03, Sunday, May 3rd 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.109.0 | 254     | 1255         | 894 | 23 |
+| 0.109.2 | 254     | 1253         | 891 | 23 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -184,6 +184,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
+- [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv)
 - [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod)
@@ -277,7 +278,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.season](https://www.home-assistant.io/components/sensor.season)
 - [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors)
 - [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp)
-- [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr)
 - [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media)
 - [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet)
 - [sensor.sql](https://www.home-assistant.io/components/sensor.sql)
@@ -391,24 +391,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ## Screenshots
 
-![Screenshot - Home](./.assets/screencapture-home.png?raw=True)
+![Screenshot - Home](./.assets/home.png?raw=True)
 
 <details>
 <summary>More Screenshots Here</summary>
 
-![Screenshot - App Dashboard](./.assets/screencapture-appdashboard.png?raw=True)
-
-![Screenshot - Rooms](./.assets/screencapture-rooms.png?raw=True)
-
-![Screenshot - Weather](./.assets/screencapture-weather.png?raw=True)
-
-![Screenshot - SunUV](./.assets/screencapture-sunuv.png?raw=True)
-
-![Screenshot - System](./.assets/screencapture-system.png?raw=True)
-
-![Screenshot - Fire](./.assets/screencapture-fire.png?raw=True)
-
-![Screenshot - HA](./.assets/screencapture-homeassistant.png?raw=True)
+![Screenshot - More](./.assets/more.png?raw=True)
 
 </details>
 

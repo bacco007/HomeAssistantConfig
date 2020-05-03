@@ -102,7 +102,8 @@
           title: Rain History - Airport (Rolling)
           style: |
             ha-card {
-              background-color: var(--dwains-theme-primary)
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
             }
             .card-header {
               padding: 5px 16px;
@@ -143,7 +144,8 @@
           title: Rain History - Home (Rolling)
           style: |
             ha-card {
-              background-color: var(--dwains-theme-primary)
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
             }
             .card-header {
               padding: 5px 16px;
@@ -185,7 +187,8 @@
           title: Rain Intensity - Home (Last 7 Days)
           style: |
             ha-card {
-              background-color: var(--dwains-theme-primary)
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
             }
             .card-header {
               padding: 5px 16px;
@@ -225,7 +228,8 @@
           title: Rain Intensity - Home (Last 365 Days)
           style: |
             ha-card {
-              background-color: var(--dwains-theme-primary)
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
             }
             .card-header {
               padding: 5px 16px;

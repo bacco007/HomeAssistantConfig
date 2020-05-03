@@ -1,3 +1,5 @@
+#dwains_theme
+
 - type: custom:dwains-flexbox-card
   items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
   cards:
@@ -89,46 +91,75 @@
           name: Electricity Gen from Fossil Fuels
         - entity: sensor.opennem_nsw1_gen_from_renewables
           name: Electricity Gen from Renewables
-    - type: glance
-      title: Current Generation
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        state-badge { margin: 1px 0; }
+
+    - type: custom:config-template-card
+      variables:
+        - states['sensor.opennem_nsw1_electricity_generation'].state
       entities:
-        - entity: sensor.opennem_nsw1_battery_charging
-          name: Battery (Charge)
-        - entity: sensor.opennem_nsw1_battery_discharging
-          name: Battery (Discharge)
-        - entity: sensor.opennem_nsw1_biomass
-          name: Biomass
-        - entity: sensor.opennem_nsw1_black_coal
-          name: Black Coal
-        - entity: sensor.opennem_nsw1_brown_coal
-          name: Brown Coal
-        - entity: sensor.opennem_nsw1_distillate
-          name: Distillate
-        - entity: sensor.opennem_nsw1_gas_ccgt
-          name: Gas (CCGT)
-        - entity: sensor.opennem_nsw1_gas_ocgt
-          name: Gas (OCGT)
-        - entity: sensor.opennem_nsw1_gas_recip
-          name: Gas (Recip)
-        - entity: sensor.opennem_nsw1_gas_steam
-          name: Gas (Steam)
-        - entity: sensor.opennem_nsw1_hydro
-          name: Hydro
-        - entity: sensor.opennem_nsw1_pumps
-          name: Pumps
-        - entity: sensor.opennem_nsw1_solar_rooftop
-          name: Solar (Rooftop)
-        - entity: sensor.opennem_nsw1_solar_utility
-          name: Solar (Utility)
-        - entity: sensor.opennem_nsw1_wind
-          name: Wind
+        - sensor.opennem_nsw1_electricity_generation
+      card:
+        type: custom:auto-entities
+        card:
+          type: entities
+          title: Current Generation
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px 10px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+        sort:
+          method: state
+          reverse: true
+          numeric: true
+        filter:
+          include:
+            - group: group.opennem
+              options:
+                type: custom:bar-card
+                style: |
+                  ha-icon {
+                    color: var(--dwains-theme-accent) !important;
+                  }
+                  ha-icon	 {
+                    margin-top: -7px;
+                    padding-right: 5px;
+                  }
+                  bar-card-indicator	 {
+                    margin-top: -12px;
+                    padding-right: 5px;
+                  }
+                  bar-card-name	 {
+                    margin-top: -4.5px;
+                    padding-left: 5px;
+                  }
+                  bar-card-backgroundbar	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-currentbar	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-targetbar	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-targetmarker	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-value	 {
+                    margin-top: -4.5px;
+                    padding-left: 5px;
+                  }
+                positions:
+                  title: inside
+                  value: inside
+                entity_row: true
+                min: 0
+                max: '${vars[0]}'
+                color: rgb(26,204,147,0.33)

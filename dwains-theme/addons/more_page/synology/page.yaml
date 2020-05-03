@@ -237,7 +237,8 @@
             title: TheCube2 CPU
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -264,7 +265,8 @@
             title: TheCube2 Memory
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -291,7 +293,8 @@
             title: TheCube2 Network
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -320,7 +323,8 @@
             title: Disk 1 (/dev/sda)
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -347,7 +351,8 @@
             title: Disk 2 (/dev/sdb)
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -374,7 +379,8 @@
             title: Volume 1
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;

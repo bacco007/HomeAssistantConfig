@@ -102,12 +102,24 @@
           title: Data from Johns Hopkins
           style: |
             ha-card {
+              padding-bottom: 10px;
               background-color: var(--dwains-theme-primary)
             }
             .card-header {
               padding: 5px 16px;
               font-size: 18px;
               font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
             }
           entities:
             - entity: sensor.worldwide_confirmed
@@ -242,12 +254,24 @@
           title: Data from NSW Health
           style: |
             ha-card {
+              padding-bottom: 10px;
               background-color: var(--dwains-theme-primary)
             }
             .card-header {
               padding: 5px 16px;
               font-size: 18px;
               font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
             }
           entities:
             - entity: sensor.covid_19_nswh_local
@@ -385,12 +409,24 @@
           title: Data from ESRI Australia / The Guardian
           style: |
             ha-card {
+              padding-bottom: 10px;
               background-color: var(--dwains-theme-primary)
             }
             .card-header {
               padding: 5px 16px;
               font-size: 18px;
               font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
             }
           entities:
             - entity: sensor.covid_19_esria_aus_cases
@@ -521,6 +557,7 @@
           title: State by State
           style: |
             ha-card {
+              padding-bottom: 10px;
               background-color: var(--dwains-theme-primary)
             }
             .card-header {

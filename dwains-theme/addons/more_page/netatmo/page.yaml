@@ -235,7 +235,8 @@
             title: Indoor Sensor (Lounge)
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -266,7 +267,8 @@
             title: Outdoor Sensor
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;
@@ -297,7 +299,8 @@
             title: Rain Gauge
             style: |
               ha-card {
-                background-color: var(--dwains-theme-primary)
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
               }
               .card-header {
                 padding: 5px 16px;

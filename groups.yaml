@@ -18,6 +18,24 @@ office_media:
   entities:
     - media_player.bedroom_sonos
     - media_player.googlehome3140
+opennem:
+  name: OpenNEM
+  entities:
+    - sensor.opennem_nsw1_battery_charging
+    - sensor.opennem_nsw1_battery_discharging
+    - sensor.opennem_nsw1_biomass
+    - sensor.opennem_nsw1_black_coal
+    - sensor.opennem_nsw1_brown_coal
+    - sensor.opennem_nsw1_distillate
+    - sensor.opennem_nsw1_gas_ccgt
+    - sensor.opennem_nsw1_gas_ocgt
+    - sensor.opennem_nsw1_gas_recip
+    - sensor.opennem_nsw1_gas_steam
+    - sensor.opennem_nsw1_hydro
+    - sensor.opennem_nsw1_pumps
+    - sensor.opennem_nsw1_solar_rooftop
+    - sensor.opennem_nsw1_solar_utility
+    - sensor.opennem_nsw1_wind
 lounge_media:
   name: Lounge - Media
   entities:
