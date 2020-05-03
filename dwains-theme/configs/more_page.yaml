@@ -32,6 +32,9 @@ more_page:
     - name: Upcoming Sport
       icon: mdi:football-australian
       path: 'dwains-theme/addons/more_page/sports/page.yaml'
+    - name: WaterNSW Dam Levels
+      icon: mdi:water
+      path: 'dwains-theme/addons/more_page/waternsw/page.yaml'
     - name: Weather
       icon: mdi:weather-partly-rainy
       path: 'dwains-theme/addons/more_page/weather/page.yaml'

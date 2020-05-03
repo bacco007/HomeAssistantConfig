@@ -138,11 +138,11 @@
     },
     "87eb65c6_2c5798": {
       "lastPayload": {
-        "state": 63.4,
+        "state": 58.3,
         "attributes": {
-          "count": 6,
-          "countstring": "6 Days",
-          "average": 10.57,
+          "count": 5,
+          "countstring": "5 Days",
+          "average": 11.66,
           "highest": 24.2,
           "sort": 3
         }

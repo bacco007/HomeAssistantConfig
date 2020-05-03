@@ -279,40 +279,81 @@
                 - attribute: num_pending
                   name: Pending
                   unit: ' '
-# - type: custom:dwains-flexbox-card
-#   items_classes: 'col-xs-12 col-md-12 col-lg-12 col-xl-12'
-#   cards:
-#     - type: custom:auto-entities
-#       filter:
-#         include:
-#           - entity_id: device_tracker.*
-#           - attributes:
-#               - source type: 'router'
-#               - is wired: 'false'
-#         exclude:
-#           - state: not_home
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-6 col-lg-6 col-xl-6'
+  cards:
+    - type: custom:auto-entities
+      filter:
+        include:
+          - domain: device_tracker
+            state: home
+            attributes:
+              source_type: router
+              is_wired: false
+      card:
+        type: custom:flex-table-card
+        title: Connected Devices (WiFi)
+        style: |
+          ha-card {
+            padding-bottom: 10px;
+            background-color: var(--dwains-theme-primary)
+          }
+          .card-header {
+            padding: 5px 16px;
+            font-size: 18px;
+            font-weight: 700 !important;
+          }
+          # font-family: { var(--primary-font-family);}
+          # font-weight: {400 !important;}
+        sort_by: ip+
+        clickable: true
+        css:
+          table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+        columns:
+          - name: Name / Host Name
+            data: name,hostname
+            multi_delimiter: ' / '
+          - name: MAC
+            attr: mac
+          - name: SSID
+            attr: essid
+          - name: Proto
+            attr: radio_proto
+          - name: IP
+            attr: ip
 
-#       card:
-#         type: custom:flex-table-card
-#         title: Connected Devices
-#         style: |
-#           ha-card {
-#             padding-bottom: 10px;
-#             background-color: var(--dwains-theme-primary)
-#           }
-#           .card-header {
-#             padding: 5px 16px;
-#             font-size: 18px;
-#             font-weight: 700 !important;
-#           }
-#           # font-family: { var(--primary-font-family);}
-#           # font-weight: {400 !important;}
-#         sort_by: NAME+
-#         clickable: true
-#         css:
-#           table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
-#         columns:
-#           - name: Name
-#             attr: hostname
-#           - name: SSID
-#             attr: essid
+    - type: custom:auto-entities
+      filter:
+        include:
+          - domain: device_tracker
+            state: home
+            attributes:
+              source_type: router
+              is_wired: true
+      card:
+        type: custom:flex-table-card
+        title: Connected Devices (Ethernet)
+        style: |
+          ha-card {
+            padding-bottom: 10px;
+            background-color: var(--dwains-theme-primary)
+          }
+          .card-header {
+            padding: 5px 16px;
+            font-size: 18px;
+            font-weight: 700 !important;
+          }
+          # font-family: { var(--primary-font-family);}
+          # font-weight: {400 !important;}
+        sort_by: ip+
+        clickable: true
+        css:
+          table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+        columns:
+          - name: Name / Host Name
+            data: name,hostname
+            multi_delimiter: ' / '
+          - name: MAC
+            data: mac
+          - name: IP
+            data: ip
