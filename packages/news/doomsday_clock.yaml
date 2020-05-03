@@ -1,4 +1,0 @@
----
-sensor:
-  - platform: doomsday_clock
-    scan_interval: 86400

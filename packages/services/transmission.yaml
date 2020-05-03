@@ -1,6 +1,0 @@
----
-transmission:
-  host: !secret transmission_host
-  port: !secret transmission_port
-  username: !secret transmission_username
-  password: !secret transmission_password

@@ -1,6 +1,0 @@
----
-sensor:
-  - platform: xbox_live
-    api_key: !secret xboxone_apikey
-    xuid:
-      - !secret xboxone_xuid

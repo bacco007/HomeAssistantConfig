@@ -1,5 +1,0 @@
----
-media_player:
-  - platform: xboxone
-    device: !secret xboxone_device
-    name: Xbox One

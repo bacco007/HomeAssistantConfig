@@ -1,8 +1,0 @@
-{
-  "domain": "covid19_nswhealth_tests",
-  "name": "COVID-19 NSW Health Tests",
-  "documentation": "",
-  "dependencies": [],
-  "codeowners": ["@bacco007"],
-  "requirements": ["pandas==1.0.3"]
-}

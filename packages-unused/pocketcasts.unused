@@ -1,5 +1,0 @@
----
-sensor:
-  - platform: pocketcasts
-    username: !secret pocketcasts_user
-    password: !secret pocketcasts_password

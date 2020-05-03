@@ -1,8 +1,0 @@
-{
-  "domain": "nsw_air_quality",
-  "name": "NSW Air Quality",
-  "documentation": "",
-  "dependencies": [],
-  "codeowners": ["@bacco007"],
-  "requirements": []
-}

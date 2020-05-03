@@ -1,5 +1,0 @@
----
-sensor:
-  - platform: transport_nsw
-    stop_id: !secret tfnsw_stopid1
-    api_key: !secret tfnsw_apikey

@@ -1,8 +1,0 @@
-{
-  "domain": "doomsday_clock",
-  "name": "Doomsday Clock",
-  "documentation": "https://github.com/renemarc/home-assistant-doomsday-clock",
-  "requirements": ["countdoom==0.2.1"],
-  "dependencies": [],
-  "codeowners": ["@renemarc"]
-}

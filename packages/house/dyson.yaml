@@ -1,5 +1,0 @@
----
-dyson:
-  username: !secret dyson_username
-  password: !secret dyson_password
-  language: AU

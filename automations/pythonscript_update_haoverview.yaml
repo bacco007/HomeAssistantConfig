@@ -1,9 +1,0 @@
----
-alias: 'Python Script - Update ha_overview'
-trigger:
-  - event: start
-    platform: homeassistant
-  - platform: time_pattern
-    minutes: "/10"
-action:
-  - service: python_script.ha_overview
