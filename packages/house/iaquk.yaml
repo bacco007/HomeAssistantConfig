@@ -9,10 +9,17 @@ iaquk:
     sensors:
       - iaq_level
       - iaq_index
+  office:
+    sources:
+      temperature: sensor.zha_office_temperature
+      humidity: sensor.zha_office_humidity
+    sensors:
+      - iaq_level
+      - iaq_index
   bedroom:
     sources:
-      temperature: sensor.bedroom_multisensor_temperature
-      humidity: sensor.bedroom_multisensor_humidity
+      temperature: sensor.zha_bedroom_temperature
+      humidity: sensor.zha_bedroom_humidity
       # co2:
       # tvoc:
     sensors:

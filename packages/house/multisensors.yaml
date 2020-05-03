@@ -3,13 +3,13 @@ sensor:
   - platform: statistics
     name: today_temp_xiaomibedroom
     sampling_size: 150
-    entity_id: sensor.bedroom_multisensor_temperature
+    entity_id: sensor.zha_bedroom_temperature
     max_age:
       hours: 24
   - platform: statistics
-    name: today_temp_xiaomilounge
+    name: today_temp_xiaomioffice
     sampling_size: 150
-    entity_id: sensor.lounge_multisensor_temperature
+    entity_id: sensor.zha_office_temperature
     max_age:
       hours: 24
 
@@ -30,18 +30,18 @@ sensor:
         value_template: "{{ states.sensor.today_temp_xiaomibedroom.attributes['change']}}"
         icon_template: mdi:thermometer-lines
         unit_of_measurement: "°C"
-      xiaomilounge_min_temp:
-        friendly_name: "Lounge Min Temp (Last 24hrs)"
-        value_template: "{{ states.sensor.today_temp_xiaomilounge.attributes['min_value']}}"
+      xiaomioffice_min_temp:
+        friendly_name: "Office Min Temp (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomioffice.attributes['min_value']}}"
         icon_template: mdi:thermometer-chevron-down
         unit_of_measurement: "°C"
-      xiaomilounge_max_temp:
-        friendly_name: "Lounge Max Temp (Last 24hrs)"
-        value_template: "{{ states.sensor.today_temp_xiaomilounge.attributes['max_value']}}"
+      xiaomioffice_max_temp:
+        friendly_name: "Office Max Temp (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomioffice.attributes['max_value']}}"
         icon_template: mdi:thermometer-chevron-up
         unit_of_measurement: "°C"
-      xiaomilounge_change_temp:
-        friendly_name: "Lounge Temp Change (Last 24hrs)"
-        value_template: "{{ states.sensor.today_temp_xiaomilounge.attributes['change']}}"
+      xiaomioffice_change_temp:
+        friendly_name: "Office Temp Change (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomioffice.attributes['change']}}"
         icon_template: mdi:thermometer-lines
         unit_of_measurement: "°C"

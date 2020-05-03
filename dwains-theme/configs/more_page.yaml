@@ -3,16 +3,22 @@
 more_page:
   addons:
     - name: Coronavirus
-      icon: fas:disease
+      icon: mdi:biohazard
       path: 'dwains-theme/addons/more_page/coronavirus/page.yaml'
+    - name: Home Assistant
+      icon: mdi:home-assistant
+      path: 'dwains-theme/addons/more_page/homeassistant/page.yaml'
+      data:
+        version: '{{ states.sensor.ha_current_version.state }}'
+        uptime: '{{ states.sensor.ha_uptime_hours.state }}'
     - name: IoT & Smarthome Network Status
-      icon: fal:chart-network
+      icon: mdi:lan-connect
       path: 'dwains-theme/addons/more_page/net-status/page.yaml'
     - name: National Electricity Market (NSW)
       icon: mdi:transmission-tower
       path: 'dwains-theme/addons/more_page/opennem/page.yaml'
     - name: Netatmo Weather Station
-      icon: fal:windsock
+      icon: mdi:gauge
       path: 'dwains-theme/addons/more_page/netatmo/page.yaml'
     - name: Pi-Hole
       icon: mdi:pi-hole
@@ -21,14 +27,17 @@ more_page:
       icon: mdi:nas
       path: 'dwains-theme/addons/more_page/synology/page.yaml'
     - name: Ubiquiti UniFi
-      icon: fal:router
+      icon: mdi:router-wireless
       path: 'dwains-theme/addons/more_page/ubiquiti/unifi.yaml'
     - name: Upcoming Sport
       icon: mdi:football-australian
       path: 'dwains-theme/addons/more_page/sports/page.yaml'
     - name: Weather
-      icon: fal:cloud-sun-rain
+      icon: mdi:weather-partly-rainy
       path: 'dwains-theme/addons/more_page/weather/page.yaml'
+    - name: Zigbee
+      icon: mdi:zigbee
+      path: 'dwains-theme/addons/more_page/zigbee/page.yaml'
 #     - name: Hello more page
 #       icon: fas:chart-area
 #       path: 'dwains-theme/addons/more_page/hello-more-page/page.yaml'

@@ -18,3 +18,5 @@
   type: module
 - url: /hacsfiles/stack-in-card/stack-in-card.js
   type: module
+- url: /hacsfiles/zha-network-card/zha-network-card.js
+  type: module

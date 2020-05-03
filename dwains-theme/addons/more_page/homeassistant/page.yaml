@@ -1,0 +1,352 @@
+# dwains_theme
+
+- type: custom:stack-in-card
+  style: |
+    ha-card {
+      color: teal;
+      border-radius: 2.5px;
+    }
+  cards:
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      cards:
+        # - type: horizontal-stack
+        #   cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://www.home-assistant.io/images/favicon-192x192-full.png"/><br/>
+
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                **Home Assistant**
+            # - type: entities
+            #   style: |
+            #     ha-card { box-shadow: none; }
+            #   #   #states { padding-top: 0px; padding-bottom: 0px }
+            #   entities:
+            #     - type: custom:bar-card
+            #       name: Outdoor Sensor
+            #       entity: sensor.netatmo_brisbane_street_outdoor_battery_percent
+            #       entity_row: true
+            #       animation:
+            #         state: on
+            #       positions:
+            #         minmax: inside
+            #         title: inside
+            #         value: inside
+            #       icon: fal:battery-bolt
+            #       severity:
+            #         - color: rgb(141, 252, 124)
+            #           from: 0
+            #           to: 100
+            #       style: |
+            #         ha-icon {
+            #           color: var(--dwains-theme-accent) !important;
+            #         }
+            #         .contentbar-direction-right {
+            #         flex-direction: column;
+            #         }
+            #         .min-direction-right {
+            #           margin: 0px;
+            #           margin-left: 4px;
+            #           margin-right: auto;
+            #           margin-bottom: -20px;
+            #           bottom: 10px;
+            #         }
+            #           bar-card-value {
+            #           margin: 0px;
+            #         }
+            #         bar-card-name {
+            #           margin: 0px;
+            #         }
+            #         bar-card-max {
+            #           margin: 0px;
+            #           margin-left: auto;
+            #           margin-top: -20px;
+            #           top: 10px;
+            #         }
+            #         bar-card-divider {
+            #           display: none;
+            #         }
+            #     - type: custom:bar-card
+            #       name: Rain Sensor
+            #       entity: sensor.netatmo_brisbane_street_rain_battery_percent
+            #       entity_row: true
+            #       animation:
+            #         state: on
+            #       positions:
+            #         minmax: inside
+            #         title: inside
+            #         value: inside
+            #       icon: fal:battery-bolt
+            #       severity:
+            #         - color: rgb(141, 252, 124)
+            #           from: 0
+            #           to: 100
+            #       style: |
+            #         ha-icon {
+            #           color: var(--dwains-theme-accent) !important;
+            #         }
+            #         .contentbar-direction-right {
+            #         flex-direction: column;
+            #         }
+            #         .min-direction-right {
+            #           margin: 0px;
+            #           margin-left: 4px;
+            #           margin-right: auto;
+            #           margin-bottom: -20px;
+            #           bottom: 10px;
+            #         }
+            #           bar-card-value {
+            #           margin: 0px;
+            #         }
+            #         bar-card-name {
+            #           margin: 0px;
+            #         }
+            #         bar-card-max {
+            #           margin: 0px;
+            #           margin-left: auto;
+            #           margin-top: -20px;
+            #           top: 10px;
+            #         }
+            #         bar-card-divider {
+            #           display: none;
+            #         }
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.ha_db_size
+      name: Database Size
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        #extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.count_all_components
+      name: Components
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 6
+      align_state: center
+      show:
+        #extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.count_all_entities
+      name: Entities
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 6
+      align_state: center
+      show:
+        # extrema: true
+        fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Configuration Tools
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Reload Themes
+              service: frontend.reload_themes
+              type: call-service
+            - script.check_config
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Restart Home Assistant
+              service: homeassistant.restart
+              type: call-service
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Generate README.md
+              service: readme.generate
+              type: call-service
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Reload Core Config
+              service: homeassistant.reload_core_config
+              type: call-service
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Reload Groups
+              service: group.reload
+              type: call-service
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Reload Automations
+              service: automation.reload
+              type: call-service
+            - action_name: GO!
+              icon: 'mdi:cube-send'
+              name: Reload Scripts
+              service: script.reload
+              type: call-service
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Auto Backups
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - binary_sensor.ha_update_available
+            - sensor.ha_current_version
+            - sensor.ha_latest_version
+            - type: section
+            - sensor.hass_current_beta_version
+            - sensor.hass_current_dev_version
+            - type: section
+            - sensor.hass_current_supervisor_version
+            - sensor.hass_beta_supervisor_version
+            - type: section
+            - sensor.potential_breaking_changes
+            - type: section
+            - sensor.ha_overview
+            - type: section
+            - entity: sensor.ssl_certificate_expiry
+              name: HA SSL Cert Expiry
+
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Component Counts
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: name
+          filter:
+            include:
+              - { entity_id: sensor.count_* }
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Auto Backups
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.auto_backup
+              name: Auto Backup Status
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - attribute: monitored_snapshots
+                  name: Monitored
+                - attribute: purgeable_snapshots
+                  name: Purgeable
+                - entity: sensor.auto_backup
+                  unit: false
+                  name: Pending

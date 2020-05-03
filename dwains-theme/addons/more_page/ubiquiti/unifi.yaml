@@ -1,371 +1,318 @@
----
-#
-# Unifi more_page.
-# Made by Ruben Dijk.
-
-# Donw/upload speed
-- type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-3 col-xl-3'
-  cards:
-    - type: markdown
-      content: >
-        **UniFi USG**<br>
-        Uptime: {{ states.sensor.usg_uptime.state }}<br>
-        WAN Uptime: {{ states.sensor.unifi_gateway_www_uptime.state }}
-    - type: markdown
-      content: >
-        **UniFi WiFi AP-AC-Lite (UFO)**<br>
-        Uptime: {{ states.sensor.ufo_uptime.state }}
-    - type: markdown
-      content: >
-        **UniFi Switch 8 Port 60W**<br>
-        Uptime: {{ states.sensor.hateful8_uptime.state }}
-
-- type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-md-4 col-lg-4'
-  cards:
-
-  # unifi gateway alerts
-    - type: custom:button-card
-      entity: sensor.unifi_gateway_alerts
-      show_state: true
-      styles:
-        grid:
-          - grid-template-areas: '"i n" "i s" "i l"'
-          - grid-template-columns: 25% 75%
-          - grid-template-rows: min-content min-content
-        card:
-          - background-color: var(--dwains-theme-primary)
-          - border-radius: 10px;
-          - box-shadow: 10px;
-        name:
-          - font-size: 15px
-          - font-weight: bold
-          - color: var(--dwains-theme-names)
-          - justify-self: start
-        state:
-          - justify-self: start
-          - font-size: 13px
-          - color: var(--dwains-theme-names)
-        label:
-          - padding-top: 0px
-          - padding-bottom: 0px
-          - font-size: 12px
-          - color: var(--dwains-theme-grey)
-          - justify-self: start
-        icon:
-          - color: var(--dwains-theme-accent)
-      state:
-        - value: "0"
-          color: var(--dwains-theme-accent)
-          icon: mdi:shield-alert-outline
-        - value: "1"
-          operator: '>='
-          color: red
-          icon: mdi:alert
-          styles:
-            card:
-              - animation: blink 2s ease infinite
-
-  # Go to your unifi controller webpage
-    - type: custom:button-card
-      show_state: false
-      styles:
-        grid:
-          - grid-template-areas: '"i n" "i n" "i n"'
-          - grid-template-columns: 25% 75%
-          - grid-template-rows: min-content min-content
-        card:
-          - background-color: var(--dwains-theme-primary)
-          - border-radius: 10px;
-          - box-shadow: 10px;
-        name:
-          - font-size: 15px
-          - font-weight: bold
-          - color: var(--dwains-theme-names)
-          - justify-self: start
-        state:
-          - justify-self: start
-          - font-size: 13px
-          - color: var(--dwains-theme-names)
-        label:
-          - padding-top: 0px
-          - padding-bottom: 0px
-          - font-size: 12px
-          - color: var(--dwains-theme-grey)
-          - justify-self: start
-        icon:
-          - color: var(--dwains-theme-accent)
-      name: Unifi Controller
-      icon: mdi:web
-      color: var(--dwains-theme-accent)
-      tap_action:
-        action: url
-        url_path: 'https://unifi.tbsmartho.me/manage/site/default/dashboard'
-
-  # Firmware update
-    - type: custom:button-card
-      entity: sensor.unifi_gateway_firmware_upgradable
-      show_state: true
-      styles:
-        grid:
-          - grid-template-areas: '"i n" "i s" "i l"'
-          - grid-template-columns: 25% 75%
-          - grid-template-rows: min-content min-content
-        card:
-          - background-color: var(--dwains-theme-primary)
-          - border-radius: 10px;
-          - box-shadow: 10px;
-        name:
-          - font-size: 15px
-          - font-weight: bold
-          - color: var(--dwains-theme-names)
-          - justify-self: start
-        state:
-          - justify-self: start
-          - font-size: 13px
-          - color: var(--dwains-theme-names)
-        label:
-          - padding-top: 0px
-          - padding-bottom: 0px
-          - font-size: 12px
-          - color: var(--dwains-theme-grey)
-          - justify-self: start
-        icon:
-          - color: var(--dwains-theme-accent)
-      state:
-        - value: "0"
-          color: var(--dwains-theme-accent)
-        - value: "1"
-          operator: '>='
-          color: orange
-          icon: mdi:database-refresh
-
-- type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
-  cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          border-radius: 10px;
-          box-shadow: 10px;
-          font-weight: bold;
-          opacity: 0.8;
-        }
-      entities:
-        - sensor.unifi_gateway_www_xput_up
-      name: Upload Speed
-      line_color: 'var(--dwains-theme-accent)'
-      hours_to_show: 24
-      hour24: true
-      points_per_hour: 1
-      smoothing: false
-      show:
-        points: false
-        graph: line
-        extrema: true
-
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          border-radius: 10px;
-          box-shadow: 10px;
-          font-weight: bold;
-          opacity: 0.8;
-        }
-      entities:
-        - sensor.unifi_gateway_www_xput_down
-      name: Download Speed
-      line_color: 'var(--dwains-theme-accent)'
-      hours_to_show: 24
-      hour24: true
-      points_per_hour: 1
-      smoothing: false
-      show:
-        points: false
-        graph: line
-        extrema: true
-
-# device status first 2 cards
-- type: vertical-stack
+- type: custom:stack-in-card
+  style: |
+    ha-card {
+      color: teal;
+      border-radius: 2.5px;
+    }
   cards:
     - type: custom:dwains-flexbox-card
-      padding: true
-      items_classes: 'col-lg-6 col-md-6 col-sm-12 col-xs-12'
+      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
       cards:
-        - type: horizontal-stack
+        # - type: horizontal-stack
+        #   cards:
+        - type: vertical-stack
           cards:
-        # card 1 WWW
-            - type: custom:button-card
+            - type: markdown
               style: |
-                ha-card {
-                  background-color: var(--dwains-theme-primary);
-                  border-radius: 10px;
-                  box-shadow: 10px;
-                  font-weight: bold;
-                  opacity: 0.8;
-                }
-              aspect_ratio: 1/1.4
-              custom_fields:
-                graph:
-                  card:
-                    type: sensor
-                    entity: sensor.unifi_gateway_www_speedtest_ping
-                    name: Ping
-                    graph: line
-                    style: |
-                      ha-card {
-                        background-color: var(--dwains-theme-primary);
-                      }
-              styles:
-                custom_fields:
-                  graph:
-                    - overflow: unset
-                card:
-
-                grid:
-                  - grid-template-areas: '"i" "n" "graph"'
-                  - grid-template-columns: 1fr
-                  - grid-template-rows: 1fr min-content min-content
-
-              entity: sensor.unifi_gateway_www
-              name: Internet
-              state:
-                - value: 'OK'
-                  color: var(--dwains-theme-accent)
-                - value: 'ERROR'
-                  color: grey
-              hold_action:
-                action: more-info
-          # Card 2 LAN
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://brands.home-assistant.io/unifi/logo.png"/><br/>
             - type: custom:button-card
-              style: |
-                ha-card {
-                  background-color: var(--dwains-theme-primary);
-                  border-radius: 10px;
-                  box-shadow: 10px;
-                  font-weight: bold;
-                  opacity: 0.8;
-                }
-              aspect_ratio: 1/1.4
-              custom_fields:
-                graph:
-                  card:
-                    type: sensor
-                    entity: sensor.unifi_gateway_lan_num_user
-                    name: Users
-                    graph: line
-                    style: |
-                      ha-card {
-                        background-color: var(--dwains-theme-primary);
-                      }
+              show_state: false
               styles:
-                custom_fields:
-                  graph:
-                    - overflow: unset
-                card:
-
                 grid:
-                  - grid-template-areas: '"i" "n" "graph"'
-                  - grid-template-columns: 1fr
-                  - grid-template-rows: 1fr min-content min-content
+                  - grid-template-areas: '"i n" "i n" "i n"'
+                  - grid-template-columns: 25% 75%
+                  - grid-template-rows: min-content min-content
+                card:
+                  - background-color: var(--dwains-theme-primary)
+                  - border-radius: 2.5px
+                  - box-shadow: none
+                  - width: 250px
+                  - margin-left: 10px
+                  - padding-top: 10px
+                  - padding-bottom: 10px
+                  - margin-bottom: 5px
+                name:
+                  - font-size: 15px
+                  - font-weight: bold
+                  - color: var(--dwains-theme-names)
+                  - justify-self: start
+                state:
+                  - justify-self: start
+                  - font-size: 13px
+                  - color: var(--dwains-theme-names)
+                label:
+                  - padding-top: 0px
+                  - padding-bottom: 0px
+                  - font-size: 12px
+                  - color: var(--dwains-theme-grey)
+                  - justify-self: start
+                icon:
+                  - color: var(--dwains-theme-accent)
+              name: UniFi Controller
+              icon: mdi:router-wireless
+              color: var(--dwains-theme-accent)
+              tap_action:
+                action: url
+                url_path: 'https://unifi.tbsmartho.me/'
 
-              entity: sensor.unifi_gateway_lan
-              name: Ethernet
-              state:
-                - value: 'OK'
-                  color: var(--dwains-theme-accent)
-                - value: 'ERROR'
-                  color: grey
-              hold_action:
-                action: more-info
-# device status second 2 cards
-        - type: horizontal-stack
-          cards: 
-        # Card 3 WLAN
-            - type: custom:button-card
+        - type: vertical-stack
+          cards:
+            - type: markdown
               style: |
-                ha-card {
-                  background-color: var(--dwains-theme-primary);
-                  border-radius: 10px;
-                  box-shadow: 10px;
-                  font-weight: bold;
-                  opacity: 0.8;
-                }
-              aspect_ratio: 1/1.4
-              custom_fields:
-                graph:
-                  card:
-                    type: sensor
-                    entity: sensor.unifi_gateway_wlan_num_user
-                    name: Users
-                    graph: line
-                    style: |
-                      ha-card {
-                        background-color: var(--dwains-theme-primary);
-                      }
-              styles:
-                custom_fields:
-                  graph:
-                    - overflow: unset
-                card:
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                **UniFi USG**<br>
+                &nbsp;&nbsp;&nbsp;Uptime: {{ states.sensor.usg_uptime.state }}<br>
+                &nbsp;&nbsp;&nbsp;WAN Uptime: {{ states.sensor.unifi_gateway_www_uptime.state }}
 
-                grid:
-                  - grid-template-areas: '"i" "n" "graph"'
-                  - grid-template-columns: 1fr
-                  - grid-template-rows: 1fr min-content min-content
+                **UniFi WiFi AP-AC-Lite (UFO)**<br>
+                &nbsp;&nbsp;&nbsp;Uptime: {{ states.sensor.ufo_uptime.state }}
 
-              entity: sensor.unifi_gateway_wlan
-              name: Wireless
-              state:
-                - value: 'OK'
-                  color: var(--dwains-theme-accent)
-                - value: 'ERROR'
-                  color: grey
-              hold_action:
-                action: more-info
+                **UniFi Switch 8 Port 60W**<br>
+                &nbsp;&nbsp;&nbsp;Uptime: {{ states.sensor.hateful8_uptime.state }}
 
-        # Card 4 WAN
-            - type: custom:button-card
-              style: |
-                ha-card {
-                  background-color: var(--dwains-theme-primary);
-                  border-radius: 10px;
-                  box-shadow: 10px;
-                  font-weight: bold;
-                  opacity: 0.8;
-                }
-              aspect_ratio: 1/1.4
-              custom_fields:
-                graph:
-                  card:
-                    type: sensor
-                    entity: sensor.unifi_gateway_wan_download
-                    name: Download
-                    graph: line
-                    style: |
-                      ha-card {
-                        background-color: var(--dwains-theme-primary);
-                      }
-              styles:
-                custom_fields:
-                  graph:
-                    - overflow: unset
-                card:
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.unifi_gateway_www_xput_down
+          name: Download (Mbps)
+        - entity: sensor.unifi_gateway_www_xput_up
+          name: Upload (Mbps)
+        - entity: sensor.unifi_gateway_www_speedtest_ping
+          name: Ping (ms)
+          y_axis: secondary
+      name: Speed
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        #extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.unifi_gateway_lan_num_user
+          name: LAN
+      name: LAN Devices
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        # extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.unifi_gateway_wlan_num_user
+          name: WLAN
+      name: WLAN Devices
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        # extrema: true
+        fill: fade
 
-                grid:
-                  - grid-template-areas: '"i" "n" "graph"'
-                  - grid-template-columns: 1fr
-                  - grid-template-rows: 1fr min-content min-content
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  # padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: WAN
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.unifi_gateway_wan
+              name: Status
+            - entity: sensor.unifi_gateway_wan_ip
+              name: IP Address
+            - entity: sensor.unifi_gateway_wan
+              name: Gateways
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - attribute: num_gw
+                  name: Devices
+                  unit: ' '
+                - attribute: num_adopted
+                  name: Adopted
+                  unit: ' '
+                - attribute: num_disconnected
+                  name: Disconnected
+                  unit: ' '
+                - attribute: num_pending
+                  name: Pending
+                  unit: ' '
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: LAN
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.unifi_gateway_lan
+              name: Status
+            - entity: sensor.unifi_gateway_lan_num_user
+              name: Devices Connected
+              icon: mdi:lan
+            - entity: sensor.unifi_gateway_lan
+              name: Switches
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - attribute: num_sw
+                  name: Devices
+                  unit: ' '
+                - attribute: num_adopted
+                  name: Adopted
+                  unit: ' '
+                - attribute: num_disconnected
+                  name: Disconnected
+                  unit: ' '
+                - attribute: num_pending
+                  name: Pending
+                  unit: ' '
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: WLAN
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.unifi_gateway_wlan
+              name: Status
+            - entity: sensor.unifi_gateway_wlan_num_user
+              name: Devices Connected
+              icon: mdi:wifi
+            - entity: sensor.unifi_gateway_wlan
+              name: Access Points
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - attribute: num_ap
+                  name: Devices
+                  unit: ' '
+                - attribute: num_adopted
+                  name: Adopted
+                  unit: ' '
+                - attribute: num_disconnected
+                  name: Disconnected
+                  unit: ' '
+                - attribute: num_pending
+                  name: Pending
+                  unit: ' '
+# - type: custom:dwains-flexbox-card
+#   items_classes: 'col-xs-12 col-md-12 col-lg-12 col-xl-12'
+#   cards:
+#     - type: custom:auto-entities
+#       filter:
+#         include:
+#           - entity_id: device_tracker.*
+#           - attributes:
+#               - source type: 'router'
+#               - is wired: 'false'
+#         exclude:
+#           - state: not_home
 
-              entity: sensor.unifi_gateway_wan
-              name: WAN
-              state:
-                - value: 'OK'
-                  color: var(--dwains-theme-accent)
-                - value: 'ERROR'
-                  color: grey
-              hold_action:
-                action: more-info
+#       card:
+#         type: custom:flex-table-card
+#         title: Connected Devices
+#         style: |
+#           ha-card {
+#             padding-bottom: 10px;
+#             background-color: var(--dwains-theme-primary)
+#           }
+#           .card-header {
+#             padding: 5px 16px;
+#             font-size: 18px;
+#             font-weight: 700 !important;
+#           }
+#           # font-family: { var(--primary-font-family);}
+#           # font-weight: {400 !important;}
+#         sort_by: NAME+
+#         clickable: true
+#         css:
+#           table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+#         columns:
+#           - name: Name
+#             attr: hostname
+#           - name: SSID
+#             attr: essid
