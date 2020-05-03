@@ -46,5 +46,6 @@ airsonos.xml
 .xbox-token.json
 .pip_progress
 isort.cfg
-
-!.androidkeys/fake_adbkey
+.prettierrc.js
+.prettierrc.yaml
+.yamllint
