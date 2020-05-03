@@ -1,0 +1,325 @@
+# dwains_theme
+
+# - type: picture
+#   image: 'https://wallpaperscave.com/images/original/17/12-14/earth-bougainvillea-3407.jpg'
+#   style: |
+#     ha-card {
+#       height: 125px;
+#       border-radius: 2.5px;
+#     }
+
+- type: custom:stack-in-card
+  style: |
+    ha-card {
+      color: teal;
+      border-radius: 2.5px;
+    }
+  cards:
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      cards:
+        # - type: horizontal-stack
+        #   cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://brands.home-assistant.io/netatmo/logo.png"/><br/>
+            - type: custom:button-card
+              show_state: false
+              styles:
+                grid:
+                  - grid-template-areas: '"i n" "i n" "i n"'
+                  - grid-template-columns: 25% 75%
+                  - grid-template-rows: min-content min-content
+                card:
+                  - background-color: var(--dwains-theme-primary)
+                  - border-radius: 2.5px
+                  - box-shadow: none
+                  - width: 250px
+                  - margin-left: 10px
+                  - padding-top: 10px
+                  - padding-bottom: 10px
+                  - margin-bottom: 5px
+                name:
+                  - font-size: 15px
+                  - font-weight: bold
+                  - color: var(--dwains-theme-names)
+                  - justify-self: start
+                state:
+                  - justify-self: start
+                  - font-size: 13px
+                  - color: var(--dwains-theme-names)
+                label:
+                  - padding-top: 0px
+                  - padding-bottom: 0px
+                  - font-size: 12px
+                  - color: var(--dwains-theme-grey)
+                  - justify-self: start
+                icon:
+                  - color: var(--dwains-theme-accent)
+              name: My Netatmo Station
+              icon: fal:windsock
+              color: var(--dwains-theme-accent)
+              tap_action:
+                action: url
+                url_path: 'https://my.netatmo.com/app/station'
+
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                **Netatmo Weather Station**
+            - type: entities
+              style: |
+                ha-card { box-shadow: none; }
+              #   #states { padding-top: 0px; padding-bottom: 0px }
+              entities:
+                - type: custom:bar-card
+                  name: Outdoor Sensor
+                  entity: sensor.netatmo_brisbane_street_outdoor_battery_percent
+                  entity_row: true
+                  animation:
+                    state: on
+                  positions:
+                    minmax: inside
+                    title: inside
+                    value: inside
+                  icon: fal:battery-bolt
+                  severity:
+                    - color: rgb(141, 252, 124)
+                      from: 0
+                      to: 100
+                  style: |
+                    ha-icon {
+                      color: var(--dwains-theme-accent) !important;
+                    }
+                    .contentbar-direction-right {
+                    flex-direction: column;
+                    }
+                    .min-direction-right {
+                      margin: 0px;
+                      margin-left: 4px;
+                      margin-right: auto;
+                      margin-bottom: -20px;
+                      bottom: 10px;
+                    }
+                      bar-card-value {
+                      margin: 0px;
+                    }
+                    bar-card-name {
+                      margin: 0px;
+                    }
+                    bar-card-max {
+                      margin: 0px;
+                      margin-left: auto;
+                      margin-top: -20px;
+                      top: 10px;
+                    }
+                    bar-card-divider {
+                      display: none;
+                    }
+                - type: custom:bar-card
+                  name: Rain Sensor
+                  entity: sensor.netatmo_brisbane_street_rain_battery_percent
+                  entity_row: true
+                  animation:
+                    state: on
+                  positions:
+                    minmax: inside
+                    title: inside
+                    value: inside
+                  icon: fal:battery-bolt
+                  severity:
+                    - color: rgb(141, 252, 124)
+                      from: 0
+                      to: 100
+                  style: |
+                    ha-icon {
+                      color: var(--dwains-theme-accent) !important;
+                    }
+                    .contentbar-direction-right {
+                    flex-direction: column;
+                    }
+                    .min-direction-right {
+                      margin: 0px;
+                      margin-left: 4px;
+                      margin-right: auto;
+                      margin-bottom: -20px;
+                      bottom: 10px;
+                    }
+                      bar-card-value {
+                      margin: 0px;
+                    }
+                    bar-card-name {
+                      margin: 0px;
+                    }
+                    bar-card-max {
+                      margin: 0px;
+                      margin-left: auto;
+                      margin-top: -20px;
+                      top: 10px;
+                    }
+                    bar-card-divider {
+                      display: none;
+                    }
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.netatmo_brisbane_street_indoor_temperature
+          name: Temp
+        - entity: sensor.netatmo_brisbane_street_indoor_humidity
+          name: Humidity
+          y_axis: secondary
+      name: Indoor
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        #extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.netatmo_brisbane_street_outdoor_temperature
+          name: Temp
+        - entity: sensor.netatmo_brisbane_street_outdoor_humidity
+          name: Humidity
+          y_axis: secondary
+      name: Outdoor
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        #extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.netatmo_brisbane_street_rain_sum_rain_24
+      name: Rainfall
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        # extrema: true
+        fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Indoor Sensor (Lounge)
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: name
+          filter:
+            include:
+              - { entity_id: sensor.netatmo_*indoor* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Outdoor Sensor
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: name
+          filter:
+            include:
+              - { entity_id: sensor.netatmo_*outdoor* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Rain Gauge
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: name
+          filter:
+            include:
+              - { entity_id: sensor.netatmo_*rain* }

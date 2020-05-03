@@ -1,0 +1,10 @@
+---
+hello_world:
+  module: hello
+  class: HelloWorld
+
+check_config:
+  module: checkconfig
+  class: CheckConfig
+  restart: false
+  folder_Watcher: false

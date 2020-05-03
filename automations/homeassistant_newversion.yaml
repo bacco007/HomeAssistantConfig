@@ -1,0 +1,28 @@
+---
+alias: Admin - New Home Assistant Version
+trigger:
+  - platform: state
+    entity_id: sensor.ha_latest_version
+action:
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              New HA Version
+            text: |
+              New Home Assistant Version
+              Current - {{ states.sensor.ha_current_version.state }}
+              New - {{ states.sensor.ha_latest_version.state }}
+  - service: persistent_notification.create
+    data_template:
+      title: New HA Version
+      message: >-
+        New Home Assistant Version
+        Current - {{ states.sensor.ha_current_version.state }}
+        New - {{ states.sensor.ha_latest_version.state }}
+      notification_id: hassio_upgrade

@@ -1,0 +1,4 @@
+---
+weather:
+  - platform: darksky
+    api_key: !secret darksky_apikey

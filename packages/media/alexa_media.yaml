@@ -1,0 +1,11 @@
+---
+alexa_media:
+  accounts:
+    - email: !secret alexa_email
+      password: !secret alexa_password
+      url: amazon.com.au
+      scan_interval: 30
+      exclude_devices:
+        - "This Device"
+        - "Bedroom Sonos"
+        - "Thomas's Echo Dot"

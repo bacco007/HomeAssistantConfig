@@ -1,0 +1,37 @@
+---
+homeassistant:
+  customize:
+    sensor.hasupervisor_addon_mariadb:
+      friendly_name: 'MariaDB'
+      icon: 'mdi:home-assistant'
+
+sensor:
+  - platform: rest
+    resource: http://192.168.1.62:8123/api/hassio/addons/core_mariadb/info
+    name: hasupervisor_addon_mariadb
+    value_template: '{{ value_json.data.state }}'
+    scan_interval: 60
+    json_attributes_path: '$.data'
+    json_attributes:
+      - name
+      - available
+      - version
+      - last_version
+    headers:
+      Content-Type: application/json
+      Authorization: !secret ha_api_llat
+      User-Agent: Home Assistant REST sensor
+
+switch:
+  - platform: template
+    switches:
+      hasupervisor_addon_mariadb:
+        value_template: "{{ is_state('sensor.hasupervisor_addon_mariadb', 'started') }}"
+        turn_on:
+          service: hassio.addon_start
+          data:
+            addon: core_mariadb
+        turn_off:
+          service: hassio.addon_stop
+          data:
+            addon: core_mariadb

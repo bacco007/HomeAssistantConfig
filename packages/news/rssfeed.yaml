@@ -1,0 +1,74 @@
+---
+sensor:
+  - platform: feedparser
+    name: CNN
+    entity_namespace: rssfeed
+    feed_url: http://rss.cnn.com/rss/edition.rss
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: news.com.au
+    entity_namespace: rssfeed
+    feed_url: http://www.news.com.au/feed
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: Sky News UK
+    entity_namespace: rssfeed
+    feed_url: http://feeds.skynews.com/feeds/rss/home.xml
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: Sydney Morning Herald
+    entity_namespace: rssfeed
+    feed_url: https://www.smh.com.au/rss/feed.xml
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: Fox Sports
+    entity_namespace: rssfeed
+    feed_url: https://www.foxsports.com.au/content-feeds/breaking-news/
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: Northern Daily Leader
+    entity_namespace: rssfeed
+    feed_url: https://www.northerndailyleader.com.au/rss.xml
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: The Guardian (AU)
+    entity_namespace: rssfeed
+    feed_url: https://www.theguardian.com/au/rss
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: The Guardian (UK)
+    entity_namespace: rssfeed
+    feed_url: https://www.theguardian.com/uk/rss
+    show_topn: 10
+    inclusions:
+      - title
+      - link
+  - platform: feedparser
+    name: Sky Sports (UK)
+    entity_namespace: rssfeed
+    feed_url: https://www.skysports.com/rss/12040
+    show_topn: 10
+    inclusions:
+      - title
+      - link

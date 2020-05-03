@@ -1,0 +1,70 @@
+---
+
+garbage_collection:
+  sensors:
+    - name: binday_waste
+      frequency: "weekly"
+      collection_days:
+        - thu
+    - name: binday_greenwaste
+      frequency: "even-weeks"
+      collection_days:
+        - thu
+    - name: binday_recycling
+      frequency: "odd-weeks"
+      collection_days:
+        - thu
+
+sensor:
+  - platform: template
+    sensors:
+      binday_date:
+        friendly_name: Next Collection Date
+        entity_id: sensor.date_time
+        icon_template: mdi:truck-delivery
+        value_template: "{{ as_timestamp(states.sensor.binday_waste.attributes['next_date'])|timestamp_custom ('%a %-d %-b') }}"
+      binday_redbin:
+        friendly_name: General Waste
+        entity_id: sensor.date_time
+        icon_template: mdi:delete-empty
+        value_template: >-
+          {% set val = states.sensor.binday_waste.attributes['days'] %}
+          {% if val == 0 %}
+            Today
+          {% elif val == 1 %}
+            Tomorrow
+          {% elif val >= 7 %}
+            Next Week
+          {% else %}
+            In {{val}} Days
+          {% endif %}
+      binday_greenbin:
+        friendly_name: Green Waste
+        entity_id: sensor.date_time
+        icon_template: mdi:leaf
+        value_template: >-
+          {% set val = states.sensor.binday_greenwaste.attributes['days'] %}
+          {% if val == 0 %}
+            Today
+          {% elif val == 1 %}
+            Tomorrow
+          {% elif val >= 7 %}
+            Next Week
+          {% else %}
+            In {{val}} Days
+          {% endif %}
+      binday_yellowbin:
+        friendly_name: Recycling
+        entity_id: sensor.date_time
+        icon_template: mdi:recycle
+        value_template: >-
+          {% set val = states.sensor.binday_recycling.attributes['days'] %}
+          {% if val == 0 %}
+            Today
+          {% elif val == 1 %}
+            Tomorrow
+          {% elif val >= 7 %}
+            Next Week
+          {% else %}
+            In {{val}} Days
+          {% endif %}

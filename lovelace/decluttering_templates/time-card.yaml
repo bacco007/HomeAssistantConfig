@@ -1,0 +1,59 @@
+---
+card:
+  type: vertical-stack
+  cards:
+    - type: markdown
+      content: |
+        ## {{states('sensor.time')}}
+
+        ### {{states('sensor.date_long_format')}}
+        #### UTC {{states('sensor.time_utc')}} - London {{states('sensor.time_london')}} - New York {{states('sensor.time_new_york')}}
+      style: |
+        ha-card {
+          background: none;
+          font-family: var(--time-font-family);
+          text-align: right;
+          box-shadow: none !important;
+        }
+        ha-markdown {
+          padding-top: 0px !important;
+          padding-bottom: 5px !important;
+        }
+        h2 {
+          font-family: var(--time-font-family);
+          -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
+          font-size: 3em;
+          font-weight: var(--paper-font-headline_-_font-weight);
+          letter-spacing: var(--paper-font-headline_-_letter-spacing);
+          line-height: 1em;
+          text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
+          margin: 0;
+          opacity: 0.7;
+        }
+        h3 {
+          color: var(--accent-color);
+          font-family: var(--time-font-family);
+          font-weight: 600 !important;
+          -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
+          font-size: 1.5em !important;
+          font-weight: var(--paper-font-headline_-_font-weight);
+          letter-spacing: var(--paper-font-headline_-_letter-spacing);
+          line-height: var(--paper-font-headline_-_line-height);
+          text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
+          margin: 0;
+          opacity: 0.7;
+        }
+        h4 {
+          font-family: var(--time-font-family);
+          font-weight: 400 !important;
+          -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
+          font-size: 1.2em;
+          font-weight: var(--paper-font-headline_-_font-weight);
+          letter-spacing: var(--paper-font-headline_-_letter-spacing);
+          line-height: 1em;
+          text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
+          margin: 0;
+          opacity: 0.7;
+        }
+    - type: custom:decluttering-card
+      template: quick_launch

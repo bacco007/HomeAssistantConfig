@@ -1,0 +1,8 @@
+---
+sensor:
+  - platform: radarr_upcoming_media
+    api_key: !secret radarr_apikey
+    host: !secret radarr_host
+    port: !secret radarr_port
+    days: 360
+    max: 100

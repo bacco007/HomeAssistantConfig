@@ -1,0 +1,16 @@
+---
+default:
+  - entities:
+      - sensor.your_entity_here
+card:
+  type: glance
+  show_header_toggle: false
+  entities: "[[entities]]"
+  style: |
+    ha-card {
+      border: solid 1px var(--border-color);
+      font-family: var(--primary-font-family);
+    }
+    state-badge {
+      margin: 0px !important;
+    }

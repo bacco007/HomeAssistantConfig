@@ -1,0 +1,4 @@
+---
+sensor:
+  - platform: opensky
+    radius: 50

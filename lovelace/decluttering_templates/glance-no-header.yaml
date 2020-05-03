@@ -1,0 +1,15 @@
+---
+default:
+  - entities:
+      - sensor.your_entity_here
+card:
+  type: glance
+  show_header_toggle: false
+  style: |
+    state-badge {
+      margin: 0 !important;
+    }
+    .entities {
+      padding-top: 2px !important;
+    }
+  entities: '[[entities]]'

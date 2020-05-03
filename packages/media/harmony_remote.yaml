@@ -1,0 +1,21 @@
+---
+sensor:
+  - platform: template
+    sensors:
+      harmonyhub_status:
+        friendly_name: "Harmony Hub Status"
+        value_template: "{{ states.remote.harmony_hub.attributes.current_activity }}"
+
+switch:
+  - platform: template
+    switches:
+      harmonyhub:
+        friendly_name: Bedroom TV
+        value_template: '{{ states.sensor.harmonyhub_status.state != "PowerOff" }}'
+        entity_id: sensor.harmonyhub_status
+        turn_on:
+          service: remote.turn_on
+          entity_id: remote.harmony_hub
+        turn_off:
+          service: remote.turn_off
+          entity_id: remote.harmony_hub

@@ -1,0 +1,46 @@
+---
+type: custom:upcoming-media-card
+entity: sensor.plex_recently_added
+style: |
+  .plex_fanart {
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  .plex_fan_fanart {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none !important;
+    background: none !important;
+    height: 120px;
+  }
+  .plex_svg_poster {
+    margin-top: 0px;
+  }
+  ha-card {
+    border: solid 1px var(--border-color);
+    font-family: var(--primary-font-family);
+    height: 400px;
+    overflow: scroll;
+    box-shadow:
+      inset 0px -21px 8px -20px #CCC !important;
+  }
+  .card-header {
+    padding-bottom: 8px;
+  }
+  .plex_poster {
+    margin: 0 !important;
+    padding-bottom: 5px;
+  }
+date: ddmm
+clock: 24
+max: 10
+image_style: fanart
+hide_unflagged: true
+all_shadows: none
+title_size: 0.5em
+line_size: 0.25em
+title_text: "$title"
+line1_text: "$number - $episode"
+line2_text: "$runtime"
+line3_text: "Released: $aired"
+line4_text: "Added: $release"

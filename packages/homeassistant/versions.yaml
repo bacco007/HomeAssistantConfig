@@ -1,0 +1,126 @@
+---
+homeassistant:
+  customize:
+    sensor.ha_current_version:
+      friendly_name: Current Version
+      icon: mdi:home-assistant
+    sensor.ha_latest_version:
+      friendly_name: Latest Version
+      icon: mdi:home-assistant
+    sensor.ha_uptime_hours:
+      friendly_name: Uptime
+      icon: mdi:home-assistant
+    sensor.hass_current_beta_version:
+      friendly_name: "Hass.io Beta Release"
+      icon: mdi:beta
+    sensor.hass_current_dev_version:
+      friendly_name: "Hass.io Dev Release"
+      icon: mdi:alpha
+    sensor.hass_current_supervisor_version:
+      friendly_name: "Hass.io Current Supervisor Version"
+      icon: mdi:check-decagram
+    sensor.hass_beta_supervisor_version:
+      friendly_name: "Hass.io Beta Supervisor Version"
+      icon: mdi:check-decagram
+
+sensor:
+  ###
+  ## Latest Version (Docker)
+  ###
+  - platform: version
+    source: hassio
+    image: qemux86-64
+    name: HA Latest Version
+  ###
+  ## Current Version
+  ###
+  - platform: version
+    source: local
+    name: HA Current Version
+  ###
+  ## HA Uptime
+  ###
+  - platform: uptime
+    name: HA Uptime Hours
+    unit_of_measurement: hours
+  ###
+  ## HA Current Beta Version
+  ###
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/beta.json
+    name: Hass Current Beta Version
+    scan_interval: 7200
+    value_template: "{{ value_json.homeassistant['qemux86-64'] }}"
+  ###
+  ## HA Current Dev Version
+  ###
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/dev.json
+    name: Hass Current Dev Version
+    scan_interval: 7200
+    value_template: "{{ value_json.homeassistant['qemux86-64'] }}"
+  ###
+  ## Hass Current Supervisor Version
+  ###
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/stable.json
+    name: Hass Current Supervisor Version
+    scan_interval: 7200
+    value_template: "{{ value_json.supervisor }}"
+
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/beta.json
+    name: Hass Beta Supervisor Version
+    scan_interval: 7200
+    value_template: "{{ value_json.supervisor }}"
+
+  - platform: rest
+    name: Hass Main config
+    resource: !secret hass_api_config_url
+    authentication: basic
+    value_template: >
+      {{ value_json.version }}
+    json_attributes:
+      - components
+      - unit_system
+      - config_dir
+      - version
+    headers:
+      Content-Type: application/json
+      Authorization: !secret ha_api_llat
+      User-Agent: Home Assistant REST sensor
+
+  - platform: rest
+    name: Hass.io Info
+    resource: !secret hassio_api_info_url
+    authentication: basic
+    value_template: >
+      {{ value_json.result }}
+    json_attributes:
+      - data
+    headers:
+      Content-Type: application/json
+      Authorization: !secret ha_api_llat
+      User-Agent: Home Assistant REST sensor
+
+  - platform: template
+    sensors:
+      count_all_components:
+        entity_id: sensor.hass_main_config
+        friendly_name: "All Components"
+        icon_template: mdi:code-tags
+        value_template: "{{ states.sensor.hass_main_config.attributes.components | count }}"
+
+binary_sensor:
+  - platform: template
+    sensors:
+      ha_update_available:
+        friendly_name: "HA Update Available"
+        icon_template: mdi:home-assistant
+        value_template: >-
+          {{ states('sensor.ha_latest_version') != 'unavailable' and
+             states('sensor.ha_latest_version') > states('sensor.ha_current_version') }}
+
+# http://192.168.1.62:8123/api/supervisor/info
+# http://192.168.1.62:8123/api/hassio/snapshots
+# http://192.168.1.62:8123/api/hassio/info

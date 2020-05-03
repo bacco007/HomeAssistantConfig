@@ -1,0 +1,44 @@
+---
+alias: Admin - HA Supervisor Addon Available
+trigger:
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_adb', 'version') != state_attr('sensor.hasupervisor_addon_adb', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_appdaemon', 'version') != state_attr('sensor.hasupervisor_addon_appdaemon', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_deconz', 'version') != state_attr('sensor.hasupervisor_addon_deconz', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_esphome', 'version') != state_attr('sensor.hasupervisor_addon_esphome', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_jupyterlablite', 'version') != state_attr('sensor.hasupervisor_addon_jupyterlablite', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_mariadb', 'version') != state_attr('sensor.hasupervisor_addon_mariadb', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_mqtt', 'version') != state_attr('sensor.hasupervisor_addon_mqtt', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_nodered', 'version') != state_attr('sensor.hasupervisor_addon_nodered', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_phpmyadmin', 'version') != state_attr('sensor.hasupervisor_addon_phpmyadmin', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_sshweb', 'version') != state_attr('sensor.hasupervisor_addon_sshweb', 'last_version')}}"
+  - platform: template
+    value_template: "{{state_attr('sensor.hasupervisor_addon_vscode', 'version') != state_attr('sensor.hasupervisor_addon_vscode', 'last_version')}}"
+action:
+  - service: notify.slack
+    data_template:
+      message: ''
+      target: '#tbsmarthome'
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              Update Available - HA Addon
+            text: |
+              Update Available - HA Addon ({{ trigger.to_state.attributes.friendly_name }})
+  - service: persistent_notification.create
+    data_template:
+      title: Update Available - HA Addon
+      message: >-
+        Update Available - HA Addon ({{ trigger.to_state.attributes.friendly_name }})
+      notification_id: haaddon_upgrade

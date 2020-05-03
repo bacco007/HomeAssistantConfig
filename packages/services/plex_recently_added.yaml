@@ -1,0 +1,22 @@
+---
+sensor:
+  - platform: plex_recently_added
+    token: !secret plex_token
+    host: !secret plex_host
+    port: !secret plex_port
+    download_images: false
+    max: 50
+  - platform: plex_recently_added
+    name: Plex Recently Added Movies
+    token: !secret plex_token
+    host: !secret plex_host
+    port: !secret plex_port
+    section_types:
+      - movie
+  - platform: plex_recently_added
+    name: Plex Recently Added TV
+    token: !secret plex_token
+    host: !secret plex_host
+    port: !secret plex_port
+    section_types:
+      - show

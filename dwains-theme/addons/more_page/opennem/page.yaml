@@ -1,0 +1,165 @@
+#dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - sensor.opennem_nsw1_current_price
+      name: Current Price
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 6
+      smoothing: true
+      show:
+        points: false
+        graph: line
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+          name: Fossil Fuels
+        - entity: sensor.opennem_nsw1_gen_from_renewables
+          name: Renewables
+      name: Generation Type
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 6
+      smoothing: true
+      show:
+        points: false
+        graph: line
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.opennem_nsw1_electricity_demand
+          name: Demand
+        - entity: sensor.opennem_nsw1_electricity_generation
+          name: Generation
+      name: Generation vs Demand
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 6
+      smoothing: true
+      show:
+        points: false
+        graph: line
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  cards:
+    - type: entities
+      title: Current State
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+      entities:
+        - entity: sensor.opennem_nsw1_current_price
+          name: Current Price
+        - entity: sensor.opennem_nsw1_temperature
+          name: Average Temperature
+        - entity: sensor.opennem_nsw1_electricity_demand
+          name: Current Demand
+        - entity: sensor.opennem_nsw1_imported_power
+          name: Import from other Regions
+        - entity: sensor.opennem_nsw1_exported_power
+          name: Export to other Regions
+        - type: section
+        - entity: sensor.opennem_nsw1_electricity_generation
+          name: Current Generation
+        - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+          name: Electricity Gen from Fossil Fuels
+        - entity: sensor.opennem_nsw1_gen_from_renewables
+          name: Electricity Gen from Renewables
+
+    - type: custom:config-template-card
+      variables:
+        - states['sensor.opennem_nsw1_electricity_generation'].state
+      entities:
+        - sensor.opennem_nsw1_electricity_generation
+      card:
+        type: custom:auto-entities
+        card:
+          type: entities
+          title: Current Generation
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px 10px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+        sort:
+          method: state
+          reverse: true
+          numeric: true
+        filter:
+          include:
+            - group: group.opennem
+              options:
+                type: custom:bar-card
+                style: |
+                  ha-icon {
+                    color: var(--dwains-theme-accent) !important;
+                  }
+                  ha-icon	 {
+                    margin-top: -7px;
+                    padding-right: 5px;
+                  }
+                  bar-card-indicator	 {
+                    margin-top: -12px;
+                    padding-right: 5px;
+                  }
+                  bar-card-name	 {
+                    margin-top: -4.5px;
+                    padding-left: 5px;
+                  }
+                  bar-card-backgroundbar	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-currentbar	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-targetbar	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-targetmarker	 {
+                    margin-top: -3.5px;
+                    border-radius: 2.5px;
+                  }
+                  bar-card-value	 {
+                    margin-top: -4.5px;
+                    padding-left: 5px;
+                  }
+                positions:
+                  title: inside
+                  value: inside
+                entity_row: true
+                min: 0
+                max: '${vars[0]}'
+                color: rgb(26,204,147,0.33)

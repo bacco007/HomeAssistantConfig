@@ -1,0 +1,59 @@
+---
+sensor:
+  # - platform: github
+  #   access_token: !secret github_accesstoken
+  #   entity_namespace: github
+  #   repositories:
+  #     - path: 'home-assistant/home-assistant'
+  #     - path: 'bacco007/HomeAssistantConfig'
+
+  - platform: command_line
+    command: 'curl https://api.github.com/repos/bacco007/HomeAssistantConfig'
+    name: github
+    scan_interval: 3600
+    value_template: ' {{ value_json.name }}'
+    json_attributes:
+      - open_issues
+      - subscribers_count
+      - forks
+      - stargazers_count
+      - updated_at
+      - pushed_at
+
+  - platform: template
+    sensors:
+      github_issues:
+        value_template: "{{ state_attr('sensor.github', 'open_issues') }}"
+        entity_id: sensor.github
+        friendly_name: Github - Issues
+        icon_template: mdi:github-circle
+
+      github_subscribers:
+        value_template: "{{ state_attr('sensor.github', 'subscribers_count') }}"
+        entity_id: sensor.github
+        friendly_name: Github - Subscribers
+        icon_template: mdi:github-circle
+
+      github_forks:
+        value_template: "{{ state_attr('sensor.github', 'forks') }}"
+        entity_id: sensor.github
+        friendly_name: Github - Forks
+        icon_template: mdi:github-circle
+
+      github_stars:
+        value_template: "{{ state_attr('sensor.github', 'stargazers_count') }}"
+        entity_id: sensor.github
+        friendly_name: Github - Stars
+        icon_template: mdi:github-circle
+
+      github_updatedat:
+        value_template: "{{ state_attr('sensor.github', 'updated_at') }}"
+        entity_id: sensor.github
+        friendly_name: Github - Last Update
+        icon_template: mdi:github-circle
+
+      github_pushedat:
+        value_template: "{{ state_attr('sensor.github', 'pushed_at') }}"
+        entity_id: sensor.github
+        friendly_name: Github - Last Push
+        icon_template: mdi:github-circle

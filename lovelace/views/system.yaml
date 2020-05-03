@@ -1,0 +1,501 @@
+---
+title: System Status
+path: systemstatus
+panel: true
+icon: mdi:settings
+
+cards:
+  - type: custom:layout-card
+    # layout: vertical
+    max_columns: 3
+    # max_width: [275px, 40%, 40%, 40%]
+    cards:
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: IoT / SmartHome Network Connectivity
+          - card:
+              show_header_toggle: false
+              type: entities
+              style: |
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+                ha-card {
+                  border: solid 1px var(--border-color);
+                  font-family: var(--primary-font-family);
+                  font-weight: 400 !important;
+                }
+
+            sort:
+              method: name
+              numeric: true
+            filter:
+              include:
+                - entity_id: binary_sensor.networkstatus_*
+                  options:
+                    type: 'custom:secondaryinfo-entity-row'
+                    secondary_info: >-
+                      [[ {entity}.attributes.ip_address ]]
+            show_empty: true
+            type: 'custom:auto-entities'
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: markdown
+            style: >
+              ha-markdown.markdown.no-header {
+                  padding-bottom: 5px !important;
+              }
+            content: |
+              ## Internet Speed
+          - type: entities
+            show_header_toggle: false
+            style: |
+              .card-content div {
+                margin: 0 !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - entity: sensor.today_speedtest_download
+                name: Download Speed - 24hr Average
+                icon: mdi:arrow-down-bold
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'Max [[ sensor.speedtest_download_max.state ]]Mbit/s, Min [[ sensor.speedtest_download_min.state ]]Mbit/s'
+              - entity: sensor.today_speedtest_upload
+                name: Upload Speed - 24hr Average
+                icon: mdi:arrow-up-bold
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'Max [[ sensor.speedtest_upload_max.state ]]Mbit/s, Min [[ sensor.speedtest_upload_min.state ]]Mbit/s'
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.speedtest_ping
+                height: 20
+                line_width: 2
+                font_size: 70
+                hours_to_show: 168
+                points_per_hour: 1
+                show:
+                  fill: true
+                  graph: bar
+                color_thresholds:
+                  - value: 20
+                    color: '#1db954'
+                  - value: 30
+                    color: '#bf9540'
+                  - value: 50
+                    color: '#bf4040'
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.speedtest_download
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 168
+                points_per_hour: 1
+                show:
+                  # extrema: true
+                  fill: true
+                color_thresholds:
+                  - value: 0
+                    color: '#FFFF00'
+                  - value: 18
+                    color: '#3498db'
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.speedtest_upload
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 168
+                points_per_hour: 1
+                show:
+                  # extrema: true
+                  fill: true
+                color_thresholds:
+                  - value: 0
+                    color: '#FFFF00'
+                  - value: 4
+                    color: '#3498db'
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:decluttering-card
+            template: markdown-header
+            variables:
+              - header: TheCube2 Storage Status
+          - type: custom:decluttering-card
+            template: entities-no-header
+            variables:
+              - entities:
+                  - type: weblink
+                    name: TheCube2 DSM
+                    icon: 'mdi:nas'
+                    url: 'http://thecube2:5000'
+                  - type: section
+                  - entity: binary_sensor.networkstatus_nas_thecube2
+                    type: custom:secondaryinfo-entity-row
+                    secondary_info: 'Up [[ sensor.thecube2_uptime.state ]]'
+                  - type: section
+                  - entity: sensor.thecube2_synology_dsm_status_sda
+                    type: custom:secondaryinfo-entity-row
+                    name: Disk 1
+                    secondary_info: '/dev/sda1'
+                  - entity: sensor.thecube2_synology_dsm_status_sdb
+                    type: custom:secondaryinfo-entity-row
+                    name: Disk 2
+                    secondary_info: '/dev/sda2'
+                  - entity: sensor.thecube2_synology_dsm_status_volume_1
+                    type: custom:secondaryinfo-entity-row
+                    name: Volume 1
+                    secondary_info: 'Total: [[ sensor.thecube2_synology_dsm_total_size_volume_1.state ]], Used: [[ sensor.thecube2_synology_dsm_used_space_volume_1.state	]]'
+
+          - type: entities
+            entities:
+              - type: section
+
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.thecube2_synology_dsm_cpu_load_total
+                max: 100
+                min: 0
+                name: CPU Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.thecube2_synology_dsm_memory_usage_real
+                max: 100
+                min: 0
+                name: RAM Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+              - entity: sensor.thecube2_synology_dsm_volume_used_volume_1
+                max: 100
+                min: 0
+                name: HDD Used
+                severity: { green: 0, red: 80, yellow: 30 }
+                theme: default
+                type: gauge
+                unit: '%'
+
+          - type: entities
+            entities:
+              - type: section
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.thecube2_synology_dsm_network_down
+                name: Network Up
+                height: 60
+                line_color: var(--accent-color)
+                line_width: 2
+                font_size: 70
+                hours_to_show: 24
+                points_per_hour: 10
+                show:
+                  # extrema: true
+                  fill: true
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.thecube2_synology_dsm_network_up
+                name: Network Down
+                height: 60
+                line_color: var(--accent-color)
+                line_width: 2
+                font_size: 70
+                hours_to_show: 24
+                points_per_hour: 10
+                show:
+                  # extrema: true
+                  fill: true
+
+          - type: entities
+            show_header_toggle: false
+            entities:
+              - type: custom:auto-entities
+                card:
+                  group_config: { secondary_info: last-changed }
+                  head: { label: System, type: section }
+                  type: custom:fold-entity-row
+                filter:
+                  include:
+                    - { entity_id: sensor.thecube2_*cpu* }
+                    - { entity_id: sensor.thecube2_*memory* }
+                    - { entity_id: sensor.thecube2_*network* }
+              - type: custom:auto-entities
+                card:
+                  group_config: { secondary_info: last-changed }
+                  head: { label: Disk 1 (/dev/sda), type: section }
+                  type: custom:fold-entity-row
+                filter:
+                  include:
+                    - { entity_id: sensor.thecube2_*sda }
+              - type: custom:auto-entities
+                card:
+                  group_config: { secondary_info: last-changed }
+                  head: { label: Disk 1 (/dev/sdb), type: section }
+                  type: custom:fold-entity-row
+                filter:
+                  include:
+                    - { entity_id: sensor.thecube2_*sdb }
+              - type: custom:auto-entities
+                card:
+                  group_config: { secondary_info: last-changed }
+                  head: { label: Volume 1, type: section }
+                  type: custom:fold-entity-row
+                filter:
+                  include:
+                    - { entity_id: sensor.thecube2_*volume_1 }
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: markdown
+            style: >
+              ha-markdown.markdown.no-header {
+                  padding-bottom: 5px !important;
+              }
+            content: |
+              ## Pi-Hole Status
+          - type: entities
+            show_header_toggle: false
+            style: |
+              .card-content div {
+                margin: 0 !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - type: weblink
+                name: Pi-Hole Admin Panel
+                icon: mdi:pi-hole
+                url: 'http://pihole.tbsmartho.me/admin'
+              - type: section
+              - switch.pihole_switch
+              - entity: binary_sensor.servicestatus_pihole
+                type: custom:secondaryinfo-entity-row
+                secondary_info: '[[ sensor.pi_hole_domains_blocked.state ]] domains blocked'
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.pi_hole_ads_blocked_today
+                name: Ads Blocked Today (#)
+                height: 20
+                line_width: 2
+                font_size: 70
+                hours_to_show: 48
+                points_per_hour: 6
+                show:
+                  fill: true
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.pi_hole_ads_percentage_blocked_today
+                name: Ads Blocked Today (%)
+                height: 20
+                line_width: 2
+                font_size: 70
+                hours_to_show: 48
+                points_per_hour: 6
+                show:
+                  fill: true
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.pi_hole_dns_queries_today
+                name: DNS Queries
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 168
+                points_per_hour: 1
+                show:
+                  # extrema: true
+                  fill: true
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.pi_hole_dns_unique_clients
+                name: Unique Clients
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 168
+                points_per_hour: 1
+                show:
+                  # extrema: true
+                  fill: true
+          - type: entities
+            show_header_toggle: false
+            entities:
+              - type: custom:auto-entities
+                card:
+                  group_config: { secondary_info: last-changed }
+                  head: { label: Data, type: section }
+                  type: custom:fold-entity-row
+                filter:
+                  include:
+                    - { entity_id: sensor.pi_hole_* }
+
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: markdown
+            style: >
+              ha-markdown.markdown.no-header {
+                  padding-bottom: 5px !important;
+              }
+            content: |
+              ## UniFi Network
+          - type: entities
+            show_header_toggle: false
+            style: |
+              .card-content div {
+                margin: 0 !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - type: weblink
+                name: UniFi Controller
+                icon: mdi:router-wireless-settings
+                url: 'https://unifi.tbsmartho.me'
+              - type: section
+              - entity: binary_sensor.networkstatus_router
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'Up [[ sensor.usg_uptime.state ]]'
+              - entity: binary_sensor.networkstatus_wifi
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'Up [[ sensor.ufo_uptime.state ]]'
+              - entity: binary_sensor.networkstatus_switch
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'Up [[ sensor.hateful8_uptime.state ]]'
+              - type: section
+              - entity: binary_sensor.unifi_status_lan
+                type: custom:secondaryinfo-entity-row
+                secondary_info: '[[ sensor.unifi_gateway_lan_sw.state ]] Switch, [[ sensor.unifi_gateway_lan_user.state ]] Users'
+              - entity: binary_sensor.unifi_status_wlan
+                type: custom:secondaryinfo-entity-row
+                secondary_info: '[[ sensor.unifi_gateway_wlan_ap.state ]] AP, [[ sensor.unifi_gateway_wlan_user.state ]] Users'
+              - entity: binary_sensor.unifi_status_wan
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'WAN IP Address: [[ sensor.unifi_gateway_wan_ip.state ]]'
+              - entity: binary_sensor.unifi_status_www
+                type: custom:secondaryinfo-entity-row
+                secondary_info: 'Up [[ sensor.unifi_gateway_www_uptime.state ]]'
+              - type: section
+              - entity: sensor.unifi_gateway_alerts
+                name: UniFi Controller Alerts
+              - entity: sensor.unifi_gateway_firmware_upgradable
+                name: Firmware Upgrades Available
+              - type: section
+              - entity: sensor.ufo_model
+              - entity: sensor.ufo_firmware_version
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.usg_wan_in_mbps
+                    name: WAN In (MB/s)
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 24
+                points_per_hour: 10
+                show:
+                  # extrema: true
+                  fill: true
+              - type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.usg_wan_out_mbps
+                    name: WAN Out (MB/s)
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 24
+                points_per_hour: 10
+                show:
+                  # extrema: true
+                  fill: true
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.usg_lan_in_mbps
+                    name: LAN In (MB/s)
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 24
+                points_per_hour: 10
+                show:
+                  # extrema: true
+                  fill: true
+              - type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.usg_lan_out_mbps
+                    name: LAN Out (MB/s)
+                height: 50
+                line_width: 2
+                font_size: 70
+                hours_to_show: 24
+                points_per_hour: 10
+                show:
+                  # extrema: true
+                  fill: true
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Folding@Home
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.foldingathome
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Gaming
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.bacco007

@@ -1,0 +1,17 @@
+---
+camera:
+  - platform: generic
+    name: BOM Satellite
+    still_image_url: http://www.bom.gov.au/gms/IDE00135.jpg
+  - platform: bom
+    location: Namoi
+    name: Namoi128km
+    frames: 10
+    filename: /config/www/images/radar_namoi_128km.gif
+  - platform: bom
+    # location: Moree
+    id: 532
+    delta: 600
+    frames: 10
+    name: Moree256km
+    filename: /config/www/images/radar_moree_256km.gif

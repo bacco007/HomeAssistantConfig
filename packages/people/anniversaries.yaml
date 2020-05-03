@@ -1,0 +1,46 @@
+---
+homeassistant:
+  customize:
+    sensor.datetracking_mybirthday:
+      friendly_name: My Birthday
+    sensor.datetracking_henrybirthday:
+      friendly_name: Henry's Birthday
+    sensor.datetracking_patrickbirthday:
+      friendly_name: Patrick's Birthday
+    sensor.datetracking_mumbirthday:
+      friendly_name: Mum's Birthday
+    sensor.datetracking_dadbirthday:
+      friendly_name: Dad's Birthday
+    sensor.datetracking_marleybirthday:
+      friendly_name: Marley's Birthday
+    sensor.datetracking_myworkbirthday:
+      friendly_name: My Work Birthday
+    sensor.datetracking_katebirthday:
+      friendly_name: Kate's Birthday
+
+anniversaries:
+  sensors:
+    - name: !secret date1_name
+      date: !secret date1_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date2_name
+      date: !secret date2_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date3_name
+      date: !secret date3_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date4_name
+      date: !secret date4_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date5_name
+      date: !secret date5_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date6_name
+      date: !secret date6_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date7_name
+      date: !secret date7_date
+      date_format: '%a %b %-d %Y'
+    - name: !secret date8_name
+      date: !secret date8_date
+      date_format: '%a %b %-d %Y'

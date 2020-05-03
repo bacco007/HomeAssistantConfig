@@ -1,0 +1,51 @@
+# Ignore Folders
+.storage
+.cloud
+.google.token
+.backup
+__pycache__
+deps
+www/custom-lovelace/upcoming-media-card
+icloud
+notebooks
+tts
+custom_components_dev
+
+# Ignore File Extensions
+*.conf
+*.pickle
+*.pyc
+*.crt
+*.csr
+*.key
+
+# Temporary files
+*.db-journal
+*.pid
+
+# Ignore Specific Files
+._*
+.DS_Store
+.spotify-token-cache
+.uuid
+.androidkeys/adbkey
+.androidkeys/adbkey.pub
+secrets.yaml
+known_devices.yaml
+home-assistant_v2.db
+home-assistant_v2.db-wal
+home-assistant_v2.db-shm
+home-assistant.log
+google_calendars.yaml
+www/images/radar_moree_256km.gif
+www/images/radar_namoi_128km.gif
+yamllinterrors.txt
+README_Dev.md
+zigbee.db
+airsonos.xml
+.xbox-token.json
+.pip_progress
+isort.cfg
+.prettierrc.js
+.prettierrc.yaml
+.yamllint

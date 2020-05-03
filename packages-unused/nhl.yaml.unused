@@ -1,0 +1,91 @@
+---
+sensor:
+  # - platform: nhl_api
+  #   team_id: 24
+
+  - platform: rest
+    resource: https://statsapi.web.nhl.com/api/v1/schedule?teamId=24&hydrate=linescore
+    name: nhl_game_status
+    value_template: >-
+      {% if value_json.totalGames == 0 %}
+        No Game
+      {% else %}
+        {{ value_json.dates[0].games[0].status.detailedState }}
+      {% endif %}
+    json_attributes:
+      - dates
+
+  - platform: template
+    sensors:
+      nhl_away_team:
+        friendly_name_template: '{{ states.sensor.nhl_sensor.attributes.away_name }}'
+        value_template: '{{ states.sensor.nhl_sensor.attributes.away_score }}'
+        entity_picture_template: '{{ states.sensor.nhl_sensor.attributes.away_logo }}'
+      nhl_home_team:
+        friendly_name_template: '{{ states.sensor.nhl_sensor.attributes.home_name }}'
+        value_template: '{{ states.sensor.nhl_sensor.attributes.home_score }}'
+        entity_picture_template: '{{ states.sensor.nhl_sensor.attributes.home_logo }}'
+
+      nhl_away_score:
+        value_template: '{{ states.sensor.nhl_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["score"] }}'
+        friendly_name_template: '{{ states.sensor.nhl_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["team"]["name"] }}'
+        entity_id: sensor.nhl_game_status
+      nhl_home_score:
+        value_template: '{{ states.sensor.nhl_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["score"] }}'
+        friendly_name_template: '{{ states.sensor.nhl_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["name"] }}'
+        entity_id: sensor.nhl_game_status
+
+      nhl_home_score2:
+        value_template: >-
+          {% if states('sensor.nhl_game_status') == 'No Game' %}
+            No Game
+          {% else %}
+            {{ states.sensor.nhl_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["score"] }}
+          {% endif %}
+        friendly_name_template: >-
+          {% if states('sensor.nhl_game_status') == 'No Game' %}
+            Home
+          {% else %}
+            {{ states.sensor.nhl_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["name"] }}
+          {% endif %}
+        entity_picture_template: >-
+          {% if states('sensor.nhl_game_status') == 'No Game' %}
+            https://www-league.nhlstatic.com/images/logos/league-dark/133.svg
+          {% else  %}
+            https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/{{ states.sensor.nhl_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["id"] | int }}.svg
+          {% endif %}
+        entity_id: sensor.nhl_game_status
+
+      nhl_away_score2:
+        value_template: >-
+          {% if states('sensor.nhl_game_status') == 'No Game' %}
+            No Game
+          {% else %}
+            {{ states.sensor.nhl_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["score"] }}
+          {% endif %}
+        friendly_name_template: >-
+          {% if states('sensor.nhl_game_status') == 'No Game' %}
+            Away
+          {% else %}
+            {{ states.sensor.nhl_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["team"]["name"] }}
+          {% endif %}
+        entity_picture_template: >-
+          {% if states('sensor.nhl_game_status') == 'No Game' %}
+            https://www-league.nhlstatic.com/images/logos/league-dark/133.svg
+          {% else  %}
+            https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/{{ states.sensor.nhl_game_status.attributes.dates[0]["games"][0]["teams"]["away"]["team"]["id"] | int }}.svg
+          {% endif %}
+        entity_id: sensor.nhl_game_status
+
+      nhl_game_venue:
+        friendly_name: "NHL Game Venue"
+        icon_template: mdi:stadium
+        value_template: '{{ states.sensor.nhl_game_status.attributes["dates"][0]["games"][0]["venue"]["name"] }}'
+        entity_id: sensor.nhl_game_status
+
+      nhl_game_date:
+        device_class: timestamp
+        friendly_name: "NHL Game Date"
+        icon_template: mdi:calendar-clock
+        value_template: '{{ states.sensor.nhl_game_status.attributes["dates"][0]["games"][0]["gameDate"] }}'
+        entity_id: sensor.nhl_game_status

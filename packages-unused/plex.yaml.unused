@@ -1,0 +1,18 @@
+---
+plex:
+  host: !secret plex_host
+  port: !secret plex_port
+  token: !secret plex_token
+  media_player:
+    use_episode_art: false
+
+sensor:
+  - platform: template
+    sensors:
+      plex_users:
+        value_template: >-
+          {% for attr in states.sensor.plex_plex.attributes %}
+          {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" and not attr=="icon" -%}
+          {{attr}} is watching {{states.sensor.plex_plex.attributes [attr]}}
+          {%- endif %}
+          {%- endfor -%}

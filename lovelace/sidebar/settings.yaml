@@ -1,0 +1,170 @@
+---
+clock: true
+date: true
+dateFormat: ddd, Do MMM YYYY
+width:
+  mobile: 0
+  tablet: 17
+  desktop: 17
+# breakpoints:
+#   mobile: 500
+#   tablet: 1024
+sidebarMenu:
+  - action: navigate
+    active: true
+    name: Weather
+    icon: mdi:weather-cloudy-alert
+    navigation_path: /lovelace/weather
+  - action: navigate
+    name: COVID-19
+    icon: mdi:biohazard
+    navigation_path: /lovelace/covid19
+bottomCard:
+  type: horizontal-stack
+  cardOptions:
+    cards:
+      - type: 'custom:button-card'
+        color_type: blank-card
+      - type: 'custom:button-card'
+        color_type: blank-card
+      - type: 'custom:button-card'
+        icon: mdi:information-outline
+        size: 40px
+        styles:
+          card:
+            - background: var(--background-color)
+            - height: 30px
+            - width: 30px
+          icon:
+            - color: 'rgba(255, 255, 255, 0.7)'
+        tap_action:
+          action: call-service
+          haptic: heavy
+          service: browser_mod.popup
+          service_data:
+            deviceID:
+              - this
+            title: Information
+            large: true
+            card: !include ../popup_cards/info.yaml
+
+      - type: 'custom:button-card'
+        icon: mdi:trash-can
+        size: 40px
+        styles:
+          card:
+            - background: var(--background-color)
+            - height: 30px
+            - width: 30px
+          icon:
+            - color:
+                '[[[ if (states["sensor.binday_date"].state == "Today") return "rgba(255, 255, 0, 0.8)";
+                else return "rgba(255, 255, 255, 0.7)"; ]]]'
+        tap_action:
+          action: call-service
+          haptic: heavy
+          service: browser_mod.popup
+          service_data:
+            deviceID:
+              - this
+            title: Bin Day
+            large: false
+            card: !include ../popup_cards/binday.yaml
+
+      - type: 'custom:button-card'
+        icon: mdi:settings
+        size: 40px
+        styles:
+          card:
+            - background: var(--background-color)
+            - height: 30px
+            - width: 30px
+          icon:
+            - color: rgba(255, 255, 255, 0.7)
+        tap_action:
+          action: call-service
+          haptic: heavy
+          service: browser_mod.popup
+          service_data:
+            deviceID:
+              - this
+            title: Settings
+            large: true
+            card:
+              type: 'custom:layout-card'
+              layout: vertical
+              column_num: 2
+              cards:
+                - type: entities
+                  entities:
+                    - sensor.hacs
+                    - sensor.daylight
+                - break
+                - type: entities
+                  title: Dyson Fan
+                  entities:
+                    - climate.bedroom
+                    - fan.bedroom
+                    - sensor.bedroom_aqi
+                    - sensor.bedroom_dust
+                    - sensor.bedroom_filter_life
+                    - sensor.bedroom_humidity
+                    - sensor.bedroom_temperature
+                - break
+                - type: entities
+                  title: Dyson Fan
+                  entities:
+                    - climate.bedroom
+                    - fan.bedroom
+                    - sensor.bedroom_aqi
+                    - sensor.bedroom_dust
+                    - sensor.bedroom_filter_life
+                    - sensor.bedroom_humidity
+                    - sensor.bedroom_temperature
+style: |
+  .sidebarMenu li {
+    font-family: var(--var-primary-font-family) !important;
+    font-weight: 500 !important;
+  }
+  .sidebarMenu li.active ha-icon {
+    color: rgb(247, 217, 89);
+  }
+  .sidebarMenu li.active {
+    background-color: rgba(0,0,0,0.2);
+  }
+  .template li {
+    font-weight: 300 !important;
+    font-family: var(--primary-font-family);
+    margin-bottom: 5px;
+    font-size: 0.8vw;
+    text-align: center;
+  }
+  h2.date {
+    text-align: center;
+    font-weight: 500 !important;
+    font-family: var(--primary-font-family) !important;
+    font-size: 1.3vw;
+  }
+  :host {
+    --sidebar-background: #3b4049;t
+    --sidebar-text-color: #fff;
+    --face-color: rgba(67, 73, 82, 1);
+    --face-border-color: #333;
+    --clock-hands-color: #fff;
+    --clock-seconds-hand-color: #00b59d;
+    --clock-middle-background: #fff;
+    --clock-middle-border: #fff;
+    --border-radius: 1px;
+  }
+template: >
+  <li>
+    {% if now().hour  < 5 %} Good Night! {{'\U0001F634'}}
+    {% elif now().hour < 12 %} Good Morning! {{'\u2615\uFE0F'}}
+    {% elif now().hour < 18 %} Good Afternoon! {{'\U0001F44B\U0001F3FB'}}
+    {% else %} Good Evening! {{'\U0001F44B\U0001F3FB'}}{% endif %}
+  </li>
+  <li></li>
+
+  <li>UTC: {{states('sensor.time_utc')}} - LDN: {{states('sensor.time_london')}} - NYC: {{states('sensor.time_new_york')}}</li>
+  {% if "gft" in states('sensor.trash_today') %} <li>Vandaag GFT</li> {% endif
+  %}

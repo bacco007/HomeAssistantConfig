@@ -1,0 +1,8 @@
+{
+  "domain": "auto_backup",
+  "name": "Auto Backup",
+  "documentation": "https://github.com/jcwillox/hass-auto-backup",
+  "dependencies": [],
+  "codeowners": ["@jcwillox"],
+  "requirements": []
+}

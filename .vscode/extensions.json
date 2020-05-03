@@ -1,0 +1,19 @@
+{
+  "recommendations": [
+    "ybaumes.highlight-trailing-white-spaces",
+    "emilast.LogFileHighlighter",
+    "keesschollaart.vscode-home-assistant",
+    "lukas-tr.materialdesignicons-intellisense",
+    "oderwat.indent-rainbow",
+    "redhat.vscode-yaml",
+    "usernamehw.errorlens",
+    "vscode-icons-team.vscode-icons",
+    "ESPHome.esphome-vscode",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "bierner.lit-html",
+    "runem.lit-plugin"
+  ]
+}

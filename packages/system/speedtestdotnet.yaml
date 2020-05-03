@@ -1,0 +1,77 @@
+---
+homeassistant:
+  customize:
+    sensor.speedtest_ping:
+      friendly_name: Ping
+      icon: mdi:pulse
+    sensor.speedtest_download:
+      friendly_name: Download
+      icon: mdi:arrow-down-bold
+    sensor.speedtest_upload:
+      friendly_name: Upload
+      icon: mdi:arrow-up-bold
+    sensor.today_speedtest_download_mean:
+      icon: mdi:arrow-down-bold
+      unit_of_measurement: "Mbit/s"
+    sensor.today_speedtest_upload_mean:
+      icon: mdi:arrow-up-bold
+      unit_of_measurement: "Mbit/s"
+
+speedtestdotnet:
+  scan_interval:
+    hours: 1
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+
+sensor:
+  - platform: filter
+    name: "Speedtest Download - Filtered"
+    entity_id: sensor.speedtest_download
+    filters:
+      - filter: lowpass
+        time_constant: 20
+        precision: 2
+  - platform: filter
+    name: "Speedtest Upload - Filtered"
+    entity_id: sensor.speedtest_upload
+    filters:
+      - filter: lowpass
+        time_constant: 20
+        precision: 2
+  - platform: statistics
+    name: today_speedtest_download
+    sampling_size: 150
+    entity_id: sensor.speedtest_download
+    max_age:
+      hours: 24
+  - platform: statistics
+    name: today_speedtest_upload
+    sampling_size: 150
+    entity_id: sensor.speedtest_upload
+    max_age:
+      hours: 24
+
+  - platform: template
+    sensors:
+      speedtest_download_min:
+        friendly_name: 'Download Speed - Min'
+        value_template: "{{ states.sensor.today_speedtest_download.attributes['min_value']}}"
+        icon_template: mdi:arrow-down-bold
+        unit_of_measurement: "Mbit/s"
+      speedtest_download_max:
+        friendly_name: 'Download Speed - Max'
+        value_template: "{{ states.sensor.today_speedtest_download.attributes['max_value']}}"
+        icon_template: mdi:arrow-down-bold
+        unit_of_measurement: "Mbit/s"
+      speedtest_upload_min:
+        friendly_name: 'Upload Speed - Min'
+        value_template: "{{ states.sensor.today_speedtest_upload.attributes['min_value']}}"
+        icon_template: mdi:arrow-up-bold
+        unit_of_measurement: "Mbit/s"
+      speedtest_upload_max:
+        friendly_name: 'Upload Speed - Max'
+        value_template: "{{ states.sensor.today_speedtest_upload.attributes['max_value']}}"
+        icon_template: mdi:arrow-up-bold
+        unit_of_measurement: "Mbit/s"

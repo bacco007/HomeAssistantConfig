@@ -1,0 +1,81 @@
+---
+sensor:
+  # - platform: nhl_api
+  #   team_id: 24
+
+  - platform: rest
+    resource: http://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=147&hydrate=linescore
+    name: mlb_game_status
+    value_template: >-
+      {% if value_json.totalGames == 0 %}
+        No Game
+      {% else %}
+        {{ value_json.dates[0].games[0].status.detailedState }}
+      {% endif %}
+    json_attributes:
+      - dates
+
+  - platform: template
+    sensors:
+      ### HOME SCORE
+      mlb_home_score:
+        value_template: >-
+          {% if states('sensor.mlb_game_status') == 'No Game' %}
+            No Game
+          {% else %}
+            {{ states.sensor.mlb_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["score"] }}
+          {% endif %}
+        friendly_name_template: >-
+          {% if states('sensor.mlb_game_status') == 'No Game' %}
+            Home
+          {% else %}
+            {{ states.sensor.mlb_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["name"] }}
+          {% endif %}
+        entity_picture_template: >-
+          {% if states('sensor.mlb_game_status') == 'No Game' %}
+            https://www.mlbstatic.com/team-logos/league-on-dark/1.svg
+          {% else  %}
+            https://www.mlbstatic.com/team-logos/{{ states.sensor.mlb_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["id"] | int }}.svg
+          {% endif %}
+        entity_id: sensor.mlb_game_status
+
+      ### AWAY SCORE
+      mlb_away_score:
+        value_template: >-
+          {% if states('sensor.mlb_game_status') == 'No Game' %}
+            No Game
+          {% else %}
+            {{ states.sensor.mlb_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["score"] }}
+          {% endif %}
+        friendly_name_template: >-
+          {% if states('sensor.mlb_game_status') == 'No Game' %}
+            Away
+          {% else %}
+            {{ states.sensor.mlb_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["team"]["name"] }}
+          {% endif %}
+        entity_picture_template: >-
+          {% if states('sensor.mlb_game_status') == 'No Game' %}
+            https://www.mlbstatic.com/team-logos/league-on-dark/1.svg
+          {% else  %}
+            https://www.mlbstatic.com/team-logos/{{ states.sensor.mlb_game_status.attributes.dates[0]["games"][0]["teams"]["away"]["team"]["id"] | int }}.svg
+          {% endif %}
+        entity_id: sensor.mlb_game_status
+
+      mlb_game_venue:
+        friendly_name: "MLB Game Venue"
+        icon_template: mdi:stadium
+        value_template: '{{ states.sensor.mlb_game_status.attributes["dates"][0]["games"][0]["venue"]["name"] }}'
+        entity_id: sensor.mlb_game_status
+
+      mlb_game_date:
+        device_class: timestamp
+        friendly_name: "MLB Game Date"
+        icon_template: mdi:calendar-clock
+        value_template: '{{ states.sensor.mlb_game_status.attributes["dates"][0]["games"][0]["gameDate"] }}'
+        entity_id: sensor.mlb_game_status
+
+      mlb_game_description:
+        friendly_name: "MLB Game Description"
+        icon_template: mdi:baseball
+        value_template: '{{ states.sensor.mlb_game_status.attributes["dates"][0]["games"][0]["description"] }}'
+        entity_id: sensor.mlb_game_status

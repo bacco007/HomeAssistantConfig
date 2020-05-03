@@ -1,0 +1,47 @@
+---
+sensor:
+  - platform: statistics
+    name: today_temp_xiaomibedroom
+    sampling_size: 150
+    entity_id: sensor.bedroom_multisensor_temperature
+    max_age:
+      hours: 24
+  - platform: statistics
+    name: today_temp_xiaomilounge
+    sampling_size: 150
+    entity_id: sensor.lounge_multisensor_temperature
+    max_age:
+      hours: 24
+
+  - platform: template
+    sensors:
+      xiaomibedroom_min_temp:
+        friendly_name: "Bedroom Min Temp (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomibedroom.attributes['min_value']}}"
+        icon_template: mdi:thermometer-chevron-down
+        unit_of_measurement: "°C"
+      xiaomibedroom_max_temp:
+        friendly_name: "Bedroom Max Temp (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomibedroom.attributes['max_value']}}"
+        icon_template: mdi:thermometer-chevron-up
+        unit_of_measurement: "°C"
+      xiaomibedroom_change_temp:
+        friendly_name: "Bedroom Temp Change (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomibedroom.attributes['change']}}"
+        icon_template: mdi:thermometer-lines
+        unit_of_measurement: "°C"
+      xiaomilounge_min_temp:
+        friendly_name: "Lounge Min Temp (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomilounge.attributes['min_value']}}"
+        icon_template: mdi:thermometer-chevron-down
+        unit_of_measurement: "°C"
+      xiaomilounge_max_temp:
+        friendly_name: "Lounge Max Temp (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomilounge.attributes['max_value']}}"
+        icon_template: mdi:thermometer-chevron-up
+        unit_of_measurement: "°C"
+      xiaomilounge_change_temp:
+        friendly_name: "Lounge Temp Change (Last 24hrs)"
+        value_template: "{{ states.sensor.today_temp_xiaomilounge.attributes['change']}}"
+        icon_template: mdi:thermometer-lines
+        unit_of_measurement: "°C"

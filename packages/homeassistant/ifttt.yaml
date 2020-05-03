@@ -1,0 +1,3 @@
+---
+ifttt:
+  key: !secret ifttt_apikey

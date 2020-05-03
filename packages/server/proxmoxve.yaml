@@ -1,0 +1,12 @@
+---
+proxmoxve:
+  - host: !secret proxmox_host
+    port: !secret proxmox_port
+    username: !secret proxmox_user
+    password: !secret proxmox_password
+    verify_ssl: false
+    nodes:
+      - node: !secret proxmox_node1
+        vms:
+          - !secret proxmox_node1_vms1
+          - !secret proxmox_node1_vms2

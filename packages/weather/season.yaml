@@ -1,0 +1,10 @@
+---
+sensor:
+  - platform: season
+
+  - platform: template
+    sensors:
+      seasonname:
+        friendly_name: "Season"
+        value_template: >
+          {{ states('sensor.season').title() }}

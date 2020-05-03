@@ -1,0 +1,22 @@
+{
+    "config": {
+        "title": "FoldingAtHomeControl",
+        "step": {
+            "user": {
+                "title": "FoldingAtHomeControl",
+                "description": "If you need help with the configuration have a look here: https://github.com/eifinger/hass-foldingathomecontrol",
+                "data": {
+                    "address": "IP Address or Hostname",
+                    "password": "Password",
+                    "port": "Portnumber"
+                }
+            }
+        },
+        "error": {
+            "auth": "Username/Password is wrong."
+        },
+        "abort": {
+            "single_instance_allowed": "Only a single configuration of FoldingAtHomeControl is allowed."
+        }
+    }
+}

@@ -1,0 +1,33 @@
+---
+influxdb:
+  host: !secret influxdb_host
+  port: !secret influxdb_port
+  database: !secret influxdb_database
+  username: !secret influxdb_username
+  password: !secret influxdb_password
+  max_retries: 5
+  default_measurement: state
+  # exclude:
+  #   entities:
+  #     - sensor.hassio_appdaemon_rest
+  #     - sensor.hassio_deconz_rest
+  #     - sensor.hassio_influxdb_rest
+  #     - sensor.hassio_mariadb_rest
+  #     - sensor.hassio_mqtt_rest
+  #     - sensor.hassio_nodered_rest
+  #     - sensor.hassio_sshweb_rest
+  #     - sensor.hassio_vscode_rest
+  #     - sensor.plex_recently_added
+  #     - sensor.plex_recently_added_movies
+  #     - sensor.plex_recently_added_tv
+  #     - sensor.sonarr_upcoming_media
+  #     - sensor.radarr_upcoming_media
+  #     - sensor.rssfeed_cnn
+  #     - sensor.rssfeed_fox_sports
+  #     - sensor.rssfeed_news_com_au
+  #     - sensor.rssfeed_northern_daily_leader
+  #     - sensor.rssfeed_sky_news_uk
+  #     - sensor.rssfeed_sky_sports_uk
+  #     - sensor.rssfeed_sydney_morning_herald
+  #     - sensor.rssfeed_the_guardian_au
+  #     - sensor.rssfeed_the_guardian_uk

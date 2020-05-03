@@ -1,0 +1,25 @@
+---
+alias: Admin - Nightly Hassio Snapshot
+initial_state: 'on'
+trigger:
+  - platform: time
+    at: '03:00:00'
+condition: []
+action:
+  - service: hassio.snapshot_full
+    data_template:
+      name: Automated Backup {{ now().strftime('%Y-%m-%d') }}
+  - delay: '00:30:00'
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              New Hass.io Backup
+            text: |
+              New Hass.io Backup has been Created
+              "Automated Backup {{ now().strftime('%Y-%m-%d') }}"

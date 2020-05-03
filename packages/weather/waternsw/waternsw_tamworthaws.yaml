@@ -1,0 +1,86 @@
+---
+sensor:
+  - platform: waternsw
+    name: DPI Calala AWS Rainfall
+    site_id: 419113
+    from_variable: 10.00
+    to_variable: 10.00
+    unit_of_measure: mm
+  - platform: waternsw
+    name: DPI Calala AWS Wind Direction
+    site_id: 419113
+    from_variable: 500.00
+    to_variable: 500.00
+    unit_of_measure: Deg
+  - platform: waternsw
+    name: DPI Calala AWS Avg Wind Speed
+    site_id: 419113
+    from_variable: 514.00
+    to_variable: 514.00
+    unit_of_measure: m/s
+  - platform: waternsw
+    name: DPI Calala AWS Baro Pressure
+    site_id: 419113
+    from_variable: 550.00
+    to_variable: 550.00
+    unit_of_measure: hPa
+  - platform: waternsw
+    name: DPI Calala Air Temperature
+    site_id: 419113
+    from_variable: 2065.00
+    to_variable: 2065.00
+    unit_of_measure: °C
+  - platform: waternsw
+    name: DPI Calala Rel Humidity
+    site_id: 419113
+    from_variable: 2075.00
+    to_variable: 2075.00
+    unit_of_measure: "%"
+  - platform: waternsw
+    name: DPI Calala Soil Moist 0.1m
+    site_id: 419113
+    from_variable: 760.01
+    to_variable: 760.01
+    unit_of_measure: "%"
+  - platform: waternsw
+    name: DPI Calala Soil Moist 0.2m
+    site_id: 419113
+    from_variable: 760.02
+    to_variable: 760.02
+    unit_of_measure: "%"
+  - platform: waternsw
+    name: DPI Calala Soil Moist 0.5m
+    site_id: 419113
+    from_variable: 760.05
+    to_variable: 760.05
+    unit_of_measure: "%"
+  - platform: waternsw
+    name: DPI Calala Soil Moist 1.0m
+    site_id: 419113
+    from_variable: 760.10
+    to_variable: 760.10
+    unit_of_measure: "%"
+  - platform: waternsw
+    name: DPI Calala Soil Temp 0.1m
+    site_id: 419113
+    from_variable: 775.01
+    to_variable: 775.01
+    unit_of_measure: °C
+  - platform: waternsw
+    name: DPI Calala Soil Temp 0.2m
+    site_id: 419113
+    from_variable: 775.02
+    to_variable: 775.02
+    unit_of_measure: °C
+  - platform: waternsw
+    name: DPI Calala Soil Temp 0.5m
+    site_id: 419113
+    from_variable: 775.05
+    to_variable: 775.05
+    unit_of_measure: °C
+  - platform: waternsw
+    name: DPI Calala Soil Temp 1.0m
+    site_id: 419113
+    from_variable: 775.10
+    to_variable: 775.10
+    unit_of_measure: °C

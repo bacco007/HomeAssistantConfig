@@ -1,0 +1,12 @@
+---
+sensor:
+  - platform: radarr
+    api_key: !secret radarr_apikey
+    host: !secret radarr_host
+    port: !secret radarr_port
+    monitored_conditions:
+      - movies
+      - upcoming
+      - status
+      - commands
+    days: 365

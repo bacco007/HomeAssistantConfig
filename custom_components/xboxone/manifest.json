@@ -1,0 +1,14 @@
+{
+  "domain": "xboxone",
+  "name": "Xbox One Smartglass - Media player integration",
+  "documentation": "https://github.com/OpenXbox/xboxone-home-assistant",
+  "dependencies": [],
+  "codeowners": [
+    "@hunterjm",
+    "@ericleb010",
+    "@tuxuser"
+  ],
+  "requirements": [
+    "packaging>=20.3"
+  ]
+}

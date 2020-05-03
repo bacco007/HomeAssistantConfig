@@ -1,0 +1,11 @@
+---
+alias: 'Theme - Day/Night Cycle (Night)'
+initial_state: 'true'
+trigger:
+  platform: sun
+  event: sunrise
+  offset: '+00:00:00'
+action:
+  - service: frontend.set_theme
+    data:
+      name: dark

@@ -1,0 +1,35 @@
+---
+homeassistant:
+  customize:
+    sensor.fire_danger_in_northern_slopes_region:
+      hidden: true
+
+sensor:
+  - platform: nsw_rural_fire_service_fire_danger
+    district_name: Northern Slopes
+  - platform: template
+    sensors:
+      fire_danger_level_today:
+        friendly_name: "Danger Level Today"
+        value_template: "{{ state_attr('sensor.fire_danger_in_northern_slopes', 'danger_level_today') | title }}"
+        icon_template: mdi:fire
+        entity_id: sensor.fire_danger_in_northern_slopes
+      fire_danger_level_tomorrow:
+        friendly_name: "Danger Level Tomorrow"
+        value_template: "{{ state_attr('sensor.fire_danger_in_northern_slopes', 'danger_level_tomorrow') | title }}"
+        icon_template: mdi:fire
+        entity_id: sensor.fire_danger_in_northern_slopes
+
+binary_sensor:
+  - platform: template
+    sensors:
+      fire_ban_today:
+        friendly_name: "Fire Ban Today"
+        value_template: "{{ state_attr('sensor.fire_danger_in_northern_slopes', 'fire_ban_today') | title }}"
+        device_class: safety
+        entity_id: sensor.fire_danger_in_northern_slopes
+      fire_ban_tomorrow:
+        friendly_name: "Fire Ban Tomorrow"
+        value_template: "{{ state_attr('sensor.fire_danger_in_northern_slopes', 'fire_ban_tomorrow') | title }}"
+        device_class: safety
+        entity_id: sensor.fire_danger_in_northern_slopes

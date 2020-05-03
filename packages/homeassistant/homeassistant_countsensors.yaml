@@ -1,0 +1,143 @@
+---
+sensor:
+  - platform: template
+    sensors:
+
+      # ----- Count All Entities
+      count_all_entities:
+        entity_id: sensor.date_time
+        friendly_name: 'All Entities'
+        icon_template: mdi:code-tags
+        value_template: "{{ states | count }}"
+
+      # ----- Count Automations
+      count_automations:
+        entity_id: sensor.date_time
+        friendly_name: 'Automations'
+        icon_template: mdi:robot
+        value_template: "{{ states.automation | list | length }}"
+
+      # ----- Count Scripts
+      count_scripts:
+        entity_id: sensor.date_time
+        friendly_name: 'Scripts'
+        icon_template: mdi:script-text-outline
+        value_template: "{{ states.script | list | length }}"
+
+      # ----- Count Device Trackers
+      count_device_trackers:
+        entity_id: sensor.date_time
+        friendly_name: 'Devices'
+        icon_template: mdi:cellphone-link
+        value_template: "{{ states.device_tracker | list | length }}"
+
+      # ----- Count Binary Sensors
+      count_binary_sensors:
+        entity_id: sensor.date_time
+        friendly_name: 'Binary Sensors'
+        icon_template: mdi:checkbox-multiple-marked-circle # mdi:unfold-less-horizontal
+        value_template: "{{ states.binary_sensor | list | length }}"
+
+      # ----- Count Sensors
+      count_sensors:
+        entity_id: sensor.date_time
+        friendly_name: 'Sensors'
+        icon_template: mdi:pulse
+        value_template: "{{ states.sensor | list | length }}"
+
+      # ----- Count Switches
+      count_switches:
+        entity_id: sensor.date_time
+        friendly_name: 'Switches'
+        icon_template: mdi:power-socket-us
+        value_template: "{{ states.switch | list | length }}"
+
+      # ----- Count Zones
+      count_zones:
+        entity_id: sensor.date_time
+        friendly_name: 'Zones'
+        icon_template: mdi:map-marker-radius
+        value_template: "{{ states.zone | list | length }}"
+
+      # ----- Input Booleans
+      count_input_booleans:
+        entity_id: sensor.date_time
+        friendly_name: 'Input Booleans'
+        icon_template: mdi:toggle-switch
+        value_template: "{{ states.input_boolean | list | length }}"
+
+      # ----- Input Numbers
+      count_input_numbers:
+        entity_id: sensor.date_time
+        friendly_name: 'Input Numbers'
+        icon_template: mdi:numeric
+        value_template: "{{ states.input_number | list | length }}"
+
+      # ----- Input Texts
+      count_input_texts:
+        entity_id: sensor.date_time
+        friendly_name: 'Input Texts'
+        icon_template: mdi:alphabetical
+        value_template: "{{ states.input_text | list | length }}"
+
+      # ----- Input Selects
+      count_input_selects:
+        entity_id: sensor.date_time
+        friendly_name: 'Input Selects'
+        icon_template: mdi:format-align-justify
+        value_template: "{{ states.input_select | list | length }}"
+
+      # ----- Input Date Times
+      count_input_datetimes:
+        entity_id: sensor.date_time
+        friendly_name: 'Input Date Times'
+        icon_template: mdi:calendar
+        value_template: "{{ states.input_datetime | list | length }}"
+
+      # ----- Lights
+      count_lights:
+        entity_id: sensor.date_time
+        friendly_name: 'Lights'
+        icon_template: mdi:lightbulb-on
+        value_template: "{{ states.light | list | length }}"
+
+      # ----- Media Players
+      count_mediaplayers:
+        entity_id: sensor.date_time
+        friendly_name: 'Media Players'
+        icon_template: mdi:cast-connected
+        value_template: "{{ states.media_player | list | length }}"
+
+      # ----- Cameras
+      count_cameras:
+        entity_id: sensor.date_time
+        friendly_name: 'Cameras'
+        icon_template: mdi:cctv
+        value_template: "{{ states.camera | list | length }}"
+
+      # ----- Geolocations
+      count_geolocation:
+        entity_id: sensor.date_time
+        friendly_name: 'Geo Locations'
+        icon_template: mdi:map-plus
+        value_template: "{{ states.geo_location | list | length }}"
+
+      # ----- Groups
+      count_groups:
+        entity_id: sensor.date_time
+        friendly_name: 'Groups'
+        icon_template: mdi:group
+        value_template: "{{ states.group | list | length }}"
+
+      # ----- Remote
+      count_remotes:
+        entity_id: sensor.date_time
+        friendly_name: 'Remotes'
+        icon_template: mdi:remote
+        value_template: "{{ states.remote | list | length }}"
+
+      count_calendars:
+        entity_id: sensor.date_time
+        friendly_name: 'Calendars'
+        icon_template: mdi:calendar
+        value_template: "{{ states.calendar | list | length }}"
