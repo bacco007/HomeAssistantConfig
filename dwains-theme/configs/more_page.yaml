@@ -11,9 +11,12 @@ more_page:
       data:
         version: '{{ states.sensor.ha_current_version.state }}'
         uptime: '{{ states.sensor.ha_uptime_hours.state }}'
-    - name: IoT & Smarthome Network Status
+    - name: IoT & SmartHome Network Status
       icon: mdi:lan-connect
       path: 'dwains-theme/addons/more_page/net-status/page.yaml'
+    - name: Media
+      icon: mdi:television
+      path: 'dwains-theme/addons/more_page/media/page.yaml'
     - name: National Electricity Market (NSW)
       icon: mdi:transmission-tower
       path: 'dwains-theme/addons/more_page/opennem/page.yaml'
@@ -38,9 +41,12 @@ more_page:
     - name: Weather
       icon: mdi:weather-partly-rainy
       path: 'dwains-theme/addons/more_page/weather/page.yaml'
-    - name: Zigbee
-      icon: mdi:zigbee
-      path: 'dwains-theme/addons/more_page/zigbee/page.yaml'
+    - name: Testing
+      icon: mdi:widgets
+      path: 'dwains-theme/addons/more_page/testing.yaml'
+    # - name: Zigbee
+    #   icon: mdi:zigbee
+    #   path: 'dwains-theme/addons/more_page/zigbee/page.yaml'
 #     - name: Hello more page
 #       icon: fas:chart-area
 #       path: 'dwains-theme/addons/more_page/hello-more-page/page.yaml'

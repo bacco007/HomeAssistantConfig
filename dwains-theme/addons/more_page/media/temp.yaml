@@ -1,0 +1,42 @@
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+      cards:
+        - type: custom:swipe-card
+          #card_width: '200px'
+          parameters:
+            effect: 'coverflow'
+            grabCursor: true
+            centeredSlides: true
+            slidesPerView: 1
+            spaceBetween: 30
+            loop: true
+            autoplay:
+              delay: 2500
+              disableOnInteraction: false
+            coverflowEffect:
+              rotate: 50
+              stretch: 0
+              depth: 100
+              modifier: 1
+              slideShadows: true
+            pagenation:
+              type: 'bullets'
+          cards:
+            - !include
+              - media/media_card.yaml
+              - entity: sensor.lovelace_sonarr_upcoming_01
+            - !include
+              - media/media_card.yaml
+              - entity: sensor.lovelace_sonarr_upcoming_02
+            - !include
+              - media/media_card.yaml
+              - entity: sensor.lovelace_sonarr_upcoming_03
+            - !include
+              - media/media_card.yaml
+              - entity: sensor.lovelace_sonarr_upcoming_04
+            - !include
+              - media/media_card.yaml
+              - entity: sensor.lovelace_sonarr_upcoming_05
+            - !include
+              - media/media_card.yaml
+              - entity: sensor.lovelace_sonarr_upcoming_06

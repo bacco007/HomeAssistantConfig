@@ -219,7 +219,6 @@ class LGEDevice:
 
         self._device = device
         self._name = name
-        self._state = device.status
         self._device_id = device.device_info.id
         self._type = device.device_info.type
         self._mac = device.device_info.macaddress
@@ -228,6 +227,7 @@ class LGEDevice:
         self._model = f"{device.device_info.model_name}"
         self._id = f"{self._type.name}:{self._device_id}"
 
+        self._state = None
         self._retry_count = 0
         self._disconnected = True
         self._not_logged = False
@@ -275,8 +275,11 @@ class LGEDevice:
         return data
 
     def init_device(self):
-        self._device.init_device_info()
-        self._model = f"{self._model}-{self._device.model_info.model_type}"
+        if self._device.init_device_info():
+            self._state = self._device.status
+            self._model = f"{self._model}-{self._device.model_info.model_type}"
+            return True
+        return False
 
     def _restart_monitor(self):
         """Restart the device monitor"""
@@ -376,29 +379,35 @@ async def lge_devices_setup(hass, client) -> dict:
         device_name = device.name
         device_mac = device.macaddress
         model_name = device.model_name
+        dev = None
+        result = False
         device_count += 1
 
         if device.type == DeviceType.WASHER:
-            base_name = device_name
-            dev = LGEDevice(WasherDevice(client, device), base_name)
+            dev = LGEDevice(WasherDevice(client, device), device_name)
         elif device.type == DeviceType.DRYER:
-            base_name = device_name
-            dev = LGEDevice(DryerDevice(client, device), base_name)
+            dev = LGEDevice(DryerDevice(client, device), device_name)
         elif device.type == DeviceType.DISHWASHER:
-            base_name = device_name
-            dev = LGEDevice(DishWasherDevice(client, device), base_name)
+            dev = LGEDevice(DishWasherDevice(client, device), device_name)
         elif device.type == DeviceType.REFRIGERATOR:
-            base_name = device_name
-            dev = LGEDevice(RefrigeratorDevice(client, device), base_name)
-        else:
-            _LOGGER.info("Found unsupported LGE Device %s of type %s", device_name, device.type.name)
+            dev = LGEDevice(RefrigeratorDevice(client, device), device_name)
+
+        if dev:
+            result = await hass.async_add_executor_job(dev.init_device)
+
+        if not result:
+            _LOGGER.info(
+                "Found unsupported LGE Device. Name: %s - Type: %s",
+                device_name,
+                device.type.name,
+            )
             continue
 
-        await hass.async_add_executor_job(dev.init_device)
         wrapped_devices.setdefault(device.type, []).append(dev)
         _LOGGER.info(
-            "LGE Device added. Name: %s - Model: %s - Mac: %s - ID: %s",
-            base_name,
+            "LGE Device added. Name: %s - Type: %s - Model: %s - Mac: %s - ID: %s",
+            device_name,
+            device.type.name,
             model_name,
             device_mac,
             device_id,

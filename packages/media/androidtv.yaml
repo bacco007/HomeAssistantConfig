@@ -7,20 +7,20 @@ media_player:
     adb_server_port: 5037
     adbkey: '/config/.androidkeys/adbkey'
     get_sources: true
-    exclude_unnamed_apps: false
-    apps:
-      au.com.ninenow.ctv: '9Now'
-      au.com.kayosports.tv: 'Kayo Sports'
-      au.com.optus.sport.androidtv: 'Optus Sport'
-      au.com.stan.and: 'Stan'
-      au.com.tenplay: '10play'
-      au.net.abc.iview: 'ABC iView'
-      com.sbs.ondemand.tv: 'SBS On Demand'
-      com.spotify.tv.android: 'Spotify'
-      com.swm.live: '7plus'
-      foxtelnow.box.launcher: 'Foxtel Now Launcher'
-      org.xbmc.kodi: 'Kodi'
-      tunein.player: 'TuneIn'
-    state_detection_rules:
-      'foxtelnow.box.launcher':
-        - 'standby'
+    # exclude_unnamed_apps: false
+    # apps:
+    #   au.com.ninenow.ctv: '9Now'
+    #   au.com.kayosports.tv: 'Kayo Sports'
+    #   au.com.optus.sport.androidtv: 'Optus Sport'
+    #   au.com.stan.and: 'Stan'
+    #   au.com.tenplay: '10play'
+    #   au.net.abc.iview: 'ABC iView'
+    #   com.sbs.ondemand.tv: 'SBS On Demand'
+    #   com.spotify.tv.android: 'Spotify'
+    #   com.swm.live: '7plus'
+    #   foxtelnow.box.launcher: 'Foxtel Now Launcher'
+    #   org.xbmc.kodi: 'Kodi'
+    #   tunein.player: 'TuneIn'
+    # state_detection_rules:
+    #   'foxtelnow.box.launcher':
+    #     - 'standby'

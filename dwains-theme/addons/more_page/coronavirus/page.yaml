@@ -592,6 +592,9 @@
             - name: Tests
               attr: Tests
               align: right
+
+- !include bar-graph-states.yaml
+
 - type: iframe
   aspect_ratio: 50%
   url: https://nswdac-np-covid-19-postcode-heatmap.azurewebsites.net/

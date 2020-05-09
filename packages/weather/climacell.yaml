@@ -1,0 +1,50 @@
+---
+sensor:
+  ## Weather climatecell.co
+  - platform: climacell
+    api_key: !secret climacell_apikey
+    name: Climacell
+    latitude: !secret zone_home_latitude
+    longitude: !secret zone_home_longitude
+    monitored_conditions:
+      realtime:
+        - weather_condition
+        - temperature
+        - feels_like
+        - humidity
+        - visibility
+        - cloud_cover
+        - precipitation
+        - precipitation_type
+        - pressure
+        - wind_speed
+        - wind_direction
+        - wind_gust
+        - moon_phase
+        - sunset
+        - sunrise
+        - pm25
+        - pm10
+        - o3
+        - no2
+        - co
+        - so2
+        - epa_aqi
+        - epa_primary_pollutant
+        - epa_health_concern
+        - pollen_tree
+        - pollen_weed
+        - pollen_grass
+        - fire_index
+      forecast:
+        - weather_condition
+        - temperature
+        - precipitation
+        - precipitation_probability
+    scan_interval:
+      # At least one of these must be specified:
+      days: 0
+      hours: 1
+      minutes: 0
+      seconds: 0
+      milliseconds: 0

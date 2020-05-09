@@ -39,15 +39,15 @@ sensor:
     json_attributes:
       - newest_version
       - current_version
-  # Sensor to track details on new addons
-  - platform: command_line
-    name: New addons
-    command: 'curl http://supervisor/addons -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq --slurpfile slugs found_addon_slugs.txt ''{"addons":[.data.addons[] | select(.slug as $slug | $slugs | index($slug) | not)], "repositories":.data.repositories}'''
-    value_template: '{{ value_json.addons | length }}'
-    json_attributes:
-      - addons
-      - repositories
-      - addon_slugs
+  # # Sensor to track details on new addons
+  # - platform: command_line
+  #   name: New addons
+  #   command: 'curl http://supervisor/addons -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq --slurpfile slugs found_addon_slugs.txt ''{"addons":[.data.addons[] | select(.slug as $slug | $slugs | index($slug) | not)], "repositories":.data.repositories}'''
+  #   value_template: '{{ value_json.addons | length }}'
+  #   json_attributes:
+  #     - addons
+  #     - repositories
+  #     - addon_slugs
 
 binary_sensor:
   - platform: template

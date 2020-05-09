@@ -2,24 +2,24 @@
   "nodes": {
     "bb0c36dc_4f7d88": {
       "lastPayload": {
-        "state": 16.389,
+        "state": 15.938,
         "attributes": {
           "max": 28.1,
-          "min": 5.6,
-          "avg": 16.389,
-          "mindate": "19 Apr 2020",
+          "min": 3.3,
+          "avg": 15.938,
+          "mindate": "04 May 2020",
           "maxdate": "02 Feb 2020",
-          "datestring": "Min: 19 Apr 2020 - Max: 02 Feb 2020"
+          "datestring": "Min: 04 May 2020 - Max: 02 Feb 2020"
         }
       }
     },
     "cd416e62_0709e": {
       "lastPayload": {
-        "state": 447.6,
+        "state": 450.6,
         "attributes": {
-          "count": 42,
-          "countstring": "42 Days",
-          "average": 10.66,
+          "count": 43,
+          "countstring": "43 Days",
+          "average": 10.48,
           "highest": 55.6,
           "sort": "4"
         }
@@ -27,11 +27,11 @@
     },
     "a38693a7_6e5c6": {
       "lastPayload": {
-        "state": 434.3,
+        "state": 437.7,
         "attributes": {
-          "count": 44,
-          "countstring": "44 Days",
-          "average": 9.87,
+          "count": 45,
+          "countstring": "45 Days",
+          "average": 9.73,
           "highest": 44.9,
           "sort": 4
         }
@@ -39,11 +39,11 @@
     },
     "1777533_24f10ad": {
       "lastPayload": {
-        "state": 33.393,
+        "state": 33.014,
         "attributes": {
           "max": 46.9,
           "min": 14.8,
-          "avg": 33.393,
+          "avg": 33.014,
           "mindate": "01 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 01 May 2020 - Max: 05 Jan 2020"
@@ -52,14 +52,14 @@
     },
     "5f38fb64_d46bf4": {
       "lastPayload": {
-        "state": 15.677,
+        "state": 15.174,
         "attributes": {
           "max": 28.6,
-          "min": 4,
-          "avg": 15.677,
-          "mindate": "19 Apr 2020",
+          "min": 2.7,
+          "avg": 15.174,
+          "mindate": "04 May 2020",
           "maxdate": "02 Feb 2020",
-          "datestring": "Min: 19 Apr 2020 - Max: 02 Feb 2020"
+          "datestring": "Min: 04 May 2020 - Max: 02 Feb 2020"
         }
       }
     },
@@ -73,11 +73,11 @@
     },
     "e663f7e9_a5b388": {
       "lastPayload": {
-        "state": 28.165,
+        "state": 27.81,
         "attributes": {
           "max": 41.3,
           "min": 14.1,
-          "avg": 28.165,
+          "avg": 27.81,
           "mindate": "01 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 01 May 2020 - Max: 05 Jan 2020"
@@ -94,24 +94,24 @@
     },
     "e133678a_067db8": {
       "lastPayload": {
-        "state": 148.03,
+        "state": 145.96,
         "attributes": {
           "max": 163.9,
-          "min": 113.9,
-          "avg": 148.03,
-          "mindate": "25 Apr 2020",
+          "min": 112.9,
+          "avg": 145.96,
+          "mindate": "05 May 2020",
           "maxdate": "05 Jan 2020",
-          "datestring": "Min: 25 Apr 2020 - Max: 05 Jan 2020"
+          "datestring": "Min: 05 May 2020 - Max: 05 Jan 2020"
         }
       }
     },
     "1423d97d_559027": {
       "lastPayload": {
-        "state": 146.72,
+        "state": 144.64,
         "attributes": {
           "max": 162.9,
           "min": 112.9,
-          "avg": 146.72,
+          "avg": 144.64,
           "mindate": "23 Apr 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 Apr 2020 - Max: 05 Jan 2020"
@@ -126,23 +126,23 @@
     },
     "d04bb90d_434ff8": {
       "lastPayload": {
-        "state": 24.8,
+        "state": 4,
         "attributes": {
           "count": 2,
           "countstring": "2 Days",
-          "average": 12.4,
-          "highest": 24.2,
+          "average": 2,
+          "highest": 3.4,
           "sort": 1
         }
       }
     },
     "87eb65c6_2c5798": {
       "lastPayload": {
-        "state": 58.3,
+        "state": 44.5,
         "attributes": {
           "count": 5,
           "countstring": "5 Days",
-          "average": 11.66,
+          "average": 8.9,
           "highest": 24.2,
           "sort": 3
         }
@@ -150,11 +150,11 @@
     },
     "7ed58e6d_bf223": {
       "lastPayload": {
-        "state": 65.8,
+        "state": 46.6,
         "attributes": {
-          "count": 6,
-          "countstring": "6 Days",
-          "average": 10.97,
+          "count": 5,
+          "countstring": "5 Days",
+          "average": 9.32,
           "highest": 21.2,
           "sort": 3
         }
@@ -162,24 +162,24 @@
     },
     "ce42590b_835aa8": {
       "lastPayload": {
-        "state": 21.8,
+        "state": 3.6,
         "attributes": {
           "count": 2,
           "countstring": "2 Days",
-          "average": 10.9,
-          "highest": 21.2,
+          "average": 1.8,
+          "highest": 3,
           "sort": "1"
         }
       }
     },
     "98856537_cb6888": {
       "lastPayload": {
-        "state": 0,
+        "state": 24.2,
         "attributes": {
-          "count": 0,
-          "countstring": "No Rain",
-          "average": 0,
-          "highest": 0,
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 24.2,
+          "highest": 24.2,
           "sort": 2
         }
       }
@@ -210,55 +210,55 @@
     },
     "2539ad6_6fcb652": {
       "lastPayload": {
-        "state": 5.2,
+        "state": 2.5,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "15:04 30 Apr 2020",
+          "time": "15:05 09 May 2020",
           "sort": 3
         }
       }
     },
     "2fb780af_b9bdc": {
       "lastPayload": {
-        "state": 15.8,
+        "state": 10.2,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:04 30 Apr 2020",
+          "time": "15:05 09 May 2020",
           "sort": 5
         }
       }
     },
     "42015636_8b2f88": {
       "lastPayload": {
-        "state": 3.4,
+        "state": 0.6,
         "attributes": {
           "aep": 0,
-          "ey": 6,
-          "time": "18:04 30 Apr 2020",
+          "ey": 0,
+          "time": "15:05 09 May 2020",
           "sort": 1
         }
       }
     },
     "2aebf71d_dc0db8": {
       "lastPayload": {
-        "state": 4.3,
+        "state": 1.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "14:04 30 Apr 2020",
+          "time": "15:05 09 May 2020",
           "sort": 2
         }
       }
     },
     "7a909ca4_d739c4": {
       "lastPayload": {
-        "state": 9.8,
+        "state": 6,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:04 30 Apr 2020",
+          "time": "15:05 09 May 2020",
           "sort": 4
         }
       }
@@ -299,23 +299,23 @@
     },
     "d065f5d6_0b5b88": {
       "lastPayload": {
-        "state": 570,
+        "state": 571,
         "attributes": {}
       }
     },
     "7fd7fe72_91aff": {
       "lastPayload": {
-        "state": 4624,
+        "state": 4642,
         "attributes": {}
       }
     },
     "54b7e4dc_f1759c": {
       "lastPayload": {
-        "state": 15.8,
+        "state": 12.8,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:04 30 Apr 2020",
+          "time": "15:05 09 May 2020",
           "sort": 6
         }
       }
@@ -344,12 +344,12 @@
     },
     "f569d297_e68f4": {
       "lastPayload": {
-        "state": 0,
+        "state": 21.2,
         "attributes": {
-          "count": 0,
-          "countstring": "No Rain",
-          "average": 0,
-          "highest": 0,
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 21.2,
+          "highest": 21.2,
           "sort": 2
         }
       }
