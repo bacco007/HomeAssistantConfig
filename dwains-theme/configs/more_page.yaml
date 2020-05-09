@@ -26,6 +26,9 @@ more_page:
     - name: Pi-Hole
       icon: mdi:pi-hole
       path: 'dwains-theme/addons/more_page/pi-hole/page.yaml'
+    - name: Sun UV Air Quality
+      icon: mdi:shield-sun-outline
+      path: 'dwains-theme/addons/more_page/sun_uv/page.yaml'
     - name: Synology NAS
       icon: mdi:nas
       path: 'dwains-theme/addons/more_page/synology/page.yaml'

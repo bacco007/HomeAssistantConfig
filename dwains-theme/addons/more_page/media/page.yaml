@@ -64,7 +64,7 @@
         include:
           - entity_id: sensor.lovelace_sonarr_upcoming_*
             attributes:
-              name: "! "
+              name: '! '
             options:
               type: custom:button-card
               show_state: true
@@ -167,7 +167,7 @@
         include:
           - entity_id: sensor.lovelace_radarr_upcoming_*
             attributes:
-              name: "! "
+              name: '! '
             options:
               type: custom:button-card
               show_state: true
@@ -280,7 +280,7 @@
         include:
           - entity_id: sensor.lovelace_plex_recent_*
             attributes:
-              name: "! "
+              name: '! '
             options:
               type: custom:button-card
               show_state: true

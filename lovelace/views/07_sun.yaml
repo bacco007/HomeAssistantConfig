@@ -1,6 +1,6 @@
 ---
 # lovelace_gen
-title: Sun, UV, Air Quality
+title: Sun, UV, Air Quality 
 path: sun-uv
 icon: mdi:shield-sun-outline
 panel: true

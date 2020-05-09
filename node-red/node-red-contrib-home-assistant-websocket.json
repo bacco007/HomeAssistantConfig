@@ -27,11 +27,11 @@
     },
     "a38693a7_6e5c6": {
       "lastPayload": {
-        "state": 437.7,
+        "state": 438.3,
         "attributes": {
           "count": 45,
           "countstring": "45 Days",
-          "average": 9.73,
+          "average": 9.74,
           "highest": 44.9,
           "sort": 4
         }
@@ -126,23 +126,23 @@
     },
     "d04bb90d_434ff8": {
       "lastPayload": {
-        "state": 4,
+        "state": 4.6,
         "attributes": {
           "count": 2,
           "countstring": "2 Days",
-          "average": 2,
-          "highest": 3.4,
+          "average": 2.3,
+          "highest": 4,
           "sort": 1
         }
       }
     },
     "87eb65c6_2c5798": {
       "lastPayload": {
-        "state": 44.5,
+        "state": 45.1,
         "attributes": {
           "count": 5,
           "countstring": "5 Days",
-          "average": 8.9,
+          "average": 9.02,
           "highest": 24.2,
           "sort": 3
         }
@@ -210,7 +210,7 @@
     },
     "2539ad6_6fcb652": {
       "lastPayload": {
-        "state": 2.5,
+        "state": 3,
         "attributes": {
           "aep": 0,
           "ey": 0,
@@ -221,7 +221,7 @@
     },
     "2fb780af_b9bdc": {
       "lastPayload": {
-        "state": 10.2,
+        "state": 10.9,
         "attributes": {
           "aep": 0,
           "ey": 0,
@@ -232,7 +232,7 @@
     },
     "42015636_8b2f88": {
       "lastPayload": {
-        "state": 0.6,
+        "state": 0.7,
         "attributes": {
           "aep": 0,
           "ey": 0,
@@ -243,7 +243,7 @@
     },
     "2aebf71d_dc0db8": {
       "lastPayload": {
-        "state": 1.3,
+        "state": 1.6,
         "attributes": {
           "aep": 0,
           "ey": 0,
@@ -254,7 +254,7 @@
     },
     "7a909ca4_d739c4": {
       "lastPayload": {
-        "state": 6,
+        "state": 6.9,
         "attributes": {
           "aep": 0,
           "ey": 0,

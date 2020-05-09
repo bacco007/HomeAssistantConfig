@@ -6,9 +6,13 @@
 #   url: /to_your_folder/filename.js
 - url: /hacsfiles/bar-card/bar-card.js
   type: module
+- url: /hacsfiles/bom-weather-card/bom-weather-card.js
+  type: module
 - url: /hacsfiles/config-template-card/config-template-card.js
   type: module
 - url: /hacsfiles/flex-table-card/flex-table-card.js
+  type: module
+- url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
   type: module
 - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
   type: js
@@ -18,5 +22,5 @@
   type: module
 - url: /hacsfiles/stack-in-card/stack-in-card.js
   type: module
-- url: /hacsfiles/zha-network-card/zha-network-card.js
+- url: /hacsfiles/sun-card/sun-card.js
   type: module

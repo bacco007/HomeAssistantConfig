@@ -1,0 +1,299 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      name: NSW AQI (72 Hours)
+      entities:
+        - entity: sensor.nsw_air_quality_tamworth
+          name: AQI
+      animate: true
+      decimals: 4
+      hours_to_show: 48
+      points_per_hour: 6
+      group_by: hour
+      line_width: 3
+      lower_bound: 0
+      align_state: center
+      unit: "AQI"
+      show:
+        extrema: true
+        average: true
+        fill: fade
+      color_thresholds:
+        - value: 200
+          color: '#d04730'
+        - value: 150
+          color: '#782d49'
+        - value: 100
+          color: '#ec783a'
+        - value: 67
+          color: '#ffd236'
+        - value: 34
+          color: '#99b964'
+        - value: 0
+          color: '#31add3'
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      name: wAQI (72 Hours)
+      entities:
+        - entity: sensor.waqi_tamworth_north_west_slopes_australia
+          name: wAQI
+      animate: true
+      decimals: 0
+      hours_to_show: 48
+      points_per_hour: 6
+      group_by: hour
+      line_width: 3
+      lower_bound: 0
+      align_state: center
+      unit: "AQI"
+      show:
+        extrema: true
+        average: true
+        fill: fade
+      color_thresholds:
+        - value: 301
+          color: maroon
+        - value: 201
+          color: purple
+        - value: 151
+          color: red
+        - value: 101
+          color: orange
+        - value: 51
+          color: yellow
+        - value: 0
+          color: green
+
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      name: UV Index (48 Hours)
+      entities:
+        - entity: sensor.current_uv_index
+          name: UV Index
+      animate: true
+      decimals: 4
+      hours_to_show: 48
+      points_per_hour: 6
+      group_by: hour
+      line_width: 3
+      lower_bound: 0
+      align_state: center
+      unit: "UVi"
+      show:
+        extrema: true
+        average: true
+        fill: fade
+      color_thresholds:
+        - value: 11
+          color: "#6A1B9A"
+        - value: 8
+          color: "#B71C1C"
+        - value: 6
+          color: "#EF6C00"
+        - value: 3
+          color: "#F9A825"
+        - value: 0
+          color: "#558B2F"
+
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  # padding: true
+  cards:
+    - type: custom:stack-in-card
+      cards:
+        - type: entities
+          title: Sun
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - type: custom:fold-entity-row
+              head: sensor.sun_state
+              entities:
+                - sensor.sun_solarangle
+                - sensor.sun_nextrising
+                - sensor.sun_nextdawn
+                - sensor.sun_nextnoon
+                - sensor.sun_nextdusk
+                - sensor.sun_nextsetting
+                - sensor.sun_nextmidnight
+                - type: section
+                - sensor.solar_midnight
+                - sensor.astronomical_dawn
+                - sensor.nautical_dawn
+                - sensor.dawn
+                - sensor.sunrise
+                - sensor.solar_noon
+                - sensor.sunset
+                - sensor.dusk
+                - sensor.nautical_dusk
+                - sensor.astronomical_dusk
+                - type: section
+                - sensor.daylight
+                - sensor.civil_daylight
+                - sensor.nautical_daylight
+                - sensor.astronomical_daylight
+                - sensor.night
+                - sensor.civil_night
+                - sensor.nautical_night
+                - sensor.astronomical_night
+                - type: section
+                - sensor.elevation
+                - sensor.max_elevation
+        - type: custom:sun-card
+          name:
+          meridiem: true
+          entities:
+            time: sensor.time_utc
+            max_elevation: sun.sun
+            sunrise: sensor.sunrise
+            sunset: sensor.sunset
+            noon: sensor.solar_noon
+            moon: sensor.moon
+    - type: custom:stack-in-card
+      cards:
+        - type: entities
+          title: Air Quality
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.nsw_air_quality_tamworth
+              name: Tamworth AQI (NSW DoE)
+              type: custom:multiple-entity-row
+              entities:
+                - attribute: pm10
+                  name: PM10
+                  unit: AQI
+                - attribute: pm25
+                  name: PM2.5
+                  unit: AQI
+              secondary_info:
+                entity: sensor.nsw_air_quality_tamworth_airpollev
+            - entity: sensor.nsw_air_quality_tamworth_change_aqi
+              type: custom:multiple-entity-row
+              name: Extremes (24hrs)
+              state_header: 24hr Chg
+              entities:
+                - entity: sensor.nsw_air_quality_tamworth_min_aqi
+                  name: Min
+                - entity: sensor.nsw_air_quality_tamworth_max_aqi
+                  name: Max
+            - type: section
+            - entity: sensor.waqi_tamworth_north_west_slopes_australia
+              name: Tamworth AQI (wAQI)
+              type: custom:multiple-entity-row
+              entities:
+                - attribute: pm_10
+                  name: PM10
+                  unit: AQI
+                - attribute: pm_2_5
+                  name: PM2.5
+                  unit: AQI
+              secondary_info:
+                entity: sensor.waqi_tamworth_airpollev
+            - entity: sensor.waqi_tamworth_change_aqi
+              type: custom:multiple-entity-row
+              name: Extremes (24hrs)
+              state_header: 24hr Chg
+              entities:
+                - entity: sensor.waqi_tamworth_min_aqi
+                  name: Min
+                - entity: sensor.waqi_tamworth_max_aqi
+                  name: Max
+
+    - type: custom:stack-in-card
+      cards:
+        - type: entities
+          title: UV Index
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - binary_sensor.protection_window
+            - type: custom:multiple-entity-row
+              entity: sensor.current_uv_index
+              secondary_info:
+                entity: sensor.current_uv_level
+            - sensor.max_uv_index
+            - sensor.current_ozone_level
+            - type: custom:fold-entity-row
+              head:
+                type: section
+                label: Safe Exposure Times
+              entities:
+                - sensor.skin_type_1_safe_exposure_time
+                - sensor.skin_type_2_safe_exposure_time
+                - sensor.skin_type_3_safe_exposure_time
+                - sensor.skin_type_4_safe_exposure_time
+                - sensor.skin_type_5_safe_exposure_time
