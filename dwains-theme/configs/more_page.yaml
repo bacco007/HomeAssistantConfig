@@ -5,6 +5,9 @@ more_page:
     - name: Coronavirus
       icon: mdi:biohazard
       path: 'dwains-theme/addons/more_page/coronavirus/page.yaml'
+    - name: Downloads
+      icon: mdi:download-network
+      path: 'dwains-theme/addons/more_page/downloads/page.yaml'
     - name: Home Assistant
       icon: mdi:home-assistant
       path: 'dwains-theme/addons/more_page/homeassistant/page.yaml'

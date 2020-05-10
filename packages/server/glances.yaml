@@ -19,3 +19,8 @@ glances:
   - host: !secret pveTBSH_ipaddress
     name: pveTBSH
     version: 3
+
+  - host: 127.0.0.1
+    port: 61209
+    name: vmTBSH03
+    version: 3

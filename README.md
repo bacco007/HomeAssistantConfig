@@ -1,4 +1,4 @@
-# TBSmartHome - Home Assistant Configuration
+# 🏠TBSmartHome - Home Assistant Configuration
 
 <img align="right" src="./.assets/logo.png?raw=true">
 
@@ -49,7 +49,7 @@ My smarthome setup seems to be ever-growing, but at this stage it's unlikely tha
 ### Hardware
 
 - Dell Optiplex 9020 SFF (i5, 24Gb RAM, 500Gb HDD) running Proxmox
-  - I run two VMs from this machine, one for Home Assistant and related elements and one for other home server stuff
+  - I run three VMs from this machine, one for Home Assistant (Using HassOS) and the other two for other home server stuff
 - Lenovo ThinkMachine M73 Tiny (Intel Pentium G3240T, 4Gb RAM, 500Gb HDD)
   - Ubuntu Server 18.10, this machine runs my UniFi controller and Nginx Reverse Proxy Setup
 - Raspberry Pi 3
@@ -65,11 +65,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, May 9th 2020_
+_Stats as at 15:47, Sunday, May 10th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.109.6 | 249     | 1306         | 963 | 19 |
+| 0.109.6 | 249     | 1361         | 1021 | 19 |
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -85,7 +85,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 - [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel)
 - [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media)
-- [alert](https://www.home-assistant.io/components/alert)
 - [alexa](https://www.home-assistant.io/components/alexa)
 - [alexa_media](https://www.home-assistant.io/components/alexa_media)
 - [almond](https://www.home-assistant.io/components/almond)
@@ -180,6 +179,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
+- [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv)
 - [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod)
@@ -404,13 +404,20 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
 
-- [AppDaemon](https://github.com/hassio-addons/addon-appdaemon3)
-- [deCONZ](https://github.com/home-assistant/hassio-addons/tree/master/deconz)
-- [MQTT Server & Web Client](https://github.com/hassio-addons/addon-mqtt/)
-- [MariaDB](https://home-assistant.io/addons/mariadb/)
-- [Node-RED](https://github.com/hassio-addons/addon-node-red/)
-- [SSH & Web Terminal](https://github.com/hassio-addons/addon-ssh/)
-- [Visual Studio Code](https://github.com/hassio-addons/addon-vscode)
+- ADB - Android Debug Bridge
+- AirSonos
+- AppDaemon 4
+- ESPHome
+- Glances (for my HA Instance)
+- JupyterLab Lite
+- MariaDB
+- Mosquitto Broker (MQTT)
+- Node-RED
+- Portainer
+- SSH & Web Terminal
+- Samba Share
+- Visual Studio Code
+- Xbox One Smartglass
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 

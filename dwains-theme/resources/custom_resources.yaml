@@ -16,6 +16,8 @@
   type: module
 - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
   type: js
+- url: /hacsfiles/list-card/list-card.js
+  type: js
 - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
   type: module
 - url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js

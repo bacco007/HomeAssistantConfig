@@ -10,3 +10,4 @@ proxmoxve:
         vms:
           - !secret proxmox_node1_vms1
           - !secret proxmox_node1_vms2
+          - !secret proxmox_node1_vms3

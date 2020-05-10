@@ -29,6 +29,7 @@
                 ha-markdown { padding-bottom: 1px !important; }
               content: >
                 **Home Assistant**
+
             # - type: entities
             #   style: |
             #     ha-card { box-shadow: none; }
@@ -129,7 +130,7 @@
     - type: custom:mini-graph-card
       entities:
         - entity: sensor.ha_db_size
-      name: Database Size
+      name: Database Size (MariaDB)
       height: 50
       line_color: 'var(--dwains-theme-accent)'
       line_width: 2
@@ -167,6 +168,21 @@
       align_state: center
       show:
         # extrema: true
+        fill: fade
+
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.influxdb_size
+      name: Database Size (InfluxDB)
+      height: 50
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      font_size: 70
+      hours_to_show: 168
+      points_per_hour: 1
+      align_state: center
+      show:
+        #extrema: true
         fill: fade
 
 - type: custom:dwains-flexbox-card
@@ -238,7 +254,7 @@
     - type: vertical-stack
       cards:
         - type: entities
-          title: Auto Backups
+          title: Versions
           style: |
             ha-card {
               background-color: var(--dwains-theme-primary);
@@ -278,38 +294,120 @@
             - entity: sensor.ssl_certificate_expiry
               name: HA SSL Cert Expiry
 
+    - type: custom:stack-in-card
+      cards:
+        - type: entities
+          title: HA Community Store
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.hacs
+              tap_action:
+                action: navigate
+                navigation_path: /hacs/installed
+              icon: hacs:hacs
+              name: Updates Available?
+        - type: custom:list-card
+          feed_attribute: repositories
+          entity: sensor.hacs
+          columns:
+            - field: name
+              title: Name
+              align: center
+            - field: 'installed version'
+              title: Current
+            - field: 'available version'
+              title: Latest
+
+    - type: custom:stack-in-card
+      cards:
+        - type: entities
+          title: HA Database
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.ha_db_size
+              name: HA Database Size (MariaDB)
+              secondary_info: last-changed
+            - entity: sensor.ha_db_events
+              secondary_info: last-changed
+            - entity: sensor.ha_db_states
+              secondary_info: last-changed
+            - type: section
+            - entity: sensor.influxdb_size
+              name: HA Database Size (InfluxDB)
+              secondary_info: last-changed
+
     - type: vertical-stack
       cards:
-        - type: custom:auto-entities
-          card:
-            type: entities
-            title: Component Counts
-            style: |
-              ha-card {
-                background-color: var(--dwains-theme-primary);
-                padding-bottom: 10px;
-              }
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
-          sort:
-            method: name
-          filter:
-            include:
-              - { entity_id: sensor.count_* }
+        - type: entities
+          title: HomeAssistantConfig on Github
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.github_pushedat
+            - entity: sensor.github_updatedat
+            - entity: sensor.github_forks
+            - entity: sensor.github_issues
+            - entity: sensor.github_stars
+            - entity: sensor.github_subscribers
 
     - type: vertical-stack
       cards:
@@ -350,3 +448,37 @@
                 - entity: sensor.auto_backup
                   unit: false
                   name: Pending
+
+
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Component Counts
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: name
+          filter:
+            include:
+              - { entity_id: sensor.count_* }

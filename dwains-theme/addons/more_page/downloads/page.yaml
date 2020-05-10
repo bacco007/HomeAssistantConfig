@@ -1,0 +1,216 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12'
+  cards:
+    ####################
+    ### TRANSMISSION ###
+    ####################
+    # - type: custom:stack-in-card
+    #   style: |
+    #     ha-card {
+    #       color: teal;
+    #       border-radius: 2.5px;
+    #     }
+    #   cards:
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-12 col-md-12 col-lg-3 col-xl-3'
+      cards:
+        # - type: horizontal-stack
+        #   cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://brands.home-assistant.io/transmission/logo.png"/><br/>
+
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: binary_sensor.vmtbsh01_ha_dockermon_transmission
+              type: custom:multiple-entity-row
+              secondary_info:
+                attribute: status
+              name: Transmission (vmTBSH01, Docker)
+              icon: mdi:transfer-down
+            - type: section
+            - entity: sensor.transmission_status
+              name: Status
+            - type: section
+            - entity: sensor.transmission_total_torrents
+              name: Total Torrents
+            - entity: sensor.transmission_active_torrents
+              name: Active Torents
+            - entity: sensor.transmission_completed_torrents
+              name: Completed Torrents
+            - entity: sensor.transmission_paused_torrents
+              name: Paused Torrents
+            - entity: sensor.transmission_started_torrents
+              name: Started Torrents
+            - type: section
+            - entity: sensor.transmission_down_speed
+              name: Download Speed
+            - entity: sensor.transmission_up_speed
+              name: Upload Speed
+
+        - type: custom:mini-graph-card
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+            }
+          entities:
+            - entity: sensor.transmission_total_torrents
+              name: Total
+            - entity: sensor.transmission_active_torrents
+              name: Active
+            - entity: sensor.transmission_paused_torrents
+              name: Paused
+          name: Transmission
+          line_color: 'var(--dwains-theme-accent)'
+          animate: true
+          align_state: center
+          hours_to_show: 48
+          hour24: true
+          points_per_hour: 6
+          smoothing: true
+          show:
+            points: false
+            graph: line
+            fill: fade
+            extrema: true
+        - type: custom:mini-graph-card
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+            }
+          entities:
+            - entity: sensor.transmission_up_speed
+              name: Up Speed
+            - entity: sensor.transmission_down_speed
+              name: Down Speed
+          name: Transmission
+          line_color: 'var(--dwains-theme-accent)'
+          animate: true
+          align_state: center
+          hours_to_show: 48
+          hour24: true
+          points_per_hour: 6
+          smoothing: true
+          show:
+            points: false
+            graph: line
+            fill: fade
+            extrema: true
+
+    ###############
+    ### SABnzbd ###
+    ###############
+    # - type: custom:stack-in-card
+    #   style: |
+    #     ha-card {
+    #       color: teal;
+    #       border-radius: 2.5px;
+    #     }
+    #   cards:
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-12 col-md-12 col-lg-4 col-xl-4'
+      cards:
+        # - type: horizontal-stack
+        #   cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://brands.home-assistant.io/sabnzbd/logo.png"/><br/>
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: binary_sensor.vmtbsh01_ha_dockermon_sabnzbd
+              type: custom:multiple-entity-row
+              secondary_info:
+                attribute: status
+              name: SABnzbd (vmTBSH01, Docker)
+              icon: mdi:transfer-down
+            - type: section
+            - entity: sensor.sabnzbd_status
+              name: Status
+            - sensor.sabnzbd_speed
+            - type: section
+            - entity: sensor.sabnzbd_queue
+              name: Download Queue
+            - entity: sensor.sabnzbd_queue_count
+              name: Items to Download
+            - entity: sensor.sabnzbd_left
+              name: Remaining Downloads
+            - type: section
+            - entity: sensor.sabnzbd_total
+              name: Total Downloads
+            - entity: sensor.sabnzbd_daily_total
+              name: Daily Downloads
+            - entity: sensor.sabnzbd_weekly_total
+              name: Weekly Downloads
+            - entity: sensor.sabnzbd_monthly_total
+              name: Monthly Downloads
+        - type: custom:mini-graph-card
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+            }
+          entities:
+            - entity: sensor.sabnzbd_speed
+          line_color: 'var(--dwains-theme-accent)'
+          animate: true
+          align_state: center
+          hours_to_show: 48
+          hour24: true
+          points_per_hour: 6
+          smoothing: true
+          show:
+            points: false
+            graph: line
+            fill: fade
+            extrema: true
