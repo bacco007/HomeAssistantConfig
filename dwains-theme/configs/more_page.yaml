@@ -8,6 +8,9 @@ more_page:
     - name: Downloads
       icon: mdi:download-network
       path: 'dwains-theme/addons/more_page/downloads/page.yaml'
+    - name: Folding@Home
+      icon: 'mdi:state-machine'
+      path: 'dwains-theme/addons/more_page/foldingathome/page.yaml'
     - name: Home Assistant
       icon: mdi:home-assistant
       path: 'dwains-theme/addons/more_page/homeassistant/page.yaml'

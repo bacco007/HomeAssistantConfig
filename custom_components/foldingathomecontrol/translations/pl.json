@@ -13,10 +13,23 @@
             }
         },
         "error": {
-            "auth": "Złe hasło lub nazwa użytkownika."
+            "cannot_connect": "Nie może się połączyć z gospodarzem.",
+            "auth_required": "Do połączenia się z tym hostem wymagane jest podanie hasła.",
+            "auth_failed": "Nazwa użytkownika lub hasło są nieprawidłowe."
         },
         "abort": {
-            "single_instance_allowed": "Dozwolona jest tylko jedna konfiguracja FoldingAtHomeControl."
+            "already_configured": "Dozwolona jest tylko jedna konfiguracja urządzenia FoldingAtHomeControl dla każdego adresu."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Konfiguracja opcji sterowania składaniem w domu FoldingAtHomeControl",
+                "data": {
+                    "update_rate": "Ustawianie szybkości aktualizacji",
+                    "read_timeout": "Ustawianie czasu odczytu"
+                }
+            }
         }
     }
 }

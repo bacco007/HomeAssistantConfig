@@ -8,7 +8,7 @@
     "@eifinger"
   ],
   "requirements": [
-    "PyFoldingAtHomeControl==1.2.3"
+    "PyFoldingAtHomeControl==1.5.0"
   ],
-  "homeassistant": "0.96.0"
+  "homeassistant": "0.109.0"
 }

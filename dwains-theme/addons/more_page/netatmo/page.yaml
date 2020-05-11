@@ -259,6 +259,7 @@
           filter:
             include:
               - { entity_id: sensor.netatmo_*indoor* }
+
     - type: vertical-stack
       cards:
         - type: custom:auto-entities
@@ -291,6 +292,60 @@
           filter:
             include:
               - { entity_id: sensor.netatmo_*outdoor* }
+        - type: vertical-stack
+          cards:
+          - type: entities
+            title: Temperature Extremes
+            style: |
+              ha-card {
+                padding-bottom: 10px;
+                background-color: var(--dwains-theme-primary)
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - entity: sensor.weather_home_tempmax_lastyr
+                name: Home - Max Temp (Last 365 Days)
+                type: custom:multiple-entity-row
+                show_state: false
+                entities:
+                  - attribute: max
+                    name: Max
+                  - attribute: min
+                    name: Min
+                  - attribute: avg
+                    name: Avg
+                secondary_info:
+                  attribute: datestring
+                  name:
+              - entity: sensor.weather_home_tempmin_lastyr
+                name: Home - Min Temp (Last 365 Days)
+                type: custom:multiple-entity-row
+                show_state: false
+                entities:
+                  - attribute: max
+                    name: Max
+                  - attribute: min
+                    name: Min
+                  - attribute: avg
+                    name: Avg
+                secondary_info:
+                  attribute: datestring
+                  name:
     - type: vertical-stack
       cards:
         - type: custom:auto-entities

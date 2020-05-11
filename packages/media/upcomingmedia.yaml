@@ -22,6 +22,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[1].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[1].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[1].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_02:
         friendly_name: Lovelace - Sonarr Upcoming 02
         entity_id: sensor.sonarr_upcoming_media
@@ -42,6 +48,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[2].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[2].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[2].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_03:
         friendly_name: Lovelace - Sonarr Upcoming 03
         entity_id: sensor.sonarr_upcoming_media
@@ -62,6 +74,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[3].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[3].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[3].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_04:
         friendly_name: Lovelace - Sonarr Upcoming 04
         entity_id: sensor.sonarr_upcoming_media
@@ -82,6 +100,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[4].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[4].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[4].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_05:
         friendly_name: Lovelace - Sonarr Upcoming 05
         entity_id: sensor.sonarr_upcoming_media
@@ -102,6 +126,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[5].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[5].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[5].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_06:
         friendly_name: Lovelace - Sonarr Upcoming 06
         entity_id: sensor.sonarr_upcoming_media
@@ -122,6 +152,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[6].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[6].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[6].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_07:
         friendly_name: Lovelace - Sonarr Upcoming 07
         entity_id: sensor.sonarr_upcoming_media
@@ -142,6 +178,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[7].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[7].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[7].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_08:
         friendly_name: Lovelace - Sonarr Upcoming 08
         entity_id: sensor.sonarr_upcoming_media
@@ -162,6 +204,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[8].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[8].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[8].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_09:
         friendly_name: Lovelace - Sonarr Upcoming 09
         entity_id: sensor.sonarr_upcoming_media
@@ -182,6 +230,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[9].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[9].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[9].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_10:
         friendly_name: Lovelace - Sonarr Upcoming 10
         entity_id: sensor.sonarr_upcoming_media
@@ -202,6 +256,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[10].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[10].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[10].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_11:
         friendly_name: Lovelace - Sonarr Upcoming 11
         entity_id: sensor.sonarr_upcoming_media
@@ -222,6 +282,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[11].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[11].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[11].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_sonarr_upcoming_12:
         friendly_name: Lovelace - Sonarr Upcoming 12
         entity_id: sensor.sonarr_upcoming_media
@@ -242,6 +308,12 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
             {{data[12].poster}}
+          downloaded: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{data[12].flag}}
+          onairtoday: >
+            {% set data = state_attr('sensor.sonarr_upcoming_media', 'data') | from_json %}
+            {{as_timestamp(data[12].airdate)|timestamp_custom ('%Y/%m/%d') == as_timestamp(now())|timestamp_custom ('%Y/%m/%d')}}
       lovelace_plex_recent_01:
         friendly_name: Lovelace - Plex Recent 01
         entity_id: sensor.plex_recently_added
@@ -262,6 +334,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[1].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[1].flag}}
       lovelace_plex_recent_02:
         friendly_name: Lovelace - Plex Recent 02
         entity_id: sensor.plex_recently_added
@@ -282,6 +357,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[2].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[2].flag}}
       lovelace_plex_recent_03:
         friendly_name: Lovelace - Plex Recent 03
         entity_id: sensor.plex_recently_added
@@ -302,6 +380,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[3].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[3].flag}}
       lovelace_plex_recent_04:
         friendly_name: Lovelace - Plex Recent 04
         entity_id: sensor.plex_recently_added
@@ -322,6 +403,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[4].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[4].flag}}
       lovelace_plex_recent_05:
         friendly_name: Lovelace - Plex Recent 05
         entity_id: sensor.plex_recently_added
@@ -342,6 +426,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[5].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[5].flag}}
       lovelace_plex_recent_06:
         friendly_name: Lovelace - Plex Recent 06
         entity_id: sensor.plex_recently_added
@@ -362,6 +449,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[6].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[6].flag}}
       lovelace_plex_recent_07:
         friendly_name: Lovelace - Plex Recent 07
         entity_id: sensor.plex_recently_added
@@ -382,6 +472,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[7].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[7].flag}}
       lovelace_plex_recent_08:
         friendly_name: Lovelace - Plex Recent 08
         entity_id: sensor.plex_recently_added
@@ -402,6 +495,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[8].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[8].flag}}
       lovelace_plex_recent_09:
         friendly_name: Lovelace - Plex Recent 09
         entity_id: sensor.plex_recently_added
@@ -422,6 +518,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[9].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[9].flag}}
       lovelace_plex_recent_10:
         friendly_name: Lovelace - Plex Recent 10
         entity_id: sensor.plex_recently_added
@@ -442,6 +541,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[10].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[10].flag}}
       lovelace_plex_recent_11:
         friendly_name: Lovelace - Plex Recent 11
         entity_id: sensor.plex_recently_added
@@ -462,6 +564,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[11].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[11].flag}}
       lovelace_plex_recent_12:
         friendly_name: Lovelace - Plex Recent 12
         entity_id: sensor.plex_recently_added
@@ -482,6 +587,9 @@ sensor:
           poster: >
             {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
             {{data[12].poster}}
+          watched: >
+            {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+            {{data[12].flag}}
       lovelace_radarr_upcoming_01:
         friendly_name: Lovelace - radarr Upcoming 01
         entity_id: sensor.radarr_upcoming_media

@@ -13,10 +13,23 @@
             }
         },
         "error": {
-            "auth": "Username/Password is wrong."
+            "cannot_connect": "Cannot connect to host.",
+            "auth_required": "A password is required to connect to this host.",
+            "auth_failed": "The Username or Password is wrong."
         },
         "abort": {
-            "single_instance_allowed": "Only a single configuration of FoldingAtHomeControl is allowed."
+            "already_configured": "Only a single configuration of FoldingAtHomeControl for each address is allowed."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Configure options for FoldingAtHomeControl",
+                "data": {
+                    "update_rate": "Set Update Rate",
+                    "read_timeout": "Set the Read Timeout"
+                }
+            }
         }
     }
 }

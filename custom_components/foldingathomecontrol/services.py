@@ -1,13 +1,8 @@
 """FoldingAtHomeControl services."""
 import voluptuous as vol
-
 from homeassistant.helpers import config_validation as cv
 
-from .const import (
-    CONF_ADDRESS,
-    _LOGGER,
-    DOMAIN,
-)
+from .const import _LOGGER, CONF_ADDRESS, DOMAIN
 
 DOMAIN_SERVICES = f"{DOMAIN}_services"
 

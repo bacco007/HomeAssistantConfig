@@ -72,7 +72,13 @@
               show_name: true
               show_icon: true
               name: '[[[ return entity.attributes.name ]]]'
-              entity_picture: '[[[ return entity.attributes.poster ]]]'
+              entity_picture: >
+                [[[
+                  if (entity.attributes.poster == '')
+                    return 'https://via.placeholder.com/340x500?text=No%20Poster%20Available';
+                  else
+                    return entity.attributes.poster;
+                ]]]
               show_entity_picture: true
               # entity: this.entity_id
               layout: vertical
@@ -87,7 +93,16 @@
                   - grid-template-columns: 100%
                   - grid-template-rows: 1fr min-content min-content min-content
                 card:
-                  - background-color: var(--dwains-theme-primary)
+                  - background-color: >
+                      [[[
+                        if (entity.attributes.onairtoday == "True") return 'var(--dwains-theme-accent)';
+                        else return 'var(--dwains-theme-primary)';
+                      ]]]
+                  - opacity: >
+                      [[[
+                        if (entity.attributes.downloaded == "True") return '0.5';
+                        else return '1';
+                      ]]]
                   - border-radius: 0
                   - box-shadow: none
                 name:
@@ -288,7 +303,13 @@
               show_name: true
               show_icon: true
               name: '[[[ return entity.attributes.name ]]]'
-              entity_picture: '[[[ return entity.attributes.poster ]]]'
+              entity_picture: >
+                [[[
+                  if (entity.attributes.poster == '')
+                    return 'https://via.placeholder.com/340x500?text=No%20Poster%20Available';
+                  else
+                    return entity.attributes.poster;
+                ]]]
               show_entity_picture: true
               # entity: this.entity_id
               layout: vertical
@@ -304,6 +325,11 @@
                   - grid-template-rows: 1fr min-content min-content min-content
                 card:
                   - background-color: var(--dwains-theme-primary)
+                  - opacity: >
+                      [[[
+                        if (entity.attributes.watched == "False") return '0.5';
+                        else return '1';
+                      ]]]
                   - border-radius: 0
                   - box-shadow: none
                 name:

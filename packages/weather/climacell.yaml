@@ -6,6 +6,7 @@ sensor:
     name: Climacell
     latitude: !secret zone_home_latitude
     longitude: !secret zone_home_longitude
+    units: si
     monitored_conditions:
       realtime:
         - weather_condition
@@ -39,6 +40,7 @@ sensor:
       forecast:
         - weather_condition
         - temperature
+        - feels_like
         - precipitation
         - precipitation_probability
     scan_interval:
