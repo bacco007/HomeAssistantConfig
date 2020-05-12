@@ -6,7 +6,7 @@ from homeassistant.const import UNIT_PERCENTAGE
 # Base component constants
 DOMAIN = "foldingathomecontrol"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 PLATFORMS = ["sensor"]
 DATA_UPDATED = f"{DOMAIN}_data_updated"
 SENSOR_ADDED = f"{DOMAIN}_sensor_added"

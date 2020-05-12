@@ -151,7 +151,10 @@ class FoldingAtHomeControlClient:
                     self.slot_data[unit["slot"]] = {}
                 self.slot_data[unit["slot"]]["Error"] = unit.get("error")
                 self.slot_data[unit["slot"]]["Project"] = unit.get("project")
-                self.slot_data[unit["slot"]]["Percentdone"] = unit.get("percentdone")
+                percent_done = unit.get("percentdone")
+                if percent_done is not None:
+                    percent_done = percent_done.split("%")[0]
+                self.slot_data[unit["slot"]]["Percentdone"] = percent_done
                 self.slot_data[unit["slot"]][
                     "Estimated Time Finished"
                 ] = convert_eta_to_timestamp(unit.get("eta"))

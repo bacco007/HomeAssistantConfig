@@ -4,4 +4,16 @@ sensor:
     token: !secret plex_token
     host: !secret plex_host
     port: !secret plex_port
-    max: 50
+    max: 25
+    download_images: true
+    img_dir: "/custom-lovelace/upcoming-media-card/images/plex/all/"
+  - platform: plex_recently_added
+    name: plex_recently_added_movies
+    token: !secret plex_token
+    host: !secret plex_host
+    port: !secret plex_port
+    max: 25
+    download_images: true
+    img_dir: "/custom-lovelace/upcoming-media-card/images/plex/movies/"
+    section_types:
+      - movie

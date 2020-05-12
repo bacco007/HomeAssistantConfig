@@ -1,58 +1,162 @@
-- type: horizontal-stack
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-6 col-lg-3 col-xl-3'
   cards:
     - type: custom:mini-graph-card
       entities:
         - sensor.pi_hole_ads_blocked_today
       name: Ads Blocked Today (#)
-      height: 20
-      line_width: 2
-      font_size: 70
+      line_color: 'var(--dwains-theme-accent)'
       hours_to_show: 48
+      hour24: true
       points_per_hour: 6
+      smoothing: true
+      animate: true
       show:
-        fill: true
-- type: horizontal-stack
-  cards:
+        # points: false
+        graph: line
+        fill: fade
     - type: custom:mini-graph-card
       entities:
         - sensor.pi_hole_ads_percentage_blocked_today
       name: Ads Blocked Today (%)
-      height: 20
-      line_width: 2
-      font_size: 70
+      line_color: 'var(--dwains-theme-accent)'
       hours_to_show: 48
+      hour24: true
       points_per_hour: 6
+      smoothing: true
+      animate: true
       show:
-        fill: true
-- type: horizontal-stack
-  cards:
+        # points: false
+        graph: line
+        fill: fade
     - type: custom:mini-graph-card
       entities:
         - sensor.pi_hole_dns_queries_today
       name: DNS Queries
-      height: 50
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 1
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 48
+      hour24: true
+      points_per_hour: 6
+      smoothing: true
+      animate: true
       show:
-        # extrema: true
-        fill: true
+        # points: false
+        graph: line
+        fill: fade
     - type: custom:mini-graph-card
       entities:
         - sensor.pi_hole_dns_unique_clients
       name: Unique Clients
-      height: 50
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 1
+      line_color: 'var(--dwains-theme-accent)'
+      hours_to_show: 48
+      hour24: true
+      points_per_hour: 6
+      smoothing: true
+      animate: true
       show:
-        # extrema: true
-        fill: true
-- type: custom:auto-entities
-  card:
-    type: entities
-  filter:
-    include:
-      - { entity_id: sensor.pi_hole_* }
+        # points: false
+        graph: line
+        fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  # padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Versions
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.pi_hole_version
+              name: Pi-Hole - Core
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: core_current
+                  name: Current
+                - attribute: core_latest
+                  name: Latest
+              secondary_info:
+                attribute: core_update
+                name: 'Update Available? '
+            - entity: sensor.pi_hole_version
+              name: Pi-Hole - FTL
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: FTL_current
+                  name: Current
+                - attribute: FTL_latest
+                  name: Latest
+              secondary_info:
+                attribute: FTL_update
+                name: 'Update Available? '
+            - entity: sensor.pi_hole_version
+              name: Pi-Hole - Web
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: web_current
+                  name: Current
+                - attribute: web_latest
+                  name: Latest
+              secondary_info:
+                attribute: web_update
+                name: 'Update Available? '
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Stats
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: name
+          filter:
+            include:
+              - entity_id: sensor.pi_hole_*
+            exclude:
+              - entity_id: sensor.pi_hole_version

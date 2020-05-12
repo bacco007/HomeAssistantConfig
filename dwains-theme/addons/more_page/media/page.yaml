@@ -1,7 +1,7 @@
 # dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12'
+  items_classes: "col-xs-12"
   cards:
     ##############
     ### SONARR ###
@@ -14,7 +14,7 @@
     #     }
     #   cards:
     - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
       cards:
         # - type: horizontal-stack
         #   cards:
@@ -64,14 +64,14 @@
         include:
           - entity_id: sensor.lovelace_sonarr_upcoming_*
             attributes:
-              name: '! '
+              name: "! "
             options:
               type: custom:button-card
               show_state: true
               show_label: true
               show_name: true
               show_icon: true
-              name: '[[[ return entity.attributes.name ]]]'
+              name: "[[[ return entity.attributes.name ]]]"
               entity_picture: >
                 [[[
                   if (entity.attributes.poster == '')
@@ -123,7 +123,7 @@
         ignore_case: true
       card:
         type: custom:dwains-flexbox-card
-        items_classes: 'col-xs-6 col-sm-6 col-md-3 col-lg-2'
+        items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
 
     ##############
     ### RADARR ###
@@ -136,7 +136,7 @@
     #     }
     #   cards:
     - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
       cards:
         # - type: horizontal-stack
         #   cards:
@@ -182,15 +182,15 @@
         include:
           - entity_id: sensor.lovelace_radarr_upcoming_*
             attributes:
-              name: '! '
+              name: "! "
             options:
               type: custom:button-card
               show_state: true
               show_label: true
               show_name: true
               show_icon: true
-              name: '[[[ return entity.attributes.name ]]]'
-              entity_picture: '[[[ return entity.attributes.poster ]]]'
+              name: "[[[ return entity.attributes.name ]]]"
+              entity_picture: "[[[ return entity.attributes.poster ]]]"
               show_entity_picture: true
               # entity: this.entity_id
               layout: vertical
@@ -224,7 +224,7 @@
         ignore_case: true
       card:
         type: custom:dwains-flexbox-card
-        items_classes: 'col-xs-6 col-sm-6 col-md-3 col-lg-2'
+        items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
 
     ############
     ### PLEX ###
@@ -237,7 +237,7 @@
     #     }
     #   cards:
     - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
       cards:
         # - type: horizontal-stack
         #   cards:
@@ -292,17 +292,19 @@
 
     - type: custom:auto-entities
       filter:
+        exclude:
+          - entity_id: sensor.lovelace_plex_recent_movies_*
         include:
           - entity_id: sensor.lovelace_plex_recent_*
             attributes:
-              name: '! '
+              name: "! "
             options:
               type: custom:button-card
               show_state: true
               show_label: true
               show_name: true
               show_icon: true
-              name: '[[[ return entity.attributes.name ]]]'
+              name: "[[[ return entity.attributes.name ]]]"
               entity_picture: >
                 [[[
                   if (entity.attributes.poster == '')
@@ -350,4 +352,64 @@
         ignore_case: true
       card:
         type: custom:dwains-flexbox-card
-        items_classes: 'col-xs-6 col-sm-6 col-md-3 col-lg-2'
+        items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
+
+    - type: custom:auto-entities
+      filter:
+        include:
+          - entity_id: sensor.lovelace_plex_recent_movies_*
+            attributes:
+              name: "! "
+            options:
+              type: custom:button-card
+              show_state: true
+              show_label: true
+              show_name: true
+              show_icon: true
+              name: "[[[ return entity.attributes.name ]]]"
+              entity_picture: >
+                [[[
+                  if (entity.attributes.poster == '')
+                    return 'https://via.placeholder.com/340x500?text=No%20Poster%20Available';
+                  else
+                    return entity.attributes.poster;
+                ]]]
+              show_entity_picture: true
+              # entity: this.entity_id
+              layout: vertical
+              custom_fields:
+                date: >
+                  [[[ return entity.attributes.date ]]]
+              styles:
+                grid:
+                  - grid-template-areas: '"i" "n" "date"'
+                  - grid-template-columns: 100%
+                  - grid-template-rows: 1fr min-content min-content min-content
+                card:
+                  - background-color: var(--dwains-theme-primary)
+                  - opacity: >
+                      [[[
+                        if (entity.attributes.watched == "False") return '0.5';
+                        else return '1';
+                      ]]]
+                  - border-radius: 0
+                  - box-shadow: none
+                name:
+                  - font-size: 15px
+                  - font-weight: bold
+                  - color: var(--dwains-theme-names)
+                custom_fields:
+                  episode:
+                    - font-size: 13px
+                    - color: var(--dwains-theme-names)
+                  date:
+                    - font-size: 13px
+                    - color: var(--dwains-theme-names)
+                icon:
+                  - color: var(--dwains-theme-accent)
+      sort:
+        method: name
+        ignore_case: true
+      card:
+        type: custom:dwains-flexbox-card
+        items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
