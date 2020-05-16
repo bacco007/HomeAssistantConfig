@@ -103,6 +103,17 @@ sensor:
       Authorization: !secret ha_api_llat
       User-Agent: Home Assistant REST sensor
 
+  - platform: rest
+    name: hassos_installed_version
+    resource: !secret hassio_api_info_url
+    authentication: basic
+    value_template: >
+      {{ value_json.data.hassos }}
+    headers:
+      Content-Type: application/json
+      Authorization: !secret ha_api_llat
+      User-Agent: Home Assistant REST sensor
+
   - platform: template
     sensors:
       count_all_components:

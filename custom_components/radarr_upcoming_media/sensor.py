@@ -117,10 +117,10 @@ class RadarrUpcomingMediaSensor(Entity):
                     card_item['rating'] = ''
                 if 'images' in movie:
                     card_item['poster'] = movie['images'][0]
-                    if '.jpg' in movie['images'][1]:
-                        card_item['fanart'] = movie['images'][1]
-                    else:
-                        card_item['fanart'] = ''
+                    # if '.jpg' in movie['images'][1]:
+                    #     card_item['fanart'] = movie['images'][1]
+                    # else:
+                    card_item['fanart'] = ''
                 else:
                     continue
                 self.card_json.append(card_item)
@@ -178,11 +178,13 @@ class RadarrUpcomingMediaSensor(Entity):
                             '500', tmdb_json['poster_path'])
                     except:
                         movie['images'][0] = ''
-                    try:
-                        movie['images'][1] = image_url % (
-                            '780', tmdb_json['backdrop_path'])
-                    except:
-                        movie['images'][1] = ''
+                    # try:
+                    #     if len(tmdb_json['backdrop_path']) == 0:
+                    #         movie['images'][1] = ''
+                    #     else:
+                    #         movie['images'][1] = image_url % ('780', tmdb_json['backdrop_path'])
+                    # except:
+                    #movie['images'][1] = ''
                     if days_until(movie['inCinemas'], self._tz) > -1:
                         movie['path'] = movie['inCinemas']
                     elif 'physicalRelease' in movie:

@@ -1,6 +1,5 @@
 {
     "config": {
-        "title": "Garbage Collection",
         "step": {
             "user": {
                 "title": "Garbage Collection - Konfigurace",
@@ -8,11 +7,12 @@
                 "data": {
                     "name": "Friendly name",
                     "frequency": "Frekvence",
-                    "icon_normal": "Ikona",
-                    "icon_tomorrow": "Ikona svoz zítra",
-                    "icon_today": "Ikona svoz dnes",
+                    "icon_normal": "Ikona (mdi:trash-can)",
+                    "icon_tomorrow": "Ikona svoz zítra (mdi:delete-restore)",
+                    "icon_today": "Ikona svoz dnes (mdi:delete-circle)",
+                    "expire_after": "Čas expirace (HH:MM)",
                     "verbose_state": "Verbose state (popis místo čísel)",
-                    "verbose_format": "Verbose format (Pouýij `date` a `days` proměnné (ve složených závorkách))",
+                    "verbose_format": "Verbose format (Použij `date` a `days` proměnné (ve složených závorkách))",
                     "date_format": "Formát data(see http://strftime.org/)"
                 }
             },
@@ -43,7 +43,7 @@
                 "description": "Přidané a zakázané datumy jsou seznamy datumů ve formátu yyyy-mm-dd, oddělených čárkou. Více info na https://github.com/bruxy70/Garbage-Collection",
                 "data": {
                     "first_month": "První měsíc svozu",
-                    "last_month": "Poslední měsíc scozu",
+                    "last_month": "Poslední měsíc svozu",
                     "period": "Perioda (svoz každých n týdnů/dnů): (1-52)",
                     "first_week": "První týden svozu (1-52)",
                     "first_date": "První datum",
@@ -57,8 +57,8 @@
                     "week_order_number_3": "Třetí týden v měsíci",
                     "week_order_number_4": "Čtvrtý týden v měsíci",
                     "week_order_number_5": "Pátý týden v měsíci",
-                    "include_dates": "Přidané datumy (volitelné)",
-                    "exclude_dates": "Zakázané datumy (volitelné)",
+                    "include_dates": "Přidané datumy (yyyy-mm-dd, yyyy-mm-dd, ...) - volitelné",
+                    "exclude_dates": "Zakázané datumy (yyyy-mm-dd, yyyy-mm-dd, ...) - volitelné",
                     "move_country_holidays": "Státní svátky - země (volitelné)",
                     "prov": "Státní svátky - provincie (volitelné)",
                     "state": "Státní svátky - stát (volitelné)",
@@ -68,15 +68,17 @@
             }
         },
         "error": {
-            "name": "Jméno sensoru nemůže být prázdné.",
-            "days": "VYber jeden nebo více dní!",
+            "value": "Chybná hodnota. Zkontroluj zadané hodnoty!",
+            "icon": "Ikony musí být zadány ve formátu 'prefix:jmnéno'.",
+            "days": "Vyber jeden nebo více dní!",
             "entities": "Entita neexistuje!",
             "month_day": "Špatný formát data!",
+            "time": "Špatný formát času!",
             "weekday_order_number": "Vyber jeden nebo více dní!",
+            "week_order_number": "Vyber jeden nebo více týdnů!",
             "period": "Perioda musí být číslo mezi 1 a 52",
             "first_week": "První týden musí být číslo mezi 1 a 52",
             "date": "Špatný formát data!"
-            
         },
         "abort": {
             "single_instance_allowed": "Only a single configuration of Garbage Collection is allowed."
@@ -89,11 +91,12 @@
                 "description": "Zadej jméno sensoru a nastav parametry. Více na https://github.com/bruxy70/Garbage-Collection",
                 "data": {
                     "frequency": "Frekvence",
-                    "icon_normal": "Ikona",
-                    "icon_tomorrow": "Ikona svoz zítra",
-                    "icon_today": "Ikona svoz dnes",
+                    "icon_normal": "Ikona (mdi:trash-can)",
+                    "icon_tomorrow": "Ikona svoz zítra (mdi:delete-restore)",
+                    "icon_today": "Ikona svoz dnes (mdi:delete-circle)",
+                    "expire_after": "Čas expirace (HH:MM)",
                     "verbose_state": "Verbose state (popis místo čísel)",
-                    "verbose_format": "Verbose format (Pouýij `date` a `days` proměnné (ve složených závorkách))",
+                    "verbose_format": "Verbose format (Použij `date` a `days` proměnné (ve složených závorkách))",
                     "date_format": "Formát data(see http://strftime.org/)"
                 }
             },
@@ -139,8 +142,8 @@
                     "week_order_number_3": "Třetí týden v měsíci",
                     "week_order_number_4": "Čtvrtý týden v měsíci",
                     "week_order_number_5": "Pátý týden v měsíci",
-                    "include_dates": "Přidané datumy (volitelné)",
-                    "exclude_dates": "Zakázané datumy (volitelné)",
+                    "include_dates": "Přidané datumy (yyyy-mm-dd, yyyy-mm-dd, ...) - volitelné",
+                    "exclude_dates": "Zakázané datumy (yyyy-mm-dd, yyyy-mm-dd, ...) - volitelné",
                     "move_country_holidays": "Státní svátky - země (volitelné)",
                     "prov": "Státní svátky - provincie (volitelné)",
                     "state": "Státní svátky - stát (volitelné)",
@@ -149,8 +152,17 @@
             }
         },
         "error": {
-            "date": "Špatný formát data!",
-            "entities": "Entita neexistuje!"
+            "value": "Chybná hodnota. Zkontroluj zadané hodnoty!",
+            "icon": "Ikony musí být zadány ve formátu 'prefix:jmnéno'.",
+            "days": "Vyber jeden nebo více dní!",
+            "entities": "Entita neexistuje!",
+            "month_day": "Špatný formát data!",
+            "time": "Špatný formát času!",
+            "weekday_order_number": "Vyber jeden nebo více dní!",
+            "week_order_number": "Vyber jeden nebo více týdnů!",
+            "period": "Perioda musí být číslo mezi 1 a 52",
+            "first_week": "První týden musí být číslo mezi 1 a 52",
+            "date": "Špatný formát data!"
         }
     }
 

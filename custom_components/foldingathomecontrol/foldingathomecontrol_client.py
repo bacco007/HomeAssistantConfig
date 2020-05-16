@@ -172,7 +172,10 @@ class FoldingAtHomeControlClient:
                 self.slot_data[unit["slot"]]["Work Server"] = unit.get("ws")
                 self.slot_data[unit["slot"]]["Collection Server"] = unit.get("cs")
                 self.slot_data[unit["slot"]]["Attempts"] = unit.get("attempts")
-                self.slot_data[unit["slot"]]["Time per Frame"] = unit.get("tpf")
+                tpf = unit.get("tpf")
+                if tpf is not None:
+                    tpf = timeparse(tpf)  # Convert to seconds e.g. "22 mins 47 secs" to 1367
+                self.slot_data[unit["slot"]]["Time per Frame"] = tpf
                 self.slot_data[unit["slot"]]["Basecredit"] = unit.get("basecredit")
 
     def handle_options_data_received(self, data: Any) -> None:

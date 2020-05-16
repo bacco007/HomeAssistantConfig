@@ -1,92 +1,147 @@
 ---
 sensor:
-  # Sensor to track available updates for supervisor & addons
   - platform: command_line
-    name: Supervisor updates
+    name: Supervisor Installed
     command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version,"addons":[.data.addons[] | select(.version != .installed)]}'''
-    value_template: '{{ value_json.addons | length }}'
+    value_template: "{{ value_json.addons | length }}"
+    unit_of_measurement: pending update(s)
     json_attributes:
       - newest_version
       - current_version
       - addons
-  # Sensors to track updates to other core components (audio, dns and CLI)
-  - platform: command_line
-    name: Updater Audio
-    command: 'curl http://supervisor/audio/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: '{% if value_json.newest_version != value_json.current_version %}on{% else %}off{% endif %}'
-    json_attributes:
-      - newest_version
-      - current_version
-  - platform: command_line
-    name: Updater DNS
-    command: 'curl http://supervisor/dns/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: '{% if value_json.newest_version != value_json.current_version %}on{% else %}off{% endif %}'
-    json_attributes:
-      - newest_version
-      - current_version
-  - platform: command_line
-    name: Updater CLI
-    command: 'curl http://supervisor/cli/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: '{% if value_json.newest_version != value_json.current_version %}on{% else %}off{% endif %}'
-    json_attributes:
-      - newest_version
-      - current_version
-  # Alternate updater sensor for core since binary_sensor.updater is very slow to recognize updates
-  - platform: command_line
-    name: Updater Core
-    command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: '{% if value_json.newest_version != value_json.current_version %}on{% else %}off{% endif %}'
-    json_attributes:
-      - newest_version
-      - current_version
-  # # Sensor to track details on new addons
-  # - platform: command_line
-  #   name: New addons
-  #   command: 'curl http://supervisor/addons -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq --slurpfile slugs found_addon_slugs.txt ''{"addons":[.data.addons[] | select(.slug as $slug | $slugs | index($slug) | not)], "repositories":.data.repositories}'''
-  #   value_template: '{{ value_json.addons | length }}'
-  #   json_attributes:
-  #     - addons
-  #     - repositories
-  #     - addon_slugs
 
-binary_sensor:
+  - platform: command_line
+    name: DNS Installed
+    command: 'curl http://supervisor/dns/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
+    value_template: "{{ value_json.version }}"
+    json_attributes:
+      - version
+      - version_latest
+
+  - platform: command_line
+    name: Audio Installed
+    command: 'curl http://supervisor/audio/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
+    value_template: "{{ value_json.version }}"
+    json_attributes:
+      - version
+      - version_latest
+
+  - platform: command_line
+    name: Cli Installed
+    command: 'curl http://supervisor/cli/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
+    value_template: "{{ value_json.version }}"
+    json_attributes:
+      - version
+      - version_latest
+
+  - platform: command_line
+    name: Multicast Installed
+    command: 'curl http://supervisor/multicast/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
+    value_template: "{{ value_json.version }}"
+    json_attributes:
+      - version
+      - version_latest
+
   - platform: template
     sensors:
-      # True if there's an update available for supervisor
-      updater_supervisor:
-        friendly_name: 'Updater - Supervisor'
-        device_class: problem
-        entity_id:
-          - sensor.supervisor_updates
-        value_template: "{{ state_attr('sensor.supervisor_updates', 'current_version') != state_attr('sensor.supervisor_updates', 'newest_version') }}"
-        availability_template: "{{ (states('sensor.supervisor_updates') | int(-1)) > -1 }}"
+      current_supervisor_installed:
+        value_template: '{{ states.sensor.supervisor_installed.attributes["current_version"] }}'
+      current_dns_installed:
+        value_template: '{{ states.sensor.dns_installed.attributes["version"] }}'
+      current_audio_installed:
+        value_template: '{{ states.sensor.audio_installed.attributes["version"] }}'
+      current_cli_installed:
+        value_template: '{{ states.sensor.cli_installed.attributes["version"] }}'
+      current_multicast_installed:
+        value_template: '{{ states.sensor.multicast_installed.attributes["version"] }}'
+      current_multicast_latest:
+        value_template: '{{ states.sensor.multicast_installed.attributes["version_latest"] }}'
 
-      # True if there's updates available for any HACS components
-      updater_hacs:
-        friendly_name: 'Updater - HACS'
-        device_class: problem
-        entity_id:
-          - sensor.hacs
-        value_template: "{{ states('sensor.hacs') | int > 0 }}"
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/beta.json
+    name: Home Assistant Beta Supervised Versions
+    scan_interval: 7200
+    json_attributes:
+      - supervisor
+      - homeassistant
+      - hassos
+      - hassos-cli
+      - cli
+      - dns
+      - audio
+    value_template: 'OK'
+  - platform: template
+    sensors:
+      current_supervisor_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["supervisor"] }}'
+      current_ha_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["homeassistant"]["intel-nuc"] }}'
+      current_hassos_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["hassos"]["intel-nuc"] }}'
+      current_hassos_cli_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["hassos-cli"] }}'
+      current_cli_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["cli"] }}'
+      current_dns_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["dns"] }}'
+      current_audio_beta:
+        value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["audio"] }}'
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/stable.json
+    name: Home Assistant Supervised Stable Versions
+    scan_interval: 7200
+    json_attributes:
+      - supervisor
+      - homeassistant
+      - hassos
+      - hassos-cli
+      - cli
+      - dns
+      - audio
+    value_template: 'OK'
+  - platform: template
+    sensors:
+      current_supervisor_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["supervisor"] }}'
+      current_ha_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["homeassistant"]["intel-nuc"] }}'
+      current_hassos_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["hassos"]["intel-nuc"] }}'
+      current_hassos_cli_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["hassos-cli"] }}'
+      current_cli_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["cli"] }}'
+      current_dns_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["dns"] }}'
+      current_audio_stable:
+        value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["audio"] }}'
+  - platform: rest
+    resource: https://s3.amazonaws.com/hassio-version/dev.json
+    name: Home Assistant Supervised Dev Versions
+    scan_interval: 7200
+    json_attributes:
+      - supervisor
+      - homeassistant
+      - hassos
+      - hassos-cli
+      - cli
+      - dns
+      - audio
+    value_template: 'OK'
+  - platform: template
+    sensors:
+      current_supervisor_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["supervisor"] }}'
+      current_ha_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["homeassistant"]["intel-nuc"] }}'
+      current_hassos_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["hassos"]["intel-nuc"] }}'
+      current_hassos_cli_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["hassos-cli"] }}'
+      current_cli_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["cli"] }}'
+      current_dns_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["dns"] }}'
+      current_audio_dev:
+        value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["audio"] }}'
 
-      # True if there's updates available for any addons
-      updater_addons:
-        friendly_name: 'Updater - Addons'
-        device_class: problem
-        entity_id:
-          - sensor.supervisor_updates
-        value_template: "{{ states('sensor.supervisor_updates') | int > 0 }}"
-
-automation:
-  - id: '1585256741683'
-    alias: Check config with update
-    description: Starts the check config addon when an update becomes available
-    trigger:
-      - entity_id: binary_sensor.updater
-        platform: state
-        to: 'on'
-    condition: []
-    action:
-      - data:
-          addon: core_check_config
-        service: hassio.addon_start

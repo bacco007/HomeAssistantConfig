@@ -123,7 +123,7 @@ class SonarrUpcomingMediaSensor(Entity):
             else:
                 card_item["genres"] = ""
             try:
-                card_item["poster"] = re.sub(".jpg", "_t.jpg", show["series"]["images"][2]["url"])
+                card_item["poster"] = re.sub(".jpg", "_t.jpg", show["series"]["images"][1]["url"])
             except:
                 card_item["poster"] = ""
             try:

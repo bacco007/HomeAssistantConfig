@@ -1,17 +1,19 @@
 ---
-
 garbage_collection:
   sensors:
     - name: binday_waste
       frequency: "weekly"
+      expire_after: "12:00"
       collection_days:
         - thu
     - name: binday_greenwaste
       frequency: "even-weeks"
+      expire_after: "12:00"
       collection_days:
         - thu
     - name: binday_recycling
       frequency: "odd-weeks"
+      expire_after: "12:00"
       collection_days:
         - thu
 

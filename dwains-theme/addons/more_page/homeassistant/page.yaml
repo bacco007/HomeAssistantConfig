@@ -1,17 +1,11 @@
 # dwains_theme
 
-- type: custom:stack-in-card
-  style: |
-    ha-card {
-      color: teal;
-      border-radius: 2.5px;
-    }
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:
-    - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+    - type: custom:stack-in-card
+      mode: horizontal
       cards:
-        # - type: horizontal-stack
-        #   cards:
         - type: vertical-stack
           cards:
             - type: markdown
@@ -20,7 +14,215 @@
                 ha-markdown { padding-bottom: 1px !important; }
               content: >
                 <img width="125" src="https://www.home-assistant.io/images/favicon-192x192-full.png"/><br/>
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.ha_current_version
+                name: Home Assistant Version - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_ha_stable
+                  name: Home Assistant Version - Stable
+                  icon: mdi:home-assistant
+                - entity: sensor.current_ha_beta
+                  name: Home Assistant Version - Beta
+                  icon: mdi:home-assistant
+                - entity: sensor.current_ha_dev
+                  name: Home Assistant Version - Dev
+                  icon: mdi:home-assistant
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.hassos_installed_version
+                name: HassOS Version - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_hassos_stable
+                  name: HassOS Version - Stable
+                  icon: mdi:home-assistant
+                - entity: sensor.current_hassos_beta
+                  name: HassOS Version - Beta
+                  icon: mdi:home-assistant
+                - entity: sensor.current_hassos_dev
+                  name: HassOS Version - Dev
+                  icon: mdi:home-assistant
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_supervisor_installed
+                name: Home Assistant Supervisor Version - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_supervisor_stable
+                  name: Home Assistant Supervisor Version - Stable
+                  icon: mdi:home-assistant
+                - entity: sensor.current_supervisor_beta
+                  name: Home Assistant Supervisor Version - Beta
+                  icon: mdi:home-assistant
+                - entity: sensor.current_supervisor_dev
+                  name: Home Assistant Supervisor Version - Dev
+                  icon: mdi:home-assistant
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_audio_installed
+                name: Audio - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_audio_stable
+                  name: Audio - Stable
+                - entity: sensor.current_audio_beta
+                  name: Audio - Beta
+                - entity: sensor.current_audio_dev
+                  name: Audio - Dev
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_cli_installed
+                name: CLI - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_cli_stable
+                  name: CLI - Stable
+                - entity: sensor.current_cli_beta
+                  name: CLI - Beta
+                - entity: sensor.current_cli_dev
+                  name: CLI - Dev
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_dns_installed
+                name: DNS - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_dns_stable
+                  name: DNS - Stable
+                - entity: sensor.current_dns_beta
+                  name: DNS - Beta
+                - entity: sensor.current_dns_dev
+                  name: DNS - Dev
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_multicast_installed
+                name: Multicast - Installed
+                icon: mdi:home-assistant
+              entities:
+                - entity: sensor.current_multicast_latest
+                  name: Multicast - Latest
+        - type: vertical-stack
+          cards:
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.supervisor_installed
+                  name: Supervisor Add-Ons to Update
+                  icon: mdi:home-assistant
+                  tap_action:
+                    action: navigate
+                    navigation_path: /hassio/dashboard
+            - type: custom:list-card
+              entity: sensor.supervisor_installed
+              title: HA Addons
+              columns:
+                - { field: name, title: "Addon", style: [text-align: left] }
+                - {
+                    field: installed,
+                    title: "Installed",
+                    style: [text-align: center],
+                  }
+                - {
+                    field: version,
+                    title: "Latest",
+                    style: [text-align: center],
+                  }
+              feed_attribute: addons
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary);
+                  padding-bottom: 10px;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - type: section
+                - entity: sensor.hacs
+                  tap_action:
+                    action: navigate
+                    navigation_path: /hacs/installed
+                  icon: hacs:hacs
+                  name: HACS Updates Available?
+            - type: custom:list-card
+              feed_attribute: repositories
+              entity: sensor.hacs
+              columns:
+                - { field: name, title: "Name", style: [text-align: left] }
+                - {
+                    field: installed version,
+                    title: "Installed",
+                    style: [text-align: center],
+                  }
+                - {
+                    field: available version,
+                    title: "Latest",
+                    style: [text-align: center],
+                  }
 
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
         - type: vertical-stack
           cards:
             - type: markdown
@@ -28,165 +230,68 @@
                 ha-card { box-shadow: none; }
                 ha-markdown { padding-bottom: 1px !important; }
               content: >
-                **Home Assistant**
-
-            # - type: entities
-            #   style: |
-            #     ha-card { box-shadow: none; }
-            #   #   #states { padding-top: 0px; padding-bottom: 0px }
-            #   entities:
-            #     - type: custom:bar-card
-            #       name: Outdoor Sensor
-            #       entity: sensor.netatmo_brisbane_street_outdoor_battery_percent
-            #       entity_row: true
-            #       animation:
-            #         state: on
-            #       positions:
-            #         minmax: inside
-            #         title: inside
-            #         value: inside
-            #       icon: fal:battery-bolt
-            #       severity:
-            #         - color: rgb(141, 252, 124)
-            #           from: 0
-            #           to: 100
-            #       style: |
-            #         ha-icon {
-            #           color: var(--dwains-theme-accent) !important;
-            #         }
-            #         .contentbar-direction-right {
-            #         flex-direction: column;
-            #         }
-            #         .min-direction-right {
-            #           margin: 0px;
-            #           margin-left: 4px;
-            #           margin-right: auto;
-            #           margin-bottom: -20px;
-            #           bottom: 10px;
-            #         }
-            #           bar-card-value {
-            #           margin: 0px;
-            #         }
-            #         bar-card-name {
-            #           margin: 0px;
-            #         }
-            #         bar-card-max {
-            #           margin: 0px;
-            #           margin-left: auto;
-            #           margin-top: -20px;
-            #           top: 10px;
-            #         }
-            #         bar-card-divider {
-            #           display: none;
-            #         }
-            #     - type: custom:bar-card
-            #       name: Rain Sensor
-            #       entity: sensor.netatmo_brisbane_street_rain_battery_percent
-            #       entity_row: true
-            #       animation:
-            #         state: on
-            #       positions:
-            #         minmax: inside
-            #         title: inside
-            #         value: inside
-            #       icon: fal:battery-bolt
-            #       severity:
-            #         - color: rgb(141, 252, 124)
-            #           from: 0
-            #           to: 100
-            #       style: |
-            #         ha-icon {
-            #           color: var(--dwains-theme-accent) !important;
-            #         }
-            #         .contentbar-direction-right {
-            #         flex-direction: column;
-            #         }
-            #         .min-direction-right {
-            #           margin: 0px;
-            #           margin-left: 4px;
-            #           margin-right: auto;
-            #           margin-bottom: -20px;
-            #           bottom: 10px;
-            #         }
-            #           bar-card-value {
-            #           margin: 0px;
-            #         }
-            #         bar-card-name {
-            #           margin: 0px;
-            #         }
-            #         bar-card-max {
-            #           margin: 0px;
-            #           margin-left: auto;
-            #           margin-top: -20px;
-            #           top: 10px;
-            #         }
-            #         bar-card-divider {
-            #           display: none;
-            #         }
+                <h2>Database</h2>
+        - type: vertical-stack
+          cards:
+            - type: custom:mini-graph-card
+              entities:
+                - entity: sensor.ha_db_size
+              name: Database Size (MariaDB)
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 1
+              align_state: center
+              show:
+                #extrema: true
+                fill: fade
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.ha_db_events
+                  secondary_info: last-changed
+                - entity: sensor.ha_db_states
+                  secondary_info: last-changed
+        - type: vertical-stack
+          cards:
+            - type: custom:mini-graph-card
+              entities:
+                - entity: sensor.influxdb_size
+              name: Database Size (InfluxDB)
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 1
+              align_state: center
+              show:
+                #extrema: true
+                fill: fade
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
-  cards:
-    - type: custom:mini-graph-card
-      entities:
-        - entity: sensor.ha_db_size
-      name: Database Size (MariaDB)
-      height: 50
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 1
-      align_state: center
-      show:
-        #extrema: true
-        fill: fade
-    - type: custom:mini-graph-card
-      entities:
-        - entity: sensor.count_all_components
-      name: Components
-      height: 50
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 6
-      align_state: center
-      show:
-        #extrema: true
-        fill: fade
-    - type: custom:mini-graph-card
-      entities:
-        - sensor.count_all_entities
-      name: Entities
-      height: 50
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 6
-      align_state: center
-      show:
-        # extrema: true
-        fill: fade
-
-    - type: custom:mini-graph-card
-      entities:
-        - entity: sensor.influxdb_size
-      name: Database Size (InfluxDB)
-      height: 50
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 1
-      align_state: center
-      show:
-        #extrema: true
-        fill: fade
-
-- type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
   cards:
     - type: vertical-stack
       cards:
@@ -215,38 +320,38 @@
             }
           entities:
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Reload Themes
               service: frontend.reload_themes
               type: call-service
             - script.check_config
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Restart Home Assistant
               service: homeassistant.restart
               type: call-service
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Generate README.md
               service: readme.generate
               type: call-service
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Reload Core Config
               service: homeassistant.reload_core_config
               type: call-service
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Reload Groups
               service: group.reload
               type: call-service
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Reload Automations
               service: automation.reload
               type: call-service
             - action_name: GO!
-              icon: 'mdi:cube-send'
+              icon: "mdi:cube-send"
               name: Reload Scripts
               service: script.reload
               type: call-service
@@ -277,104 +382,12 @@
               margin-left: 2px !important;
             }
           entities:
-            - binary_sensor.ha_update_available
-            - sensor.ha_current_version
-            - sensor.ha_latest_version
-            - type: section
-            - sensor.hass_current_beta_version
-            - sensor.hass_current_dev_version
-            - type: section
-            - sensor.hass_current_supervisor_version
-            - sensor.hass_beta_supervisor_version
-            - type: section
             - sensor.potential_breaking_changes
             - type: section
             - sensor.ha_overview
             - type: section
             - entity: sensor.ssl_certificate_expiry
               name: HA SSL Cert Expiry
-
-    - type: custom:stack-in-card
-      cards:
-        - type: entities
-          title: HA Community Store
-          style: |
-            ha-card {
-              background-color: var(--dwains-theme-primary);
-              padding-bottom: 10px;
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            .card-content div {
-                margin: 0 !important;
-            }
-            #states {
-              padding-top: 0px !important;
-              padding-bottom: 0px !important;
-            }
-            .secondary {
-              color: darkgray !important;
-              margin-left: 2px !important;
-            }
-          entities:
-            - entity: sensor.hacs
-              tap_action:
-                action: navigate
-                navigation_path: /hacs/installed
-              icon: hacs:hacs
-              name: Updates Available?
-        - type: custom:list-card
-          feed_attribute: repositories
-          entity: sensor.hacs
-          columns:
-            - field: name
-              title: Name
-              align: center
-            - field: 'installed version'
-              title: Current
-            - field: 'available version'
-              title: Latest
-
-    - type: custom:stack-in-card
-      cards:
-        - type: entities
-          title: HA Database
-          style: |
-            ha-card {
-              background-color: var(--dwains-theme-primary);
-              padding-bottom: 10px;
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            .card-content div {
-                margin: 0 !important;
-            }
-            #states {
-              padding-top: 0px !important;
-              padding-bottom: 0px !important;
-            }
-            .secondary {
-              color: darkgray !important;
-              margin-left: 2px !important;
-            }
-          entities:
-            - entity: sensor.ha_db_size
-              name: HA Database Size (MariaDB)
-              secondary_info: last-changed
-            - entity: sensor.ha_db_events
-              secondary_info: last-changed
-            - entity: sensor.ha_db_states
-              secondary_info: last-changed
-            - type: section
-            - entity: sensor.influxdb_size
-              name: HA Database Size (InfluxDB)
-              secondary_info: last-changed
 
     - type: vertical-stack
       cards:
@@ -449,36 +462,122 @@
                   unit: false
                   name: Pending
 
-
-    - type: vertical-stack
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
       cards:
-        - type: custom:auto-entities
-          card:
-            type: entities
-            title: Component Counts
-            style: |
-              ha-card {
-                background-color: var(--dwains-theme-primary);
-                padding-bottom: 10px;
-              }
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
-          sort:
-            method: name
-          filter:
-            include:
-              - { entity_id: sensor.count_* }
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Component Counts</h2>
+        - type: vertical-stack
+          cards:
+            - type: custom:mini-graph-card
+              entities:
+                - entity: sensor.count_all_components
+              name: Components
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 6
+              align_state: center
+              show:
+                #extrema: true
+                fill: fade
+            - type: custom:mini-graph-card
+              entities:
+                - sensor.count_all_entities
+              name: Entities
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 6
+              align_state: center
+              show:
+                # extrema: true
+                fill: fade
+        - type: vertical-stack
+          cards:
+            - type: custom:config-template-card
+              variables:
+                - states['sensor.count_all_entities'].state
+              entities:
+                - sensor.count_all_entities
+              card:
+                type: custom:auto-entities
+                card:
+                  type: entities
+                  style: |
+                    ha-card {
+                      background-color: var(--dwains-theme-primary)
+                    }
+                    .card-header {
+                      padding: 5px 16px 10px;
+                      font-size: 18px;
+                      font-weight: 700 !important;
+                    }
+                sort:
+                  method: state
+                  reverse: true
+                  numeric: true
+                filter:
+                  exclude:
+                    - entity_id: sensor.count_all_components
+                    - entity_id: sensor.count_all_entities
+                  include:
+                    - entity_id: sensor.count_*
+                      options:
+                        type: custom:bar-card
+                        style: |
+                          ha-icon {
+                            color: var(--dwains-theme-accent) !important;
+                          }
+                          ha-icon	 {
+                            margin-top: -7px;
+                            padding-right: 5px;
+                          }
+                          bar-card-indicator	 {
+                            margin-top: -12px;
+                            padding-right: 5px;
+                          }
+                          bar-card-name	 {
+                            margin-top: -4.5px;
+                            padding-left: 5px;
+                          }
+                          bar-card-backgroundbar	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-currentbar	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-targetbar	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-targetmarker	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-value	 {
+                            margin-top: -4.5px;
+                            padding-left: 5px;
+                          }
+                        positions:
+                          title: inside
+                          value: inside
+                        entity_row: true
+                        min: 0
+                        max: "${vars[0]}"
+                        color: rgb(26,204,147,0.33)

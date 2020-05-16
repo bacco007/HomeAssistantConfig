@@ -4,7 +4,7 @@ import homeassistant.util.dt as dt_util
 import holidays
 import logging
 import locale
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
 from homeassistant.core import HomeAssistant, State
 from typing import List, Any
@@ -29,6 +29,7 @@ from .const import (
     CONF_ICON_TOMORROW,
     CONF_VERBOSE_STATE,
     CONF_VERBOSE_FORMAT,
+    CONF_EXPIRE_AFTER,
     CONF_DATE_FORMAT,
     DEFAULT_DATE_FORMAT,
     DEFAULT_VERBOSE_FORMAT,
@@ -190,6 +191,10 @@ class GarbageCollection(Entity):
         self.__icon_normal = config.get(CONF_ICON_NORMAL)
         self.__icon_today = config.get(CONF_ICON_TODAY)
         self.__icon_tomorrow = config.get(CONF_ICON_TOMORROW)
+        exp = config.get(CONF_EXPIRE_AFTER)
+        self.__expire_after = (
+            None if exp is None else datetime.strptime(exp, "%H:%M").time()
+        )
         self.__date_format = config.get(CONF_DATE_FORMAT, DEFAULT_DATE_FORMAT)
         self.__verbose_format = config.get(CONF_VERBOSE_FORMAT, DEFAULT_VERBOSE_FORMAT)
         self.__icon = self.__icon_normal
@@ -374,8 +379,42 @@ class GarbageCollection(Entity):
     def __skip_holiday(self, day: date) -> date:
         return day + relativedelta(days=1)
 
+    def get_next_date(self, day1: date) -> date:
+        """Find the next date starting from day1."""
+        first_day = day1
+        i = 0
+        while i < 365:
+            next_date = self.find_candidate_date(first_day)
+            while next_date in self.__holidays:
+                _LOGGER.debug(
+                    "(%s) Skipping public holiday on %s", self.__name, next_date
+                )
+                next_date = self.__skip_holiday(next_date)
+            next_date = self.__insert_include_date(first_day, next_date)
+            date_ok = True
+            # Pokud je to dnes a po expiraci - hledat dal od zitra
+            now = dt_util.now()
+            if next_date == now.date() and self.__expire_after is not None and now.time() >= self.__expire_after:
+                _LOGGER.debug("(%s) Today's collection expired", self.__name)
+                date_ok = False
+            if next_date in self.__exclude_dates:
+                _LOGGER.debug("(%s) Skipping exclude_date %s", self.__name, next_date)
+                date_ok = False
+            if date_ok:
+                return next_date
+            first_day = next_date + relativedelta(days=1)
+            i += 1
+        _LOGGER.error("(%s) Cannot find any suitable date", self.__name)
+        return None
+
     def ready_for_update(self) -> bool:
-        today = dt_util.now().date()
+        """
+        Skip the update if the sensor was updated today
+        Except for the sensors with with next date today and after the expiration time
+        For group sensors wait for update of the sensors in the group
+        """
+        now = dt_util.now()
+        today = now.date()
         ready_for_update = bool(
             self.__last_updated is None or self.__last_updated.date() != today
         )
@@ -389,27 +428,14 @@ class GarbageCollection(Entity):
                     members_ready = False
             if ready_for_update and not members_ready:
                 ready_for_update = False
+        else:
+            if (
+                self.__expire_after is not None
+                and self.__next_date == today
+                and now.time() >= self.__expire_after
+            ):
+                ready_for_update = True
         return ready_for_update
-
-    def get_next_date(self, day1: date) -> date:
-        """Find the next date starting from day1."""
-        first_day = day1
-        i = 0
-        while i < 365:
-            next_date = self.find_candidate_date(first_day)
-            while next_date in self.__holidays:
-                _LOGGER.debug(
-                    "(%s) Skipping public holiday on %s", self.__name, next_date
-                )
-                next_date = self.__skip_holiday(next_date)
-            next_date = self.__insert_include_date(first_day, next_date)
-            if next_date not in self.__exclude_dates:
-                return next_date
-            _LOGGER.debug("(%s) Skipping exclude_date %s", self.__name, next_date)
-            first_day = next_date + relativedelta(days=1)
-            i += 1
-        _LOGGER.error("(%s) Cannot find any suitable date", self.__name)
-        return None
 
     async def async_update(self) -> None:
         """Get the latest data and updates the states."""

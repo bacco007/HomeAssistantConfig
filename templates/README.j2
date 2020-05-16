@@ -71,6 +71,29 @@ _Stats as at {{ states('sensor.time') }}, {{ states('sensor.date_long_format') }
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
 | {{ states('sensor.ha_current_version')}} | {{ states.sensor.hass_main_config.attributes.components | count }}     | {{states    | count}}         | {{states.sensor | count}} | {{states.automation | count}} |
 
+Type | Qty
+-- | --
+Alarm Control Panel | {{states.alarm_control_panel | count}}
+Alert | {{states.alert | count}}
+Automation | {{states.automation | count}}
+Binary Sensor | {{states.binary_sensor | count}}
+Camera | {{ states.camera | count }}
+Device Tracker | {{ states.device_tracker | count }}
+Group | {{ states.group | count }}
+Input Boolean | {{ states.input_boolean | count }}
+Input Datetime | {{ states.input_datetime | count }}
+Input Text | {{ states.input_text | count }}
+Light | {{ states.light | count }}
+Media Player | {{ states.media_player | count }}
+Person | {{ states.person | count }}
+Scene | {{ states.scene | count }}
+Script | {{ states.script | count }}
+Sensor | {{states.sensor | count}}
+Sun | {{ states.sun | count }}
+Switch | {{ states.switch | count }}
+Weather | {{ states.weather | count }}
+Zone | {{ states.zone | count }}
+
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
 ---

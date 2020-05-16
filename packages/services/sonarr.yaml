@@ -11,4 +11,4 @@ sensor:
       - wanted
       - status
       - commands
-    days: 365
+    days: 720

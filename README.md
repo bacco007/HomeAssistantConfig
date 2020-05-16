@@ -65,11 +65,34 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Tuesday, May 12th 2020_
+_Stats as at 04:59, Saturday, May 16th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.109.6 | 249     | 1393         | 1051 | 19 |
+| 0.109.6 | 247     | 1442         | 1086 | 19 |
+
+Type | Qty
+-- | --
+Alarm Control Panel | 0
+Alert | 0
+Automation | 19
+Binary Sensor | 107
+Camera | 3
+Device Tracker | 139
+Group | 7
+Input Boolean | 0
+Input Datetime | 0
+Input Text | 0
+Light | 7
+Media Player | 19
+Person | 1
+Scene | 0
+Script | 1
+Sensor | 1086
+Sun | 1
+Switch | 12
+Weather | 3
+Zone | 2
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -152,7 +175,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [geo_location](https://www.home-assistant.io/components/geo_location)
 - [geo_location.gdacs](https://www.home-assistant.io/components/geo_location.gdacs)
 - [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed)
-- [geo_location.wwlln](https://www.home-assistant.io/components/geo_location.wwlln)
 - [glances](https://www.home-assistant.io/components/glances)
 - [google](https://www.home-assistant.io/components/google)
 - [group](https://www.home-assistant.io/components/group)
@@ -179,7 +201,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [map](https://www.home-assistant.io/components/map)
 - [media_player](https://www.home-assistant.io/components/media_player)
 - [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media)
-- [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv)
 - [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv)
 - [media_player.braviatv](https://www.home-assistant.io/components/media_player.braviatv)
 - [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod)
