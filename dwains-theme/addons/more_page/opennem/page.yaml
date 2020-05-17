@@ -1,7 +1,7 @@
 #dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
+  items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
   cards:
     - type: custom:mini-graph-card
       style: |
@@ -11,14 +11,20 @@
       entities:
         - sensor.opennem_nsw1_current_price
       name: Current Price
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       hours_to_show: 24
       hour24: true
       points_per_hour: 6
-      smoothing: true
+      # smoothing: true
+      animate: true
+      decimals: 2
+      line_width: 3
+      lower_bound: 0
+      align_state: center
       show:
-        points: false
-        graph: line
+        extrema: true
+        average: true
+        fill: fade
     - type: custom:mini-graph-card
       style: |
         ha-card {
@@ -30,14 +36,19 @@
         - entity: sensor.opennem_nsw1_gen_from_renewables
           name: Renewables
       name: Generation Type
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       hours_to_show: 24
       hour24: true
       points_per_hour: 6
-      smoothing: true
+      animate: true
+      decimals: 2
+      line_width: 3
+      lower_bound: 0
+      align_state: center
       show:
-        points: false
-        graph: line
+        extrema: true
+        average: true
+        fill: fade
 
     - type: custom:mini-graph-card
       style: |
@@ -50,17 +61,21 @@
         - entity: sensor.opennem_nsw1_electricity_generation
           name: Generation
       name: Generation vs Demand
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       hours_to_show: 24
       hour24: true
       points_per_hour: 6
-      smoothing: true
+      animate: true
+      decimals: 2
+      line_width: 3
+      align_state: center
       show:
-        points: false
-        graph: line
+        extrema: true
+        average: true
+        fill: fade
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
     - type: entities
       title: Current State
@@ -161,5 +176,5 @@
                   value: inside
                 entity_row: true
                 min: 0
-                max: '${vars[0]}'
+                max: "${vars[0]}"
                 color: rgb(26,204,147,0.33)

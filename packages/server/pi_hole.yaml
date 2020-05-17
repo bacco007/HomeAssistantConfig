@@ -21,13 +21,13 @@ sensor:
       - web_latest
       - FTL_latest
     value_template: '{{ value_json["core_update"] }}'
-    resource: 'http://192.168.1.40/admin/api.php?versions'
+    resource: "http://192.168.1.40/admin/api.php?versions"
 
   - platform: rest
     name: Pi-Hole Status
     json_attributes:
-      - status
-    resource: 'http://192.168.1.40/admin/api.php?status'
+      - value_json
+    resource: "http://192.168.1.40/admin/api.php?status"
     value_template: '{{ value_json["status"] }}'
 
 binary_sensor:

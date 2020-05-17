@@ -413,7 +413,7 @@ cards:
                 template: rssfeed-table
                 variables:
                   - entities:
-                      - sensor.rssfeed_sky_sports_uk
+                      - sensor.rssfeed_sky_sports_uk 
 
           - type: vertical-stack
             style: !include ../includes/style.yaml

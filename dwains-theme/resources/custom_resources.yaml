@@ -12,6 +12,8 @@
   type: module
 - url: /hacsfiles/flex-table-card/flex-table-card.js
   type: module
+- url: /hacsfiles/lovelace-card-tools/card-tools.js
+  type: module
 - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
   type: module
 - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
@@ -21,6 +23,8 @@
 - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
   type: module
 - url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js
+  type: module
+- url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
   type: module
 - url: /hacsfiles/stack-in-card/stack-in-card.js
   type: module

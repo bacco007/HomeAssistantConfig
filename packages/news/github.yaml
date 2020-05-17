@@ -8,10 +8,10 @@ sensor:
   #     - path: 'bacco007/HomeAssistantConfig'
 
   - platform: command_line
-    command: 'curl https://api.github.com/repos/bacco007/HomeAssistantConfig'
+    command: "curl https://api.github.com/repos/bacco007/HomeAssistantConfig"
     name: github
     scan_interval: 3600
-    value_template: ' {{ value_json.name }}'
+    value_template: " {{ value_json.name }}"
     json_attributes:
       - open_issues
       - subscribers_count
@@ -47,13 +47,13 @@ sensor:
         icon_template: mdi:github-circle
 
       github_updatedat:
-        value_template: "{{ state_attr('sensor.github', 'updated_at') }}"
+        value_template: "{{ as_timestamp(state_attr('sensor.github', 'updated_at')) |timestamp_custom ('%-d %b, %H:%M') }}"
         entity_id: sensor.github
         friendly_name: Github - Last Update
         icon_template: mdi:github-circle
 
       github_pushedat:
-        value_template: "{{ state_attr('sensor.github', 'pushed_at') }}"
+        value_template: "{{ as_timestamp(state_attr('sensor.github', 'pushed_at')) |timestamp_custom ('%-d %b, %H:%M') }}"
         entity_id: sensor.github
         friendly_name: Github - Last Push
         icon_template: mdi:github-circle

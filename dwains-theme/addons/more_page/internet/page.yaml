@@ -1,0 +1,131 @@
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      name: Download Speed (1 Week)
+      entities:
+        - entity: sensor.speedtest_download
+          name: Download
+      animate: true
+      decimals: 2
+      hours_to_show: 168
+      points_per_hour: 1
+      line_width: 3
+      lower_bound: 0
+      align_state: center
+      show:
+        extrema: true
+        average: true
+        fill: fade
+      color_thresholds:
+        - value: 0
+          color: "#FFFF00"
+        - value: 18
+          color: "#3498db"
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      name: Upload Speed (1 Week)
+      entities:
+        - entity: sensor.speedtest_upload
+          name: Upload
+      animate: true
+      decimals: 2
+      hours_to_show: 168
+      points_per_hour: 1
+      line_width: 3
+      lower_bound: 0
+      align_state: center
+      show:
+        extrema: true
+        average: true
+        fill: fade
+      color_thresholds:
+        - value: 0
+          color: "#FFFF00"
+        - value: 4
+          color: "#3498db"
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      name: Ping (1 Week)
+      entities:
+        - entity: sensor.speedtest_ping
+          name: Ping
+      animate: true
+      decimals: 0
+      hours_to_show: 168
+      points_per_hour: 1
+      line_width: 3
+      lower_bound: 0
+      align_state: center
+      unit: "ms"
+      show:
+        extrema: true
+        average: true
+        fill: fade
+      color_thresholds:
+        - value: 20
+          color: "#1db954"
+        - value: 30
+          color: "#bf9540"
+        - value: 50
+          color: "#bf4040"
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Internet Speed</h2>
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.today_speedtest_download
+              name: Download Speed - 24hr Average
+              icon: mdi:arrow-down-bold
+              type: custom:secondaryinfo-entity-row
+              secondary_info: "Max [[ sensor.speedtest_download_max.state ]]Mbit/s, Min [[ sensor.speedtest_download_min.state ]]Mbit/s"
+            - entity: sensor.today_speedtest_upload
+              name: Upload Speed - 24hr Average
+              icon: mdi:arrow-up-bold
+              type: custom:secondaryinfo-entity-row
+              secondary_info: "Max [[ sensor.speedtest_upload_max.state ]]Mbit/s, Min [[ sensor.speedtest_upload_min.state ]]Mbit/s"

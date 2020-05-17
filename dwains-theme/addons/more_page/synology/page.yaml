@@ -33,7 +33,7 @@
     }
   cards:
     - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
       cards:
         # - type: horizontal-stack
         #   cards:
@@ -83,7 +83,7 @@
               color: var(--dwains-theme-accent)
               tap_action:
                 action: url
-                url_path: 'http://192.168.1.100:5000'
+                url_path: "http://192.168.1.100:5000"
 
         - type: vertical-stack
           cards:
@@ -99,7 +99,7 @@
               #   #states { padding-top: 0px; padding-bottom: 0px }
               entities:
                 - type: custom:bar-card
-                  name: ' '
+                  name: " "
                   entity: sensor.synology_cpu_load_total
                   entity_row: true
                   animation:
@@ -122,7 +122,7 @@
                       color: var(--dwains-theme-accent) !important;
                     }
                 - type: custom:bar-card
-                  name: ' '
+                  name: " "
                   entity: sensor.synology_memory_usage_real
                   entity_row: true
                   animation:
@@ -145,7 +145,7 @@
                       color: var(--dwains-theme-accent) !important;
                     }
                 - type: custom:bar-card
-                  name: ' '
+                  name: " "
                   entity: sensor.synology_volume_used_volume_1
                   entity_row: true
                   animation:
@@ -168,66 +168,52 @@
                       color: var(--dwains-theme-accent) !important;
                     }
 
-# - type: custom:dwains-flexbox-card
-#   items_classes: 'col-xs-4 col-md-4 col-lg-4 col-xl-4'
-#   cards:
-#     - entity: sensor.synology_cpu_load_total
-#       max: 100
-#       min: 0
-#       name: CPU Used
-#       severity: { green: 0, red: 80, yellow: 30 }
-#       theme: default
-#       type: gauge
-#       unit: '%'
-#     - entity: sensor.synology_memory_usage_real
-#       max: 100
-#       min: 0
-#       name: RAM Used
-#       severity: { green: 0, red: 80, yellow: 30 }
-#       theme: default
-#       type: gauge
-#       unit: '%'
-#     - entity: sensor.synology_volume_used_volume_1
-#       max: 100
-#       min: 0
-#       name: HDD Used
-#       severity: { green: 0, red: 80, yellow: 30 }
-#       theme: default
-#       type: gauge
-#       unit: '%'
-
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
     - type: custom:mini-graph-card
-      entities:
-        - sensor.synology_network_down
-      name: Network Up
-      height: 60
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      font_size: 70
-      hours_to_show: 24
-      points_per_hour: 10
-      show:
-        # extrema: true
-        fill: true
-    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
       entities:
         - sensor.synology_network_up
-      name: Network Down
-      height: 60
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      font_size: 70
+      name: Network Up
+      animate: true
+      decimals: 2
+      line_color: "var(--dwains-theme-accent)"
       hours_to_show: 24
+      lower_bound: 0
       points_per_hour: 10
+      line_width: 3
+      align_state: center
       show:
-        # extrema: true
-        fill: true
+        extrema: true
+        average: true
+        fill: fade
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - sensor.synology_network_down
+      name: Network Down
+      animate: true
+      decimals: 2
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 24
+      lower_bound: 0
+      points_per_hour: 10
+      line_width: 3
+      align_state: center
+      show:
+        extrema: true
+        average: true
+        fill: fade
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
     - type: vertical-stack
       cards:

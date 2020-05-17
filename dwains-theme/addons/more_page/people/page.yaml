@@ -1,0 +1,106 @@
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Birthdays etc</h2>
+        - type: custom:auto-entities
+          card:
+            type: entities
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          sort:
+            method: state
+            numeric: true
+          filter:
+            include:
+              - domain: anniversaries
+                options:
+                  type: "custom:secondaryinfo-entity-row"
+                  secondary_info: >-
+                    [[ {entity}.attributes.date ]]  ([[
+                    {entity}.attributes.years_at_next_anniversary ]] Years)
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Travel Times</h2>
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.here_travel_tom_to_work
+              type: "custom:secondaryinfo-entity-row"
+              name: "Here: Current Location -> Work"
+              secondary_info: "Arrive by [[ sensor.here_travel_tom_to_work_arrivetime.state ]]"
+            - entity: sensor.here_travel_tom_to_home
+              type: "custom:secondaryinfo-entity-row"
+              name: "Here: Current Location -> Home"
+              secondary_info: "Arrive by [[ sensor.here_travel_tom_to_home_arrivetime.state ]]"
+            - entity: sensor.here_travel_home_to_work_car
+              name: "Here: Home -> Work by Car"
+            - entity: sensor.here_travel_home_to_work_walk
+              name: "Here: Home -> Work on Foot"
+            - type: section
+            - entity: sensor.waze_travel_home_to_work
+              name: "Waze: Home -> Work"
+            - entity: sensor.waze_travel_tom_to_work
+              name: "Waze: Current Location -> Work"
+            - entity: sensor.waze_travel_tom_to_home
+              name: "Waze: Current Location -> Home"

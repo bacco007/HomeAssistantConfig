@@ -51,7 +51,7 @@ cards:
             show_empty: true
             type: 'custom:auto-entities'
 
-      - type: custom:vertical-stack-in-card
+      - type: custom:vertical-stack-in-card 
         cards:
           - type: markdown
             style: >

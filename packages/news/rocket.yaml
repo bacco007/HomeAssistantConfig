@@ -1,6 +1,7 @@
 ---
 sensor:
   - platform: launch_library
+    name: Launch Library
 
   - platform: rest
     scan_interval: 1800

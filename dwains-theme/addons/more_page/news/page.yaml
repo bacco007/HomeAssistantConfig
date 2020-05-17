@@ -1,0 +1,465 @@
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://brands.home-assistant.io/_/nsw_fuel_station/logo.png"/><br/>
+        - type: entities
+          title: Caltex Vortex98
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.fuelcheck_caltex_tamworth_orana_p98
+              name: Caltex Orana, White Street
+            - entity: sensor.fuel_caltexwhite_stats365
+              name: Caltex Orana - Last 365 Days
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - entity: sensor.fuel_caltexwhite_stats365
+                  attribute: max
+                  name: Max
+                - entity: sensor.fuel_caltexwhite_stats365
+                  attribute: min
+                  name: Min
+                - entity: sensor.fuel_caltexwhite_stats365
+                  attribute: avg
+                  name: Avg
+              secondary_info:
+                entity: sensor.fuel_caltexwhite_stats365
+                attribute: datestring
+                name: false
+            - entity: sensor.fuelcheck_caltex_tamworth_p98
+              name: Caltex Tamworth, Gunnedah Road
+            - entity: sensor.fuelcheck_caltex_woolworths_tamworth_p98
+              name: Woolworths Caltex Tamworth, Bridge Street
+        - type: vertical-stack
+          cards:
+            - type: entities
+              title: BP Ultimate98
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.fuelcheck_bp_tamworth_p98
+                  name: BP Viaduct, Peel Street
+                - entity: sensor.fuel_bpviaduct_stats365
+                  name: BP Viaduct - Last 365 Days
+                  type: custom:multiple-entity-row
+                  show_state: false
+                  entities:
+                    - entity: sensor.fuel_bpviaduct_stats365
+                      attribute: max
+                      name: Max
+                    - entity: sensor.fuel_bpviaduct_stats365
+                      attribute: min
+                      name: Min
+                    - entity: sensor.fuel_bpviaduct_stats365
+                      attribute: avg
+                      name: Avg
+                  secondary_info:
+                    entity: sensor.fuel_bpviaduct_stats365
+                    attribute: datestring
+                    name: false
+                - entity: sensor.fuelcheck_bp_nemingha_p98
+                  name: BP Nemingha, New England Highway
+                - entity: sensor.fuelcheck_bp_tamworth_p98_2
+                  name: BP Tamworth, Goonoo Goonoo Road
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://www.home-assistant.io/images/supported_brands/rocket.png"/><br/>
+        - type: entities
+          title: SpaceX
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - sensor.spacex_next_launch_day
+            - sensor.spacex_next_launch_time
+            - sensor.spacex_next_rocket
+            - sensor.spacex_next_launch_site
+            - sensor.spacex_next_mission_name
+        - type: vertical-stack
+          cards:
+            - type: entities
+              title: International Space Station
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - binary_sensor.iss
+                - sensor.iss_peopleinspace
+            - type: entities
+              title: Next Rocket Launch
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.launch_library
+                  name: Next Launch
+                  type: custom:multiple-entity-row
+                  secondary_info:
+                    entity: sensor.launch_library
+                    attribute: launch_time
+                    name: false
+                - entity: sensor.launch_library
+                  name: Launch Agency
+                  type: custom:multiple-entity-row
+                  show_state: false
+                  entities:
+                    - entity: sensor.launch_library
+                      attribute: agency
+                      name: " "
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
+  cards:
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_cnn
+      title: CNN
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_fox_sports
+      title: Fox Sports (Australia)
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_news_com_au
+      title: News.com.au
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_northern_daily_leader
+      title: Northern Daily Leader
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_sky_news_uk
+      title: Sky News (UK)
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_sky_sports_uk
+      title: Sky Sports (UK)
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_sydney_morning_herald
+      title: Sydney Morning Herald
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_the_guardian_au
+      title: The Guardian (Australia)
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries
+    - type: custom:list-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entity: sensor.rssfeed_the_guardian_uk
+      title: The Guardian (UK)
+      columns:
+        - { add_link: link, field: title, title: "" }
+      row_limit: 10
+      feed_attribute: entries

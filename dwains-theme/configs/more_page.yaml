@@ -4,55 +4,64 @@ more_page:
   addons:
     - name: Coronavirus
       icon: mdi:biohazard
-      path: 'dwains-theme/addons/more_page/coronavirus/page.yaml'
+      path: "dwains-theme/addons/more_page/coronavirus/page.yaml"
     - name: Downloads
       icon: mdi:download-network
-      path: 'dwains-theme/addons/more_page/downloads/page.yaml'
+      path: "dwains-theme/addons/more_page/downloads/page.yaml"
     - name: Folding@Home
-      icon: 'mdi:state-machine'
-      path: 'dwains-theme/addons/more_page/foldingathome/page.yaml'
+      icon: "mdi:state-machine"
+      path: "dwains-theme/addons/more_page/foldingathome/page.yaml"
     - name: Home Assistant
       icon: mdi:home-assistant
-      path: 'dwains-theme/addons/more_page/homeassistant/page.yaml'
+      path: "dwains-theme/addons/more_page/homeassistant/page.yaml"
       data:
-        version: '{{ states.sensor.ha_current_version.state }}'
-        uptime: '{{ states.sensor.ha_uptime_hours.state }}'
+        version: "{{ states.sensor.ha_current_version.state }}"
+        uptime: "{{ states.sensor.ha_uptime_hours.state }}"
+    - name: Internet
+      icon: mdi:ip-network
+      path: "dwains-theme/addons/more_page/internet/page.yaml"
     - name: IoT & SmartHome Network Status
       icon: mdi:lan-connect
-      path: 'dwains-theme/addons/more_page/net-status/page.yaml'
+      path: "dwains-theme/addons/more_page/net-status/page.yaml"
     - name: Media
       icon: mdi:television
-      path: 'dwains-theme/addons/more_page/media/page.yaml'
+      path: "dwains-theme/addons/more_page/media/page.yaml"
     - name: National Electricity Market (NSW)
       icon: mdi:transmission-tower
-      path: 'dwains-theme/addons/more_page/opennem/page.yaml'
+      path: "dwains-theme/addons/more_page/opennem/page.yaml"
     - name: Netatmo Weather Station
       icon: mdi:gauge
-      path: 'dwains-theme/addons/more_page/netatmo/page.yaml'
+      path: "dwains-theme/addons/more_page/netatmo/page.yaml"
+    - name: News
+      icon: mdi:newspaper-variant
+      path: "dwains-theme/addons/more_page/news/page.yaml"
+    - name: People
+      icon: mdi:account-group-outline
+      path: "dwains-theme/addons/more_page/people/page.yaml"
     - name: Pi-Hole
       icon: mdi:pi-hole
-      path: 'dwains-theme/addons/more_page/pi-hole/page.yaml'
+      path: "dwains-theme/addons/more_page/pi-hole/page.yaml"
     - name: Sun UV Air Quality
       icon: mdi:shield-sun-outline
-      path: 'dwains-theme/addons/more_page/sun_uv/page.yaml'
+      path: "dwains-theme/addons/more_page/sun_uv/page.yaml"
     - name: Synology NAS
       icon: mdi:nas
-      path: 'dwains-theme/addons/more_page/synology/page.yaml'
+      path: "dwains-theme/addons/more_page/synology/page.yaml"
     - name: Ubiquiti UniFi
       icon: mdi:router-wireless
-      path: 'dwains-theme/addons/more_page/ubiquiti/unifi.yaml'
+      path: "dwains-theme/addons/more_page/ubiquiti/unifi.yaml"
     - name: Upcoming Sport
       icon: mdi:football-australian
-      path: 'dwains-theme/addons/more_page/sports/page.yaml'
+      path: "dwains-theme/addons/more_page/sports/page.yaml"
     - name: WaterNSW Dam Levels
       icon: mdi:water
-      path: 'dwains-theme/addons/more_page/waternsw/page.yaml'
+      path: "dwains-theme/addons/more_page/waternsw/page.yaml"
     - name: Weather
       icon: mdi:weather-partly-rainy
-      path: 'dwains-theme/addons/more_page/weather/page.yaml'
+      path: "dwains-theme/addons/more_page/weather/page.yaml"
     - name: Testing
       icon: mdi:widgets
-      path: 'dwains-theme/addons/more_page/testing.yaml'
+      path: "dwains-theme/addons/more_page/testing.yaml"
     # - name: Zigbee
     #   icon: mdi:zigbee
     #   path: 'dwains-theme/addons/more_page/zigbee/page.yaml'

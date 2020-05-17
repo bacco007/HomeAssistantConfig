@@ -65,11 +65,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, May 16th 2020_
+_Stats as at 04:59, Sunday, May 17th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.109.6 | 247     | 1442         | 1086 | 19 |
+| 0.109.6 | 249     | 1440         | 1089 | 19 |
 
 Type | Qty
 -- | --
@@ -78,17 +78,17 @@ Alert | 0
 Automation | 19
 Binary Sensor | 107
 Camera | 3
-Device Tracker | 139
+Device Tracker | 140
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
-Light | 7
-Media Player | 19
+Light | 6
+Media Player | 18
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 1086
+Sensor | 1089
 Sun | 1
 Switch | 12
 Weather | 3
@@ -175,6 +175,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [geo_location](https://www.home-assistant.io/components/geo_location)
 - [geo_location.gdacs](https://www.home-assistant.io/components/geo_location.gdacs)
 - [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed)
+- [geo_location.wwlln](https://www.home-assistant.io/components/geo_location.wwlln)
 - [glances](https://www.home-assistant.io/components/glances)
 - [google](https://www.home-assistant.io/components/google)
 - [group](https://www.home-assistant.io/components/group)
@@ -272,6 +273,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk)
 - [sensor.icloud](https://www.home-assistant.io/components/sensor.icloud)
 - [sensor.ios](https://www.home-assistant.io/components/sensor.ios)
+- [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library)
 - [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app)
 - [sensor.moon](https://www.home-assistant.io/components/sensor.moon)
 - [sensor.netatmo](https://www.home-assistant.io/components/sensor.netatmo)
