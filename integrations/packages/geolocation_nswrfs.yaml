@@ -1,0 +1,32 @@
+---
+homeassistant:
+  customize_glob:
+    "geo_location.nsw_fire_service_feed_*":
+      icon: mdi:fire
+
+geo_location:
+  - platform: nsw_rural_fire_service_feed
+    entity_namespace: "nswrfs"
+    radius: 100
+    categories:
+      - 'Emergency Warning'
+      - 'Watch and Act'
+      - 'Advice'
+      - 'Not Applicable'
+
+sensor:
+  - platform: template
+    sensors:
+      fires_near_me:
+        entity_id: sensor.date_time
+        friendly_name: 'Fires Near Me'
+        icon_template: mdi:fire
+        value_template: |
+          {% for state in states
+          if ('nswrfs' in state.entity_id and state.domain in ['geo_location']) -%}
+          {% if loop.last -%}
+          {{ loop.index }}
+          {%- endif %}
+          {% else %}
+          0
+          {%- endfor %}

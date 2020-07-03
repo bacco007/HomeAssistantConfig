@@ -1,0 +1,5 @@
+---
+# https://www.home-assistant.io/integrations/bom/
+platform: bom
+name: Tamworth
+station: IDN60801.95762

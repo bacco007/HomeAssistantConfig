@@ -1,0 +1,81 @@
+# dwains_theme
+
+- type: custom:stack-in-card
+  mode: vertical
+  cards:
+    - type: custom:dwains-flexbox-card
+      cards:
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <img width="125" src="/local/systemicons/hdhomerun.png"/><br/>
+                    **{{ (data | fromjson)['name']}}**<br/>
+                    **{{ (data | fromjson)['model']}}**<br/>
+                    **Version:** {{ (data | fromjson)['version']}}
+                - !include
+                  - ../../1_Templates/button_link.yaml
+                  - name: 'Web Interface'
+                    icon: 'mdi:television'
+                    url: http://192.168.1.120
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <h3>Tuner 1 - {{ (data | fromjson)['tuner0_status']}}</h3>
+                    <b>Frequency:</b> {{ (data | fromjson)['tuner0_frequency']}}<br/>
+                    <b>Channel:</b> {{ (data | fromjson)['tuner0_channelno']}} - {{ (data | fromjson)['tuner0_channelname']}}<br/>
+                    <b>Signal Strength:</b> {{ (data | fromjson)['tuner0_signalstrength']}}<br/>
+                    <b>Signal Quality:</b> {{ (data | fromjson)['tuner0_quality']}}<br/>
+                    <b>Target IP:</b> {{ (data | fromjson)['tuner0_targetip']}}<br/>
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <h3>Tuner 2 - {{ (data | fromjson)['tuner1_status']}}</h3>
+                    <b>Frequency:</b> {{ (data | fromjson)['tuner1_frequency']}}<br/>
+                    <b>Channel:</b> {{ (data | fromjson)['tuner1_channelno']}} - {{ (data | fromjson)['tuner1_channelname']}}<br/>
+                    <b>Signal Strength:</b> {{ (data | fromjson)['tuner1_signalstrength']}}<br/>
+                    <b>Signal Quality:</b> {{ (data | fromjson)['tuner1_quality']}}<br/>
+                    <b>Target IP:</b> {{ (data | fromjson)['tuner1_targetip']}}<br/>
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <h3>Tuner 3 - {{ (data | fromjson)['tuner2_status']}}</h3>
+                    <b>Frequency:</b> {{ (data | fromjson)['tuner2_frequency']}}<br/>
+                    <b>Channel:</b> {{ (data | fromjson)['tuner2_channelno']}} - {{ (data | fromjson)['tuner2_channelname']}}<br/>
+                    <b>Signal Strength:</b> {{ (data | fromjson)['tuner2_signalstrength']}}<br/>
+                    <b>Signal Quality:</b> {{ (data | fromjson)['tuner2_quality']}}<br/>
+                    <b>Target IP:</b> {{ (data | fromjson)['tuner2_targetip']}}<br/>
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <h3>Tuner 4 - {{ (data | fromjson)['tuner3_status']}}</h3>
+                    <b>Frequency:</b> {{ (data | fromjson)['tuner3_frequency']}}<br/>
+                    <b>Channel:</b> {{ (data | fromjson)['tuner3_channelno']}} - {{ (data | fromjson)['tuner3_channelname']}}<br/>
+                    <b>Signal Strength:</b> {{ (data | fromjson)['tuner3_signalstrength']}}<br/>
+                    <b>Signal Quality:</b> {{ (data | fromjson)['tuner3_quality']}}<br/>
+                    <b>Target IP:</b> {{ (data | fromjson)['tuner3_targetip']}}<br/>

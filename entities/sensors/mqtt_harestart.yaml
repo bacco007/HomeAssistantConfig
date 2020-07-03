@@ -1,0 +1,4 @@
+---
+platform: mqtt
+name: "HA Restart Time"
+state_topic: "harestart"

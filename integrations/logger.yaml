@@ -1,0 +1,3 @@
+---
+logger:
+  default: warn

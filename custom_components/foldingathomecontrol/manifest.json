@@ -1,0 +1,13 @@
+{
+  "domain": "foldingathomecontrol",
+  "name": "Folding@HomeControl",
+  "documentation": "https://github.com/eifinger/hass-foldingathomecontrol",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": [
+    "@eifinger"
+  ],
+  "requirements": [
+    "PyFoldingAtHomeControl==1.5.0"
+  ]
+}

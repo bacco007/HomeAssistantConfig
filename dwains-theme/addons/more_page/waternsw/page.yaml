@@ -1,0 +1,395 @@
+# dwains_theme
+
+# - type: picture
+#   image: 'https://wallpaperscave.com/images/original/17/12-14/earth-bougainvillea-3407.jpg'
+#   style: |
+#     ha-card {
+#       height: 125px;
+#       border-radius: 2.5px;
+#     }
+
+- type: custom:stack-in-card
+  style: |
+    ha-card {
+      color: teal;
+      border-radius: 2.5px;
+    }
+  cards:
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      cards:
+        # - type: horizontal-stack
+        #   cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                **WaterNSW**
+
+        - type: vertical-stack
+          cards:
+            - type: entities
+              style: |
+                ha-card { box-shadow: none; }
+              #   #states { padding-top: 0px; padding-bottom: 0px }
+              entities:
+                - type: custom:bar-card
+                  name: Chaffey Dam
+                  entity: sensor.waternsw_chaffey_dam_storage
+                  entity_row: true
+                  animation:
+                    state: on
+                  positions:
+                    minmax: inside
+                    title: inside
+                    value: inside
+                  icon: mdi:water
+                  severity:
+                    - color: rgb(141, 252, 124)
+                      from: 0
+                      to: 100
+                  style: |
+                    ha-icon {
+                      color: var(--dwains-theme-accent) !important;
+                    }
+                    .contentbar-direction-right {
+                    flex-direction: column;
+                    }
+                    .min-direction-right {
+                      margin: 0px;
+                      margin-left: 4px;
+                      margin-right: auto;
+                      margin-bottom: -20px;
+                      bottom: 10px;
+                    }
+                      bar-card-value {
+                      margin: 0px;
+                    }
+                    bar-card-name {
+                      margin: 0px;
+                    }
+                    bar-card-max {
+                      margin: 0px;
+                      margin-left: auto;
+                      margin-top: -20px;
+                      top: 10px;
+                    }
+                    bar-card-divider {
+                      display: none;
+                    }
+                - type: custom:bar-card
+                  name: Keepit Dam
+                  entity: sensor.waternsw_keepit_dam_storage
+                  entity_row: true
+                  animation:
+                    state: on
+                  positions:
+                    minmax: inside
+                    title: inside
+                    value: inside
+                  icon: mdi:water
+                  severity:
+                    - color: rgb(141, 252, 124)
+                      from: 0
+                      to: 100
+                  style: |
+                    ha-icon {
+                      color: var(--dwains-theme-accent) !important;
+                    }
+                    .contentbar-direction-right {
+                    flex-direction: column;
+                    }
+                    .min-direction-right {
+                      margin: 0px;
+                      margin-left: 4px;
+                      margin-right: auto;
+                      margin-bottom: -20px;
+                      bottom: 10px;
+                    }
+                      bar-card-value {
+                      margin: 0px;
+                    }
+                    bar-card-name {
+                      margin: 0px;
+                    }
+                    bar-card-max {
+                      margin: 0px;
+                      margin-left: auto;
+                      margin-top: -20px;
+                      top: 10px;
+                    }
+                    bar-card-divider {
+                      display: none;
+                    }
+                - type: custom:bar-card
+                  name: Split Rock Dam
+                  entity: sensor.waternsw_split_rock_dam_storage
+                  entity_row: true
+                  animation:
+                    state: on
+                  positions:
+                    minmax: inside
+                    title: inside
+                    value: inside
+                  icon: mdi:water
+                  severity:
+                    - color: rgb(141, 252, 124)
+                      from: 0
+                      to: 100
+                  style: |
+                    ha-icon {
+                      color: var(--dwains-theme-accent) !important;
+                    }
+                    .contentbar-direction-right {
+                    flex-direction: column;
+                    }
+                    .min-direction-right {
+                      margin: 0px;
+                      margin-left: 4px;
+                      margin-right: auto;
+                      margin-bottom: -20px;
+                      bottom: 10px;
+                    }
+                      bar-card-value {
+                      margin: 0px;
+                    }
+                    bar-card-name {
+                      margin: 0px;
+                    }
+                    bar-card-max {
+                      margin: 0px;
+                      margin-left: auto;
+                      margin-top: -20px;
+                      top: 10px;
+                    }
+                    bar-card-divider {
+                      display: none;
+                    }
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.waternsw_chaffey_dam_storage
+      name: Chaffey Dam
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      height: 30
+      font-size: 10
+      hours_to_show: 168
+      points_per_hour: 1
+      group_by: hour
+      aggregate_func: last
+      align_state: center
+      show:
+        extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.waternsw_keepit_dam_storage
+      name: Keepit Dam
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      height: 30
+      font-size: 10
+      hours_to_show: 168
+      points_per_hour: 1
+      group_by: hour
+      aggregate_func: last
+      align_state: center
+      show:
+        extrema: true
+        fill: fade
+    - type: custom:mini-graph-card
+      entities:
+        - sensor.waternsw_split_rock_dam_storage
+      name: Split Rock Dam
+      line_color: 'var(--dwains-theme-accent)'
+      line_width: 2
+      height: 30
+      font-size: 10
+      hours_to_show: 168
+      points_per_hour: 1
+      group_by: hour
+      aggregate_func: last
+      align_state: center
+      show:
+        extrema: true
+        fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Chaffey Dam
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.waternsw_chaffey_dam
+              name: Dam Stats
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: spillway_level
+                  name: S/W Lev
+                  unit: ' '
+                - attribute: dead_water_level
+                  name: D/W Level
+                  unit: ' '
+                - attribute: capacity
+                  name: 'Capacity (ML)'
+                  unit: ' '
+            - entity: sensor.waternsw_chaffey_dam_storage
+              name: Current Storage %
+            - entity: sensor.waternsw_chaffey_dam_volume
+              name: Current Volume
+            - entity: sensor.waternsw_chaffey_dam_water_level
+              name: Current Water Level
+            - entity: sensor.waternsw_chaffey_dam_rainfall
+              name: Rainfall (24hrs)
+            - entity: sensor.waternsw_chaffey_dam_net_inflow_24hrs
+              name: Net Inflow (24hrs)
+            - entity: sensor.waternsw_chaffey_dam_releases_24hrs
+              name: Releases (24hrs)
+            - entity: sensor.waternsw_chaffey_dam_evaporation_24hrs
+              name: Evaporation (24hrs)
+            - type: section
+            - sensor.waternsw_chaffey_dam_rainfall
+            - sensor.waternsw_goonoo_goonoo_timbumburi_rainfall
+            - sensor.waternsw_peel_taroona_rainfall
+            - sensor.waternsw_peel_chaffey_dam_rainfall
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Keepit Dam
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.waternsw_keepit_dam
+              name: Dam Stats
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: spillway_level
+                  name: S/W Lev
+                  unit: ' '
+                - attribute: dead_water_level
+                  name: D/W Level
+                  unit: ' '
+                - attribute: capacity
+                  name: 'Capacity (ML)'
+                  unit: ' '
+            - entity: sensor.waternsw_keepit_dam_storage
+              name: Current Storage %
+            - entity: sensor.waternsw_keepit_dam_volume
+              name: Current Volume
+            - entity: sensor.waternsw_keepit_dam_water_level
+              name: Current Water Level
+            - entity: sensor.waternsw_keepit_dam_rainfall
+              name: Rainfall (24hrs)
+            - entity: sensor.waternsw_keepit_dam_net_inflow_24hrs
+              name: Net Inflow (24hrs)
+            - entity: sensor.waternsw_keepit_dam_releases_24hrs
+              name: Releases (24hrs)
+            - entity: sensor.waternsw_keepit_dam_evaporation_24hrs
+              name: Evaporation (24hrs)
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Split Rock Dam
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.waternsw_split_rock_dam
+              name: Dam Stats
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: spillway_level
+                  name: S/W Lev
+                  unit: ' '
+                - attribute: dead_water_level
+                  name: D/W Level
+                  unit: ' '
+                - attribute: capacity
+                  name: 'Capacity (ML)'
+                  unit: ' '
+            - entity: sensor.waternsw_split_rock_dam_storage
+              name: Current Storage %
+            - entity: sensor.waternsw_split_rock_dam_volume
+              name: Current Volume
+            - entity: sensor.waternsw_split_rock_dam_water_level
+              name: Current Water Level
+            - entity: sensor.waternsw_split_rock_dam_rainfall
+              name: Rainfall (24hrs)
+            - entity: sensor.waternsw_split_rock_dam_net_inflow_24hrs
+              name: Net Inflow (24hrs)
+            - entity: sensor.waternsw_split_rock_dam_releases_24hrs
+              name: Releases (24hrs)
+            - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
+              name: Evaporation (24hrs)

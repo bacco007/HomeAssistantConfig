@@ -1,0 +1,36 @@
+---
+media_player:
+  - platform: androidtv
+    name: Foxtel Now Box
+    device_class: androidtv
+    host: 192.168.1.70
+    adb_server_ip: 127.0.0.1
+    adb_server_port: 5037
+    adbkey: '/config/.androidkeys/adbkey'
+    get_sources: true
+    exclude_unnamed_apps: false
+    apps:
+      au.com.ninenow.ctv: '9Now'
+      au.com.kayosports.tv: 'Kayo Sports'
+      au.com.optus.sport.androidtv: 'Optus Sport'
+      au.com.stan.and: 'Stan'
+      au.com.tenplay: '10play'
+      au.net.abc.iview: 'ABC iView'
+      com.android.tv: 'Live TV'
+      com.netflix.ninja: 'Netflix'
+      com.sbs.ondemand.tv: 'SBS On Demand'
+      com.spotify.tv.android: 'Spotify'
+      com.swm.live: '7plus'
+      foxtelnow.box.launcher: 'Foxtel Now Launcher'
+      org.xbmc.kodi: 'Kodi'
+      tunein.player: 'TuneIn'
+    state_detection_rules:
+      'foxtelnow.box.launcher':
+        - 'idle'
+      'com.plexapp.android':
+        - 'paused':
+            'media_session_state': 3
+            'wake_lock_size': 1
+        - 'playing':
+            'media_session_state': 3
+        - 'standby'

@@ -1,0 +1,13 @@
+---
+log_level:
+  name: Log Level
+  options:
+    - critical
+    - fatal
+    - error
+    - warning
+    - warn
+    - info
+    - debug
+    - notset
+  initial: warning

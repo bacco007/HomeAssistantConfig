@@ -1,0 +1,285 @@
+# dwains_theme
+
+- type: custom:stack-in-card
+  mode: vertical
+  cards:
+    - type: custom:dwains-flexbox-card
+      cards:
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    **pveTBSH**<br/>
+                    **Uptime:** {{ (data | fromjson)['uptime']}}
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          cards:
+            - type: vertical-stack
+              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    **Server Performance**
+                - type: custom:bar-card
+                  positions:
+                    name: outside
+                    value: inside
+                  height: 15px
+                  width: 75%
+                  decimal: 1
+                  entities:
+                    - entity: sensor.netdata_pvetbsh_system_cpu_idle
+                      name: CPU Load
+                      icon: mdi:speedometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 10
+                        - color: rgb(206,133,0,0.60)
+                          from: 11
+                          to: 25
+                        - color: rgb(163,0,0,0.60)
+                          from: 26
+                          to: 150
+                    - entity: sensor.pvetbsh_ram_used_percent
+                      name: Memory
+                      icon: mdi:memory
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_swap_used_percent
+                      name: Swap
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_used_percent
+                      name: HDD
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                  style: |
+                    ha-card {
+                      --paper-item-icon-color: rgb(47,186,229);
+                      border-radius: 2.5px;
+                      box-shadow: none;
+                    }
+                    #states {
+                      padding-top: 0 !important;
+                    }
+                    ha-icon	 {
+                      #margin-left: -100px;
+                      margin-top: -5px;
+                      padding-right: 5px;
+                    }
+                    bar-card-iconbar {
+                      height: 20px;
+                    }
+                    bar-card-indicator	 {
+                      #margin-left: -50px;
+                      margin-top: -6px;
+                      padding-right: 5px;
+                    }
+                    bar-card-name	 {
+                      margin-top: 3px;
+                      padding-left: 5px;
+                    }
+                    bar-card-backgroundbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-currentbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-value	 {
+                      #margin-right: -105px;
+                      margin-top: 3px;
+                      padding-left: 5px;
+                        font-size: 9.5px;
+                    }
+                    bar-card-row {
+                      margin-bottom: 0px !important;
+                    }
+
+            - type: vertical-stack
+              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    **Temperatures**
+                - type: custom:bar-card
+                  positions:
+                    name: outside
+                    value: inside
+                  height: 15px
+                  width: 75%
+                  entities:
+                    - entity: sensor.pvetbsh_acpitz_1_temp
+                      name: Thermal 1
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_acpitz_2_temp
+                      name: Thermal 2
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_core_0_temp
+                      name: Core 0
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_core_1_temp
+                      name: Core 1
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_core_2_temp
+                      name: Core 2
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.pvetbsh_core_3_temp
+                      name: Core 3
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.tbsh01_package_id_0_temp
+                      name: Package
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                  style: |
+                    ha-card {
+                      --paper-item-icon-color: rgb(47,186,229);
+                      border-radius: 2.5px;
+                      box-shadow: none;
+                    }
+                    #states {
+                      padding-top: 0 !important;
+                    }
+                    ha-icon	 {
+                      #margin-left: -100px;
+                      margin-top: -5px;
+                      padding-right: 5px;
+                    }
+                    bar-card-iconbar {
+                      height: 20px;
+                    }
+                    bar-card-indicator	 {
+                      #margin-left: -50px;
+                      margin-top: -6px;
+                      padding-right: 5px;
+                    }
+                    bar-card-name	 {
+                      margin-top: 3px;
+                      padding-left: 5px;
+                    }
+                    bar-card-backgroundbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-currentbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-value	 {
+                      #margin-right: -105px;
+                      margin-top: 3px;
+                      padding-left: 5px;
+                      font-size: 9.5px;
+                    }
+                    bar-card-row {
+                      margin-bottom: 0px !important;
+                    }

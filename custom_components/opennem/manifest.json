@@ -1,0 +1,8 @@
+{
+  "domain": "opennem",
+  "name": "OpenNEM",
+  "documentation": "https://github.com/bacco007/sensor.opennem",
+  "dependencies": [],
+  "codeowners": ["@bacco007"],
+  "requirements": []
+}

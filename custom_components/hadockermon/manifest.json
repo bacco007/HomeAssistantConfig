@@ -1,0 +1,8 @@
+{
+  "domain": "hadockermon",
+  "name": "HA Dockermon",
+  "documentation": "https://github.com/custom-components/switch.hadockermon",
+  "dependencies": [],
+  "codeowners": ["@ludeeus"],
+  "requirements": ["pydockermon==1.0.0"]
+}

@@ -1,0 +1,36 @@
+---
+proxmoxve:
+  - host: !secret proxmox_host
+    port: !secret proxmox_port
+    username: !secret proxmox_user
+    password: !secret proxmox_password
+    verify_ssl: false
+    nodes:
+      - node: !secret proxmox_node1
+        vms:
+          - !secret proxmox_node1_vms1
+          - !secret proxmox_node1_vms2
+          - !secret proxmox_node1_vms3
+
+# sensor:
+#   - platform: rest
+#     method: GET
+#     verify_ssl: false
+#     headers:
+#       Cookie: !secret proxmox_cookie
+#       content-Type: applicaion/json
+#     resource: 'https://192.168.1.60:8006/api2/json/nodes/pveTBSH/qemu'
+#     name: 'proxmox_pvetbsh_qemu_100'
+#     value_template: 'OK'
+#     json_attributes_path: "$..[?(@.vmid=='100')]"
+#     json_attributes:
+#       - vmid
+#       - name
+#       - status
+#       - netout
+#       - netin
+#       - cpu
+#       - cpus
+#       - mem
+#       - maxmem
+#       - maxdisk

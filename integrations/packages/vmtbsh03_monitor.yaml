@@ -1,0 +1,38 @@
+---
+sensor:
+  - platform: systemmonitor
+    resources:
+      - type: disk_free
+        arg: /
+      - type: disk_use
+        arg: /
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: memory_use
+      - type: memory_free
+      - type: swap_use_percent
+      - type: swap_use
+      - type: network_in
+        arg: eth0
+      - type: network_out
+        arg: eth0
+      - type: last_boot
+      - type: load_1m
+      - type: load_5m
+      - type: load_15m
+      - type: processor_use
+
+  - platform: template
+    sensors:
+      vmtbsh03_uptime:
+        friendly_name: 'vmTBSH03 Uptime'
+        value_template: >
+          {%- set time = as_timestamp(now()) - as_timestamp(states.sensor.last_boot.state) | int %}
+          {%- set minutes = ((time % 3600) // 60) | int %}
+          {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+          {%- set hours = ((time % 86400) // 3600) | int %}
+          {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+          {%- set days = (time // 86400) | int %}
+          {%- set days = '{}d '.format(days) if days > 0 else '' %}
+          {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}

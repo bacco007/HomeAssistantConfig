@@ -1,0 +1,20 @@
+---
+alias: Auto Backup - Snapshot Failure
+trigger:
+  platform: event
+  event_type: auto_backup.snapshot_failed
+action:
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              Home Assistant - Snapshot Failed
+            text: |
+              Home Assistant Snapshot Failure
+              Snapshot Name: {{ trigger.event.data.name }}
+              Error: {{ trigger.event.data.error }}

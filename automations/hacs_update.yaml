@@ -1,0 +1,30 @@
+---
+alias: HACS - Updates Available
+trigger:
+  - platform: state
+    entity_id: sensor.hacs
+condition:
+  - condition: template
+    value_template: "{{ states(trigger.entity_id) != 'unknown'}}"
+  - condition: template
+    value_template: "{{ (states(trigger.entity_id) | float) != 0}}"
+action:
+  - service: persistent_notification.create
+    data_template:
+      title: HACS - Updates Available
+      message: >-
+        {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+          **{{ repo.display_name }}** _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
+        {% endfor %}
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              HACS - Updates Available
+            text: |
+              Updates to Custom Components are available

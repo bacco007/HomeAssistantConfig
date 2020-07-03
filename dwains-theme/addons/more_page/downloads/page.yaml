@@ -1,0 +1,270 @@
+# dwains_theme
+
+####################
+### TRANSMISSION ###
+####################
+- type: custom:stack-in-card
+  mode: vertical
+  cards:
+    - type: custom:dwains-flexbox-card
+      cards:
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <img width="125" src="https://brands.home-assistant.io/transmission/logo.png"/><br/>
+                - !include
+                  - ../../1_Templates/button_link.yaml
+                  - name: 'Transmission'
+                    icon: 'mdi:transfer-down'
+                    url: !secret transmission_url
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-12 col-md-10 col-lg-10'
+          cards:
+            - type: custom:dwains-flexbox-card
+              items_classes: 'col-xs-12 col-sm-6 col-md-3 col-lg-3'
+              cards:
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Status - Docker Container'
+                    sensor: 'binary_sensor.vmtbsh01_ha_dockermon_transmission'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Status - Transmission'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_status'
+            - type: custom:dwains-flexbox-card
+              items_classes: 'col-xs-12 col-sm-6 col-md-3 col-lg-3'
+              cards:
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Torrents - Total'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_total_torrents'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Torrents - Active'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_active_torrents'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Torrents - Completed'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_completed_torrents'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Torrents - Paused'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_paused_torrents'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Torrents - Started'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_started_torrents'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Speed - Download'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.transmission_down_speed'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Speed - Upload'
+                    icon: 'mdi:transfer-up'
+                    sensor: 'sensor.transmission_up_speed'
+            # - type: custom:dwains-flexbox-card
+            #   items_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
+            #   cards:
+            #     - type: custom:mini-graph-card
+            #       style: |
+            #         ha-card {
+            #           background-color: var(--dwains-theme-primary);
+            #         }
+            #       entities:
+            #         - entity: sensor.transmission_total_torrents
+            #           name: Total
+            #         - entity: sensor.transmission_active_torrents
+            #           name: Active
+            #         - entity: sensor.transmission_paused_torrents
+            #           name: Paused
+            #       name: Transmission
+            #       line_color: 'var(--dwains-theme-accent)'
+            #       animate: true
+            #       align_state: center
+            #       hours_to_show: 48
+            #       hour24: true
+            #       points_per_hour: 6
+            #       smoothing: true
+            #       show:
+            #         points: false
+            #         graph: line
+            #         fill: fade
+            #         extrema: true
+            #     - type: custom:mini-graph-card
+            #       style: |
+            #         ha-card {
+            #           background-color: var(--dwains-theme-primary);
+            #         }
+            #       entities:
+            #         - entity: sensor.transmission_up_speed
+            #           name: Up Speed
+            #         - entity: sensor.transmission_down_speed
+            #           name: Down Speed
+            #       name: Transmission
+            #       line_color: 'var(--dwains-theme-accent)'
+            #       animate: true
+            #       align_state: center
+            #       hours_to_show: 48
+            #       hour24: true
+            #       points_per_hour: 6
+            #       smoothing: true
+            #       show:
+            #         points: false
+            #         graph: line
+            #         fill: fade
+            #         extrema: true
+
+###############
+### SABnzbd ###
+###############
+- type: custom:stack-in-card
+  mode: vertical
+  cards:
+    - type: custom:dwains-flexbox-card
+      cards:
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <img width="125" src="https://brands.home-assistant.io/sabnzbd/logo.png"/><br/>
+                - !include
+                  - ../../1_Templates/button_link.yaml
+                  - name: 'SABnzbd'
+                    icon: 'mdi:transfer-down'
+                    url: !secret sabnzbd_url
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-12 col-md-10 col-lg-10'
+          cards:
+            - type: custom:dwains-flexbox-card
+              items_classes: 'col-xs-12 col-sm-6 col-md-3 col-lg-3'
+              cards:
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Status - Docker Container'
+                    sensor: 'binary_sensor.vmtbsh01_ha_dockermon_sabnzbd'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Status - SABnzbd'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_status'
+            - type: custom:dwains-flexbox-card
+              items_classes: 'col-xs-12 col-sm-6 col-md-3 col-lg-3'
+              cards:
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Speed'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_speed'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Queue'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_queue'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Queue - to Download'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_queue_count'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Queue - Size'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_left'
+            - type: custom:dwains-flexbox-card
+              items_classes: 'col-xs-12 col-sm-6 col-md-3 col-lg-3'
+              cards:
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Downloads - Total'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_total'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Downloads - Daily'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_daily_total'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Downloads - Weekly'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_total'
+                - !include
+                  - ../../1_Templates/button_state.yaml
+                  - name: 'Downloads - Monthly'
+                    icon: 'mdi:transfer-down'
+                    sensor: 'sensor.sabnzbd_monthly_total'
+    # - type: custom:dwains-flexbox-card
+    #   item_classes: 'col-xs-12 col-sm-12 col-md-12 col-lg-12'
+    #   cards:
+    #     - type: custom:dwains-flexbox-card
+    #       items_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
+    #       cards:
+    #         - type: custom:mini-graph-card
+    #           style: |
+    #             ha-card {
+    #               background-color: var(--dwains-theme-primary);
+    #             }
+    #           entities:
+    #             - entity: sensor.transmission_total_torrents
+    #               name: Total
+    #             - entity: sensor.transmission_active_torrents
+    #               name: Active
+    #             - entity: sensor.transmission_paused_torrents
+    #               name: Paused
+    #           name: Transmission
+    #           line_color: 'var(--dwains-theme-accent)'
+    #           animate: true
+    #           align_state: center
+    #           hours_to_show: 48
+    #           hour24: true
+    #           points_per_hour: 6
+    #           smoothing: true
+    #           show:
+    #             points: false
+    #             graph: line
+    #             fill: fade
+    #             extrema: true
+    #         - type: custom:mini-graph-card
+    #           style: |
+    #             ha-card {
+    #               background-color: var(--dwains-theme-primary);
+    #             }
+    #           entities:
+    #             - entity: sensor.transmission_up_speed
+    #               name: Up Speed
+    #             - entity: sensor.transmission_down_speed
+    #               name: Down Speed
+    #           name: Transmission
+    #           line_color: 'var(--dwains-theme-accent)'
+    #           animate: true
+    #           align_state: center
+    #           hours_to_show: 48
+    #           hour24: true
+    #           points_per_hour: 6
+    #           smoothing: true
+    #           show:
+    #             points: false
+    #             graph: line
+    #             fill: fade
+    #             extrema: true

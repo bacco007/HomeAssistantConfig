@@ -1,0 +1,211 @@
+---
+sensor:
+  # {% for n in range(12) %}{% set u = n + 1 %}
+  #   lovelace_plex_recent_movies_{{'%02d' % (u)}}:
+  #     friendly_name: Lovelace - Plex Recent Movies {{'%02d' % (u)}}
+  #     entity_id: sensor.plex_recently_added_movies
+  #     value_template: {% raw %}{{state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['title'] is defined else 'None'}}{% endraw %}
+  #     attribute_templates:
+  #       name: >
+  #         {% raw %}{{state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['title'] is defined else 'None'}}{% endraw %}
+  #       date: >
+  #         {% raw %}{{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['airdate'])
+  #         | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['airdate']) is defined else "None"}}{% endraw %}
+  #       poster: >
+  #         {% raw %}{{state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['poster'] is defined else "None"}}{% endraw %}
+  #       watched: >
+  #         {% raw %}{{state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[{%endraw%}{{u}}{%raw%}]['flag'] is defined else "None"}}{% endraw %}
+  #   {% endfor %}
+  - platform: template
+    sensors:
+      lovelace_plex_recent_movies_01:
+        friendly_name: Lovelace - Plex Recent Movies 01
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[1]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[1]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[1]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[1]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[1]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[1]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[1]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[1]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[1]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[1]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_02:
+        friendly_name: Lovelace - Plex Recent Movies 02
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[2]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[2]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[2]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[2]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[2]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[2]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[2]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[2]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[2]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[2]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_03:
+        friendly_name: Lovelace - Plex Recent Movies 03
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[3]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[3]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[3]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[3]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[3]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[3]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[3]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[3]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[3]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[3]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_04:
+        friendly_name: Lovelace - Plex Recent Movies 04
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[4]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[4]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[4]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[4]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[4]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[4]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[4]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[4]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[4]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[4]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_05:
+        friendly_name: Lovelace - Plex Recent Movies 05
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[5]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[5]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[5]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[5]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[5]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[5]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[5]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[5]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[5]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[5]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_06:
+        friendly_name: Lovelace - Plex Recent Movies 06
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[6]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[6]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[6]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[6]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[6]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[6]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[6]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[6]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[6]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[6]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_07:
+        friendly_name: Lovelace - Plex Recent Movies 07
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[7]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[7]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[7]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[7]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[7]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[7]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[7]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[7]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[7]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[7]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_08:
+        friendly_name: Lovelace - Plex Recent Movies 08
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[8]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[8]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[8]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[8]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[8]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[8]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[8]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[8]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[8]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[8]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_09:
+        friendly_name: Lovelace - Plex Recent Movies 09
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[9]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[9]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[9]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[9]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[9]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[9]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[9]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[9]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[9]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[9]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_10:
+        friendly_name: Lovelace - Plex Recent Movies 10
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[10]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[10]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[10]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[10]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[10]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[10]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[10]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[10]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[10]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[10]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_11:
+        friendly_name: Lovelace - Plex Recent Movies 11
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[11]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[11]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[11]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[11]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[11]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[11]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[11]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[11]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[11]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[11]['flag'] is defined else "None"}}
+
+      lovelace_plex_recent_movies_12:
+        friendly_name: Lovelace - Plex Recent Movies 12
+        entity_id: sensor.plex_recently_added_movies
+        value_template: >
+          {{state_attr('sensor.plex_recently_added_movies', 'data')[12]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[12]['title'] is defined else 'None'}}
+        attribute_templates:
+          name: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[12]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[12]['title'] is defined else 'None'}}
+          date: >
+            {{as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[12]['airdate']) 
+            | timestamp_custom ('%A %-d %b, %H:%M') if as_timestamp(state_attr('sensor.plex_recently_added_movies', 'data')[12]['airdate']) is defined else "None"}}
+          poster: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[12]['poster'] if state_attr('sensor.plex_recently_added_movies', 'data')[12]['poster'] is defined else "None"}}
+          watched: >
+            {{state_attr('sensor.plex_recently_added_movies', 'data')[12]['flag'] if state_attr('sensor.plex_recently_added_movies', 'data')[12]['flag'] is defined else "None"}}

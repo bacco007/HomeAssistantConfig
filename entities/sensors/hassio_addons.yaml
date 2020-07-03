@@ -1,0 +1,11 @@
+---
+platform: rest
+name: Addons
+resource: !secret hassio_addons_url
+headers:
+  Authorization: !secret ha_api_llat
+json_attributes_path: "$.data"
+json_attributes:
+  - addons
+  - addons_repositories
+value_template: '{{ value_json.data.addons | count}}'

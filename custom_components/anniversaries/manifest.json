@@ -1,0 +1,15 @@
+{
+  "domain": "anniversaries",
+  "name": "Anniversaries",
+  "documentation": "https://github.com/pinkywafer/Anniversaries",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": ["@pinkywafer"],
+  "requirements": [
+    "datetime",
+    "python-dateutil",
+    "integrationhelper",
+    "uuid",
+    "voluptuous"
+  ]
+}

@@ -1,0 +1,50 @@
+---
+sensor:
+  - platform: bom
+    station: IDN60801.95762
+    name: Tamworth
+    monitored_conditions:
+      - apparent_t
+      - cloud
+      - cloud_base_m
+      - cloud_oktas
+      - cloud_type_id
+      - cloud_type
+      - delta_t
+      - gust_kmh
+      - gust_kt
+      - air_temp
+      - dewpt
+      - local_date_time
+      - local_date_time_full
+      - press
+      - press_qnh
+      - press_msl
+      - press_tend
+      - rain_trace
+      - rel_hum
+      - vis_km
+      - weather
+      - wind_dir
+      - wind_spd_kmh
+      - wind_spd_kt
+
+  - platform: statistics
+    name: today_temp_bom
+    sampling_size: 150
+    entity_id: sensor.bom_tamworth_air_temp_c
+    max_age:
+      hours: 24
+
+  - platform: template
+    sensors:
+      bom_min_temp:
+        friendly_name: 'BOM Min Temp'
+        value_template: "{{ states.sensor.today_temp_bom.attributes['min_value']}}"
+        icon_template: mdi:thermometer-chevron-down
+        unit_of_measurement: "°C"
+      bom_max_temp:
+        friendly_name: 'BOM Max Temp'
+        value_template: "{{ states.sensor.today_temp_bom.attributes['max_value']}}"
+        icon_template: mdi:thermometer-chevron-up
+        unit_of_measurement: "°C"

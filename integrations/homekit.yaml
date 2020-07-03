@@ -1,0 +1,12 @@
+---
+homekit:
+  auto_start: true
+  name: Home Assistant
+  filter:
+    include_entities:
+      - binary_sensor.zha_office_motion
+      - light.zha_office_light
+      - media_player.bedroom_sonos
+      - sensor.zha_bedroom_temperature
+      - sensor.zha_office_temperature
+      - sensor.zha_laundry_temperature

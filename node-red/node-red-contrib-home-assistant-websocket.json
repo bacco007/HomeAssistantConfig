@@ -1,0 +1,651 @@
+{
+  "nodes": {
+    "9ed309ff_9fb3": {
+      "lastPayload": {
+        "state": 32.1,
+        "attributes": {}
+      }
+    },
+    "c367aa3b_7e33e8": {
+      "lastPayload": {
+        "state": 242.6,
+        "attributes": {}
+      }
+    },
+    "3a319b9e_2fc6b4": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "a9f15fb5_d6db2": {
+      "lastPayload": {
+        "state": 49.9,
+        "attributes": {}
+      }
+    },
+    "d9add54e_f8931": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "ee6486df_dc1928": {
+      "lastPayload": {
+        "state": 151.1,
+        "attributes": {}
+      }
+    },
+    "4f748b0f_6bcd74": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "91b848fc_d0eff": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "d99a3425_bad508": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "badf76f2_8d5ad": {
+      "lastPayload": {
+        "state": 455,
+        "attributes": {}
+      }
+    },
+    "da56a437_c91db": {
+      "lastPayload": {
+        "state": 84,
+        "attributes": {}
+      }
+    },
+    "d8039aa5_f9af18": {
+      "lastPayload": {
+        "state": 46,
+        "attributes": {}
+      }
+    },
+    "60495a73_217f5c": {
+      "lastPayload": {
+        "state": 17.4,
+        "attributes": {}
+      }
+    },
+    "f177a971_98fee8": {
+      "lastPayload": {
+        "state": 250.7,
+        "attributes": {}
+      }
+    },
+    "5bc42a23_e9331c": {
+      "lastPayload": {
+        "state": 5.8,
+        "attributes": {}
+      }
+    },
+    "3ecc78bf_a817": {
+      "lastPayload": {
+        "state": 455,
+        "attributes": {}
+      }
+    },
+    "e25ca7e9_0ef01": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "89362226_a2e418": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "7fc4e6a2_70685": {
+      "lastPayload": {
+        "state": 100,
+        "attributes": {}
+      }
+    },
+    "b8ba9bae_43ed7": {
+      "lastPayload": {
+        "state": 116,
+        "attributes": {}
+      }
+    },
+    "35216d50_21fec2": {
+      "lastPayload": {
+        "state": 168,
+        "attributes": {}
+      }
+    },
+    "e22cc942_3a94f": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {}
+      }
+    },
+    "b0cd82d_0e1088": {
+      "lastPayload": {
+        "state": 69,
+        "attributes": {}
+      }
+    },
+    "ac727c28_44b77": {
+      "lastPayload": {
+        "state": 15,
+        "attributes": {}
+      }
+    },
+    "ae64dbe3_1e2d2": {
+      "lastPayload": {
+        "state": 1,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "03:07 03 Jul 2020",
+          "sort": 4
+        }
+      }
+    },
+    "4b8ffd88_01a24c": {
+      "lastPayload": {
+        "state": 0.3,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "05:07 03 Jul 2020",
+          "sort": 2
+        }
+      }
+    },
+    "9c32ef9e_198c5": {
+      "lastPayload": {
+        "state": 0.2,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "06:07 03 Jul 2020",
+          "sort": 1
+        }
+      }
+    },
+    "3e7de169_4cf3ce": {
+      "lastPayload": {
+        "state": 0.4,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "04:07 03 Jul 2020",
+          "sort": 3
+        }
+      }
+    },
+    "5b2a34dc_cc5e94": {
+      "lastPayload": {
+        "state": 1.8,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "03:07 03 Jul 2020",
+          "sort": 5
+        }
+      }
+    },
+    "fedcc9b8_2176b8": {
+      "lastPayload": {
+        "state": 1.8,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "03:07 03 Jul 2020",
+          "sort": 6
+        }
+      }
+    },
+    "cffaf137_0ce64": {
+      "lastPayload": {
+        "state": 20.37,
+        "attributes": {
+          "period": "2020-07-03T18:15:00"
+        }
+      }
+    },
+    "91249862_5694a": {
+      "lastPayload": {
+        "state": 11.42,
+        "attributes": {
+          "period": "2020-07-03T18:15:00"
+        }
+      }
+    },
+    "247b555a_f45482": {
+      "lastPayload": {
+        "state": 7.57,
+        "attributes": {
+          "period": "2020-07-03T18:15:00"
+        }
+      }
+    },
+    "842f01fc_12319": {
+      "lastPayload": {
+        "state": 65.5,
+        "attributes": {
+          "aep": 63.2,
+          "ey": 1,
+          "time": "19:02 26 Feb 2020",
+          "sort": 5
+        }
+      }
+    },
+    "b16ef0f7_52011": {
+      "lastPayload": {
+        "state": 65.5,
+        "attributes": {
+          "aep": 0,
+          "ey": 2,
+          "time": "19:02 26 Feb 2020",
+          "sort": 6
+        }
+      }
+    },
+    "2b1fa0f5_064bf": {
+      "lastPayload": {
+        "state": 19.6,
+        "attributes": {
+          "aep": 0,
+          "ey": 0.5,
+          "time": "18:02 08 Feb 2020",
+          "sort": 2
+        }
+      }
+    },
+    "c5d24e79_cdf26": {
+      "lastPayload": {
+        "state": 7,
+        "attributes": {
+          "aep": 0,
+          "ey": 1,
+          "time": "20:02 08 Feb 2020",
+          "sort": "1"
+        }
+      }
+    },
+    "20278b5a_8e2fa4": {
+      "lastPayload": {
+        "state": 31.1,
+        "attributes": {
+          "aep": 0,
+          "ey": 0.5,
+          "time": "18:02 08 Feb 2020",
+          "sort": "3"
+        }
+      }
+    },
+    "1c6730fe_5720d7": {
+      "lastPayload": {
+        "state": 40.6,
+        "attributes": {
+          "aep": 0,
+          "ey": 2,
+          "time": "19:02 09 Feb 2020",
+          "sort": "4"
+        }
+      }
+    },
+    "fd053220_3acfa": {
+      "lastPayload": {
+        "state": 598,
+        "attributes": {}
+      }
+    },
+    "8fcacd47_e3f83": {
+      "lastPayload": {
+        "state": 4818,
+        "attributes": {}
+      }
+    },
+    "ed1d6c14_0eede8": {
+      "lastPayload": {
+        "state": 356.3,
+        "attributes": {}
+      }
+    },
+    "943db8e2_eb4428": {
+      "lastPayload": {
+        "state": 277,
+        "attributes": {}
+      }
+    },
+    "db8dabb7_51f83": {
+      "lastPayload": {
+        "state": 334,
+        "attributes": {}
+      }
+    },
+    "8035f609_c576a8": {
+      "lastPayload": {
+        "state": 8.4,
+        "attributes": {
+          "count": 4,
+          "countstring": "4 Days",
+          "average": 2.1,
+          "highest": 5.8,
+          "sort": 2
+        }
+      }
+    },
+    "b6601402_363ac8": {
+      "lastPayload": {
+        "state": 9.9,
+        "attributes": {
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 3.3,
+          "highest": 7.4,
+          "sort": 2
+        }
+      }
+    },
+    "d4f5da6c_a1fc4": {
+      "lastPayload": {
+        "state": 0.8,
+        "attributes": {
+          "count": 2,
+          "countstring": "2 Days",
+          "average": 0.4,
+          "highest": 0.6,
+          "sort": "1"
+        }
+      }
+    },
+    "f24014c9_ac0258": {
+      "lastPayload": {
+        "state": 103.5,
+        "attributes": {}
+      }
+    },
+    "cdb027c7_820ed8": {
+      "lastPayload": {
+        "state": 140.3,
+        "attributes": {
+          "max": 163.9,
+          "min": 112.9,
+          "avg": 140.3,
+          "mindate": "05 May 2020",
+          "maxdate": "05 Jan 2020",
+          "datestring": "Min: 05 May 2020 - Max: 05 Jan 2020"
+        }
+      }
+    },
+    "311fef1b_5191e8": {
+      "lastPayload": {
+        "state": 12.886,
+        "attributes": {
+          "max": 28.1,
+          "min": 1.8,
+          "avg": 12.886,
+          "mindate": "01 Jul 2020",
+          "maxdate": "02 Feb 2020",
+          "datestring": "Min: 01 Jul 2020 - Max: 02 Feb 2020"
+        }
+      }
+    },
+    "9175a68d_c94b78": {
+      "lastPayload": {
+        "state": 29.2,
+        "attributes": {
+          "count": 9,
+          "countstring": "9 Days",
+          "average": 3.24,
+          "highest": 19.6,
+          "sort": 3
+        }
+      }
+    },
+    "6a5bcb5d_8aa50c": {
+      "lastPayload": {
+        "state": 33.2,
+        "attributes": {
+          "count": 5,
+          "countstring": "5 Days",
+          "average": 6.64,
+          "highest": 22.3,
+          "sort": 3
+        }
+      }
+    },
+    "1b767a8_196e406": {
+      "lastPayload": {
+        "state": 1,
+        "attributes": {
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 1,
+          "highest": 1,
+          "sort": 1
+        }
+      }
+    },
+    "4886e2d4_46b2d4": {
+      "lastPayload": {
+        "state": 24.71,
+        "attributes": {
+          "max": 41.3,
+          "min": 9.5,
+          "avg": 24.71,
+          "mindate": "23 May 2020",
+          "maxdate": "05 Jan 2020",
+          "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
+        }
+      }
+    },
+    "1f2952a_7e1c72d": {
+      "lastPayload": {
+        "state": 29.514,
+        "attributes": {
+          "max": 46.9,
+          "min": 8.4,
+          "avg": 29.514,
+          "mindate": "23 May 2020",
+          "maxdate": "05 Jan 2020",
+          "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
+        }
+      }
+    },
+    "fc09a2d1_e54b4": {
+      "lastPayload": {
+        "state": 17.16,
+        "attributes": {}
+      }
+    },
+    "f757099a_d4cc4": {
+      "lastPayload": {
+        "state": 2732.64,
+        "attributes": {}
+      }
+    },
+    "7e607f36_2c7aa8": {
+      "lastPayload": {
+        "state": "91.0",
+        "attributes": {
+          "units": "GB"
+        }
+      }
+    },
+    "e96c7bb3_6563b8": {
+      "lastPayload": {
+        "state": "482.0",
+        "attributes": {
+          "units": "GB"
+        }
+      }
+    },
+    "8c14123d_0a703": {
+      "lastPayload": {
+        "state": "USG",
+        "attributes": {
+          "model": "UGW3",
+          "version": "4.4.50.5272448",
+          "data": "547.1 GB",
+          "serial": "F09FC212B4F7",
+          "sitename": "TBSmartHome (default)",
+          "type": "ugw",
+          "controller": "https://192.168.1.20:8443",
+          "external_ip_address": "110.143.197.190",
+          "uptime": "14d 7hr 24min",
+          "lastseen": "a few seconds ago"
+        }
+      }
+    },
+    "957cbb4_eef05c8": {
+      "lastPayload": {
+        "state": "35.2",
+        "attributes": {
+          "units": "GB"
+        }
+      }
+    },
+    "4ab87d18_2096bc": {
+      "lastPayload": {
+        "state": "3.9",
+        "attributes": {
+          "units": "GB"
+        }
+      }
+    },
+    "c64bc5f1_cdb0c": {
+      "lastPayload": {
+        "state": 139.22,
+        "attributes": {
+          "max": 162.9,
+          "min": 112.9,
+          "avg": 139.22,
+          "mindate": "23 Apr 2020",
+          "maxdate": "05 Jan 2020",
+          "datestring": "Min: 23 Apr 2020 - Max: 05 Jan 2020"
+        }
+      }
+    },
+    "acca2149_2ab16": {
+      "lastPayload": {
+        "state": 44.9,
+        "attributes": {
+          "date": "08 Feb 2020"
+        }
+      }
+    },
+    "4f587f87_f1d52": {
+      "lastPayload": {
+        "state": 55.6,
+        "attributes": {
+          "date": "08 Feb 2020"
+        }
+      }
+    },
+    "2cd48d0a_141992": {
+      "lastPayload": {
+        "state": 0.09,
+        "attributes": {}
+      }
+    },
+    "13d27691_292561": {
+      "lastPayload": {
+        "state": 495,
+        "attributes": {
+          "count": 60,
+          "countstring": "60 Days",
+          "average": 8.25,
+          "highest": 55.6,
+          "sort": "4"
+        }
+      }
+    },
+    "506bee74_0a6ac8": {
+      "lastPayload": {
+        "state": 1,
+        "attributes": {}
+      }
+    },
+    "ee3ed6bb_25091": {
+      "lastPayload": {
+        "state": 521.2,
+        "attributes": {
+          "count": 61,
+          "countstring": "61 Days",
+          "average": 8.54,
+          "highest": 44.9,
+          "sort": 4
+        }
+      }
+    },
+    "b2a53f98_321f6": {
+      "lastPayload": {
+        "state": "Hateful8",
+        "attributes": {
+          "model": "US8P60",
+          "version": "4.0.80.10875",
+          "serial": "18E8294E9002",
+          "sitename": "TBSmartHome (default)",
+          "type": "usw",
+          "controller": "https://192.168.1.20:8443",
+          "uptime": "14d 7hr 24min",
+          "rx_data": "91.0 GB",
+          "tx_data": "482.0 GB",
+          "lastseen": "a few seconds ago"
+        }
+      }
+    },
+    "7b4905a4_5af234": {
+      "lastPayload": {
+        "state": "UFO",
+        "attributes": {
+          "ip_address": "192.168.1.27",
+          "model": "U7LT",
+          "version": "4.0.80.10875",
+          "mac": "80:2a:a8:d3:8f:48",
+          "serial": "802AA8D38F48",
+          "sitename": "TBSmartHome (default)",
+          "type": "uap",
+          "cpu": 8.3,
+          "users": 26,
+          "controller": "https://192.168.1.20:8443",
+          "guests": 0,
+          "uptime": "14d 7hr 24min",
+          "lastseen": "a few seconds ago",
+          "tx_data": "35.2 GB",
+          "rx_data": "3.9 GB"
+        }
+      }
+    },
+    "ebd67e08_e4ebb8": {
+      "lastPayload": {
+        "state": 11.842,
+        "attributes": {
+          "max": 28.6,
+          "min": -0.6,
+          "avg": 11.842,
+          "mindate": "06 Jun 2020",
+          "maxdate": "02 Feb 2020",
+          "datestring": "Min: 06 Jun 2020 - Max: 02 Feb 2020"
+        }
+      }
+    },
+    "ab2ad1b0_e2144": {
+      "lastPayload": {
+        "state": 155,
+        "attributes": {
+          "uptime": "0d 4hr 2min",
+          "drops": 155
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+---
+# https://www.home-assistant.io/integrations/recorder/
+recorder:
+  db_url: !secret mariadb_connection
+  purge_keep_days: 7
+  exclude:
+    entities:
+      - sun.sun
+    entity_globs:
+      - sensor.192_168_1_50*
+      - sensor.date*
+      - sensor.rssfeed_*
+      - sensor.time*
+      - sensor.unifi_*
+      - sensor.usg_*
+      - sensor.*monitordocker*
+    domains:
+      - anniversaries
+      - automation
+      - calendar
+      - camera
+      - device_tracker
+      - group
+      - geo_location
+      - light
+      - media_player
+      - persistent_notification
+      - switch
+      - weblink
+      - zone
+    event_types:
+      - service_removed
+      - service_executed
+      - platform_discovered
+      - homeassistant_start
+      - homeassistant_stop
+      - feedreader
+      - service_registered
+      - call_service
+      - component_loaded
+      - logbook_entry
+      - automation_triggered
+      - script_started
+      - timer_out_of_sync

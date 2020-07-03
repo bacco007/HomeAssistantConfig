@@ -1,0 +1,6 @@
+---
+logs_warning_counter:
+  name: Warnings
+  initial: 0
+  icon: mdi:alert
+  step: 1

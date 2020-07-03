@@ -1,0 +1,147 @@
+# https://dwainscheeren.github.io/lovelace-dwains-theme/configuration/more_page.html
+
+more_page:
+  addons:
+    - name: Coronavirus
+      icon: mdi:biohazard
+      path: "dwains-theme/addons/more_page/coronavirus/page.yaml"
+    - name: Downloads
+      icon: mdi:download-network
+      path: "dwains-theme/addons/more_page/downloads/page.yaml"
+    - name: Flight Tracker
+      icon: "mdi:airplane"
+      path: "dwains-theme/addons/more_page/flighttracker/page.yaml"
+    - name: Folding@Home
+      icon: "mdi:state-machine"
+      path: "dwains-theme/addons/more_page/foldingathome/page.yaml"
+    - name: HDHomerun
+      icon: mdi:television
+      path: "dwains-theme/addons/more_page/hdhomerun/page.yaml"
+      data:
+        name: "{{ states.sensor.hdhomerun_info.attributes.FriendlyName }}"
+        model: "{{ states.sensor.hdhomerun_info.attributes.ModelNumber }}"
+        version: "{{ states.sensor.hdhomerun_info.attributes.FirmwareVersion }}"
+        url: "{{ states.sensor.hdhomerun_info.attributes.BaseURL }}"
+        tuner0_status: "{{ states.sensor.hdhomerun_tuner_0.state }}"
+        tuner0_channelno: "{{ states.sensor.hdhomerun_tuner_0.attributes.VctNumber|default('NA') }}"
+        tuner0_channelname: "{{ states.sensor.hdhomerun_tuner_0.attributes.VctName|default('Not Tuned') }}"
+        tuner0_frequency: "{{ states.sensor.hdhomerun_tuner_0.attributes.Frequency|default('Not Tuned') }}"
+        tuner0_signalstrength: "{{ states.sensor.hdhomerun_tuner_0.attributes.SignalStrengthPercent|default('Not Tuned') }}"
+        tuner0_quality: "{{ states.sensor.hdhomerun_tuner_0.attributes.SymbolQualityPercent|default('Not Tuned') }}"
+        tuner0_targetip: "{{ states.sensor.hdhomerun_tuner_0.attributes.TargetIP|default('Not Tuned') }}"
+        tuner1_status: "{{ states.sensor.hdhomerun_tuner_1.state }}"
+        tuner1_channelno: "{{ states.sensor.hdhomerun_tuner_1.attributes.VctNumber|default('NA') }}"
+        tuner1_channelname: "{{ states.sensor.hdhomerun_tuner_1.attributes.VctName|default('Not Tuned') }}"
+        tuner1_frequency: "{{ states.sensor.hdhomerun_tuner_1.attributes.Frequency|default('Not Tuned') }}"
+        tuner1_signalstrength: "{{ states.sensor.hdhomerun_tuner_1.attributes.SignalStrengthPercent|default('Not Tuned') }}"
+        tuner1_quality: "{{ states.sensor.hdhomerun_tuner_1.attributes.SymbolQualityPercent|default('Not Tuned') }}"
+        tuner1_targetip: "{{ states.sensor.hdhomerun_tuner_1.attributes.TargetIP|default('Not Tuned') }}"
+        tuner2_status: "{{ states.sensor.hdhomerun_tuner_2.state }}"
+        tuner2_channelno: "{{ states.sensor.hdhomerun_tuner_2.attributes.VctNumber|default('NA') }}"
+        tuner2_channelname: "{{ states.sensor.hdhomerun_tuner_2.attributes.VctName|default('Not Tuned') }}"
+        tuner2_frequency: "{{ states.sensor.hdhomerun_tuner_2.attributes.Frequency|default('Not Tuned') }}"
+        tuner2_signalstrength: "{{ states.sensor.hdhomerun_tuner_2.attributes.SignalStrengthPercent|default('Not Tuned') }}"
+        tuner2_quality: "{{ states.sensor.hdhomerun_tuner_2.attributes.SymbolQualityPercent|default('Not Tuned') }}"
+        tuner2_targetip: "{{ states.sensor.hdhomerun_tuner_2.attributes.TargetIP|default('Not Tuned') }}"
+        tuner3_status: "{{ states.sensor.hdhomerun_tuner_3.state }}"
+        tuner3_channelno: "{{ states.sensor.hdhomerun_tuner_3.attributes.VctNumber|default('NA') }}"
+        tuner3_channelname: "{{ states.sensor.hdhomerun_tuner_3.attributes.VctName|default('Not Tuned') }}"
+        tuner3_frequency: "{{ states.sensor.hdhomerun_tuner_3.attributes.Frequency|default('Not Tuned') }}"
+        tuner3_signalstrength: "{{ states.sensor.hdhomerun_tuner_3.attributes.SignalStrengthPercent|default('Not Tuned') }}"
+        tuner3_quality: "{{ states.sensor.hdhomerun_tuner_3.attributes.SymbolQualityPercent|default('Not Tuned') }}"
+        tuner3_targetip: "{{ states.sensor.hdhomerun_tuner_3.attributes.TargetIP|default('Not Tuned') }}"
+    - name: Home Assistant
+      icon: mdi:home-assistant
+      path: "dwains-theme/addons/more_page/homeassistant/page.yaml"
+      data:
+        version: "{{ states.sensor.ha_current_version.state }}"
+        uptime: "{{ states.sensor.ha_uptime_hours.state }}"
+    - name: Internet
+      icon: mdi:ip-network
+      path: "dwains-theme/addons/more_page/internet/page.yaml"
+    - name: IoT & SmartHome Network Status
+      icon: mdi:lan-connect
+      path: "dwains-theme/addons/more_page/net-status/page.yaml"
+    - name: Media
+      icon: mdi:television
+      path: "dwains-theme/addons/more_page/media/page.yaml"
+    - name: National Electricity Market (NSW)
+      icon: mdi:transmission-tower
+      path: "dwains-theme/addons/more_page/opennem/page.yaml"
+    - name: Netatmo Weather Station
+      icon: mdi:gauge
+      path: "dwains-theme/addons/more_page/netatmo/page.yaml"
+    - name: News
+      icon: mdi:newspaper-variant
+      path: "dwains-theme/addons/more_page/news/page.yaml"
+    - name: People
+      icon: mdi:account-group-outline
+      path: "dwains-theme/addons/more_page/people/page.yaml"
+    - name: Pi-Hole
+      icon: mdi:pi-hole
+      path: "dwains-theme/addons/more_page/pi-hole/page.yaml"
+    - name: Solar
+      icon: mdi:solar-power
+      path: "dwains-theme/addons/more_page/solar/page.yaml"
+    - name: Sun UV Air Quality
+      icon: mdi:shield-sun-outline
+      path: "dwains-theme/addons/more_page/sun_uv/page.yaml"
+    - name: Synology NAS
+      icon: mdi:nas
+      path: "dwains-theme/addons/more_page/synology/page.yaml"
+      data:
+        uptime: '{{ states.sensor.thecube2_uptime.state }}'
+        version: '{{ states.sensor.synology_dsm_version.state }}'
+        status: '{{ states.sensor.synology_dsm_update.state }}'
+    - name: Ubiquiti UniFi
+      icon: mdi:router-wireless
+      path: "dwains-theme/addons/more_page/ubiquiti/unifi.yaml"
+      data:
+        usw_name: "{{ states.sensor.unifipoller_usw.state }}"
+        usw_model: "{{ states.sensor.unifipoller_usw.attributes.model }}"
+        usw_version: "{{ states.sensor.unifipoller_usw.attributes.version }}"
+        usw_serial: "{{ states.sensor.unifipoller_usw.attributes.serial }}"
+        usw_lastseen: "{{ states.sensor.unifipoller_usw.attributes.lastseen }}"
+        usw_uptime: "{{ states.sensor.unifipoller_usw.attributes.uptime }}"
+        usw_rxdata: "{{ states.sensor.unifipoller_usw.attributes.rx_data }}"
+        usw_txdata: "{{ states.sensor.unifipoller_usw.attributes.tx_data }}"
+        usg_name: "{{ states.sensor.unifipoller_usg.state }}"
+        usg_model: "{{ states.sensor.unifipoller_usg.attributes.model }}"
+        usg_version: "{{ states.sensor.unifipoller_usg.attributes.version }}"
+        usg_serial: "{{ states.sensor.unifipoller_usg.attributes.serial }}"
+        usg_data: "{{ states.sensor.unifipoller_usg.attributes.data }}"
+        usg_uptime: "{{ states.sensor.unifipoller_usg.attributes.uptime }}"
+        usg_lastseen: "{{ states.sensor.unifipoller_usg.attributes.lastseen }}"
+        usg_externalip: "{{ states.sensor.unifipoller_usg.attributes.external_ip_address }}"
+        usg_www_uptime: "{{ states.sensor.unifipoller_usg_www.attributes.uptime }}"
+        usg_www_drops: "{{ states.sensor.unifipoller_usg_www.attributes.drops }}"
+        uap_name: "{{ states.sensor.unifipoller_uap.state }}"
+        uap_model: "{{ states.sensor.unifipoller_uap.attributes.model }}"
+        uap_version: "{{ states.sensor.unifipoller_uap.attributes.version }}"
+        uap_serial: "{{ states.sensor.unifipoller_uap.attributes.serial }}"
+        uap_uptime: "{{ states.sensor.unifipoller_uap.attributes.uptime }}"
+        uap_lastseen: "{{ states.sensor.unifipoller_uap.attributes.lastseen }}"
+        uap_ipaddress: "{{ states.sensor.unifipoller_uap.attributes.ip_address }}"
+        uap_rxdata: "{{ states.sensor.unifipoller_uap.attributes.rx_data }}"
+        uap_txdata: "{{ states.sensor.unifipoller_uap.attributes.tx_data }}"
+    - name: Upcoming Sport
+      icon: mdi:football-australian
+      path: "dwains-theme/addons/more_page/sports/page.yaml"
+    - name: WaterNSW Dam Levels
+      icon: mdi:water
+      path: "dwains-theme/addons/more_page/waternsw/page.yaml"
+    - name: Weather
+      icon: mdi:weather-partly-rainy
+      path: "dwains-theme/addons/more_page/weather/page.yaml"
+    - name: Testing
+      icon: mdi:widgets
+      path: "dwains-theme/addons/more_page/testing.yaml"
+    # - name: Zigbee
+    #   icon: mdi:zigbee
+    #   path: 'dwains-theme/addons/more_page/zigbee/page.yaml'
+#     - name: Hello more page
+#       icon: fas:chart-area
+#       path: 'dwains-theme/addons/more_page/hello-more-page/page.yaml'
+#       data:
+#         some_data: 'This is some data parsed.'
+#         some_other_data: 'and some other data.'

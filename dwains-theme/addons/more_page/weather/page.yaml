@@ -1,0 +1,415 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-6 col-lg-3 col-xl-3'
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.bom_tamworth_air_temp_c
+          name: Temperature
+      name: Temperature
+      line_color: 'var(--dwains-theme-accent)'
+      animate: true
+      align_state: center
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 4
+      smoothing: true
+      show:
+        points: false
+        graph: line
+        fill: fade
+        extrema: true
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.bom_tamworth_rain_today
+          name: Rainfall
+      name: Rainfall
+      line_color: 'var(--dwains-theme-accent)'
+      animate: true
+      align_state: center
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 4
+      smoothing: true
+      show:
+        points: false
+        graph: line
+        fill: fade
+        extrema: true
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.bom_tamworth_pressure_mb
+          name: Cases
+      name: Pressure
+      line_color: 'var(--dwains-theme-accent)'
+      animate: true
+      align_state: center
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 4
+      smoothing: true
+      show:
+        points: false
+        graph: line
+        fill: fade
+        extrema: true
+
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.bom_tamworth_relative_humidity
+          name: Humidity
+      name: Humidity
+      line_color: 'var(--dwains-theme-accent)'
+      animate: true
+      align_state: center
+      hours_to_show: 24
+      hour24: true
+      points_per_hour: 4
+      smoothing: true
+      show:
+        points: false
+        graph: line
+        fill: fade
+        extrema: true
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  # padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Tamworth Airport
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.bom_tamworth_air_temp_c
+              name: Current Temperature
+              icon: mdi:thermometer
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - entity: sensor.bom_tamworth_air_temp_c
+                  name: Air
+                - entity: sensor.bom_tamworth_feels_like_c
+                  name: Feels Like
+            - type: section
+            - entity: sensor.bom_max_temp
+              name: 24hr Temp Extremes
+              icon: mdi:thermometer-alert
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - entity: sensor.bom_max_temp
+                  name: Max
+                - entity: sensor.bom_min_temp
+                  name: Min
+            - type: section
+            - entity: sensor.bom_tamworth_wind_gust_kmh
+              name: Current Wind (km/h)
+              icon: mdi:weather-windy
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - entity: sensor.bom_tamworth_wind_gust_kmh
+                  name: Gust
+                  unit: ' '
+                - entity: sensor.bom_tamworth_wind_speed_kmh
+                  name: Speed
+                  unit: ' '
+                - entity: sensor.bom_tamworth_wind_direction
+                  name: Direction
+            - entity: sensor.bom_tamworth_wind_gust_kmh
+              name: Current Wind (kt)
+              icon: mdi:weather-windy
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - entity: sensor.bom_tamworth_wind_gust_kt
+                  name: Gust
+                  unit: ' '
+                - entity: sensor.bom_tamworth_wind_speed_kt
+                  name: Speed
+                  unit: ' '
+                - entity: sensor.bom_tamworth_wind_direction
+                  name: Direction
+            - type: section
+            - entity: sensor.bom_tamworth_pressure_mb
+              name: Current Pressure
+              icon: mdi:gauge
+            - entity: sensor.bom_tamworth_relative_humidity
+              name: Current Humidity
+              icon: mdi:water-percent
+            - type: section
+            - entity: sensor.bom_tamworth_rain_today
+              name: Rain Today (9am to 9am)
+              icon: mdi:weather-rainy
+            - type: section
+            - entity: sensor.bom_tamworth_visability_km
+              name: Visibility
+              icon: mdi:panorama-horizontal
+            - type: section
+            - entity: sensor.weather_bom_tempmax_lastyr
+              name: BOM - Max Temp (Last 365 Days)
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: max
+                  name: Max
+                - attribute: min
+                  name: Min
+                - attribute: avg
+                  name: Avg
+              secondary_info:
+                attribute: datestring
+                name:
+            - entity: sensor.weather_bom_tempmin_lastyr
+              name: BOM - Min Temp (Last 365 Days)
+              type: custom:multiple-entity-row
+              show_state: false
+              entities:
+                - attribute: max
+                  name: Max
+                - attribute: min
+                  name: Min
+                - attribute: avg
+                  name: Avg
+              secondary_info:
+                attribute: datestring
+                name:
+
+    - type: vertical-stack
+      cards:
+        - !include bom_forecast.yaml
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  # padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: custom:flex-table-card
+          title: Rain History - Airport (Rolling)
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: sort
+          clickable: true
+          css:
+            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+          entities:
+            include:
+              - sensor.weather_bom_rain_*
+              - sensor.weather_bom_totalrain_*
+          columns:
+            - name: sort
+              attr: sort
+              hidden: true
+            - name: Name
+              prop: name
+            - name: When?
+              attr: countstring
+              align: center
+            - name: Avg
+              attr: average
+              align: right
+            - name: Max
+              attr: highest
+              align: right
+            - name: Total
+              prop: state
+              align: right
+
+        - type: custom:flex-table-card
+          title: Rain History - Home (Rolling)
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: sort
+          clickable: true
+          css:
+            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+          entities:
+            include:
+              - sensor.weather_home_rain_*
+              - sensor.weather_home_totalrain_*
+          columns:
+            - name: sort
+              attr: sort
+              hidden: true
+            - name: Name
+              prop: name
+            - name: When?
+              attr: countstring
+              align: center
+            - name: Avg
+              attr: average
+              align: right
+            - name: Max
+              attr: highest
+              align: right
+            - name: Total
+              prop: state
+              align: right
+
+    - type: vertical-stack
+      cards:
+        - type: custom:flex-table-card
+          title: Rain Intensity - Home (Last 7 Days)
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: sort
+          clickable: true
+          css:
+            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+          entities:
+            include: sensor.aep_*_weekly
+          columns:
+            - name: sort
+              attr: sort
+              hidden: true
+            - name: Name
+              prop: name
+            - name: When?
+              attr: time
+              align: center
+            - name: AEP %
+              attr: aep
+              align: right
+            - name: EY
+              attr: ey
+              align: right
+            - name: Max
+              prop: state
+              align: right
+
+        - type: custom:flex-table-card
+          title: Rain Intensity - Home (Last 365 Days)
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: sort
+          clickable: true
+          css:
+            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+          entities:
+            include: sensor.aep_*_yearly
+          columns:
+            - name: sort
+              attr: sort
+              hidden: true
+            - name: Name
+              prop: name
+            - name: When?
+              attr: time
+              align: center
+            - name: AEP %
+              attr: aep
+              align: right
+            - name: EY
+              attr: ey
+              align: right
+            - name: Max
+              prop: state
+              align: right
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  # padding: true
+  cards:
+
+    - entity: camera.namoi128km
+      name: Namoi Radar (128km Coverage)
+      type: picture-entity
+      show_name: false
+      show_state: false
+
+    - entity: camera.moree256km
+      name: Moree Radar (256km Coverage)
+      type: picture-entity
+      show_name: false
+      show_state: false
+
+    - entity: camera.bom_satellite
+      name: Satellite
+      type: picture-entity
+      show_name: false
+      show_state: false

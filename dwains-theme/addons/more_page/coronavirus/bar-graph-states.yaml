@@ -1,0 +1,1162 @@
+type: custom:dwains-flexbox-card
+items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
+# padding: true
+cards:
+  - type: custom:stack-in-card
+    cards:
+      - type: markdown
+        content: State by State - Cases
+        style: |
+          ha-card {
+            background-color: var(--dwains-theme-primary)
+          }
+          ha-markdown {
+            padding: 10px 16px 5px !important;
+            font-size: 18px;
+            font-weight: 700 !important;
+          }
+          .card-content div {
+              margin: 0 !important;
+          }
+      - type: custom:mod-card
+        style: |
+          ha-card {
+            padding: 0em 3em 0em 1.2em;
+            margin-top: -1em;
+            margin-bottom: 1em;
+            # width: 20em;
+            margin: auto;
+          }
+        card:
+          type: horizontal-stack
+          cards:
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_act
+                name: ACT
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_act') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_nsw
+                name: NSW
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_nsw') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_nt
+                name: NT
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_nt') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_qld
+                name: QLD
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_qld') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_sa
+                name: SA
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_sa') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_tas
+                name: TAS
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_tas') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_vic
+                name: VIC
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_vic') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_cases'].state
+              entities:
+                - sensor.covid_19_esria_aus_cases
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_wa
+                name: WA
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((states('sensor.covid_19_esria_wa') | int) / (states('sensor.covid_19_esria_aus_cases') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+
+  - type: custom:stack-in-card
+    cards:
+      - type: markdown
+        content: State by State - Tests
+        style: |
+          ha-card {
+            background-color: var(--dwains-theme-primary)
+          }
+          ha-markdown {
+            padding: 10px 16px 5px !important;
+            font-size: 18px;
+            font-weight: 700 !important;
+          }
+          .card-content div {
+              margin: 0 !important;
+          }
+      - type: custom:mod-card
+        style: |
+          ha-card {
+            padding: 0em 3em 0em 1.2em;
+            margin-top: -1em;
+            margin-bottom: 1em;
+            # width: 20em;
+            margin: auto;
+          }
+        card:
+          type: horizontal-stack
+          cards:
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_act
+                attribute: Tests
+                name: ACT
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_act','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_nsw
+                attribute: Tests
+                name: NSW
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_nsw','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_nt
+                name: NT
+                attribute: Tests
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_nt','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_qld
+                attribute: Tests
+                name: QLD
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_qld','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_sa
+                attribute: Tests
+                name: SA
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_sa','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_tas
+                attribute: Tests
+                name: TAS
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_tas','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_vic
+                attribute: Tests
+                name: VIC
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_vic','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_tests'].state
+              entities:
+                - sensor.covid_19_esria_aus_tests
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_wa
+                attribute: Tests
+                name: WA
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_wa','Tests') | int) / (states('sensor.covid_19_esria_aus_tests') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+
+  - type: custom:stack-in-card
+    cards:
+      - type: markdown
+        content: State by State - Deaths
+        style: |
+          ha-card {
+            background-color: var(--dwains-theme-primary)
+          }
+          ha-markdown {
+            padding: 10px 16px 5px !important;
+            font-size: 18px;
+            font-weight: 700 !important;
+          }
+          .card-content div {
+              margin: 0 !important;
+          }
+      - type: custom:mod-card
+        style: |
+          ha-card {
+            padding: 0em 3em 0em 1.2em;
+            margin-top: -1em;
+            margin-bottom: 1em;
+            # width: 20em;
+            margin: auto;
+          }
+        card:
+          type: horizontal-stack
+          cards:
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_act
+                attribute: Deaths
+                name: ACT
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_act','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_nsw
+                attribute: Deaths
+                name: NSW
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_nsw','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_nt
+                name: NT
+                attribute: Deaths
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_nt','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_qld
+                attribute: Deaths
+                name: QLD
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_qld','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_sa
+                attribute: Deaths
+                name: SA
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_sa','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_tas
+                attribute: Deaths
+                name: TAS
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_tas','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_vic
+                attribute: Deaths
+                name: VIC
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_vic','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }
+            - type: 'custom:config-template-card'
+              variables:
+                - states['sensor.covid_19_esria_aus_deaths'].state
+              entities:
+                - sensor.covid_19_esria_aus_deaths
+              card:
+                type: custom:bar-card
+                entity: sensor.covid_19_esria_wa
+                attribute: Deaths
+                name: WA
+                color: 'var(--bar)'
+                max: '${vars[0]}'
+                direction: up
+                positions:
+                  icon: off
+                height: 10em
+                width: 1.8em
+                unit_of_measurement: ' '
+                style: |
+                  :host {
+                    --bar: #405914;
+                    --pos: {{ ((state_attr('sensor.covid_19_esria_wa','Deaths') | int) / (states('sensor.covid_19_esria_aus_deaths') | int)) * 11 }}em;
+                  }
+                  ha-card, bar-card-backgroundbar {
+                    box-shadow: none;
+                    background: none;
+                  }
+                  bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                    border-radius: .3em;
+                  }
+                  bar-card-value {
+                    color: var(--bar);
+                    filter: brightness(1.5);
+                    font-size: 1em;
+                    text-shadow: none;
+                    font-weight: 700;
+                    margin-bottom: var(--pos);
+                  }
+                  bar-card-name {
+                    font-weight: 700;
+                  }
+                  bar-card-title {
+                    overflow: visible;
+                    margin-left: auto;
+                  }

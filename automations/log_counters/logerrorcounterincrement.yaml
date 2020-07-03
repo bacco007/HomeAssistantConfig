@@ -1,0 +1,11 @@
+---
+id: logs_error_counter_increment
+alias: Logs - Increment Error Counter
+trigger:
+  platform: event
+  event_type: system_log_event
+  event_data:
+    level: ERROR
+action:
+  service: counter.increment
+  entity_id: counter.logs_error_counter

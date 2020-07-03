@@ -1,0 +1,30 @@
+# dwains_theme
+
+type: custom:button-card
+name: {{ name }}
+icon: {{ icon }}
+label: {{ label }}
+show_state: false
+show_label: true
+show_name: true
+show_entity_picture: true
+styles:
+  grid:
+    - grid-template-areas: '"i n" "i l"'
+    - grid-template-columns: 25% 75%
+    - grid-template-rows: min-content min-content
+  card:
+    - background-color: var(--dwains-theme-primary)
+    - border-radius: 0
+    - box-shadow: none
+  name:
+    - font-size: 15px
+    - font-weight: bold
+    - color: var(--dwains-theme-names)
+    - justify-self: start
+  label:
+    - justify-self: start
+    - font-size: 13px
+    - color: var(--dwains-theme-names)
+  icon:
+    - color: var(--dwains-theme-accent)

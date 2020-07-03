@@ -1,0 +1,128 @@
+
+- type: custom:stack-in-card
+  mode: vertical
+  cards:
+    - type: custom:dwains-flexbox-card
+      cards:
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-2'
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    <h3>Birthdays, etc</h3>
+        - type: custom:dwains-flexbox-card
+          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-10'
+          cards:
+            - type: custom:auto-entities
+              item_classes: 'col-xs-12 col-sm-12 col-md-12 col-lg-12'
+              sort:
+                method: state
+                numeric: true
+              card:
+                type: custom:dwains-flexbox-card
+                items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
+              filter:
+                include:
+                  - entity_id: sensor.anniversary*
+                    options:
+                      type: custom:button-card
+                      show_state: true
+                      show_label: false
+                      show_name: true
+                      show_entity_picture: true
+                      custom_fields:
+                        data: >
+                          [[[ return entity.attributes.years_at_next_anniversary + ' years  - ' + entity.attributes.date ]]]
+                      styles:
+                        grid:
+                          - grid-template-areas: '"i n" "i s" "i data"'
+                          - grid-template-columns: 25% 75%
+                          - grid-template-rows: min-content min-content min-content
+                        card:
+                          - background-color: var(--dwains-theme-primary)
+                          - border-radius: 0
+                          - box-shadow: none
+                        name:
+                          - font-size: 15px
+                          - font-weight: bold
+                          - color: var(--dwains-theme-names)
+                          - justify-self: start
+                        state:
+                          - justify-self: start
+                          - font-size: 13px
+                          - color: var(--dwains-theme-names)
+                        label:
+                          - padding-top: 0px
+                          - padding-bottom: 0px
+                          - font-size: 12px
+                          - color: var(--dwains-theme-grey)
+                          - justify-self: start
+                        custom_fields:
+                          data:
+                            - justify-self: start
+                            - font-size: 13px
+                            - color: var(--dwains-theme-names)
+                        icon:
+                          - color: var(--dwains-theme-accent)
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Travel Times</h2>
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.here_travel_tom_to_work
+              type: "custom:secondaryinfo-entity-row"
+              name: "Here: Current Location -> Work"
+              secondary_info: "Arrive by [[ sensor.here_travel_tom_to_work_arrivetime.state ]]"
+            - entity: sensor.here_travel_tom_to_home
+              type: "custom:secondaryinfo-entity-row"
+              name: "Here: Current Location -> Home"
+              secondary_info: "Arrive by [[ sensor.here_travel_tom_to_home_arrivetime.state ]]"
+            - entity: sensor.here_travel_home_to_work_car
+              name: "Here: Home -> Work by Car"
+            - entity: sensor.here_travel_home_to_work_walk
+              name: "Here: Home -> Work on Foot"
+            - type: section
+            - entity: sensor.waze_travel_home_to_work
+              name: "Waze: Home -> Work"
+            - entity: sensor.waze_travel_tom_to_work
+              name: "Waze: Current Location -> Work"
+            - entity: sensor.waze_travel_tom_to_home
+              name: "Waze: Current Location -> Home"

@@ -1,0 +1,231 @@
+# 🏠TBSmartHome - Home Assistant Configuration
+
+<img align="right" src="./.assets/logo.png?raw=true">
+
+This is my [Home Assistant](https://www.home-assistant.io/) configuration - based on many of the other great configurations are out there (and listed below)
+
+I live in ![Australia](http://flags.ox3.in/mini/au.png) so some of what you find here may not be relevent, or you may have access to better (and probably cheaper) ways.
+
+It's very much a work-in-progress, but feel free to steal ideas or code to use for your own setup
+
+_Please :star: this repo if you find it useful_
+
+[![HA Version](https://img.shields.io/badge/Home%20Assistant-{{states.sensor.current_version.state}}-brightgreen)](https://github.com/home-assistant/home-assistant/releases/{{states.sensor.current_version.state}})
+![Hits](http://hits.dwyl.io/bacco007/HomeAssistantConfig.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/bacco007/HomeAssistantConfig?style=flat-square) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bacco007/HomeAssistantConfig?style=flat-square)
+![Licence](https://img.shields.io/badge/license-Unlicense-blue.svg?style=flat-square)
+![Twitter Follow](https://img.shields.io/twitter/follow/bacco007?style=social)
+
+[![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
+
+---
+
+## Table of Contents
+
+- [🏠TBSmartHome - Home Assistant Configuration](#tbsmarthome---home-assistant-configuration)
+  - [Table of Contents](#table-of-contents)
+  - [TL;DR](#tldr)
+  - [Ecosystem](#ecosystem)
+    - [Hardware](#hardware)
+    - [Zigbee](#zigbee)
+  - [Stats](#stats)
+  - [Integrations Used](#integrations-used)
+    - [Custom Components Used](#custom-components-used)
+      - [HACS - Integrations](#hacs---integrations)
+      - [HACS - Lovelace Cards](#hacs---lovelace-cards)
+      - [HACS - Themes](#hacs---themes)
+  - [Screenshots](#screenshots)
+  - [HA Supervisor](#ha-supervisor)
+    - [Addon Repositories](#addon-repositories)
+    - [Addons](#addons)
+  - [Licence](#licence)
+  - [Other Good HA Resources/Configs](#other-good-ha-resourcesconfigs)
+
+---
+
+## TL;DR
+
+This is my Home Assistant config - documentation isn't my strongest skill, so if you've got any questions, hit me up
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+## Ecosystem
+
+My smarthome setup seems to be ever-growing, but at this stage it's unlikely that I'll make any major changes from here
+
+### Hardware
+
+- Dell Optiplex 9020 SFF (i5, 24Gb RAM, 500Gb HDD) running Proxmox
+  - I run three VMs from this machine, one for Home Assistant (Using HassOS) and the other two for other home server stuff
+- Lenovo ThinkMachine M73 Tiny (Intel Pentium G3240T, 4Gb RAM, 500Gb HDD)
+  - Ubuntu Server 18.10, this machine runs my UniFi controller and Nginx Reverse Proxy Setup
+- Raspberry Pi 3
+  - Pi-Hole
+
+### Zigbee
+
+I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a ConBee II as the host
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+## Stats
+
+_Stats as at {{ states('sensor.time') }}, {{ states('sensor.date_long_format') }}_
+
+| HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
+| ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
+| {{ states('sensor.ha_current_version')}} | {{ states.sensor.hass_main_config.attributes.components | count }}     | {{states    | count}}         | {{states.sensor | count}} | {{states.automation | count}} |
+
+Type | Qty
+-- | --
+Alarm Control Panel | {{states.alarm_control_panel | count}}
+Alert | {{states.alert | count}}
+Automation | {{states.automation | count}}
+Binary Sensor | {{states.binary_sensor | count}}
+Camera | {{ states.camera | count }}
+Device Tracker | {{ states.device_tracker | count }}
+Group | {{ states.group | count }}
+Input Boolean | {{ states.input_boolean | count }}
+Input Datetime | {{ states.input_datetime | count }}
+Input Text | {{ states.input_text | count }}
+Light | {{ states.light | count }}
+Media Player | {{ states.media_player | count }}
+Person | {{ states.person | count }}
+Scene | {{ states.scene | count }}
+Script | {{ states.script | count }}
+Sensor | {{states.sensor | count}}
+Sun | {{ states.sun | count }}
+Switch | {{ states.switch | count }}
+Weather | {{ states.weather | count }}
+Zone | {{ states.zone | count }}
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+## Integrations Used
+
+Here is a list of all the integrations I use, including any Custom Components (which are also listed below)
+
+<details>
+<summary>Expand Integrations List</summary>
+{% set a = states.sensor.hass_main_config.attributes.components %}
+| Name |
+| --- |
+{%- for integration in a|sort %}
+| [{{integration}}](https://www.home-assistant.io/components/{{integration}}) | {%- endfor %}
+</details>
+
+### Custom Components Used
+
+<details>
+<summary>Expand Custom Components List</summary>
+{% for integration in custom_components|sort(attribute='name') %}
+- [{{integration.name}}]({{integration.documentation}}){% endfor -%}
+</details>
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+#### HACS - Integrations
+
+| Name | Description |
+| --- | ---|
+{%- for component in hacs_components | selectattr('category', 'equalto', 'integration') | sort(attribute='name') %}
+| [{{component.name}}]({{component.documentation}}) | {{component.description}} | {%- endfor %}
+
+#### HACS - Lovelace Cards
+
+| Name | Description |
+| --- | ---|
+{%- for component in hacs_components | selectattr('category', 'equalto', 'plugin') | sort(attribute='name') %}
+| [{{component.name}}]({{component.documentation}}) | {{component.description}} | {%- endfor %}
+
+#### HACS - Themes
+
+| Name | Description |
+| --- | ---|
+{%- for component in hacs_components | selectattr('category', 'equalto', 'theme') | sort(attribute='name') %}
+| [{{component.name}}]({{component.documentation}}) | {{component.description}} | {%- endfor %}
+
+---
+
+## Screenshots
+
+![Screenshot - Home](./.assets/home.png?raw=True)
+
+<details>
+<summary>More Screenshots Here</summary>
+
+![Screenshot - More](./.assets/more.png?raw=True)
+
+</details>
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+## HA Supervisor
+
+### Addon Repositories
+
+{% for repository in states.sensor.addons.attributes.addons_repositories | sort -%}
+- {{ repository }}
+{% endfor %}
+
+### Addons
+
+Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
+
+
+{%- set addon_docs =
+	{
+		"core_samba": "https://github.com/home-assistant/hassio-addons/tree/master/samba",
+		"core_mariadb": "https://github.com/home-assistant/hassio-addons/tree/master/mariadb"
+	}
+-%}
+
+{% for addon in states.sensor.addons.attributes.addons | sort(attribute='name') -%}
+- [{{ addon.name }}]({{addon_docs[addon.slug]}})
+{% endfor %}
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+## Licence
+
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute this software, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
+
+In jurisdictions that recognize copyright laws, the author or authors of this software dedicate any and all copyright interest in the software to the public domain. We make this dedication for the benefit of the public at large and to the detriment of our heirs and successors. We intend this dedication to be an overt act of relinquishment in perpetuity of all present and future rights to this software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to [https://unlicense.org](https://unlicense.org)
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+## Other Good HA Resources/Configs
+
+These resources have either provided inspiration or some great code that has helped me get my configuration up and running
+
+- [aFFekopp/homeassistant](https://github.com/aFFekopp/homeassistant)
+  - This is where I've copied the great theme from
+- [danrspencer/hass-config](https://github.com/danrspencer/hass-config)
+- [JamesMcCarthy79/Home-Assistant-Config](https://github.com/JamesMcCarthy79/Home-Assistant-Config)
+- [jimz011/homeassistant](https://github.com/jimz011/homeassistant)
+- [Limych/HomeAssistantConfiguration](https://github.com/Limych/HomeAssistantConfiguration)
+
+<p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+---
+
+Generated by the [custom readme integration](https://github.com/custom-components/readme)
+
+[buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
+[buymeacoffee]: https://www.buymeacoffee.com/bacco007

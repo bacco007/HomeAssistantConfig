@@ -1,0 +1,361 @@
+---
+# lovelace_gen
+title: Rooms
+path: rooms
+icon: mdi:floor-plan
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    cards:
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Bedroom
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - type: custom:slider-entity-row
+                        entity: light.lamp
+                        name: Bedroom Light
+                        toggle: true
+                      - type: custom:rgb-light-card
+                        entity: light.lamp
+                        colors:
+                          - rgb_color:
+                              - 241
+                              - 224
+                              - 181
+                          - rgb_color:
+                              - 239
+                              - 210
+                              - 117
+                          - rgb_color:
+                              - 245
+                              - 250
+                              - 246
+                          - icon_color: '#D72AE0'
+                            rgb_color:
+                              - 255
+                              - 127
+                              - 255
+                          - icon_color: '#E02A2A'
+                            rgb_color:
+                              - 255
+                              - 0
+                              - 0
+                          - rgb_color:
+                              - 255
+                              - 255
+                              - 255
+                            brightness: 255
+                            icon_color: '#FFFFFF'
+                          - rgb_color:
+                              - 51
+                              - 102
+                              - 204
+                            brightness: 255
+                            icon_color: '#3366CC'
+                          - rgb_color:
+                              - 51
+                              - 204
+                              - 51
+                            brightness: 255
+                            icon_color: '#33CC33'
+                          - rgb_color:
+                              - 255
+                              - 0
+                              - 255
+                            brightness: 255
+                            icon_color: '#FF00FF'
+                      - entity: sensor.xiaomibedroom_change_temp
+                        type: custom:multiple-entity-row
+                        name: Temperature (24hrs)
+                        show_state: false
+                        entities:
+                          - entity: sensor.xiaomibedroom_min_temp
+                            name: Min
+                          - entity: sensor.xiaomibedroom_max_temp
+                            name: Max
+                          - entity: sensor.xiaomibedroom_change_temp
+                            name: 24hr Chg
+                      - type: section
+                      - sensor.bedroom_iaq_index
+                      - sensor.bedroom_iaq_level
+                      - type: section
+                      - entity: binary_sensor.switchmonusb_01_status
+                        type: custom:multiple-entity-row
+                        name: Switch 1 (Left)
+                        icon: mdi:toggle-switch
+                        show_state: false
+                        entities:
+                          - entity: sensor.switchmonusb_01_current
+                            name: Current
+                          - entity: sensor.switchmonusb_01_voltage
+                            name: Voltage
+                          - entity: sensor.switchmonusb_01_wattage
+                            name: Wattage
+                          - entity: sensor.switchmonusb_01_daily_energy
+                            name: Energy
+                      - entity: binary_sensor.switchmonusb_02_status
+                        type: custom:multiple-entity-row
+                        name: Switch 2 (Right)
+                        icon: mdi:toggle-switch
+                        show_state: false
+                        entities:
+                          - entity: sensor.switchmonusb_02_current
+                            name: Current
+                          - entity: sensor.switchmonusb_02_voltage
+                            name: Voltage
+                          - entity: sensor.switchmonusb_02_wattage
+                            name: Wattage
+                          - entity: sensor.switchmonusb_02_daily_energy
+                            name: Energy
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature
+                  - entities:
+                      - sensor.bedroom_multisensor_temperature
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: custom:decluttering-card
+                template: mini-graph-colorthresholds
+                variables:
+                  - name: Temperature Change
+                  - entities:
+                      - sensor.xiaomibedroom_change_temp
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+                  - color_thresholds:
+                      - value: 0.01
+                        color: '#00b59d'
+                      - value: 0
+                        color: black
+                      - value: -0.01
+                        color: '#b50018'
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph-colorthresholds
+                    variables:
+                      - name: Humidity
+                      - entities:
+                          - sensor.bedroom_multisensor_humidity
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                      - color_thresholds:
+                          - value: 70
+                            color: '#e74c3c'
+                          - value: 40
+                            color: '#1db954'
+                          - value: 0
+                            color: '#3498db'
+                  - type: custom:decluttering-card
+                    template: mini-graph-colorthresholds
+                    variables:
+                      - name: Pressure
+                      - entities:
+                          - sensor.bedroom_multisensor_pressure
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                      - color_thresholds:
+                          - value: 70
+                            color: '#e74c3c'
+                          - value: 40
+                            color: '#1db954'
+                          - value: 0
+                            color: '#3498db'
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Lounge
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.xiaomilounge_change_temp
+                        type: custom:multiple-entity-row
+                        name: Temperature (24hrs)
+                        show_state: false
+                        entities:
+                          - entity: sensor.xiaomilounge_min_temp
+                            name: Min
+                          - entity: sensor.xiaomilounge_max_temp
+                            name: Max
+                          - entity: sensor.xiaomilounge_change_temp
+                            name: 24hr Chg
+                      - type: section
+                      - sensor.lounge_iaq_index
+                      - sensor.lounge_iaq_level
+              - type: custom:decluttering-card
+                template: mini-graph
+                variables:
+                  - name: Temperature
+                  - entities:
+                      - sensor.lounge_multisensor_temperature
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+              - type: custom:decluttering-card
+                template: mini-graph-colorthresholds
+                variables:
+                  - name: Temperature Change
+                  - entities:
+                      - sensor.xiaomilounge_change_temp
+                  - height: 60
+                  - hours_to_show: 48
+                  - points_per_hour: 3
+                  - decimals: 2
+                  - icon: false
+                  - extrema: true
+                  - average: true
+                  - color_thresholds:
+                      - value: 0.01
+                        color: '#00b59d'
+                      - value: 0
+                        color: black
+                      - value: -0.01
+                        color: '#b50018'
+              - type: horizontal-stack
+                cards:
+                  - type: custom:decluttering-card
+                    template: mini-graph-colorthresholds
+                    variables:
+                      - name: Humidity
+                      - entities:
+                          - sensor.lounge_multisensor_humidity
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                      - color_thresholds:
+                          - value: 70
+                            color: '#e74c3c'
+                          - value: 40
+                            color: '#1db954'
+                          - value: 0
+                            color: '#3498db'
+                  - type: custom:decluttering-card
+                    template: mini-graph-colorthresholds
+                    variables:
+                      - name: Pressure
+                      - entities:
+                          - sensor.lounge_multisensor_pressure
+                      - height: 60
+                      - hours_to_show: 48
+                      - points_per_hour: 3
+                      - decimals: 2
+                      - icon: false
+                      - extrema: true
+                      - average: true
+                      - color_thresholds:
+                          - value: 70
+                            color: '#e74c3c'
+                          - value: 40
+                            color: '#1db954'
+                          - value: 0
+                            color: '#3498db'
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Office
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: binary_sensor.office_presence
+                        name: Presence Detected?
+                      - entity: sensor.office_lightlevel
+                        name: Lumination
+              - type: custom:decluttering-card
+                template: mini-graph-colorthresholds
+                variables:
+                  - name: Lumination
+                  - entities:
+                      - sensor.office_lightlevel
+                  - height: 80
+                  - hours_to_show: 48
+                  - points_per_hour: 6
+                  - decimals: 0
+                  - icon: false
+                  - extrema: true
+                  - average: true
+                  - color_thresholds:
+                      - value: 200
+                        color: '#FFFF00'
+                      - value: 100
+                        color: '#FFFACD'
+                      - value: 50
+                        color: '#FFFFE0'
+                      - value: 10
+                        color: '#3498db'
+                      - value: 0
+                        color: black
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: Laundry
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - sensor.washer

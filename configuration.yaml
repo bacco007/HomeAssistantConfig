@@ -1,0 +1,34 @@
+---
+homeassistant:
+  packages: !include_dir_named integrations
+
+automation: !include_dir_list automations
+
+conversation:
+
+discovery:
+
+group: !include groups.yaml
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.1.0/24
+  server_port: !secret httpserver_port
+
+map:
+
+script: !include scripts.yaml
+
+ssdp:
+
+system_health:
+
+tts:
+  - platform: google_translate
+
+updater:
+  reporting: true
+  include_used_components: true
+
+zeroconf:

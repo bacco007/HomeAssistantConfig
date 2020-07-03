@@ -1,0 +1,6 @@
+---
+logs_critical_counter:
+  name: Critical
+  initial: 0
+  icon: mdi:alert
+  step: 1

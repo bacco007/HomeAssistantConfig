@@ -1,0 +1,25 @@
+---
+homeassistant:
+  customize:
+    binary_sensor.iss:
+      icon: mdi:satellite-variant
+      friendly_name: ISS Visible
+
+binary_sensor:
+  - platform: iss
+
+sensor:
+  - platform: template
+    sensors:
+      iss_peopleinspace:
+        friendly_name: "People in Space"
+        value_template: '{{ states.binary_sensor.iss.attributes["number_of_people_in_space"] }}'
+        entity_id: binary_sensor.iss
+      iss_location:
+        friendly_name: "ISS Location"
+        icon_template: "mdi:satellite-variant"
+        value_template: "{{ states.binary_sensor.iss.state }}"
+        entity_id: binary_sensor.iss
+        attribute_templates:
+          latitude: '{{ states.binary_sensor.iss.attributes["lat"] }}'
+          longitude: '{{ states.binary_sensor.iss.attributes["long"] }}'

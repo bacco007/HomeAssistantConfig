@@ -1,0 +1,10 @@
+---
+# https://www.home-assistant.io/integrations/influxdb/
+influxdb:
+  host: !secret influxdb_host
+  port: !secret influxdb_port
+  database: !secret influxdb_database
+  username: !secret influxdb_username
+  password: !secret influxdb_password
+  max_retries: 5
+  default_measurement: state

@@ -1,0 +1,410 @@
+---
+# lovelace_gen
+title: Server Status
+path: serverstatus
+panel: true
+icon: mdi:server-network
+
+cards:
+  - type: custom:layout-card
+    layout: auto
+    max_columns: 3
+    cards:
+      # - type: vertical-stack
+      #   style: !include ../includes/style.yaml
+      #   cards:
+      #     - type: custom:decluttering-card
+      #       template: time-card
+      #     - type: custom:gap-card
+      #       height: 10
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: pveTBSH
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.pvetbsh_uptime
+                        name: Server Uptime
+                        icon: mdi:server
+                      - type: section
+                      - entity: binary_sensor.pvetbsh_vmtbsh01_running
+                        name: vmTBSH01 - Running
+                        icon: mdi:server
+                      - entity: binary_sensor.pvetbsh_vmtbsh02_running
+                        name: vmTBSH02 - Running
+                        icon: mdi:server
+              - type: horizontal-stack
+                cards:
+                  - entity: sensor.pvetbsh_system_cpu_idle
+                    max: 100
+                    min: 0
+                    name: CPU Idle
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.pvetbsh_ram_used_percent
+                    max: 100
+                    min: 0
+                    name: RAM Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.pvetbsh_used_percent
+                    max: 100
+                    min: 0
+                    name: HDD Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: piServ
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.piserv_uptime
+                        name: Server Uptime
+                        icon: mdi:server
+                      - type: section
+                      - binary_sensor.servicestatus_pihole
+                      - switch.pihole_switch
+                      - type: section
+              - type: horizontal-stack
+                cards:
+                  - entity: sensor.piserv_cpu_used
+                    max: 100
+                    min: 0
+                    name: CPU Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.piserv_ram_used_percent
+                    max: 100
+                    min: 0
+                    name: RAM Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.piserv_used_percent
+                    max: 100
+                    min: 0
+                    name: HDD Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: TBSH01
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.tbsh01_uptime
+                        name: Server Uptime
+                        icon: mdi:server
+                      - entity: sensor.tbsh01_containers_total
+                        type: custom:multiple-entity-row
+                        name: Docker Containers
+                        state_header: Total
+                        entities:
+                          - entity: sensor.tbsh01_containers_running
+                            name: Run
+                          - entity: sensor.tbsh01_containers_paused
+                            name: Pause
+                          - entity: sensor.tbsh01_containers_stopped
+                            name: Stop
+                      - entity: sensor.tbsh01_images_total
+                        type: custom:multiple-entity-row
+                        name: Docker Images
+                        icon: mdi:docker
+                        state_header: Images
+                        entities:
+                          - entity: sensor.tbsh01_containers_total
+                            name: Containers
+                      - entity: sensor.tbsh01_containers_active
+                        type: custom:multiple-entity-row
+                        name: Docker Performance
+                        icon: mdi:docker
+                        show_state: false
+                        entities:
+                          - entity: sensor.tbsh01_containers_cpu_used
+                            name: CPU
+                            units: '%'
+                          - entity: sensor.tbsh01_containers_ram_used
+                            name: RAM
+                            units: 'MB'
+                        secondary_info:
+                          entity: sensor.tbsh01_version
+                          name: Docker Version
+              - type: custom:flex-table-card
+                style: >
+                  font-family: { var(--primary-font-family);}
+                  font-weight: {400 !important;}
+                sort_by: name+
+                clickable: true
+                css:
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 11px !important'
+                entities:
+                  include: binary_sensor.tbsh01_ha_dockermon*
+                columns:
+                  - name: Name
+                    prop: name
+                    modify: x.replace(" (TBSH01)", "")
+                  - name: State
+                    attr: status
+                    #modify: x.replace(" (healthy)", "").replace("Up ","")
+                  - name: Mem_MB
+                    attr: memory
+                    align: right
+                    modify: x.replace("MB","")
+              - type: horizontal-stack
+                cards:
+                  - entity: sensor.tbsh01_cpu_used
+                    max: 100
+                    min: 0
+                    name: CPU Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.tbsh01_ram_used_percent
+                    max: 100
+                    min: 0
+                    name: RAM Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.tbsh01_etc_hostname_used_percent
+                    max: 100
+                    min: 0
+                    name: HDD Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: vmTBSH01
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.vmtbsh01_uptime
+                        name: Server Uptime
+                        icon: mdi:server
+                      - entity: sensor.vmtbsh01_containers_total
+                        type: custom:multiple-entity-row
+                        name: Docker Containers
+                        state_header: Total
+                        entities:
+                          - entity: sensor.vmtbsh01_containers_running
+                            name: Run
+                          - entity: sensor.vmtbsh01_containers_paused
+                            name: Pause
+                          - entity: sensor.vmtbsh01_containers_stopped
+                            name: Stop
+                      - entity: sensor.vmtbsh01_images_total
+                        type: custom:multiple-entity-row
+                        name: Docker Images
+                        icon: mdi:docker
+                        state_header: Images
+                        entities:
+                          - entity: sensor.vmtbsh01_containers_total
+                            name: Containers
+                      - entity: sensor.vmtbsh01_containers_active
+                        type: custom:multiple-entity-row
+                        name: Docker Performance
+                        icon: mdi:docker
+                        show_state: false
+                        entities:
+                          - entity: sensor.vmtbsh01_containers_cpu_used
+                            name: CPU
+                            units: '%'
+                          - entity: sensor.vmtbsh01_containers_ram_used
+                            name: RAM
+                            units: 'MB'
+                        secondary_info:
+                          entity: sensor.vmtbsh01_version
+                          name: Docker Version
+              - type: custom:flex-table-card
+                style: >
+                  font-family: { var(--primary-font-family);}
+                  font-weight: {400 !important;}
+                sort_by: name+
+                clickable: true
+                css:
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 11px !important'
+                entities:
+                  include: binary_sensor.vmtbsh01_ha_dockermon*
+                columns:
+                  - name: Name
+                    prop: name
+                    modify: x.replace(" (vmTBSH01)", "")
+                  - name: State
+                    attr: status
+                    #modify: x.replace(" (healthy)", "").replace("Up ","")
+                  - name: Mem_MB
+                    attr: memory
+                    align: right
+                    modify: x.replace("MB","")
+              - type: horizontal-stack
+                cards:
+                  - entity: sensor.vmtbsh01_cpu_used
+                    max: 100
+                    min: 0
+                    name: CPU Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.vmtbsh01_ram_used_percent
+                    max: 100
+                    min: 0
+                    name: RAM Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.vmtbsh01_etc_hostname_used_percent
+                    max: 100
+                    min: 0
+                    name: HDD Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+
+      - type: vertical-stack
+        style: !include ../includes/style.yaml
+        cards:
+          - type: custom:decluttering-card
+            template: title
+            variables:
+              - title: vmTBSH02
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:decluttering-card
+                template: entities-no-header
+                variables:
+                  - entities:
+                      - entity: sensor.vmtbsh02_uptime
+                        name: Server Uptime
+                        icon: mdi:server
+                      - entity: sensor.vmtbsh02_containers_total
+                        type: custom:multiple-entity-row
+                        name: Docker Containers
+                        state_header: Total
+                        entities:
+                          - entity: sensor.vmtbsh02_containers_running
+                            name: Run
+                          - entity: sensor.vmtbsh02_containers_paused
+                            name: Pause
+                          - entity: sensor.vmtbsh02_containers_stopped
+                            name: Stop
+                      - entity: sensor.vmtbsh02_images_total
+                        type: custom:multiple-entity-row
+                        name: Docker Images
+                        icon: mdi:docker
+                        state_header: Images
+                        entities:
+                          - entity: sensor.vmtbsh02_containers_total
+                            name: Containers
+                      - entity: sensor.vmtbsh02_containers_active
+                        type: custom:multiple-entity-row
+                        name: Docker Performance
+                        icon: mdi:docker
+                        show_state: false
+                        entities:
+                          - entity: sensor.vmtbsh02_containers_cpu_used
+                            name: CPU
+                            units: '%'
+                          - entity: sensor.vmtbsh02_containers_ram_used
+                            name: RAM
+                            units: 'MB'
+                        secondary_info:
+                          entity: sensor.vmtbsh02_version
+                          name: Docker Version
+              - type: custom:flex-table-card
+                style: >
+                  font-family: { var(--primary-font-family);}
+                  font-weight: {400 !important;}
+                sort_by: name+
+                clickable: true
+                css:
+                  table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 11px !important'
+                entities:
+                  include: binary_sensor.vmtbsh02_ha_dockermon*
+                columns:
+                  - name: Name
+                    prop: name
+                    modify: x.replace(" (vmTBSH02)", "")
+                  - name: State
+                    attr: status
+                    #modify: x.replace(" (healthy)", "").replace("Up ","")
+                  - name: Mem_MB
+                    attr: memory
+                    align: right
+                    modify: x.replace("MB","")
+              - type: horizontal-stack
+                cards:
+                  - entity: sensor.vmtbsh02_cpu_used
+                    max: 100
+                    min: 0
+                    name: CPU Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.vmtbsh02_ram_used_percent
+                    max: 100
+                    min: 0
+                    name: RAM Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'
+                  - entity: sensor.vmtbsh02_etc_hostname_used_percent
+                    max: 100
+                    min: 0
+                    name: HDD Used
+                    severity: { green: 0, red: 80, yellow: 30 }
+                    theme: default
+                    type: gauge
+                    unit: '%'

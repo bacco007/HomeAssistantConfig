@@ -1,0 +1,14 @@
+---
+alias: 'Theme - Startup (Day)'
+initial_state: 'true'
+trigger:
+  - platform: homeassistant
+    event: start
+condition:
+  condition: state
+  entity_id: sun.sun
+  state: 'above_horizon'
+action:
+  - service: frontend.set_theme
+    data:
+      name: dark

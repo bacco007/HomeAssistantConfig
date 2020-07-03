@@ -1,0 +1,203 @@
+---
+sensor:
+  - platform: season
+  ###
+  ## BOM Forecast
+  ###
+  - platform: bom_forecast
+    product_id: IDN11113
+    name: Tamworth
+    forecast_days: 6
+    rest_of_today: true
+    friendly: false
+    friendly_state_format: "{min} to {max}, {summary}"
+    monitored_conditions:
+      - "max"
+      - "min"
+      - "chance_of_rain"
+      - "possible_rainfall"
+      - "summary"
+      - "detailed_summary"
+      - "icon"
+      - "uv_alert"
+      - "fire_danger"
+
+  - platform: template
+    sensors:
+      bom_current_text:
+        value_template: >
+          {% set val = states("sensor.bom_tamworth_detailed_summary_0") %}
+          {{ val.split('.')[0] | title }}
+
+      bom_forecast_0:
+        entity_id:
+          - sensor.bom_tamworth_today_max
+          - sensor.bom_tamworth_today_min
+          - sensor.bom_tamworth_chance_of_rain_0
+          - sensor.bom_tamworth_icon_0
+        friendly_name: "Today"
+        value_template: >
+          {{states('sensor.bom_tamworth_today_min')|round(0)}}° to {{states('sensor.bom_tamworth_today_max')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_0')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_0')|round(0)}}mm)
+        entity_picture_template: >-
+          {%- if now().strftime('%H:%M') > '18:00' and (states('sensor.bom_tamworth_icon_0') == 'fog' or states('sensor.bom_tamworth_icon_0') == 'haze' or states('sensor.bom_tamworth_icon_0') == ' light-showers' or states('sensor.bom_tamworth_icon_0') == 'partly-cloudy' or states('sensor.bom_tamworth_icon_0') == 'showers') -%}
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_0') ~ '-night.png' }}
+          {%- else -%}
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_0') ~ '.png' }}
+          {%- endif -%}
+
+      bom_forecast_1:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_1
+          - sensor.bom_tamworth_min_temp_c_1
+          - sensor.bom_tamworth_chance_of_rain_1
+          - sensor.bom_tamworth_icon_1
+        friendly_name_template: >
+          {%- set date = as_timestamp(now()) + (1 * 86400 ) -%}
+          {{ date | timestamp_custom("Tomorrow (%d/%m)") | replace("(0", "(") | replace("/0", "/") }}
+        value_template: >
+          {{states('sensor.bom_tamworth_min_temp_c_1')|round(0)}}° to {{states('sensor.bom_tamworth_max_temp_c_1')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_1')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_1')|round(0)}}mm)
+        entity_picture_template: >-
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_1') ~ '.png' }}
+
+      bom_forecast_2:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_2
+          - sensor.bom_tamworth_min_temp_c_2
+          - sensor.bom_tamworth_chance_of_rain_2
+          - sensor.bom_tamworth_icon_2
+        friendly_name_template: >
+          {%- set date = as_timestamp(now()) + (2 * 86400 ) -%}
+          {{ date | timestamp_custom("%A (%d/%m)") | replace("(0", "(") | replace("/0", "/") }}
+        value_template: >
+          {{states('sensor.bom_tamworth_min_temp_c_2')|round(0)}}° to {{states('sensor.bom_tamworth_max_temp_c_2')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_2')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_2')|round(0)}}mm)
+        entity_picture_template: >-
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_2') ~ '.png' }}
+
+      bom_forecast_3:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_3
+          - sensor.bom_tamworth_min_temp_c_3
+          - sensor.bom_tamworth_chance_of_rain_3
+          - sensor.bom_tamworth_icon_3
+        friendly_name_template: >
+          {%- set date = as_timestamp(now()) + (3 * 86400 ) -%}
+          {{ date | timestamp_custom("%A (%d/%m)") | replace("(0", "(") | replace("/0", "/") }}
+        value_template: >
+          {{states('sensor.bom_tamworth_min_temp_c_3')|round(0)}}° to {{states('sensor.bom_tamworth_max_temp_c_3')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_3')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_3')|round(0)}}mm)
+        entity_picture_template: >-
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_3') ~ '.png' }}
+
+      bom_forecast_4:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_4
+          - sensor.bom_tamworth_min_temp_c_4
+          - sensor.bom_tamworth_chance_of_rain_4
+          - sensor.bom_tamworth_icon_4
+        friendly_name_template: >
+          {%- set date = as_timestamp(now()) + (4 * 86400 ) -%}
+          {{ date | timestamp_custom("%A (%d/%m)") | replace("(0", "(") | replace("/0", "/") }}
+        value_template: >
+          {{states('sensor.bom_tamworth_min_temp_c_4')|round(0)}}° to {{states('sensor.bom_tamworth_max_temp_c_4')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_4')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_4')|round(0)}}mm)
+        entity_picture_template: >-
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_4') ~ '.png' }}
+
+      bom_forecast_5:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_5
+          - sensor.bom_tamworth_min_temp_c_5
+          - sensor.bom_tamworth_chance_of_rain_5
+          - sensor.bom_tamworth_icon_5
+        friendly_name_template: >
+          {%- set date = as_timestamp(now()) + (5 * 86400 ) -%}
+          {{ date | timestamp_custom("%A (%d/%m)") | replace("(0", "(") | replace("/0", "/") }}
+        value_template: >
+          {{states('sensor.bom_tamworth_min_temp_c_5')|round(0)}}° to {{states('sensor.bom_tamworth_max_temp_c_5')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_5')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_5')|round(0)}}mm)
+        entity_picture_template: >-
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_5') ~ '.png' }}
+
+      bom_forecast_6:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_6
+          - sensor.bom_tamworth_min_temp_c_6
+          - sensor.bom_tamworth_chance_of_rain_6
+          - sensor.bom_tamworth_possible_rainfall_6
+          - sensor.bom_tamworth_icon_6
+        friendly_name_template: >
+          {%- set date = as_timestamp(now()) + (6 * 86400 ) -%}
+          {{ date | timestamp_custom("%A (%d/%m)") | replace("(0", "(") | replace("/0", "/") }}
+        value_template: >
+          {{states('sensor.bom_tamworth_min_temp_c_6')|round(0)}}° to {{states('sensor.bom_tamworth_max_temp_c_6')|round(0)}}° ({{states('sensor.bom_tamworth_chance_of_rain_6')|round(0)}}%, {{states('sensor.bom_tamworth_possible_rainfall_6')|round(0)}}mm)
+        entity_picture_template: >-
+          {{ '/local/icons/bom_icons/' ~ states('sensor.bom_tamworth_icon_6') ~ '.png' }}
+
+      bom_today_max:
+        entity_id:
+          - sensor.bom_tamworth_max_temp_c_0
+          - sensor.today_temp_bom
+        value_template: >
+          {%- if states('sensor.bom_tamworth_max_temp_c_0') == 'n/a' -%}
+            {{ state_attr('sensor.today_temp_bom', 'max_value') }}
+          {% else %}
+            {{ states('sensor.bom_tamworth_max_temp_c_0') }}
+          {% endif %}
+
+      bom_today_min:
+        entity_id:
+          - sensor.bom_tamworth_min_temp_c_0
+          - sensor.today_temp_bom
+        value_template: >
+          {%- if states('sensor.bom_tamworth_min_temp_c_0') == 'n/a' -%}
+            {{ state_attr('sensor.today_temp_bom', 'min_value') }}
+          {% else %}
+            {{ states('sensor.bom_tamworth_min_temp_c_0') }}
+          {% endif %}
+
+      weather_rest_of_today:
+        friendly_name: "Todays Weather"
+        value_template: |
+          {{ states('sensor.bom_tamworth_air_temp_c') }}, {{ state_attr('sensor.bom_forecast_tamworth_0', 'Summary') }}
+          Feels like: {{ states('sensor.bom_tamworth_feels_like_c') }}
+          Humidity: {{ states('sensor.bom_tamworth_relative_humidity') }}%
+          Wind: {% if is_state('sensor.bom_tamworth_wind_direction', 'CALM') %} CALM {% else %} {{ states('sensor.bom_tamworth_wind_direction') }} {{ states('sensor.bom_tamworth_wind_speed_kmh') }} km/h {% endif %}
+        icon_template: "{{ state_attr('sensor.bom_forecast_tamworth_0', 'icon') }}"
+
+      bom_uv_alert:
+        value_template: >
+          {%- if states('sensor.bom_tamworth_uv_alert_0') != 'n/a' -%}
+            UV Today: {{ states('sensor.bom_tamworth_uv_alert_0') }}
+          {%- elif states('sensor.bom_tamworth_uv_alert_1') != 'n/a' -%}
+            UV Tomorrow: {{ states('sensor.bom_tamworth_uv_alert_1') }}
+          {%- else -%}
+            UV: Unavailable
+          {%- endif -%}
+
+      bom_uv_alert_summary:
+        value_template: >
+          {%- if states('sensor.bom_tamworth_uv_alert_0') != 'n/a' -%}
+            {% set val = states('sensor.bom_tamworth_uv_alert_0').split('[')[1].split(']')[0] %}
+          {%- elif states('sensor.bom_tamworth_uv_alert_1') != 'n/a' -%}
+            {% set val = states('sensor.bom_tamworth_uv_alert_1').split('[')[1].split(']')[0] %}
+          {%- else -%}
+            {%- set val = 'Unavailable' -%}
+          {%- endif -%}
+            {{ val | title }}
+
+      bom_fire_danger:
+        value_template: >
+          {%- if states('sensor.bom_tamworth_fire_danger_0') != 'n/a' -%}
+            Fire Danger Today: {{ states('sensor.bom_tamworth_fire_danger_0') }}
+          {%- elif states('sensor.bom_tamworth_fire_danger_1') != 'n/a' -%}
+            Fire Danger Tomorrow: {{ states('sensor.bom_tamworth_fire_danger_1') }}
+          {%- else -%}
+            Fire Danger: Unavailable
+          {%- endif -%}
+
+      bom_fire_danger_summary:
+        value_template: >
+          {%- if states('sensor.bom_tamworth_fire_danger_0') != 'n/a' -%}
+            {{ states('sensor.bom_tamworth_fire_danger_0') }}
+          {%- elif states('sensor.bom_tamworth_fire_danger_1') != 'n/a' -%}
+            {{ states('sensor.bom_tamworth_fire_danger_1') }}
+          {%- else -%}
+            Unavailable
+          {%- endif -%}

@@ -1,0 +1,27 @@
+---
+iaquk:
+  lounge:
+    sources:
+      temperature: sensor.netatmo_brisbane_street_indoor_temperature
+      humidity: sensor.netatmo_brisbane_street_indoor_humidity
+      co2: sensor.netatmo_brisbane_street_indoor_co2
+      # tvoc:
+    sensors:
+      - iaq_level
+      - iaq_index
+  office:
+    sources:
+      temperature: sensor.zha_office_temperature
+      humidity: sensor.zha_office_humidity
+    sensors:
+      - iaq_level
+      - iaq_index
+  bedroom:
+    sources:
+      temperature: sensor.zha_bedroom_temperature
+      humidity: sensor.zha_bedroom_humidity
+      # co2:
+      # tvoc:
+    sensors:
+      - iaq_level
+      - iaq_index

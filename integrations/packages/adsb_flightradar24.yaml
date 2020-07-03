@@ -1,0 +1,63 @@
+---
+# ADS-B System / Flightradar 24
+
+homeassistant:
+  customize:
+    sensor.adsb_fr24_feeder:
+      hidden: true
+    sensor.adsb_fr24_feeder_aircraft_tracked:
+      icon: mdi:airplane
+    sensor.adsb_fr24_feeder_aircraft_uploaded:
+      icon: mdi:airplane
+    sensor.adsb_fr24_feeder_radar_code:
+      icon: mdi:radar
+
+binary_sensor:
+  - platform: template
+    sensors:
+      adsb_fr24_feeder_receiver_connected:
+        friendly_name: Receiver Connected
+        value_template: '{{ is_state_attr("sensor.adsb_fr24_feeder", "rx_connected", "1") }}'
+        device_class: connectivity
+      adsb_fr24_feeder_link_connected:
+        friendly_name: Link Connected
+        value_template: '{{ is_state_attr("sensor.adsb_fr24_feeder", "feed_status", "connected") }}'
+        device_class: connectivity
+      adsb_fr24_mlat_connected:
+        friendly_name: MLAT Connected
+        value_template: '{{ is_state_attr("sensor.adsb_fr24_feeder", "mlat-ok", "OK") }}'
+        device_class: connectivity
+
+sensor:
+  - platform: rest
+    name: ADSB FR24 Feeder
+    resource: http://192.168.1.64:8754/monitor.json
+    value_template: '{{ value_json.feed_alias }}'
+    method: GET
+    scan_interval: 60
+    json_attributes:
+      - rx_connected
+      - feed_status
+      - d11_map_size
+      - feed_num_ac_tracked
+      - build_version
+      - build_timestamp
+      - feed_alias
+      - mlat-ok
+      - last_rx_connect_time
+  - platform: template
+    sensors:
+      adsb_fr24_feeder_radar_code:
+        friendly_name: Radar Code
+        value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_alias"] }}'
+      adsb_fr24_feeder_aircraft_tracked:
+        friendly_name: Aircraft Tracked
+        value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["d11_map_size"] | round(0) }}'
+        unit_of_measurement: 'aircrafts'
+      adsb_fr24_feeder_aircraft_uploaded:
+        friendly_name: Aircraft Uploaded
+        value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_num_ac_tracked"] | round(0) }}'
+        unit_of_measurement: 'aircrafts'
+      adsb_fr24_feeder_version:
+        friendly_name: Version
+        value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["build_version"] }}'

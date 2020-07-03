@@ -1,0 +1,96 @@
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-md-12 col-lg-12 col-xl-12'
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - entity: sensor.solar_sungrow_house_load
+          name: House Load
+        - entity: sensor.solar_sungrow_pv_power
+          name: Solar
+        - entity: sensor.solar_sungrow_grid_power
+          name: Grid
+      name: Power
+      line_color: 'var(--dwains-theme-accent)'
+      animate: true
+      decimals: 2
+      height: 30
+      font-size: 20
+      hours_to_show: 24
+      points_per_hour: 30
+      # group_by: hour
+      # aggregate_func: last
+      line_width: 1
+      align_state: center
+      smoothing: true
+      show:
+        extrema: true
+        average: true
+        fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  cards:
+    - type: entities
+      title: Solar Stats
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.solar_sungrow_house_solar_percent
+          name: Solar to House Load
+        - type: divider
+        - entity: sensor.solar_sungrow_solar_percent_tohouse
+          name: Solar Generation to House
+        - entity: sensor.solar_sungrow_solar_percent_togrid
+          name: Solar Generation to Grid
+
+    - type: entities
+      title: Solar Stats
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.solar_sungrow_daily_grid_energy
+          name: Daily Grid Energy
+        - entity: sensor.solar_sungrow_daily_yield
+          name: Daily Solar Yield

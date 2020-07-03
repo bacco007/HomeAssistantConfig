@@ -1,0 +1,10 @@
+---
+alias: 'Weather - Update BOM Icons'
+trigger:
+  - event: start
+    platform: homeassistant
+  - platform: time
+    at: '18:01:00'
+action:
+  - service: homeassistant.update_entity
+    entity_id: sensor.bom_forecast_0, sensor.bom_forecast_1, sensor.bom_forecast_2, sensor.bom_forecast_3, sensor.bom_forecast_4, sensor.bom_forecast_5, sensor.bom_forecast_6

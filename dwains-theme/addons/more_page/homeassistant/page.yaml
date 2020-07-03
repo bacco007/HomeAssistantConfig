@@ -1,0 +1,776 @@
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://www.home-assistant.io/images/favicon-192x192-full.png"/><br/>
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.ha_uptime_hours
+                  name: HA Uptime
+                - entity: sensor.ha_restart_time
+                  name: Time taken to restart
+                  icon: mdi:home-assistant
+                - type: section
+                - entity: input_select.log_level
+                  name: Change Log Level
+                - entity: counter.logs_critical_counter
+                  name: Log Counter
+                  type: custom:multiple-entity-row
+                  show_state: false
+                  entities:
+                    - entity: counter.logs_critical_counter
+                      name: Critical
+                    - entity: counter.logs_error_counter
+                      name: Error
+                    - entity: counter.logs_warning_counter
+                      unit: false
+                      name: Warning
+            - type: custom:mini-graph-card
+              name: Log Counter
+              height: 100
+              line_width: 2
+              hours_to_show: 24
+              points_per_hour: 10
+              show:
+                extrema: false
+                fill: true
+                state: false
+                legend: false
+              entities:
+                - entity: counter.logs_critical_counter
+                  name: Critical
+                  color: rgba(50,203,253,0.33)
+                - entity: counter.logs_error_counter
+                  name: Error
+                  color: rgb(26,204,147,0.33)
+                - entity: counter.logs_warning_counter
+                  name: Warning
+        - type: entities
+          title: Versions
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.ha_current_version
+                name: Home Assistant Version - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_ha_stable') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_ha_stable
+                  name: Home Assistant Version - Stable
+                  icon: mdi:home-assistant
+                - entity: sensor.current_ha_beta
+                  name: Home Assistant Version - Beta
+                  icon: mdi:home-assistant
+                - entity: sensor.current_ha_dev
+                  name: Home Assistant Version - Dev
+                  icon: mdi:home-assistant
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.hassos_installed_version
+                name: HassOS Version - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_hassos_stable') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_hassos_stable
+                  name: HassOS Version - Stable
+                  icon: mdi:home-assistant
+                - entity: sensor.current_hassos_beta
+                  name: HassOS Version - Beta
+                  icon: mdi:home-assistant
+                - entity: sensor.current_hassos_dev
+                  name: HassOS Version - Dev
+                  icon: mdi:home-assistant
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_supervisor_installed
+                name: Home Assistant Supervisor Version - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_supervisor_stable') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_supervisor_stable
+                  name: Home Assistant Supervisor Version - Stable
+                  icon: mdi:home-assistant
+                - entity: sensor.current_supervisor_beta
+                  name: Home Assistant Supervisor Version - Beta
+                  icon: mdi:home-assistant
+                - entity: sensor.current_supervisor_dev
+                  name: Home Assistant Supervisor Version - Dev
+                  icon: mdi:home-assistant
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_audio_installed
+                name: Audio - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_audio_stable') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_audio_stable
+                  name: Audio - Stable
+                - entity: sensor.current_audio_beta
+                  name: Audio - Beta
+                - entity: sensor.current_audio_dev
+                  name: Audio - Dev
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_cli_installed
+                name: CLI - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_cli_stable') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_cli_stable
+                  name: CLI - Stable
+                - entity: sensor.current_cli_beta
+                  name: CLI - Beta
+                - entity: sensor.current_cli_dev
+                  name: CLI - Dev
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_dns_installed
+                name: DNS - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_dns_stable') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_dns_stable
+                  name: DNS - Stable
+                - entity: sensor.current_dns_beta
+                  name: DNS - Beta
+                - entity: sensor.current_dns_dev
+                  name: DNS - Dev
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_multicast_installed
+                name: Multicast - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_multicast_latest') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_multicast_latest
+                  name: Multicast - Latest
+        - type: vertical-stack
+          cards:
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.supervisor_installed
+                  name: Supervisor Add-Ons to Update
+                  icon: mdi:home-assistant
+                  style: |
+                    :host {
+                    --paper-item-icon-color:
+                      {% if states(config.entity)|int > 0 %}
+                        rgb(255, 223, 0)
+                      {% else %}
+                        var(--disabled-text-color)
+                      {% endif %}
+                      ;
+                    }
+                  tap_action:
+                    action: navigate
+                    navigation_path: /hassio/dashboard
+            - type: custom:list-card
+              entity: sensor.supervisor_installed
+              title: HA Addons
+              columns:
+                - { field: name, title: "Addon", style: [text-align: left] }
+                - {
+                    field: installed,
+                    title: "Installed",
+                    style: [text-align: center],
+                  }
+                - {
+                    field: version,
+                    title: "Latest",
+                    style: [text-align: center],
+                  }
+              feed_attribute: addons
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary);
+                  padding-bottom: 10px;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - type: section
+                - entity: sensor.hacs
+                  tap_action:
+                    action: navigate
+                    navigation_path: /hacs/installed
+                  icon: hacs:hacs
+                  name: HACS Updates Available?
+                  style: |
+                    :host {
+                    --paper-item-icon-color:
+                      {% if states(config.entity)|int > 0 %}
+                        rgb(255, 223, 0)
+                      {% else %}
+                        var(--disabled-text-color)
+                      {% endif %}
+                      ;
+                    }
+            - type: custom:list-card
+              feed_attribute: repositories
+              entity: sensor.hacs
+              columns:
+                - { field: name, title: "Name", style: [text-align: left] }
+                - {
+                    field: installed_version,
+                    title: "Installed",
+                    style: [text-align: center],
+                  }
+                - {
+                    field: available_version,
+                    title: "Latest",
+                    style: [text-align: center],
+                  }
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Database</h2>
+        - type: vertical-stack
+          cards:
+            - type: custom:mini-graph-card
+              entities:
+                - entity: sensor.ha_db_size
+              name: Database Size (MariaDB)
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 1
+              align_state: center
+              show:
+                #extrema: true
+                fill: fade
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.ha_db_events
+                  secondary_info: last-changed
+                - entity: sensor.ha_db_states
+                  secondary_info: last-changed
+        - type: vertical-stack
+          cards:
+            - type: custom:mini-graph-card
+              entities:
+                - entity: sensor.influxdb_size
+              name: Database Size (InfluxDB)
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 1
+              align_state: center
+              show:
+                #extrema: true
+                fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <img width="125" src="https://brands.home-assistant.io/github/logo.png"/><br/>
+                <h3>bacco007/HomeAssistConfig</h3>
+        - type: entities
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.github_pushedat
+              name: Last Push
+            - entity: sensor.github_updatedat
+              name: Last Update
+        - type: vertical-stack
+          cards:
+            - type: entities
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary);
+                  padding-bottom: 10px;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.github_forks
+                  name: Forks
+                - entity: sensor.github_issues
+                  name: Issues
+                - entity: sensor.github_stars
+                  name: Stars
+                - entity: sensor.github_subscribers
+                  name: Subscribers
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Configuration Tools
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Reload Themes
+              service: frontend.reload_themes
+              type: call-service
+            - script.check_config
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Restart Home Assistant
+              service: homeassistant.restart
+              type: call-service
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Generate README.md
+              service: readme.generate
+              type: call-service
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Reload Core Config
+              service: homeassistant.reload_core_config
+              type: call-service
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Reload Groups
+              service: group.reload
+              type: call-service
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Reload Automations
+              service: automation.reload
+              type: call-service
+            - action_name: GO!
+              icon: "mdi:cube-send"
+              name: Reload Scripts
+              service: script.reload
+              type: call-service
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Versions
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - sensor.potential_breaking_changes
+            - type: section
+            - sensor.ha_overview
+            - type: section
+            - entity: sensor.ssl_certificate_expiry
+              name: HA SSL Cert Expiry
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Auto Backups
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.auto_backup
+              name: Auto Backup Status
+              type: custom:multiple-entity-row
+              show_state: false
+              secondary_info: last-changed
+              entities:
+                - attribute: monitored_snapshots
+                  name: Monitored
+                - attribute: purgeable_snapshots
+                  name: Purgeable
+                - entity: sensor.auto_backup
+                  unit: false
+                  name: Pending
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: custom:stack-in-card
+      mode: horizontal
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: markdown
+              style: |
+                ha-card { box-shadow: none; }
+                ha-markdown { padding-bottom: 1px !important; }
+              content: >
+                <h2>Component Counts</h2>
+        - type: vertical-stack
+          cards:
+            - type: custom:mini-graph-card
+              entities:
+                - entity: sensor.count_all_components
+              name: Components
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 6
+              align_state: center
+              show:
+                #extrema: true
+                fill: fade
+            - type: custom:mini-graph-card
+              entities:
+                - sensor.count_all_entities
+              name: Entities
+              height: 50
+              line_color: "var(--dwains-theme-accent)"
+              line_width: 2
+              font_size: 70
+              hours_to_show: 168
+              points_per_hour: 6
+              align_state: center
+              show:
+                # extrema: true
+                fill: fade
+        - type: vertical-stack
+          cards:
+            - type: custom:config-template-card
+              variables:
+                - states['sensor.count_all_entities'].state
+              entities:
+                - sensor.count_all_entities
+              card:
+                type: custom:auto-entities
+                card:
+                  type: entities
+                  style: |
+                    ha-card {
+                      background-color: var(--dwains-theme-primary)
+                    }
+                    .card-header {
+                      padding: 5px 16px 10px;
+                      font-size: 18px;
+                      font-weight: 700 !important;
+                    }
+                sort:
+                  method: state
+                  reverse: true
+                  numeric: true
+                filter:
+                  exclude:
+                    - entity_id: sensor.count_all_components
+                    - entity_id: sensor.count_all_entities
+                  include:
+                    - entity_id: sensor.count_*
+                      options:
+                        type: custom:bar-card
+                        style: |
+                          ha-icon {
+                            color: var(--dwains-theme-accent) !important;
+                          }
+                          ha-icon	 {
+                            margin-top: -7px;
+                            padding-right: 5px;
+                          }
+                          bar-card-indicator	 {
+                            margin-top: -12px;
+                            padding-right: 5px;
+                          }
+                          bar-card-name	 {
+                            margin-top: -4.5px;
+                            padding-left: 5px;
+                          }
+                          bar-card-backgroundbar	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-currentbar	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-targetbar	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-targetmarker	 {
+                            margin-top: -3.5px;
+                            border-radius: 2.5px;
+                          }
+                          bar-card-value	 {
+                            margin-top: -4.5px;
+                            padding-left: 5px;
+                          }
+                        positions:
+                          title: inside
+                          value: inside
+                        entity_row: true
+                        min: 0
+                        max: "${vars[0]}"
+                        color: rgb(26,204,147,0.33)

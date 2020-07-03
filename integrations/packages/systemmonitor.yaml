@@ -1,0 +1,48 @@
+---
+sensor:
+  - platform: systemmonitor
+    resources:
+      - type: last_boot
+
+  - platform: template
+    sensors:
+      systemuptime:
+        entity_id: sensor.last_boot
+        friendly_name: HA Server - Uptime
+        icon_template: mdi:clock
+        value_template: >-
+          {% set time = (as_timestamp(now()) - as_timestamp(states('sensor.last_boot'))) %}
+          {% set minutes = ((time % 3600) / 60) | int %}
+          {% set hours = ((time % 86400) / 3600) | int %}
+          {% set days = (time / 86400) | int %}
+          {%- if time < 60 -%}
+            Less than a minute
+          {%- else -%}
+            {%- if days > 0 -%}
+              {%- if days == 1 -%}
+                1 day
+              {%- else -%}
+                {{ days }} days
+              {%- endif -%}
+            {%- endif -%}
+            {%- if hours > 0 -%}
+              {%- if days > 0 -%}
+                {{ ', ' }}
+              {%- endif -%}
+              {%- if hours == 1 -%}
+                1 hour
+              {%- else -%}
+                {{ hours }} hours
+              {%- endif -%}
+            {%- endif -%}
+            {%- if minutes > 0 -%}
+              {%- if days > 0 or hours > 0 -%}
+                {{ ', ' }}
+              {%- endif -%}
+              {%- if minutes == 1 -%}
+                1 minute
+              {%- else -%}
+                {{ minutes }} minutes
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}

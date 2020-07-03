@@ -1,0 +1,30 @@
+---
+alias: Admin - HA Supervisor Addon Available
+trigger:
+  - platform: state
+    entity_id: sensor.supervisor_installed
+condition:
+  - condition: template
+    value_template: "{{ states.sensor.supervisor_installed.state != 'unknown'}}"
+  - condition: template
+    value_template: "{{ (states.sensor.supervisor_installed.state | float) != 0}}"
+action:
+  - service: persistent_notification.create
+    data_template:
+      title: HA Add-ons - Updates Available
+      message: >-
+        {% for repo in states.sensor.supervisor_installed.attributes.addons %}
+          **{{ repo.name }}** _{{ repo["installed"] }}_ -> _{{ repo["version"] }}_
+        {% endfor %}
+  - service: notify.slack
+    data_template:
+      message: ""
+      target: "#tbsmarthome"
+      data:
+        attachments:
+          - color: >
+              #800400
+            title: >
+              HA Add-ons - Updates Available
+            text: |
+              Updates to HA Add-ons are available

@@ -1,0 +1,77 @@
+---
+homeassistant:
+  customize:
+    sensor.opennem_nsw1_battery_charging:
+      friendly_name: Battery (Charging)
+    sensor.opennem_nsw1_battery_discharging:
+      friendly_name: Battery (Discharging)
+    sensor.opennem_nsw1_biomass:
+      friendly_name: Biomass
+    sensor.opennem_nsw1_black_coal:
+      friendly_name: Coal (Black)
+    sensor.opennem_nsw1_brown_coal:
+      friendly_name: Coal (Brown)
+    sensor.opennem_nsw1_current_price:
+      friendly_name: Current Price
+    sensor.opennem_nsw1_distillate:
+      friendly_name: Distillate
+    sensor.opennem_nsw1_electricity_demand:
+      friendly_name: Electricity Demand
+    sensor.opennem_nsw1_electricity_generation:
+      friendly_name: Electricity Generation
+    sensor.opennem_nsw1_exported_power:
+      friendly_name: Exported Power
+    sensor.opennem_nsw1_gas_ccgt:
+      friendly_name: Gas (CCGT)
+    sensor.opennem_nsw1_gas_ocgt:
+      friendly_name: Gas (OCGT)
+    sensor.opennem_nsw1_gas_recip:
+      friendly_name: Gas (Recip)
+    sensor.opennem_nsw1_gas_steam:
+      friendly_name: Gas (Steam)
+    sensor.opennem_nsw1_gen_from_fossil_fuels:
+      friendly_name: Electricity Gen from Fossil Fuels
+    sensor.opennem_nsw1_gen_from_renewables:
+      friendly_name: Electricity Gen from Renewables
+    sensor.opennem_nsw1_hydro:
+      friendly_name: Hydro
+    sensor.opennem_nsw1_imported_power:
+      friendly_name: Imported from other Regions
+    sensor.opennem_nsw1_pumps:
+      friendly_name: Pumps
+    sensor.opennem_nsw1_solar_rooftop:
+      friendly_name: Solar (Rooftop)
+    sensor.opennem_nsw1_solar_utility:
+      friendly_name: Solar (Utility)
+    sensor.opennem_nsw1_temperature:
+      friendly_name: Average Temperature
+    sensor.opennem_nsw1_wind:
+      friendly_name: Wind
+
+sensor:
+  - platform: opennem
+    region: nsw1
+    monitored_conditions:
+      - battery_charging
+      - battery_discharging
+      - biomass
+      - black_coal
+      - brown_coal
+      - exports
+      - demand
+      - distillate
+      - fossilfuel
+      - renewables
+      - gas_ccgt
+      - gas_ocgt
+      - gas_recip
+      - gas_steam
+      - generation
+      - hydro
+      - imports
+      - price
+      - pumps
+      - rooftop_solar
+      - solar
+      - temperature
+      - wind
