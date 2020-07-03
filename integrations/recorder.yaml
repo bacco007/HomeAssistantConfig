@@ -14,6 +14,7 @@ recorder:
       - sensor.unifi_*
       - sensor.usg_*
       - sensor.*monitordocker*
+      - sensor.switchmonusb*
     domains:
       - anniversaries
       - automation
