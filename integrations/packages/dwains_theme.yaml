@@ -1,4 +1,5 @@
-# Do you have any custom resources? Go to the folder dwains-theme/resources/, 
+---
+# Do you have any custom resources? Go to the folder dwains-theme/resources/,
 # if you don't have the file custom_resources.yaml then rename the file custom_resources-sample.yaml
 # to custom_resources.yaml and place your resources in the file custom_resources.yaml!
 
@@ -22,17 +23,15 @@ frontend:
 #Load browser_mod (https://github.com/thomasloven/hass-browser_mod)
 browser_mod:
 
-#Dwains theme definitions (this is for doing all the jinja2 inside YAML files) 
+#Dwains theme definitions (this is for doing all the jinja2 inside YAML files)
 #You need to have a folder called dwains-theme/configs with all the configuration files inside
 dwains_theme:
   global:
-    version: '1.4.0'
+    version: "1.4.0"
   styles:
-    padding-left: '10px'
-  translations:
-    !include_dir_merge_named ../../dwains-theme/translations/
-  configuration:
-    !include_dir_merge_named ../../dwains-theme/configs/
+    padding-left: "10px"
+  translations: !include_dir_merge_named ../../dwains-theme/translations/
+  configuration: !include_dir_merge_named ../../dwains-theme/configs/
 
 #Sensor for latest version
 sensor:
@@ -47,7 +46,7 @@ sensor:
 input_select:
   #Theme selector
   theme_selector:
-    name: Theme Selector 
+    name: Theme Selector
     options:
       - Auto Mode (Dark/Light)
       - Dark Mode
@@ -59,8 +58,8 @@ input_select:
 #Theme automations
 automation:
   #Theme Selector
-  - alias: 'themes'
-    initial_state: 'true'
+  - alias: "themes"
+    initial_state: "true"
     trigger:
       - platform: state
         entity_id: input_select.theme_selector

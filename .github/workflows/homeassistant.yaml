@@ -39,7 +39,7 @@ jobs:
       - name: Create secrets.yaml
         run: mv fake_secrets.yaml secrets.yaml
       - name: Delete Android TV
-        run: rm packages/media/androidtv.yaml
+        run: rm entities/media_players/androidtv.yaml
       - name: Home Assistant Version
         uses: "docker://homeassistant/home-assistant:stable"
         with:
@@ -58,7 +58,7 @@ jobs:
       - name: Create secrets.yaml
         run: mv fake_secrets.yaml secrets.yaml
       - name: Delete Android TV
-        run: rm packages/media/androidtv.yaml
+        run: rm entities/media_players/androidtv.yaml
       - name: Home Assistant Version
         uses: "docker://homeassistant/home-assistant:beta"
         with:
