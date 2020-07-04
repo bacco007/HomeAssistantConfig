@@ -9,10 +9,10 @@
           background-color: var(--dwains-theme-primary);
         }
       entities:
-        - entity: sensor.worldwide_confirmed
+        - entity: sensor.worldwide_coronavirus_confirmed
           name: Cases
           state: Cases
-        - entity: sensor.worldwide_deaths
+        - entity: sensor.worldwide_coronavirus_deaths
           name: Deaths
           y_axis: secondary
       name: Worldwide
@@ -122,7 +122,7 @@
               margin-left: 2px !important;
             }
           entities:
-            - entity: sensor.worldwide_confirmed
+            - entity: sensor.worldwide_coronavirus_confirmed
               name: Worldwide
               type: custom:multiple-entity-row
               icon: mdi:biohazard
@@ -131,16 +131,16 @@
               style: |
                 div.entity { text-align: right; }
               entities:
-                - entity: sensor.worldwide_confirmed
+                - entity: sensor.worldwide_coronavirus_confirmed
                   name: Cases
                   unit: " "
-                - entity: sensor.worldwide_current
+                - entity: sensor.worldwide_coronavirus_current
                   name: Current
                   unit: " "
-                - entity: sensor.worldwide_recovered
+                - entity: sensor.worldwide_coronavirus_recovered
                   name: Recovered
                   unit: " "
-                - entity: sensor.worldwide_deaths
+                - entity: sensor.worldwide_coronavirus_deaths
                   name: Deaths
                   unit: " "
             - entity: sensor.new_zealand_coronavirus_confirmed

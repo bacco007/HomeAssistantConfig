@@ -1,30 +1,19 @@
 ---
 # ADS-B System / Flightradar 24
 
-homeassistant:
-  customize:
-    sensor.adsb_fr24_feeder:
-      hidden: true
-    sensor.adsb_fr24_feeder_aircraft_tracked:
-      icon: mdi:airplane
-    sensor.adsb_fr24_feeder_aircraft_uploaded:
-      icon: mdi:airplane
-    sensor.adsb_fr24_feeder_radar_code:
-      icon: mdi:radar
-
 binary_sensor:
   - platform: template
     sensors:
       adsb_fr24_feeder_receiver_connected:
-        friendly_name: Receiver Connected
+        friendly_name: FR24 Receiver Connected
         value_template: '{{ is_state_attr("sensor.adsb_fr24_feeder", "rx_connected", "1") }}'
         device_class: connectivity
       adsb_fr24_feeder_link_connected:
-        friendly_name: Link Connected
+        friendly_name: FR24 Link Connected
         value_template: '{{ is_state_attr("sensor.adsb_fr24_feeder", "feed_status", "connected") }}'
         device_class: connectivity
       adsb_fr24_mlat_connected:
-        friendly_name: MLAT Connected
+        friendly_name: FR24 MLAT Connected
         value_template: '{{ is_state_attr("sensor.adsb_fr24_feeder", "mlat-ok", "OK") }}'
         device_class: connectivity
 
@@ -45,19 +34,24 @@ sensor:
       - feed_alias
       - mlat-ok
       - last_rx_connect_time
+
   - platform: template
     sensors:
       adsb_fr24_feeder_radar_code:
         friendly_name: Radar Code
+        icon_template: mdi:radar
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_alias"] }}'
       adsb_fr24_feeder_aircraft_tracked:
         friendly_name: Aircraft Tracked
+        icon_template: mdi:airplane
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["d11_map_size"] | round(0) }}'
         unit_of_measurement: 'aircrafts'
       adsb_fr24_feeder_aircraft_uploaded:
         friendly_name: Aircraft Uploaded
+        icon_template: mdi:airplane
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_num_ac_tracked"] | round(0) }}'
         unit_of_measurement: 'aircrafts'
       adsb_fr24_feeder_version:
         friendly_name: Version
+        icon_template: mdi:airplane
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["build_version"] }}'

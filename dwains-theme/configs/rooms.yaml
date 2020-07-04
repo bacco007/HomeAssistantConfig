@@ -90,10 +90,16 @@ rooms:
   - name: Server Rack
     icon: mdi:server-network
     # device: group.serverrack_device
-    page_entities:
-      entities:
-        - entity: sensor.piserv_uptime
+    # page_entities:
+    #   entities:
     addons:
+      - name: piServ
+        icon: mdi:server
+        path: 'dwains-theme/addons/rooms/server-rack/piserv.yaml'
+        button_path: 'dwains-theme/addons/rooms/server-rack/button.yaml'
+        data:
+          entity: sensor.piserv_uptime
+          uptime: '{{states.sensor.piserv_uptime.state}}'
       - name: pveTBSH
         icon: mdi:server
         path: 'dwains-theme/addons/rooms/server-rack/pvetbsh.yaml'

@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 19:23, Friday, July 3rd 2020_
+_Stats as at 04:59, Saturday, July 4th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.112.1 | 258     | 2061         | 1766 | 24 |
+| 0.112.1 | 258     | 2068         | 1769 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 68
+Binary Sensor | 69
 Camera | 3
-Device Tracker | 58
+Device Tracker | 59
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
@@ -95,7 +95,7 @@ Media Player | 15
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1766
+Sensor | 1769
 Sun | 1
 Switch | 83
 Weather | 3
@@ -508,11 +508,29 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Addon Repositories
 
+- https://github.com/danielwelch/hassio-zigbee2mqtt
+- https://github.com/esphome/hassio
+- https://github.com/hassio-addons/repository
+- https://github.com/OpenXbox/xboxone-home-assistant
+- https://github.com/sabeechen/hassio-google-drive-backup
 
 
 ### Addons
 
-Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
+Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ADB - Android Debug Bridge]()
+- [AirSonos]()
+- [ESPHome]()
+- [Glances]()
+- [Hass.io Google Drive Backup]()
+- [MariaDB](https://github.com/home-assistant/hassio-addons/tree/master/mariadb)
+- [Mosquitto broker]()
+- [Node-RED]()
+- [phpMyAdmin]()
+- [Portainer]()
+- [Samba share](https://github.com/home-assistant/hassio-addons/tree/master/samba)
+- [SSH & Web Terminal]()
+- [Xbox One Smartglass REST server]()
+
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 

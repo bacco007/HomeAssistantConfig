@@ -6,15 +6,19 @@ recorder:
   exclude:
     entities:
       - sun.sun
+      - sensor.ha_uptime_hours
     entity_globs:
       - sensor.192_168_1_50*
       - sensor.date*
+      - sensor.here_travel_*
+      - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*
       - sensor.unifi_*
       - sensor.usg_*
       - sensor.*monitordocker*
       - sensor.switchmonusb*
+      - sensor.*_uptime
     domains:
       - anniversaries
       - automation

@@ -15,7 +15,7 @@
                     ha-card { box-shadow: none; }
                     ha-markdown { padding-bottom: 1px !important; }
                   content: >
-                    **pveTBSH**<br/>
+                    **piServ**<br/>
                     **Uptime:** {{ (data | fromjson)['uptime']}}
         - type: custom:dwains-flexbox-card
           item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
@@ -37,8 +37,8 @@
                   width: 75%
                   decimal: 1
                   entities:
-                    - entity: sensor.pvetbsh_cpu_load
-                      name: CPU Load
+                    - entity: sensor.piserv_cpu_used
+                      name: CPU
                       icon: mdi:speedometer
                       severity:
                         - color: rgb(26,204,147,0.33)
@@ -50,7 +50,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 26
                           to: 150
-                    - entity: sensor.pvetbsh_ram_used_percent
+                    - entity: sensor.piserv_ram_used_percent
                       name: Memory
                       icon: mdi:memory
                       severity:
@@ -63,7 +63,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_swap_used_percent
+                    - entity: sensor.piserv_swap_used_percent
                       name: Swap
                       icon: mdi:harddisk
                       severity:
@@ -76,7 +76,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_used_percent
+                    - entity: sensor.piserv_used_percent
                       name: HDD
                       icon: mdi:harddisk
                       severity:
@@ -149,86 +149,8 @@
                   height: 15px
                   width: 75%
                   entities:
-                    - entity: sensor.pvetbsh_acpitz_1_temp
+                    - entity: sensor.piserv_cpu_thermal_1_temp
                       name: Thermal 1
-                      icon: mdi:thermometer
-                      severity:
-                        - color: rgb(26,204,147,0.33)
-                          from: 0
-                          to: 69.9
-                        - color: rgb(206,133,0,0.60)
-                          from: 70
-                          to: 85
-                        - color: rgb(163,0,0,0.60)
-                          from: 85
-                          to: 150
-                    - entity: sensor.pvetbsh_acpitz_2_temp
-                      name: Thermal 2
-                      icon: mdi:thermometer
-                      severity:
-                        - color: rgb(26,204,147,0.33)
-                          from: 0
-                          to: 69.9
-                        - color: rgb(206,133,0,0.60)
-                          from: 70
-                          to: 85
-                        - color: rgb(163,0,0,0.60)
-                          from: 85
-                          to: 150
-                    - entity: sensor.pvetbsh_core_0_temp
-                      name: Core 0
-                      icon: mdi:thermometer
-                      severity:
-                        - color: rgb(26,204,147,0.33)
-                          from: 0
-                          to: 69.9
-                        - color: rgb(206,133,0,0.60)
-                          from: 70
-                          to: 85
-                        - color: rgb(163,0,0,0.60)
-                          from: 85
-                          to: 150
-                    - entity: sensor.pvetbsh_core_1_temp
-                      name: Core 1
-                      icon: mdi:thermometer
-                      severity:
-                        - color: rgb(26,204,147,0.33)
-                          from: 0
-                          to: 69.9
-                        - color: rgb(206,133,0,0.60)
-                          from: 70
-                          to: 85
-                        - color: rgb(163,0,0,0.60)
-                          from: 85
-                          to: 150
-                    - entity: sensor.pvetbsh_core_2_temp
-                      name: Core 2
-                      icon: mdi:thermometer
-                      severity:
-                        - color: rgb(26,204,147,0.33)
-                          from: 0
-                          to: 69.9
-                        - color: rgb(206,133,0,0.60)
-                          from: 70
-                          to: 85
-                        - color: rgb(163,0,0,0.60)
-                          from: 85
-                          to: 150
-                    - entity: sensor.pvetbsh_core_3_temp
-                      name: Core 3
-                      icon: mdi:thermometer
-                      severity:
-                        - color: rgb(26,204,147,0.33)
-                          from: 0
-                          to: 69.9
-                        - color: rgb(206,133,0,0.60)
-                          from: 70
-                          to: 85
-                        - color: rgb(163,0,0,0.60)
-                          from: 85
-                          to: 150
-                    - entity: sensor.tbsh01_package_id_0_temp
-                      name: Package
                       icon: mdi:thermometer
                       severity:
                         - color: rgb(26,204,147,0.33)
@@ -283,85 +205,3 @@
                     bar-card-row {
                       margin-bottom: 0px !important;
                     }
-
-- type: custom:stack-in-card
-  mode: vertical
-  cards:
-    - type: custom:dwains-flexbox-card
-      cards:
-        - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-1'
-          cards:
-            - type: vertical-stack
-              cards:
-                - type: markdown
-                  style: |
-                    ha-card { box-shadow: none; }
-                    ha-markdown { padding-bottom: 1px !important; }
-                  content: >
-                    <center>
-                    <img width="150" src="https://brands.home-assistant.io/_/proxmoxve/logo.png"><br/>
-                    </center>
-        - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-11'
-          cards:
-            - type: entities
-              item_classes: 'col-xs-12 col-sm-6 col-md-6 col-lg-6'
-              style: |
-                ha-card {
-                  padding-bottom: 10px;
-                  background-color: var(--dwains-theme-primary)
-                }
-                .card-header {
-                  padding: 5px 16px;
-                  font-size: 18px;
-                  font-weight: 700 !important;
-                }
-                .card-content div {
-                    margin: 0 !important;
-                }
-                #states {
-                  padding-top: 0px !important;
-                  padding-bottom: 0px !important;
-                }
-                .secondary {
-                  color: darkgray !important;
-                  margin-left: 2px !important;
-                }
-              entities:
-                - entity: binary_sensor.pvetbsh_vmtbsh01_running
-                  name: vmTBSH01
-                  type: custom:multiple-entity-row
-                  show_state: true
-                  secondary_info: last-changed
-                  style: |
-                    div.entity { text-align: right; }
-                  entities:
-                    - attribute: vmid
-                      name: VMID
-                    - attribute: type
-                      name: Type
-                - entity: binary_sensor.pvetbsh_vmtbsh02_running
-                  name: vmTBSH02
-                  type: custom:multiple-entity-row
-                  show_state: true
-                  secondary_info: last-changed
-                  style: |
-                    div.entity { text-align: right; }
-                  entities:
-                    - attribute: vmid
-                      name: VMID
-                    - attribute: type
-                      name: Type
-                - entity: binary_sensor.pvetbsh_vmtbsh03_running
-                  name: vmTBSH03
-                  type: custom:multiple-entity-row
-                  show_state: true
-                  secondary_info: last-changed
-                  style: |
-                    div.entity { text-align: right; }
-                  entities:
-                    - attribute: vmid
-                      name: VMID
-                    - attribute: type
-                      name: Type
