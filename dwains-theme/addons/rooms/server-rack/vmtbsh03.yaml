@@ -145,9 +145,9 @@
                     **Docker Containers**
                 - type: custom:config-template-card
                   variables:
-                    - states['sensor.docker_vmtbsh03_containers_total'].state
+                    - states['sensor.vmtbsh03_containers_active'].state
                   entities:
-                    - sensor.docker_vmtbsh03_containers_total
+                    - sensor.vmtbsh03_containers_active
                   card:
                     type: custom:bar-card
                     positions:
@@ -159,14 +159,8 @@
                     max: '${vars[0]}'
                     color: rgb(26,204,147,0.33)
                     entities:
-                      - entity: sensor.docker_vmtbsh03_containers_running
+                      - entity: sensor.vmtbsh03_containers_active
                         name: Running
-                        icon: mdi:docker
-                      - entity: sensor.docker_vmtbsh03_containers_paused
-                        name: Paused
-                        icon: mdi:docker
-                      - entity: sensor.docker_vmtbsh03_containers_stopped
-                        name: Stopped
                         icon: mdi:docker
                     style: |
                       ha-card {
@@ -217,7 +211,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-1'
           cards:
             - type: vertical-stack
               cards:
@@ -226,242 +220,126 @@
                     ha-card { box-shadow: none; }
                     ha-markdown { padding-bottom: 1px !important; }
                   content: >
+                    <center>
                     <img width="150" src="/local/systemicons/docker.svg"><br/>
-                    Containers: {{ (data | fromjson)['docker_containers']}}
-                - !include
-                  - ../../1_Templates/button_link.yaml
-                  - name: 'Portainer'
-                    icon: 'mdi:docker'
-                    # url: !secret portainer_url
+                    </center>
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-11'
           cards:
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: ADB'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_adb/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_adb'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_adb'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_adb_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_adb_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_adb_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_adb_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Airsonos'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_airsonos/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_airsonos'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_airsonos'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_airsonos_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_airsonos_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_airsonos_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_airsonos_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: AppDaemon 4'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_appdaemon/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_appdaemon'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_appdaemon'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_appdaemon_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_appdaemon_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_appdaemon_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_appdaemon_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: ESP-Home'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/15ef4d2f_esphome/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_15ef4d2f_esphome'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_15ef4d2f_esphome'
-                status: "{{ (data | fromjson)['docker_addon_15ef4d2f_esphome_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_15ef4d2f_esphome_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_15ef4d2f_esphome_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_15ef4d2f_esphome_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Glances'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_glances/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_glances'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_glances'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_glances_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_glances_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_glances_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_glances_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: G-Drive Backup'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/cebe7a76_hassio_google_drive_backup/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_cebe7a76_hassio_google_drive_backup'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_cebe7a76_hassio_google_drive_backup'
-                status: "{{ (data | fromjson)['docker_addon_cebe7a76_hassio_google_drive_backup_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_cebe7a76_hassio_google_drive_backup_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_cebe7a76_hassio_google_drive_backup_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_cebe7a76_hassio_google_drive_backup_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: JupiterLab Lite'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_jupyterlablite/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_jupyterlablite'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_jupyterlablite'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_jupyterlablite_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_jupyterlablite_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_jupyterlablite_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_jupyterlablite_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: MariaDB'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/core_mariadb/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_core_mariadb'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_core_mariadb'
-                status: "{{ (data | fromjson)['docker_addon_core_mariadb_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_core_mariadb_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_core_mariadb_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_core_mariadb_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Mosquitto'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/core_mosquitto/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_core_mosquitto'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_core_mosquitto'
-                status: "{{ (data | fromjson)['docker_addon_core_mosquitto_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_core_mosquitto_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_core_mosquitto_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_core_mosquitto_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Node-RED'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_nodered/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_nodered'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_nodered'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_nodered_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_nodered_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_nodered_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_nodered_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Portainer'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_portainer/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_portainer'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_portainer'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_portainer_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_portainer_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_portainer_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_portainer_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Samba'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/core_samba/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_core_samba'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_core_samba'
-                status: "{{ (data | fromjson)['docker_addon_core_samba_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_core_samba_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_core_samba_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_core_samba_nettx']}}"
-              - partial_docker_info.yaml
-              - name: 'Add-On: SSH & W/T'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_ssh/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_ssh'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_ssh'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_ssh_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_ssh_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_ssh_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_ssh_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: VS Code'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/a0d7b954_vscode/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_a0d7b954_vscode'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_a0d7b954_vscode'
-                status: "{{ (data | fromjson)['docker_addon_a0d7b954_vscode_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_a0d7b954_vscode_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_a0d7b954_vscode_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_a0d7b954_vscode_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Add-On: Xbox One'
-                image: 'http://192.168.1.63:8123/api/hassio/addons/41cba666_xboxone/icon'
-                status_sensor: 'sensor.status_vmtbsh03_docker_addon_41cba666_xboxone'
-                switch: 'switch.vmtbsh03_ha_dockermon_addon_41cba666_xboxone'
-                status: "{{ (data | fromjson)['docker_addon_41cba666_xboxone_status']}}"
-                memory: "{{ (data | fromjson)['docker_addon_41cba666_xboxone_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_addon_41cba666_xboxone_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_addon_41cba666_xboxone_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA Dockermon'
-                image: '/local/systemicons/docker.svg'
-                status_sensor: 'sensor.status_vmtbsh02_docker_ha_dockermon'
-                switch: 'switch.vmtbsh02_ha_dockermon_ha_dockermon'
-                status: "{{ (data | fromjson)['docker_ha_dockermon_status']}}"
-                memory: "{{ (data | fromjson)['docker_ha_dockermon_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_ha_dockermon_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_ha_dockermon_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA - Audio'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_hassio_audio'
-                switch: 'switch.vmtbsh03_ha_dockermon_hassio_audio'
-                status: "{{ (data | fromjson)['docker_hassio_audio_status']}}"
-                memory: "{{ (data | fromjson)['docker_hassio_audio_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_hassio_audio_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_hassio_audio_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA - CLI'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_hassio_cli'
-                switch: 'switch.vmtbsh03_ha_dockermon_hassio_cli'
-                status: "{{ (data | fromjson)['docker_hassio_cli_status']}}"
-                memory: "{{ (data | fromjson)['docker_hassio_cli_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_hassio_cli_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_hassio_cli_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA - DNS'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_hassio_dns'
-                switch: 'switch.vmtbsh03_ha_dockermon_hassio_dns'
-                status: "{{ (data | fromjson)['docker_hassio_dns_status']}}"
-                memory: "{{ (data | fromjson)['docker_hassio_dns_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_hassio_dns_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_hassio_dns_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA - Multicast'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_hassio_multicast'
-                switch: 'switch.vmtbsh03_ha_dockermon_hassio_multicast'
-                status: "{{ (data | fromjson)['docker_hassio_multicast_status']}}"
-                memory: "{{ (data | fromjson)['docker_hassio_multicast_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_hassio_multicast_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_hassio_multicast_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA - Supervisor'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_hassio_supervisor'
-                switch: 'switch.vmtbsh03_ha_dockermon_hassio_supervisor'
-                status: "{{ (data | fromjson)['docker_hassio_supervisor_status']}}"
-                memory: "{{ (data | fromjson)['docker_hassio_supervisor_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_hassio_supervisor_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_hassio_supervisor_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'HA OS - Supervisor'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_hassos_supervisor'
-                switch: 'switch.vmtbsh03_ha_dockermon_hassos_supervisor'
-                status: "{{ (data | fromjson)['docker_hassos_supervisor_status']}}"
-                memory: "{{ (data | fromjson)['docker_hassos_supervisor_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_hassos_supervisor_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_hassos_supervisor_nettx']}}"
-            - !include
-              - partial_docker_info.yaml
-              - name: 'Home Assistant'
-                image: '/local/systemicons/homeassistant.png'
-                status_sensor: 'sensor.status_vmtbsh03_docker_homeassistant'
-                switch: 'switch.vmtbsh03_ha_dockermon_homeassistant'
-                status: "{{ (data | fromjson)['docker_homeassistant_status']}}"
-                memory: "{{ (data | fromjson)['docker_homeassistant_memory']}}"
-                netrx: "{{ (data | fromjson)['docker_homeassistant_netrx']}}"
-                nettx: "{{ (data | fromjson)['docker_homeassistant_nettx']}}"
+            - type: custom:dwains-flexbox-card
+              padding: true
+              items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
+              cards:
+                - type: custom:docker-card
+                  name: "Addon: Android Debug Bridge"
+                  logo: /api/hassio/addons/a0d7b954_adb/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_adb
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: AirSonos"
+                  logo: /api/hassio/addons/a0d7b954_airsonos/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_airsonos
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: ESPHome"
+                  logo: /api/hassio/addons/15ef4d2f_esphome/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_15ef4d2f_esphome
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: Glances"
+                  logo: /api/hassio/addons/a0d7b954_glances/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_glances
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: Google Drive Backup"
+                  logo: /api/hassio/addons/cebe7a76_hassio_google_drive_backup/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_cebe7a76_hassio_google_drive_backup
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: MariaDB"
+                  logo: /api/hassio/addons/core_mariadb/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_core_mariadb
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: Mosquitto broker"
+                  logo: /api/hassio/addons/core_mosquitto/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_core_mosquitto
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: Node-RED"
+                  logo: /api/hassio/addons/a0d7b954_nodered/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_nodered
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: phpMyAdmin"
+                  logo: /api/hassio/addons/a0d7b954_phpmyadmin/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_phpmyadmin
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: Samba Share"
+                  logo: /api/hassio/addons/core_samba/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_core_samba
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: SSH & Web Terminal"
+                  logo: /api/hassio/addons/a0d7b954_ssh/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_ssh
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: "Addon: Xbox One"
+                  logo: /api/hassio/addons/41cba666_xboxone/icon
+                  entitypart: vmtbsh03_ha_dockermon_addon_41cba666_xboxone
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: HA Dockermon
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_ha_dockermon
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: HassIO - Audio
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_hassio_audio
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: HassIO - CLI
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_hassio_cli
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: HassIO - DNS
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_hassio_dns
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: HassIO - Multicast
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_hassio_multicast
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: Home Assistant Supervisor
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_hassio_supervisor
+                  sensortype: hadockermon
+
+                - type: custom:docker-card
+                  name: Home Assistant
+                  logo: /local/systemicons/homeassistant.png
+                  entitypart: vmtbsh03_ha_dockermon_homeassistant
+                  sensortype: hadockermon

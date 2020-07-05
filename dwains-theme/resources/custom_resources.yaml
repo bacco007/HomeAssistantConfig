@@ -36,5 +36,5 @@
   url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
 - url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
   type: module
-- url: /local/docker-card.js?v=0.0.64
+- url: /local/docker-card.js?v=0.0.69
   type: module

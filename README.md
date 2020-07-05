@@ -72,30 +72,30 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, July 4th 2020_
+_Stats as at 04:59, Sunday, July 5th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.112.1 | 258     | 2068         | 1769 | 24 |
+| 0.112.2 | 264     | 2109         | 1799 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 69
+Binary Sensor | 72
 Camera | 3
-Device Tracker | 59
+Device Tracker | 63
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 5
-Media Player | 15
+Media Player | 18
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1769
+Sensor | 1799
 Sun | 1
 Switch | 83
 Weather | 3
@@ -135,6 +135,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
+| [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
@@ -186,6 +187,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fan.zha](https://www.home-assistant.io/components/fan.zha) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
+| [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
@@ -277,6 +279,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
+| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
@@ -308,6 +311,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
+| [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
@@ -332,6 +336,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
 | [sensor.xbox_live](https://www.home-assistant.io/components/sensor.xbox_live) |
 | [sensor.zha](https://www.home-assistant.io/components/sensor.zha) |
+| [simpleicons](https://www.home-assistant.io/components/simpleicons) |
+| [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |

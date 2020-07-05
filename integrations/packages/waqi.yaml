@@ -8,7 +8,7 @@ sensor:
   - platform: statistics
     name: waqi_tamworth_stats
     sampling_size: 150
-    entity_id: sensor.waqi_tamworth_north_west_slopes_australia
+    entity_id: sensor.waqi_tamworth_north_west_slopes
     max_age:
       hours: 24
 
@@ -17,9 +17,9 @@ sensor:
       waqi_tamworth_airpollev:
         friendly_name: Air Quality Level
         icon_template: mdi:chemical-weapon
-        entity_id: sensor.waqi_tamworth_north_west_slopes_australia
+        entity_id: sensor.waqi_tamworth_north_west_slopes
         value_template: >
-          {% set index = states('sensor.waqi_tamworth_north_west_slopes_australia') | float(-1) %}
+          {% set index = states('sensor.waqi_tamworth_north_west_slopes') | float(-1) %}
           {% if index > 300 %}
             Hazardous
           {% elif index > 200 %}
@@ -58,13 +58,13 @@ sensor:
         unit_of_measurement: "AQI"
       waqi_tamworth_pm10:
         friendly_name: "AQI - PM10"
-        value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes_australia', 'pm_10') }}"
+        value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_10') }}"
         icon_template: mdi:cloud
-        entity_id: sensor.waqi_tamworth_north_west_slopes_australia
+        entity_id: sensor.waqi_tamworth_north_west_slopes
         unit_of_measurement: "AQI"
       waqi_tamworth_pm25:
         friendly_name: "AQI - PM2.5"
-        value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes_australia', 'pm_2_5') }}"
+        value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_2_5') }}"
         icon_template: mdi:cloud
-        entity_id: sensor.waqi_tamworth_north_west_slopes_australia
+        entity_id: sensor.waqi_tamworth_north_west_slopes
         unit_of_measurement: "AQI"

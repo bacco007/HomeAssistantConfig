@@ -7,18 +7,30 @@ recorder:
     entities:
       - sun.sun
       - sensor.ha_uptime_hours
+      - binary_sensor.iss
+      - sensor.iss_location
+      - sensor.date_time
     entity_globs:
+      - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
       - sensor.date*
       - sensor.here_travel_*
+      - sensor.waze_travel_*
       - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*
-      - sensor.unifi_*
+      - sensor.unifi*
       - sensor.usg_*
       - sensor.*monitordocker*
       - sensor.switchmonusb*
       - sensor.*_uptime
+      - sensor.pvetbsh*
+      - sensor.piserv*
+      - sensor.tbsh01*
+      - sensor.tbsh02*
+      - sensor.vmtbsh01*
+      - sensor.vmtbsh02*
+      - sensor.vmtbsh03*
     domains:
       - anniversaries
       - automation
@@ -47,3 +59,5 @@ recorder:
       - automation_triggered
       - script_started
       - timer_out_of_sync
+      - hacs/repository
+      - system_log_event

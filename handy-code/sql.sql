@@ -7,7 +7,7 @@ delete from states where created < curdate()-3;
 delete from events where created < curdate()-3;
 
 delete from events where event_id not in (select event_id from states);
-
+ 
 optimize table events;
 optimize table states;
 

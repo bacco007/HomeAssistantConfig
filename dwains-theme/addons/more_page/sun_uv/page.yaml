@@ -45,7 +45,7 @@
         }
       name: wAQI (72 Hours)
       entities:
-        - entity: sensor.waqi_tamworth_north_west_slopes_australia
+        - entity: sensor.waqi_tamworth_north_west_slopes
           name: wAQI
       animate: true
       decimals: 0
@@ -227,7 +227,7 @@
                 - entity: sensor.nsw_air_quality_tamworth_max_aqi
                   name: Max
             - type: section
-            - entity: sensor.waqi_tamworth_north_west_slopes_australia
+            - entity: sensor.waqi_tamworth_north_west_slopes
               name: Tamworth AQI (wAQI)
               type: custom:multiple-entity-row
               entities:

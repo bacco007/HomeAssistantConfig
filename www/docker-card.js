@@ -38,198 +38,283 @@ class DockerCard extends LitElement {
   }
 
   renderMain() {
+    const type = this._config.sensortype || 'monitor_docker'
     const entpart = this._config.entitypart
     const logo = this._config.logo || '/local/systemicons/docker.svg'
-    const name =
-      this._config.name ||
-      this.hass.states['switch.' + entpart].attributes.friendly_name
-    const switchstate = this.hass.states['switch.' + entpart].state
-    if (this.hass.states['switch.' + entpart].state == 'on') {
-      var updown = 'rgb(26,204,147,0.33)'
-    } else {
-      var updown = 'rgb(255,0,0,0.33)'
-    }
 
-    if (this.hass.states['sensor.' + entpart + '_cpu']) {
-      var cpu = this.hass.states['sensor.' + entpart + '_cpu'].state
-      var cpu_icon = this.hass.states['sensor.' + entpart + '_cpu'].attributes
-        .icon
-      var cpu_uom = this.hass.states['sensor.' + entpart + '_cpu'].attributes
-        .unit_of_measurement
-    }
-
-    if (this.hass.states['sensor.' + entpart + '_memory']) {
-      var mem = this.hass.states['sensor.' + entpart + '_memory'].state
-      var mem_icon = this.hass.states['sensor.' + entpart + '_memory']
-        .attributes.icon
-      var mem_uom = this.hass.states['sensor.' + entpart + '_memory'].attributes
-        .unit_of_measurement
-      var mempct = this.hass.states['sensor.' + entpart + '_memory_percent']
-        .state
-      var mempct_icon = this.hass.states[
-        'sensor.' + entpart + '_memory_percent'
-      ].attributes.icon
-      var mempct_uom = this.hass.states['sensor.' + entpart + '_memory_percent']
-        .attributes.unit_of_measurement
-    }
-
-    if (this.hass.states['sensor.' + entpart + '_network_speed_up']) {
-      var netspup = this.hass.states['sensor.' + entpart + '_network_speed_up']
-        .state
-      var netspup_icon = this.hass.states[
-        'sensor.' + entpart + '_network_speed_up'
-      ].attributes.icon
-      var netspup_uom = this.hass.states[
-        'sensor.' + entpart + '_network_speed_up'
-      ].attributes.unit_of_measurement
-      var netspdown = this.hass.states[
-        'sensor.' + entpart + '_network_speed_down'
-      ].state
-      var netspdown_icon = this.hass.states[
-        'sensor.' + entpart + '_network_speed_down'
-      ].attributes.icon
-      var netspdown_uom = this.hass.states[
-        'sensor.' + entpart + '_network_speed_down'
-      ].attributes.unit_of_measurement
-    }
-
-    if (this.hass.states['sensor.' + entpart + '_network_total_up']) {
-      var netup = this.hass.states['sensor.' + entpart + '_network_total_up']
-        .state
-      var netup_icon = this.hass.states[
-        'sensor.' + entpart + '_network_total_up'
-      ].attributes.icon
-      var netup_uom = this.hass.states[
-        'sensor.' + entpart + '_network_total_up'
-      ].attributes.unit_of_measurement
-      var netdown = this.hass.states[
-        'sensor.' + entpart + '_network_total_down'
-      ].state
-      var netdown_icon = this.hass.states[
-        'sensor.' + entpart + '_network_total_down'
-      ].attributes.icon
-      var netdown_uom = this.hass.states[
-        'sensor.' + entpart + '_network_total_down'
-      ].attributes.unit_of_measurement
-    }
-
-    const image = this.hass.states['sensor.' + entpart + '_image'].state
-    const status = this.hass.states['sensor.' + entpart + '_status'].state
-    const uptime = this.hass.states['sensor.' + entpart + '_up_time'].state
-
-    return html`
-      <section id="name">
-        <div style="display: flex;">
-          <img class="avatar" src="${logo}" />
-          <div style="padding-left: 5px">
-            <div><strong>${name}</strong></div>
-            <div>${status}</div>
+    if (type == 'hadockermon') {
+      const name =
+        this._config.name ||
+        this.hass.states['binary_sensor.' + entpart].attributes.friendly_name
+      const switchstate = this.hass.states['binary_sensor.' + entpart].state
+      if (this.hass.states['binary_sensor.' + entpart].state == 'on') {
+        var updown = 'rgb(26,204,147,0.33)'
+      } else {
+        var updown = 'rgb(255,0,0,0.33)'
+      }
+      var mem = this.hass.states['binary_sensor.' + entpart].attributes.memory
+      var mem_icon = 'mdi:memory'
+      var netdown = this.hass.states['binary_sensor.' + entpart].attributes.network_rx_total
+      var netdown_icon = 'mdi:download'
+      var netup = this.hass.states['binary_sensor.' + entpart].attributes.network_tx_total
+      var netup_icon = 'mdi:upload'
+      const image = this.hass.states['binary_sensor.' + entpart].attributes.image
+      const status = this.hass.states['binary_sensor.' + entpart].attributes.status
+      return html`
+        <section id="name">
+          <div style="display: flex;">
+            <img class="avatar" src="${logo}" />
+            <div style="padding-left: 5px">
+              <div><strong>${name}</strong></div>
+              <div>${status}</div>
+            </div>
           </div>
-        </div>
-        <span class="dot" style="background-color: ${updown}"></span>
-      </section>
-      <section id="stats">
-        ${cpu
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${cpu_icon}"></ha-icon
-                >${cpu}${cpu_uom}
+          <span class="dot" style="background-color: ${updown}"></span>
+        </section>
+        <section id="stats">
+          ${mem
+            ? html`
+                <div>
+                  <ha-icon class="statsicon" icon="${mem_icon}"></ha-icon
+                  >${mem}
+                </div>
+              `
+            : html`
+                <div style="opacity: 0.5;">
+                  <ha-icon class="statsicon" icon="mdi:memory"></ha-icon>N/A
+                </div>
+              `}
+          ${netdown
+            ? html`
+                <div>
+                  <ha-icon class="statsicon" icon="${netdown_icon}"></ha-icon
+                  >${netdown}
+                </div>
+              `
+            : html`
+                <div style="opacity: 0.5;">
+                  <ha-icon class="statsicon" icon="mdi:download"></ha-icon>N/A
+                </div>
+              `}
+          ${netup
+            ? html`
+                <div>
+                  <ha-icon class="statsicon" icon="${netup_icon}"></ha-icon
+                  >${netup}
+                </div>
+              `
+            : html`
+                <div style="opacity: 0.5;">
+                  <ha-icon class="statsicon" icon="mdi:upload"></ha-icon>N/A
+                </div>
+              `}
+        </section>
+        <section class="collapseheader shade" @click=${this.toggle}>
+          <h3>More Details</h3>
+          <div class="toggle plusminus-button">
+            <ha-icon
+              icon=${this.open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
+            ></ha-icon>
+          </div>
+        </section>
+        <section class="${this.open ? 'expanded' : 'collapsed'}">
+          <h3>Image</h3>
+          <div id="extra-div">${image}</div>
+          <div id="extra-div">${switchstate}</div>
+        </section>
+      `
+    } else {
+        const name =
+          this._config.name ||
+          this.hass.states['switch.' + entpart].attributes.friendly_name
+        const switchstate = this.hass.states['switch.' + entpart].state
+        if (this.hass.states['switch.' + entpart].state == 'on') {
+          var updown = 'rgb(26,204,147,0.33)'
+        } else {
+          var updown = 'rgb(255,0,0,0.33)'
+        }
+
+        if (this.hass.states['sensor.' + entpart + '_cpu']) {
+          var cpu = this.hass.states['sensor.' + entpart + '_cpu'].state
+          var cpu_icon = this.hass.states['sensor.' + entpart + '_cpu'].attributes
+            .icon
+          var cpu_uom = this.hass.states['sensor.' + entpart + '_cpu'].attributes
+            .unit_of_measurement
+        }
+
+        if (this.hass.states['sensor.' + entpart + '_memory']) {
+          var mem = this.hass.states['sensor.' + entpart + '_memory'].state
+          var mem_icon = this.hass.states['sensor.' + entpart + '_memory']
+            .attributes.icon
+          var mem_uom = this.hass.states['sensor.' + entpart + '_memory'].attributes
+            .unit_of_measurement
+          var mempct = this.hass.states['sensor.' + entpart + '_memory_percent']
+            .state
+          var mempct_icon = this.hass.states[
+            'sensor.' + entpart + '_memory_percent'
+          ].attributes.icon
+          var mempct_uom = this.hass.states['sensor.' + entpart + '_memory_percent']
+            .attributes.unit_of_measurement
+        }
+
+        if (this.hass.states['sensor.' + entpart + '_network_speed_up']) {
+          var netspup = this.hass.states['sensor.' + entpart + '_network_speed_up']
+            .state
+          var netspup_icon = this.hass.states[
+            'sensor.' + entpart + '_network_speed_up'
+          ].attributes.icon
+          var netspup_uom = this.hass.states[
+            'sensor.' + entpart + '_network_speed_up'
+          ].attributes.unit_of_measurement
+          var netspdown = this.hass.states[
+            'sensor.' + entpart + '_network_speed_down'
+          ].state
+          var netspdown_icon = this.hass.states[
+            'sensor.' + entpart + '_network_speed_down'
+          ].attributes.icon
+          var netspdown_uom = this.hass.states[
+            'sensor.' + entpart + '_network_speed_down'
+          ].attributes.unit_of_measurement
+        }
+
+        if (this.hass.states['sensor.' + entpart + '_network_total_up']) {
+          var netup = this.hass.states['sensor.' + entpart + '_network_total_up']
+            .state
+          var netup_icon = this.hass.states[
+            'sensor.' + entpart + '_network_total_up'
+          ].attributes.icon
+          var netup_uom = this.hass.states[
+            'sensor.' + entpart + '_network_total_up'
+          ].attributes.unit_of_measurement
+          var netdown = this.hass.states[
+            'sensor.' + entpart + '_network_total_down'
+          ].state
+          var netdown_icon = this.hass.states[
+            'sensor.' + entpart + '_network_total_down'
+          ].attributes.icon
+          var netdown_uom = this.hass.states[
+            'sensor.' + entpart + '_network_total_down'
+          ].attributes.unit_of_measurement
+        }
+
+        const image = this.hass.states['sensor.' + entpart + '_image'].state
+        const status = this.hass.states['sensor.' + entpart + '_status'].state
+        const uptime = this.hass.states['sensor.' + entpart + '_up_time'].state
+        return html`
+          <section id="name">
+            <div style="display: flex;">
+              <img class="avatar" src="${logo}" />
+              <div style="padding-left: 5px">
+                <div><strong>${name}</strong></div>
+                <div>${status}</div>
               </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:chip"></ha-icon>N/A
-              </div>
-            `}
-        ${mempct
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${mem_icon}"></ha-icon
-                >${mem}${mem_uom}
-              </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:memory"></ha-icon>N/A
-              </div>
-            `}
-        ${mempct
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${mempct_icon}"></ha-icon
-                >${mempct}${mempct_uom}
-              </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:memory"></ha-icon>N/A
-              </div>
-            `}
-        ${netdown
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${netdown_icon}"></ha-icon
-                >${netdown}${netdown_uom}
-              </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:download"></ha-icon>N/A
-              </div>
-            `}
-        ${netspdown
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${netspdown_icon}"></ha-icon
-                >${netspdown}${netspdown_uom}
-              </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:download"></ha-icon>N/A
-              </div>
-            `}
-        ${netup
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${netup_icon}"></ha-icon
-                >${netup}${netup_uom}
-              </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:upload"></ha-icon>N/A
-              </div>
-            `}
-        ${netspup
-          ? html`
-              <div>
-                <ha-icon class="statsicon" icon="${netspup_icon}"></ha-icon
-                >${netspup}${netspup_uom}
-              </div>
-            `
-          : html`
-              <div style="opacity: 0.5;">
-                <ha-icon class="statsicon" icon="mdi:upload"></ha-icon>N/A
-              </div>
-            `}
-      </section>
-      <section class="collapseheader shade" @click=${this.toggle}>
-        <h3>More Details</h3>
-        <div class="toggle plusminus-button">
-          <ha-icon
-            icon=${this.open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-          ></ha-icon>
-        </div>
-      </section>
-      <section class="${this.open ? 'expanded' : 'collapsed'}">
-        <h3>Image</h3>
-        <div id="extra-div">${image}</div>
-        <h3>Up Time</h3>
-        <div id="extra-div">${uptime}</div>
-        <div id="extra-div">${switchstate}</div>
-      </section>
-    `
+            </div>
+            <span class="dot" style="background-color: ${updown}"></span>
+          </section>
+          <section id="stats">
+            ${cpu
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${cpu_icon}"></ha-icon
+                    >${cpu}${cpu_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:chip"></ha-icon>N/A
+                  </div>
+                `}
+            ${mempct
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${mem_icon}"></ha-icon
+                    >${mem}${mem_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:memory"></ha-icon>N/A
+                  </div>
+                `}
+            ${mempct
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${mempct_icon}"></ha-icon
+                    >${mempct}${mempct_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:memory"></ha-icon>N/A
+                  </div>
+                `}
+            ${netdown
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${netdown_icon}"></ha-icon
+                    >${netdown}${netdown_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:download"></ha-icon>N/A
+                  </div>
+                `}
+            ${netspdown
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${netspdown_icon}"></ha-icon
+                    >${netspdown}${netspdown_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:download"></ha-icon>N/A
+                  </div>
+                `}
+            ${netup
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${netup_icon}"></ha-icon
+                    >${netup}${netup_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:upload"></ha-icon>N/A
+                  </div>
+                `}
+            ${netspup
+              ? html`
+                  <div>
+                    <ha-icon class="statsicon" icon="${netspup_icon}"></ha-icon
+                    >${netspup}${netspup_uom}
+                  </div>
+                `
+              : html`
+                  <div style="opacity: 0.5;">
+                    <ha-icon class="statsicon" icon="mdi:upload"></ha-icon>N/A
+                  </div>
+                `}
+          </section>
+          <section class="collapseheader shade" @click=${this.toggle}>
+            <h3>More Details</h3>
+            <div class="toggle plusminus-button">
+              <ha-icon
+                icon=${this.open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
+              ></ha-icon>
+            </div>
+          </section>
+          <section class="${this.open ? 'expanded' : 'collapsed'}">
+            <h3>Image</h3>
+            <div id="extra-div">${image}</div>
+            <h3>Up Time</h3>
+            <div id="extra-div">${uptime}</div>
+            <div id="extra-div">${switchstate}</div>
+          </section>
+        `
+    }
+
   }
 
   toggle() {
