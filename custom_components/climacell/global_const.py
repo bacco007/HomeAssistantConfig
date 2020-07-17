@@ -14,8 +14,8 @@ from homeassistant.const import (
     ATTR_ICON,
 
     SUN_EVENT_SUNSET,
-    SUN_EVENT_SUNRISE
-)
+    SUN_EVENT_SUNRISE,
+    ATTR_UNIT_OF_MEASUREMENT)
 
 ATTRIBUTION = "Powered by Climacell"
 ATTR_OBSERVATION_TIME = "observation_time"
@@ -302,7 +302,8 @@ CLIMACELL_DATA_CONDITIONS = {
         ATTR_OUT_FIELD: "epa_aqi",
         ATTR_NAME: "EPA AQI",
         ATTR_ICON: "mdi:eye",
-        ATTR_FORECAST_VALUES: 0
+        ATTR_FORECAST_VALUES: 0,
+        ATTR_UNIT_OF_MEASUREMENT: "epa ndx"
     },
     ATTR_AIR_QUALITY_EPA_PRIM: {
         ATTR_FIELD: "epa_primary_pollutant",
@@ -405,7 +406,8 @@ CLIMACELL_DATA_CONDITIONS = {
         ATTR_OUT_FIELD: "fire_index",
         ATTR_NAME: "Fire Index",
         ATTR_ICON: "mdi:pine-tree-fire",
-        ATTR_FORECAST_VALUES: 0
+        ATTR_FORECAST_VALUES: 0,
+        ATTR_UNIT_OF_MEASUREMENT: "fr ndx"
     },
 
 }

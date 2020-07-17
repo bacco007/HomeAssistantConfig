@@ -2,7 +2,7 @@
  "nodes": {
   "node-red": {
    "name": "node-red",
-   "version": "1.0.6",
+   "version": "1.1.0",
    "local": false,
    "nodes": {
     "inject": {
@@ -450,7 +450,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.22.3",
+   "version": "0.22.6",
    "local": false,
    "nodes": {
     "server": {
@@ -624,7 +624,7 @@
   },
   "node-red-contrib-influxdb": {
    "name": "node-red-contrib-influxdb",
-   "version": "0.4.0",
+   "version": "0.4.1",
    "local": false,
    "nodes": {
     "influxdb": {
@@ -678,7 +678,7 @@
   },
   "node-red-contrib-modbus": {
    "name": "node-red-contrib-modbus",
-   "version": "5.13.2",
+   "version": "5.13.3",
    "local": false,
    "nodes": {
     "Modbus-Client": {
@@ -1284,7 +1284,7 @@
   },
   "node-red-node-ping": {
    "name": "node-red-node-ping",
-   "version": "0.2.0",
+   "version": "0.2.1",
    "local": false,
    "nodes": {
     "ping": {
@@ -1301,7 +1301,7 @@
   },
   "node-red-node-random": {
    "name": "node-red-node-random",
-   "version": "0.1.4",
+   "version": "0.2.0",
    "local": false,
    "nodes": {
     "random": {
@@ -1318,7 +1318,7 @@
   },
   "node-red-node-rbe": {
    "name": "node-red-node-rbe",
-   "version": "0.2.8",
+   "version": "0.2.9",
    "local": false,
    "nodes": {
     "rbe": {
@@ -1352,7 +1352,7 @@
   },
   "node-red-node-serialport": {
    "name": "node-red-node-serialport",
-   "version": "0.10.2",
+   "version": "0.10.3",
    "local": false,
    "nodes": {
     "serialport": {
@@ -1437,6 +1437,112 @@
      "local": false,
      "module": "node-red-node-twitter",
      "file": "/opt/node_modules/node-red-node-twitter/27-twitter.js"
+    }
+   }
+  },
+  "node-red-contrib-calc": {
+   "name": "node-red-contrib-calc",
+   "version": "1.0.3",
+   "local": false,
+   "nodes": {
+    "math": {
+     "name": "math",
+     "types": [
+      "calculator"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-calc",
+     "file": "/opt/node_modules/node-red-contrib-calc/math.js"
+    }
+   }
+  },
+  "node-red-contrib-deconz": {
+   "name": "node-red-contrib-deconz",
+   "version": "1.1.16",
+   "local": false,
+   "nodes": {
+    "in": {
+     "name": "in",
+     "types": [
+      "deconz-input"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/nodes/in.js"
+    },
+    "get": {
+     "name": "get",
+     "types": [
+      "deconz-get"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/nodes/get.js"
+    },
+    "out": {
+     "name": "out",
+     "types": [
+      "deconz-output"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/nodes/out.js"
+    },
+    "event": {
+     "name": "event",
+     "types": [
+      "deconz-event"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/nodes/event.js"
+    },
+    "battery": {
+     "name": "battery",
+     "types": [
+      "deconz-battery"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/nodes/battery.js"
+    },
+    "server": {
+     "name": "server",
+     "types": [
+      "deconz-server"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/nodes/server.js"
+    },
+    "api": {
+     "name": "api",
+     "types": [],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-deconz",
+     "file": "/opt/node_modules/node-red-contrib-deconz/deconz.js"
+    }
+   }
+  }
+ },
+ "users": {
+  "_": {
+   "editor": {
+    "view": {
+     "view-show-grid": true,
+     "view-snap-grid": true,
+     "view-grid-size": 20,
+     "view-node-status": true,
+     "view-node-show-label": true,
+     "view-show-tips": true
     }
    }
   }

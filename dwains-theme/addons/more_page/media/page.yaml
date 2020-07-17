@@ -30,10 +30,6 @@
               cards:
                 - !include
                   - ../../1_Templates/button_state.yaml
-                  - name: "Sonarr Version"
-                    sensor: "sensor.sonarr_status"
-                - !include
-                  - ../../1_Templates/button_state.yaml
                   - name: "Tracked Shows"
                     sensor: "sensor.sonarr_shows"
                 - !include

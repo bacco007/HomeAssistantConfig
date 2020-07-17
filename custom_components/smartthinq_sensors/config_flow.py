@@ -75,12 +75,12 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if not region_regex.match(region):
             return self._show_form({"base": "invalid_region"})
 
-        language_regex = re.compile(r"^[a-z]{2,3}-[A-Z]{2,3}$")
+        language_regex = re.compile(r"^[a-z]{2,3}$")
         if not language_regex.match(language):
             return self._show_form({"base": "invalid_language"})
 
         self._region = region
-        self._language = language
+        self._language = language + "-" + region
         self._token = refresh_token
 
         if not self._token:
@@ -175,5 +175,11 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.debug("SmartThinQ configuration already present / imported.")
             return self.async_abort(reason="single_instance_allowed")
 
-        self._use_api_v2 = False
-        return await self.async_step_user(import_config)
+        _LOGGER.warning(
+            "Integration configuration using configuration.yaml is not supported."
+            " Please configure integration from HA user interface"
+        )
+        return self.async_abort(reason="single_instance_allowed")
+
+        # self._use_api_v2 = False
+        # return await self.async_step_user(import_config)

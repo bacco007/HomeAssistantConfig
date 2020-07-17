@@ -45,7 +45,7 @@
                   width: 75%
                   decimal: 1
                   entities:
-                    - entity: sensor.synology_cpu_load_total
+                    - entity: sensor.thecube2_cpu_load_total
                       name: CPU Load
                       icon: mdi:speedometer
                       severity:
@@ -58,7 +58,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 26
                           to: 150
-                    - entity: sensor.synology_memory_usage_real
+                    - entity: sensor.thecube2_memory_usage_real
                       name: Memory
                       icon: mdi:memory
                       severity:
@@ -71,7 +71,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.synology_volume_used_volume_1
+                    - entity: sensor.thecube2_volume_1_volume_used
                       name: HDD
                       icon: mdi:harddisk
                       severity:
@@ -157,7 +157,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.synology_temperature_sda
+                    - entity: sensor.thecube2_drive_1_temperature
                       name: Disk 1
                       icon: mdi:thermometer
                       severity:
@@ -170,7 +170,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.synology_temperature_sdb
+                    - entity: sensor.thecube2_drive_2_temperature
                       name: Disk 2
                       icon: mdi:thermometer
                       severity:
@@ -236,7 +236,7 @@
           background-color: var(--dwains-theme-primary);
         }
       entities:
-        - sensor.synology_network_up
+        - sensor.thecube2_network_up
       name: Network Up
       animate: true
       decimals: 2
@@ -256,7 +256,7 @@
           background-color: var(--dwains-theme-primary);
         }
       entities:
-        - sensor.synology_network_down
+        - sensor.thecube2_network_down
       name: Network Down
       animate: true
       decimals: 2
@@ -303,7 +303,7 @@
               }
           filter:
             include:
-              - { entity_id: sensor.synology*cpu* }
+              - { entity_id: sensor.thecube2_cpu* }
         - type: custom:auto-entities
           card:
             type: entities
@@ -331,7 +331,7 @@
               }
           filter:
             include:
-              - { entity_id: sensor.synology*memory* }
+              - { entity_id: sensor.thecube2_memory* }
         - type: custom:auto-entities
           card:
             type: entities
@@ -359,13 +359,13 @@
               }
           filter:
             include:
-              - { entity_id: sensor.synology*network* }
+              - { entity_id: sensor.thecube2_network* }
     - type: vertical-stack
       cards:
         - type: custom:auto-entities
           card:
             type: entities
-            title: Disk 1 (/dev/sda)
+            title: Drive 1
             style: |
               ha-card {
                 background-color: var(--dwains-theme-primary);
@@ -389,11 +389,12 @@
               }
           filter:
             include:
-              - { entity_id: sensor.synology*sda }
+              - { entity_id: sensor.thecube2_drive_1* }
+              - { entity_id: binary_sensor.thecube2_drive_1* }
         - type: custom:auto-entities
           card:
             type: entities
-            title: Disk 2 (/dev/sdb)
+            title: Drive 2
             style: |
               ha-card {
                 background-color: var(--dwains-theme-primary);
@@ -417,7 +418,8 @@
               }
           filter:
             include:
-              - { entity_id: sensor.synology*sdb }
+              - { entity_id: sensor.thecube2_drive_2* }
+              - { entity_id: binary_sensor.thecube2_drive_2* }
         - type: custom:auto-entities
           card:
             type: entities
@@ -445,4 +447,5 @@
               }
           filter:
             include:
-              - { entity_id: sensor.synology*volume_1 }
+              - { entity_id: sensor.thecube2_volume_1* }
+              - { entity_id: binary_sensor.thecube2_volume_1* }

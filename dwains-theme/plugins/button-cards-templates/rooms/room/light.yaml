@@ -23,6 +23,9 @@ room_light:
           } else {
             return hass.localize('component.light.state._.on');
           }
+        }
+        else if(entity.state == 'unavailable') {
+          return hass.localize('state.default.unavailable');
         } else {
           return hass.localize('component.light.state._.off');
         }
@@ -32,7 +35,11 @@ room_light:
     - value: 'off'
       styles:
         icon:
-          - color: var(--dwains-theme-grey)
+          - color: var(--dwains-theme-off)
+    - value: 'unavailable'
+      styles:
+        icon:
+          - color: var(--dwains-theme-unavailable)
   styles:
     grid:
       - grid-template-areas: '"i n""i l"'
@@ -45,7 +52,8 @@ room_light:
       - padding-top: 14px
       - padding-bottom: 14px
     icon:
-      - width: 55%
+      - width: 25px
+      - height: 25px
     img_cell:
       - width: 45px
       - height: 45px

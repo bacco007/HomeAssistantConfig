@@ -8,6 +8,8 @@
   type: module
 - url: /hacsfiles/bom-weather-card/bom-weather-card.js
   type: module
+- url: /hacsfiles/button-text-card/button-text-card.js
+  type: module
 - url: /hacsfiles/config-template-card/config-template-card.js
   type: module
 - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js

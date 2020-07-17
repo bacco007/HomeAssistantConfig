@@ -146,7 +146,7 @@
                             openDoors++;
                           }
                         });  
-                        return (openDoors >= 1 ? openDoors + hass.localize('component.binary_sensor.state.door.on') : hass.localize('component.binary_sensor.state.door.off'));
+                        return (openDoors >= 1 ? openDoors + ' ' + hass.localize('component.binary_sensor.state.door.on') : hass.localize('component.binary_sensor.state.door.off'));
                       } else {
                         console.log("Invalid rooms.yaml:{{ room["name"] }}.door entity!");
                         return 'Entity error!'
@@ -197,7 +197,7 @@
                             openWindows++;
                           }
                         });  
-                        return (openWindows >= 1 ? openWindows + hass.localize('component.binary_sensor.state.window.on') : hass.localize('component.binary_sensor.state.window.off'));
+                        return (openWindows >= 1 ? openWindows + ' ' + hass.localize('component.binary_sensor.state.window.on') : hass.localize('component.binary_sensor.state.window.off'));
                       } else {
                         console.log("Invalid rooms.yaml:{{ room["name"] }}.window entity!");
                         return 'Entity error!'
@@ -296,6 +296,9 @@
                     if(entity){
                       if(entity.state == 'off'){
                         return hass.localize('component.light.state._.off');
+                      }
+                      else if(entity.state == 'unavailable') {
+                        return hass.localize('state.default.unavailable');
                       } else {
                         if (states['{{ room["light"] }}'].attributes && (states['{{ room["light"] }}'].attributes.brightness <= 255)) { 
                           var bri = Math.round(states['{{ room["light"] }}'].attributes.brightness / 2.55); 
@@ -319,6 +322,9 @@
                     if(entity){
                       if(entity.state == 'off'){
                         return hass.localize('component.light.state._.off');
+                      }
+                      else if(entity.state == 'unavailable') {
+                        return hass.localize('state.default.unavailable');
                       } else {
                         return hass.localize('component.light.state._.on');
                       }

@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, July 5th 2020_
+_Stats as at 04:59, Friday, July 17th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.112.2 | 264     | 2109         | 1799 | 24 |
+| 0.112.4 | 265     | 2108         | 1782 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 72
+Binary Sensor | 73
 Camera | 3
-Device Tracker | 63
+Device Tracker | 69
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 5
-Media Player | 18
+Media Player | 20
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1799
+Sensor | 1782
 Sun | 1
-Switch | 83
+Switch | 84
 Weather | 3
 Zone | 3
 
@@ -244,6 +244,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
+| [panel_iframe](https://www.home-assistant.io/components/panel_iframe) |
 | [persistent_notification](https://www.home-assistant.io/components/persistent_notification) |
 | [person](https://www.home-assistant.io/components/person) |
 | [pi_hole](https://www.home-assistant.io/components/pi_hole) |
@@ -468,6 +469,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bar Card](https://github.com/custom-cards/bar-card) | Customizable Animated Bar card for Home Assistant Lovelace |
 | [Bom Weather Card](https://github.com/DavidFW1960/bom-weather-card) | Custom BOM Australia Animated Weather Card |
 | [Button Card](https://github.com/custom-cards/button-card) | ❇️ Lovelace button-card for home assistant |
+| [Button Text Card](https://github.com/Savjee/button-text-card) | Custom, "neumorphism" Lovelace card |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) | 🔹A collection of tools for other lovelace plugins to use |
 | [Config Template Card](https://github.com/iantrich/config-template-card) | 📝 Templatable Lovelace Configurations |
