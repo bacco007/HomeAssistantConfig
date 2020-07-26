@@ -4,7 +4,7 @@ bedroom_media:
   entities:
     - media_player.apple_tv_bedroom
     - media_player.bedroom_display
-    - media_player.foxtel_now_box
+    - media_player.nvidia_shield
     - media_player.thomas_s_echo_plus
     - media_player.ua40es6200_ua40es6200
     - media_player.xbox_one

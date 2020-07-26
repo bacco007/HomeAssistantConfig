@@ -16,6 +16,7 @@ monitor_docker:
       ouroboros: 'Ouroboros'
       portainer: 'Portainer'
       readsb: 'ReASDB'
+      sonos-web: 'Sonos Web'
       tar1090: 'tar1090'
       unifi: 'Unifi Controller'
     monitored_conditions:
@@ -50,7 +51,9 @@ monitor_docker:
       glances: 'Glances'
       graphs1090: 'graphs1090'
       ha-dockermon: 'HA Dockermon'
+      opensky: 'Opensky Feeder'
       ouroboros: 'Ouroboros'
+      pfclient: 'PlaneFinder Feeder'
       piaware2influx: 'PiAware to InfluxDB'
       piaware: 'PiAware Feeder'
       rbfeeder: 'RadarBox Feeder'

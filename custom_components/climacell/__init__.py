@@ -134,7 +134,8 @@ class ClimacellDailyDataProvider(DataProviderBase):
                           + '&end_time=' + end_date.isoformat()
             url = _ENDPOINT + '/weather/forecast/daily'
 
-            # _LOGGER.debug("ClimacellData _retrieve_data _params: %s - realtime_fields: %s", self._params, self.realtime_fields)
+            _LOGGER.debug("ClimacellData _retrieve_data _params: %s - realtime_fields: %s | %s ... %s",
+                          self._params, self.__daily_fields, datetime.datetime.now(), datetime.datetime.utcnow())
             self.data = self.__retrieve_data(url, self.__headers, querystring)
 
         return True

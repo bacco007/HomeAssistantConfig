@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Friday, July 17th 2020_
+_Stats as at 04:59, Sunday, July 26th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.112.4 | 265     | 2108         | 1782 | 24 |
+| 0.112.4 | 267     | 2133         | 1795 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 73
+Binary Sensor | 74
 Camera | 3
-Device Tracker | 69
+Device Tracker | 81
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 5
-Media Player | 20
+Media Player | 25
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1782
+Sensor | 1795
 Sun | 1
-Switch | 84
+Switch | 86
 Weather | 3
 Zone | 3
 
@@ -142,6 +142,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.zha](https://www.home-assistant.io/components/binary_sensor.zha) |
+| [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [calendar](https://www.home-assistant.io/components/calendar) |
@@ -223,6 +224,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
 | [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
+| [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
@@ -241,7 +243,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [notify.file](https://www.home-assistant.io/components/notify.file) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
-| [notify.slack](https://www.home-assistant.io/components/notify.slack) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
 | [panel_iframe](https://www.home-assistant.io/components/panel_iframe) |
@@ -265,6 +266,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
+| [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.bom](https://www.home-assistant.io/components/sensor.bom) |
 | [sensor.bom_forecast](https://www.home-assistant.io/components/sensor.bom_forecast) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
@@ -389,6 +391,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
 - [Amber Electric](https://www.home-assistant.io/integrations/bom)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
+- [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
 - [BOM Forecast](https://github.com/davidfw1960/bom_forecast)
 - [Breaking Changes](https://github.com/custom-components/breaking_changes)
 - [Browser mod]()
@@ -432,6 +435,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | ---|
 | [Alexa Media Player](https://github.com/custom-components/alexa_media_player) | This is a custom component to allow control of Amazon Alexa devices in Home Assistant using the unofficial Alexa API. |
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) | Anniversary Countdown Sensor for Home Assistant |
+| [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) | Custom Component for fetching lightning data from blitzortung.org |
 | [Bom Forecast](https://github.com/DavidFW1960/bom_forecast) | BOM Australian Weather Forecast via FTP |
 | [Breaking Changes](https://github.com/custom-components/breaking_changes) | Component to show potential breaking_changes in the current published version based on your loaded components |
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) | 🔹 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player |
@@ -530,6 +534,7 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [ESPHome]()
 - [Glances]()
 - [Hass.io Google Drive Backup]()
+- [JupyterLab Lite]()
 - [MariaDB](https://github.com/home-assistant/hassio-addons/tree/master/mariadb)
 - [Mosquitto broker]()
 - [Node-RED]()

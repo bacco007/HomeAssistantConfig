@@ -2,7 +2,7 @@
 # https://www.home-assistant.io/integrations/frontend/
 frontend:
   javascript_version: auto
-  extra_html_url: []
-  extra_html_url_es5: []
+  # extra_html_url: []
+  # extra_html_url_es5: []
   # See package_dwains_theme.yaml
   # themes: !include_dir_merge_named ../themes

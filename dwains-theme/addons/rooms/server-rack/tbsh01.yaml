@@ -501,6 +501,10 @@
                 - type: custom:docker-card
                   # name:
                   # logo:
+                  entitypart: tbsh01_monitordocker_sonos_web
+                - type: custom:docker-card
+                  # name:
+                  # logo:
                   entitypart: tbsh01_monitordocker_tar1090
                 - type: custom:docker-card
                   # name:
