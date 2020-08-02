@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, July 26th 2020_
+_Stats as at 04:59, Sunday, August 2nd 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.112.4 | 267     | 2133         | 1795 | 24 |
+| 0.113.2 | 268     | 2107         | 1767 | 24 |
 
 Type | Qty
 -- | --
@@ -85,19 +85,19 @@ Alert | 0
 Automation | 24
 Binary Sensor | 74
 Camera | 3
-Device Tracker | 81
+Device Tracker | 85
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 5
-Media Player | 25
+Media Player | 26
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1795
+Sensor | 1767
 Sun | 1
-Switch | 86
+Switch | 81
 Weather | 3
 Zone | 3
 
@@ -243,6 +243,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [notify.file](https://www.home-assistant.io/components/notify.file) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
+| [notify.slack](https://www.home-assistant.io/components/notify.slack) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
 | [panel_iframe](https://www.home-assistant.io/components/panel_iframe) |

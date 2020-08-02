@@ -395,6 +395,8 @@ class ClimacellRealtimeSensor(ClimacellAbstractSensor):
             self._state = data['value']
             self._unit_of_measurement = data.get('units', None)
             self._observation_time = self.__data_provider.data[ATTR_OBSERVATION_TIME]['value']
+        else:
+            _LOGGER.warning("RealtimeSensor.update - Provider has no data for: %s", self.name)
 
 
 class ClimacellDailySensor(ClimacellAbstractSensor):
@@ -425,7 +427,7 @@ class ClimacellDailySensor(ClimacellAbstractSensor):
             else:
                 self.__update_multiple_value(data)
         else:
-            _LOGGER.warning("DailySensor.update - Provider has no data")
+            _LOGGER.warning("DailySensor.update - Provider has no data for: %s", self.name)
 
     def __update_single_value(self, sensor_data):
         # _LOGGER.debug("DailySensor.__update_single_value - %s(%s): %s",
@@ -440,17 +442,16 @@ class ClimacellDailySensor(ClimacellAbstractSensor):
         #               self.__sensor_meta_condition[ATTR_OUT_FIELD],
         #               self._observation,
         #               sensor_data)
-        data = None
 
-        if self.__sensor_number < len(sensor_data):
-            data = sensor_data[self.__sensor_number]
+        data = sensor_data[self.__sensor_number]
 
-            if 'min' in data:
-                self._sensor_prefix_name = 'min'
-            elif 'max' in data:
-                self._sensor_prefix_name = 'max'
-            else:
-                self._sensor_prefix_name = ''
+        if 'min' in data:
+            self._sensor_prefix_name = 'min'
+        elif 'max' in data:
+            self._sensor_prefix_name = 'max'
+        else:
+            _LOGGER.error("DailySensor.__update_multiple_value - sensor_number: %s, sensor_data: %s",
+                          self.__sensor_number, len(sensor_data))
 
         if len(self._sensor_prefix_name) > 0:
             # _LOGGER.debug("ClimacellSensor.update [%s] - 'data'= %s - %s - %s", self._name, data, self.forecast_value, len(data))
@@ -479,6 +480,8 @@ class ClimacellHourlySensor(ClimacellAbstractSensor):
             self._state = data['value']
             self._unit_of_measurement = data.get('units', None)
             self._observation_time = self.__data_provider.data[self._observation][ATTR_OBSERVATION_TIME]['value']
+        else:
+            _LOGGER.warning("HourlySensor.update - Provider has no data for: %s", self.name)
 
 
 class ClimacellNowcastSensor(ClimacellAbstractSensor):
@@ -498,3 +501,5 @@ class ClimacellNowcastSensor(ClimacellAbstractSensor):
             self._state = data['value']
             self._unit_of_measurement = data.get('units', None)
             self._observation_time = self.__data_provider.data[self._observation][ATTR_OBSERVATION_TIME]['value']
+        else:
+            _LOGGER.warning("NowcastSensor.update - Provider has no data for: %s", self.name)

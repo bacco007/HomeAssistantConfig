@@ -2,3 +2,5 @@
 # https://www.home-assistant.io/integrations/logger/
 logger:
   default: warn
+  logs:
+    homeassistant.components.netatmo: debug

@@ -23,6 +23,7 @@ _LOGGER = logging.getLogger(__name__)
 _HOSTNAME = 'api.climacell.co'
 _ENDPOINT = 'https://' + _HOSTNAME + '/v3'
 
+
 @asyncio.coroutine
 def async_setup(hass, config):
     _LOGGER.info("__init__ async_setup start for domain %s.", DOMAIN)
@@ -75,7 +76,7 @@ class ClimacellRealtimeDataProvider(DataProviderBase):
         return True
 
     def __retrieve_data(self, url, headers, querystring):
-        result = None
+        result = self.data
 
         try:
             _LOGGER.debug("_retrieve_data url: %s - headers: %s - querystring: %s",
@@ -88,6 +89,8 @@ class ClimacellRealtimeDataProvider(DataProviderBase):
 
             if response.status_code == 200:
                 result = json.loads(response.text)
+            else:
+                _LOGGER.error("ClimacellRealtimeDataProvider._retrieve_data error status_code %s", response.status_code)
 
             _LOGGER.debug("_retrieve_data response.text: %s", response.text)
 
@@ -141,7 +144,7 @@ class ClimacellDailyDataProvider(DataProviderBase):
         return True
 
     def __retrieve_data(self, url, headers, querystring):
-        result = None
+        result = self.data
 
         try:
             _LOGGER.debug("_retrieve_data url: %s - headers: %s - querystring: %s",
@@ -154,6 +157,8 @@ class ClimacellDailyDataProvider(DataProviderBase):
 
             if response.status_code == 200:
                 result = json.loads(response.text)
+            else:
+                _LOGGER.error("ClimacellDailyDataProvider._retrieve_data error status_code %s", response.status_code)
 
             _LOGGER.debug("_retrieve_data response.text: %s", response.text)
         except socket.error as err:
@@ -205,7 +210,7 @@ class ClimacellHourlyDataProvider(DataProviderBase):
         return True
 
     def __retrieve_data(self, url, headers, querystring):
-        result = None
+        result = self.data
 
         try:
             _LOGGER.debug("_retrieve_data url: %s - headers: %s - querystring: %s",
@@ -218,6 +223,8 @@ class ClimacellHourlyDataProvider(DataProviderBase):
 
             if response.status_code == 200:
                 result = json.loads(response.text)
+            else:
+                _LOGGER.error("ClimacellHourlyDataProvider._retrieve_data error status_code %s", response.status_code)
 
             _LOGGER.debug("_retrieve_data response.text: %s", response.text)
         except socket.error as err:
@@ -271,7 +278,7 @@ class ClimacellNowcastDataProvider(DataProviderBase):
         return True
 
     def __retrieve_data(self, url, headers, querystring):
-        result = None
+        result = self.data
 
         try:
             _LOGGER.debug("_retrieve_data url: %s - headers: %s - querystring: %s",
@@ -284,8 +291,11 @@ class ClimacellNowcastDataProvider(DataProviderBase):
 
             if response.status_code == 200:
                 result = json.loads(response.text)
+            else:
+                _LOGGER.error("ClimacellNowcastDataProvider._retrieve_data error status_code %s", response.status_code)
 
             _LOGGER.debug("_retrieve_data response.text: %s", response.text)
+
         except socket.error as err:
             _LOGGER.error("Unable to connect to Climatecell '%s' while try to retrieve data from %s.", err, url)
 

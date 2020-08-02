@@ -9,27 +9,29 @@
         }
       entities:
         - entity: sensor.flighttracker_flights_now
-        # - entity: sensor.amber_general_usage_price_next_24hr
-        #   name: Next 24hrs
-        # - entity: sensor.amber_general_usage_price_previous_24hr
-        #   name: Prev 24hrs
-      name: Flights Tracked - Last Day (1 Min Increments)
-      line_color: 'var(--dwains-theme-accent)'
+      name: Flights Tracked - Last Day
       animate: true
       decimals: 0
       height: 30
       font-size: 20
       hours_to_show: 24
       points_per_hour: 60
-      # group_by: hour
-      # aggregate_func: last
+      # group_by: date
+      aggregate_func: max
       line_width: 1
       align_state: center
       smoothing: true
+      bar_spacing: 1
       show:
+        graph: bar
         extrema: true
         average: true
         fill: fade
+      color_thresholds:
+        - value: 0.1
+          color: 'var(--dwains-theme-accent)'
+        - value: 0
+          color: lightgray
     - type: custom:mini-graph-card
       style: |
         ha-card {
@@ -37,7 +39,7 @@
         }
       entities:
         - entity: sensor.flighttracker_flights_1hr
-      name: Flights Tracked - Last Week (1 Hour Increments)
+      name: Flights Tracked - Last Week
       line_color: 'var(--dwains-theme-accent)'
       animate: true
       decimals: 0
@@ -49,11 +51,17 @@
       aggregate_func: max
       line_width: 1
       align_state: center
-      smoothing: true
+      bar_spacing: 1
       show:
+        graph: bar
         extrema: true
         average: true
         fill: fade
+      color_thresholds:
+        - value: 0.1
+          color: 'var(--dwains-theme-accent)'
+        - value: 0
+          color: lightgray
     - type: custom:mini-graph-card
       style: |
         ha-card {
@@ -61,7 +69,7 @@
         }
       entities:
         - entity: sensor.flighttracker_flights_6hr
-      name: Flights Tracked - Last Week (6 Hour Increments)
+      name: Flights Tracked - Last Week
       line_color: 'var(--dwains-theme-accent)'
       animate: true
       decimals: 0
@@ -73,11 +81,17 @@
       aggregate_func: max
       line_width: 1
       align_state: center
-      smoothing: true
+      bar_spacing: 1
       show:
+        graph: bar
         extrema: true
         average: true
         fill: fade
+      color_thresholds:
+        - value: 0.1
+          color: 'var(--dwains-theme-accent)'
+        - value: 0
+          color: lightgray
     - type: custom:mini-graph-card
       style: |
         ha-card {
@@ -85,7 +99,7 @@
         }
       entities:
         - entity: sensor.flighttracker_flights_12hr
-      name: Flights Tracked - Last Week (12 Hour Increments)
+      name: Flights Tracked - Last Week
       line_color: 'var(--dwains-theme-accent)'
       animate: true
       decimals: 0
@@ -97,11 +111,17 @@
       aggregate_func: max
       line_width: 1
       align_state: center
-      smoothing: true
+      bar_spacing: 1
       show:
+        graph: bar
         extrema: true
         average: true
         fill: fade
+      color_thresholds:
+        - value: 0.1
+          color: 'var(--dwains-theme-accent)'
+        - value: 0
+          color: lightgray
     - type: custom:mini-graph-card
       style: |
         ha-card {
@@ -109,7 +129,7 @@
         }
       entities:
         - entity: sensor.flighttracker_flights_24hr
-      name: Flights Tracked - Last Week (1 Day Increments)
+      name: Flights Tracked - Last Week
       line_color: 'var(--dwains-theme-accent)'
       animate: true
       decimals: 0
@@ -121,11 +141,17 @@
       aggregate_func: max
       line_width: 1
       align_state: center
-      smoothing: true
+      bar_spacing: 1
       show:
+        graph: bar
         extrema: true
         average: true
         fill: fade
+      color_thresholds:
+        - value: 0.1
+          color: 'var(--dwains-theme-accent)'
+        - value: 0
+          color: lightgray
     - type: custom:mini-graph-card
       style: |
         ha-card {
@@ -145,8 +171,13 @@
       aggregate_func: max
       line_width: 1
       align_state: center
-      smoothing: true
+      bar_spacing: 1
       show:
         extrema: true
         average: true
         fill: fade
+      color_thresholds:
+        - value: 0.1
+          color: 'var(--dwains-theme-accent)'
+        - value: 0
+          color: lightgray

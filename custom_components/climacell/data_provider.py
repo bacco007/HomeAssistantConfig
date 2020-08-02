@@ -70,17 +70,17 @@ class DataProviderBase:
 
         update = True
 
-        _LOGGER.debug("Update '%s' now: %s? %s", self.__name, hourminute, update)
+        # _LOGGER.debug("Update '%s' now: %s? %s", self.__name, hourminute, update)
         if self.__exceptions is not None:
             for key, value in self.__exceptions[0].items():
-                _LOGGER.debug("'%s' - hour %s is in %s: %s",
-                              self.__name, hourminute, value, self.__is_between(hourminute, value))
+                # _LOGGER.debug("'%s' - hour %s is in %s: %s",
+                #               self.__name, hourminute, value, self.__is_between(hourminute, value))
                 if self.__is_between(hourminute, value):
                     update = False
 
         if update:
             updt_state = self.__throttle_user_update()
-            _LOGGER.debug("Update '%s' now, auto increment: %s", self.__name, updt_state)
+            # _LOGGER.debug("Update '%s' now, auto increment: %s", self.__name, updt_state)
             if updt_state:
                 self.__inc_service_counter()
 

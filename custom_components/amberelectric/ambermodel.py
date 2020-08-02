@@ -312,7 +312,10 @@ class VariablePricesAndRenewable:
     def from_dict(obj: Any) -> "VariablePricesAndRenewable":
         assert isinstance(obj, dict)
         period_type = PeriodType(obj.get("periodType"))
-        created_at = from_datetime(obj.get("createdAt"))
+        if obj.get("createdAt") == None:
+            created_at = ""
+        else:
+            created_at = from_datetime(obj.get("createdAt"))
         wholesale_kwh_price = from_str(obj.get("wholesaleKWHPrice"))
         usage = from_union([from_str, from_none], obj.get("usage"))
         region = from_str(obj.get("region"))
