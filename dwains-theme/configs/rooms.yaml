@@ -19,14 +19,12 @@ rooms:
   - name: Lounge
     icon: mdi:television-classic
     media_player: group.lounge_media
-    temperature: sensor.netatmo_brisbane_street_indoor_temperature
-    humidity: sensor.netatmo_brisbane_street_indoor_humidity
-    pressure: sensor.netatmo_brisbane_street_indoor_pressure
+    temperature: sensor.weather_inside_temperature
+    humidity: sensor.weather_inside_humidity
+    # pressure: sensor.netatmo_brisbane_street_indoor_pressure
     page_entities:
       entities:
         - entity: sensor.lounge_iaq_index
-        - entity: sensor.netatmo_brisbane_street_indoor_co2
-        - entity: sensor.netatmo_brisbane_street_indoor_noise
 
   - name: Office
     icon: mdi:briefcase
@@ -70,11 +68,11 @@ rooms:
 
   - name: Outside
     icon: mdi:home-export-outline
-    temperature: sensor.netatmo_brisbane_street_outdoor_temperature
-    humidity: sensor.netatmo_brisbane_street_outdoor_humidity
-    page_entities:
-      entities:
-        - entity: sensor.netatmo_brisbane_street_rain_sum_rain_24
+    temperature: sensor.weather_outside_temperature
+    humidity: sensor.weather_outside_humidity
+    # page_entities:
+    #   entities:
+    #     - entity: sensor.netatmo_brisbane_street_rain_sum_rain_24
 
   - name: Garage
     icon: mdi:garage

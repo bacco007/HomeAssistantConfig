@@ -68,9 +68,6 @@ more_page:
     - name: National Electricity Market (NSW)
       icon: mdi:transmission-tower
       path: "dwains-theme/addons/more_page/opennem/page.yaml"
-    - name: Netatmo Weather Station
-      icon: mdi:gauge
-      path: "dwains-theme/addons/more_page/netatmo/page.yaml"
     - name: News
       icon: mdi:newspaper-variant
       path: "dwains-theme/addons/more_page/news/page.yaml"
@@ -133,6 +130,9 @@ more_page:
     - name: Weather
       icon: mdi:weather-partly-rainy
       path: "dwains-theme/addons/more_page/weather/page.yaml"
+    - name: Weather Station
+      icon: mdi:gauge
+      path: "dwains-theme/addons/more_page/weatherstation/page.yaml"
     - name: Testing
       icon: mdi:widgets
       path: "dwains-theme/addons/more_page/testing.yaml"

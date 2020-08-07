@@ -1,0 +1,328 @@
+---
+sensor:
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_pressure
+    icon: mdi:gauge
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.pressure_mbar is defined %}
+        {{ value_json.pressure_mbar | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_pressure') }}
+      {% endif %}
+    unit_of_measurement: "mBar"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_humidity
+    icon: mdi:water-percent
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.outHumidity is defined %}
+        {{ value_json.outHumidity | round(1) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_relativehumidity') }}
+      {% endif %}
+    unit_of_measurement: "%"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_inside_humidity
+    icon: mdi:water-percent
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.inHumidity is defined %}
+        {{ value_json.inHumidity | round(1) | float }}
+      {% else %}
+        {{ states('sensor.weather_inside_relativehumidity') }}
+      {% endif %}
+    unit_of_measurement: "%"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_temperature
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.outTemp_C is defined %}
+        {{ value_json.outTemp_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_temperature') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    name: weather_inside_temperature
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.inTemp_C is defined %}
+        {{ value_json.inTemp_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_inside_temperature') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_windspeed
+    icon: mdi:weather-windy
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.windSpeed_kph is defined %}
+        {{ value_json.windSpeed_kph | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_windspeed') }}
+      {% endif %}
+    unit_of_measurement: "km/h"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_windgust
+    icon: mdi:weather-windy
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.windGust_kph is defined %}
+        {{ value_json.windGust_kph | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_windgust') }}
+      {% endif %}
+    unit_of_measurement: "km/h"
+
+  - platform: mqtt
+    name: weather_outside_radiation
+    icon: mdi:radioactive
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.radiation_Wpm2 is defined %}
+        {{ value_json.radiation_Wpm2 | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_radiation') }}
+      {% endif %}
+    unit_of_measurement: "watts/m²"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_rain
+    icon: mdi:water
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.rain_cm is defined %}
+        {% set temp = value_json.rain_cm | float * 10 %}
+        {{ temp | round(2) }}
+      {% else %}
+        {{ states('sensor.weather_outside_rain') }}
+      {% endif %}
+    unit_of_measurement: "mm"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_rainrate
+    icon: mdi:water
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.rainRate_cm_per_hour is defined %}
+        {% set temp = value_json.rainRate_cm_per_hour | float * 10 %}
+        {{ temp | round(2) }}
+      {% else %}
+        {{ states('sensor.weather_outside_rainrate') }}
+      {% endif %}
+    unit_of_measurement: "mm/h"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_uvindex
+    icon: mdi:sunglasses
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.UV is defined %}
+        {{ value_json.UV | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_uvindex') }}
+      {% endif %}
+    unit_of_measurement: "index"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_altimeter
+    icon: mdi:gauge
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.altimeter_mbar is defined %}
+        {{ value_json.altimeter_mbar | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_altimeter') }}
+      {% endif %}
+    unit_of_measurement: "mBar"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_apptemperature
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.appTemp_C is defined %}
+        {{ value_json.appTemp_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_apptemperature') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_barometer
+    icon: mdi:gauge
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.barometer_mbar is defined %}
+        {{ value_json.barometer_mbar | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_barometer') }}
+      {% endif %}
+    unit_of_measurement: "mBar"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_beaufort
+    # icon: mdi:gauge
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.beaufort_count is defined %}
+        {{ value_json.beaufort_count | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_beaufort') }}
+      {% endif %}
+    # unit_of_measurement: "mBar"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_cloudbase
+    icon: mdi:weather-cloudy
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.barometer_cloudbase_meter is defined %}
+        {{ value_json.barometer_cloudbase_meter | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_cloudbase') }}
+      {% endif %}
+    unit_of_measurement: "m"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_dewpoint
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.dewpoint_C is defined %}
+        {{ value_json.dewpoint_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_dewpoint') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_heatindex
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.heatindex_C is defined %}
+        {{ value_json.heatindex_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_heatindex') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_humidex
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.humidex_C is defined %}
+        {{ value_json.humidex_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_humidex') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_inside_dewpoint
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.inDewpoint_C is defined %}
+        {{ value_json.inDewpoint_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_inside_dewpoint') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    name: weather_outside_windchill
+    icon: mdi:thermometer
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.windchill_C is defined %}
+        {{ value_json.windchill_C | round(2) | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_windchill') }}
+      {% endif %}
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_rain_hour
+    icon: mdi:water
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.hourRain_cm is defined %}
+        {% set temp = value_json.hourRain_cm | float * 10 %}
+        {{ temp | round(2) }}
+      {% else %}
+        {{ states('sensor.weather_outside_rain_hour') }}
+      {% endif %}
+    unit_of_measurement: "mm"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_rain_24hr
+    icon: mdi:water
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.rain24_cm is defined %}
+        {% set temp = value_json.rain24_cm | float * 10 %}
+        {{ temp | round(2) }}
+      {% else %}
+        {{ states('sensor.weather_outside_rain_24hr') }}
+      {% endif %}
+    unit_of_measurement: "mm"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_rain_day
+    icon: mdi:water
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.dayRain_cm is defined %}
+        {% set temp = value_json.dayRain_cm | float * 10 %}
+        {{ temp | round(2) }}
+      {% else %}
+        {{ states('sensor.weather_outside_rain_day') }}
+      {% endif %}
+    unit_of_measurement: "mm"
+
+  - platform: mqtt
+    expire_after: 120
+    name: weather_outside_winddirection
+    icon: mdi:radar
+    state_topic: "weather/loop"
+    value_template: >-
+      {% if value_json.windDir is defined %}
+        {{ value_json.windDir | float }}
+      {% else %}
+        {{ states('sensor.weather_outside_winddirection') }}
+      {% endif %}
+    unit_of_measurement: "°"

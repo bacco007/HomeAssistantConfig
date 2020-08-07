@@ -1548,6 +1548,23 @@
      "file": "/opt/node_modules/node-red-contrib-rate/rate.js"
     }
    }
+  },
+  "node-red-contrib-unit-converter": {
+   "name": "node-red-contrib-unit-converter",
+   "version": "0.0.1",
+   "local": false,
+   "nodes": {
+    "unit-converter": {
+     "name": "unit-converter",
+     "types": [
+      "unit-converter"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-unit-converter",
+     "file": "/opt/node_modules/node-red-contrib-unit-converter/unit-converter.js"
+    }
+   }
   }
  },
  "users": {

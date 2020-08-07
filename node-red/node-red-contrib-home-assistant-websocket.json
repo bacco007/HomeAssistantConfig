@@ -116,121 +116,121 @@
     },
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 14,
+        "state": 115,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 75,
+        "state": 176,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 0,
+        "state": 2,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 12,
+        "state": 57,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 4,
+        "state": 11,
         "attributes": {}
       }
     },
     "ae64dbe3_1e2d2": {
       "lastPayload": {
-        "state": 3.2,
+        "state": 5.2,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "20:07 26 Jul 2020",
+          "time": "12:08 07 Aug 2020",
           "sort": 4
         }
       }
     },
     "4b8ffd88_01a24c": {
       "lastPayload": {
-        "state": 1.7,
+        "state": 1.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "06:07 27 Jul 2020",
+          "time": "15:08 07 Aug 2020",
           "sort": 2
         }
       }
     },
     "9c32ef9e_198c5": {
       "lastPayload": {
-        "state": 1.1,
+        "state": 0.8,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "10:07 27 Jul 2020",
+          "time": "15:08 07 Aug 2020",
           "sort": 1
         }
       }
     },
     "3e7de169_4cf3ce": {
       "lastPayload": {
-        "state": 2.1,
+        "state": 2.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "06:07 27 Jul 2020",
+          "time": "15:08 07 Aug 2020",
           "sort": 3
         }
       }
     },
     "5b2a34dc_cc5e94": {
       "lastPayload": {
-        "state": 4.4,
+        "state": 10,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "20:07 26 Jul 2020",
+          "time": "12:08 07 Aug 2020",
           "sort": 5
         }
       }
     },
     "fedcc9b8_2176b8": {
       "lastPayload": {
-        "state": 4.4,
+        "state": 13.5,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "20:07 26 Jul 2020",
+          "time": "12:08 07 Aug 2020",
           "sort": 6
         }
       }
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 19.04,
+        "state": 19.46,
         "attributes": {
-          "period": "2020-08-02T11:10:00"
+          "period": "2020-08-07T16:55:00"
         }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 10.09,
+        "state": 10.52,
         "attributes": {
-          "period": "2020-08-02T11:10:00"
+          "period": "2020-08-07T16:55:00"
         }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 6.23,
+        "state": 6.66,
         "attributes": {
-          "period": "2020-08-02T11:10:00"
+          "period": "2020-08-07T16:55:00"
         }
       }
     },
@@ -302,83 +302,83 @@
     },
     "fd053220_3acfa": {
       "lastPayload": {
-        "state": 610,
+        "state": 613,
         "attributes": {}
       }
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 4890,
+        "state": 4896,
         "attributes": {}
       }
     },
     "ed1d6c14_0eede8": {
       "lastPayload": {
-        "state": 370.75,
+        "state": 543.63,
         "attributes": {}
       }
     },
     "943db8e2_eb4428": {
       "lastPayload": {
-        "state": 287,
+        "state": 289,
         "attributes": {}
       }
     },
     "db8dabb7_51f83": {
       "lastPayload": {
-        "state": 336,
+        "state": 337,
         "attributes": {}
       }
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 12,
+        "state": 27,
         "attributes": {
-          "count": 3,
-          "countstring": "3 Days",
-          "average": 4,
-          "highest": 10,
+          "count": 4,
+          "countstring": "4 Days",
+          "average": 6.75,
+          "highest": 12.2,
           "sort": 2
         }
       }
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 9.2,
+        "state": 28.6,
         "attributes": {
-          "count": 2,
-          "countstring": "2 Days",
-          "average": 4.6,
-          "highest": 5.8,
+          "count": 5,
+          "countstring": "5 Days",
+          "average": 5.72,
+          "highest": 12.6,
           "sort": 2
         }
       }
     },
     "d4f5da6c_a1fc4": {
       "lastPayload": {
-        "state": 17,
+        "state": 8,
         "attributes": {
-          "count": 3,
-          "countstring": "3 Days",
-          "average": 5.67,
-          "highest": 12.2,
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 8,
+          "highest": 8,
           "sort": "1"
         }
       }
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 77.4,
+        "state": 102.9,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 139.55,
+        "state": 139.42,
         "attributes": {
           "max": 163.9,
           "min": 112.9,
-          "avg": 139.55,
+          "avg": 139.42,
           "mindate": "05 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 05 May 2020 - Max: 05 Jan 2020"
@@ -387,11 +387,11 @@
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 12.046,
+        "state": 12.003,
         "attributes": {
           "max": 28.1,
           "min": -1.1,
-          "avg": 12.046,
+          "avg": 12.003,
           "mindate": "05 Jul 2020",
           "maxdate": "02 Feb 2020",
           "datestring": "Min: 05 Jul 2020 - Max: 02 Feb 2020"
@@ -400,11 +400,11 @@
     },
     "9175a68d_c94b78": {
       "lastPayload": {
-        "state": 36.4,
+        "state": 44.2,
         "attributes": {
           "count": 8,
           "countstring": "8 Days",
-          "average": 4.55,
+          "average": 5.52,
           "highest": 12.2,
           "sort": 3
         }
@@ -412,11 +412,11 @@
     },
     "6a5bcb5d_8aa50c": {
       "lastPayload": {
-        "state": 33.9,
+        "state": 37.7,
         "attributes": {
           "count": 10,
           "countstring": "10 Days",
-          "average": 3.39,
+          "average": 3.77,
           "highest": 12.6,
           "sort": 3
         }
@@ -424,23 +424,23 @@
     },
     "1b767a8_196e406": {
       "lastPayload": {
-        "state": 25.2,
+        "state": 4.8,
         "attributes": {
-          "count": 4,
-          "countstring": "4 Days",
-          "average": 6.3,
-          "highest": 12.6,
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 4.8,
+          "highest": 4.8,
           "sort": 1
         }
       }
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 23.492,
+        "state": 23.348,
         "attributes": {
           "max": 41.3,
           "min": 9.5,
-          "avg": 23.492,
+          "avg": 23.348,
           "mindate": "23 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
@@ -449,11 +449,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 28.463,
+        "state": 28.307,
         "attributes": {
           "max": 46.9,
           "min": 8.4,
-          "avg": 28.463,
+          "avg": 28.307,
           "mindate": "23 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
@@ -462,19 +462,19 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 18.83,
+        "state": 18.37,
         "attributes": {}
       }
     },
     "f757099a_d4cc4": {
       "lastPayload": {
-        "state": 2931.87,
+        "state": 2956.2,
         "attributes": {}
       }
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "69.9",
+        "state": "98.7",
         "attributes": {
           "units": "GB"
         }
@@ -482,7 +482,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "357.2",
+        "state": "544.1",
         "attributes": {
           "units": "GB"
         }
@@ -494,20 +494,20 @@
         "attributes": {
           "model": "UGW3",
           "version": "4.4.50.5272448",
-          "data": "411.5 GB",
+          "data": "621.6 GB",
           "serial": "F09FC212B4F7",
           "sitename": "TBSmartHome (default)",
           "type": "ugw",
           "controller": "https://192.168.1.20:8443",
           "external_ip_address": "110.143.197.190",
-          "uptime": "9d 20hr 39min",
+          "uptime": "15d 2hr 26min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "4.6",
+        "state": "195.8",
         "attributes": {
           "units": "GB"
         }
@@ -515,7 +515,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "1.2",
+        "state": "28.3",
         "attributes": {
           "units": "GB"
         }
@@ -523,11 +523,11 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 138.46,
+        "state": 138.38,
         "attributes": {
           "max": 162.9,
           "min": 112.9,
-          "avg": 138.46,
+          "avg": 138.38,
           "mindate": "23 Apr 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 Apr 2020 - Max: 05 Jan 2020"
@@ -552,17 +552,17 @@
     },
     "2cd48d0a_141992": {
       "lastPayload": {
-        "state": 0.09,
+        "state": 0.1,
         "attributes": {}
       }
     },
     "13d27691_292561": {
       "lastPayload": {
-        "state": 531.4,
+        "state": 539.4,
         "attributes": {
-          "count": 68,
-          "countstring": "68 Days",
-          "average": 7.81,
+          "count": 69,
+          "countstring": "69 Days",
+          "average": 7.82,
           "highest": 55.6,
           "sort": "4"
         }
@@ -570,17 +570,17 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 10,
+        "state": 1,
         "attributes": {}
       }
     },
     "ee3ed6bb_25091": {
       "lastPayload": {
-        "state": 557.6,
+        "state": 562.4,
         "attributes": {
-          "count": 71,
-          "countstring": "71 Days",
-          "average": 7.85,
+          "count": 72,
+          "countstring": "72 Days",
+          "average": 7.81,
           "highest": 44.9,
           "sort": 4
         }
@@ -596,9 +596,9 @@
           "sitename": "TBSmartHome (default)",
           "type": "usw",
           "controller": "https://192.168.1.20:8443",
-          "uptime": "9d 20hr 39min",
-          "rx_data": "69.9 GB",
-          "tx_data": "357.2 GB",
+          "uptime": "15d 2hr 26min",
+          "rx_data": "98.7 GB",
+          "tx_data": "544.1 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -614,36 +614,36 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 9.5,
-          "users": 26,
+          "cpu": 10.3,
+          "users": 28,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "9d 20hr 39min",
+          "uptime": "15d 2hr 26min",
           "lastseen": "a few seconds ago",
-          "tx_data": "4.6 GB",
-          "rx_data": "1.2 GB"
+          "tx_data": "195.8 GB",
+          "rx_data": "28.3 GB"
         }
       }
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 10.625,
+        "state": 10.407,
         "attributes": {
           "max": 28.6,
-          "min": -3.4,
-          "avg": 10.625,
-          "mindate": "05 Jul 2020",
+          "min": -4.1,
+          "avg": 10.407,
+          "mindate": "06 Aug 2020",
           "maxdate": "02 Feb 2020",
-          "datestring": "Min: 05 Jul 2020 - Max: 02 Feb 2020"
+          "datestring": "Min: 06 Aug 2020 - Max: 02 Feb 2020"
         }
       }
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 78,
+        "state": 132,
         "attributes": {
-          "uptime": "0d 5hr 24min",
-          "drops": 78
+          "uptime": "0d 4hr 20min",
+          "drops": 132
         }
       }
     }

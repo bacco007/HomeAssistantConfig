@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, August 2nd 2020_
+_Stats as at 04:59, Friday, August 7th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.113.2 | 268     | 2107         | 1767 | 24 |
+| 0.113.3 | 258     | 2110         | 1768 | 24 |
 
 Type | Qty
 -- | --
@@ -85,17 +85,17 @@ Alert | 0
 Automation | 24
 Binary Sensor | 74
 Camera | 3
-Device Tracker | 85
+Device Tracker | 86
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 5
-Media Player | 26
+Media Player | 27
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1767
+Sensor | 1768
 Sun | 1
 Switch | 81
 Weather | 3
@@ -114,8 +114,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name |
 | --- |
-| [air_quality](https://www.home-assistant.io/components/air_quality) |
-| [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
@@ -152,14 +150,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [camera.bom](https://www.home-assistant.io/components/camera.bom) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
 | [camera.generic](https://www.home-assistant.io/components/camera.generic) |
-| [camera.netatmo](https://www.home-assistant.io/components/camera.netatmo) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
 | [climacell](https://www.home-assistant.io/components/climacell) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
-| [climate.dyson](https://www.home-assistant.io/components/climate.dyson) |
-| [climate.netatmo](https://www.home-assistant.io/components/climate.netatmo) |
 | [climate.zha](https://www.home-assistant.io/components/climate.zha) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [config](https://www.home-assistant.io/components/config) |
@@ -181,10 +176,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [digital_ocean](https://www.home-assistant.io/components/digital_ocean) |
 | [discovery](https://www.home-assistant.io/components/discovery) |
 | [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
-| [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
 | [fan](https://www.home-assistant.io/components/fan) |
-| [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [fan.zha](https://www.home-assistant.io/components/fan.zha) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
@@ -193,6 +186,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
 | [geo_location](https://www.home-assistant.io/components/geo_location) |
+| [geo_location.blitzortung](https://www.home-assistant.io/components/geo_location.blitzortung) |
 | [geo_location.gdacs](https://www.home-assistant.io/components/geo_location.gdacs) |
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
 | [glances](https://www.home-assistant.io/components/glances) |
@@ -280,7 +274,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.covid19_nswhealth_tests](https://www.home-assistant.io/components/sensor.covid19_nswhealth_tests) |
 | [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
-| [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
@@ -299,7 +292,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
 | [sensor.my_unifi](https://www.home-assistant.io/components/sensor.my_unifi) |
-| [sensor.netatmo](https://www.home-assistant.io/components/sensor.netatmo) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -370,8 +362,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [updater](https://www.home-assistant.io/components/updater) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
-| [vacuum](https://www.home-assistant.io/components/vacuum) |
-| [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bom](https://www.home-assistant.io/components/weather.bom) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |

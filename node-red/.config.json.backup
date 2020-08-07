@@ -1531,6 +1531,23 @@
      "file": "/opt/node_modules/node-red-contrib-deconz/deconz.js"
     }
    }
+  },
+  "node-red-contrib-rate": {
+   "name": "node-red-contrib-rate",
+   "version": "1.2.0",
+   "local": false,
+   "nodes": {
+    "rate": {
+     "name": "rate",
+     "types": [
+      "rate"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-rate",
+     "file": "/opt/node_modules/node-red-contrib-rate/rate.js"
+    }
+   }
   }
  },
  "users": {
