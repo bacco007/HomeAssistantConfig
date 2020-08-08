@@ -233,113 +233,122 @@
                 - type: custom:docker-card
                   name: "Addon: Android Debug Bridge"
                   logo: /api/hassio/addons/a0d7b954_adb/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_adb
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_adb
+                  
 
                 - type: custom:docker-card
                   name: "Addon: AirSonos"
                   logo: /api/hassio/addons/a0d7b954_airsonos/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_airsonos
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_airsonos
+                  
 
                 - type: custom:docker-card
                   name: "Addon: ESPHome"
                   logo: /api/hassio/addons/15ef4d2f_esphome/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_15ef4d2f_esphome
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_15ef4d2f_esphome
+                  
 
                 - type: custom:docker-card
                   name: "Addon: Glances"
                   logo: /api/hassio/addons/a0d7b954_glances/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_glances
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_glances
+                  
 
                 - type: custom:docker-card
                   name: "Addon: Google Drive Backup"
                   logo: /api/hassio/addons/cebe7a76_hassio_google_drive_backup/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_cebe7a76_hassio_google_drive_backup
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_cebe7a76_hassio_google_drive_backup
+                  
 
                 - type: custom:docker-card
                   name: "Addon: MariaDB"
                   logo: /api/hassio/addons/core_mariadb/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_core_mariadb
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_core_mariadb
+                  
 
                 - type: custom:docker-card
                   name: "Addon: Mosquitto broker"
                   logo: /api/hassio/addons/core_mosquitto/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_core_mosquitto
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_core_mosquitto
+                  
+
+                - type: custom:docker-card
+                  name: "Addon: JupyterLab Lite"
+                  logo: /api/hassio/addons/a0d7b954_jupyterlablite/icon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_jupyterlablite
 
                 - type: custom:docker-card
                   name: "Addon: Node-RED"
                   logo: /api/hassio/addons/a0d7b954_nodered/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_nodered
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_nodered
+                  
 
                 - type: custom:docker-card
                   name: "Addon: phpMyAdmin"
                   logo: /api/hassio/addons/a0d7b954_phpmyadmin/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_phpmyadmin
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_phpmyadmin
+                  
+                - type: custom:docker-card
+                  name: "Addon: Portainer"
+                  logo: /api/hassio/addons/a0d7b954_portainer/icon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_portainer
 
                 - type: custom:docker-card
                   name: "Addon: Samba Share"
                   logo: /api/hassio/addons/core_samba/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_core_samba
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_core_samba
+                  
 
                 - type: custom:docker-card
                   name: "Addon: SSH & Web Terminal"
                   logo: /api/hassio/addons/a0d7b954_ssh/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_a0d7b954_ssh
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_a0d7b954_ssh
+                  
 
                 - type: custom:docker-card
                   name: "Addon: Xbox One"
                   logo: /api/hassio/addons/41cba666_xboxone/icon
-                  entitypart: vmtbsh03_ha_dockermon_addon_41cba666_xboxone
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_addon_41cba666_xboxone
+                  
 
                 - type: custom:docker-card
-                  name: HA Dockermon
+                  name: Docker Proxy
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_ha_dockermon
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_dockerproxy
+
 
                 - type: custom:docker-card
                   name: HassIO - Audio
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_hassio_audio
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_hassio_audio
+                  
 
                 - type: custom:docker-card
                   name: HassIO - CLI
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_hassio_cli
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_hassio_cli
+                  
 
                 - type: custom:docker-card
                   name: HassIO - DNS
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_hassio_dns
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_hassio_dns
+                  
 
                 - type: custom:docker-card
                   name: HassIO - Multicast
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_hassio_multicast
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_hassio_multicast
+                  
 
                 - type: custom:docker-card
                   name: Home Assistant Supervisor
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_hassio_supervisor
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_hassio_supervisor
+                  
 
                 - type: custom:docker-card
                   name: Home Assistant
                   logo: /local/systemicons/homeassistant.png
-                  entitypart: vmtbsh03_ha_dockermon_homeassistant
-                  sensortype: hadockermon
+                  entitypart: vmtbsh03_monitordocker_homeassistant
+                  

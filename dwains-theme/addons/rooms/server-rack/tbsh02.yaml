@@ -407,16 +407,6 @@
                 - type: custom:docker-card
                   # name:
                   # logo:
-                  entitypart: tbsh02_monitordocker_flightairmap
-
-                - type: custom:docker-card
-                  # name:
-                  # logo: 
-                  entitypart: tbsh02_monitordocker_flightairmap_db
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
                   entitypart: tbsh02_monitordocker_fr24
 
                 - type: custom:docker-card
@@ -431,13 +421,8 @@
 
                 - type: custom:docker-card
                   # name:
-                  logo: /local/systemicons/homeassistant.png
-                  entitypart: tbsh02_monitordocker_ha_dockermon
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_opensky
+                  # logo: 
+                  entitypart: tbsh02_monitordocker_mm2
 
                 - type: custom:docker-card
                   # name:
@@ -463,6 +448,11 @@
                   # name:
                   # logo:
                   entitypart: tbsh02_monitordocker_rbfeeder
+
+                - type: custom:docker-card
+                  # name:
+                  # logo:
+                  entitypart: tbsh02_monitordocker_readsb
 
                 - type: custom:docker-card
                   # name:

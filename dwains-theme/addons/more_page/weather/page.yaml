@@ -392,6 +392,45 @@
               align: right
 
 - type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  # padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Aidan's Place
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.weather_aidan_temp
+              name: Temperature
+
+            - entity: sensor.weather_aidan_humidity
+              name: Humidity
+
+            - entity: sensor.weather_aidan_rain
+              name: Rainfall
+
+- type: custom:dwains-flexbox-card
   items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
   # padding: true
   cards:

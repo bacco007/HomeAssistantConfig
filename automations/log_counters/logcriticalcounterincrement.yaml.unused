@@ -2,7 +2,6 @@
 id: logs_critical_counter_increment
 alias: Logs - Increment Critical Counter
 trigger:
-  # mode: parallel
   platform: event
   event_type: system_log_event
   event_data:
