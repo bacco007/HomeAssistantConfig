@@ -295,3 +295,25 @@ sensor:
               No Game Scheduled
             {% endif %}
           {% endif %}
+
+      sport_nswwaratahs:
+        entity_id: calendar.nsw_waratahs
+        friendly_name: NSW Waratahs
+        entity_picture_template: /local/sportlogos/nswaratahs.png
+        value_template: >-
+          {% set op = state_attr('calendar.nsw_waratahs', 'message') %}
+          {% if is_state('calendar.nsw_waratahs', 'on') %}
+            Playing Now - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.nsw_waratahs', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Game Scheduled
+            {% endif %}
+          {% endif %}

@@ -58,5 +58,6 @@ sport_upcoming:
     - sensor.sport_nascar
     - sensor.sport_indycar
     - sensor.sport_newknights
+    - sensor.sport_nswwaratahs
     - sensor.sport_sydfc
     - sensor.sport_sydswans

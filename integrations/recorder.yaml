@@ -28,6 +28,7 @@ recorder:
       - sensor.piserv*
       - sensor.tbsh01*
       - sensor.tbsh02*
+      - sensor.tbsh03*
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*

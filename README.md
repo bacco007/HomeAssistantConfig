@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, August 8th 2020_
+_Stats as at 04:59, Sunday, August 23rd 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.113.3 | 258     | 2115         | 1771 | 24 |
+| 0.114.3 | 255     | 2279         | 1940 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 74
+Binary Sensor | 54
 Camera | 3
-Device Tracker | 86
+Device Tracker | 100
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 5
-Media Player | 27
+Media Player | 29
 Person | 1
 Scene | 0
 Script | 0
-Sensor | 1771
+Sensor | 1940
 Sun | 1
-Switch | 81
+Switch | 86
 Weather | 3
 Zone | 3
 
@@ -128,10 +128,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.deconz](https://www.home-assistant.io/components/binary_sensor.deconz) |
 | [binary_sensor.digital_ocean](https://www.home-assistant.io/components/binary_sensor.digital_ocean) |
 | [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
-| [binary_sensor.hadockermon](https://www.home-assistant.io/components/binary_sensor.hadockermon) |
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
+| [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
@@ -152,7 +152,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [camera.generic](https://www.home-assistant.io/components/camera.generic) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
-| [climacell](https://www.home-assistant.io/components/climacell) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
 | [climate.zha](https://www.home-assistant.io/components/climate.zha) |
@@ -176,6 +175,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [digital_ocean](https://www.home-assistant.io/components/digital_ocean) |
 | [discovery](https://www.home-assistant.io/components/discovery) |
 | [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
+| [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.zha](https://www.home-assistant.io/components/fan.zha) |
@@ -267,7 +267,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
-| [sensor.climacell](https://www.home-assistant.io/components/sensor.climacell) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |
 | [sensor.covid19_nswhealth](https://www.home-assistant.io/components/sensor.covid19_nswhealth) |
@@ -346,7 +345,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
-| [switch.hadockermon](https://www.home-assistant.io/components/switch.hadockermon) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
@@ -370,7 +368,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [websocket_api](https://www.home-assistant.io/components/websocket_api) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
-| [zha_map](https://www.home-assistant.io/components/zha_map) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -396,6 +393,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
+- [GeoJson Rich Integration](https://github.com/Fusion/python-aio-geojson-query/tree/master/examples/homeassistant)
 - [Google Fit]()
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS](https://hacs.xyz/docs/configuration/start)
@@ -415,8 +413,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [UI Logs](https://github.com/custom-components/uilogs)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
-- [Xbox One Smartglass - Media player integration](https://github.com/OpenXbox/xboxone-home-assistant)
-- [ZHA Network Map](https://github.com/zha-ng/zha-map)</details>
+- [Xbox One Smartglass - Media player integration](https://github.com/OpenXbox/xboxone-home-assistant)</details>
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -467,6 +464,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Button Text Card](https://github.com/Savjee/button-text-card) | Custom, "neumorphism" Lovelace card |
 | [Card Mod](https://github.com/thomasloven/lovelace-card-mod) | 🔹 Add CSS styles to (almost) any lovelace card |
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) | 🔹A collection of tools for other lovelace plugins to use |
+| [Compass Card](https://github.com/tomvanswam/compass-card) | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) | 📝 Templatable Lovelace Configurations |
 | [Custom Header](https://github.com/maykar/custom-header) | Custom Header adds enhancements and customization options to Home Assistant's Lovelace header. |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
@@ -524,7 +522,7 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [AirSonos]()
 - [ESPHome]()
 - [Glances]()
-- [Hass.io Google Drive Backup]()
+- [Home Assistant Google Drive Backup]()
 - [JupyterLab Lite]()
 - [MariaDB](https://github.com/home-assistant/hassio-addons/tree/master/mariadb)
 - [Mosquitto broker]()

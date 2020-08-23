@@ -252,3 +252,18 @@ sensor:
       {%- set days = (time // 86400) %}
       {%- set days = '{}d '.format(days) if days > 0 else '' %}
       {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+
+  - platform: snmp
+    host: 192.168.1.65
+    name: TBSH03 Uptime
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}

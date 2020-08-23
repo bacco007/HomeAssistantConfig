@@ -5,7 +5,7 @@ house_information:
       - entity: sensor.binday_next
         icon_on: mdi:truck-delivery
         icon_off: mdi:truck-delivery
-      - entity: sensor.netatmo_brisbane_street_rain_sum_rain_24
+      - entity: sensor.weather_outside_rain_day
         icon_on: mdi:weather-rainy
         icon_off: mdi:weather-rainy
       - entity: sensor.bom_tamworth_rain_today

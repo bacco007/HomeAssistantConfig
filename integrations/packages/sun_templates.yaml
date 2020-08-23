@@ -53,6 +53,18 @@
         value_template: "{{ '%+.1f'|format(state_attr('sun.sun', 'elevation')) }}"
         icon_template: mdi:weather-sunny
 
+      sun_angle:
+        friendly_name: "Elevation"
+        unit_of_measurement: '°'
+        icon_template: "mdi:axis-y-rotate-clockwise"
+        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+
+      sun_azimuth:
+        friendly_name: "Azimuth"
+        unit_of_measurement: '°'
+        icon_template: "mdi:axis-z-rotate-clockwise"
+        value_template: "{{ state_attr('sun.sun', 'azimuth') }}"
+
       sun_state:
         friendly_name: Sun
         icon_template: >-

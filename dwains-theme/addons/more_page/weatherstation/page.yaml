@@ -171,7 +171,7 @@
             #         }
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  items_classes: 'col-xs-12 col-sm-3 col-sm-3 col-xl-3'
   cards:
     - type: custom:mini-graph-card
       entities:
@@ -181,7 +181,7 @@
           name: Humidity
           y_axis: secondary
       name: Inside
-      height: 50
+      # height: 50
       line_color: 'var(--dwains-theme-accent)'
       line_width: 2
       font_size: 70
@@ -199,7 +199,7 @@
           name: Humidity
           y_axis: secondary
       name: Outside
-      height: 50
+      # height: 50
       line_color: 'var(--dwains-theme-accent)'
       line_width: 2
       font_size: 70
@@ -213,7 +213,7 @@
       entities:
         - sensor.weather_outside_rain_day
       name: Rainfall
-      height: 50
+      # height: 50
       line_color: 'var(--dwains-theme-accent)'
       line_width: 2
       font_size: 70
@@ -223,6 +223,11 @@
       show:
         # extrema: true
         fill: fade
+    - type: custom:compass-card
+      name: Wind
+      entity: sensor.weather_outside_winddirection
+      secondary_entity: sensor.weather_outside_windspeed
+      direction_offset: 0
 
 - type: custom:dwains-flexbox-card
   items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'

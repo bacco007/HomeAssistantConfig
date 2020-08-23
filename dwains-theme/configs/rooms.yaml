@@ -122,6 +122,14 @@ rooms:
           entity: sensor.tbsh02_uptime
           uptime: '{{states.sensor.tbsh02_uptime.state}}'
 
+      - name: TBSH03
+        icon: mdi:server
+        path: 'dwains-theme/addons/rooms/server-rack/tbsh03.yaml'
+        button_path: 'dwains-theme/addons/rooms/server-rack/button.yaml'
+        data:
+          entity: sensor.tbsh03_uptime
+          uptime: '{{states.sensor.tbsh03_uptime.state}}'
+
       - name: vmTBSH01
         icon: mdi:server
         path: 'dwains-theme/addons/rooms/server-rack/vmtbsh01.yaml'

@@ -1,0 +1,18 @@
+geo_location:
+  - platform: aio_geojson_query
+    source: livetraffic_incidents
+    endpoint: https://northerntablelands.myroadinfo.com.au/livetraffic/incident.json
+    latitude: !secret zone_home_latitude
+    longitude: !secret zone_home_longitude
+    radius: 20
+    criteria:
+      - ended != false
+    mappings:
+      id: UniqueId
+      dateformat: milliseconds
+      date: lastUpdated
+      title: displayName
+    extra_fields:
+      - headline
+      - mainCategory
+      - incidentKind

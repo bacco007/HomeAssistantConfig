@@ -396,70 +396,10 @@
               cards:
                 - type: custom:docker-card
                   # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_adsb2influxdb
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_adsbx
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_fr24
-
-                - type: custom:docker-card
-                  # name:
                   logo: /local/systemicons/glances.png
                   entitypart: tbsh02_monitordocker_glances
 
                 - type: custom:docker-card
                   # name:
                   # logo:
-                  entitypart: tbsh02_monitordocker_graphs1090
-
-                - type: custom:docker-card
-                  # name:
-                  # logo: 
-                  entitypart: tbsh02_monitordocker_mm2
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
                   entitypart: tbsh02_monitordocker_ouroboros
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_pfclient
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_piaware2influx
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_piaware
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_rbfeeder
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_readsb
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_tar1090
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_vrs

@@ -40,9 +40,17 @@
     - type: vertical-stack
       cards:
         - type: custom:mini-media-player
-          entity: media_player.bedroom_sonos
+          entity: media_player.office_sonos
           artwork: cover
           source: icon
+          speaker_group:
+            platform: sonos
+            show_group_count: true
+            entities:
+              - entity_id: media_player.office_sonos
+                name: Sonos - Office
+              - entity_id: media_player.bedroom_sonos
+                name: Sonos - Bedroom
           shortcuts:
             columns: 2
             buttons:

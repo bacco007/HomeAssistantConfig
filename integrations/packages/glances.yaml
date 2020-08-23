@@ -8,6 +8,10 @@ glances:
     name: TBSH02
     version: 3
 
+  - host: !secret TBSH03_ipaddress
+    name: TBSH03
+    version: 3
+
   - host: !secret vmTBSH01_ipaddress
     name: vmTBSH01
     version: 3

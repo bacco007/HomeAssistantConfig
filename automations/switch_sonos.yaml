@@ -9,9 +9,9 @@ trigger:
     type: remote_button_short_release
 condition:
   - condition: state
-    entity_id: media_player.bedroom_sonos
+    entity_id: media_player.office_sonos
     state: playing
 action:
   - data: {}
-    entity_id: media_player.bedroom_sonos
+    entity_id: media_player.office_sonos
     service: media_player.media_stop

@@ -1,0 +1,52 @@
+---
+sensor:
+  - platform: rest
+    resource: http://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=147
+    name: yankees_game_status
+    # scan_interval:
+    #   hours: 24
+    value_template: '{{ value_json.dates[0].games[0].status.detailedState }}'
+    json_attributes:
+      - dates
+  - platform: template
+    sensors:
+      yankees_away_score:
+        value_template: >-
+          {% if states('sensor.yankees_game_status') == 'unknown' %}
+            No_Game
+          {% else %}
+            {{ states.sensor.yankees_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["score"] }}
+          {% endif %}
+        friendly_name_template: >-
+          {% if states('sensor.yankees_game_status') == 'unknown' %}
+            Away
+          {% else %}
+            {{ states.sensor.yankees_game_status.attributes["dates"][0]["games"][0]["teams"]["away"]["team"]["name"] }}
+          {% endif %}
+        entity_picture_template: >-
+          {% if states('sensor.yankees_game_status') == 'unknown' %}
+            https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8rGHWIehoVzpadKbNwJhQ_IxdUbKv81ed06p_3fRsSvmJzluS
+          {% else  %}
+            https://www.mlbstatic.com/mlb.com/builds/site-core/f1bd3a33969d8febdbcb23b1161db091cf3ae918_1561045539/images/logos/team-primary-on-light/{{ states.sensor.yankees_game_status.attributes.dates[0]["games"][0]["teams"]["away"]["team"]["id"] | int }}.svg
+          {% endif %}
+        entity_id: sensor.yankees_game_status
+      yankees_home_score:
+        value_template: >-
+          {% if states('sensor.yankees_game_status') == 'unknown' %}
+            No_Game
+          {% else %}
+            {{ states.sensor.yankees_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["score"] }}
+          {% endif %}
+        friendly_name_template: >-
+          {% if states('sensor.yankees_game_status') == 'unknown' %}
+            Home
+          {% else %}
+            {{ states.sensor.yankees_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["name"] }}
+          {% endif %}
+        entity_picture_template: >-
+          {% if states('sensor.yankees_game_status') == 'unknown' %}
+            https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8rGHWIehoVzpadKbNwJhQ_IxdUbKv81ed06p_3fRsSvmJzluS
+          {% else  %}
+            https://www.mlbstatic.com/mlb.com/builds/site-core/f1bd3a33969d8febdbcb23b1161db091cf3ae918_1561045539/images/logos/team-primary-on-light/{{ states.sensor.yankees_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["id"] | int }}.svg
+          {% endif %}
+        entity_id: sensor.yankees_game_status
