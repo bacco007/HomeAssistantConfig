@@ -1,10 +1,10 @@
 # dwains_theme
 ## Room add-on custom button: Sonos
 ## Created by Jeroen Klompen
-## Version: 1.0.3
+## Version: 1.0.5
 
 type: custom:button-card
-entity: {{ (data | fromjson)['entity'] }}
+entity: {{ (data | fromjson)['speakers'][0].entity }}
 template: rooms_child
 name: {{ name }}
 icon: {{ icon|default('fas:puzzle-piece') }}
@@ -15,17 +15,25 @@ double_tap_action:
   action: call-service
   service: media_player.media_play_pause
   service_data:
-    entity_id: {{ (data | fromjson)['entity'] }}
+    entity_id: {{ (data | fromjson)['speakers'][0].entity }}
 label: >
   [[[
     if(entity.state == 'playing') {
       if ('media_artist' in entity.attributes) {
-        return (entity.state + ' <br /> ' + entity.attributes.media_artist + ' - ' + entity.attributes.media_title);
+        return (hass.localize('component.media_player.state._.playing') + ' <br /> ' + entity.attributes.media_artist + ' - ' + entity.attributes.media_title).toLowerCase();
       } else {
-        return (entity.state + ' <br /> ' + entity.attributes.media_title);
+        return (hass.localize('component.media_player.state._.playing') + ' <br /> ' + entity.attributes.media_title).toLowerCase();
       }
-    } else if(entity){
-      return (entity.state);
+    } else if (entity.state == 'idle') {
+      return hass.localize('component.media_player.state._.idle');
+    } else if (entity.state == 'paused') {
+      return hass.localize('component.media_player.state._.paused');
+    } else if (entity.state == 'standby') {
+      return hass.localize('component.media_player.state._.standby');
+    } else if (entity.state == 'on') {
+      return hass.localize('component.media_player.state._.on');
+    } else if (entity.state == 'off') {
+      return hass.localize('component.media_player.state._.off');
     } else {
       return 'Entity error!';
     }

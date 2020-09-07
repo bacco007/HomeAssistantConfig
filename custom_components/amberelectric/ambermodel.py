@@ -37,8 +37,10 @@ def to_class(c: Type[T], x: Any) -> dict:
     return cast(Any, x).to_dict()
 
 
-def from_datetime(x: Any) -> datetime:
-    return dateutil.parser.parse(x)
+def from_datetime(x: Any) -> Optional[datetime]:
+    if x != None:
+        return dateutil.parser.parse(x)
+    return x
 
 
 def to_enum(c: Type[EnumT], x: Any) -> EnumT:

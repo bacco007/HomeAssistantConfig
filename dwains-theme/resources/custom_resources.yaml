@@ -32,6 +32,8 @@
   type: module
 - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
   type: module
+- url: /hacsfiles/spotify-card/spotify-card.js
+  type: module
 - url: /hacsfiles/stack-in-card/stack-in-card.js
   type: module
 - url: /hacsfiles/sun-card/sun-card.js

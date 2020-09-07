@@ -1,0 +1,6 @@
+---
+platform: ha_skyfield
+show_time: true
+show_legend: true
+# north_up: true
+show_constellations: false

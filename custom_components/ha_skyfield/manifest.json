@@ -1,0 +1,8 @@
+{
+  "domain": "ha_skyfield",
+  "name": "Polar plots of the sun, moon, and planets",
+  "documentation": "https://github.com/partofthething/ha_skyfield",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": ["skyfield", "matplotlib", "numpy"]
+}

@@ -3,9 +3,8 @@ import datetime
 import logging
 from datetime import timedelta
 
-import pandas as pd
-
 import homeassistant.helpers.config_validation as cv
+import pandas as pd
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
@@ -24,7 +23,7 @@ DEFAULT_UOM = "Tests"
 
 ICON = "mdi:biohazard"
 
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=30)
+MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=300)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_NAME): cv.string})
 
@@ -63,7 +62,7 @@ class NSWHSensor(Entity):
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
 
-        url = "https://data.nsw.gov.au/data/dataset/5424aa3b-550d-4637-ae50-7f458ce327f4/resource/227f6b65-025c-482c-9f22-a25cf1b8594f/download/covid-19-tests-by-date-and-location-and-result.csv"
+        url = "https://data.nsw.gov.au/data/dataset/60616720-3c60-4c52-b499-751f31e3b132/resource/945c6204-272a-4cad-8e33-dde791f5059a/download/pcr_testing_table1_location.csv"
 
         df = pd.read_csv(url, parse_dates=[0])
 

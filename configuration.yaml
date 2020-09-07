@@ -18,8 +18,6 @@ http:
 
 map:
 
-script: !include scripts.yaml
-
 ssdp:
 
 system_health:

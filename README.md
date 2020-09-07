@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, August 23rd 2020_
+_Stats as at 04:59, Monday, September 7th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.114.3 | 255     | 2279         | 1940 | 24 |
+| 0.114.4 | 252     | 2581         | 2189 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 54
-Camera | 3
-Device Tracker | 100
+Binary Sensor | 53
+Camera | 4
+Device Tracker | 113
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
-Light | 5
+Light | 4
 Media Player | 29
 Person | 1
 Scene | 0
-Script | 0
-Sensor | 1940
+Script | 1
+Sensor | 2189
 Sun | 1
-Switch | 86
+Switch | 114
 Weather | 3
 Zone | 3
 
@@ -114,6 +114,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name |
 | --- |
+| [air_quality](https://www.home-assistant.io/components/air_quality) |
+| [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
@@ -139,7 +141,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
-| [binary_sensor.zha](https://www.home-assistant.io/components/binary_sensor.zha) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
@@ -150,11 +151,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [camera.bom](https://www.home-assistant.io/components/camera.bom) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
 | [camera.generic](https://www.home-assistant.io/components/camera.generic) |
+| [camera.ha_skyfield](https://www.home-assistant.io/components/camera.ha_skyfield) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
-| [climate.zha](https://www.home-assistant.io/components/climate.zha) |
+| [climate.dyson](https://www.home-assistant.io/components/climate.dyson) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [config](https://www.home-assistant.io/components/config) |
 | [configurator](https://www.home-assistant.io/components/configurator) |
@@ -163,7 +165,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [counter](https://www.home-assistant.io/components/counter) |
 | [cover](https://www.home-assistant.io/components/cover) |
 | [cover.deconz](https://www.home-assistant.io/components/cover.deconz) |
-| [cover.zha](https://www.home-assistant.io/components/cover.zha) |
 | [deconz](https://www.home-assistant.io/components/deconz) |
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
@@ -171,14 +172,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.tile](https://www.home-assistant.io/components/device_tracker.tile) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
-| [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
 | [digital_ocean](https://www.home-assistant.io/components/digital_ocean) |
 | [discovery](https://www.home-assistant.io/components/discovery) |
 | [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
 | [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
 | [fan](https://www.home-assistant.io/components/fan) |
-| [fan.zha](https://www.home-assistant.io/components/fan.zha) |
+| [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
 | [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
@@ -210,9 +210,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.deconz](https://www.home-assistant.io/components/light.deconz) |
 | [light.lifx](https://www.home-assistant.io/components/light.lifx) |
-| [light.zha](https://www.home-assistant.io/components/light.zha) |
-| [lock](https://www.home-assistant.io/components/lock) |
-| [lock.zha](https://www.home-assistant.io/components/lock.zha) |
 | [logger](https://www.home-assistant.io/components/logger) |
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
@@ -225,12 +222,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
 | [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
-| [media_player.xboxone](https://www.home-assistant.io/components/media_player.xboxone) |
 | [met](https://www.home-assistant.io/components/met) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
-| [netatmo](https://www.home-assistant.io/components/netatmo) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
@@ -273,6 +268,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.covid19_nswhealth_tests](https://www.home-assistant.io/components/sensor.covid19_nswhealth_tests) |
 | [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
+| [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
@@ -330,12 +326,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.websocket_api](https://www.home-assistant.io/components/sensor.websocket_api) |
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
 | [sensor.xbox_live](https://www.home-assistant.io/components/sensor.xbox_live) |
-| [sensor.zha](https://www.home-assistant.io/components/sensor.zha) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |
+| [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
 | [stt](https://www.home-assistant.io/components/stt) |
@@ -349,7 +345,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
 | [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
-| [switch.zha](https://www.home-assistant.io/components/switch.zha) |
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
 | [system_health](https://www.home-assistant.io/components/system_health) |
 | [system_log](https://www.home-assistant.io/components/system_log) |
@@ -360,6 +355,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [updater](https://www.home-assistant.io/components/updater) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
+| [vacuum](https://www.home-assistant.io/components/vacuum) |
+| [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bom](https://www.home-assistant.io/components/weather.bom) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
@@ -405,10 +402,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [NSW Rural Fire Service - Fire Danger]()
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
+- [Polar plots of the sun, moon, and planets](https://github.com/partofthething/ha_skyfield)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Simple Icons]()
 - [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
+- [Start Spotify on chromecast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [UI Logs](https://github.com/custom-components/uilogs)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
@@ -446,7 +445,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) | 📺 Sonarr component to feed Upcoming Media Card. |
 | [Sensor.Unifigateway](https://github.com/custom-components/sensor.unifigateway) | High level health status of UniFi Security Gateway devices via UniFi Controller |
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) | Use Simple Icons in Home Assistant |
+| [Skyfield Panel With Sun, Moon, And Planets](https://github.com/partofthething/ha_skyfield) | See the apparent positions of the Sun, Moon, and planets in this home assistant custom component |
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) | Home Assistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |
+| [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
 | [Ui Logs](https://github.com/custom-components/uilogs) | Custom panel that show colorful logs for Home Assistant (core), and the supervisor (if you have it). |
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) | Home Assistant Sensor for WaterNSW Real Time Data |
 | [Xbox One   Smartglass Media Player](https://github.com/OpenXbox/xboxone-home-assistant) | Control your Xbox One from your Home Assistant device. |
@@ -478,6 +479,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
 | [Slider Entity Row](https://github.com/thomasloven/lovelace-slider-entity-row) | 🔹 Add sliders to entity cards |
+| [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) | 🔹Dynamically replace lovelace cards depending on occasion |
 | [Sun Card](https://github.com/mishaaq/sun-card) | Lovelace card for sun component - Home Assistant |
@@ -519,7 +521,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ADB - Android Debug Bridge]()
-- [AirSonos]()
 - [ESPHome]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()

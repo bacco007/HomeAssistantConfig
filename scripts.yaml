@@ -1,0 +1,26 @@
+---
+radio:
+  alias: Play Radio on Device
+  sequence:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.office_sonos
+        volume_level: "0.15"
+    - service: media_player.play_media
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.radio_device", "Sonos - Office") %} media_player.office_sonos
+          {% elif is_state("input_select.radio_device", "Sonos - Bedroom") %} media_player.bedroom_sonos
+          {% elif is_state("input_select.radio_device", "Google Home Hub") %} media_player.bedroom_display
+          {% elif is_state("input_select.radio_device", "Nvidia Shield") %} media_player.nvidia_shield
+          {% elif is_state("input_select.radio_device", "Echo Plus") %} media_player.thomas_s_echo_plus
+          {% endif %}
+        media_content_id: >
+          {% if is_state("input_select.radio_station", "BBC Radio 1") %} http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_one/format/pls.pls
+          {% elif is_state("input_select.radio_station", "Virgin Radio UK") %} http://radio.virginradio.co.uk/stream?ref=rf
+          {% elif is_state("input_select.radio_station", "BBC Radio Nottingham") %} http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_nottingham/format/pls.pls
+          {% elif is_state("input_select.radio_station", "KISSTORY") %} http://www.radiofeeds.co.uk/bauer.pls?station=kisstory.mp3.m3u
+          {% elif is_state("input_select.radio_station", "Kemet FM") %} http://109.169.26.139:8120/listen.pls?sid=1
+          {% elif is_state("input_select.radio_station", "ABC News Radio") %} http://live-radio01.mediahubaustralia.com/PBW/aac/
+          {% endif %}
+        media_content_type: music

@@ -1,0 +1,8 @@
+---
+radio_station:
+  name: "Select Radio Station:"
+  icon: mdi:radio
+  options:
+    - ABC News
+    - BBC Radio 1
+    - Virgin Radio UK

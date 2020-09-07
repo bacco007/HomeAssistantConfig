@@ -1,0 +1,11 @@
+---
+radio_device:
+  name: "Select Output Device:"
+  options:
+    - "Google Home Hub"
+    - "Sonos - Bedroom"
+    - "Sonos - Office"
+    - "Echo Plus"
+    - "Nvidia Shield"
+  initial: "Sonos - Office"
+  icon: mdi:speaker-wireless

@@ -1,22 +1,25 @@
-## Created by Jeroen Klompen
+# dwains_theme
 ## Room add-on: Sonos
-## Version: 1.0.0
+## Created by Jeroen Klompen
+## Version: 1.0.5
 
 - type: custom:dwains-flexbox-card
   items_classes: 'col-xs-12 col-sm-6 col-sm-6'
-  #padding: true
   cards:
     - type: entities
       style: |
         ha-card {
           border-radius: 5px;
           background-color: var(--dwains-theme-primary);
+          --paper-slider-knob-color: var(--dwains-theme-names);
+          --paper-slider-active-color: var(--dwains-theme-names);
+          --paper-slider-knob-start-color: var(--dwains-theme-grey);
+          --paper-slider-container-color: var(--dwains-theme-grey);
         }
       entities:
-        #- entity: {{ (data | fromjson)['entity'] }}
-        - entity: media_player.bedroom_sonos
+        - entity: {{ (data | fromjson)['speakers'][0].entity }}
           group: true
-          name: Sonos
+          name: {{ name }}
           info: scroll
           type: 'custom:mini-media-player'
           hide:
@@ -26,89 +29,49 @@
             icon_state: false
             power_color: false
           speaker_group:
-            platform: sonos
+            platform: {{ (data | fromjson)['platform']|default('sonos') }}
             show_group_count: true
             entities:
-              - entity_id: media_player.bedroom_sonos
-                name: 'Office'
+            {% for speakers in (data | fromjson)['speakers'] %}
+              - entity_id: {{ speakers.entity }}
+              {% if speakers.name %}
+                name: {{ speakers.name }}
+              {% endif %}
+            {% endfor %}
           shortcuts:
             columns: 3
-            column_height: 50
             hide_when_off: true
             label: Select Input
             align_text: center
+            column_height: 70
             buttons:
-              - name: ABC NENW
-                type: source
-                id: 'ABC New England North West'
-              - name: Sky News (AU)
-                type: source
-                id: 'Sky News Radio'
-              - name: Absolute (UK)
-                type: source
-                id: 'Absolute Radio UK (AAC)'
-              - name: Absolute 80s (UK)
-                type: source
-                id: 'Absolute Radio 80s'
-              - name: Absolute 90s (UK)
-                type: source
-                id: 'Absolute Radio 90s'
-              - name: Absolute 10s (UK)
-                type: source
-                id: 'Absolute Radio 10s'
-              - name: Absolute 20s (UK)
-                type: source
-                id: 'Absolute Radio 20s'
-              - name: Absolute CRock (UK)
-                type: source
-                id: 'Absolute Radio Classic Rock'
-              - name: BBC R1
-                type: source
-                id: 'BBC Radio 1'
-              - name: BBC R2
-                type: source
-                id: 'BBC Radio 2'
-              - name: BBC R5L
-                type: source
-                id: 'BBC Radio 5 live'
-              - name: BBC R6M
-                type: source
-                id: 'BBC Radio 6 Music'
-              - name: Gold104.3 Melb
-                type: source
-                id: 'GOLD 104.3'
-              - name: Nova969 Syd
-                type: source
-                id: 'Nova 96.9'
-              - name: ABC JJ
-                type: source
-                id: 'Double J (Sydney, NSW)'
-              - name: ABC JJJ
-                type: source
-                id: 'triple j (New South Wales)'
-              - name: MMM Syd
-                type: source
-                id: 'Triple M 104.9 Sydney'
-              - name: MMM Melb
-                type: source
-                id: 'Triple M 105.1 Melbourne'
-              - name: RadX UK
-                type: source
-                id: 'Radio X'
-                image: '../local/images/radio-icons/radiox.png'
-              - name: VirgR UK
-                type: source
-                id: 'Virgin Radio UK'
-                image: '../local/images/radio-icons/virginradio.png'
-
+            {% for buttons in (data | fromjson)['buttons'] %}
+              - name: {{ buttons.name }}
+              {% if buttons.icon %}
+                icon: {{ buttons.icon }}
+              {% endif %}
+              {% if buttons.cover %}
+                cover: {{ buttons.cover }}
+              {% endif %}
+                type: {{ buttons.type }}
+                id: {{ buttons.id }}
+            {% endfor %}
     - type: entities
       style: |
         ha-card {
           border-radius: 5px;
           background-color: var(--dwains-theme-primary);
+          --paper-slider-knob-color: var(--dwains-theme-names);
+          --paper-slider-active-color: var(--dwains-theme-names);
+          --paper-slider-knob-start-color: var(--dwains-theme-grey);
+          --paper-slider-container-color: var(--dwains-theme-grey);
         }
       entities:
+      {% for speakers in (data | fromjson)['speakers'] %}
         - type: 'custom:slider-entity-row'
-          entity: media_player.bedroom_sonos
+          entity: {{ speakers.entity }}
           icon: 'mdi:speaker'
-          name: 'Office'
+        {% if speakers.name %}
+          name: {{ speakers.name }}
+        {% endif %}
+      {% endfor %}
