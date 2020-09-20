@@ -1,0 +1,11 @@
+---
+alias: Webhook - Office Lamp Toggle
+description: ""
+initial_state: true
+trigger:
+  platform: webhook
+  webhook_id: office_lamp_toggle
+action:
+  - entity_id: light.zha_office_light
+    service: light.toggle
+    data: {}

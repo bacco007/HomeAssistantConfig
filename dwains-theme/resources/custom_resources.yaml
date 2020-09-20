@@ -6,6 +6,8 @@
 #   url: /to_your_folder/filename.js
 - url: /hacsfiles/bar-card/bar-card.js
   type: module
+- url: /hacsfiles/bom-radar-card/bom-radar-card.js
+  type: module
 - url: /hacsfiles/bom-weather-card/bom-weather-card.js
   type: module
 - url: /hacsfiles/button-text-card/button-text-card.js

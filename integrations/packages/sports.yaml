@@ -4,7 +4,6 @@ sensor:
     sensors:
       # Manchester United
       sport_manu:
-        entity_id: calendar.manchester_united_fixtures
         friendly_name: Manchester United
         entity_picture_template: /local/sportlogos/manu.png
         value_template: >-
@@ -26,7 +25,6 @@ sensor:
           {% endif %}
 
       sport_newengpats:
-        entity_id: calendar.new_england_patriots
         friendly_name: New England Patriots
         entity_picture_template: /local/sportlogos/newengpats.png
         value_template: >-
@@ -48,7 +46,6 @@ sensor:
           {% endif %}
 
       sport_anaducks:
-        entity_id: calendar.anaheim_ducks
         friendly_name: Anaheim (Mighty) Ducks
         entity_picture_template: /local/sportlogos/Anaheim_Ducks.svg
         value_template: >-
@@ -71,7 +68,6 @@ sensor:
 
       # New York Yankees
       sport_yankees:
-        entity_id: calendar.new_york_yankees
         friendly_name: New York Yankees
         entity_picture_template: /local/sportlogos/yankees.png
         value_template: >-
@@ -94,7 +90,6 @@ sensor:
 
       # Cricket
       sport_cricket:
-        entity_id: calendar.cricket_australia
         friendly_name: Cricket Australia (Aus/Syd6ers)
         entity_picture_template: /local/sportlogos/cricket.png
         value_template: >-
@@ -117,7 +112,6 @@ sensor:
 
       # Supercars
       sport_supercars:
-        entity_id: calendar.supercars
         friendly_name: Supercars
         entity_picture_template: /local/sportlogos/supercars.png
         value_template: >-
@@ -140,7 +134,6 @@ sensor:
 
       # F1
       sport_f1:
-        entity_id: calendar.f1
         friendly_name: Formula One
         entity_picture_template: /local/sportlogos/F1.svg
         value_template: >-
@@ -162,7 +155,6 @@ sensor:
           {% endif %}
 
       sport_wec:
-        entity_id: calendar.lm_wec_fia_world_endurance_championship
         friendly_name: FIA WEC
         entity_picture_template: /local/sportlogos/wec.png
         value_template: >-
@@ -185,7 +177,6 @@ sensor:
 
       # Nascar
       sport_nascar:
-        entity_id: calendar.nascar
         friendly_name: NASCAR
         entity_picture_template: /local/sportlogos/nascar.svg
         value_template: >-
@@ -208,7 +199,6 @@ sensor:
 
       # Indycar
       sport_indycar:
-        entity_id: calendar.indycar
         friendly_name: IndyCar
         entity_picture_template: /local/sportlogos/indycar.png
         value_template: >-
@@ -231,7 +221,6 @@ sensor:
 
       # Newcastle Knights
       sport_newknights:
-        entity_id: calendar.newcastle_knights
         friendly_name: Newcastle Knights
         entity_picture_template: /local/sportlogos/newknights.svg
         value_template: >-
@@ -253,7 +242,6 @@ sensor:
           {% endif %}
 
       sport_sydfc:
-        entity_id: calendar.sydney_fc
         friendly_name: Sydney FC
         entity_picture_template: /local/sportlogos/sydfc.png
         value_template: >-
@@ -275,7 +263,6 @@ sensor:
           {% endif %}
 
       sport_sydswans:
-        entity_id: calendar.sydney_swans
         friendly_name: Sydney Swans
         entity_picture_template: /local/sportlogos/sydswans.png
         value_template: >-
@@ -297,7 +284,6 @@ sensor:
           {% endif %}
 
       sport_nswwaratahs:
-        entity_id: calendar.nsw_waratahs
         friendly_name: NSW Waratahs
         entity_picture_template: /local/sportlogos/nswaratahs.png
         value_template: >-

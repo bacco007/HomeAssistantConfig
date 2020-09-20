@@ -20,7 +20,6 @@ sensor:
     sensors:
       lovelace_plex_recent_movies_01:
         friendly_name: Lovelace - Plex Recent Movies 01
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[1]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[1]['title'] is defined else 'None'}}
         attribute_templates:
@@ -36,7 +35,6 @@ sensor:
 
       lovelace_plex_recent_movies_02:
         friendly_name: Lovelace - Plex Recent Movies 02
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[2]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[2]['title'] is defined else 'None'}}
         attribute_templates:
@@ -52,7 +50,6 @@ sensor:
 
       lovelace_plex_recent_movies_03:
         friendly_name: Lovelace - Plex Recent Movies 03
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[3]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[3]['title'] is defined else 'None'}}
         attribute_templates:
@@ -68,7 +65,6 @@ sensor:
 
       lovelace_plex_recent_movies_04:
         friendly_name: Lovelace - Plex Recent Movies 04
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[4]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[4]['title'] is defined else 'None'}}
         attribute_templates:
@@ -84,7 +80,6 @@ sensor:
 
       lovelace_plex_recent_movies_05:
         friendly_name: Lovelace - Plex Recent Movies 05
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[5]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[5]['title'] is defined else 'None'}}
         attribute_templates:
@@ -100,7 +95,6 @@ sensor:
 
       lovelace_plex_recent_movies_06:
         friendly_name: Lovelace - Plex Recent Movies 06
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[6]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[6]['title'] is defined else 'None'}}
         attribute_templates:
@@ -116,7 +110,6 @@ sensor:
 
       lovelace_plex_recent_movies_07:
         friendly_name: Lovelace - Plex Recent Movies 07
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[7]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[7]['title'] is defined else 'None'}}
         attribute_templates:
@@ -132,7 +125,6 @@ sensor:
 
       lovelace_plex_recent_movies_08:
         friendly_name: Lovelace - Plex Recent Movies 08
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[8]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[8]['title'] is defined else 'None'}}
         attribute_templates:
@@ -148,7 +140,6 @@ sensor:
 
       lovelace_plex_recent_movies_09:
         friendly_name: Lovelace - Plex Recent Movies 09
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[9]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[9]['title'] is defined else 'None'}}
         attribute_templates:
@@ -164,7 +155,6 @@ sensor:
 
       lovelace_plex_recent_movies_10:
         friendly_name: Lovelace - Plex Recent Movies 10
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[10]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[10]['title'] is defined else 'None'}}
         attribute_templates:
@@ -180,7 +170,6 @@ sensor:
 
       lovelace_plex_recent_movies_11:
         friendly_name: Lovelace - Plex Recent Movies 11
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[11]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[11]['title'] is defined else 'None'}}
         attribute_templates:
@@ -196,7 +185,6 @@ sensor:
 
       lovelace_plex_recent_movies_12:
         friendly_name: Lovelace - Plex Recent Movies 12
-        entity_id: sensor.plex_recently_added_movies
         value_template: >
           {{state_attr('sensor.plex_recently_added_movies', 'data')[12]['title'] if state_attr('sensor.plex_recently_added_movies', 'data')[12]['title'] is defined else 'None'}}
         attribute_templates:

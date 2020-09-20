@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Monday, September 7th 2020_
+_Stats as at 04:59, Saturday, September 19th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.114.4 | 252     | 2581         | 2189 | 24 |
+| 0.115.1 | 252     | 2302         | 1917 | 24 |
 
 Type | Qty
 -- | --
@@ -85,19 +85,19 @@ Alert | 0
 Automation | 24
 Binary Sensor | 53
 Camera | 4
-Device Tracker | 113
+Device Tracker | 128
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 4
-Media Player | 29
+Media Player | 30
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 2189
+Sensor | 1917
 Sun | 1
-Switch | 114
+Switch | 88
 Weather | 3
 Zone | 3
 
@@ -181,7 +181,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
-| [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
@@ -202,6 +201,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
 | [icloud](https://www.home-assistant.io/components/icloud) |
 | [ifttt](https://www.home-assistant.io/components/ifttt) |
+| [image](https://www.home-assistant.io/components/image) |
 | [influxdb](https://www.home-assistant.io/components/influxdb) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [ios](https://www.home-assistant.io/components/ios) |
@@ -271,7 +271,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
-| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
@@ -348,6 +347,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
 | [system_health](https://www.home-assistant.io/components/system_health) |
 | [system_log](https://www.home-assistant.io/components/system_log) |
+| [tag](https://www.home-assistant.io/components/tag) |
 | [tile](https://www.home-assistant.io/components/tile) |
 | [transmission](https://www.home-assistant.io/components/transmission) |
 | [tts](https://www.home-assistant.io/components/tts) |
@@ -460,6 +460,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Atomic Calendar Revive](https://github.com/marksie1988/atomic-calendar-revive) | Custom calendar card for Home Assistant with Lovelace |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) | Customizable Animated Bar card for Home Assistant Lovelace |
+| [Bom Radar Card](https://github.com/theOzzieRat/bom-radar-card) | A rain radar card using the new tiled images from the Australian BOM |
 | [Bom Weather Card](https://github.com/DavidFW1960/bom-weather-card) | Custom BOM Australia Animated Weather Card |
 | [Button Card](https://github.com/custom-cards/button-card) | ❇️ Lovelace button-card for home assistant |
 | [Button Text Card](https://github.com/Savjee/button-text-card) | Custom, "neumorphism" Lovelace card |

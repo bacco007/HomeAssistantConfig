@@ -28,7 +28,6 @@ sensor:
     sensors:
       lovelace_sonarr_upcoming_01:
         friendly_name: Lovelace - Sonarr Upcoming 01
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[1]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[1]['title'] is defined else 'None'}}
         attribute_templates:
@@ -52,7 +51,6 @@ sensor:
 
       lovelace_sonarr_upcoming_02:
         friendly_name: Lovelace - Sonarr Upcoming 02
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[2]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[2]['title'] is defined else 'None'}}
         attribute_templates:
@@ -76,7 +74,6 @@ sensor:
 
       lovelace_sonarr_upcoming_03:
         friendly_name: Lovelace - Sonarr Upcoming 03
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[3]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[3]['title'] is defined else 'None'}}
         attribute_templates:
@@ -100,7 +97,6 @@ sensor:
 
       lovelace_sonarr_upcoming_04:
         friendly_name: Lovelace - Sonarr Upcoming 04
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[4]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[4]['title'] is defined else 'None'}}
         attribute_templates:
@@ -124,7 +120,6 @@ sensor:
 
       lovelace_sonarr_upcoming_05:
         friendly_name: Lovelace - Sonarr Upcoming 05
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[5]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[5]['title'] is defined else 'None'}}
         attribute_templates:
@@ -148,7 +143,6 @@ sensor:
 
       lovelace_sonarr_upcoming_06:
         friendly_name: Lovelace - Sonarr Upcoming 06
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[6]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[6]['title'] is defined else 'None'}}
         attribute_templates:
@@ -172,7 +166,6 @@ sensor:
 
       lovelace_sonarr_upcoming_07:
         friendly_name: Lovelace - Sonarr Upcoming 07
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[7]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[7]['title'] is defined else 'None'}}
         attribute_templates:
@@ -196,7 +189,6 @@ sensor:
 
       lovelace_sonarr_upcoming_08:
         friendly_name: Lovelace - Sonarr Upcoming 08
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[8]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[8]['title'] is defined else 'None'}}
         attribute_templates:
@@ -220,7 +212,6 @@ sensor:
 
       lovelace_sonarr_upcoming_09:
         friendly_name: Lovelace - Sonarr Upcoming 09
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[9]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[9]['title'] is defined else 'None'}}
         attribute_templates:
@@ -244,7 +235,6 @@ sensor:
 
       lovelace_sonarr_upcoming_10:
         friendly_name: Lovelace - Sonarr Upcoming 10
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[10]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[10]['title'] is defined else 'None'}}
         attribute_templates:
@@ -268,7 +258,6 @@ sensor:
 
       lovelace_sonarr_upcoming_11:
         friendly_name: Lovelace - Sonarr Upcoming 11
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[11]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[11]['title'] is defined else 'None'}}
         attribute_templates:
@@ -292,7 +281,6 @@ sensor:
 
       lovelace_sonarr_upcoming_12:
         friendly_name: Lovelace - Sonarr Upcoming 12
-        entity_id: sensor.sonarr_upcoming_media
         value_template: >
           {{state_attr('sensor.sonarr_upcoming_media', 'data')[12]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[12]['title'] is defined else 'None'}}
         attribute_templates:

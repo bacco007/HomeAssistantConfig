@@ -450,7 +450,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.24.1",
+   "version": "0.25.0",
    "local": false,
    "nodes": {
     "server": {
@@ -910,7 +910,7 @@
   },
   "node-red-contrib-time-range-switch": {
    "name": "node-red-contrib-time-range-switch",
-   "version": "1.0.0",
+   "version": "1.0.1",
    "local": false,
    "nodes": {
     "time-range-switch": {
@@ -1195,7 +1195,7 @@
   },
   "node-red-node-email": {
    "name": "node-red-node-email",
-   "version": "1.7.8",
+   "version": "1.7.9",
    "local": false,
    "nodes": {
     "email": {
@@ -1264,7 +1264,7 @@
   },
   "node-red-node-pi-gpio": {
    "name": "node-red-node-pi-gpio",
-   "version": "1.1.1",
+   "version": "1.2.0",
    "local": false,
    "nodes": {
     "rpi-gpio": {
@@ -1352,7 +1352,7 @@
   },
   "node-red-node-serialport": {
    "name": "node-red-node-serialport",
-   "version": "0.10.3",
+   "version": "0.11.0",
    "local": false,
    "nodes": {
     "serialport": {
@@ -1442,7 +1442,7 @@
   },
   "node-red-contrib-calc": {
    "name": "node-red-contrib-calc",
-   "version": "1.0.4",
+   "version": "1.0.5",
    "local": false,
    "nodes": {
     "math": {
@@ -1534,7 +1534,7 @@
   },
   "node-red-contrib-rate": {
    "name": "node-red-contrib-rate",
-   "version": "1.2.0",
+   "version": "1.2.2",
    "local": false,
    "nodes": {
     "rate": {

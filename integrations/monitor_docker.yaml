@@ -3,22 +3,22 @@ monitor_docker:
   - name: TBSH01_monitordocker
     url: tcp://192.168.1.20:2375
     rename:
-      db: 'MariaDB'
-      deconz: 'deCONZ'
-      duplicati: 'Duplicati'
-      glances: 'Glances'
-      graphs1090: 'graphs1090'
-      guacamole: 'Guacamole'
-      ha-dockermon: 'HA Dockermon'
-      homer: 'Homer'
-      netdata: 'Netdata'
-      nginxproxymanager: 'NGINX Proxy Manager'
-      ouroboros: 'Ouroboros'
-      portainer: 'Portainer'
-      readsb: 'ReASDB'
-      sonos-web: 'Sonos Web'
-      tar1090: 'tar1090'
-      unifi: 'Unifi Controller'
+      db: "MariaDB"
+      deconz: "deCONZ"
+      duplicati: "Duplicati"
+      glances: "Glances"
+      graphs1090: "graphs1090"
+      guacamole: "Guacamole"
+      ha-dockermon: "HA Dockermon"
+      homer: "Homer"
+      netdata: "Netdata"
+      nginxproxymanager: "NGINX Proxy Manager"
+      ouroboros: "Ouroboros"
+      portainer: "Portainer"
+      readsb: "ReASDB"
+      sonos-web: "Sonos Web"
+      tar1090: "tar1090"
+      unifi: "Unifi Controller"
     monitored_conditions:
       - version
       - containers_total
@@ -44,8 +44,8 @@ monitor_docker:
   - name: TBSH02_monitordocker
     url: tcp://192.168.1.64:2375
     rename:
-      glances: 'Glances'
-      ouroboros: 'Ouroboros'
+      glances: "Glances"
+      ouroboros: "Ouroboros"
     monitored_conditions:
       - version
       - containers_total
@@ -71,22 +71,22 @@ monitor_docker:
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
     rename:
-      adsb2influxdb: 'ADS-B to InfluxDB'
-      adsbx: 'ADS-B Exchange Feeder'
-      flightairmap: 'Flight Air Map'
-      flightairmap_db: 'Flight Air Map DB'
-      fr24: 'flightradar24 Feeder'
-      glances: 'Glances'
-      graphs1090: 'graphs1090'
-      ha-dockermon: 'HA Dockermon'
-      opensky: 'Opensky Feeder'
-      ouroboros: 'Ouroboros'
-      pfclient: 'PlaneFinder Feeder'
-      piaware2influx: 'PiAware to InfluxDB'
-      piaware: 'PiAware Feeder'
-      rbfeeder: 'RadarBox Feeder'
-      tar1090: 'tar1090'
-      vrs: 'Virtual Radar Server'
+      adsb2influxdb: "ADS-B to InfluxDB"
+      adsbx: "ADS-B Exchange Feeder"
+      flightairmap: "Flight Air Map"
+      flightairmap_db: "Flight Air Map DB"
+      fr24: "flightradar24 Feeder"
+      glances: "Glances"
+      graphs1090: "graphs1090"
+      ha-dockermon: "HA Dockermon"
+      opensky: "Opensky Feeder"
+      ouroboros: "Ouroboros"
+      pfclient: "PlaneFinder Feeder"
+      piaware2influx: "PiAware to InfluxDB"
+      piaware: "PiAware Feeder"
+      rbfeeder: "RadarBox Feeder"
+      tar1090: "tar1090"
+      vrs: "Virtual Radar Server"
     monitored_conditions:
       - version
       - containers_total
@@ -107,28 +107,28 @@ monitor_docker:
       - network_speed_up
       - network_speed_down
       - network_total_up
-      - network_total_down      
+      - network_total_down
 
   - name: vmTBSH01_monitordocker
     url: tcp://192.168.1.61:2375
     rename:
-      duplicati: 'Duplicati'
-      glances: 'Glances'
-      grafana: 'Grafana'
-      ha-dockermon: 'HA Dockermon'
-      jackett: 'Jackett'
-      jdownloader: 'jDownloader'
-      netdata: 'Netdata'
-      nzbhydra2: 'NZB Hydra 2'
-      ouroboros: 'Ouroboros'
-      portainer: 'Portainer'
-      radarr: 'Radarr'
-      sabnzbd: 'SABnzbd'
-      sonarr: 'Sonarr'
-      tautulli: 'Tautulli'
-      transmission: 'Transmission'
-      tvheadend: 'TV Headend'
-      varken: 'Varken'
+      duplicati: "Duplicati"
+      glances: "Glances"
+      grafana: "Grafana"
+      ha-dockermon: "HA Dockermon"
+      jackett: "Jackett"
+      jdownloader: "jDownloader"
+      netdata: "Netdata"
+      nzbhydra2: "NZB Hydra 2"
+      ouroboros: "Ouroboros"
+      portainer: "Portainer"
+      radarr: "Radarr"
+      sabnzbd: "SABnzbd"
+      sonarr: "Sonarr"
+      tautulli: "Tautulli"
+      transmission: "Transmission"
+      tvheadend: "TV Headend"
+      varken: "Varken"
     monitored_conditions:
       - version
       - containers_total
@@ -154,17 +154,17 @@ monitor_docker:
   - name: vmTBSH02_monitordocker
     url: tcp://192.168.1.62:2375
     rename:
-      chronograf: 'Chronograf'
-      duplicati: 'Duplicati'
-      glances: 'Glances'
-      ha-dockermon: 'HA Dockermon'
-      influxdb: 'InfluxDB'
-      kapacitor: 'Kapacitor'
-      netdata: 'Netdata'
-      ouroboros: 'Ouroboros'
-      portainer: 'Portainer'
-      telegraf: 'Telegraf'
-      unifipoller: 'UniFi Poller'
+      chronograf: "Chronograf"
+      duplicati: "Duplicati"
+      glances: "Glances"
+      ha-dockermon: "HA Dockermon"
+      influxdb: "InfluxDB"
+      kapacitor: "Kapacitor"
+      netdata: "Netdata"
+      ouroboros: "Ouroboros"
+      portainer: "Portainer"
+      telegraf: "Telegraf"
+      unifipoller: "UniFi Poller"
     monitored_conditions:
       - version
       - containers_total
@@ -189,7 +189,7 @@ monitor_docker:
   - name: vmTBSH03_monitordocker
     url: tcp://192.168.1.63:2375
     rename:
-      ha-dockermon: 'HA Dockermon'
+      ha-dockermon: "HA Dockermon"
     monitored_conditions:
       - version
       - containers_total

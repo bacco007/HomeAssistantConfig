@@ -22,27 +22,22 @@ sensor:
       - rocket
       - details
     value_template: '{{ value_json["launch_date_unix"] }}'
-    resource: 'https://api.spacexdata.com/v2/launches/next'
+    resource: "https://api.spacexdata.com/v2/launches/next"
   - platform: template
     sensors:
       spacex_next_launch_day:
-        friendly_name: 'Next Launch Day'
+        friendly_name: "Next Launch Day"
         value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%d.%m.%Y")}}'
-        entity_id: sensor.spacex
       spacex_next_launch_time:
-        friendly_name: 'Next Launch Time'
+        friendly_name: "Next Launch Time"
         value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%H:%M")}}'
-        unit_of_measurement: 'h'
-        entity_id: sensor.spacex
+        unit_of_measurement: "h"
       spacex_next_rocket:
-        friendly_name: 'Next Rocket'
+        friendly_name: "Next Rocket"
         value_template: '{{ states.sensor.spacex.attributes["rocket"]["rocket_name"] }}'
-        entity_id: sensor.spacex
       spacex_next_launch_site:
-        friendly_name: 'Next Launch Site'
+        friendly_name: "Next Launch Site"
         value_template: '{{ states.sensor.spacex.attributes["launch_site"]["site_name"] }}'
-        entity_id: sensor.spacex
       spacex_next_mission_name:
-        friendly_name: 'Next Mission Name'
+        friendly_name: "Next Mission Name"
         value_template: '{{ states.sensor.spacex.attributes["mission_name"] }}'
-        entity_id: sensor.spacex

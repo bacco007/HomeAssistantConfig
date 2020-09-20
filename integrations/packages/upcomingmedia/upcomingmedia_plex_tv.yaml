@@ -24,7 +24,6 @@ sensor:
     sensors:
       lovelace_plex_recent_tv_01:
         friendly_name: Lovelace - Plex Recent TV 01
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[1]['title'] if state_attr('sensor.plex_recently_added', 'data')[1]['title'] is defined else 'None'}}
         attribute_templates:
@@ -44,7 +43,6 @@ sensor:
 
       lovelace_plex_recent_tv_02:
         friendly_name: Lovelace - Plex Recent TV 02
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[2]['title'] if state_attr('sensor.plex_recently_added', 'data')[2]['title'] is defined else 'None'}}
         attribute_templates:
@@ -64,7 +62,6 @@ sensor:
 
       lovelace_plex_recent_tv_03:
         friendly_name: Lovelace - Plex Recent TV 03
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[3]['title'] if state_attr('sensor.plex_recently_added', 'data')[3]['title'] is defined else 'None'}}
         attribute_templates:
@@ -84,7 +81,6 @@ sensor:
 
       lovelace_plex_recent_tv_04:
         friendly_name: Lovelace - Plex Recent TV 04
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[4]['title'] if state_attr('sensor.plex_recently_added', 'data')[4]['title'] is defined else 'None'}}
         attribute_templates:
@@ -104,7 +100,6 @@ sensor:
 
       lovelace_plex_recent_tv_05:
         friendly_name: Lovelace - Plex Recent TV 05
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[5]['title'] if state_attr('sensor.plex_recently_added', 'data')[5]['title'] is defined else 'None'}}
         attribute_templates:
@@ -124,7 +119,6 @@ sensor:
 
       lovelace_plex_recent_tv_06:
         friendly_name: Lovelace - Plex Recent TV 06
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[6]['title'] if state_attr('sensor.plex_recently_added', 'data')[6]['title'] is defined else 'None'}}
         attribute_templates:
@@ -144,7 +138,6 @@ sensor:
 
       lovelace_plex_recent_tv_07:
         friendly_name: Lovelace - Plex Recent TV 07
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[7]['title'] if state_attr('sensor.plex_recently_added', 'data')[7]['title'] is defined else 'None'}}
         attribute_templates:
@@ -164,7 +157,6 @@ sensor:
 
       lovelace_plex_recent_tv_08:
         friendly_name: Lovelace - Plex Recent TV 08
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[8]['title'] if state_attr('sensor.plex_recently_added', 'data')[8]['title'] is defined else 'None'}}
         attribute_templates:
@@ -184,7 +176,6 @@ sensor:
 
       lovelace_plex_recent_tv_09:
         friendly_name: Lovelace - Plex Recent TV 09
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[9]['title'] if state_attr('sensor.plex_recently_added', 'data')[9]['title'] is defined else 'None'}}
         attribute_templates:
@@ -204,7 +195,6 @@ sensor:
 
       lovelace_plex_recent_tv_10:
         friendly_name: Lovelace - Plex Recent TV 10
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[10]['title'] if state_attr('sensor.plex_recently_added', 'data')[10]['title'] is defined else 'None'}}
         attribute_templates:
@@ -224,7 +214,6 @@ sensor:
 
       lovelace_plex_recent_tv_11:
         friendly_name: Lovelace - Plex Recent TV 11
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[11]['title'] if state_attr('sensor.plex_recently_added', 'data')[11]['title'] is defined else 'None'}}
         attribute_templates:
@@ -244,7 +233,6 @@ sensor:
 
       lovelace_plex_recent_tv_12:
         friendly_name: Lovelace - Plex Recent TV 12
-        entity_id: sensor.plex_recently_added
         value_template: >
           {{state_attr('sensor.plex_recently_added', 'data')[12]['title'] if state_attr('sensor.plex_recently_added', 'data')[12]['title'] is defined else 'None'}}
         attribute_templates:

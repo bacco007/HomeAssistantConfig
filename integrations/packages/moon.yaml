@@ -5,7 +5,6 @@ sensor:
   - platform: template
     sensors:
       moonphase:
-        entity_id: sensor.moon
         friendly_name: "Moon Phase"
         value_template: >
           {{ states('sensor.moon').title().replace('_',' ') }}

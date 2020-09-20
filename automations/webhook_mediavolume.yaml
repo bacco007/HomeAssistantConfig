@@ -1,0 +1,12 @@
+---
+alias: Webhook - Set Media Volume
+description: ""
+initial_state: true
+trigger:
+  platform: webhook
+  webhook_id: set_media_volume
+action:
+  - service: media_player.volume_set
+    data:
+      entity_id: "{{ trigger.json.entities }}"
+      volume_level: "{{ trigger.json.parameter }}"

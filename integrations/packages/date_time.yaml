@@ -16,13 +16,13 @@ binary_sensor:
   - platform: tod
     name: Early Morning
     after: sunrise
-    after_offset: '-02:00'
-    before: '07:00'
+    after_offset: "-02:00"
+    before: "07:00"
 
   - platform: tod
     name: Late Morning
-    after: '10:00'
-    before: '12:00'
+    after: "10:00"
+    before: "12:00"
 
   - platform: tod
     name: Night
@@ -36,8 +36,8 @@ binary_sensor:
 
   - platform: tod
     name: Work
-    after: '07:00'
-    before: '17:00'
+    after: "07:00"
+    before: "17:00"
 
 sensor:
   ###
@@ -45,11 +45,11 @@ sensor:
   ###
   - platform: time_date
     display_options:
-      - 'time'
-      - 'date'
-      - 'date_time'
-      - 'time_utc'
-      - 'beat'
+      - "time"
+      - "date"
+      - "date_time"
+      - "time_utc"
+      - "beat"
   ###
   ## World Time - London
   ###
@@ -66,8 +66,7 @@ sensor:
   - platform: template
     sensors:
       date_long_format:
-        friendly_name: 'Date Long Format'
-        entity_id: sensor.date
+        friendly_name: "Date Long Format"
         value_template: >
           {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
           {% set month = months[now().strftime('%m') | int -1] %}
@@ -84,7 +83,6 @@ sensor:
       date_friendly:
         friendly_name: Date
         icon_template: mdi:calendar-today
-        entity_id: sensor.date
         friendly_name_template: >-
           {% set date = states('sensor.date') %}
           {% set datetime = strptime(date, '%Y-%m-%d') %}
@@ -98,7 +96,6 @@ sensor:
       date_long:
         friendly_name: Date
         icon_template: mdi:calendar-today
-        entity_id: sensor.date
         value_template: >-
           {% set date = states('sensor.date') %}
           {% set datetime = strptime(date, '%Y-%m-%d') %}
@@ -192,10 +189,8 @@ sensor:
           {% set datetime = strptime(date, '%Y-%m-%d') %}
           {% set timestamp = as_timestamp(datetime) + 2*24*60*60 %}
           {{ timestamp | timestamp_custom('%A') }}
-  - platform: template
-    sensors:
       day_phase:
-        friendly_name: 'Day Phase'
+        friendly_name: "Day Phase"
         value_template: >
           {% if now() > now().replace(hour=5).replace(minute=0).replace(second=0) and
               now() < now().replace(hour=9).replace(minute=0).replace(second=0) %}

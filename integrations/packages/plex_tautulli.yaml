@@ -42,17 +42,14 @@ sensor:
         icon_template: mdi:plex
         value_template: "{{state_attr('sensor.tautulli', 'Top User')}}"
       plex_lanbandwidth:
-        value_template: '{{ (states.sensor.tautulli.attributes.lan_bandwidth / 1024) | round(2) }}'
-        entity_id: sensor.tautulli
-        unit_of_measurement: 'Mbps'
-        friendly_name: 'Plex LAN Bandwidth'
+        value_template: "{{ (states.sensor.tautulli.attributes.lan_bandwidth / 1024) | round(2) }}"
+        unit_of_measurement: "Mbps"
+        friendly_name: "Plex LAN Bandwidth"
       plex_wanbandwidth:
-        value_template: '{{ (states.sensor.tautulli.attributes.wan_bandwidth / 1024) | round(2) }}'
-        entity_id: sensor.tautulli
-        unit_of_measurement: 'Mbps'
-        friendly_name: 'Plex WAN Bandwidth'
+        value_template: "{{ (states.sensor.tautulli.attributes.wan_bandwidth / 1024) | round(2) }}"
+        unit_of_measurement: "Mbps"
+        friendly_name: "Plex WAN Bandwidth"
       plex_totalbandwidth:
-        value_template: '{{ (states.sensor.tautulli.attributes.total_bandwidth / 1024) | round(2) }}'
-        entity_id: sensor.tautulli
-        unit_of_measurement: 'Mbps'
-        friendly_name: 'Plex Total Bandwidth'
+        value_template: "{{ (states.sensor.tautulli.attributes.total_bandwidth / 1024) | round(2) }}"
+        unit_of_measurement: "Mbps"
+        friendly_name: "Plex Total Bandwidth"

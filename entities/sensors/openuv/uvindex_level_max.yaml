@@ -3,8 +3,7 @@ platform: template
 sensors:
   uvindex_level_max:
     friendly_name: Max UV Index Level
-    icon_template: mdi:sun
-    entity_id: sensor.max_uv_index
+    icon_template: mdi:weather-sunny
     value_template: >
       {% set index = states('sensor.max_uv_index') | float(-1) %}
       {% if index > 11 %}

@@ -19,8 +19,6 @@ recorder:
       - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*
-      - sensor.unifi*
-      - sensor.usg_*
       - sensor.*monitordocker*
       - sensor.switchmonusb*
       - sensor.*_uptime

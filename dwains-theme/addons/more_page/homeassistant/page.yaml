@@ -256,6 +256,24 @@
               entities:
                 - entity: sensor.current_multicast_latest
                   name: Multicast - Latest
+            - type: custom:fold-entity-row
+              head:
+                entity: sensor.current_observer_installed
+                name: Observer - Installed
+                icon: mdi:home-assistant
+                style: |
+                  :host {
+                  --paper-item-icon-color:
+                    {% if states(config.entity) != states('sensor.current_observer1_latest') %}
+                      rgb(255, 223, 0)
+                    {% else %}
+                      var(--disabled-text-color)
+                    {% endif %}
+                    ;
+                  }
+              entities:
+                - entity: sensor.current_observer_latest
+                  name: Observer - Latest
         - type: vertical-stack
           cards:
             - type: entities

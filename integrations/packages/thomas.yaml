@@ -3,7 +3,6 @@ sensor:
   - platform: template
     sensors:
       thomas_status:
-        entity_id: device_tracker.tbiphone11
         value_template: >-
           {% if is_state('device_tracker.tbiphone11', 'home') %}
             Home
@@ -14,11 +13,11 @@ sensor:
           {% endif %}
         icon_template: >-
           {% if is_state('device_tracker.tbiphone11', 'home') %}
-            mdi:house
+            mdi:home
           {% elif is_state('device_tracker.tbiphone11', 'trc') %}
-            mdi:work
+            mdi:office-building
           {% else %}
             mdi:car
           {% endif %}
-        friendly_name: 'Thomas'
+        friendly_name: "Thomas"
         entity_picture_template: /local/avatar_thomas.jpg

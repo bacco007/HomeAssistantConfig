@@ -24,36 +24,30 @@ sensor:
     sensors:
       github_issues:
         value_template: "{{ state_attr('sensor.github', 'open_issues') }}"
-        entity_id: sensor.github
         friendly_name: Github - Issues
         icon_template: mdi:github
 
       github_subscribers:
         value_template: "{{ state_attr('sensor.github', 'subscribers_count') }}"
-        entity_id: sensor.github
         friendly_name: Github - Subscribers
         icon_template: mdi:github
 
       github_forks:
         value_template: "{{ state_attr('sensor.github', 'forks') }}"
-        entity_id: sensor.github
         friendly_name: Github - Forks
         icon_template: mdi:github
 
       github_stars:
         value_template: "{{ state_attr('sensor.github', 'stargazers_count') }}"
-        entity_id: sensor.github
         friendly_name: Github - Stars
         icon_template: mdi:github
 
       github_updatedat:
         value_template: "{{ as_timestamp(state_attr('sensor.github', 'updated_at')) |timestamp_custom ('%-d %b, %H:%M') }}"
-        entity_id: sensor.github
         friendly_name: Github - Last Update
         icon_template: mdi:github
 
       github_pushedat:
         value_template: "{{ as_timestamp(state_attr('sensor.github', 'pushed_at')) |timestamp_custom ('%-d %b, %H:%M') }}"
-        entity_id: sensor.github
         friendly_name: Github - Last Push
         icon_template: mdi:github

@@ -1,0 +1,12 @@
+---
+alias: Webhook - Office Sonos Play Source Trigger from Stream Deck
+description: ""
+initial_state: true
+trigger:
+  platform: webhook
+  webhook_id: sonos_play_source
+action:
+  - service: media_player.select_source
+    entity_id: media_player.office_sonos
+    data:
+      source: "{{ trigger.json.parameter }}"

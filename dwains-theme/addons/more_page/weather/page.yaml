@@ -1,7 +1,7 @@
 # dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-md-6 col-lg-3 col-xl-3'
+  items_classes: "col-xs-12 col-md-6 col-lg-3 col-xl-3"
   cards:
     - type: custom:mini-graph-card
       style: |
@@ -12,7 +12,7 @@
         - entity: sensor.bom_tamworth_air_temp_c
           name: Temperature
       name: Temperature
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       align_state: center
       hours_to_show: 24
@@ -34,7 +34,7 @@
         - entity: sensor.bom_tamworth_rain_today
           name: Rainfall
       name: Rainfall
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       align_state: center
       hours_to_show: 24
@@ -56,7 +56,7 @@
         - entity: sensor.bom_tamworth_pressure_mb
           name: Cases
       name: Pressure
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       align_state: center
       hours_to_show: 24
@@ -78,7 +78,7 @@
         - entity: sensor.bom_tamworth_relative_humidity
           name: Humidity
       name: Humidity
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       align_state: center
       hours_to_show: 24
@@ -92,7 +92,7 @@
         extrema: true
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   # padding: true
   cards:
     - type: vertical-stack
@@ -153,10 +153,10 @@
               entities:
                 - entity: sensor.bom_tamworth_wind_gust_kmh
                   name: Gust
-                  unit: ' '
+                  unit: " "
                 - entity: sensor.bom_tamworth_wind_speed_kmh
                   name: Speed
-                  unit: ' '
+                  unit: " "
                 - entity: sensor.bom_tamworth_wind_direction
                   name: Direction
             - entity: sensor.bom_tamworth_wind_gust_kmh
@@ -168,10 +168,10 @@
               entities:
                 - entity: sensor.bom_tamworth_wind_gust_kt
                   name: Gust
-                  unit: ' '
+                  unit: " "
                 - entity: sensor.bom_tamworth_wind_speed_kt
                   name: Speed
-                  unit: ' '
+                  unit: " "
                 - entity: sensor.bom_tamworth_wind_direction
                   name: Direction
             - type: section
@@ -224,7 +224,7 @@
         - !include bom_forecast.yaml
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   # padding: true
   cards:
     - type: vertical-stack
@@ -246,7 +246,7 @@
           sort_by: sort
           clickable: true
           css:
-            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
           entities:
             include:
               - sensor.weather_bom_rain_*
@@ -287,7 +287,7 @@
           sort_by: sort
           clickable: true
           css:
-            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
           entities:
             include:
               - sensor.weather_home_rain_*
@@ -330,7 +330,7 @@
           sort_by: sort
           clickable: true
           css:
-            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
           entities:
             include: sensor.aep_*_weekly
           columns:
@@ -369,7 +369,7 @@
           sort_by: sort
           clickable: true
           css:
-            table+: 'border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;'
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
           entities:
             include: sensor.aep_*_yearly
           columns:
@@ -392,7 +392,7 @@
               align: right
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   # padding: true
   cards:
     - type: vertical-stack
@@ -431,21 +431,22 @@
               name: Rainfall
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   # padding: true
   cards:
-
-    - entity: camera.namoi128km
-      name: Namoi Radar (128km Coverage)
-      type: picture-entity
-      show_name: false
-      show_state: false
-
-    - entity: camera.moree256km
-      name: Moree Radar (256km Coverage)
-      type: picture-entity
-      show_name: false
-      show_state: false
+    - type: "custom:bom-radar-card"
+      frame_count: 25
+      center_latitude: "-31.0927407"
+      center_longitude: "150.9305582"
+      marker_latitude: "-31.0927407"
+      marker_longitude: "150.9305582"
+      show_marker: true
+      show_range: true
+      show_zoom: true
+      show_recenter: true
+      show_playback: true
+      extra_labels: true
+      zoom_level: "8"
 
     - entity: camera.bom_satellite
       name: Satellite

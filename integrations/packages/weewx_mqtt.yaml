@@ -193,8 +193,8 @@ sensor:
       {% else %}
         {{ states('sensor.weather_outside_beaufort') }}
       {% endif %}
-    # unit_of_measurement: "mBar"
 
+    # unit_of_measurement: "mBar"
   - platform: mqtt
     expire_after: 120
     name: weather_outside_cloudbase

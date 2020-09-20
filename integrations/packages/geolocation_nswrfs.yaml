@@ -9,17 +9,16 @@ geo_location:
     entity_namespace: "nswrfs"
     radius: 100
     categories:
-      - 'Emergency Warning'
-      - 'Watch and Act'
-      - 'Advice'
-      - 'Not Applicable'
+      - "Emergency Warning"
+      - "Watch and Act"
+      - "Advice"
+      - "Not Applicable"
 
 sensor:
   - platform: template
     sensors:
       fires_near_me:
-        entity_id: sensor.date_time
-        friendly_name: 'Fires Near Me'
+        friendly_name: "Fires Near Me"
         icon_template: mdi:fire
         value_template: |
           {% for state in states

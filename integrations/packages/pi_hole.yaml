@@ -31,7 +31,6 @@ binary_sensor:
     sensors:
       servicestatus_pihole:
         friendly_name: Pi-Hole (PiServ)
-        entity_id: sensor.pi_hole_status
         value_template: "{{ is_state('sensor.pi_hole_status', 'enabled') }}"
         icon_template: >-
           {% if is_state('sensor.pi_hole_status', 'enabled') %}

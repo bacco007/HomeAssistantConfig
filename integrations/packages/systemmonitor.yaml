@@ -7,7 +7,6 @@ sensor:
   - platform: template
     sensors:
       systemuptime:
-        entity_id: sensor.last_boot
         friendly_name: HA Server - Uptime
         icon_template: mdi:clock
         value_template: >-

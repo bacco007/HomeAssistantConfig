@@ -22,7 +22,6 @@ sensor:
     sensors:
       binday_next:
         friendly_name: Next Bin Day
-        entity_id: sensor.date_time
         icon_template: mdi:truck-delivery
         value_template: >-
           {% set val = states.sensor.binday_waste.attributes['days'] %}
@@ -42,7 +41,6 @@ sensor:
           {{ day }} - {{bins}}
       binday_date:
         friendly_name: Next Collection Date
-        entity_id: sensor.date_time
         icon_template: mdi:truck-delivery
         value_template: "{{ as_timestamp(states.sensor.binday_waste.attributes['next_date'])|timestamp_custom ('%a %-d %-b') }}"
       binday_redbin:
@@ -62,7 +60,6 @@ sensor:
           {% endif %}
       binday_greenbin:
         friendly_name: Green Waste
-        entity_id: sensor.date_time
         icon_template: mdi:leaf
         value_template: >-
           {% set val = states.sensor.binday_greenwaste.attributes['days'] %}

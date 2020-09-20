@@ -1,0 +1,14 @@
+---
+alias: Webhook - Office Lamp & Sonos Off
+description: ""
+initial_state: true
+trigger:
+  platform: webhook
+  webhook_id: office_lampsonos_off
+action:
+  - entity_id: light.zha_office_light
+    service: light.turn_off
+    data: {}
+  - data: {}
+    entity_id: media_player.office_sonos
+    service: media_player.media_stop
