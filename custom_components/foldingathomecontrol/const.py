@@ -1,12 +1,17 @@
 """Constants for foldingathomecontrol."""
 import logging
 
-from homeassistant.const import UNIT_PERCENTAGE, TIME_SECONDS
+from homeassistant.const import MAJOR_VERSION, MINOR_VERSION, TIME_SECONDS
+
+if MAJOR_VERSION == 0 and MINOR_VERSION < 115:
+    from homeassistant.const import UNIT_PERCENTAGE as PERCENTAGE
+else:
+    from homeassistant.const import PERCENTAGE
 
 # Base component constants
 DOMAIN = "foldingathomecontrol"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "2.0.1"
+VERSION = "2.0.3"
 PLATFORMS = ["sensor"]
 DATA_UPDATED = f"{DOMAIN}_data_updated"
 SENSOR_ADDED = f"{DOMAIN}_sensor_added"
@@ -46,7 +51,7 @@ SENSOR_TYPES = [
     {"name": "Project", "unit_of_measurement": None, "icon": ICON},
     {
         "name": "Percentdone",
-        "unit_of_measurement": UNIT_PERCENTAGE,
+        "unit_of_measurement": PERCENTAGE,
         "icon": "mdi:percent",
     },
     {

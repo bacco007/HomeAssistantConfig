@@ -1,4 +1,0 @@
----
-platform: xboxone
-device: !secret xboxone_device
-name: Xbox One

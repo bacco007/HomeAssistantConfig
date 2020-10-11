@@ -4,6 +4,7 @@ from datetime import datetime
 import dateutil.parser
 
 
+
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
 
@@ -314,10 +315,9 @@ class VariablePricesAndRenewable:
     def from_dict(obj: Any) -> "VariablePricesAndRenewable":
         assert isinstance(obj, dict)
         period_type = PeriodType(obj.get("periodType"))
-        if obj.get("createdAt") == None:
-            created_at = ""
-        else:
-            created_at = from_datetime(obj.get("createdAt"))
+        created_at = None  
+        if(obj.get("createdAt") is not None):
+            created_at = from_datetime(obj.get("createdAt"))         
         wholesale_kwh_price = from_str(obj.get("wholesaleKWHPrice"))
         usage = from_union([from_str, from_none], obj.get("usage"))
         region = from_str(obj.get("region"))
@@ -326,10 +326,14 @@ class VariablePricesAndRenewable:
         period_source = PeriodSource(obj.get("periodSource"))
         percentile_rank = from_str(obj.get("percentileRank"))
         latest_period = from_union([from_datetime, from_none], obj.get("latestPeriod"))
-        forecasted_at = from_union([from_datetime, from_none], obj.get("forecastedAt"))
-        forecasted_at_period = from_union(
-            [from_str, from_none], obj.get("forecastedAt+period")
-        )
+        forecasted_at = None
+        if(obj.get("forecastedAt") is not None):
+            forecasted_at = from_union([from_datetime, from_none], obj.get("forecastedAt"))
+        forecasted_at_period = None
+        if(obj.get("forecastedAt+period") is not None):        
+            forecasted_at_period = from_union(
+                [from_str, from_none], obj.get("forecastedAt+period")
+            )
         return VariablePricesAndRenewable(
             period_type,
             created_at,

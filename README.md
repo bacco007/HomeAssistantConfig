@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, September 19th 2020_
+_Stats as at 04:59, Saturday, October 10th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.115.1 | 252     | 2302         | 1917 | 24 |
+| 0.116.2 | 249     | 2624         | 2190 | 28 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 24
-Binary Sensor | 53
+Automation | 28
+Binary Sensor | 52
 Camera | 4
-Device Tracker | 128
+Device Tracker | 148
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 4
-Media Player | 30
+Media Player | 32
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 1917
+Sensor | 2190
 Sun | 1
-Switch | 88
+Switch | 116
 Weather | 3
 Zone | 3
 
@@ -114,8 +114,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name |
 | --- |
-| [air_quality](https://www.home-assistant.io/components/air_quality) |
-| [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
@@ -152,11 +150,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
 | [camera.generic](https://www.home-assistant.io/components/camera.generic) |
 | [camera.ha_skyfield](https://www.home-assistant.io/components/camera.ha_skyfield) |
+| [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
-| [climate.dyson](https://www.home-assistant.io/components/climate.dyson) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [config](https://www.home-assistant.io/components/config) |
 | [configurator](https://www.home-assistant.io/components/configurator) |
@@ -177,10 +175,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
 | [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
-| [fan](https://www.home-assistant.io/components/fan) |
-| [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
+| [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
@@ -268,9 +265,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.covid19_nswhealth_tests](https://www.home-assistant.io/components/sensor.covid19_nswhealth_tests) |
 | [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
-| [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
+| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
@@ -286,6 +283,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
 | [sensor.my_unifi](https://www.home-assistant.io/components/sensor.my_unifi) |
+| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -341,6 +339,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
+| [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
 | [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
@@ -355,8 +354,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [updater](https://www.home-assistant.io/components/updater) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
-| [vacuum](https://www.home-assistant.io/components/vacuum) |
-| [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bom](https://www.home-assistant.io/components/weather.bom) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
@@ -412,7 +409,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [UI Logs](https://github.com/custom-components/uilogs)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
-- [Xbox One Smartglass - Media player integration](https://github.com/OpenXbox/xboxone-home-assistant)</details>
+- [ZHA Network Map](https://github.com/zha-ng/zha-map)</details>
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -450,7 +447,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
 | [Ui Logs](https://github.com/custom-components/uilogs) | Custom panel that show colorful logs for Home Assistant (core), and the supervisor (if you have it). |
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) | Home Assistant Sensor for WaterNSW Real Time Data |
-| [Xbox One   Smartglass Media Player](https://github.com/OpenXbox/xboxone-home-assistant) | Control your Xbox One from your Home Assistant device. |
 | [ZHA-MAP](https://github.com/zha-ng/zha-map) | Build ZHA network topology map. |
 
 #### HACS - Lovelace Cards
@@ -533,7 +529,6 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [Portainer]()
 - [Samba share](https://github.com/home-assistant/hassio-addons/tree/master/samba)
 - [SSH & Web Terminal]()
-- [Xbox One Smartglass REST server]()
 
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>

@@ -3,7 +3,6 @@ sensor:
   # {% for n in range(12) %}{% set u = n + 1 %}
   #   lovelace_sonarr_upcoming_{{'%02d' % (u)}}:
   #     friendly_name: Lovelace - Sonarr Upcoming {{'%02d' % (u)}}
-  #     entity_id: sensor.sonarr_upcoming_media
   #     value_template: {% raw %}{{state_attr('sensor.sonarr_upcoming_media', 'data')[{%endraw%}{{u}}{%raw%}]['title'] if state_attr('sensor.sonarr_upcoming_media', 'data')[{%endraw%}{{u}}{%raw%}]['title'] is defined else 'None'}}{% endraw %}
   #     attribute_templates:
   #       name: >

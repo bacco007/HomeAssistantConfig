@@ -125,9 +125,9 @@ rooms:
     # light: light.zha_spare_light
   - name: Laundry
     icon: mdi:washing-machine
-    temperature: sensor.zha_laundry_temperature
-    motion: binary_sensor.zha_laundry_motion
-    door: binary_sensor.zha_laundry_door
+    # temperature: sensor.zha_laundry_temperature
+    # motion: binary_sensor.zha_laundry_motion
+    # door: binary_sensor.zha_laundry_door
     addons:
       - name: LG ThinQ Washing Machine
         icon: mdi:washing-machine
@@ -146,12 +146,18 @@ rooms:
     temperature: sensor.weather_outside_temperature
     humidity: sensor.weather_outside_humidity
 
-
     # page_entities:
     #   entities:
     #     - entity: sensor.netatmo_brisbane_street_rain_sum_rain_24
   - name: Garage
     icon: mdi:garage
+    addons:
+      - name: VW Tiguan
+        icon: mdi:car
+        path: "dwains-theme/addons/rooms/garage/car/page.yaml"
+        button_path: "dwains-theme/addons/rooms/garage/car/button.yaml"
+        data:
+          entity: sensor.piserv_uptime
     page_entities:
       entities:
         - entity: sensor.fuelcheck_bp_tamworth_p98

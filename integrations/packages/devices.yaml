@@ -132,23 +132,6 @@ binary_sensor:
             {% else %}
               IP Address Not Available
             {% endif %}
-      networkstatus_netatmoweather:
-        friendly_name: Netatmo Weather Station
-        entity_id: device_tracker.netatmo_personal_weather_statio
-        value_template: "{{ is_state('device_tracker.netatmo', 'home') }}"
-        icon_template: >-
-          {% if is_state('device_tracker.netatmo', 'home') %}
-            mdi:weather-cloudy-alert
-          {% else %}
-            mdi:weather-cloudy-alert
-          {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.netatmo', 'home') %}
-              IP: {{ states.device_tracker.netatmo.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
       networkstatus_sonos:
         friendly_name: Sonos Play:1 (Bedroom)
         value_template: "{{ is_state('device_tracker.sonos_lounge_room', 'home') }}"

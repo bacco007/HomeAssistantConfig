@@ -3,7 +3,6 @@ sensor:
   # {% for n in range(12) %}{% set u = n + 1 %}
   #   lovelace_plex_recent_tv_{{'%02d' % (u)}}:
   #     friendly_name: Lovelace - Plex Recent TV {{'%02d' % (u)}}
-  #     entity_id: sensor.plex_recently_added
   #     value_template: {% raw %}{{state_attr('sensor.plex_recently_added', 'data')[{%endraw%}{{u}}{%raw%}]['title'] if state_attr('sensor.plex_recently_added', 'data')[{%endraw%}{{u}}{%raw%}]['title'] is defined else 'None'}}{% endraw %}
   #     attribute_templates:
   #       name: >

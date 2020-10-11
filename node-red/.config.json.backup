@@ -399,7 +399,7 @@
   },
   "node-red-contrib-bigtimer": {
    "name": "node-red-contrib-bigtimer",
-   "version": "2.4.0",
+   "version": "2.5.0",
    "local": false,
    "nodes": {
     "bigtimer": {
@@ -450,7 +450,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.25.0",
+   "version": "0.27.0",
    "local": false,
    "nodes": {
     "server": {
@@ -512,6 +512,16 @@
      "local": false,
      "module": "node-red-contrib-home-assistant-websocket",
      "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/nodes/webhook/webhook.js"
+    },
+    "ha-zone": {
+     "name": "ha-zone",
+     "types": [
+      "ha-zone"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-home-assistant-websocket",
+     "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/nodes/zone/zone.js"
     },
     "api-call-service": {
      "name": "api-call-service",
@@ -815,7 +825,7 @@
   },
   "node-red-contrib-moment": {
    "name": "node-red-contrib-moment",
-   "version": "3.0.3",
+   "version": "4.0.0",
    "local": false,
    "nodes": {
     "moment": {
@@ -961,7 +971,7 @@
   },
   "node-red-dashboard": {
    "name": "node-red-dashboard",
-   "version": "2.23.2",
+   "version": "2.23.4",
    "local": false,
    "nodes": {
     "ui_base": {
@@ -1195,7 +1205,7 @@
   },
   "node-red-node-email": {
    "name": "node-red-node-email",
-   "version": "1.7.9",
+   "version": "1.7.11",
    "local": false,
    "nodes": {
     "email": {
@@ -1563,6 +1573,24 @@
      "local": false,
      "module": "node-red-contrib-unit-converter",
      "file": "/opt/node_modules/node-red-contrib-unit-converter/unit-converter.js"
+    }
+   }
+  },
+  "node-red-node-mysql": {
+   "name": "node-red-node-mysql",
+   "version": "0.1.1",
+   "local": false,
+   "nodes": {
+    "mysql": {
+     "name": "mysql",
+     "types": [
+      "MySQLdatabase",
+      "mysql"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-node-mysql",
+     "file": "/opt/node_modules/node-red-node-mysql/68-mysql.js"
     }
    }
   }

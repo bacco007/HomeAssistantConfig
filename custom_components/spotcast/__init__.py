@@ -3,6 +3,7 @@ import logging
 import voluptuous as vol
 import random
 import time
+from datetime import datetime
 import spotipy
 from functools import wraps, partial
 from homeassistant.components import http, websocket_api
@@ -12,7 +13,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.cast.media_player import KNOWN_CHROMECAST_INFO_KEY
 from homeassistant.components.cast.helpers import ChromeCastZeroconf
 
-__VERSION__ = "3.4.2"
+__VERSION__ = "3.4.3"
 DOMAIN = "spotcast"
 
 _LOGGER = logging.getLogger(__name__)
@@ -161,7 +162,7 @@ def setup(hass, config):
                 resp = resp.get("content")
             elif playlistType == "featured":
                 resp = client.featured_playlists(
-                    locale=locale, country=countryCode, timestamp=None, limit=limit, offset=0
+                    locale=locale, country=countryCode, timestamp=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'), limit=limit, offset=0
                 )
                 resp = resp.get("playlists")
             else:
@@ -435,7 +436,7 @@ class SpotifyCastDevice:
                      None,
                      None,
                  ),
-                 ChromeCastZeroconf.get_zeroconf()) 
+                 ChromeCastZeroconf.get_zeroconf())
         _LOGGER.error(
             "Could not find device %s from hass.data",
             device_name,

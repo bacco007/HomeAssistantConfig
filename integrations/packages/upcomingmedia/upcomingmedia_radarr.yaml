@@ -3,7 +3,6 @@ sensor:
   # {% for n in range(12) %}{% set u = n + 1 %}{% set l = state_attr('sensor.radarr_upcoming_media', 'data')| count -1 %}
   #   lovelace_radarr_upcoming_{{'%02d' % (u)}}:
   #     friendly_name: Lovelace - Radarr Upcoming {{'%02d' % (u)}}
-  #     entity_id: sensor.radarr_upcoming_media
   #     value_template: >
   #       {% raw %}{{state_attr('sensor.radarr_upcoming_media', 'data')[{%endraw%}{{u}}{%raw%}]['title'] if {%endraw%}{{u}}{%raw%} <= state_attr('sensor.radarr_upcoming_media', 'data')| count -1 else 'None'}}{% endraw %}
   #     attribute_templates:
