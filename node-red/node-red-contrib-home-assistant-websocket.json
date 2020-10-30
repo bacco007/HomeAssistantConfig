@@ -116,7 +116,7 @@
     },
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 114,
+        "state": 113,
         "attributes": {}
       }
     },
@@ -128,19 +128,19 @@
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 2,
+        "state": 1,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 77,
+        "state": 74,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 16,
+        "state": 15,
         "attributes": {}
       }
     },
@@ -212,25 +212,25 @@
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 18.22,
+        "state": 18.09,
         "attributes": {
-          "period": "2020-10-30T17:30:00"
+          "period": "2020-10-30T17:50:00"
         }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 9.11,
+        "state": 8.99,
         "attributes": {
-          "period": "2020-10-30T17:30:00"
+          "period": "2020-10-30T17:50:00"
         }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 6.55,
+        "state": 6.43,
         "attributes": {
-          "period": "2020-10-30T17:30:00"
+          "period": "2020-10-30T17:50:00"
         }
       }
     },
@@ -474,7 +474,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "114.1",
+        "state": "114.3",
         "attributes": {
           "units": "GB"
         }
@@ -482,7 +482,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "409.4",
+        "state": "410.8",
         "attributes": {
           "units": "GB"
         }
@@ -494,20 +494,20 @@
         "attributes": {
           "model": "UGW3",
           "version": "4.4.51.5287926",
-          "data": "505.4 GB",
+          "data": "507.0 GB",
           "serial": "F09FC212B4F7",
           "sitename": "TBSmartHome (default)",
           "type": "ugw",
           "controller": "https://192.168.1.20:8443",
           "external_ip_address": "110.143.197.190",
-          "uptime": "13d 3hr 28min",
+          "uptime": "13d 3hr 51min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "317.1",
+        "state": "317.8",
         "attributes": {
           "units": "GB"
         }
@@ -515,7 +515,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "25.2",
+        "state": "25.3",
         "attributes": {
           "units": "GB"
         }
@@ -596,9 +596,9 @@
           "sitename": "TBSmartHome (default)",
           "type": "usw",
           "controller": "https://192.168.1.20:8443",
-          "uptime": "13d 3hr 29min",
-          "rx_data": "114.1 GB",
-          "tx_data": "409.4 GB",
+          "uptime": "13d 3hr 51min",
+          "rx_data": "114.3 GB",
+          "tx_data": "410.8 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -614,14 +614,14 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 17.9,
-          "users": 25,
+          "cpu": 11.5,
+          "users": 26,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "13d 3hr 29min",
+          "uptime": "13d 3hr 52min",
           "lastseen": "a few seconds ago",
-          "tx_data": "317.1 GB",
-          "rx_data": "25.2 GB"
+          "tx_data": "317.8 GB",
+          "rx_data": "25.3 GB"
         }
       }
     },
@@ -640,10 +640,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 4152,
+        "state": 4159,
         "attributes": {
-          "uptime": "",
-          "drops": 4152
+          "uptime": "0d 0hr 4min",
+          "drops": 4159
         }
       }
     },
@@ -655,13 +655,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "22.70",
+        "state": "nan",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "93.95",
+        "state": "nan",
         "attributes": {}
       }
     },

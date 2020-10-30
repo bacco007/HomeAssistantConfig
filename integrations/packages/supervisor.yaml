@@ -70,19 +70,23 @@ sensor:
       current_supervisor_installed:
         value_template: '{{ states.sensor.supervisor_installed.attributes["current_version"] }}'
       current_dns_installed:
-        value_template: '{{ states.sensor.dns_installed.attributes["version"] }}'
+        value_template: '{{ states.sensor.dns_installed.attributes["current_version"] }}'
       current_audio_installed:
-        value_template: '{{ states.sensor.audio_installed.attributes["version"] }}'
+        value_template: '{{ states.sensor.audio_installed.attributes["current_version"] }}'
       current_cli_installed:
-        value_template: '{{ states.sensor.cli_installed.attributes["version"] }}'
+        value_template: '{{ states.sensor.cli_installed.attributes["current_version"] }}'
       current_multicast_installed:
-        value_template: '{{ states.sensor.multicast_installed.attributes["version"] }}'
+        value_template: '{{ states.sensor.multicast_installed.attributes["current_version"] }}'
       current_multicast_latest:
-        value_template: '{{ states.sensor.multicast_installed.attributes["version_latest"] }}'
+        value_template: '{{ states.sensor.multicast_installed.attributes["newest_version"] }}'
       current_observer_installed:
-        value_template: '{{ states.sensor.observer_installed.attributes["version"] }}'
+        value_template: '{{ states.sensor.observer_installed.attributes["current_version"] }}'
       current_observer_latest:
-        value_template: '{{ states.sensor.observer_installed.attributes["version_latest"] }}'
+        value_template: '{{ states.sensor.observer_installed.attributes["newest_version"] }}'
+      current_core_installed:
+        value_template: '{{ states.sensor.core_installed.attributes["current_version"] }}'
+      current_core_latest:
+        value_template: '{{ states.sensor.core_installed.attributes["newest_version"] }}'
 
   - platform: rest
     resource: https://s3.amazonaws.com/hassio-version/beta.json
