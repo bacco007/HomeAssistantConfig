@@ -1,8 +1,0 @@
-{
-  "domain": "aio-geojson-query",
-  "name": "GeoJson Rich Integration",
-  "documentation": "https://github.com/Fusion/python-aio-geojson-query/tree/master/examples/homeassistant",
-  "dependencies": [],
-  "codeowners": ["@fusion"],
-  "requirements": ["aio-geojson-query==0.0.3"]
-}

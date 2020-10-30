@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, October 10th 2020_
+_Stats as at 04:59, Thursday, October 29th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.116.2 | 249     | 2624         | 2190 | 28 |
+| 0.116.4 | 255     | 2710         | 2263 | 28 |
 
 Type | Qty
 -- | --
@@ -85,19 +85,19 @@ Alert | 0
 Automation | 28
 Binary Sensor | 52
 Camera | 4
-Device Tracker | 148
+Device Tracker | 145
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 4
-Media Player | 32
+Media Player | 31
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 2190
+Sensor | 2263
 Sun | 1
-Switch | 116
+Switch | 114
 Weather | 3
 Zone | 3
 
@@ -114,6 +114,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name |
 | --- |
+| [air_quality](https://www.home-assistant.io/components/air_quality) |
+| [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
@@ -142,6 +144,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
+| [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [calendar](https://www.home-assistant.io/components/calendar) |
 | [calendar.garbage_collection](https://www.home-assistant.io/components/calendar.garbage_collection) |
 | [calendar.google](https://www.home-assistant.io/components/calendar.google) |
@@ -155,6 +158,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
+| [climate.dyson](https://www.home-assistant.io/components/climate.dyson) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [config](https://www.home-assistant.io/components/config) |
 | [configurator](https://www.home-assistant.io/components/configurator) |
@@ -166,7 +170,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [deconz](https://www.home-assistant.io/components/deconz) |
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
-| [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.tile](https://www.home-assistant.io/components/device_tracker.tile) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
@@ -175,6 +178,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
 | [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
+| [fan](https://www.home-assistant.io/components/fan) |
+| [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
 | [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
@@ -196,7 +201,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [homekit](https://www.home-assistant.io/components/homekit) |
 | [http](https://www.home-assistant.io/components/http) |
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
-| [icloud](https://www.home-assistant.io/components/icloud) |
 | [ifttt](https://www.home-assistant.io/components/ifttt) |
 | [image](https://www.home-assistant.io/components/image) |
 | [influxdb](https://www.home-assistant.io/components/influxdb) |
@@ -258,6 +262,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.bom_forecast](https://www.home-assistant.io/components/sensor.bom_forecast) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
+| [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |
@@ -265,6 +270,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.covid19_nswhealth_tests](https://www.home-assistant.io/components/sensor.covid19_nswhealth_tests) |
 | [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
+| [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
@@ -275,7 +281,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time) |
 | [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk) |
-| [sensor.icloud](https://www.home-assistant.io/components/sensor.icloud) |
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
 | [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
 | [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app) |
@@ -322,7 +327,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
 | [sensor.websocket_api](https://www.home-assistant.io/components/sensor.websocket_api) |
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
-| [sensor.xbox_live](https://www.home-assistant.io/components/sensor.xbox_live) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
@@ -354,6 +358,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [updater](https://www.home-assistant.io/components/updater) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
+| [vacuum](https://www.home-assistant.io/components/vacuum) |
+| [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bom](https://www.home-assistant.io/components/weather.bom) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
@@ -377,6 +383,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [BOM Forecast](https://github.com/davidfw1960/bom_forecast)
 - [Breaking Changes](https://github.com/custom-components/breaking_changes)
 - [Browser mod]()
+- [Bureau of Meteorology](https://github.com/bremor/bureau_of_meteorology)
 - [Climacell weather](https://gitlab.com/rrenato/ha-climacell-weather)
 - [COVID-19 NSW Health]()
 - [COVID-19 NSW Health Tests]()
@@ -387,11 +394,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
-- [GeoJson Rich Integration](https://github.com/Fusion/python-aio-geojson-query/tree/master/examples/homeassistant)
 - [Google Fit]()
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS](https://hacs.xyz/docs/configuration/start)
 - [IAQ UK](https://github.com/Limych/ha-iaquk)
+- [iCloud3 Device Tracker](https://gcobb321.github.io/icloud3_dev/#/)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [MyJDownloader](https://www.home-assistant.io/integrations/myjdownloader)
 - [Node-RED](https://github.com/zachowj/node-red)
@@ -409,6 +416,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [UI Logs](https://github.com/custom-components/uilogs)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
+- [Yahoo Finance](https://github.com/InduPrakash/yahoofinance)
 - [ZHA Network Map](https://github.com/zha-ng/zha-map)</details>
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -423,6 +431,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bom Forecast](https://github.com/DavidFW1960/bom_forecast) | BOM Australian Weather Forecast via FTP |
 | [Breaking Changes](https://github.com/custom-components/breaking_changes) | Component to show potential breaking_changes in the current published version based on your loaded components |
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) | 🔹 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player |
+| [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) | Custom component for retrieving weather information from the Bureau of Meteorology. |
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |
 | [Feedparser](https://github.com/custom-components/feedparser) | 📰 RSS Feed Integration |
 | [Folding@Homecontrol](https://github.com/eifinger/hass-foldingathomecontrol) | Homeassistant integration for FoldingAtHomeControl |
@@ -431,6 +440,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [HACS](https://github.com/hacs/integration) | HACS gives you a powerful UI to handle downloads of all your custom needs. |
 | [Hass Amber Electric](https://github.com/lewisbenge/hass-amber-electric) | Home Assistant Component to pull the latest energy prices from Amber Electric |
 | [Hass Favicon](https://github.com/thomasloven/hass-favicon) | 🔹 Change the favicon of your Home Assistant instance |
+| [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 is a device_tracker custom_component for iPhones, iPads & iWatches that monitors zone & location events triggered by the HA iOS Companion App |
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) | Indoor Air Quality Sensor Component for Home Assistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
@@ -447,6 +457,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
 | [Ui Logs](https://github.com/custom-components/uilogs) | Custom panel that show colorful logs for Home Assistant (core), and the supervisor (if you have it). |
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) | Home Assistant Sensor for WaterNSW Real Time Data |
+| [Yahoo Finance](https://github.com/InduPrakash/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
 | [ZHA-MAP](https://github.com/zha-ng/zha-map) | Build ZHA network topology map. |
 
 #### HACS - Lovelace Cards
@@ -518,6 +529,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ADB - Android Debug Bridge]()
+- [AppDaemon 4]()
 - [ESPHome]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()

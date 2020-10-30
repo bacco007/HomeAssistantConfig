@@ -1,0 +1,23 @@
+---
+platform: yahoofinance
+scan_interval:
+  hours: 1
+symbols:
+  - AMX.AX
+  - RIO.AX
+  - TLS.AX
+  - TNE.AX
+  - PRT.AX
+  - NEC.AX
+  - JBH.AX
+  - SWM.AX
+  - SXL.AX
+  - ^AXJO
+  - ^AORD
+  - ^DJI
+  - ^IXIC
+  - ^FTSE
+  - AUDUSD=X
+  - AUDGBP=X
+  - AUDNZD=X
+  - AUDEUR=X

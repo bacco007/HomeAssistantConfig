@@ -386,6 +386,62 @@
                     style: [text-align: center],
                   }
 
+- type: conditional
+  conditions:
+    - entity: sensor.potential_breaking_changes
+      state_not: "0"
+  card:
+    type: custom:dwains-flexbox-card
+    items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+    cards:
+      - type: custom:stack-in-card
+        mode: horizontal
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                style: |
+                  ha-card { box-shadow: none; }
+                  ha-markdown { padding-bottom: 1px !important; }
+                content: >
+                  <h2>Breaking Changes</h2>
+          - type: vertical-stack
+            cards:
+              - type: entities
+                style: |
+                  ha-card {
+                    background-color: var(--dwains-theme-primary)
+                  }
+                  .card-header {
+                    padding: 5px 16px;
+                    font-size: 18px;
+                    font-weight: 700 !important;
+                  }
+                  .card-content div {
+                      margin: 0 !important;
+                  }
+                  #states {
+                    padding-top: 0px !important;
+                    padding-bottom: 0px !important;
+                  }
+                  .secondary {
+                    color: darkgray !important;
+                    margin-left: 2px !important;
+                  }
+                entities:
+                  - entity: sensor.potential_breaking_changes
+                    name: Potential Breaking Changes
+              - type: "custom:list-card"
+                feed_attribute: changes
+                columns:
+                  - add_link: doclink
+                    field: integration
+                    title: Component
+                  - add_link: prlink
+                    field: description
+                    title: Description
+                entity: sensor.potential_breaking_changes
+
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:

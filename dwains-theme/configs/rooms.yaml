@@ -280,25 +280,8 @@ rooms:
 
   - name: Tamworth
     icon: mdi:road-variant
-    temperature: sensor.bom_tamworth_air_temp_c
-    humidity: sensor.bom_tamworth_relative_humidity
-    pressure: sensor.bom_tamworth_pressure_mb
-    addons:
-      - name: Namoi 128km Radar
-        path: "dwains-theme/addons/rooms/tamworth/camera/page.yaml"
-        button_path: "dwains-theme/addons/rooms/tamworth/camera/button.yaml"
-        data:
-          entity: camera.namoi128km
-      - name: Moree 256km Radar
-        path: "dwains-theme/addons/rooms/tamworth/camera/page.yaml"
-        button_path: "dwains-theme/addons/rooms/tamworth/camera/button.yaml"
-        data:
-          entity: camera.moree256km
-      - name: National Satellite
-        path: "dwains-theme/addons/rooms/tamworth/camera/page.yaml"
-        button_path: "dwains-theme/addons/rooms/tamworth/camera/button.yaml"
-        data:
-          entity: camera.bom_satellite
+    temperature: sensor.tamworth_airport_temperature
+    humidity: sensor.tamworth_airport_humidity
     page_entities:
       entities:
         - entity: sensor.bom_max_temp

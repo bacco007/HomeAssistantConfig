@@ -4,10 +4,11 @@ monitor_docker:
     url: tcp://192.168.1.20:2375
     rename:
       db: "MariaDB"
+      dockergc: "Docker Garbage Collection"
+      dozzle: "Dozzle"
       deconz: "deCONZ"
       duplicati: "Duplicati"
       glances: "Glances"
-      graphs1090: "graphs1090"
       guacamole: "Guacamole"
       ha-dockermon: "HA Dockermon"
       homer: "Homer"
@@ -15,9 +16,7 @@ monitor_docker:
       nginxproxymanager: "NGINX Proxy Manager"
       ouroboros: "Ouroboros"
       portainer: "Portainer"
-      readsb: "ReASDB"
       sonos-web: "Sonos Web"
-      tar1090: "tar1090"
       unifi: "Unifi Controller"
     monitored_conditions:
       - version
@@ -41,45 +40,50 @@ monitor_docker:
       - network_total_up
       - network_total_down
 
-  - name: TBSH02_monitordocker
-    url: tcp://192.168.1.64:2375
-    rename:
-      glances: "Glances"
-      ouroboros: "Ouroboros"
-    monitored_conditions:
-      - version
-      - containers_total
-      - containers_running
-      - containers_paused
-      - containers_stopped
-      - images
-      - containers_cpu_percentage
-      - containers_memory
-      - containers_memory_percentage
-      - state
-      - status
-      - uptime
-      - image
-      - cpu_percentage
-      - memory
-      - memory_percentage
-      - network_speed_up
-      - network_speed_down
-      - network_total_up
-      - network_total_down
+  # - name: TBSH02_monitordocker
+  #   url: tcp://192.168.1.64:2375
+  #   rename:
+  #     glances: "Glances"
+  #     ouroboros: "Ouroboros"
+  #   monitored_conditions:
+  #     - version
+  #     - containers_total
+  #     - containers_running
+  #     - containers_paused
+  #     - containers_stopped
+  #     - images
+  #     - containers_cpu_percentage
+  #     - containers_memory
+  #     - containers_memory_percentage
+  #     - state
+  #     - status
+  #     - uptime
+  #     - image
+  #     - cpu_percentage
+  #     - memory
+  #     - memory_percentage
+  #     - network_speed_up
+  #     - network_speed_down
+  #     - network_total_up
+  #     - network_total_down
 
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
     rename:
+      adminer: "adminer"
       adsb2influxdb: "ADS-B to InfluxDB"
+      adsb2mqtt: "ADS-B to MQTT"
       adsbx: "ADS-B Exchange Feeder"
+      clarkson: "Clarkson"
+      dockergc: "Docker Garbage Collection"
+      dozzle: "Dozzle"
+      duplicati: "Duplicati"
       flightairmap: "Flight Air Map"
       flightairmap_db: "Flight Air Map DB"
       fr24: "flightradar24 Feeder"
       glances: "Glances"
       graphs1090: "graphs1090"
-      ha-dockermon: "HA Dockermon"
-      opensky: "Opensky Feeder"
+      mm2: "mm2"
       ouroboros: "Ouroboros"
       pfclient: "PlaneFinder Feeder"
       piaware2influx: "PiAware to InfluxDB"
@@ -112,8 +116,10 @@ monitor_docker:
   - name: vmTBSH01_monitordocker
     url: tcp://192.168.1.61:2375
     rename:
+      dockergc: "Docker Garbage Collection"
+      dozzle: "Dozzle"
       duplicati: "Duplicati"
-      glances: "Glances"
+      nice_johnson: "Glances"
       grafana: "Grafana"
       ha-dockermon: "HA Dockermon"
       jackett: "Jackett"
@@ -155,8 +161,10 @@ monitor_docker:
     url: tcp://192.168.1.62:2375
     rename:
       chronograf: "Chronograf"
+      dockergc: "Docker Garbage Collection"
+      dozzle: "Dozzle"
       duplicati: "Duplicati"
-      glances: "Glances"
+      suspicious_golick: "Glances"
       ha-dockermon: "HA Dockermon"
       influxdb: "InfluxDB"
       kapacitor: "Kapacitor"
@@ -186,6 +194,7 @@ monitor_docker:
       - network_speed_down
       - network_total_up
       - network_total_down
+
   - name: vmTBSH03_monitordocker
     url: tcp://192.168.1.63:2375
     rename:

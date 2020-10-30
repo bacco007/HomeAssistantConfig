@@ -399,7 +399,7 @@
   },
   "node-red-contrib-bigtimer": {
    "name": "node-red-contrib-bigtimer",
-   "version": "2.5.0",
+   "version": "2.6.0",
    "local": false,
    "nodes": {
     "bigtimer": {
@@ -450,7 +450,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.27.0",
+   "version": "0.27.1",
    "local": false,
    "nodes": {
     "server": {

@@ -2,54 +2,68 @@
 sensor:
   - platform: command_line
     name: Supervisor Installed
-    command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version,"addons":[.data.addons[] | select(.version != .installed)]}'''
+    command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version,"update_available":.data.update_available,"addons":[.data.addons[] | select(.update_available)]}'''
     value_template: "{{ value_json.addons | length }}"
     unit_of_measurement: pending update(s)
     json_attributes:
+      - update_available
       - newest_version
       - current_version
       - addons
 
   - platform: command_line
     name: DNS Installed
-    command: 'curl http://supervisor/dns/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
-    value_template: "{{ value_json.version }}"
+    command: 'curl http://supervisor/dns/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
     json_attributes:
-      - version
-      - version_latest
+      - update_available
+      - newest_version
+      - current_version
 
   - platform: command_line
     name: Audio Installed
-    command: 'curl http://supervisor/audio/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
-    value_template: "{{ value_json.version }}"
+    command: 'curl http://supervisor/audio/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
     json_attributes:
-      - version
-      - version_latest
+      - update_available
+      - newest_version
+      - current_version
 
   - platform: command_line
-    name: Cli Installed
-    command: 'curl http://supervisor/cli/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
-    value_template: "{{ value_json.version }}"
+    name: ClI Installed
+    command: 'curl http://supervisor/cli/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
     json_attributes:
-      - version
-      - version_latest
+      - update_available
+      - newest_version
+      - current_version
 
   - platform: command_line
     name: Multicast Installed
-    command: 'curl http://supervisor/multicast/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"version":.data.version,"version_latest":.data.version_latest }'''
-    value_template: "{{ value_json.version }}"
+    command: 'curl http://supervisor/multicast/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
     json_attributes:
-      - version
-      - version_latest
+      - update_available
+      - newest_version
+      - current_version
 
   - platform: command_line
     name: Observer Installed
-    command: 'curl http://supervisor/observer/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"host": .data.host,"version":.data.version,"version_latest":.data.version_latest }'''
-    value_template: "{{ value_json.version }}"
+    command: 'curl http://supervisor/observer/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
     json_attributes:
-      - host
-      - version
-      - version_latest
+      - update_available
+      - newest_version
+      - current_version
+
+  - platform: command_line
+    name: Core Installed
+    command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
+    json_attributes:
+      - update_available
+      - newest_version
+      - current_version
 
   - platform: template
     sensors:
@@ -157,3 +171,27 @@ sensor:
         value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["dns"] }}'
       current_audio_dev:
         value_template: '{{ states.sensor.home_assistant_supervised_dev_versions.attributes["audio"] }}'
+
+binary_sensor:
+  # True if there's updates available for any HACS components, Addons or the Host
+  - platform: threshold
+    name: Updater HACS
+    entity_id: sensor.hacs_updates
+    upper: 0.5
+  - platform: threshold
+    name: Updater Addons
+    entity_id: sensor.supervisor_installed
+    upper: 0.5
+  - platform: threshold
+    name: Updater Host
+    entity_id: sensor.host_installed
+    upper: 0.5
+
+  - platform: template
+    sensors:
+      # True if there's an update available for supervisor
+      updater_supervisor:
+        friendly_name: "Updater Supervisor"
+        device_class: problem
+        value_template: "{{ state_attr('sensor.supervisor_installed', 'update_available') }}"
+        availability_template: "{{ states('sensor.supervisor_installed') | int(-1) > -1 }}"

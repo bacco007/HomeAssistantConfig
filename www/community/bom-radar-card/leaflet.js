@@ -5962,4 +5962,4 @@
   }),
     (window.L = t);
 });
-//# sourceMappingURL=leaflet.js.map
+//# sourceMappingURL=https://unpkg.com/leaflet@1.7.1/dist/leaflet.js.map

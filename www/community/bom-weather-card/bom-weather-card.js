@@ -1,5 +1,5 @@
 console.info(
-  `%c BOM-WEATHER-CARD \n%c Version 0.79     `,
+  `%c BOM-WEATHER-CARD \n%c Version 0.82     `,
   "color: orange; font-weight: bold; background: black",
   "color: white; font-weight: bold; background: dimgray"
 );
@@ -284,13 +284,13 @@ class BOMWeatherCard extends LitElement {
     var light_rain_icon = (iconStyle ==="true") ? `rainy-1` : (iconStyle ==="hybrid") ? `rainy-1` : `rainy-1` ;
     var windy_icon = (iconStyle ==="true") ? `cloudy-original` : (iconStyle ==="hybrid") ? `wind` : `wind`;
     var fog_icon = (iconStyle ==="true") ? `cloudy-original` : (iconStyle ==="hybrid") ? `fog` : `fog`;
-    var showers_icon = (iconStyle ==="true") ? `rainy-3` : (iconStyle ==="hybrid") ? `rainy-3` : `rainy-3`;
+    var showers_icon = (iconStyle ==="true") ? `rainy-1` : (iconStyle ==="hybrid") ? `rainy-1` : `rainy-1`;
     var rain_icon = (iconStyle ==="true") ? `rainy-5` : (iconStyle ==="hybrid") ? `rainy-5` : `rain`;
     var dust_icon = (iconStyle ==="true") ? `cloudy-${this.dayOrNight}-1` : (iconStyle ==="hybrid") ? `haze` : `haze`;
     var snow_icon = (iconStyle ==="true") ? `snowy-6` : (iconStyle ==="hybrid") ? `snowy-6` : `snow`;
     var storm_icon = (iconStyle ==="true") ? `scattered-thunderstorms` : (iconStyle ==="hybrid") ? `scattered-thunderstorms` : `scattered-thunderstorms`;
-    var light_showers_icon = (iconStyle ==="true") ? `rainy-5` : (iconStyle ==="hybrid") ? `rainy-5` : `rainy-5`;
-    var heavy_showers_icon = (iconStyle ==="true") ? `rainy-7` : (iconStyle ==="hybrid") ? `rainy-7` : `rainy-7`;
+    var light_showers_icon = (iconStyle ==="true") ? `rainy-2` : (iconStyle ==="hybrid") ? `rainy-2` : `rainy-2`;
+    var heavy_showers_icon = (iconStyle ==="true") ? `rainy-3` : (iconStyle ==="hybrid") ? `rainy-3` : `rainy-3`;
     var cyclone_icon = (iconStyle ==="true") ? `tornado` : (iconStyle ==="hybrid") ? `tornado` : `tornado`;
     var clear_day_icon = (iconStyle ==="true") ? `day` : (iconStyle ==="hybrid") ? `day` : `clear-day`;
     var clear_night_icon = (iconStyle ==="true") ? `night` : (iconStyle ==="hybrid") ? `night` : `clear-night`;
@@ -305,12 +305,15 @@ class BOMWeatherCard extends LitElement {
       'clear': clear_icon,
       'mostly-sunny': mostly_sunny_icon,
       'partly-cloudy': partly_cloudy_icon,
+      'mostly_sunny': mostly_sunny_icon,
+      'partly_cloudy': partly_cloudy_icon,
       'cloudy': cloudy_icon,
       'hazy': hazy_icon,
       'hazey': hazy_icon,
       'haze': hazy_icon,
       'frost': frost_icon,
       'light-rain': light_rain_icon,
+      'light_rain': light_rain_icon,
       'wind': windy_icon,
       'windy': windy_icon,
       'fog': fog_icon,
@@ -329,17 +332,27 @@ class BOMWeatherCard extends LitElement {
       'light-shower': light_showers_icon,
       'heavy-showers': heavy_showers_icon,
       'heavy-shower': heavy_showers_icon,
+      'light_showers': light_showers_icon,
+      'light_shower': light_showers_icon,
+      'heavy_showers': heavy_showers_icon,
+      'heavy_shower': heavy_showers_icon,
       'tropical-cyclone': cyclone_icon,
+      'tropical_cyclone': cyclone_icon,
       'tropicalcyclone': cyclone_icon,
       'clear-day': clear_day_icon,
       'clear-night': clear_night_icon,
+      'clear_day': clear_day_icon,
+      'clear_night': clear_night_icon,
       'sleet': sleet_icon,
       'partly-cloudy-day': partly_cloudy_day_icon,
       'partly-cloudy-night': partly_cloudy_night_icon,
+      'partly_cloudy_day': partly_cloudy_day_icon,
+      'partly_cloudy_night': partly_cloudy_night_icon,
       'hail': hail_icon,
       'lightning': lightning_icon,
       'thunderstorm': lightning_icon,
       'windy-variant': windy_variant_icon,
+      'windy_variant': windy_variant_icon,
       'exceptional': '!!',
     }
   }
@@ -592,7 +605,7 @@ style() {
   var tempFontSize = this.config.temp_font_size || "4em";
   var tempRightPos = this.config.temp_right_pos || "0.85em";
   var tempUOMTopMargin = this.config.temp_uom_top_margin || "-12px";
-  var tempUOMRightMargin = this.config.temp_uom_right_margin || "7px";
+  var tempUOMRightMargin = this.config.temp_uom_right_margin || "4px";
   var apparentTopMargin = this.config.apparent_top_margin || "45px";
   var apparentRightPos =  this.config.apparent_right_pos || "1em";
   var apparentRightMargin = this.config.apparent_right_margin || "1em";
@@ -641,7 +654,7 @@ style() {
         color: var(--primary-text-color);
         position: absolute;
         right: ${tempRightPos};
-        margin-top: ${tempTopMargin};
+        margin-top: ${tempTopMargin} !important;
       }
 
       .tempc {
@@ -651,8 +664,8 @@ style() {
         color: var(--primary-text-color);
         position: absolute;
         right: 1em;
-        margin-top: ${tempUOMTopMargin};
-        margin-right: ${tempUOMRightMargin};
+        margin-top: ${tempUOMTopMargin} !important;
+        margin-right: ${tempUOMRightMargin} !important;
       }
 
       .apparent {

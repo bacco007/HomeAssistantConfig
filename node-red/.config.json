@@ -450,7 +450,7 @@
   },
   "node-red-contrib-home-assistant-websocket": {
    "name": "node-red-contrib-home-assistant-websocket",
-   "version": "0.27.1",
+   "version": "0.27.4",
    "local": false,
    "nodes": {
     "server": {
@@ -1544,7 +1544,7 @@
   },
   "node-red-contrib-rate": {
    "name": "node-red-contrib-rate",
-   "version": "1.2.2",
+   "version": "1.4.0",
    "local": false,
    "nodes": {
     "rate": {

@@ -23,7 +23,7 @@ DEFAULT_UOM = "People"
 
 ICON = "mdi:biohazard"
 
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=30)
+MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=300)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_NAME): cv.string})
 

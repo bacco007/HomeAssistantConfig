@@ -2,15 +2,15 @@
 
 house_information:
   favorites:
-      - entity: sensor.binday_next
-        icon_on: mdi:truck-delivery
-        icon_off: mdi:truck-delivery
-      - entity: sensor.weather_outside_rain_day
-        icon_on: mdi:weather-rainy
-        icon_off: mdi:weather-rainy
-      - entity: sensor.bom_tamworth_rain_today
-        icon_on: mdi:weather-rainy
-        icon_off: mdi:weather-rainy
+    - entity: sensor.binday_next
+      icon_on: mdi:truck-delivery
+      icon_off: mdi:truck-delivery
+    - entity: sensor.weather_outside_rain_day
+      icon_on: mdi:weather-rainy
+      icon_off: mdi:weather-rainy
+    - entity: sensor.tamworth_airport_rain_since_9am
+      icon_on: mdi:weather-rainy
+      icon_off: mdi:weather-rainy
   #   - entity: binary_sensor.doorbell_button
   #     icon_on: fas:bell
   #     icon_off: fas:bell
@@ -20,7 +20,7 @@ house_information:
   addons:
     - name: Calendar
       icon: mdi:calendar
-      path: 'dwains-theme/addons/house_information/calendar/page.yaml'
+      path: "dwains-theme/addons/house_information/calendar/page.yaml"
       data:
         calendars:
           - calendar.anaheim_ducks

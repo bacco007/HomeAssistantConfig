@@ -24,7 +24,7 @@ DEFAULT_UOM = "AQI"
 
 ICON = "mdi:chemical-weapon"
 
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=5)
+MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=15)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_NAME): cv.string})
 

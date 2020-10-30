@@ -12,5 +12,5 @@ check_config:
 asx_sensor:
   module: asx_sensor
   class: Get_ASX_info
-  TICKER: "TLS,RIO,TNE,AMX"
+  TICKER: "TLS,RIO,TNE,AMX,PRT,NEC,JBG,SWM,SXL"
   TICK_FLAG: "input_boolean.check_asx_info"

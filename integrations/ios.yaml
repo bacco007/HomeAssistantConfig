@@ -1,0 +1,20 @@
+---
+# https://www.home-assistant.io/integrations/ios/
+ios:
+  actions:
+    - name: LightsSonosActionOver
+      background_color: "#000000"
+      label:
+        text: "Lights, Sonos, Action Over"
+        color: "#ff0000"
+      icon:
+        icon: lightbulb_off_outline
+        color: "#ffffff"
+    - name: OfficeLightsOn
+      background_color: "#000000"
+      label:
+        text: "Office Lights On"
+        color: "#ff0000"
+      icon:
+        icon: lightbulb_on
+        color: "#ffffff"
