@@ -2,6 +2,7 @@
 platform: yahoofinance
 scan_interval:
   hours: 1
+show_trending_icon: true
 symbols:
   - AMX.AX
   - RIO.AX

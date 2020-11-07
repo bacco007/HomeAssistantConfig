@@ -4,7 +4,9 @@ import logging
 from homeassistant.const import MAJOR_VERSION, MINOR_VERSION, TIME_SECONDS
 
 if MAJOR_VERSION == 0 and MINOR_VERSION < 115:
-    from homeassistant.const import UNIT_PERCENTAGE as PERCENTAGE
+    from homeassistant.const import (  # pylint: disable=no-name-in-module
+        UNIT_PERCENTAGE as PERCENTAGE,
+    )
 else:
     from homeassistant.const import PERCENTAGE
 
@@ -75,6 +77,10 @@ SENSOR_TYPES = [
         "icon": "mdi:server-network",
     },
     {"name": "Attempts", "unit_of_measurement": UNIT_ATTEMPTS, "icon": "mdi:cached"},
-    {"name": "Time per Frame", "unit_of_measurement": TIME_SECONDS, "icon": "mdi:speedometer"},
+    {
+        "name": "Time per Frame",
+        "unit_of_measurement": TIME_SECONDS,
+        "icon": "mdi:speedometer",
+    },
     {"name": "Basecredit", "unit_of_measurement": UNIT_CREDITS, "icon": ICON},
 ]

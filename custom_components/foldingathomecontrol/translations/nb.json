@@ -1,0 +1,35 @@
+{
+    "config": {
+        "title": "FoldingAtHomeControl",
+        "step": {
+            "user": {
+                "title": "FoldingAtHomeControl",
+                "description": "Hvis du trenger hjelp med konfigurasjonen, kan du ta en titt her: https://github.com/eifinger/hass-foldingathomecontrol",
+                "data": {
+                    "address": "IP-adresse eller vertsnavn",
+                    "password": "Passord",
+                    "port": "Portnummer"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Kan ikke koble til verten.",
+            "auth_required": "Det kreves et passord for å koble til denne verten.",
+            "auth_failed": "Brukernavnet eller passordet er feil."
+        },
+        "abort": {
+            "already_configured": "Bare en enkelt konfigurasjon av FoldingAtHomeControl for hver adresse er tillatt."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Konfigurere alternativer for FoldingAtHomeControl",
+                "data": {
+                    "update_rate": "Angi oppdateringsfrekvens",
+                    "read_timeout": "Angi tidsavbrudd for lesing"
+                }
+            }
+        }
+    }
+}

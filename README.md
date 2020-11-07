@@ -72,33 +72,33 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Thursday, October 29th 2020_
+_Stats as at 04:59, Saturday, November 7th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.116.4 | 255     | 2710         | 2263 | 28 |
+| 0.117.4 | 258     | 2537         | 2163 | 27 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 28
-Binary Sensor | 52
-Camera | 4
-Device Tracker | 145
+Automation | 27
+Binary Sensor | 60
+Camera | 1
+Device Tracker | 64
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 4
-Media Player | 31
+Media Player | 33
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 2263
+Sensor | 2163
 Sun | 1
-Switch | 114
-Weather | 3
+Switch | 115
+Weather | 2
 Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -128,10 +128,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.browser_mod](https://www.home-assistant.io/components/binary_sensor.browser_mod) |
 | [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud) |
 | [binary_sensor.deconz](https://www.home-assistant.io/components/binary_sensor.deconz) |
-| [binary_sensor.digital_ocean](https://www.home-assistant.io/components/binary_sensor.digital_ocean) |
 | [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
+| [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
@@ -139,8 +139,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
+| [binary_sensor.threshold](https://www.home-assistant.io/components/binary_sensor.threshold) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
+| [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
@@ -149,9 +151,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [calendar.garbage_collection](https://www.home-assistant.io/components/calendar.garbage_collection) |
 | [calendar.google](https://www.home-assistant.io/components/calendar.google) |
 | [camera](https://www.home-assistant.io/components/camera) |
-| [camera.bom](https://www.home-assistant.io/components/camera.bom) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
-| [camera.generic](https://www.home-assistant.io/components/camera.generic) |
 | [camera.ha_skyfield](https://www.home-assistant.io/components/camera.ha_skyfield) |
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
@@ -173,12 +173,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.tile](https://www.home-assistant.io/components/device_tracker.tile) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
-| [digital_ocean](https://www.home-assistant.io/components/digital_ocean) |
 | [discovery](https://www.home-assistant.io/components/discovery) |
 | [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
 | [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
 | [fan](https://www.home-assistant.io/components/fan) |
+| [fan.deconz](https://www.home-assistant.io/components/fan.deconz) |
 | [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
@@ -211,6 +211,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.deconz](https://www.home-assistant.io/components/light.deconz) |
 | [light.lifx](https://www.home-assistant.io/components/light.lifx) |
+| [lock](https://www.home-assistant.io/components/lock) |
+| [lock.deconz](https://www.home-assistant.io/components/lock.deconz) |
 | [logger](https://www.home-assistant.io/components/logger) |
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
@@ -223,6 +225,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
 | [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
+| [media_player.xbox](https://www.home-assistant.io/components/media_player.xbox) |
 | [met](https://www.home-assistant.io/components/met) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
@@ -230,10 +233,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
-| [notify.file](https://www.home-assistant.io/components/notify.file) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
+| [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
 | [panel_iframe](https://www.home-assistant.io/components/panel_iframe) |
@@ -247,6 +250,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [recorder](https://www.home-assistant.io/components/recorder) |
 | [remote](https://www.home-assistant.io/components/remote) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
+| [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
 | [samsungtv](https://www.home-assistant.io/components/samsungtv) |
 | [scene](https://www.home-assistant.io/components/scene) |
@@ -258,8 +262,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
-| [sensor.bom](https://www.home-assistant.io/components/sensor.bom) |
-| [sensor.bom_forecast](https://www.home-assistant.io/components/sensor.bom_forecast) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
@@ -288,7 +290,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
 | [sensor.my_unifi](https://www.home-assistant.io/components/sensor.my_unifi) |
-| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -327,6 +328,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
 | [sensor.websocket_api](https://www.home-assistant.io/components/sensor.websocket_api) |
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
+| [sensor.xbox](https://www.home-assistant.io/components/sensor.xbox) |
+| [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
@@ -361,11 +364,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson) |
 | [weather](https://www.home-assistant.io/components/weather) |
-| [weather.bom](https://www.home-assistant.io/components/weather.bom) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.met](https://www.home-assistant.io/components/weather.met) |
 | [webhook](https://www.home-assistant.io/components/webhook) |
 | [websocket_api](https://www.home-assistant.io/components/websocket_api) |
+| [xbox](https://www.home-assistant.io/components/xbox) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
 | [zone](https://www.home-assistant.io/components/zone) |
@@ -380,7 +383,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Amber Electric](https://www.home-assistant.io/integrations/bom)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
-- [BOM Forecast](https://github.com/davidfw1960/bom_forecast)
 - [Breaking Changes](https://github.com/custom-components/breaking_changes)
 - [Browser mod]()
 - [Bureau of Meteorology](https://github.com/bremor/bureau_of_meteorology)
@@ -403,7 +405,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [MyJDownloader](https://www.home-assistant.io/integrations/myjdownloader)
 - [Node-RED](https://github.com/zachowj/node-red)
 - [NSW Air Quality]()
-- [NSW Rural Fire Service - Fire Danger]()
+- [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Polar plots of the sun, moon, and planets](https://github.com/partofthething/ha_skyfield)
@@ -428,7 +430,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Alexa Media Player](https://github.com/custom-components/alexa_media_player) | This is a custom component to allow control of Amazon Alexa devices in Home Assistant using the unofficial Alexa API. |
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) | Anniversary Countdown Sensor for Home Assistant |
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) | Custom Component for fetching lightning data from blitzortung.org |
-| [Bom Forecast](https://github.com/DavidFW1960/bom_forecast) | BOM Australian Weather Forecast via FTP |
 | [Breaking Changes](https://github.com/custom-components/breaking_changes) | Component to show potential breaking_changes in the current published version based on your loaded components |
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) | 🔹 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player |
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) | Custom component for retrieving weather information from the Bureau of Meteorology. |
@@ -445,6 +446,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
 | [Node Red](https://github.com/zachowj/hass-node-red) | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |
+| [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) | OpenNEM Sensor for Home Assistant |
 | [Readme](https://github.com/custom-components/readme) | Use Jinja and data from Home Assistant to generate your README.md file |
 | [Sensor.Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) | ▶️ Plex component to feed Upcoming Media Card. |

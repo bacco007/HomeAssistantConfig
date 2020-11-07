@@ -1,8 +1,0 @@
----
-digital_ocean:
-  access_token: !secret digitalocean_apikey
-
-binary_sensor:
-  - platform: digital_ocean
-    droplets:
-      - !secret digitalocean_droplet

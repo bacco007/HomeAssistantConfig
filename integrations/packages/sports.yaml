@@ -176,15 +176,36 @@ sensor:
           {% endif %}
 
       # Nascar
-      sport_nascar:
-        friendly_name: NASCAR
-        entity_picture_template: /local/sportlogos/nascar.svg
+      sport_nascar_cup:
+        friendly_name: NASCAR Cup Series
+        entity_picture_template: /local/sportlogos/nascarcup.png
         value_template: >-
-          {% set op = state_attr('calendar.nascar', 'message') | replace('🏁 ', '') %}
-          {% if is_state('calendar.nascar', 'on') %}
+          {% set op = state_attr('calendar.nascar_cup_series', 'message') | replace('NASCAR Cup ', '') %}
+          {% if is_state('calendar.nascar_cup_series', 'on') %}
             Today - {{ op }}
           {% else %}
-            {% set st = state_attr('calendar.nascar', 'start_time') %}
+            {% set st = state_attr('calendar.nascar_cup_series', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+
+      sport_nascar_xfinity:
+        friendly_name: NASCAR Xfinity Series
+        entity_picture_template: /local/sportlogos/nascarxfinity.png
+        value_template: >-
+          {% set op = state_attr('calendar.nascar_xfinity_series', 'message') | replace('NASCAR Xfinity ', '') %}
+          {% if is_state('calendar.nascar_xfinity_series', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.nascar_xfinity_series', 'start_time') %}
             {% if st != None %}
               {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {% if diff > 6 %}
@@ -301,5 +322,146 @@ sensor:
               {% endif %}
             {% else %}
               No Game Scheduled
+            {% endif %}
+          {% endif %}
+
+      sport_btcc:
+        friendly_name: BTCC
+        entity_picture_template: /local/sportlogos/btcc.png
+        value_template: >-
+          {% set op = state_attr('calendar.btcc', 'message') | replace('BTCC ', '') %}
+          {% if is_state('calendar.btcc', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.btcc', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+      sport_icgtc:
+        friendly_name: Intercontinental GT Challenge
+        entity_picture_template: /local/sportlogos/icgtc.png
+        value_template: >-
+          {% set op = state_attr('calendar.gt_intercontinental_gt_challenge', 'message') | replace('BTCC ', '') %}
+          {% if is_state('calendar.gt_intercontinental_gt_challenge', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.gt_intercontinental_gt_challenge', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+      sport_imsasports:
+        friendly_name: IMSA SportsCar Championship
+        entity_picture_template: /local/sportlogos/imsasc.png
+        value_template: >-
+          {% set op = state_attr('calendar.imsa_weathertech_sportscar_championship', 'message') | replace('IMSA WeatherTech Championship ', '') %}
+          {% if is_state('calendar.imsa_weathertech_sportscar_championship', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.imsa_weathertech_sportscar_championship', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+      sport_motogp:
+        friendly_name: MotoGP
+        entity_picture_template: /local/sportlogos/motogp.png
+        value_template: >-
+          {% set op = state_attr('calendar.motogp', 'message') | replace('MotoGP ', '') %}
+          {% if is_state('calendar.motogp', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.motogp', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+      sport_wrc:
+        friendly_name: World Rally Championship
+        entity_picture_template: /local/sportlogos/wrc.png
+        value_template: >-
+          {% set op = state_attr('calendar.wrc', 'message') | replace('WRC ', '') %}
+          {% if is_state('calendar.wrc', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.wrc', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+      sport_dtm:
+        friendly_name: DTM
+        entity_picture_template: /local/sportlogos/dtm.png
+        value_template: >-
+          {% set op = state_attr('calendar.dtm', 'message') | replace('DTM ', '') %}
+          {% if is_state('calendar.dtm', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.dtm', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
+            {% endif %}
+          {% endif %}
+      sport_formula_e:
+        friendly_name: Formula E
+        entity_picture_template: /local/sportlogos/formulae.png
+        value_template: >-
+          {% set op = state_attr('calendar.fia_formula_e', 'message') | replace('FE - ', '') %}
+          {% if is_state('calendar.fia_formula_e', 'on') %}
+            Today - {{ op }}
+          {% else %}
+            {% set st = state_attr('calendar.fia_formula_e', 'start_time') %}
+            {% if st != None %}
+              {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {% if diff > 6 %}
+                {{ diff }} Days - {{ op }}
+              {% else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }} - {{ op }}
+              {% endif %}
+            {% else %}
+              No Race Scheduled
             {% endif %}
           {% endif %}

@@ -8,6 +8,6 @@
     "@eifinger"
   ],
   "requirements": [
-    "PyFoldingAtHomeControl==1.5.0"
+    "PyFoldingAtHomeControl==1.6.7"
   ]
 }

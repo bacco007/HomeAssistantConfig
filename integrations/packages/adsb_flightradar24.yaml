@@ -21,7 +21,7 @@ sensor:
   - platform: rest
     name: ADSB FR24 Feeder
     resource: http://192.168.1.65:8754/monitor.json
-    value_template: '{{ value_json.feed_alias }}'
+    value_template: "{{ value_json.feed_alias }}"
     method: GET
     scan_interval: 60
     json_attributes:
@@ -45,12 +45,12 @@ sensor:
         friendly_name: Aircraft Tracked
         icon_template: mdi:airplane
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["d11_map_size"] | round(0) }}'
-        unit_of_measurement: 'aircrafts'
+        unit_of_measurement: "aircrafts"
       adsb_fr24_feeder_aircraft_uploaded:
         friendly_name: Aircraft Uploaded
         icon_template: mdi:airplane
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["feed_num_ac_tracked"] | round(0) }}'
-        unit_of_measurement: 'aircrafts'
+        unit_of_measurement: "aircrafts"
       adsb_fr24_feeder_version:
         friendly_name: Version
         icon_template: mdi:airplane

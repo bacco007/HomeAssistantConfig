@@ -14,7 +14,7 @@ action:
       title: HA Add-ons - Updates Available
       message: >-
         {% for repo in states.sensor.supervisor_installed.attributes.addons %}
-          **{{ repo.name }}** _{{ repo["installed"] }}_ -> _{{ repo["version"] }}_
+          **{{ repo.name }}** _{{ repo["version"] }}_ -> _{{ repo["version_latest"] }}_
         {% endfor %}
   - service: notify.slack
     data_template:

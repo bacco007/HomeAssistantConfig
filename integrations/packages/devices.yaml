@@ -148,6 +148,22 @@ binary_sensor:
             {% else %}
               IP Address Not Available
             {% endif %}
+      networkstatus_sonos_office:
+        friendly_name: Sonos One (Office)
+        value_template: "{{ is_state('device_tracker.sonoszp', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.sonoszp', 'home') %}
+            si:sonos
+          {% else %}
+            si:sonos
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.sonoszp', 'home') %}
+              IP: {{ states.device_tracker.sonoszp.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
       networkstatus_appletv:
         friendly_name: Apple TV (Bedroom)
         value_template: "{{ is_state('device_tracker.appletvbedroom', 'home') }}"
@@ -182,17 +198,17 @@ binary_sensor:
             {% endif %}
       networkstatus_foxtelnowbox:
         friendly_name: Foxtel Now Box
-        value_template: "{{ is_state('device_tracker.android_6c38e10f6ba1d4fc', 'home') }}"
+        value_template: "{{ is_state('device_tracker.foxtelnow', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.android_6c38e10f6ba1d4fc', 'home') %}
+          {% if is_state('device_tracker.foxtelnow', 'home') %}
             mdi:android
           {% else %}
             mdi:android
           {% endif %}
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.android_6c38e10f6ba1d4fc', 'home') %}
-              IP: {{ states.device_tracker.android_6c38e10f6ba1d4fc.attributes['ip'] }}
+            {% if is_state('device_tracker.foxtelnow', 'home') %}
+              IP: {{ states.device_tracker.foxtelnow.attributes['ip'] }}
             {% else %}
               IP Address Not Available
             {% endif %}
@@ -225,6 +241,102 @@ binary_sensor:
           ip_address: >-
             {% if is_state('device_tracker.xboxone', 'home') %}
               IP: {{ states.device_tracker.xboxone.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_fetchtv:
+        friendly_name: Fetch TV Mighty
+        value_template: "{{ is_state('device_tracker.fetch_tv_mighty', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.fetch_tv_mighty', 'home') %}
+            mdi:television-box
+          {% else %}
+            mdi:television-box
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.fetch_tv_mighty', 'home') %}
+              IP: {{ states.device_tracker.fetch_tv_mighty.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_loungetv:
+        friendly_name: Sony Bravia TV - Lounge
+        value_template: "{{ is_state('device_tracker.lounge_tv', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.lounge_tv', 'home') %}
+            mdi:television
+          {% else %}
+            mdi:television
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.lounge_tv', 'home') %}
+              IP: {{ states.device_tracker.lounge_tv.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_nvidiashield:
+        friendly_name: Nvidia Shield
+        value_template: "{{ is_state('device_tracker.nvidia_shield', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.nvidia_shield', 'home') %}
+            si:nvidia
+          {% else %}
+          si:nvidia
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.nvidia_shield', 'home') %}
+              IP: {{ states.device_tracker.nvidia_shield.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_solar:
+        friendly_name: Solar Inverter
+        value_template: "{{ is_state('device_tracker.rakmodule_7622ae', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.rakmodule_7622ae', 'home') %}
+            mdi:solar-panel
+          {% else %}
+            mdi:solar-panel
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.rakmodule_7622ae', 'home') %}
+              IP: {{ states.device_tracker.rakmodule_7622ae.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_bedroomtv:
+        friendly_name: Samsung UA40ES6200 - Bedroom
+        value_template: "{{ is_state('device_tracker.samsung_ua40es6200', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.samsung_ua40es6200', 'home') %}
+            si:samsung
+          {% else %}
+          si:samsung
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.samsung_ua40es6200', 'home') %}
+              IP: {{ states.device_tracker.samsung_ua40es6200.attributes['ip'] }}
+            {% else %}
+              IP Address Not Available
+            {% endif %}
+      networkstatus_dysonfan:
+        friendly_name: Dyson Hot+Cool Link
+        value_template: "{{ is_state('device_tracker.sz2_au_kka0995a', 'home') }}"
+        icon_template: >-
+          {% if is_state('device_tracker.sz2_au_kka0995a', 'home') %}
+            mdi:fan
+          {% else %}
+            mdi:fan
+          {% endif %}
+        attribute_templates:
+          ip_address: >-
+            {% if is_state('device_tracker.sz2_au_kka0995a', 'home') %}
+              IP: {{ states.device_tracker.sz2_au_kka0995a.attributes['ip'] }}
             {% else %}
               IP Address Not Available
             {% endif %}

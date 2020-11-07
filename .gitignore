@@ -55,3 +55,4 @@ isort.cfg
 .Google Fit_google_fit.token
 alexa*.html
 temp.yml
+yamllint_errors.txt

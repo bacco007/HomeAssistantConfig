@@ -5,7 +5,7 @@ sensor:
   - platform: rest
     name: ADSB FA Feeder
     resource: http://192.168.1.65:8080/status.json
-    value_template: '{{ value_json.piaware.status }}'
+    value_template: "{{ value_json.piaware.status }}"
     method: GET
     scan_interval: 60
     json_attributes:

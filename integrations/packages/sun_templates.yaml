@@ -1,5 +1,5 @@
 ---
-  sensor:
+sensor:
   - platform: template
     sensors:
       sun_state_day:
@@ -55,13 +55,13 @@
 
       sun_angle:
         friendly_name: "Elevation"
-        unit_of_measurement: '°'
+        unit_of_measurement: "°"
         icon_template: "mdi:axis-y-rotate-clockwise"
         value_template: "{{ state_attr('sun.sun', 'elevation') }}"
 
       sun_azimuth:
         friendly_name: "Azimuth"
-        unit_of_measurement: '°'
+        unit_of_measurement: "°"
         icon_template: "mdi:axis-z-rotate-clockwise"
         value_template: "{{ state_attr('sun.sun', 'azimuth') }}"
 

@@ -71,6 +71,9 @@ more_page:
     - name: News
       icon: mdi:newspaper-variant
       path: "dwains-theme/addons/more_page/news/page.yaml"
+    - name: News - Finance
+      icon: mdi:cash-multiple
+      path: "dwains-theme/addons/more_page/news_finance/page.yaml"
     - name: People
       icon: mdi:account-group-outline
       path: "dwains-theme/addons/more_page/people/page.yaml"
@@ -87,9 +90,9 @@ more_page:
       icon: mdi:nas
       path: "dwains-theme/addons/more_page/synology/page.yaml"
       data:
-        uptime: '{{ states.sensor.thecube2_uptime.state }}'
-        version: '{{ states.sensor.synology_dsm_version.state }}'
-        status: '{{ states.sensor.synology_dsm_update.state }}'
+        uptime: "{{ states.sensor.thecube2_uptime.state }}"
+        version: "{{ states.sensor.synology_dsm_version.state }}"
+        status: "{{ states.sensor.synology_dsm_update.state }}"
     - name: Ubiquiti UniFi
       icon: mdi:router-wireless
       path: "dwains-theme/addons/more_page/ubiquiti/unifi.yaml"

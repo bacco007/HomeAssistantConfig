@@ -8,4 +8,4 @@ json_attributes_path: "$.data"
 json_attributes:
   - addons
   - addons_repositories
-value_template: '{{ value_json.data.addons | count}}'
+value_template: "{{ value_json.data.addons | count}}"

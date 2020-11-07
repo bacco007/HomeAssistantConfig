@@ -89,7 +89,7 @@ sensor:
         value_template: '{{ states.sensor.core_installed.attributes["newest_version"] }}'
 
   - platform: rest
-    resource: https://s3.amazonaws.com/hassio-version/beta.json
+    resource: https://version.home-assistant.io/beta.json
     name: Home Assistant Beta Supervised Versions
     scan_interval: 7200
     json_attributes:
@@ -118,7 +118,7 @@ sensor:
       current_audio_beta:
         value_template: '{{ states.sensor.home_assistant_beta_supervised_versions.attributes["audio"] }}'
   - platform: rest
-    resource: https://s3.amazonaws.com/hassio-version/stable.json
+    resource: https://version.home-assistant.io/stable.json
     name: Home Assistant Supervised Stable Versions
     scan_interval: 7200
     json_attributes:
@@ -147,7 +147,7 @@ sensor:
       current_audio_stable:
         value_template: '{{ states.sensor.home_assistant_supervised_stable_versions.attributes["audio"] }}'
   - platform: rest
-    resource: https://s3.amazonaws.com/hassio-version/dev.json
+    resource: https://version.home-assistant.io/dev.json
     name: Home Assistant Supervised Dev Versions
     scan_interval: 7200
     json_attributes:

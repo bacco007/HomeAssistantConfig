@@ -8,3 +8,8 @@ influxdb:
   password: !secret influxdb_password
   max_retries: 5
   default_measurement: state
+  exclude:
+    entities:
+      - sun.sun
+    entity_globs:
+      - sensor.*monitordocker*

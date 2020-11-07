@@ -14,6 +14,8 @@ ignore: |
   known_devices.yaml
   google_calendars.yaml
   ._*.yaml
+  esphome/
+  notebooks/
 rules:
   braces:
     level: error
@@ -70,11 +72,11 @@ rules:
       fake-secrets.yaml
       lovelace/custom_header/settings.yaml
     level: warning
-    max: 500
+    max: 600
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
   new-line-at-end-of-file:
-    level: error    
+    level: error
   new-lines:
     level: error
     type: unix

@@ -264,7 +264,7 @@
                 style: |
                   :host {
                   --paper-item-icon-color:
-                    {% if states(config.entity) != states('sensor.current_observer1_latest') %}
+                    {% if states(config.entity) != states('sensor.current_observer_latest') %}
                       rgb(255, 223, 0)
                     {% else %}
                       var(--disabled-text-color)

@@ -10,23 +10,23 @@ from datetime import timedelta
 
 import aiohttp
 import async_timeout
-import voluptuous as vol
-
 import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_SCAN_INTERVAL
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
-from homeassistant.helpers.update_coordinator import (
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
     ATTR_CURRENCY_SYMBOL,
     ATTR_FIFTY_DAY_AVERAGE,
-    ATTR_FIFTY_DAY_SYMBOL,
+    ATTR_FIFTY_DAY_AVERAGE_CHANGE,
+    ATTR_FIFTY_DAY_AVERAGE_CHANGE_PERCENTAGE,
+    ATTR_MARKET_CHANGE,
+    ATTR_MARKET_CHANGE_PERCENTAGE,
     ATTR_PREVIOUS_CLOSE,
+    ATTR_SYMBOL,
     ATTRIBUTION,
     BASE,
     CONF_SHOW_TRENDING_ICON,
@@ -100,8 +100,12 @@ class YahooFinanceSensor(Entity):
     _currency = DEFAULT_CURRENCY
     _currency_symbol = DEFAULT_CURRENCY_SYMBOL
     _fifty_day_average = None
+    _fifty_day_average_change = None
+    _fifty_day_average_change_percent = None
     _icon = DEFAULT_ICON
     _previous_close = None
+    _market_change = None
+    _market_change_percent = None
     _short_name = None
     _state = None
     _symbol = None
@@ -143,9 +147,13 @@ class YahooFinanceSensor(Entity):
         return {
             ATTR_ATTRIBUTION: ATTRIBUTION,
             ATTR_CURRENCY_SYMBOL: self._currency_symbol,
-            ATTR_FIFTY_DAY_SYMBOL: self._symbol,
             ATTR_FIFTY_DAY_AVERAGE: self._fifty_day_average,
+            ATTR_FIFTY_DAY_AVERAGE_CHANGE: self._fifty_day_average_change,
+            ATTR_FIFTY_DAY_AVERAGE_CHANGE_PERCENTAGE: self._fifty_day_average_change_percent,
             ATTR_PREVIOUS_CLOSE: self._previous_close,
+            ATTR_MARKET_CHANGE: self._market_change,
+            ATTR_MARKET_CHANGE_PERCENTAGE: self._market_change_percent,
+            ATTR_SYMBOL: self._symbol,
         }
 
     @property
@@ -166,7 +174,13 @@ class YahooFinanceSensor(Entity):
         self._short_name = symbol_data["shortName"]
         self._state = symbol_data["regularMarketPrice"]
         self._fifty_day_average = symbol_data["fiftyDayAverage"]
+        self._fifty_day_average_change = symbol_data["fiftyDayAverageChange"]
+        self._fifty_day_average_change_percent = symbol_data[
+            "fiftyDayAverageChangePercent"
+        ]
         self._previous_close = symbol_data["regularMarketPreviousClose"]
+        self._market_change = symbol_data["regularMarketChange"]
+        self._market_change_percent = symbol_data["regularMarketChangePercent"]
 
         currency = symbol_data["financialCurrency"]
         if currency is None:
@@ -264,15 +278,25 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
 
             for item in result:
                 symbol = item["symbol"]
+
+                # Return data pieces which we care about, use 0 for missing numeric values
                 data[symbol] = {
                     "regularMarketPrice": item.get("regularMarketPrice", 0),
-                    "shortName": item.get("shortName"),
-                    "fiftyDayAverage": item.get("fiftyDayAverage", 0),
+                    "regularMarketChange": item.get("regularMarketChange", 0),
+                    "regularMarketChangePercent": item.get(
+                        "regularMarketChangePercent", 0
+                    ),
                     "regularMarketPreviousClose": item.get(
                         "regularMarketPreviousClose", 0
                     ),
+                    "fiftyDayAverage": item.get("fiftyDayAverage", 0),
+                    "fiftyDayAverageChange": item.get("fiftyDayAverageChange", 0),
+                    "fiftyDayAverageChangePercent": item.get(
+                        "fiftyDayAverageChangePercent", 0
+                    ),
                     "currency": item.get("currency"),
                     "financialCurrency": item.get("financialCurrency"),
+                    "shortName": item.get("shortName"),
                 }
                 _LOGGER.debug(
                     "Updated %s=%s",

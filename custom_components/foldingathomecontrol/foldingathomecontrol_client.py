@@ -63,7 +63,6 @@ class FoldingAtHomeControlClient:
                 self.config_entry, options=options
             )
 
-
     async def async_set_update_rate(self, update_rate: int) -> None:
         """Set update_rate."""
         if self.client is not None:
@@ -174,7 +173,9 @@ class FoldingAtHomeControlClient:
                 self.slot_data[unit["slot"]]["Attempts"] = unit.get("attempts")
                 tpf = unit.get("tpf")
                 if tpf is not None:
-                    tpf = timeparse(tpf)  # Convert to seconds e.g. "22 mins 47 secs" to 1367
+                    tpf = timeparse(
+                        tpf
+                    )  # Convert to seconds e.g. "22 mins 47 secs" to 1367
                 self.slot_data[unit["slot"]]["Time per Frame"] = tpf
                 self.slot_data[unit["slot"]]["Basecredit"] = unit.get("basecredit")
 
@@ -186,17 +187,17 @@ class FoldingAtHomeControlClient:
 
     def handle_slots_data_received(self, slots_data: Any) -> None:
         """Handle received slots data."""
+        self.update_slots_data(slots_data)
         added, removed = self.calculate_slot_changes(slots_data)
         if len(added) > 0:
-            async_dispatcher_send(self.hass, self.sensor_added_identifer, added)
             self.slots.extend(added)
+            async_dispatcher_send(self.hass, self.sensor_added_identifer, added)
         if len(removed) > 0:
             async_dispatcher_send(self.hass, self.sensor_removed_identifer, removed)
             for slot in removed:
                 # Remove old data
                 del self.slot_data[slot]
                 self.slots.remove(slot)
-        self.update_slots_data(slots_data)
 
     def calculate_slot_changes(self, slots: dict) -> Tuple[dict, dict]:
         """Get added and removed slots."""

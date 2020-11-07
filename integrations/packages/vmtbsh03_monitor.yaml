@@ -26,7 +26,7 @@ sensor:
   - platform: template
     sensors:
       vmtbsh03_uptime:
-        friendly_name: 'vmTBSH03 Uptime'
+        friendly_name: "vmTBSH03 Uptime"
         value_template: >
           {%- set time = as_timestamp(now()) - as_timestamp(states.sensor.last_boot.state) | int %}
           {%- set minutes = ((time % 3600) // 60) | int %}

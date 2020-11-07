@@ -1,0 +1,21 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Allerede konfigurert"
+        },
+        "error": {
+            "cannot_connect": "Kan ikke koble til",
+            "invalid_auth": "Ugyldig godkjenning",
+            "unknown": "Ukjent feil"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Passord",
+                    "username": "Brukernavn"
+                }
+            }
+        }
+    },
+    "title": "Amber Electric"
+}
