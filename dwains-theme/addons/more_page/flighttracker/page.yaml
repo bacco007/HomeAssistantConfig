@@ -1,6 +1,95 @@
 # dwains_theme
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-md-12 col-lg-12 col-xl-12'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  # padding: true
+  cards:
+    - type: entities
+      title: Flightaware
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.adsb_fa_adsbfeed
+          name: ADS-B Feed
+          type: custom:multiple-entity-row
+          secondary_info:
+            attribute: message
+            name: "Message: "
+        - entity: sensor.adsb_fa_mlat
+          name: MLAT Feed
+          type: custom:multiple-entity-row
+          secondary_info:
+            attribute: message
+            name: "Message: "
+        - entity: sensor.adsb_fa_piaware
+          name: PiAware Status
+          type: custom:multiple-entity-row
+          secondary_info:
+            attribute: message
+            name: "Message: "
+        - entity: sensor.adsb_fa_flightaware
+          name: Connection to FlightAware
+          type: custom:multiple-entity-row
+          secondary_info:
+            attribute: message
+            name: "Message: "
+    - type: entities
+      title: FlightRadar24
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.adsb_fr24_feeder_radar_code
+          type: custom:multiple-entity-row
+          name: FR24 Radar Code
+        - entity: sensor.adsb_fr24_feeder_version
+          type: custom:multiple-entity-row
+          name: FR24 Version
+        - entity: binary_sensor.adsb_fr24_feeder_link_connected
+          type: custom:multiple-entity-row
+        - entity: binary_sensor.adsb_fr24_feeder_receiver_connected
+          type: custom:multiple-entity-row
+        - entity: binary_sensor.adsb_fr24_mlat_connected
+          type: custom:multiple-entity-row
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:
     - type: custom:mini-graph-card
       style: |
@@ -29,7 +118,7 @@
         fill: fade
       color_thresholds:
         - value: 0.1
-          color: 'var(--dwains-theme-accent)'
+          color: "var(--dwains-theme-accent)"
         - value: 0
           color: lightgray
     - type: custom:mini-graph-card
@@ -40,7 +129,7 @@
       entities:
         - entity: sensor.flighttracker_flights_1hr
       name: Flights Tracked - Last Week
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       decimals: 0
       height: 30
@@ -59,7 +148,7 @@
         fill: fade
       color_thresholds:
         - value: 0.1
-          color: 'var(--dwains-theme-accent)'
+          color: "var(--dwains-theme-accent)"
         - value: 0
           color: lightgray
     - type: custom:mini-graph-card
@@ -70,7 +159,7 @@
       entities:
         - entity: sensor.flighttracker_flights_6hr
       name: Flights Tracked - Last Week
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       decimals: 0
       height: 30
@@ -89,7 +178,7 @@
         fill: fade
       color_thresholds:
         - value: 0.1
-          color: 'var(--dwains-theme-accent)'
+          color: "var(--dwains-theme-accent)"
         - value: 0
           color: lightgray
     - type: custom:mini-graph-card
@@ -100,7 +189,7 @@
       entities:
         - entity: sensor.flighttracker_flights_12hr
       name: Flights Tracked - Last Week
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       decimals: 0
       height: 30
@@ -119,7 +208,7 @@
         fill: fade
       color_thresholds:
         - value: 0.1
-          color: 'var(--dwains-theme-accent)'
+          color: "var(--dwains-theme-accent)"
         - value: 0
           color: lightgray
     - type: custom:mini-graph-card
@@ -130,7 +219,7 @@
       entities:
         - entity: sensor.flighttracker_flights_24hr
       name: Flights Tracked - Last Week
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       decimals: 0
       height: 30
@@ -149,7 +238,7 @@
         fill: fade
       color_thresholds:
         - value: 0.1
-          color: 'var(--dwains-theme-accent)'
+          color: "var(--dwains-theme-accent)"
         - value: 0
           color: lightgray
     - type: custom:mini-graph-card
@@ -158,9 +247,9 @@
           background-color: var(--dwains-theme-primary);
         }
       entities:
-        - entity: sensor.flighttracker_maxdistance_nm
-      name: Max Distance (Nautical Miles)
-      line_color: 'var(--dwains-theme-accent)'
+        - entity: sensor.flighttracker_maxdistance_km
+      name: Max Distance (Km)
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       decimals: 0
       height: 30
@@ -178,6 +267,6 @@
         fill: fade
       color_thresholds:
         - value: 0.1
-          color: 'var(--dwains-theme-accent)'
+          color: "var(--dwains-theme-accent)"
         - value: 0
           color: lightgray

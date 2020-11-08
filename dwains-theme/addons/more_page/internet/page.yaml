@@ -6,7 +6,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
           cards:
             - type: vertical-stack
               cards:
@@ -22,19 +22,19 @@
                 #     icon: 'mdi:nas'
                 #     url: http://192.168.1.100:5000
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          item_classes: "col-xs-12 col-sm-9 col-md-10 col-lg-10"
           cards:
             - type: horizontal-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-6 col-lg-6'
+              item_classes: "col-xs-12 col-sm-12 col-md-6 col-lg-6"
               cards:
-                - type: 'custom:flex-horseshoe-card'
+                - type: "custom:flex-horseshoe-card"
                   entities:
                     - entity: sensor.speedtest_download
                       decimals: 2
-                      area: 'Download'
-                      unit: 'Mbps' 
+                      area: "Download"
+                      unit: "Mbps"
                   show:
-                    horseshoe_style: 'lineargradient'
+                    horseshoe_style: "lineargradient"
                   layout:
                     states:
                       - id: 0
@@ -56,16 +56,16 @@
                     min: 0
                     max: 25
                   color_stops:
-                    16: '#E7FAFC'
-                    17: '#D0F5FA'
-                    18: '#B8F0F8'
-                    19: '#A1EBF6'
-                    20: '#89E7F4'
-                    21: '#72E2F2'
-                    22: '#5ADDF0'
-                    23: '#43D8EE'
-                    24: '#2BD3EC'
-                    25: '#14cfea'
+                    16: "#E7FAFC"
+                    17: "#D0F5FA"
+                    18: "#B8F0F8"
+                    19: "#A1EBF6"
+                    20: "#89E7F4"
+                    21: "#72E2F2"
+                    22: "#5ADDF0"
+                    23: "#43D8EE"
+                    24: "#2BD3EC"
+                    25: "#14cfea"
                   style: |
                     ha-card {
                       box-shadow: none;
@@ -73,14 +73,14 @@
                     }
                 - type: horizontal-stack
                   cards:
-                    - type: 'custom:flex-horseshoe-card'
+                    - type: "custom:flex-horseshoe-card"
                       entities:
                         - entity: sensor.speedtest_download_max
                           decimals: 2
-                          area: '24hr Max'
-                          unit: 'Mbps'
+                          area: "24hr Max"
+                          unit: "Mbps"
                       show:
-                        horseshoe_style: 'lineargradient'
+                        horseshoe_style: "lineargradient"
                       layout:
                         states:
                           - id: 0
@@ -102,29 +102,29 @@
                         min: 0
                         max: 25
                       color_stops:
-                        16: '#E7FAFC'
-                        17: '#D0F5FA'
-                        18: '#B8F0F8'
-                        19: '#A1EBF6'
-                        20: '#89E7F4'
-                        21: '#72E2F2'
-                        22: '#5ADDF0'
-                        23: '#43D8EE'
-                        24: '#2BD3EC'
-                        25: '#14cfea'
+                        16: "#E7FAFC"
+                        17: "#D0F5FA"
+                        18: "#B8F0F8"
+                        19: "#A1EBF6"
+                        20: "#89E7F4"
+                        21: "#72E2F2"
+                        22: "#5ADDF0"
+                        23: "#43D8EE"
+                        24: "#2BD3EC"
+                        25: "#14cfea"
                       style: |
                         ha-card {
                           box-shadow: none;
                           height: 100px;
                         }
-                    - type: 'custom:flex-horseshoe-card'
+                    - type: "custom:flex-horseshoe-card"
                       entities:
                         - entity: sensor.speedtest_download_min
                           decimals: 2
-                          area: '24hr Min'
-                          unit: 'Mbps'
+                          area: "24hr Min"
+                          unit: "Mbps"
                       show:
-                        horseshoe_style: 'lineargradient'
+                        horseshoe_style: "lineargradient"
                       layout:
                         states:
                           - id: 0
@@ -146,16 +146,16 @@
                         min: 0
                         max: 25
                       color_stops:
-                        16: '#E7FAFC'
-                        17: '#D0F5FA'
-                        18: '#B8F0F8'
-                        19: '#A1EBF6'
-                        20: '#89E7F4'
-                        21: '#72E2F2'
-                        22: '#5ADDF0'
-                        23: '#43D8EE'
-                        24: '#2BD3EC'
-                        25: '#14cfea'
+                        16: "#E7FAFC"
+                        17: "#D0F5FA"
+                        18: "#B8F0F8"
+                        19: "#A1EBF6"
+                        20: "#89E7F4"
+                        21: "#72E2F2"
+                        22: "#5ADDF0"
+                        23: "#43D8EE"
+                        24: "#2BD3EC"
+                        25: "#14cfea"
                       style: |
                         ha-card {
                           box-shadow: none;
@@ -163,16 +163,16 @@
                         }
 
             - type: horizontal-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-6 col-lg-6'
+              item_classes: "col-xs-12 col-sm-12 col-md-6 col-lg-6"
               cards:
-                - type: 'custom:flex-horseshoe-card'
+                - type: "custom:flex-horseshoe-card"
                   entities:
                     - entity: sensor.speedtest_upload
                       decimals: 2
-                      area: 'Upload'
-                      unit: 'Mbps'
+                      area: "Upload"
+                      unit: "Mbps"
                   show:
-                    horseshoe_style: 'lineargradient'
+                    horseshoe_style: "lineargradient"
                   layout:
                     states:
                       - id: 0
@@ -194,16 +194,16 @@
                     min: 0
                     max: 6
                   color_stops:
-                    16: '#E7FAFC'
-                    17: '#D0F5FA'
-                    18: '#B8F0F8'
-                    19: '#A1EBF6'
-                    20: '#89E7F4'
-                    21: '#72E2F2'
-                    22: '#5ADDF0'
-                    23: '#43D8EE'
-                    24: '#2BD3EC'
-                    25: '#14cfea'
+                    16: "#E7FAFC"
+                    17: "#D0F5FA"
+                    18: "#B8F0F8"
+                    19: "#A1EBF6"
+                    20: "#89E7F4"
+                    21: "#72E2F2"
+                    22: "#5ADDF0"
+                    23: "#43D8EE"
+                    24: "#2BD3EC"
+                    25: "#14cfea"
                   style: |
                     ha-card {
                       box-shadow: none;
@@ -211,14 +211,14 @@
                     }
                 - type: horizontal-stack
                   cards:
-                    - type: 'custom:flex-horseshoe-card'
+                    - type: "custom:flex-horseshoe-card"
                       entities:
                         - entity: sensor.speedtest_upload_max
                           decimals: 2
-                          area: '24hr Max'
-                          unit: 'Mbps'
+                          area: "24hr Max"
+                          unit: "Mbps"
                       show:
-                        horseshoe_style: 'lineargradient'
+                        horseshoe_style: "lineargradient"
                       layout:
                         states:
                           - id: 0
@@ -240,29 +240,29 @@
                         min: 0
                         max: 6
                       color_stops:
-                        16: '#E7FAFC'
-                        17: '#D0F5FA'
-                        18: '#B8F0F8'
-                        19: '#A1EBF6'
-                        20: '#89E7F4'
-                        21: '#72E2F2'
-                        22: '#5ADDF0'
-                        23: '#43D8EE'
-                        24: '#2BD3EC'
-                        25: '#14cfea'
+                        16: "#E7FAFC"
+                        17: "#D0F5FA"
+                        18: "#B8F0F8"
+                        19: "#A1EBF6"
+                        20: "#89E7F4"
+                        21: "#72E2F2"
+                        22: "#5ADDF0"
+                        23: "#43D8EE"
+                        24: "#2BD3EC"
+                        25: "#14cfea"
                       style: |
                         ha-card {
                           box-shadow: none;
                           height: 100px;
                         }
-                    - type: 'custom:flex-horseshoe-card'
+                    - type: "custom:flex-horseshoe-card"
                       entities:
-                        - entity:  sensor.speedtest_upload_min
+                        - entity: sensor.speedtest_upload_min
                           decimals: 2
-                          area: '24hr Min'
-                          unit: 'Mbps'
+                          area: "24hr Min"
+                          unit: "Mbps"
                       show:
-                        horseshoe_style: 'lineargradient'
+                        horseshoe_style: "lineargradient"
                       layout:
                         states:
                           - id: 0
@@ -284,16 +284,16 @@
                         min: 0
                         max: 6
                       color_stops:
-                        16: '#E7FAFC'
-                        17: '#D0F5FA'
-                        18: '#B8F0F8'
-                        19: '#A1EBF6'
-                        20: '#89E7F4'
-                        21: '#72E2F2'
-                        22: '#5ADDF0'
-                        23: '#43D8EE'
-                        24: '#2BD3EC'
-                        25: '#14cfea'
+                        16: "#E7FAFC"
+                        17: "#D0F5FA"
+                        18: "#B8F0F8"
+                        19: "#A1EBF6"
+                        20: "#89E7F4"
+                        21: "#72E2F2"
+                        22: "#5ADDF0"
+                        23: "#43D8EE"
+                        24: "#2BD3EC"
+                        25: "#14cfea"
                       style: |
                         ha-card {
                           box-shadow: none;
@@ -396,51 +396,3 @@
           color: "#bf9540"
         - value: 50
           color: "#bf4040"
-
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
-  cards:
-    - type: custom:stack-in-card
-      mode: horizontal
-      cards:
-        - type: vertical-stack
-          cards:
-            - type: markdown
-              style: |
-                ha-card { box-shadow: none; }
-                ha-markdown { padding-bottom: 1px !important; }
-              content: >
-                <h2>Internet Speed</h2>
-        - type: entities
-          style: |
-            ha-card {
-              background-color: var(--dwains-theme-primary);
-              padding-bottom: 10px;
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            .card-content div {
-                margin: 0 !important;
-            }
-            #states {
-              padding-top: 0px !important;
-              padding-bottom: 0px !important;
-            }
-            .secondary {
-              color: darkgray !important;
-              margin-left: 2px !important;
-            }
-          entities:
-            - entity: sensor.today_speedtest_download
-              name: Download Speed - 24hr Average
-              icon: mdi:arrow-down-bold
-              type: custom:secondaryinfo-entity-row
-              secondary_info: "Max [[ sensor.speedtest_download_max.state ]]Mbit/s, Min [[ sensor.speedtest_download_min.state ]]Mbit/s"
-            - entity: sensor.today_speedtest_upload
-              name: Upload Speed - 24hr Average
-              icon: mdi:arrow-up-bold
-              type: custom:secondaryinfo-entity-row
-              secondary_info: "Max [[ sensor.speedtest_upload_max.state ]]Mbit/s, Min [[ sensor.speedtest_upload_min.state ]]Mbit/s"

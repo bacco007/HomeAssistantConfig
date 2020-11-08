@@ -123,34 +123,6 @@
                 ha-markdown { padding-bottom: 1px !important; }
               content: >
                 <img width="125" src="https://www.home-assistant.io/images/supported_brands/rocket.png"/><br/>
-        - type: entities
-          title: SpaceX
-          style: |
-            ha-card {
-              background-color: var(--dwains-theme-primary)
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            .card-content div {
-                margin: 0 !important;
-            }
-            #states {
-              padding-top: 0px !important;
-              padding-bottom: 0px !important;
-            }
-            .secondary {
-              color: darkgray !important;
-              margin-left: 2px !important;
-            }
-          entities:
-            - sensor.spacex_next_launch_day
-            - sensor.spacex_next_launch_time
-            - sensor.spacex_next_rocket
-            - sensor.spacex_next_launch_site
-            - sensor.spacex_next_mission_name
         - type: vertical-stack
           cards:
             - type: entities

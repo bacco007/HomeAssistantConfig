@@ -1,0 +1,66 @@
+# dwains_theme
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  # padding: true
+  cards:
+    - type: entities
+      title: Latest SpaceX Launch
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - sensor.latest_launch_day
+        - sensor.latest_launch_mission
+        - sensor.latest_launch_payload
+        - sensor.latest_launch_rocket
+        - sensor.latest_launch_site
+        - sensor.latest_launch_time
+    - type: entities
+      title: Next SpaceX Launch
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - sensor.next_launch_countdown
+        - sensor.next_launch_day
+        - sensor.next_launch_mission
+        - sensor.next_launch_payload
+        - sensor.next_launch_rocket
+        - sensor.next_launch_site
+        - sensor.next_launch_time

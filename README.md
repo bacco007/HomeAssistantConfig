@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Saturday, November 7th 2020_
+_Stats as at 04:59, Sunday, November 8th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.117.4 | 258     | 2537         | 2163 | 27 |
+| 0.117.5 | 264     | 2635         | 2249 | 27 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 27
-Binary Sensor | 60
+Binary Sensor | 70
 Camera | 1
-Device Tracker | 64
+Device Tracker | 65
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
@@ -95,7 +95,7 @@ Media Player | 33
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 2163
+Sensor | 2249
 Sun | 1
 Switch | 115
 Weather | 2
@@ -120,6 +120,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
 | [alexa_media](https://www.home-assistant.io/components/alexa_media) |
+| [amber_electric](https://www.home-assistant.io/components/amber_electric) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [api](https://www.home-assistant.io/components/api) |
 | [auth](https://www.home-assistant.io/components/auth) |
@@ -136,6 +137,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
+| [binary_sensor.spacex](https://www.home-assistant.io/components/binary_sensor.spacex) |
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
@@ -260,7 +262,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
+| [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
+| [sensor.average](https://www.home-assistant.io/components/sensor.average) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
@@ -309,6 +313,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
+| [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics) |
@@ -334,6 +339,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
 | [sonos](https://www.home-assistant.io/components/sonos) |
+| [spacex](https://www.home-assistant.io/components/spacex) |
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |
 | [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
@@ -380,8 +386,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Custom Components List</summary>
 
 - [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
+- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/bom)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
+- [Average](https://github.com/Limych/ha-average)
 - [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
 - [Breaking Changes](https://github.com/custom-components/breaking_changes)
 - [Browser mod]()
@@ -413,6 +421,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Simple Icons]()
 - [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
+- [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
 - [Start Spotify on chromecast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [UI Logs](https://github.com/custom-components/uilogs)
@@ -428,7 +437,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | Name | Description |
 | --- | ---|
 | [Alexa Media Player](https://github.com/custom-components/alexa_media_player) | This is a custom component to allow control of Amazon Alexa devices in Home Assistant using the unofficial Alexa API. |
+| [Amber Electric](https://github.com/troykelly/hacs-amberelectric) | Unofficial Amber Electric integration for Home Assistant |
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) | Anniversary Countdown Sensor for Home Assistant |
+| [Average Sensor](https://github.com/Limych/ha-average) | Average Sensor for Home Assistant |
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) | Custom Component for fetching lightning data from blitzortung.org |
 | [Breaking Changes](https://github.com/custom-components/breaking_changes) | Component to show potential breaking_changes in the current published version based on your loaded components |
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) | 🔹 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player |
@@ -456,6 +467,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Simpleicons](https://github.com/vigonotion/hass-simpleicons) | Use Simple Icons in Home Assistant |
 | [Skyfield Panel With Sun, Moon, And Planets](https://github.com/partofthething/ha_skyfield) | See the apparent positions of the Sun, Moon, and planets in this home assistant custom component |
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) | Home Assistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |
+| [Spacex Next Launch And Starman](https://github.com/djtimca/HASpaceX) | Home Assistant integration for SpaceX Next Launch and Starman data. |
 | [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
 | [Ui Logs](https://github.com/custom-components/uilogs) | Custom panel that show colorful logs for Home Assistant (core), and the supervisor (if you have it). |
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) | Home Assistant Sensor for WaterNSW Real Time Data |
