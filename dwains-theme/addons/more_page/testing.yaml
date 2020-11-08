@@ -1,89 +1,17 @@
 # dwains_theme
-- type: custom:stack-in-card
-  cards:
-    - type: custom:dwains-flexbox-card
-      cards:
-        - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-1'
-          cards:
-            - type: vertical-stack
-              cards:
-                - type: markdown
-                  style: |
-                    ha-card { box-shadow: none; }
-                    ha-markdown { padding-bottom: 1px !important; }
-                  content: >
-                    <center>
-                    <img width="150" src="/local/systemicons/docker.svg"><br/>
-                    </center>
-                # - !include
-                #   - ../../1_Templates/button_link.yaml
-                #   - name: 'Portainer'
-                #     icon: 'mdi:docker'
-                #     # url: !secret portainer_url
-        - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-11'
-          cards:
-            - type: custom:dwains-flexbox-card
-              padding: true
-              items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
-              cards:
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_adsb2influxdb
 
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_adsbx
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_flightairmap
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_flightairmap_db
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_fr24
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_glances
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_graphs1090
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_ha_dockermon
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_ouroboros
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_piaware
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_tar1090
-
-                - type: custom:docker-card
-                  # name:
-                  # logo:
-                  entitypart: tbsh02_monitordocker_vrs
+- type: custom:auto-entities
+  filter:
+    include:
+      - group: group.sport_upcoming
+        options:
+          type: custom:sports-card
+  sort:
+    method: attribute
+    ignore_case: true
+    numeric: true
+    attribute: sortorder
+  card:
+    type: custom:dwains-flexbox-card
+    padding: true
+    items_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"

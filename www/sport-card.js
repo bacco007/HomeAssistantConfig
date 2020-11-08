@@ -1,11 +1,94 @@
-<html>
-  <head>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="http://fonts.googleapis.com/css?family=Open+Sans"
-    />
-    <style>
+import {
+  LitElement,
+  html,
+  css,
+} from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
+
+const VERSION = "0.0.1";
+
+function hasConfigOrEntityChanged(element, changedProps) {
+  if (changedProps.has("_config")) {
+    return true;
+  }
+
+  return true;
+}
+
+class SportsCard extends LitElement {
+  constructor() {
+    super();
+  }
+
+  static get properties() {
+    return {
+      hass: {},
+      _config: {},
+    };
+  }
+
+  setConfig(config) {
+    if (!config.entity) {
+      throw new Error("Please define entity");
+    }
+    this._config = config;
+  }
+
+  shouldUpdate(changedProps) {
+    return hasConfigOrEntityChanged(this, changedProps);
+  }
+
+  renderMain() {
+    const sensor = this._config.entity;
+
+    var name = this.hass.states[sensor].attributes.friendly_name;
+    var picture = this.hass.states[sensor].attributes.entity_picture;
+    var nexttime = this.hass.states[sensor].attributes.nexttime;
+    var nextevent = this.hass.states[sensor].attributes.nextevent;
+    var nextlocation = this.hass.states[sensor].attributes.nextlocation;
+    return html`
+      <div class="schedule">
+        <div class="schedule-main">
+          <div class="schedule-main-left">
+            <div class="schedule-main-left-info">
+              <div class="left-title">${name}</div>
+              <!-- <div class="left-subtitle">Subtitle</div> -->
+            </div>
+          </div>
+          <div class="schedule-main-middle"></div>
+          <div class="schedule-main-right">
+            <div class="schedule-main-right-date">${nexttime}</div>
+            <div class="schedule-main-right-logo">
+              <img src="${picture}" valign="center" />
+            </div>
+          </div>
+        </div>
+        <div class="schedule-detail">${nextevent}</div>
+      </div>
+    `;
+  }
+
+  render() {
+    //Check if config and hass is loaded
+    if (!this._config || !this.hass) {
+      return html``;
+    }
+
+    return html`
+      ${this._config.style
+        ? html`
+            <style>
+              ${this._config.style}
+            </style>
+          `
+        : html``}
+      <ha-card>
+        <div id="container">${this.renderMain()}</div>
+      </ha-card>
+    `;
+  }
+
+  static get styles() {
+    return css`
       body {
         font-family: Open Sans, Helvetica, Arial, Verdana, sans-serif;
         background: #f2f2f7;
@@ -14,7 +97,7 @@
         max-width: 100%;
         border-radius: 5px;
         overflow: hidden;
-        padding-bottom: 10px;
+        #padding-bottom: 10px;
       }
       .schedule-main {
         background: #e2e2e2;
@@ -33,10 +116,10 @@
       .schedule-main-left-info {
         overflow: hidden;
         width: 100%;
-        white-space: nowrap;
+        #white-space: nowrap;
       }
       .schedule-main-middle {
-        width: 300px;
+        # width: 300px;
         padding: 10px;
         display: flex;
         align-items: center;
@@ -119,7 +202,7 @@
       }
       .left-title,
       .left-subtitle {
-        text-transform: uppercase;
+        # text-transform: uppercase;
         font-weight: 600;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -130,46 +213,19 @@
         border-radius: 0 0 5px 5px;
         text-align: center;
       }
-    </style>
-  </head>
-  <body>
-    <div class="schedule">
-      <div class="schedule-main">
-        <div class="schedule-main-left">
-          <div class="schedule-main-left-info">
-            <div class="left-title">Cricket Australia</div>
-            <!-- <div class="left-subtitle">Subtitle</div> -->
-          </div>
-        </div>
-        <div class="schedule-main-middle"></div>
-        <div class="schedule-main-right">
-          <div class="schedule-main-right-date">13 Days</div>
-          <div class="schedule-main-right-logo">
-            <img src="../www/sportlogos/Anaheim_Ducks.svg" valign="center" />
-          </div>
-        </div>
-      </div>
-      <div class="schedule-detail">
-        1st Test Australia vs Afghanistan - Day 1
-      </div>
-    </div>
-    <div class="schedule">
-      <div class="schedule-main">
-        <div class="schedule-main-left">
-          <div class="schedule-main-left-info">
-            <div class="left-title">Name</div>
-            <div class="left-subtitle">Subtitle</div>
-          </div>
-        </div>
-        <div class="schedule-main-middle"></div>
-        <div class="schedule-main-right">
-          <div class="schedule-main-right-date">28 AUG</div>
-          <div class="schedule-main-right-logo">
-            <img src="newengpats.png" valign="center" />
-          </div>
-        </div>
-      </div>
-      <div class="schedule-detail">Details</div>
-    </div>
-  </body>
-</html>
+    `;
+  }
+
+  getCardSize() {
+    return 2;
+  }
+}
+
+if (!customElements.get("sports-card")) {
+  customElements.define("sports-card", SportsCard);
+  console.info(
+    `%c SPORTS-CARD \n%c Version ${VERSION} `,
+    "color: #2fbae5; font-weight: bold; background: black",
+    "color: white; font-weight: bold; background: dimgray"
+  );
+}

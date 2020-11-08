@@ -21,8 +21,7 @@ sensor:
         friendly_name: "Fires Near Me"
         icon_template: mdi:fire
         value_template: |
-          {% for state in states
-          if ('nswrfs' in state.entity_id and state.domain in ['geo_location']) -%}
+          {% for state in states if ('nswrfs' in state.entity_id and state.domain in ['geo_location']) -%}
           {% if loop.last -%}
           {{ loop.index }}
           {%- endif %}

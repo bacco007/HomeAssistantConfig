@@ -21,10 +21,15 @@ action:
       message: ""
       target: "#tbsmarthome"
       data:
-        attachments:
-          - color: >
-              #800400
-            title: >
-              HACS - Updates Available
-            text: |
-              Updates to Custom Components are available
+        blocks:
+          - type: section
+            text:
+              type: mrkdwn
+              text: "*HACS - Updates Available*"
+          - type: section
+            text:
+              type: mrkdwn
+              text: >-
+                {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+                  **{{ repo.display_name }}** _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
+                {% endfor %}

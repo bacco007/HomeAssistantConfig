@@ -12,7 +12,6 @@ switch:
       harmonyhub:
         friendly_name: Bedroom TV
         value_template: '{{ states.sensor.harmonyhub_status.state != "PowerOff" }}'
-        entity_id: sensor.harmonyhub_status
         turn_on:
           service: remote.turn_on
           entity_id: remote.harmony_hub

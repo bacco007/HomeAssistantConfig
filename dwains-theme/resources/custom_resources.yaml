@@ -46,3 +46,5 @@
   type: module
 - url: /local/docker-card.js?v=0.0.69
   type: module
+- url: /local/sport-card.js?v=0.0.6
+  type: module

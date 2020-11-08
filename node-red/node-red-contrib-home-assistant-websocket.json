@@ -116,13 +116,13 @@
     },
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 58,
+        "state": 76,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 139,
+        "state": 88,
         "attributes": {}
       }
     },
@@ -134,13 +134,13 @@
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 48,
+        "state": 47,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 7,
+        "state": 14,
         "attributes": {}
       }
     },
@@ -151,7 +151,7 @@
           "aep": 0,
           "ey": 0,
           "time": "13:11 05 Nov 2020",
-          "sort": 4
+          "sort": 3
         }
       }
     },
@@ -162,7 +162,7 @@
           "aep": 0,
           "ey": 0,
           "time": "13:11 05 Nov 2020",
-          "sort": 2
+          "sort": 5
         }
       }
     },
@@ -173,7 +173,7 @@
           "aep": 0,
           "ey": 0,
           "time": "13:11 05 Nov 2020",
-          "sort": 1
+          "sort": 6
         }
       }
     },
@@ -184,7 +184,7 @@
           "aep": 0,
           "ey": 0,
           "time": "13:11 05 Nov 2020",
-          "sort": 3
+          "sort": 4
         }
       }
     },
@@ -195,7 +195,7 @@
           "aep": 0,
           "ey": 0,
           "time": "13:11 05 Nov 2020",
-          "sort": 5
+          "sort": 2
         }
       }
     },
@@ -206,25 +206,25 @@
           "aep": 0,
           "ey": 0,
           "time": "13:11 05 Nov 2020",
-          "sort": 6
+          "sort": 1
         }
       }
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 16.59,
+        "state": 18.19,
         "attributes": {}
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 7.49,
+        "state": 9.09,
         "attributes": {}
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 4.93,
+        "state": 6.53,
         "attributes": {}
       }
     },
@@ -235,7 +235,7 @@
           "aep": 63.2,
           "ey": 1,
           "time": "19:02 26 Feb 2020",
-          "sort": 5
+          "sort": 2
         }
       }
     },
@@ -246,7 +246,7 @@
           "aep": 0,
           "ey": 2,
           "time": "21:10 21 Oct 2020",
-          "sort": 6
+          "sort": 1
         }
       }
     },
@@ -257,7 +257,7 @@
           "aep": 0,
           "ey": 0.5,
           "time": "18:02 08 Feb 2020",
-          "sort": 2
+          "sort": 5
         }
       }
     },
@@ -268,7 +268,7 @@
           "aep": 0,
           "ey": 1,
           "time": "20:02 08 Feb 2020",
-          "sort": "1"
+          "sort": "6"
         }
       }
     },
@@ -279,7 +279,7 @@
           "aep": 0,
           "ey": 0.5,
           "time": "18:02 08 Feb 2020",
-          "sort": "3"
+          "sort": "4"
         }
       }
     },
@@ -290,7 +290,7 @@
           "aep": 0,
           "ey": 2,
           "time": "19:02 09 Feb 2020",
-          "sort": "4"
+          "sort": "3"
         }
       }
     },
@@ -302,7 +302,7 @@
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5306,
+        "state": 5311,
         "attributes": {}
       }
     },
@@ -326,24 +326,24 @@
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 40,
+        "state": 15.2,
         "attributes": {
-          "count": 5,
-          "countstring": "5 Days",
-          "average": 8,
-          "highest": 24.8,
+          "count": 4,
+          "countstring": "4 Days",
+          "average": 3.8,
+          "highest": 12,
           "sort": 2
         }
       }
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 129.44,
+        "state": 93.3,
         "attributes": {
-          "count": 8,
-          "countstring": "8 Days",
-          "average": 16.18,
-          "highest": 33.71,
+          "count": 7,
+          "countstring": "7 Days",
+          "average": 13.33,
+          "highest": 30.56,
           "sort": 2
         }
       }
@@ -362,17 +362,17 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 108.8,
+        "state": 86.483,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 138.35,
+        "state": 138.33,
         "attributes": {
           "max": 163.9,
           "min": 112.9,
-          "avg": 138.35,
+          "avg": 138.33,
           "mindate": "05 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 05 May 2020 - Max: 05 Jan 2020"
@@ -381,11 +381,11 @@
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 10.937,
+        "state": 10.941,
         "attributes": {
           "max": 28.1,
           "min": -1.28,
-          "avg": 10.937,
+          "avg": 10.941,
           "mindate": "26 Aug 2020",
           "maxdate": "02 Feb 2020",
           "datestring": "Min: 26 Aug 2020 - Max: 02 Feb 2020"
@@ -418,12 +418,12 @@
     },
     "1b767a8_196e406": {
       "lastPayload": {
-        "state": 4.88,
+        "state": 2.29,
         "attributes": {
-          "count": 3,
-          "countstring": "3 Days",
-          "average": 1.63,
-          "highest": 2.59,
+          "count": 2,
+          "countstring": "2 Days",
+          "average": 1.14,
+          "highest": 1.3,
           "sort": 1
         }
       }
@@ -443,11 +443,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 27.073,
+        "state": 27.079,
         "attributes": {
           "max": 46.9,
           "min": 8.4,
-          "avg": 27.073,
+          "avg": 27.079,
           "mindate": "23 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
@@ -456,7 +456,7 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 17.9,
+        "state": 19.11,
         "attributes": {}
       }
     },
@@ -468,7 +468,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "208.2",
+        "state": "219.9",
         "attributes": {
           "units": "GB"
         }
@@ -476,7 +476,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "817.5",
+        "state": "902.2",
         "attributes": {
           "units": "GB"
         }
@@ -488,20 +488,20 @@
         "attributes": {
           "model": "UGW3",
           "version": "4.4.51.5287926",
-          "data": "995.2 GB",
+          "data": "1089.4 GB",
           "serial": "F09FC212B4F7",
           "sitename": "TBSmartHome (default)",
           "type": "ugw",
           "controller": "https://192.168.1.20:8443",
           "external_ip_address": "110.143.197.190",
-          "uptime": "21d 0hr 2min",
+          "uptime": "22d 3hr 0min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "38.2",
+        "state": "118.1",
         "attributes": {
           "units": "GB"
         }
@@ -509,7 +509,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "5.9",
+        "state": "12.4",
         "attributes": {
           "units": "GB"
         }
@@ -517,11 +517,11 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 137.45,
+        "state": 137.43,
         "attributes": {
           "max": 162.9,
           "min": 112.9,
-          "avg": 137.45,
+          "avg": 137.43,
           "mindate": "23 Apr 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 Apr 2020 - Max: 05 Jan 2020"
@@ -564,7 +564,7 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 2,
+        "state": 8,
         "attributes": {}
       }
     },
@@ -590,9 +590,9 @@
           "sitename": "TBSmartHome (default)",
           "type": "usw",
           "controller": "https://192.168.1.20:8443",
-          "uptime": "21d 0hr 2min",
-          "rx_data": "208.2 GB",
-          "tx_data": "817.5 GB",
+          "uptime": "22d 3hr 1min",
+          "rx_data": "219.9 GB",
+          "tx_data": "902.2 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -608,14 +608,14 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 19.8,
-          "users": 28,
+          "cpu": 20.8,
+          "users": 29,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "21d 0hr 3min",
+          "uptime": "22d 3hr 1min",
           "lastseen": "a few seconds ago",
-          "tx_data": "38.2 GB",
-          "rx_data": "5.9 GB"
+          "tx_data": "118.1 GB",
+          "rx_data": "12.4 GB"
         }
       }
     },
@@ -634,10 +634,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 6562,
+        "state": 6911,
         "attributes": {
-          "uptime": "0d 0hr 3min",
-          "drops": 6562
+          "uptime": "0d 0hr 1min",
+          "drops": 6911
         }
       }
     },
@@ -649,37 +649,22 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "nan",
+        "state": "23.30",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "nan",
+        "state": "63.22",
         "attributes": {}
       }
     },
     "6ca45ff1_f711b": {
       "lastPayload": {
-        "state": "Everton vs Man United",
-        "attributes": {
-          "event": "Everton vs Man United",
-          "date": "15 hours ago",
-          "venue": "Goodison Park",
-          "home": "Everton",
-          "away": "Man United",
-          "league": "English Premier League",
-          "season": "2020-2021",
-          "round": "8"
-        }
-      }
-    },
-    "6c121a87_915e24": {
-      "lastPayload": {
         "state": "Man United vs West Brom",
         "attributes": {
           "event": "Man United vs West Brom",
-          "date": "in 13 days",
+          "date": "in 12 days",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "West Brom",
@@ -689,12 +674,12 @@
         }
       }
     },
-    "50748e7d_2121": {
+    "6c121a87_915e24": {
       "lastPayload": {
         "state": "Man United vs Istanbul Basaksehir",
         "attributes": {
           "event": "Man United vs Istanbul Basaksehir",
-          "date": "in 16 days",
+          "date": "in 15 days",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Istanbul Basaksehir",
@@ -704,12 +689,74 @@
         }
       }
     },
+    "50748e7d_2121": {
+      "lastPayload": {
+        "state": "Southampton vs Man United",
+        "attributes": {
+          "event": "Southampton vs Man United",
+          "date": "in 20 days",
+          "venue": "St. Mary's Stadium",
+          "home": "Southampton",
+          "away": "Man United",
+          "league": "English Premier League",
+          "season": "2020-2021",
+          "round": "10"
+        }
+      }
+    },
     "c8b325e4_b8cce8": {
+      "lastPayload": {
+        "state": "Everton vs Man United",
+        "attributes": {
+          "event": "Everton vs Man United",
+          "date": "2 days ago",
+          "venue": "Goodison Park",
+          "home": "Everton",
+          "away": "Man United",
+          "league": "English Premier League",
+          "season": "2020-2021",
+          "round": "8",
+          "homescore": "1",
+          "awayscore": "3"
+        }
+      }
+    },
+    "a9baddf7_766c5": {
+      "lastPayload": {
+        "state": "Man United vs Paris SG",
+        "attributes": {
+          "event": "Man United vs Paris SG",
+          "date": "in 23 days",
+          "venue": "Old Trafford",
+          "home": "Man United",
+          "away": "Paris SG",
+          "league": "UEFA Champions League",
+          "season": "2020-2021",
+          "round": "5"
+        }
+      }
+    },
+    "ebb5fc25_0bf0c": {
+      "lastPayload": {
+        "state": "West Ham vs Man United",
+        "attributes": {
+          "event": "West Ham vs Man United",
+          "date": "in a month",
+          "venue": "London Stadium",
+          "home": "West Ham",
+          "away": "Man United",
+          "league": "English Premier League",
+          "season": "2020-2021",
+          "round": "11"
+        }
+      }
+    },
+    "bab41f6f_a9a39": {
       "lastPayload": {
         "state": "Istanbul Basaksehir vs Man United",
         "attributes": {
           "event": "Istanbul Basaksehir vs Man United",
-          "date": "4 days ago",
+          "date": "5 days ago",
           "venue": "Başakşehir Fatih Terim Stadyumu",
           "home": "Istanbul Basaksehir",
           "away": "Man United",
@@ -721,42 +768,12 @@
         }
       }
     },
-    "a9baddf7_766c5": {
-      "lastPayload": {
-        "state": "Southampton vs Man United",
-        "attributes": {
-          "event": "Southampton vs Man United",
-          "date": "in 21 days",
-          "venue": "St. Mary's Stadium",
-          "home": "Southampton",
-          "away": "Man United",
-          "league": "English Premier League",
-          "season": "2020-2021",
-          "round": "10"
-        }
-      }
-    },
-    "ebb5fc25_0bf0c": {
-      "lastPayload": {
-        "state": "Man United vs Paris SG",
-        "attributes": {
-          "event": "Man United vs Paris SG",
-          "date": "in 24 days",
-          "venue": "Old Trafford",
-          "home": "Man United",
-          "away": "Paris SG",
-          "league": "UEFA Champions League",
-          "season": "2020-2021",
-          "round": "5"
-        }
-      }
-    },
-    "bab41f6f_a9a39": {
+    "b89a0f34_67276": {
       "lastPayload": {
         "state": "Man United vs Arsenal",
         "attributes": {
           "event": "Man United vs Arsenal",
-          "date": "7 days ago",
+          "date": "8 days ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Arsenal",
@@ -768,12 +785,12 @@
         }
       }
     },
-    "b89a0f34_67276": {
+    "81add29d_408d9": {
       "lastPayload": {
         "state": "Man United vs RasenBallsport Leipzig",
         "attributes": {
           "event": "Man United vs RasenBallsport Leipzig",
-          "date": "11 days ago",
+          "date": "12 days ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "RasenBallsport Leipzig",
@@ -785,12 +802,12 @@
         }
       }
     },
-    "81add29d_408d9": {
+    "8faca7f1_28fae8": {
       "lastPayload": {
         "state": "Man United vs Chelsea",
         "attributes": {
           "event": "Man United vs Chelsea",
-          "date": "15 days ago",
+          "date": "16 days ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Chelsea",
@@ -802,29 +819,12 @@
         }
       }
     },
-    "8faca7f1_28fae8": {
-      "lastPayload": {
-        "state": "Paris SG vs Man United",
-        "attributes": {
-          "event": "Paris SG vs Man United",
-          "date": "19 days ago",
-          "venue": "Parc des Princes",
-          "home": "Paris SG",
-          "away": "Man United",
-          "league": "UEFA Champions League",
-          "season": "2020-2021",
-          "round": "1",
-          "homescore": "1",
-          "awayscore": "2"
-        }
-      }
-    },
     "ce06dade_059de8": {
       "lastPayload": {
         "state": "New York Jets vs New England Patriots",
         "attributes": {
           "event": "New York Jets vs New England Patriots",
-          "date": "in a day",
+          "date": "in 7 hours",
           "venue": null,
           "home": "New York Jets",
           "away": "New England Patriots",
@@ -839,7 +839,7 @@
         "state": "New England Patriots vs Baltimore Ravens",
         "attributes": {
           "event": "New England Patriots vs Baltimore Ravens",
-          "date": "in 7 days",
+          "date": "in 6 days",
           "venue": null,
           "home": "New England Patriots",
           "away": "Baltimore Ravens",
@@ -854,7 +854,7 @@
         "state": "Houston Texans vs New England Patriots",
         "attributes": {
           "event": "Houston Texans vs New England Patriots",
-          "date": "in 14 days",
+          "date": "in 13 days",
           "venue": null,
           "home": "Houston Texans",
           "away": "New England Patriots",
@@ -869,7 +869,7 @@
         "state": "New England Patriots vs Arizona Cardinals",
         "attributes": {
           "event": "New England Patriots vs Arizona Cardinals",
-          "date": "in 21 days",
+          "date": "in 20 days",
           "venue": null,
           "home": "New England Patriots",
           "away": "Arizona Cardinals",
@@ -899,7 +899,7 @@
         "state": "Buffalo Bills vs New England Patriots",
         "attributes": {
           "event": "Buffalo Bills vs New England Patriots",
-          "date": "7 days ago",
+          "date": "8 days ago",
           "venue": "",
           "home": "Buffalo Bills",
           "away": "New England Patriots",
@@ -916,7 +916,7 @@
         "state": "New England Patriots vs San Francisco 49ers",
         "attributes": {
           "event": "New England Patriots vs San Francisco 49ers",
-          "date": "14 days ago",
+          "date": "15 days ago",
           "venue": "",
           "home": "New England Patriots",
           "away": "San Francisco 49ers",
@@ -933,7 +933,7 @@
         "state": "New England Patriots vs Denver Broncos",
         "attributes": {
           "event": "New England Patriots vs Denver Broncos",
-          "date": "21 days ago",
+          "date": "22 days ago",
           "venue": "",
           "home": "New England Patriots",
           "away": "Denver Broncos",
@@ -1340,6 +1340,138 @@
         "state": 1003.66,
         "attributes": {}
       }
+    },
+    "3016229d_895e2e": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "13:11 05 Nov 2020",
+          "sort": 8
+        }
+      }
+    },
+    "ac2847d2_af37a8": {
+      "lastPayload": {
+        "state": 0.1,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "13:11 05 Nov 2020",
+          "sort": 7
+        }
+      }
+    },
+    "764432ce_ee9c0c": {
+      "lastPayload": {
+        "state": 3.8,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "04:02 09 Feb 2020",
+          "sort": "7"
+        }
+      }
+    },
+    "52f7e32c_552f04": {
+      "lastPayload": {
+        "state": 2.4,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "16:02 09 Feb 2020",
+          "sort": "8"
+        }
+      }
+    },
+    "69040648_41de6": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "17:11 08 Nov 2020",
+          "sort": 8
+        }
+      }
+    },
+    "897ee7be_103218": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "17:11 08 Nov 2020",
+          "sort": 7
+        }
+      }
+    },
+    "ec302af1_dfe74": {
+      "lastPayload": {
+        "state": 0.9,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "13:11 05 Nov 2020",
+          "sort": 3
+        }
+      }
+    },
+    "f6e1ae0c_c581a8": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "17:11 08 Nov 2020",
+          "sort": 5
+        }
+      }
+    },
+    "5c0e3d5e_5133cc": {
+      "lastPayload": {
+        "state": 0,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "17:11 08 Nov 2020",
+          "sort": 6
+        }
+      }
+    },
+    "e9019b55_3f106": {
+      "lastPayload": {
+        "state": 0.3,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "14:11 05 Nov 2020",
+          "sort": 4
+        }
+      }
+    },
+    "2e04cb49_703f74": {
+      "lastPayload": {
+        "state": 1.9,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "13:11 05 Nov 2020",
+          "sort": 2
+        }
+      }
+    },
+    "f77adadb_9106f8": {
+      "lastPayload": {
+        "state": 3.7,
+        "attributes": {
+          "aep": 0,
+          "ey": 0,
+          "time": "13:11 05 Nov 2020",
+          "sort": 1
+        }
+      }
     }
   }
-}    
+}

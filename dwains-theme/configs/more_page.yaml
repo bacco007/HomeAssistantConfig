@@ -142,12 +142,15 @@ more_page:
     - name: Weather Station
       icon: mdi:gauge
       path: "dwains-theme/addons/more_page/weatherstation/page.yaml"
+    - name: Xbox
+      icon: si:xbox
+      path: "dwains-theme/addons/more_page/xbox/page.yaml"
     - name: Testing
       icon: mdi:widgets
       path: "dwains-theme/addons/more_page/testing.yaml"
-    # - name: Zigbee
-    #   icon: mdi:zigbee
-    #   path: 'dwains-theme/addons/more_page/zigbee/page.yaml'
+    - name: Zigbee
+      icon: mdi:zigbee
+      path: "dwains-theme/addons/more_page/zigbee/page.yaml"
 #     - name: Hello more page
 #       icon: fas:chart-area
 #       path: 'dwains-theme/addons/more_page/hello-more-page/page.yaml'

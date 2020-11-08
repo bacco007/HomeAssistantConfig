@@ -42,7 +42,6 @@ home-assistant.log
 google_calendars.yaml
 www/images/radar_moree_256km.gif
 www/images/radar_namoi_128km.gif
-yamllinterrors.txt
 README_Dev.md
 zigbee.db
 airsonos.xml
@@ -55,4 +54,4 @@ isort.cfg
 .Google Fit_google_fit.token
 alexa*.html
 temp.yml
-yamllint_errors.txt
+yamlint_errors.txt

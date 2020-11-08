@@ -92,12 +92,6 @@ sensor:
           {% set current = as_timestamp(strptime(states('sensor.date_time'), '%Y-%m-%d, %H:%M')) %}
           {% set dusk = as_timestamp(state_attr('sun.sun', 'next_dusk')) %}
           {% if current <= dusk %}
-            {# output example "will set at around 8." #}
-            {# output example "will set at around a quarter past 8." #}
-            {# output example "will set at around 8 and a half." #}
-            {# output example "will set at around a quarter to 9." #}
-            {# output example "will set in a few minutes." #}
-            {# output example "is setting." #}
             {% set setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
             {% if current >= setting %}
               is setting
@@ -137,10 +131,6 @@ sensor:
               {% endif %}
             {% endif %}
           {% else %}
-            {# output example "will rise in about 7 hours." #}
-            {# output example "will rise in about 7 and a half hours." #}
-            {# output example "will rise in a few minutes." #}
-            {# output example "is rising." #}
             {% set dawn = as_timestamp(state_attr('sun.sun', 'next_dawn')) %}
             {% set rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
             {% set diff = ((rising - current) / 60 / 60) %}

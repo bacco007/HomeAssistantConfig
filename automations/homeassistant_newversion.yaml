@@ -6,14 +6,16 @@ trigger:
 action:
   - service: notify.slack
     data_template:
-      message: ""
+      message: "New Home Assistant Version"
       target: "#tbsmarthome"
-      data:
-        attachments:
-          - color: >
-              #800400
-            title: >
-              New HA Version
+      blocks:
+        - type: section
+          text:
+            type: mrkdwn
+            text: "*New Home Assistant Version*"
+        - type: section
+          text:
+            type: mrkdwn
             text: |
               New Home Assistant Version
               Current - {{ states.sensor.ha_current_version.state }}

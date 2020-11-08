@@ -8,7 +8,7 @@
     }
   cards:
     - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
       cards:
         # - type: horizontal-stack
         #   cards:
@@ -28,32 +28,53 @@
                 ha-card { box-shadow: none; }
                 ha-markdown { padding-bottom: 1px !important; }
               content: >
-                **Zigbee Home Automation**
+                **Zigbee**
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-12 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  # padding: true
   cards:
-    - type: 'custom:zha-network-card'
-      clickable: true
-      columns:
-        - name: Name
-          prop: name
-        - attr: available
-          id: available
-          modify: x || "false"
-          name: Online
-        - attr: model
-          name: Model
-        - attr: ieee
-          name: IEEE
-        - name: NWK
-          prop: nwk
-        - attr: rssi
-          name: RSSI
-        - attr: lqi
-          name: LQI
-        - attr: last_seen
-          name: Last Seen
-        - attr: power_source
-          name: Power Source
-      sort_by: name
+    - type: entities
+      title: Deconz / Conbee
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.current_version_deconz
+          name: Deconz Version
+          icon: mdi:zigbee
+          type: custom:multiple-entity-row
+          show_state: false
+          entities:
+            - entity: sensor.current_version_deconz
+              name: Current
+            - entity: sensor.latest_version_deconz
+              name: Latest
+        - entity: sensor.current_apiversion_deconz
+          name: Deconz API Version
+          icon: mdi:zigbee
+        - type: section
+        - entity: sensor.current_firmware_conbee
+          name: Conbee Firmware
+          icon: mdi:zigbee
+        - entity: sensor.zigbee_channel_deconz
+          name: Zigbee Channel
+          icon: mdi:zigbee
