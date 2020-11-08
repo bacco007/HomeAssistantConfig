@@ -116,7 +116,7 @@
     },
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 76,
+        "state": 75,
         "attributes": {}
       }
     },
@@ -140,7 +140,7 @@
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 14,
+        "state": 13,
         "attributes": {}
       }
     },
@@ -212,20 +212,26 @@
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 18.19,
-        "attributes": {}
+        "state": 18.16,
+        "attributes": {
+          "period": "2020-11-08T17:05:00"
+        }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 9.09,
-        "attributes": {}
+        "state": 9.06,
+        "attributes": {
+          "period": "2020-11-08T17:05:00"
+        }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 6.53,
-        "attributes": {}
+        "state": 6.49,
+        "attributes": {
+          "period": "2020-11-08T17:05:00"
+        }
       }
     },
     "842f01fc_12319": {
@@ -362,7 +368,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 86.483,
+        "state": 120.69,
         "attributes": {}
       }
     },
@@ -456,7 +462,7 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 19.11,
+        "state": 18.94,
         "attributes": {}
       }
     },
@@ -476,7 +482,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "902.2",
+        "state": "902.4",
         "attributes": {
           "units": "GB"
         }
@@ -488,20 +494,20 @@
         "attributes": {
           "model": "UGW3",
           "version": "4.4.51.5287926",
-          "data": "1089.4 GB",
+          "data": "1089.7 GB",
           "serial": "F09FC212B4F7",
           "sitename": "TBSmartHome (default)",
           "type": "ugw",
           "controller": "https://192.168.1.20:8443",
           "external_ip_address": "110.143.197.190",
-          "uptime": "22d 3hr 0min",
+          "uptime": "22d 3hr 6min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "118.1",
+        "state": "118.4",
         "attributes": {
           "units": "GB"
         }
@@ -590,9 +596,9 @@
           "sitename": "TBSmartHome (default)",
           "type": "usw",
           "controller": "https://192.168.1.20:8443",
-          "uptime": "22d 3hr 1min",
+          "uptime": "22d 3hr 5min",
           "rx_data": "219.9 GB",
-          "tx_data": "902.2 GB",
+          "tx_data": "902.4 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -608,13 +614,13 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 20.8,
+          "cpu": 16,
           "users": 29,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "22d 3hr 1min",
+          "uptime": "22d 3hr 6min",
           "lastseen": "a few seconds ago",
-          "tx_data": "118.1 GB",
+          "tx_data": "118.4 GB",
           "rx_data": "12.4 GB"
         }
       }
@@ -634,10 +640,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 6911,
+        "state": 6912,
         "attributes": {
           "uptime": "0d 0hr 1min",
-          "drops": 6911
+          "drops": 6912
         }
       }
     },
@@ -655,7 +661,7 @@
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "63.22",
+        "state": "63.00",
         "attributes": {}
       }
     },
@@ -824,7 +830,7 @@
         "state": "New York Jets vs New England Patriots",
         "attributes": {
           "event": "New York Jets vs New England Patriots",
-          "date": "in 7 hours",
+          "date": "in 6 hours",
           "venue": null,
           "home": "New York Jets",
           "away": "New England Patriots",
@@ -1391,7 +1397,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 08 Nov 2020",
+          "time": "18:11 08 Nov 2020",
           "sort": 8
         }
       }
@@ -1402,7 +1408,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 08 Nov 2020",
+          "time": "18:11 08 Nov 2020",
           "sort": 7
         }
       }
@@ -1424,7 +1430,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 08 Nov 2020",
+          "time": "18:11 08 Nov 2020",
           "sort": 5
         }
       }
@@ -1435,7 +1441,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 08 Nov 2020",
+          "time": "18:11 08 Nov 2020",
           "sort": 6
         }
       }
