@@ -1,0 +1,123 @@
+---
+type: custom:stack-in-card
+mode: horizontal
+cards:
+  - type: custom:dwains-flexbox-card
+    items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            style: |
+              ha-card { box-shadow: none; }
+              ha-markdown { padding-bottom: 1px !important; }
+            content: >
+              <h2>Component Counts</h2>
+          - type: custom:mini-graph-card
+            style: |
+              ha-card { box-shadow: none; }
+            entities:
+              - entity: sensor.count_all_components
+            name: Components
+            height: 50
+            line_color: "var(--dwains-theme-accent)"
+            line_width: 2
+            font_size: 70
+            hours_to_show: 168
+            points_per_hour: 6
+            align_state: center
+            show:
+              #extrema: true
+              fill: fade
+          - type: custom:mini-graph-card
+            style: |
+              ha-card { box-shadow: none; }
+            entities:
+              - sensor.count_all_entities
+            name: Entities
+            height: 50
+            line_color: "var(--dwains-theme-accent)"
+            line_width: 2
+            font_size: 70
+            hours_to_show: 168
+            points_per_hour: 6
+            align_state: center
+            show:
+              # extrema: true
+              fill: fade
+      - type: vertical-stack
+        cards:
+          - type: custom:config-template-card
+            variables:
+              - states['sensor.count_all_entities'].state
+            entities:
+              - sensor.count_all_entities
+            card:
+              type: custom:auto-entities
+              card:
+                type: entities
+                style: |
+                  ha-card {
+                    background-color: var(--dwains-theme-primary);
+                    box-shadow: none;
+                  }
+                  .card-header {
+                    padding: 5px 16px 10px;
+                    font-size: 18px;
+                    font-weight: 700 !important;
+                  }
+              sort:
+                method: state
+                reverse: true
+                numeric: true
+              filter:
+                exclude:
+                  - entity_id: sensor.count_all_components
+                  - entity_id: sensor.count_all_entities
+                include:
+                  - entity_id: sensor.count_*
+                    options:
+                      type: custom:bar-card
+                      style: |
+                        ha-icon {
+                          color: var(--dwains-theme-accent) !important;
+                        }
+                        ha-icon	 {
+                          margin-top: -7px;
+                          padding-right: 5px;
+                        }
+                        bar-card-indicator	 {
+                          margin-top: -12px;
+                          padding-right: 5px;
+                        }
+                        bar-card-name	 {
+                          margin-top: -4.5px;
+                          padding-left: 5px;
+                        }
+                        bar-card-backgroundbar	 {
+                          margin-top: -3.5px;
+                          border-radius: 2.5px;
+                        }
+                        bar-card-currentbar	 {
+                          margin-top: -3.5px;
+                          border-radius: 2.5px;
+                        }
+                        bar-card-targetbar	 {
+                          margin-top: -3.5px;
+                          border-radius: 2.5px;
+                        }
+                        bar-card-targetmarker	 {
+                          margin-top: -3.5px;
+                          border-radius: 2.5px;
+                        }
+                        bar-card-value	 {
+                          margin-top: -4.5px;
+                          padding-left: 5px;
+                        }
+                      positions:
+                        title: inside
+                        value: inside
+                      entity_row: true
+                      min: 0
+                      max: "${vars[0]}"
+                      color: rgb(26,204,147,0.33)

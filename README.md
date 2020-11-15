@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, November 8th 2020_
+_Stats as at 04:59, Sunday, November 15th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.117.5 | 264     | 2635         | 2249 | 27 |
+| 0.117.6 | 265     | 2666         | 2278 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 27
+Automation | 24
 Binary Sensor | 70
 Camera | 1
-Device Tracker | 65
+Device Tracker | 67
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
@@ -93,12 +93,12 @@ Input Text | 0
 Light | 4
 Media Player | 33
 Person | 1
-Scene | 0
+Scene | 1
 Script | 1
-Sensor | 2249
+Sensor | 2278
 Sun | 1
 Switch | 115
-Weather | 2
+Weather | 3
 Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -176,7 +176,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.tile](https://www.home-assistant.io/components/device_tracker.tile) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [discovery](https://www.home-assistant.io/components/discovery) |
-| [dwains_theme](https://www.home-assistant.io/components/dwains_theme) |
+| [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
 | [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
 | [fan](https://www.home-assistant.io/components/fan) |
@@ -276,6 +276,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.covid19_nswhealth_tests](https://www.home-assistant.io/components/sensor.covid19_nswhealth_tests) |
 | [sensor.deconz](https://www.home-assistant.io/components/sensor.deconz) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
+| [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
 | [sensor.dyson](https://www.home-assistant.io/components/sensor.dyson) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
@@ -307,7 +308,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
-| [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
@@ -370,6 +370,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [vacuum.dyson](https://www.home-assistant.io/components/vacuum.dyson) |
 | [weather](https://www.home-assistant.io/components/weather) |
+| [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.met](https://www.home-assistant.io/components/weather.met) |
 | [webhook](https://www.home-assistant.io/components/webhook) |
@@ -398,7 +399,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [COVID-19 NSW Health]()
 - [COVID-19 NSW Health Tests]()
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
-- [Dwains Theme Component]()
+- [Dwains Dashboard](https://dwainscheeren.github.io/dwains-lovelace-dashboard/)
 - [Favicon changer]()
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
 - [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)

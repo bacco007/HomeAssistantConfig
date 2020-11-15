@@ -2,8 +2,8 @@
 iaquk:
   lounge:
     sources:
-      temperature: sensor.netatmo_brisbane_street_indoor_temperature
-      humidity: sensor.netatmo_brisbane_street_indoor_humidity
+      temperature: sensor.weather_inside_temperature
+      humidity: sensor.weather_inside_humidity
       # tvoc:
     sensors:
       - iaq_level

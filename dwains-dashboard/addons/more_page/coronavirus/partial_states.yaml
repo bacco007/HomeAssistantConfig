@@ -1,0 +1,42 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:flex-table-card
+    title: State by State
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      # font-family: { var(--primary-font-family);}
+      # font-weight: {400 !important;}
+    sort_by: NAME+
+    clickable: true
+    css:
+      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+    entities:
+      include: sensor.covid_19_esria_*
+      exclude:
+        - sensor.covid_19_esria_*_pct
+        - sensor.covid_19_esria_aus*
+    columns:
+      - name: Name
+        attr: NAME
+      - name: Last Update
+        attr: Last_Updated
+        modify: new Date(x).toDateString()
+        align: center
+      - name: Cases
+        attr: Cases
+        align: right
+      - name: Deaths
+        attr: Deaths
+        align: right
+      - name: Tests
+        attr: Tests
+        align: right

@@ -1,0 +1,171 @@
+---
+# - type: custom:dwains-flexbox-card
+#   padding: true
+#   items_classes: "col-lg-6 col-md-6 col-sm-12 col-xs-12"
+#   cards:
+#     - type: horizontal-stack
+#       cards:
+#         # Blocked Domains
+#         - type: "custom:button-card"
+#           style: |
+#             ha-card {
+#               border-radius: 4px;
+#               box-shadow: 10px;
+#               background-position: center;
+#           entity: sensor.pi_hole_domains_blocked
+#           icon: mdi:cancel
+#           name: Blocked
+#           show_state: true
+#           show_name: true
+#           show_label: true
+#           show_icon: true
+#           styles:
+#             card:
+#               - background-size: contain
+#               - background-repeat: no-repeat
+#               - background-position: center
+#             icon:
+#               - width: 20%
+#               - margin-top: 1%
+
+#         # % Blocked Today
+#         - type: "custom:button-card"
+#           style: |
+#             ha-card {
+#               border-radius: 4px;
+#               box-shadow: 10px;
+#               background-position: center;
+#           entity: sensor.pi_hole_ads_percentage_blocked_today
+#           name: Ads Blocked Today
+#           show_state: true
+#           show_name: true
+#           show_label: true
+#           show_icon: true
+#           styles:
+#             card:
+#               - background-size: contain
+#               - background-repeat: no-repeat
+#               - background-position: center
+#             icon:
+#               - width: 20%
+#               - margin-top: 1%
+
+#     - type: vertical-stack
+#       cards:
+#         - type: horizontal-stack
+#           cards:
+#             # Unique Clients
+#             - type: "custom:button-card"
+#               style: |
+#                 ha-card {
+#                   border-radius: 4px;
+#                   box-shadow: 10px;
+#                   background-position: center;
+#               entity: sensor.pi_hole_dns_unique_clients
+#               name: Unique Clients
+#               icon: mdi:devices
+#               show_state: true
+#               show_name: true
+#               show_label: true
+#               show_icon: true
+#               styles:
+#                 card:
+#                   - background-size: contain
+#                   - background-repeat: no-repeat
+#                   - background-position: center
+#                 icon:
+#                   - width: 20%
+#                   - margin-top: 1%
+
+#             # Seen Clients
+#             - type: "custom:button-card"
+#               style: |
+#                 ha-card {
+#                   border-radius: 4px;
+#                   box-shadow: 10px;
+#                   background-position: center;
+#               entity: sensor.pi_hole_seen_clients
+#               name: Seen Clients
+#               icon: mdi:monitor-cellphone-star
+#               show_state: true
+#               show_name: true
+#               show_label: true
+#               show_icon: true
+#               styles:
+#                 card:
+#                   - background-size: contain
+#                   - background-repeat: no-repeat
+#                   - background-position: center
+#                 icon:
+#                   - width: 20%
+#                   - margin-top: 1%
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-4 col-sm-4 col-xl-4"
+  padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - !include partial_uptime.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_updates_supervisor.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_updates_custom.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_versions.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_breaking_changes.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_db.yaml
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.ha_db_size
+          name: DB Size
+      name: HA Database Size (MariaDB)
+      animate: true
+      align_state: center
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 1
+      smoothing: true
+      show:
+        points: false
+        graph: line
+        fill: fade
+        extrema: true
+
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.influxdb_size
+          name: DB Size
+      name: HA Database Size (InfluxDB)
+      animate: true
+      align_state: center
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 1
+      smoothing: true
+      show:
+        points: false
+        graph: line
+        fill: fade
+        extrema: true
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  cards:
+    - type: vertical-stack
+      cards:
+        - !include partial_github.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_compcount.yaml

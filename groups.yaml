@@ -6,7 +6,7 @@ bedroom_media:
     - media_player.bedroom_display
     - media_player.nvidia_shield
     - media_player.thomas_s_echo_plus
-    - media_player.ua40es6200_ua40es6200
+    - media_player.samsung_ua40es6200
     - media_player.xbox_one
 bedroom_switch:
   name: Bedroom - Power Switch
@@ -17,7 +17,9 @@ office_media:
   name: Office - Media
   entities:
     - media_player.bedroom_sonos
-    - media_player.googlehome3140
+    - media_player.office_sonos
+    - media_player.office_speaker
+    - media_player.spotify_thomas_baxter
 opennem:
   name: OpenNEM
   entities:
@@ -39,7 +41,7 @@ opennem:
 lounge_media:
   name: Lounge - Media
   entities:
-    - media_player.sony_bravia_tv
+    - media_player.kdl_55w800c
 serverrack_device:
   name: Server Rack - Devices
   entities:

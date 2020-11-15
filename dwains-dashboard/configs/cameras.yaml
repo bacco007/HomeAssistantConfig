@@ -1,0 +1,7 @@
+# https://dwainscheeren.github.io/lovelace-dwains-theme/configuration/cameras.html
+
+cameras:
+  entities:
+    - camera.namoi128km
+    - camera.moree256km
+    - camera.bom_satellite

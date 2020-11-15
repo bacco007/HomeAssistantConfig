@@ -1,0 +1,98 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-lg-3 col-xl-3"
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.worldwide_coronavirus_confirmed
+          name: Cases
+          state: Cases
+        - entity: sensor.worldwide_coronavirus_deaths
+          name: Deaths
+          y_axis: secondary
+      name: Worldwide
+      icon: mdi:biohazard
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        # points: false
+        graph: line
+        fill: fade
+
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.covid_19_esria_aus_cases
+          name: Cases
+        - entity: sensor.covid_19_esria_aus_deaths
+          name: Deaths
+          y_axis: secondary
+      name: Australia
+      icon: mdi:biohazard
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        # points: false
+        graph: line
+        fill: fade
+
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.covid_19_esria_nsw
+          name: Cases
+      name: New South Wales
+      icon: mdi:biohazard
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        points: false
+        graph: line
+
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.covid_19_nswh_local
+          name: Cases
+        - entity: sensor.covid_19_nswh_local_tests
+          name: Tests
+          y_axis: secondary
+      name: Tamworth
+      icon: mdi:biohazard
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 168
+      hour24: true
+      points_per_hour: 0.25
+      smoothing: true
+      show:
+        points: false
+        graph: line
+      #   extrema: false
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  cards:
+    - type: vertical-stack
+      cards:
+        - !include partial_johnshopkins.yaml
+
+    - type: vertical-stack
+      cards:
+        - !include partial_australia.yaml
+
+    - type: vertical-stack
+      cards:
+        - !include partial_nswhealth.yaml
+
+    - type: vertical-stack
+      cards:
+        - !include partial_states.yaml
+
+- !include bar-graph-states.yaml
