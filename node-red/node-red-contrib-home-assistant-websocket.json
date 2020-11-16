@@ -116,13 +116,13 @@
     },
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 45,
+        "state": 98,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 88,
+        "state": 138,
         "attributes": {}
       }
     },
@@ -134,13 +134,13 @@
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 38,
+        "state": 64,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 13,
+        "state": 16,
         "attributes": {}
       }
     },
@@ -212,25 +212,25 @@
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 18.01,
+        "state": 17.83,
         "attributes": {
-          "period": "2020-11-15T12:55:00"
+          "period": "2020-11-16T16:15:00"
         }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 8.91,
+        "state": 8.72,
         "attributes": {
-          "period": "2020-11-15T12:55:00"
+          "period": "2020-11-16T16:15:00"
         }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 6.35,
+        "state": 6.16,
         "attributes": {
-          "period": "2020-11-15T12:55:00"
+          "period": "2020-11-16T16:15:00"
         }
       }
     },
@@ -308,7 +308,7 @@
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5326,
+        "state": 5328,
         "attributes": {}
       }
     },
@@ -368,7 +368,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 58.714,
+        "state": 65.749,
         "attributes": {}
       }
     },
@@ -387,11 +387,11 @@
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 11.006,
+        "state": 11.023,
         "attributes": {
           "max": 28.1,
           "min": -1.28,
-          "avg": 11.006,
+          "avg": 11.023,
           "mindate": "26 Aug 2020",
           "maxdate": "02 Feb 2020",
           "datestring": "Min: 26 Aug 2020 - Max: 02 Feb 2020"
@@ -449,11 +449,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 27.181,
+        "state": 27.233,
         "attributes": {
           "max": 46.9,
           "min": 8.4,
-          "avg": 27.181,
+          "avg": 27.233,
           "mindate": "23 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
@@ -462,19 +462,19 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 20.33,
+        "state": 20.34,
         "attributes": {}
       }
     },
     "f757099a_d4cc4": {
       "lastPayload": {
-        "state": 328.18,
+        "state": 330.36,
         "attributes": {}
       }
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "281.5",
+        "state": "296.5",
         "attributes": {
           "units": "GB"
         }
@@ -482,7 +482,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "1142.9",
+        "state": "1186.5",
         "attributes": {
           "units": "TB"
         }
@@ -500,14 +500,14 @@
           "type": "ugw",
           "controller": "https://192.168.1.20:8443",
           "external_ip_address": "110.143.197.190",
-          "uptime": "28d 22hr 57min",
+          "uptime": "30d 2hr 15min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "12.3",
+        "state": "60.7",
         "attributes": {
           "units": "GB"
         }
@@ -515,7 +515,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "1.5",
+        "state": "9.3",
         "attributes": {
           "units": "GB"
         }
@@ -570,7 +570,7 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 3,
+        "state": 0,
         "attributes": {}
       }
     },
@@ -596,9 +596,9 @@
           "sitename": "TBSmartHome (default)",
           "type": "usw",
           "controller": "https://192.168.1.20:8443",
-          "uptime": "28d 22hr 59min",
-          "rx_data": "281.5 GB",
-          "tx_data": "1.1 TB",
+          "uptime": "30d 2hr 16min",
+          "rx_data": "296.5 GB",
+          "tx_data": "1.2 TB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -614,14 +614,14 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 15.6,
+          "cpu": 27.9,
           "users": 29,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "28d 22hr 59min",
+          "uptime": "30d 2hr 16min",
           "lastseen": "a few seconds ago",
-          "tx_data": "12.3 GB",
-          "rx_data": "1.5 GB"
+          "tx_data": "60.7 GB",
+          "rx_data": "9.3 GB"
         }
       }
     },
@@ -640,10 +640,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 8936,
+        "state": 9239,
         "attributes": {
-          "uptime": "",
-          "drops": 8936
+          "uptime": "0d 0hr 2min",
+          "drops": 9239
         }
       }
     },
@@ -655,13 +655,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "nan",
+        "state": "35.70",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "nan",
+        "state": "37.38",
         "attributes": {}
       }
     },
@@ -670,7 +670,7 @@
         "state": "Man United vs West Brom",
         "attributes": {
           "event": "Man United vs West Brom",
-          "date": "in 5 days",
+          "date": "in 4 days",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "West Brom",
@@ -685,7 +685,7 @@
         "state": "Man United vs Istanbul Basaksehir",
         "attributes": {
           "event": "Man United vs Istanbul Basaksehir",
-          "date": "in 8 days",
+          "date": "in 7 days",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Istanbul Basaksehir",
@@ -700,7 +700,7 @@
         "state": "Southampton vs Man United",
         "attributes": {
           "event": "Southampton vs Man United",
-          "date": "in 13 days",
+          "date": "in 12 days",
           "venue": "St. Mary's Stadium",
           "home": "Southampton",
           "away": "Man United",
@@ -715,7 +715,7 @@
         "state": "Everton vs Man United",
         "attributes": {
           "event": "Everton vs Man United",
-          "date": "9 days ago",
+          "date": "10 days ago",
           "venue": "Goodison Park",
           "home": "Everton",
           "away": "Man United",
@@ -732,7 +732,7 @@
         "state": "Man United vs Paris SG",
         "attributes": {
           "event": "Man United vs Paris SG",
-          "date": "in 16 days",
+          "date": "in 15 days",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Paris SG",
@@ -747,7 +747,7 @@
         "state": "West Ham vs Man United",
         "attributes": {
           "event": "West Ham vs Man United",
-          "date": "in 19 days",
+          "date": "in 18 days",
           "venue": "London Stadium",
           "home": "West Ham",
           "away": "Man United",
@@ -762,7 +762,7 @@
         "state": "Istanbul Basaksehir vs Man United",
         "attributes": {
           "event": "Istanbul Basaksehir vs Man United",
-          "date": "12 days ago",
+          "date": "13 days ago",
           "venue": "Başakşehir Fatih Terim Stadyumu",
           "home": "Istanbul Basaksehir",
           "away": "Man United",
@@ -779,7 +779,7 @@
         "state": "Man United vs Arsenal",
         "attributes": {
           "event": "Man United vs Arsenal",
-          "date": "15 days ago",
+          "date": "16 days ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Arsenal",
@@ -796,7 +796,7 @@
         "state": "Man United vs RasenBallsport Leipzig",
         "attributes": {
           "event": "Man United vs RasenBallsport Leipzig",
-          "date": "19 days ago",
+          "date": "20 days ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "RasenBallsport Leipzig",
@@ -813,7 +813,7 @@
         "state": "Man United vs Chelsea",
         "attributes": {
           "event": "Man United vs Chelsea",
-          "date": "23 days ago",
+          "date": "24 days ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Chelsea",
@@ -830,8 +830,8 @@
         "state": "New England Patriots vs Baltimore Ravens",
         "attributes": {
           "event": "New England Patriots vs Baltimore Ravens",
-          "date": "13 hours ago",
-          "venue": null,
+          "date": "17 hours ago",
+          "venue": "",
           "home": "New England Patriots",
           "away": "Baltimore Ravens",
           "league": "NFL",
@@ -845,7 +845,7 @@
         "state": "Houston Texans vs New England Patriots",
         "attributes": {
           "event": "Houston Texans vs New England Patriots",
-          "date": "in 6 days",
+          "date": "in 5 days",
           "venue": null,
           "home": "Houston Texans",
           "away": "New England Patriots",
@@ -860,7 +860,7 @@
         "state": "New England Patriots vs Arizona Cardinals",
         "attributes": {
           "event": "New England Patriots vs Arizona Cardinals",
-          "date": "in 13 days",
+          "date": "in 12 days",
           "venue": null,
           "home": "New England Patriots",
           "away": "Arizona Cardinals",
@@ -875,7 +875,7 @@
         "state": "Los Angeles Chargers vs New England Patriots",
         "attributes": {
           "event": "Los Angeles Chargers vs New England Patriots",
-          "date": "in 20 days",
+          "date": "in 19 days",
           "venue": null,
           "home": "Los Angeles Chargers",
           "away": "New England Patriots",
@@ -890,7 +890,7 @@
         "state": "Los Angeles Rams vs New England Patriots",
         "attributes": {
           "event": "Los Angeles Rams vs New England Patriots",
-          "date": "in 24 days",
+          "date": "in 23 days",
           "venue": null,
           "home": "Los Angeles Rams",
           "away": "New England Patriots",
@@ -905,7 +905,7 @@
         "state": "New York Jets vs New England Patriots",
         "attributes": {
           "event": "New York Jets vs New England Patriots",
-          "date": "6 days ago",
+          "date": "7 days ago",
           "venue": "",
           "home": "New York Jets",
           "away": "New England Patriots",
@@ -922,7 +922,7 @@
         "state": "Buffalo Bills vs New England Patriots",
         "attributes": {
           "event": "Buffalo Bills vs New England Patriots",
-          "date": "15 days ago",
+          "date": "16 days ago",
           "venue": "",
           "home": "Buffalo Bills",
           "away": "New England Patriots",
@@ -939,7 +939,7 @@
         "state": "New England Patriots vs San Francisco 49ers",
         "attributes": {
           "event": "New England Patriots vs San Francisco 49ers",
-          "date": "22 days ago",
+          "date": "23 days ago",
           "venue": "",
           "home": "New England Patriots",
           "away": "San Francisco 49ers",
@@ -1353,7 +1353,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:11 13 Nov 2020",
+          "time": "08:11 14 Nov 2020",
           "sort": 8
         }
       }
@@ -1397,7 +1397,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:11 15 Nov 2020",
+          "time": "17:11 16 Nov 2020",
           "sort": 8
         }
       }
@@ -1408,7 +1408,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:11 15 Nov 2020",
+          "time": "17:11 16 Nov 2020",
           "sort": 7
         }
       }
@@ -1430,7 +1430,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:11 15 Nov 2020",
+          "time": "17:11 16 Nov 2020",
           "sort": 5
         }
       }
@@ -1441,7 +1441,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:11 15 Nov 2020",
+          "time": "17:11 16 Nov 2020",
           "sort": 6
         }
       }

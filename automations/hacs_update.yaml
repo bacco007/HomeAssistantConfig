@@ -14,7 +14,7 @@ action:
       title: HACS - Updates Available
       message: >-
         {% for repo in state_attr(trigger.entity_id, 'repositories') %}
-          **{{ repo.display_name }}** _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
+          *{{ repo.display_name }}* _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
         {% endfor %}
   - service: notify.slack
     data_template:
@@ -31,5 +31,5 @@ action:
               type: mrkdwn
               text: >-
                 {% for repo in state_attr(trigger.entity_id, 'repositories') %}
-                  **{{ repo.display_name }}** _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
+                  *{{ repo.display_name }}* _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
                 {% endfor %}

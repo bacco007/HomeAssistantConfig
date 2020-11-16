@@ -142,6 +142,13 @@ rooms:
     icon: mdi:home-export-outline
     temperature: sensor.weather_outside_temperature
     humidity: sensor.weather_outside_humidity
+    addons:
+      - name: Weather Station
+        icon: mdi:weather-cloudy-alert
+        path: "dwains-dashboard/addons/more_page/weatherstation/page.yaml"
+        button_path: "dwains-dashboard/addons/rooms/button.yaml"
+        data:
+          entity: sensor.weather_outside_temperature
 
     # page_entities:
     #   entities:
@@ -283,3 +290,10 @@ rooms:
       entities:
         - entity: sensor.bom_max_temp
         - entity: sensor.bom_min_temp
+    addons:
+      - name: BoM Weather
+        icon: mdi:weather-cloudy-alert
+        path: "dwains-dashboard/addons/more_page/weather/page.yaml"
+        button_path: "dwains-dashboard/addons/rooms/button.yaml"
+        data:
+          entity: sensor.tamworth_airport_temperature

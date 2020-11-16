@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, November 15th 2020_
+_Stats as at 04:59, Monday, November 16th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.117.6 | 265     | 2666         | 2278 | 24 |
+| 0.117.6 | 259     | 2668         | 2278 | 24 |
 
 Type | Qty
 -- | --
@@ -85,7 +85,7 @@ Alert | 0
 Automation | 24
 Binary Sensor | 70
 Camera | 1
-Device Tracker | 67
+Device Tracker | 69
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
@@ -116,8 +116,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- |
 | [air_quality](https://www.home-assistant.io/components/air_quality) |
 | [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson) |
-| [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
-| [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
 | [alexa_media](https://www.home-assistant.io/components/alexa_media) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
@@ -219,7 +217,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
-| [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
@@ -234,7 +231,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
-| [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
@@ -261,7 +257,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [script](https://www.home-assistant.io/components/script) |
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
-| [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
@@ -347,7 +342,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
-| [switch.alexa_media](https://www.home-assistant.io/components/switch.alexa_media) |
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
