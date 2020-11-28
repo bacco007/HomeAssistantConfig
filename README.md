@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Monday, November 16th 2020_
+_Stats as at 04:59, Sunday, November 29th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.117.6 | 259     | 2668         | 2278 | 24 |
+| 0.118.4 | 269     | 2651         | 2255 | 24 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 24
-Binary Sensor | 70
+Binary Sensor | 71
 Camera | 1
-Device Tracker | 69
+Device Tracker | 74
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
@@ -95,7 +95,7 @@ Media Player | 33
 Person | 1
 Scene | 1
 Script | 1
-Sensor | 2278
+Sensor | 2255
 Sun | 1
 Switch | 115
 Weather | 3
@@ -116,6 +116,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- |
 | [air_quality](https://www.home-assistant.io/components/air_quality) |
 | [air_quality.dyson](https://www.home-assistant.io/components/air_quality.dyson) |
+| [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
+| [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alexa](https://www.home-assistant.io/components/alexa) |
 | [alexa_media](https://www.home-assistant.io/components/alexa_media) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
@@ -144,6 +146,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
+| [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
@@ -217,6 +220,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
+| [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
@@ -231,6 +235,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
+| [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
@@ -251,12 +256,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
 | [samsungtv](https://www.home-assistant.io/components/samsungtv) |
+| [satellitetracker](https://www.home-assistant.io/components/satellitetracker) |
 | [scene](https://www.home-assistant.io/components/scene) |
 | [scene.deconz](https://www.home-assistant.io/components/scene.deconz) |
 | [scene.homeassistant](https://www.home-assistant.io/components/scene.homeassistant) |
 | [script](https://www.home-assistant.io/components/script) |
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
+| [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
@@ -303,6 +310,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
+| [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
@@ -319,6 +327,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission) |
+| [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -342,6 +351,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
+| [switch.alexa_media](https://www.home-assistant.io/components/switch.alexa_media) |
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
@@ -413,6 +423,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Polar plots of the sun, moon, and planets](https://github.com/partofthething/ha_skyfield)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
+- [Satellite Tracker (N2YO)](https://github.com/djtimca/hasatellitetracker)
 - [Simple Icons]()
 - [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
@@ -445,6 +456,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
 | [Ha Sun2](https://github.com/pnbruckner/ha-sun2) | Home Assistant Sun2 Sensor |
 | [HACS](https://github.com/hacs/integration) | HACS gives you a powerful UI to handle downloads of all your custom needs. |
+| [Hasatellitetracker](https://github.com/djtimca/hasatellitetracker) | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |
 | [Hass Amber Electric](https://github.com/lewisbenge/hass-amber-electric) | Home Assistant Component to pull the latest energy prices from Amber Electric |
 | [Hass Favicon](https://github.com/thomasloven/hass-favicon) | 🔹 Change the favicon of your Home Assistant instance |
 | [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 is a device_tracker custom_component for iPhones, iPads & iWatches that monitors zone & location events triggered by the HA iOS Companion App |
@@ -466,7 +478,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
 | [Ui Logs](https://github.com/custom-components/uilogs) | Custom panel that show colorful logs for Home Assistant (core), and the supervisor (if you have it). |
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) | Home Assistant Sensor for WaterNSW Real Time Data |
-| [Yahoo Finance](https://github.com/InduPrakash/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
+| [Yahoo Finance](https://github.com/iprak/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
 | [ZHA-MAP](https://github.com/zha-ng/zha-map) | Build ZHA network topology map. |
 
 #### HACS - Lovelace Cards
@@ -484,7 +496,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Card Tools](https://github.com/thomasloven/lovelace-card-tools) | 🔹A collection of tools for other lovelace plugins to use |
 | [Compass Card](https://github.com/tomvanswam/compass-card) | A Lovelace card that shows a directional indicator on a compass for Home Assistant |
 | [Config Template Card](https://github.com/iantrich/config-template-card) | 📝 Templatable Lovelace Configurations |
-| [Custom Header](https://github.com/maykar/custom-header) | Custom Header adds enhancements and customization options to Home Assistant's Lovelace header. |
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flexible Horseshoe Card For Lovelace](https://github.com/Lau-ie/flex-horseshoe-card) | Flexible Horseshoe card for Home Assistant Lovelace UI. A card with a flexible layout,  a horseshoe-like donut graph, multiple entities or attributes, graphics and animations! |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) | 🔹 A foldable row for entities card, containing other rows |
@@ -500,7 +511,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) | 🔹Dynamically replace lovelace cards depending on occasion |
 | [Sun Card](https://github.com/mishaaq/sun-card) | Lovelace card for sun component - Home Assistant |
-| [Zha Network Card](https://github.com/dmulcahey/zha-network-card) | Custom Lovelace card that displays ZHA network and device information |
 
 #### HACS - Themes
 

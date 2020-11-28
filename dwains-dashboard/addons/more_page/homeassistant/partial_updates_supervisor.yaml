@@ -48,9 +48,12 @@ cards:
     card:
       type: custom:list-card
       entity: sensor.supervisor_installed
-      title: HA Addons
       columns:
         - { field: name, title: "Addon", style: [text-align: left] }
-        - { field: installed, title: "Installed", style: [text-align: center] }
-        - { field, title: "Latest", style: [text-align: center] }
+        - { field: version, title: "Installed", style: [text-align: center] }
+        - {
+            field: version_latest,
+            title: "Latest",
+            style: [text-align: center],
+          }
       feed_attribute: addons

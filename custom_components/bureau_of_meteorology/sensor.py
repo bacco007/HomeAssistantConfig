@@ -11,7 +11,16 @@ from homeassistant.const import (
     TEMP_CELSIUS,
 )
 from homeassistant.helpers.entity import Entity
-from .const import ATTRIBUTION, DOMAIN
+from .const import (ATTRIBUTION,
+                    CONF_FORECASTS_BASENAME,
+                    CONF_FORECASTS_CREATE,
+                    CONF_FORECASTS_DAYS,
+                    CONF_FORECASTS_MONITORED,
+                    CONF_OBSERVATIONS_BASENAME,
+                    CONF_OBSERVATIONS_CREATE,
+                    CONF_OBSERVATIONS_MONITORED,
+                    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,20 +56,19 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
     """Add sensors for passed config_entry in HA."""
     collector = hass.data[DOMAIN][config_entry.entry_id]
 
-    station_name = collector.observations_data["data"]["station"]["name"]
     forecast_region = collector.daily_forecasts_data["metadata"]["forecast_region"]
     new_devices = []
 
-    for observation in collector.observations_data["data"]:
-        if observation in SENSOR_NAMES:
-            new_devices.append(ObservationSensor(collector, station_name, observation))
+    if config_entry.data[CONF_OBSERVATIONS_CREATE] == True:
+       for observation in collector.observations_data["data"]:
+           if observation in SENSOR_NAMES and observation in config_entry.data[CONF_OBSERVATIONS_MONITORED]:
+               new_devices.append(ObservationSensor(collector, config_entry.data[CONF_OBSERVATIONS_BASENAME], observation))
 
-    days = len(collector.daily_forecasts_data["data"])
-    for day in range(0, days):
-        for forecast in collector.daily_forecasts_data["data"][day]:
-            if forecast in SENSOR_NAMES:
+    if config_entry.data[CONF_FORECASTS_CREATE] == True:
+        days = config_entry.data[CONF_FORECASTS_DAYS]
+        for day in range(0, days+1):
+            for forecast in config_entry.data[CONF_FORECASTS_MONITORED]:
                 new_devices.append(ForecastSensor(collector, collector.location_name, day, forecast))
-        new_devices.append(ForecastSensor(collector, collector.location_name, day, "rain_amount_range"))
 
     if new_devices:
         async_add_devices(new_devices)
@@ -74,6 +82,7 @@ class SensorBase(Entity):
         self.collector = collector
         self.location_name = location_name
         self.sensor_name = sensor_name
+        self.current_state = None
 
     @property
     def device_class(self):
@@ -112,7 +121,12 @@ class ObservationSensor(SensorBase):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self.collector.observations_data["data"][self.sensor_name]
+        new_state = self.collector.observations_data["data"][self.sensor_name]
+        if new_state is None:
+            return self.current_state
+        else:
+            self.current_state = new_state
+            return self.current_state
 
     @property
     def name(self):
@@ -143,18 +157,16 @@ class ForecastSensor(SensorBase):
     @property
     def state(self):
         """Return the state of the sensor."""
-        if self.sensor_name == "rain_amount_range":
-            if self.collector.daily_forecasts_data["data"][self.day]["rain_amount_max"] is not None:
-                state = "{} to {}".format(
-                    self.collector.daily_forecasts_data["data"][self.day]["rain_amount_min"],
-                    self.collector.daily_forecasts_data["data"][self.day]["rain_amount_max"]
-                )
+        if self.day < len(self.collector.daily_forecasts_data["data"]):
+            new_state = self.collector.daily_forecasts_data["data"][self.day][self.sensor_name]
+            if new_state is None:
+                return self.current_state
             else:
-                state = self.collector.daily_forecasts_data["data"][self.day]["rain_amount_min"]
+                self.current_state = new_state
+                return (new_state[:251] + '...') if type(new_state) == str and len(
+                        new_state) > 251 else new_state
         else:
-            state = self.collector.daily_forecasts_data["data"][self.day][self.sensor_name]
-        return (state[:251] + '...') if type(state) == str and len(
-                state) > 251 else state
+            return None
 
     @property
     def name(self):

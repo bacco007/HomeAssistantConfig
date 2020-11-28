@@ -284,7 +284,7 @@ rooms:
 
   - name: Tamworth
     icon: mdi:road-variant
-    temperature: sensor.tamworth_airport_temperature
+    temperature: sensor.tamworth_airport_temp
     humidity: sensor.tamworth_airport_humidity
     page_entities:
       entities:
@@ -296,4 +296,4 @@ rooms:
         path: "dwains-dashboard/addons/more_page/weather/page.yaml"
         button_path: "dwains-dashboard/addons/rooms/button.yaml"
         data:
-          entity: sensor.tamworth_airport_temperature
+          entity: sensor.tamworth_airport_temp

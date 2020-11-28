@@ -50,130 +50,135 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
-    - type: custom:flex-table-card
-      title: ASX
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: friendly_name
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-      entities:
-        include:
-          - yahoofinance.*ax*
-        exclude: yahoofinance.axjo
-      columns:
-        - name: Name
-          data: friendly_name
-          align: center
-        - name: Sym
-          data: symbol
-          align: center
-        - name: 50dAvg
-          attr: fiftyDayAverage
-          align: right
-          modify: parseFloat(x).toFixed(4)
-        - name: PrevClose
-          attr: previousClose
-          align: right
-          modify: parseFloat(x).toFixed(2)
-        - name: Current
-          data: state
-          align: right
-          modify: parseFloat(x).toFixed(2)
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: ASX
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+          entities:
+            include:
+              - yahoofinance.*ax*
+            exclude: yahoofinance.axjo
+          columns:
+            - name: Name
+              data: friendly_name
+              modify: x.replace(" FPO", "")
+              align: center
+            - name: Sym
+              data: symbol
+              modify: x.replace(".AX", "")
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: PrevCl
+              attr: previousClose
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
 
-    - type: custom:flex-table-card
-      title: Exchange Rates
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: friendly_name
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-      entities:
-        include:
-          - yahoofinance.*_x
-      columns:
-        - name: Name
-          data: friendly_name
-          align: center
-        - name: Sym
-          data: symbol
-          align: center
-        - name: 50dAvg
-          attr: fiftyDayAverage
-          align: right
-          modify: parseFloat(x).toFixed(3)
-        - name: PrevClose
-          attr: previousClose
-          align: right
-          modify: parseFloat(x).toFixed(3)
-        - name: Current
-          data: state
-          align: right
-          modify: parseFloat(x).toFixed(3)
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Exchange Rates
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+          entities:
+            include:
+              - yahoofinance.*_x
+          columns:
+            - name: Name
+              data: friendly_name
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: PrevCl
+              attr: previousClose
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(3)
 
-    - type: custom:flex-table-card
-      title: Markets
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: friendly_name
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-      entities:
-        include:
-          - yahoofinance.aord
-          - yahoofinance.axjo
-          - yahoofinance.dji
-          - yahoofinance.ftse
-          - yahoofinance.ixic
-      columns:
-        - name: Name
-          data: friendly_name
-          align: center
-        - name: Sym
-          data: symbol
-          align: center
-        - name: 50dAvg
-          attr: fiftyDayAverage
-          align: right
-          modify: parseFloat(x).toFixed(3)
-        - name: PrevClose
-          attr: previousClose
-          align: right
-          modify: parseFloat(x).toFixed(3)
-        - name: Current
-          data: state
-          align: right
-          modify: parseFloat(x).toFixed(3)
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Markets
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+          entities:
+            include:
+              - yahoofinance.aord
+              - yahoofinance.axjo
+              - yahoofinance.dji
+              - yahoofinance.ftse
+              - yahoofinance.ixic
+          columns:
+            - name: Name
+              data: friendly_name
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: PrevCl
+              attr: previousClose
+              align: right
+              modify: parseFloat(x).toFixed(2)
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(2)

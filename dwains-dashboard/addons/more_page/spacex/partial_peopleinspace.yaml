@@ -1,0 +1,51 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    title: People in Space
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary);
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.iss_people_in_space
+        name: People in Space
+        icon: mdi:satellite-uplink
+        style: |
+          :host {
+          --paper-item-icon-color:
+            {% if states(config.entity)|int > 0 %}
+              rgb(255, 223, 0)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %}
+            ;
+          }
+  - type: conditional
+    conditions:
+      - entity: sensor.iss_people_in_space
+        state_not: "0"
+    card:
+      type: custom:list-card
+      entity: sensor.iss_people_in_space
+      columns:
+        - { field: name, title: "Name", style: [text-align: left] }
+        - { field: craft, title: "Craft", style: [text-align: center] }
+      feed_attribute: people

@@ -109,15 +109,11 @@ async def apply_hooks(hass):
                     <script type="module">
                         customElements.whenDefined('ha-sidebar').then(() => {{
                             const Sidebar = customElements.get('ha-sidebar');
-                            const render = Sidebar.prototype.render;
-                            Sidebar.prototype.render = function() {{
-                                const retval = render.bind(this)();
-                                retval.values.forEach((val, i, arr) => {{
-                                    if (val === "Home Assistant")
-                                        retval.values[i] = "{title}";
-                                }});
-                                return retval;
-                            }}
+                            const updated = Sidebar.prototype.updated;
+                            Sidebar.prototype.updated = function(changedProperties) {{
+                                updated.bind(this)(changedProperties);
+                                this.shadowRoot.querySelector(".title").innerHTML = "{title}";
+                            }};
                         }});
 
                         window.setInterval(() => {{

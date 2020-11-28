@@ -1,6 +1,7 @@
 ---
-# pnbruckner's sensor component as a template (from @DavidFW1960)
+# pnbruckner's sensor component as a template.
 # https://github.com/pnbruckner/ha-illuminance/blob/master/custom_components/illuminance/sensor.py
+# https://community.home-assistant.io/t/outdoor-illuminance-estimated-from-weather-conditions-reported-by-weather-underground-dark-sky-or-yr-no/
 # https://community.home-assistant.io/t/outdoor-illuminance-template-sensor/
 
 platform: template
@@ -11,6 +12,7 @@ sensors:
     unit_of_measurement: lx
     value_template: |
       {%- set factors = namespace(condition='',sun='') %}
+
       {#- Retrieve the current condition and normalize the value #}
       {%- set current_condition = states("weather.tamworth_airport") %}
       {%- set current_condition = current_condition|lower|replace("-day","")|replace("_day","")|replace("-night","")|replace("_night","")|replace("and","")|replace("-", " ")|replace("_", " ")|replace("(","")|replace(")","")|replace(" ", "")|replace(".", "") %}

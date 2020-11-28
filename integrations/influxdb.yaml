@@ -11,5 +11,8 @@ influxdb:
   exclude:
     entities:
       - sun.sun
+      - sensor.plex_tautulli_history
+      - sensor.plex_tautulli_toptv
+      - sensor.plex_tautulli_topusers
     entity_globs:
       - sensor.*monitordocker*

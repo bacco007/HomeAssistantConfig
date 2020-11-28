@@ -27,6 +27,31 @@ sensor:
       - indexes
       - libraries
       - media_type
+
+  - platform: rest
+    name: plex_tautulli_history
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - data
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_history_url
+
+  - platform: rest
+    name: plex_tautulli_toptv
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - rows
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_toptv_url
+
+  - platform: rest
+    name: plex_tautulli_topusers
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - rows
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_topusers_url
+
   - platform: template
     sensors:
       plex_topmovie:

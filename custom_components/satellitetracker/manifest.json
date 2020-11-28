@@ -1,0 +1,17 @@
+{
+    "domain": "satellitetracker",
+    "name": "Satellite Tracker (N2YO)",
+    "config_flow": true,
+    "documentation": "https://github.com/djtimca/hasatellitetracker",
+    "issue_tracker": "https://github.com/djtimca/hasatellitetracker/issues",
+    "requirements": [
+      "n2yoasync==0.0.4"
+    ],
+    "ssdp": [],
+    "zeroconf": [],
+    "homekit": {},
+    "dependencies": [],
+    "codeowners": [
+      "@djtimca"
+    ]
+  }

@@ -1,0 +1,39 @@
+---
+sensor:
+  - platform: transport_nsw
+    name: "Bus Stop - Home"
+    stop_id: !secret tfnsw_stopid1
+    api_key: !secret tfnsw_apikey
+  - platform: transport_nsw
+    name: "Bus Stop - Work"
+    stop_id: !secret tfnsw_stopid1
+    api_key: !secret tfnsw_apikey
+    route: "431"
+  - platform: template
+    sensors:
+      busmonitor_home:
+        friendly_name: "Bus Monitor - Home"
+        icon_template: mdi:bus-stop
+        value_template: >-
+          {% if is_state_attr('sensor.bus_stop_home', 'due', 'n/a') %}
+            No schedule found
+          {% else %}
+            {% if (states.sensor.bus_stop_home.attributes.due > 60) %}
+              {{ states.sensor.bus_stop_home.attributes.route }} - {{ (states.sensor.bus_stop_home.attributes.due/60)|round }} hr
+            {% else %}
+              {{ states.sensor.bus_stop_home.attributes.route }} - {{ states.sensor.bus_stop_home.attributes.due }} m
+            {% endif %}
+          {% endif %}
+      busmonitor_work:
+        friendly_name: "Bus Monitor - Work"
+        icon_template: mdi:bus-stop
+        value_template: >-
+          {% if is_state_attr('sensor.bus_stop_work', 'due', 'n/a') %}
+            No schedule found
+          {% else %}
+            {% if (states.sensor.bus_stop_work.attributes.due > 60) %}
+              {{ states.sensor.bus_stop_work.attributes.route }} - {{ (states.sensor.bus_stop_work.attributes.due/60)|round }} hr
+            {% else %}
+              {{ states.sensor.bus_stop_work.attributes.route }} - {{ states.sensor.bus_stop_work.attributes.due }} m
+            {% endif %}
+          {% endif %}

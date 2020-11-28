@@ -2,7 +2,7 @@
 # https://www.home-assistant.io/integrations/recorder/
 recorder:
   db_url: !secret mariadb_connection
-  purge_keep_days: 7
+  purge_keep_days: 10
   exclude:
     entities:
       - sun.sun
@@ -10,6 +10,9 @@ recorder:
       - binary_sensor.iss
       - sensor.iss_location
       - sensor.date_time
+      - sensor.plex_tautulli_history
+      - sensor.plex_tautulli_toptv
+      - sensor.plex_tautulli_topusers
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

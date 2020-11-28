@@ -1,0 +1,48 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:flex-table-card
+    title: Plex Top TV
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary);
+      }
+      ha-card table {
+        padding-top: 0px !important;
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      include: sensor.plex_tautulli_toptv
+    max_rows: 10
+    columns:
+      - { data: rows, modify: x.title, name: "TV Show" }
+      - { data: rows, modify: x.total_plays, name: "Plays", align: "center" }
+      - {
+          data: rows,
+          modify: (x.total_duration/60/60).toFixed(2),
+          name: "Duration",
+          suffix: " hrs",
+          align: "center",
+        }
+      - {
+          data: rows,
+          modify: new Date(x.last_play*1000).toLocaleString('en-GB'),
+          name: "Last Play",
+          align: "center",
+        }

@@ -1,0 +1,17 @@
+---
+sensor:
+  - platform: rest
+    name: ISS People in space
+    json_attributes:
+      - people
+      - number
+    value_template: "{{ value_json['number'] }}"
+    resource: "http://api.open-notify.org/astros.json"
+
+  - platform: rest
+    name: Space_UpcomingLaunches
+    scan_interval: 10800
+    json_attributes:
+      - results
+    value_template: "{{ value_json.results[0].window_start }}"
+    resource: "https://ll.thespacedevs.com/2.0.0/launch/upcoming/?format=json&limit=10&offset=0"

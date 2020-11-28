@@ -9,6 +9,17 @@ binary_sensor:
   - platform: iss
 
 sensor:
+  - platform: rest
+    name: ISS Pass Times
+    json_attributes:
+      - request
+      - response
+    value_template: >
+      {{ value_json.message }}
+    resource: !secret isspasstimes_url
+    scan_interval:
+      seconds: 300
+
   - platform: template
     sensors:
       iss_peopleinspace:

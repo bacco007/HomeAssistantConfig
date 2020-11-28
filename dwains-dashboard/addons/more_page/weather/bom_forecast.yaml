@@ -1,8 +1,8 @@
 ---
 type: custom:bom-weather-card
 title: BOM Weather
-entity_current_conditions: sensor.east_tamworth_icon_0
-entity_temperature: sensor.tamworth_airport_temperature
+entity_current_conditions: sensor.east_tamworth_icon_descriptor_0
+entity_temperature: sensor.tamworth_airport_temp
 entity_forecast_high_temp_1: sensor.east_tamworth_max_1
 entity_forecast_high_temp_2: sensor.east_tamworth_max_2
 entity_forecast_high_temp_3: sensor.east_tamworth_max_3
@@ -28,15 +28,15 @@ entity_sun: sun.sun
 entity_daytime_high: sensor.bom_today_max
 entity_daytime_low: sensor.bom_today_min
 entity_wind_bearing: sensor.tamworth_airport_wind_direction
-entity_wind_speed: sensor.tamworth_airport_wind_speed
-entity_wind_gust: sensor.tamworth_airport_gust_speed
+entity_wind_speed: sensor.tamworth_airport_wind_speed_kilometre
+entity_wind_gust: sensor.tamworth_airport_gust_speed_kilometre
 #           entity_wind_speed_kt: sensor.tamworth_airport_wind_speed_knots
 #           entity_wind_gust_kt: sensor.tamworth_airport_gust_speed_knots
 entity_humidity: sensor.tamworth_airport_humidity
 ############################## IMPORTANT!!! BOM are NOT providing Pressure sensor for forecast.
 ############################## IF you use my entity_pressure sensor the card won't display
 # entity_pressure: sensor.nodemcu_lounge_bme280_seapressure CAN USE OWN PRESSURE
-entity_apparent_temp: sensor.tamworth_airport_temperature_feels_like
+entity_apparent_temp: sensor.tamworth_airport_temp_feels_like
 entity_daily_summary: sensor.east_tamworth_extended_text_0
 entity_pop: sensor.east_tamworth_rain_chance_0
 entity_pop_intensity: sensor.tamworth_airport_rain_since_9am

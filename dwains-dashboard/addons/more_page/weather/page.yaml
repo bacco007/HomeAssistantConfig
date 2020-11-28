@@ -9,7 +9,7 @@
           background-color: var(--dwains-theme-primary);
         }
       entities:
-        - entity: sensor.tamworth_airport_temperature
+        - entity: sensor.tamworth_airport_temp
           name: Temperature
       name: Temperature
       line_color: "var(--dwains-theme-accent)"
@@ -121,16 +121,16 @@
               margin-left: 2px !important;
             }
           entities:
-            - entity: sensor.tamworth_airport_temperature
+            - entity: sensor.tamworth_airport_temp
               name: Current Temperature
               icon: mdi:thermometer
               type: custom:multiple-entity-row
               show_state: false
               secondary_info: last-changed
               entities:
-                - entity: sensor.tamworth_airport_temperature
+                - entity: sensor.tamworth_airport_temp
                   name: Air
-                - entity: sensor.tamworth_airport_temperature_feels_like
+                - entity: sensor.tamworth_airport_temp_feels_like
                   name: Feels Like
             - entity: sensor.heatindex
               type: custom:multiple-entity-row
@@ -153,34 +153,34 @@
                   name: Min
                   unit: "°C"
             - type: section
-            - entity: sensor.tamworth_airport_wind_speed
+            - entity: sensor.tamworth_airport_wind_speed_kilometre
               name: Current Wind (km/h)
               icon: mdi:weather-windy
               type: custom:multiple-entity-row
               show_state: false
               secondary_info: last-changed
               entities:
-                - entity: sensor.tamworth_airport_gust_speed
+                - entity: sensor.tamworth_airport_gust_speed_kilometre
                   name: Gust
                   unit: " "
-                - entity: sensor.tamworth_airport_wind_speed
+                - entity: sensor.tamworth_airport_wind_speed_kilometre
                   name: Speed
                   unit: " "
                 - entity: sensor.tamworth_airport_wind_direction
                   name: Direction
                 - entity: sensor.beaufort
                   name: Beaufort
-            - entity: sensor.tamworth_airport_gust_speed_knots
+            - entity: sensor.tamworth_airport_gust_speed_knot
               name: Current Wind (kt)
               icon: mdi:weather-windy
               type: custom:multiple-entity-row
               show_state: false
               secondary_info: last-changed
               entities:
-                - entity: sensor.tamworth_airport_gust_speed_knots
+                - entity: sensor.tamworth_airport_gust_speed_knot
                   name: Gust
                   unit: " "
-                - entity: sensor.tamworth_airport_wind_speed_knots
+                - entity: sensor.tamworth_airport_wind_speed_knot
                   name: Speed
                   unit: " "
                 - entity: sensor.tamworth_airport_wind_direction

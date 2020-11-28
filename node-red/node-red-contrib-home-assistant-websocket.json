@@ -116,121 +116,121 @@
     },
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 98,
+        "state": 26,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 138,
+        "state": 103,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 0,
+        "state": 1,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 64,
+        "state": 21,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 16,
+        "state": 5,
         "attributes": {}
       }
     },
     "ae64dbe3_1e2d2": {
       "lastPayload": {
-        "state": 1.1,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 3
         }
       }
     },
     "4b8ffd88_01a24c": {
       "lastPayload": {
-        "state": 0.6,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 5
         }
       }
     },
     "9c32ef9e_198c5": {
       "lastPayload": {
-        "state": 0.3,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 6
         }
       }
     },
     "3e7de169_4cf3ce": {
       "lastPayload": {
-        "state": 0.7,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 4
         }
       }
     },
     "5b2a34dc_cc5e94": {
       "lastPayload": {
-        "state": 1.5,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 2
         }
       }
     },
     "fedcc9b8_2176b8": {
       "lastPayload": {
-        "state": 2.7,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 1
         }
       }
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 17.83,
+        "state": 18.08,
         "attributes": {
-          "period": "2020-11-16T16:15:00"
+          "period": "2020-11-29T09:35:00"
         }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 8.72,
+        "state": 8.98,
         "attributes": {
-          "period": "2020-11-16T16:15:00"
+          "period": "2020-11-29T09:35:00"
         }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 6.16,
+        "state": 6.42,
         "attributes": {
-          "period": "2020-11-16T16:15:00"
+          "period": "2020-11-29T09:35:00"
         }
       }
     },
@@ -302,13 +302,13 @@
     },
     "fd053220_3acfa": {
       "lastPayload": {
-        "state": 664,
+        "state": 665,
         "attributes": {}
       }
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5328,
+        "state": 5361,
         "attributes": {}
       }
     },
@@ -344,12 +344,12 @@
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 2.29,
+        "state": 0,
         "attributes": {
-          "count": 2,
-          "countstring": "2 Days",
-          "average": 1.14,
-          "highest": 1.3,
+          "count": 0,
+          "countstring": "No Rain",
+          "average": 0,
+          "highest": 0,
           "sort": 2
         }
       }
@@ -368,17 +368,17 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 65.749,
+        "state": 59.762,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 138.27,
+        "state": 138.14,
         "attributes": {
           "max": 163.9,
           "min": 112.9,
-          "avg": 138.27,
+          "avg": 138.14,
           "mindate": "05 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 05 May 2020 - Max: 05 Jan 2020"
@@ -387,11 +387,11 @@
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 11.023,
+        "state": 11.298,
         "attributes": {
           "max": 28.1,
           "min": -1.28,
-          "avg": 11.023,
+          "avg": 11.298,
           "mindate": "26 Aug 2020",
           "maxdate": "02 Feb 2020",
           "datestring": "Min: 26 Aug 2020 - Max: 02 Feb 2020"
@@ -400,47 +400,47 @@
     },
     "9175a68d_c94b78": {
       "lastPayload": {
-        "state": 67.4,
+        "state": 0.2,
         "attributes": {
-          "count": 9,
-          "countstring": "9 Days",
-          "average": 7.49,
-          "highest": 24.8,
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 0.2,
+          "highest": 0.2,
           "sort": 3
         }
       }
     },
     "6a5bcb5d_8aa50c": {
       "lastPayload": {
-        "state": 212.65,
+        "state": 12.59,
         "attributes": {
-          "count": 18,
-          "countstring": "18 Days",
-          "average": 11.81,
-          "highest": 33.71,
+          "count": 6,
+          "countstring": "6 Days",
+          "average": 2.1,
+          "highest": 4.11,
           "sort": 3
         }
       }
     },
     "1b767a8_196e406": {
       "lastPayload": {
-        "state": 3.4,
+        "state": 0,
         "attributes": {
-          "count": 2,
-          "countstring": "2 Days",
-          "average": 1.7,
-          "highest": 1.8,
+          "count": 0,
+          "countstring": "No Rain",
+          "average": 0,
+          "highest": 0,
           "sort": 1
         }
       }
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 23.131,
+        "state": 23.822,
         "attributes": {
           "max": 41.3,
           "min": 9.5,
-          "avg": 23.131,
+          "avg": 23.822,
           "mindate": "23 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
@@ -449,11 +449,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 27.233,
+        "state": 27.628,
         "attributes": {
           "max": 46.9,
           "min": 8.4,
-          "avg": 27.233,
+          "avg": 27.628,
           "mindate": "23 May 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 May 2020 - Max: 05 Jan 2020"
@@ -462,19 +462,19 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 20.34,
+        "state": 19.41,
         "attributes": {}
       }
     },
     "f757099a_d4cc4": {
       "lastPayload": {
-        "state": 330.36,
+        "state": 327.31,
         "attributes": {}
       }
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "296.5",
+        "state": "405.3",
         "attributes": {
           "units": "GB"
         }
@@ -482,7 +482,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "1186.5",
+        "state": "1578.1",
         "attributes": {
           "units": "TB"
         }
@@ -494,20 +494,20 @@
         "attributes": {
           "model": "UGW3",
           "version": "4.4.51.5287926",
-          "data": "1.4 TB",
+          "data": "1.9 TB",
           "serial": "F09FC212B4F7",
           "sitename": "TBSmartHome (default)",
           "type": "ugw",
           "controller": "https://192.168.1.20:8443",
           "external_ip_address": "110.143.197.190",
-          "uptime": "30d 2hr 15min",
+          "uptime": "42d 19hr 33min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "60.7",
+        "state": "226.8",
         "attributes": {
           "units": "GB"
         }
@@ -515,7 +515,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "9.3",
+        "state": "37.5",
         "attributes": {
           "units": "GB"
         }
@@ -523,11 +523,11 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 137.37,
+        "state": 137.25,
         "attributes": {
           "max": 162.9,
           "min": 112.9,
-          "avg": 137.37,
+          "avg": 137.25,
           "mindate": "23 Apr 2020",
           "maxdate": "05 Jan 2020",
           "datestring": "Min: 23 Apr 2020 - Max: 05 Jan 2020"
@@ -570,7 +570,7 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 0,
+        "state": 3,
         "attributes": {}
       }
     },
@@ -596,9 +596,9 @@
           "sitename": "TBSmartHome (default)",
           "type": "usw",
           "controller": "https://192.168.1.20:8443",
-          "uptime": "30d 2hr 16min",
-          "rx_data": "296.5 GB",
-          "tx_data": "1.2 TB",
+          "uptime": "42d 19hr 35min",
+          "rx_data": "405.3 GB",
+          "tx_data": "1.6 TB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -614,24 +614,24 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 27.9,
-          "users": 29,
+          "cpu": 18.3,
+          "users": 28,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "30d 2hr 16min",
+          "uptime": "42d 19hr 36min",
           "lastseen": "a few seconds ago",
-          "tx_data": "60.7 GB",
-          "rx_data": "9.3 GB"
+          "tx_data": "226.8 GB",
+          "rx_data": "37.5 GB"
         }
       }
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.423,
+        "state": 9.743,
         "attributes": {
           "max": 28.6,
           "min": -4.1,
-          "avg": 9.423,
+          "avg": 9.743,
           "mindate": "06 Aug 2020",
           "maxdate": "02 Feb 2020",
           "datestring": "Min: 06 Aug 2020 - Max: 02 Feb 2020"
@@ -640,10 +640,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 9239,
+        "state": 12312,
         "attributes": {
-          "uptime": "0d 0hr 2min",
-          "drops": 9239
+          "uptime": "",
+          "drops": 12312
         }
       }
     },
@@ -655,52 +655,22 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "35.70",
+        "state": "36.45",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "37.38",
+        "state": "38.10",
         "attributes": {}
       }
     },
     "6ca45ff1_f711b": {
       "lastPayload": {
-        "state": "Man United vs West Brom",
-        "attributes": {
-          "event": "Man United vs West Brom",
-          "date": "in 4 days",
-          "venue": "Old Trafford",
-          "home": "Man United",
-          "away": "West Brom",
-          "league": "English Premier League",
-          "season": "2020-2021",
-          "round": "9"
-        }
-      }
-    },
-    "6c121a87_915e24": {
-      "lastPayload": {
-        "state": "Man United vs Istanbul Basaksehir",
-        "attributes": {
-          "event": "Man United vs Istanbul Basaksehir",
-          "date": "in 7 days",
-          "venue": "Old Trafford",
-          "home": "Man United",
-          "away": "Istanbul Basaksehir",
-          "league": "UEFA Champions League",
-          "season": "2020-2021",
-          "round": "4"
-        }
-      }
-    },
-    "50748e7d_2121": {
-      "lastPayload": {
         "state": "Southampton vs Man United",
         "attributes": {
           "event": "Southampton vs Man United",
-          "date": "in 12 days",
+          "date": "10 hours ago",
           "venue": "St. Mary's Stadium",
           "home": "Southampton",
           "away": "Man United",
@@ -710,12 +680,106 @@
         }
       }
     },
+    "6c121a87_915e24": {
+      "lastPayload": {
+        "state": "Man United vs Paris SG",
+        "attributes": {
+          "event": "Man United vs Paris SG",
+          "date": "in 3 days",
+          "venue": "Old Trafford",
+          "home": "Man United",
+          "away": "Paris SG",
+          "league": "UEFA Champions League",
+          "season": "2020-2021",
+          "round": "5"
+        }
+      }
+    },
+    "50748e7d_2121": {
+      "lastPayload": {
+        "state": "West Ham vs Man United",
+        "attributes": {
+          "event": "West Ham vs Man United",
+          "date": "in 6 days",
+          "venue": "London Stadium",
+          "home": "West Ham",
+          "away": "Man United",
+          "league": "English Premier League",
+          "season": "2020-2021",
+          "round": "11"
+        }
+      }
+    },
     "c8b325e4_b8cce8": {
+      "lastPayload": {
+        "state": "Man United vs Istanbul Basaksehir",
+        "attributes": {
+          "event": "Man United vs Istanbul Basaksehir",
+          "date": "5 days ago",
+          "venue": "Old Trafford",
+          "home": "Man United",
+          "away": "Istanbul Basaksehir",
+          "league": "UEFA Champions League",
+          "season": "2020-2021",
+          "round": "4",
+          "homescore": "4",
+          "awayscore": "1"
+        }
+      }
+    },
+    "a9baddf7_766c5": {
+      "lastPayload": {
+        "state": "RasenBallsport Leipzig vs Man United",
+        "attributes": {
+          "event": "RasenBallsport Leipzig vs Man United",
+          "date": "in 9 days",
+          "venue": "Red Bull Arena",
+          "home": "RasenBallsport Leipzig",
+          "away": "Man United",
+          "league": "UEFA Champions League",
+          "season": "2020-2021",
+          "round": "6"
+        }
+      }
+    },
+    "ebb5fc25_0bf0c": {
+      "lastPayload": {
+        "state": "Man United vs Man City",
+        "attributes": {
+          "event": "Man United vs Man City",
+          "date": "in 13 days",
+          "venue": "Old Trafford",
+          "home": "Man United",
+          "away": "Man City",
+          "league": "English Premier League",
+          "season": "2020-2021",
+          "round": "12"
+        }
+      }
+    },
+    "bab41f6f_a9a39": {
+      "lastPayload": {
+        "state": "Man United vs West Brom",
+        "attributes": {
+          "event": "Man United vs West Brom",
+          "date": "8 days ago",
+          "venue": "Old Trafford",
+          "home": "Man United",
+          "away": "West Brom",
+          "league": "English Premier League",
+          "season": "2020-2021",
+          "round": "9",
+          "homescore": "1",
+          "awayscore": "0"
+        }
+      }
+    },
+    "b89a0f34_67276": {
       "lastPayload": {
         "state": "Everton vs Man United",
         "attributes": {
           "event": "Everton vs Man United",
-          "date": "10 days ago",
+          "date": "22 days ago",
           "venue": "Goodison Park",
           "home": "Everton",
           "away": "Man United",
@@ -727,42 +791,12 @@
         }
       }
     },
-    "a9baddf7_766c5": {
-      "lastPayload": {
-        "state": "Man United vs Paris SG",
-        "attributes": {
-          "event": "Man United vs Paris SG",
-          "date": "in 15 days",
-          "venue": "Old Trafford",
-          "home": "Man United",
-          "away": "Paris SG",
-          "league": "UEFA Champions League",
-          "season": "2020-2021",
-          "round": "5"
-        }
-      }
-    },
-    "ebb5fc25_0bf0c": {
-      "lastPayload": {
-        "state": "West Ham vs Man United",
-        "attributes": {
-          "event": "West Ham vs Man United",
-          "date": "in 18 days",
-          "venue": "London Stadium",
-          "home": "West Ham",
-          "away": "Man United",
-          "league": "English Premier League",
-          "season": "2020-2021",
-          "round": "11"
-        }
-      }
-    },
-    "bab41f6f_a9a39": {
+    "81add29d_408d9": {
       "lastPayload": {
         "state": "Istanbul Basaksehir vs Man United",
         "attributes": {
           "event": "Istanbul Basaksehir vs Man United",
-          "date": "13 days ago",
+          "date": "25 days ago",
           "venue": "Başakşehir Fatih Terim Stadyumu",
           "home": "Istanbul Basaksehir",
           "away": "Man United",
@@ -774,12 +808,12 @@
         }
       }
     },
-    "b89a0f34_67276": {
+    "8faca7f1_28fae8": {
       "lastPayload": {
         "state": "Man United vs Arsenal",
         "attributes": {
           "event": "Man United vs Arsenal",
-          "date": "16 days ago",
+          "date": "a month ago",
           "venue": "Old Trafford",
           "home": "Man United",
           "away": "Arsenal",
@@ -791,76 +825,12 @@
         }
       }
     },
-    "81add29d_408d9": {
-      "lastPayload": {
-        "state": "Man United vs RasenBallsport Leipzig",
-        "attributes": {
-          "event": "Man United vs RasenBallsport Leipzig",
-          "date": "20 days ago",
-          "venue": "Old Trafford",
-          "home": "Man United",
-          "away": "RasenBallsport Leipzig",
-          "league": "UEFA Champions League",
-          "season": "2020-2021",
-          "round": "2",
-          "homescore": "5",
-          "awayscore": "0"
-        }
-      }
-    },
-    "8faca7f1_28fae8": {
-      "lastPayload": {
-        "state": "Man United vs Chelsea",
-        "attributes": {
-          "event": "Man United vs Chelsea",
-          "date": "24 days ago",
-          "venue": "Old Trafford",
-          "home": "Man United",
-          "away": "Chelsea",
-          "league": "English Premier League",
-          "season": "2020-2021",
-          "round": "6",
-          "homescore": "0",
-          "awayscore": "0"
-        }
-      }
-    },
     "ce06dade_059de8": {
-      "lastPayload": {
-        "state": "New England Patriots vs Baltimore Ravens",
-        "attributes": {
-          "event": "New England Patriots vs Baltimore Ravens",
-          "date": "17 hours ago",
-          "venue": "",
-          "home": "New England Patriots",
-          "away": "Baltimore Ravens",
-          "league": "NFL",
-          "season": "2020",
-          "round": "10"
-        }
-      }
-    },
-    "c62b1a45_e03418": {
-      "lastPayload": {
-        "state": "Houston Texans vs New England Patriots",
-        "attributes": {
-          "event": "Houston Texans vs New England Patriots",
-          "date": "in 5 days",
-          "venue": null,
-          "home": "Houston Texans",
-          "away": "New England Patriots",
-          "league": "NFL",
-          "season": "2020",
-          "round": "11"
-        }
-      }
-    },
-    "eebab5cd_402828": {
       "lastPayload": {
         "state": "New England Patriots vs Arizona Cardinals",
         "attributes": {
           "event": "New England Patriots vs Arizona Cardinals",
-          "date": "in 12 days",
+          "date": "10 hours ago",
           "venue": null,
           "home": "New England Patriots",
           "away": "Arizona Cardinals",
@@ -870,12 +840,12 @@
         }
       }
     },
-    "83c98d57_2ca3c": {
+    "c62b1a45_e03418": {
       "lastPayload": {
         "state": "Los Angeles Chargers vs New England Patriots",
         "attributes": {
           "event": "Los Angeles Chargers vs New England Patriots",
-          "date": "in 19 days",
+          "date": "in 7 days",
           "venue": null,
           "home": "Los Angeles Chargers",
           "away": "New England Patriots",
@@ -885,12 +855,12 @@
         }
       }
     },
-    "bac78ce_b34117": {
+    "eebab5cd_402828": {
       "lastPayload": {
         "state": "Los Angeles Rams vs New England Patriots",
         "attributes": {
           "event": "Los Angeles Rams vs New England Patriots",
-          "date": "in 23 days",
+          "date": "in 11 days",
           "venue": null,
           "home": "Los Angeles Rams",
           "away": "New England Patriots",
@@ -900,12 +870,76 @@
         }
       }
     },
+    "83c98d57_2ca3c": {
+      "lastPayload": {
+        "state": "Miami Dolphins vs New England Patriots",
+        "attributes": {
+          "event": "Miami Dolphins vs New England Patriots",
+          "date": "in 21 days",
+          "venue": null,
+          "home": "Miami Dolphins",
+          "away": "New England Patriots",
+          "league": "NFL",
+          "season": "2020",
+          "round": "15"
+        }
+      }
+    },
+    "bac78ce_b34117": {
+      "lastPayload": {
+        "state": "New England Patriots vs Buffalo Bills",
+        "attributes": {
+          "event": "New England Patriots vs Buffalo Bills",
+          "date": "in a month",
+          "venue": null,
+          "home": "New England Patriots",
+          "away": "Buffalo Bills",
+          "league": "NFL",
+          "season": "2020",
+          "round": "16"
+        }
+      }
+    },
     "1585556e_245d6b": {
+      "lastPayload": {
+        "state": "Houston Texans vs New England Patriots",
+        "attributes": {
+          "event": "Houston Texans vs New England Patriots",
+          "date": "7 days ago",
+          "venue": "",
+          "home": "Houston Texans",
+          "away": "New England Patriots",
+          "league": "NFL",
+          "season": "2020",
+          "round": "11",
+          "homescore": "27",
+          "awayscore": "20"
+        }
+      }
+    },
+    "d4ce136a_7abea": {
+      "lastPayload": {
+        "state": "New England Patriots vs Baltimore Ravens",
+        "attributes": {
+          "event": "New England Patriots vs Baltimore Ravens",
+          "date": "13 days ago",
+          "venue": "",
+          "home": "New England Patriots",
+          "away": "Baltimore Ravens",
+          "league": "NFL",
+          "season": "2020",
+          "round": "10",
+          "homescore": "23",
+          "awayscore": "17"
+        }
+      }
+    },
+    "d91e7630_d182c8": {
       "lastPayload": {
         "state": "New York Jets vs New England Patriots",
         "attributes": {
           "event": "New York Jets vs New England Patriots",
-          "date": "7 days ago",
+          "date": "19 days ago",
           "venue": "",
           "home": "New York Jets",
           "away": "New England Patriots",
@@ -917,12 +951,12 @@
         }
       }
     },
-    "d4ce136a_7abea": {
+    "424d9a9f_f9a494": {
       "lastPayload": {
         "state": "Buffalo Bills vs New England Patriots",
         "attributes": {
           "event": "Buffalo Bills vs New England Patriots",
-          "date": "16 days ago",
+          "date": "a month ago",
           "venue": "",
           "home": "Buffalo Bills",
           "away": "New England Patriots",
@@ -934,12 +968,12 @@
         }
       }
     },
-    "d91e7630_d182c8": {
+    "bdf4fe4d_90c9b": {
       "lastPayload": {
         "state": "New England Patriots vs San Francisco 49ers",
         "attributes": {
           "event": "New England Patriots vs San Francisco 49ers",
-          "date": "23 days ago",
+          "date": "a month ago",
           "venue": "",
           "home": "New England Patriots",
           "away": "San Francisco 49ers",
@@ -948,40 +982,6 @@
           "round": "7",
           "homescore": "6",
           "awayscore": "33"
-        }
-      }
-    },
-    "424d9a9f_f9a494": {
-      "lastPayload": {
-        "state": "New England Patriots vs Denver Broncos",
-        "attributes": {
-          "event": "New England Patriots vs Denver Broncos",
-          "date": "a month ago",
-          "venue": "",
-          "home": "New England Patriots",
-          "away": "Denver Broncos",
-          "league": "NFL",
-          "season": "2020",
-          "round": "6",
-          "homescore": "12",
-          "awayscore": "18"
-        }
-      }
-    },
-    "bdf4fe4d_90c9b": {
-      "lastPayload": {
-        "state": "Kansas City Chiefs vs New England Patriots",
-        "attributes": {
-          "event": "Kansas City Chiefs vs New England Patriots",
-          "date": "a month ago",
-          "venue": "",
-          "home": "Kansas City Chiefs",
-          "away": "New England Patriots",
-          "league": "NFL",
-          "season": "2020",
-          "round": "4",
-          "homescore": "26",
-          "awayscore": "10"
         }
       }
     },
@@ -1099,7 +1099,7 @@
         "state": "Sydney Roosters vs Newcastle Knights ",
         "attributes": {
           "event": "Sydney Roosters vs Newcastle Knights ",
-          "date": "2 months ago",
+          "date": "3 months ago",
           "venue": "",
           "home": "Sydney Roosters",
           "away": "Newcastle Knights ",
@@ -1116,7 +1116,7 @@
         "state": "Newcastle Knights  vs Cronulla Sharks",
         "attributes": {
           "event": "Newcastle Knights  vs Cronulla Sharks",
-          "date": "2 months ago",
+          "date": "3 months ago",
           "venue": "",
           "home": "Newcastle Knights ",
           "away": "Cronulla Sharks",
@@ -1150,7 +1150,7 @@
         "state": "Tampa Bay Rays vs New York Yankees",
         "attributes": {
           "event": "Tampa Bay Rays vs New York Yankees",
-          "date": "a month ago",
+          "date": "2 months ago",
           "venue": "",
           "home": "Tampa Bay Rays",
           "away": "New York Yankees",
@@ -1167,7 +1167,7 @@
         "state": "New York Yankees vs Tampa Bay Rays",
         "attributes": {
           "event": "New York Yankees vs Tampa Bay Rays",
-          "date": "a month ago",
+          "date": "2 months ago",
           "venue": "",
           "home": "New York Yankees",
           "away": "Tampa Bay Rays",
@@ -1184,7 +1184,7 @@
         "state": "Tampa Bay Rays vs New York Yankees",
         "attributes": {
           "event": "Tampa Bay Rays vs New York Yankees",
-          "date": "a month ago",
+          "date": "2 months ago",
           "venue": "",
           "home": "Tampa Bay Rays",
           "away": "New York Yankees",
@@ -1201,7 +1201,7 @@
         "state": "New York Yankees vs Tampa Bay Rays",
         "attributes": {
           "event": "New York Yankees vs Tampa Bay Rays",
-          "date": "a month ago",
+          "date": "2 months ago",
           "venue": "",
           "home": "New York Yankees",
           "away": "Tampa Bay Rays",
@@ -1218,7 +1218,7 @@
         "state": "New York Yankees vs Tampa Bay Rays",
         "attributes": {
           "event": "New York Yankees vs Tampa Bay Rays",
-          "date": "a month ago",
+          "date": "2 months ago",
           "venue": "",
           "home": "New York Yankees",
           "away": "Tampa Bay Rays",
@@ -1349,22 +1349,22 @@
     },
     "3016229d_895e2e": {
       "lastPayload": {
-        "state": 0.1,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:11 14 Nov 2020",
+          "time": "No Rain",
           "sort": 8
         }
       }
     },
     "ac2847d2_af37a8": {
       "lastPayload": {
-        "state": 0.1,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:11 13 Nov 2020",
+          "time": "No Rain",
           "sort": 7
         }
       }
@@ -1397,7 +1397,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 16 Nov 2020",
+          "time": "10:11 29 Nov 2020",
           "sort": 8
         }
       }
@@ -1408,7 +1408,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 16 Nov 2020",
+          "time": "10:11 29 Nov 2020",
           "sort": 7
         }
       }
@@ -1430,7 +1430,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 16 Nov 2020",
+          "time": "10:11 29 Nov 2020",
           "sort": 5
         }
       }
@@ -1441,7 +1441,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:11 16 Nov 2020",
+          "time": "10:11 29 Nov 2020",
           "sort": 6
         }
       }
@@ -1471,13 +1471,4 @@
     "f77adadb_9106f8": {
       "lastPayload": {
         "state": 3.6,
-        "attributes": {
-          "aep": 0,
-          "ey": 0,
-          "time": "07:11 13 Nov 2020",
-          "sort": 1
-        }
-      }
-    }
-  }
-}
+        "

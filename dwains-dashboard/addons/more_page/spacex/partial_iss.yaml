@@ -1,0 +1,44 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:flex-table-card
+    title: Next ISS Passes
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary);
+      }
+      ha-card table {
+        padding-top: 0px !important;
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      include: sensor.iss_pass_times
+    columns:
+      - {
+          data: response,
+          modify: new Date(x.risetime*1000).toString(),
+          name: "Time",
+        }
+      - {
+          data: response,
+          modify: (x.duration/60).toFixed(2),
+          suffix: " min",
+          align: "center",
+          name: "Duration",
+        }

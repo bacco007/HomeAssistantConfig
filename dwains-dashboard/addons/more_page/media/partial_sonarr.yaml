@@ -1,0 +1,111 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: custom:dwains-flexbox-card
+    cards:
+      - type: custom:dwains-flexbox-card
+        item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
+        cards:
+          - type: markdown
+            style: |
+              ha-card { box-shadow: none; }
+              ha-markdown { padding-bottom: 1px !important; }
+            content: >
+              <img width="125" src="https://brands.home-assistant.io/sonarr/logo.png"/><br/>
+          - !include
+            - ../../1_Templates/button_link.yaml
+            - name: "Sonarr"
+              icon: "mdi:television"
+              url: !secret sonarr_url
+      - type: custom:dwains-flexbox-card
+        item_classes: "col-xs-12 col-sm-12 col-md-10 col-lg-10"
+        cards:
+          - type: custom:dwains-flexbox-card
+            items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
+            cards:
+              - !include
+                - ../../1_Templates/button_state.yaml
+                - name: "Tracked Shows"
+                  sensor: "sensor.sonarr_shows"
+              - !include
+                - ../../1_Templates/button_state.yaml
+                - name: "Queued Episodes"
+                  sensor: "sensor.sonarr_queue"
+              - !include
+                - ../../1_Templates/button_state.yaml
+                - name: "Upcoming Episodes"
+                  sensor: "sensor.sonarr_upcoming"
+              - !include
+                - ../../1_Templates/button_state.yaml
+                - name: "Wanted Episodes"
+                  sensor: "sensor.sonarr_wanted"
+
+  - type: custom:dwains-flexbox-card
+    item_classes: "col-xs-12 col-sm-12 col-md-12 col-lg-12"
+    cards:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: sensor.lovelace_sonarr_upcoming_*
+              attributes:
+                name: "! "
+              options:
+                type: custom:button-card
+                show_state: true
+                show_label: true
+                show_name: true
+                show_icon: true
+                name: "[[[ return entity.attributes.name ]]]"
+                entity_picture: >
+                  [[[
+                    if (entity.attributes.poster == 'None')
+                      return 'https://via.placeholder.com/340x500?text=No%20Poster%20Available';
+                    else
+                      return entity.attributes.poster;
+                  ]]]
+                show_entity_picture: true
+                # entity: this.entity_id
+                layout: vertical
+                custom_fields:
+                  date: >
+                    [[[ return entity.attributes.date ]]]
+                  episode: >
+                    [[[ return entity.attributes.episode + ' (' + entity.attributes.number + ')' ]]]
+                styles:
+                  grid:
+                    - grid-template-areas: '"i" "n" "date" "episode"'
+                    - grid-template-columns: 100%
+                    - grid-template-rows: 1fr min-content min-content min-content
+                  card:
+                    - background-color: >
+                        [[[
+                          if (entity.attributes.onairtoday == "True") return 'var(--dwains-theme-accent)';
+                          else return 'var(--dwains-theme-primary)';
+                        ]]]
+                    - opacity: >
+                        [[[
+                          if (entity.attributes.downloaded == "True") return '0.5';
+                          else return '1';
+                        ]]]
+                    - border-radius: 0
+                    - box-shadow: none
+                  name:
+                    - font-size: 15px
+                    - font-weight: bold
+                    - color: var(--dwains-theme-names)
+                  custom_fields:
+                    episode:
+                      - font-size: 13px
+                      - color: var(--dwains-theme-names)
+                    date:
+                      - font-size: 13px
+                      - color: var(--dwains-theme-names)
+                  icon:
+                    - color: var(--dwains-theme-accent)
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:dwains-flexbox-card
+          items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
