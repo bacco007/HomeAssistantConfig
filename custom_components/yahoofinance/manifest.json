@@ -1,9 +1,9 @@
 {
   "domain": "yahoofinance",
   "name": "Yahoo Finance",
-  "documentation": "https://github.com/InduPrakash/yahoofinance",
+  "documentation": "https://github.com/iprak/yahoofinance",
   "requirements": [],
   "dependencies": [],
-  "codeowners": [ "@induprakash" ],
-  "issue_tracker": "https://github.com/InduPrakash/yahoofinance/issues"
+  "codeowners": ["@iprak"],
+  "issue_tracker": "https://github.com/iprak/yahoofinance/issues"
 }

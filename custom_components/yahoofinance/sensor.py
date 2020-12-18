@@ -20,23 +20,25 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     ATTR_CURRENCY_SYMBOL,
-    ATTR_FIFTY_DAY_AVERAGE,
-    ATTR_FIFTY_DAY_AVERAGE_CHANGE,
-    ATTR_FIFTY_DAY_AVERAGE_CHANGE_PERCENTAGE,
-    ATTR_MARKET_CHANGE,
-    ATTR_MARKET_CHANGE_PERCENTAGE,
-    ATTR_PREVIOUS_CLOSE,
     ATTR_SYMBOL,
+    ATTR_TRENDING,
     ATTRIBUTION,
     BASE,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CURRENCY_CODES,
+    DATA_CURRENCY_SYMBOL,
+    DATA_FINANCIAL_CURRENCY,
+    DATA_REGULAR_MARKET_PREVIOUS_CLOSE,
+    DATA_REGULAR_MARKET_PRICE,
+    DATA_SHORT_NAME,
     DEFAULT_CURRENCY,
     DEFAULT_CURRENCY_SYMBOL,
     DEFAULT_ICON,
     DOMAIN,
+    NUMERIC_DATA_KEYS,
     SERVICE_REFRESH,
+    STRING_DATA_KEYS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -58,9 +60,13 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 async def async_setup_platform(
     hass, config, async_add_entities, discovery_info=None
-):  # pylint: disable=unused-argument
+) -> None:
     """Set up the Yahoo Finance sensors."""
     symbols = config.get(CONF_SYMBOLS, [])
+
+    # Make sure all symbols are in upper case
+    symbols = [sym.upper() for sym in symbols]
+
     show_trending_icon = config.get(
         CONF_SHOW_TRENDING_ICON, DEFAULT_CONF_SHOW_TRENDING_ICON
     )
@@ -96,26 +102,34 @@ async def async_setup_platform(
 class YahooFinanceSensor(Entity):
     """Defines a Yahoo finance sensor."""
 
-    # pylint: disable=too-many-instance-attributes
     _currency = DEFAULT_CURRENCY
-    _currency_symbol = DEFAULT_CURRENCY_SYMBOL
-    _fifty_day_average = None
-    _fifty_day_average_change = None
-    _fifty_day_average_change_percent = None
     _icon = DEFAULT_ICON
-    _previous_close = None
-    _market_change = None
-    _market_change_percent = None
+    _market_price = None
     _short_name = None
-    _state = None
-    _symbol = None
 
-    def __init__(self, hass, coordinator, symbol, show_trending_icon) -> None:
+    def __init__(
+        self,
+        hass,
+        coordinator,
+        symbol,
+        show_trending_icon,
+    ) -> None:
         """Initialize the sensor."""
         self._symbol = symbol
         self._coordinator = coordinator
         self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, symbol, hass=hass)
-        self.show_trending_icon = show_trending_icon
+        self._show_trending_icon = show_trending_icon
+
+        self._attributes = {
+            ATTR_ATTRIBUTION: ATTRIBUTION,
+            ATTR_CURRENCY_SYMBOL: DEFAULT_CURRENCY_SYMBOL,
+            ATTR_SYMBOL: self._symbol,
+        }
+
+        # Initialize all numeric attributes to None
+        for key in NUMERIC_DATA_KEYS:
+            self._attributes[key] = None
+
         _LOGGER.debug("Created %s", self.entity_id)
 
     @property
@@ -134,7 +148,7 @@ class YahooFinanceSensor(Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self._state
+        return self._market_price
 
     @property
     def unit_of_measurement(self) -> str:
@@ -144,17 +158,7 @@ class YahooFinanceSensor(Entity):
     @property
     def device_state_attributes(self):
         """Return the state attributes."""
-        return {
-            ATTR_ATTRIBUTION: ATTRIBUTION,
-            ATTR_CURRENCY_SYMBOL: self._currency_symbol,
-            ATTR_FIFTY_DAY_AVERAGE: self._fifty_day_average,
-            ATTR_FIFTY_DAY_AVERAGE_CHANGE: self._fifty_day_average_change,
-            ATTR_FIFTY_DAY_AVERAGE_CHANGE_PERCENTAGE: self._fifty_day_average_change_percent,
-            ATTR_PREVIOUS_CLOSE: self._previous_close,
-            ATTR_MARKET_CHANGE: self._market_change,
-            ATTR_MARKET_CHANGE_PERCENTAGE: self._market_change_percent,
-            ATTR_SYMBOL: self._symbol,
-        }
+        return self._attributes
 
     @property
     def icon(self) -> str:
@@ -167,41 +171,59 @@ class YahooFinanceSensor(Entity):
         if data is None:
             return
 
-        symbol_data = data[self._symbol]
+        symbol_data = data.get(self._symbol)
         if symbol_data is None:
             return
 
-        self._short_name = symbol_data["shortName"]
-        self._state = symbol_data["regularMarketPrice"]
-        self._fifty_day_average = symbol_data["fiftyDayAverage"]
-        self._fifty_day_average_change = symbol_data["fiftyDayAverageChange"]
-        self._fifty_day_average_change_percent = symbol_data[
-            "fiftyDayAverageChangePercent"
-        ]
-        self._previous_close = symbol_data["regularMarketPreviousClose"]
-        self._market_change = symbol_data["regularMarketChange"]
-        self._market_change_percent = symbol_data["regularMarketChangePercent"]
+        self._short_name = symbol_data[DATA_SHORT_NAME]
+        self._market_price = symbol_data[DATA_REGULAR_MARKET_PRICE]
+        self._previous_close = symbol_data[DATA_REGULAR_MARKET_PREVIOUS_CLOSE]
 
-        currency = symbol_data["financialCurrency"]
-        if currency is None:
-            currency = symbol_data.get("currency", DEFAULT_CURRENCY)
+        for key in NUMERIC_DATA_KEYS:
+            self._attributes[key] = symbol_data[key]
+
+        # Prefer currency over financialCurrency, for foreign symbols financialCurrency
+        # can represent the remote currency. But financialCurrency can also be None.
+        financialCurrency = symbol_data[DATA_FINANCIAL_CURRENCY]
+        currency = symbol_data[DATA_CURRENCY_SYMBOL]
+
+        _LOGGER.debug(
+            "%s currency=%s financialCurrency=%s",
+            self._symbol,
+            ("None" if currency is None else currency),
+            ("None" if financialCurrency is None else financialCurrency),
+        )
+
+        currency = currency or financialCurrency or DEFAULT_CURRENCY
 
         self._currency = currency.upper()
         lower_currency = self._currency.lower()
 
-        # Fall back to currency based icon if there is no _previous_close value
-        if self.show_trending_icon and not (self._previous_close is None):
-            if self._state > self._previous_close:
-                self._icon = "mdi:trending-up"
-            elif self._state < self._previous_close:
-                self._icon = "mdi:trending-down"
+        trending_state = self.get_trending_state()
+
+        # Fall back to currency based icon if there is no trending state (based on _previous_close value)
+        if not trending_state is None:
+            self._attributes[ATTR_TRENDING] = trending_state
+
+            if self._show_trending_icon:
+                self._icon = "mdi:trending-" + trending_state
             else:
-                self._icon = "mdi:trending-neutral"
+                self._icon = "mdi:currency-" + lower_currency
         else:
             self._icon = "mdi:currency-" + lower_currency
 
         if lower_currency in CURRENCY_CODES:
             self._currency_symbol = CURRENCY_CODES[lower_currency]
+
+    def get_trending_state(self):
+        if not (self._previous_close is None):
+            if self._market_price > self._previous_close:
+                return "up"
+            elif self._market_price < self._previous_close:
+                return "down"
+            else:
+                return "neutral"
+        return None
 
     @property
     def available(self) -> bool:
@@ -280,24 +302,12 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
                 symbol = item["symbol"]
 
                 # Return data pieces which we care about, use 0 for missing numeric values
-                data[symbol] = {
-                    "regularMarketPrice": item.get("regularMarketPrice", 0),
-                    "regularMarketChange": item.get("regularMarketChange", 0),
-                    "regularMarketChangePercent": item.get(
-                        "regularMarketChangePercent", 0
-                    ),
-                    "regularMarketPreviousClose": item.get(
-                        "regularMarketPreviousClose", 0
-                    ),
-                    "fiftyDayAverage": item.get("fiftyDayAverage", 0),
-                    "fiftyDayAverageChange": item.get("fiftyDayAverageChange", 0),
-                    "fiftyDayAverageChangePercent": item.get(
-                        "fiftyDayAverageChangePercent", 0
-                    ),
-                    "currency": item.get("currency"),
-                    "financialCurrency": item.get("financialCurrency"),
-                    "shortName": item.get("shortName"),
-                }
+                data[symbol] = {}
+                for key in NUMERIC_DATA_KEYS:
+                    data[symbol][key] = item.get(key, 0)
+                for key in STRING_DATA_KEYS:
+                    data[symbol][key] = item.get(key)
+
                 _LOGGER.debug(
                     "Updated %s=%s",
                     symbol,

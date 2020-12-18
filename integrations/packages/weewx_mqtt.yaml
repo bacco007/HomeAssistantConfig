@@ -326,3 +326,24 @@ sensor:
         {{ states('sensor.weather_outside_winddirection') }}
       {% endif %}
     unit_of_measurement: "°"
+
+  - platform: average
+    name: weather_outside_temperature_average
+    entities:
+      - sensor.weather_outside_temperature
+    start: "{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: average
+    name: weather_inside_temperature_average
+    entities:
+      - sensor.weather_inside_temperature
+    start: "{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: average
+    name: weather_outside_apptemperature_average
+    entities:
+      - sensor.weather_outside_apptemperature
+    start: "{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}"
+    end: "{{ now() }}"

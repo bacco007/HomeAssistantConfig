@@ -13,6 +13,7 @@ recorder:
       - sensor.plex_tautulli_history
       - sensor.plex_tautulli_toptv
       - sensor.plex_tautulli_topusers
+      - sensor.tbsmarthome_overhead_satellites
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

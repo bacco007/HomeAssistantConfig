@@ -3,14 +3,14 @@ import logging
 from typing import Callable, List
 
 from homeassistant.components.binary_sensor import (
-    BinarySensorEntity,
     DEVICE_CLASS_SAFETY,
+    BinarySensorEntity,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import Entity
 
-from .const import DOMAIN, BINARY_SENSOR_TYPES
+from .const import BINARY_SENSOR_TYPES, DOMAIN
 from .entity import NswFireServiceFireDangerEntity
 
 _LOGGER = logging.getLogger(__name__)

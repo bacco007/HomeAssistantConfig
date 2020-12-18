@@ -14,5 +14,6 @@ influxdb:
       - sensor.plex_tautulli_history
       - sensor.plex_tautulli_toptv
       - sensor.plex_tautulli_topusers
+      - sensor.tbsmarthome_overhead_satellites
     entity_globs:
       - sensor.*monitordocker*

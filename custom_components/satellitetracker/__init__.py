@@ -217,7 +217,7 @@ class N2YOLocationCoordinator(N2YOUpdateCoordinator):
             raise PlatformNotReady from error
         except ValueError as error:
             _LOGGER.info("N2YO API: %s", error)
-            raise ConfigEntryNotReady from error
+            raise UpdateFailed from error
 
 class N2YOSatelliteCoordinator(N2YOUpdateCoordinator):
     """Class to manage Satellite type tracker updates."""
@@ -272,10 +272,10 @@ class N2YOSatelliteCoordinator(N2YOUpdateCoordinator):
 
         except ConnectionError as error:
             _LOGGER.info("N2YO API: %s", error)
-            raise UpdateFailed from error
+            raise PlatformNotReady from error
         except ValueError as error:
             _LOGGER.info("N2YO API: %s", error)
-            raise ConfigEntryNotReady from error
+            raise UpdateFailed from error
 
         
 

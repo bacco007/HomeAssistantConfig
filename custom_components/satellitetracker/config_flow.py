@@ -128,7 +128,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_TYPE:self.sensortype,
             }
 
-            unique_id = f"{self.latitude}_{self.longitude}_{self.elevation}"
+            unique_id = f"{self.latitude}_{self.longitude}_{self.elevation}_{self.category}"
             await self.async_set_unique_id(unique_id)
             self._abort_if_unique_id_configured()
             return self.async_create_entry(title=self.name, data=user_data)

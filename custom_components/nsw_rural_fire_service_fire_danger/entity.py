@@ -1,9 +1,9 @@
 """NSW Rural Fire Service - Fire Danger - Entity."""
 import logging
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
-from homeassistant.const import STATE_UNKNOWN, ATTR_ATTRIBUTION
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.const import ATTR_ATTRIBUTION, STATE_UNKNOWN
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 

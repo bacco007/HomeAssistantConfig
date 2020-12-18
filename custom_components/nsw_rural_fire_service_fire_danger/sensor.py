@@ -1,6 +1,6 @@
 """NSW Rural Fire Service - Fire Danger - Sensor."""
 import logging
-from typing import Optional, Callable, List
+from typing import Callable, List, Optional
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant

@@ -67,13 +67,7 @@ SMARTTHINQ_SCHEMA = vol.Schema(
 )
 
 CONFIG_SCHEMA = vol.Schema(
-    vol.All(
-        cv.deprecated(DOMAIN),
-        {
-            DOMAIN: SMARTTHINQ_SCHEMA
-        },
-    ),
-    extra=vol.ALLOW_EXTRA,
+    vol.All(cv.deprecated(DOMAIN), {DOMAIN: SMARTTHINQ_SCHEMA},), extra=vol.ALLOW_EXTRA,
 )
 
 
@@ -176,8 +170,7 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
         lge_devices = await lge_devices_setup(hass, client)
     except Exception:
         _LOGGER.warning(
-            "Connection not available. SmartThinQ platform not ready",
-            exc_info=True,
+            "Connection not available. SmartThinQ platform not ready", exc_info=True,
         )
         raise ConfigEntryNotReady()
 
@@ -190,10 +183,7 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
         )
 
     hass.data.setdefault(DOMAIN, {}).update(
-        {
-            CLIENT: client,
-            LGE_DEVICES: lge_devices,
-        }
+        {CLIENT: client, LGE_DEVICES: lge_devices,}
     )
 
     for platform in SMARTTHINQ_COMPONENTS:
@@ -318,11 +308,8 @@ class LGEDevice:
         return False
 
     def _critical_status(self):
-        return (
-            self._not_logged_count == MAX_UPDATE_FAIL_ALLOWED or (
-                    self._not_logged_count > 0 and
-                    self._not_logged_count % 60 == 0
-            )
+        return self._not_logged_count == MAX_UPDATE_FAIL_ALLOWED or (
+            self._not_logged_count > 0 and self._not_logged_count % 60 == 0
         )
 
     def _log_error(self, msg, *args, **kwargs):
@@ -426,17 +413,27 @@ class LGEDevice:
                     # time.sleep(1)
 
                 except InvalidCredentialError:
-                    self._log_error("Connection to ThinQ failed. Check your login credential")
+                    self._log_error(
+                        "Connection to ThinQ failed. Check your login credential"
+                    )
                     self._not_logged = True
                     return
 
-                except (reqExc.ConnectionError, reqExc.ConnectTimeout, reqExc.ReadTimeout):
-                    self._log_error("Connection to ThinQ failed. Network connection error")
+                except (
+                    reqExc.ConnectionError,
+                    reqExc.ConnectTimeout,
+                    reqExc.ReadTimeout,
+                ):
+                    self._log_error(
+                        "Connection to ThinQ failed. Network connection error"
+                    )
                     self._not_logged = True
                     return
 
                 except Exception:
-                    self._log_error("ThinQ error while updating device status", exc_info=True)
+                    self._log_error(
+                        "ThinQ error while updating device status", exc_info=True
+                    )
                     self._not_logged = True
                     return
 
@@ -479,37 +476,44 @@ async def lge_devices_setup(hass, client) -> dict:
     for device in client.devices:
         device_id = device.id
         device_name = device.name
+        device_type = device.type
         device_mac = device.macaddress
         model_name = device.model_name
         dev = None
         result = False
         device_count += 1
 
-        if device.type == DeviceType.WASHER:
+        device_group = device_type
+        if device_type in [DeviceType.WASHER, DeviceType.TOWER_WASHER]:
             dev = LGEDevice(WasherDevice(client, device), device_name)
-        elif device.type == DeviceType.DRYER:
+            device_group = DeviceType.WASHER
+        elif device_type in [DeviceType.DRYER, DeviceType.TOWER_DRYER]:
             dev = LGEDevice(DryerDevice(client, device), device_name)
-        elif device.type == DeviceType.DISHWASHER:
+            device_group = DeviceType.DRYER
+        elif device_type == DeviceType.DISHWASHER:
             dev = LGEDevice(DishWasherDevice(client, device), device_name)
-        elif device.type == DeviceType.REFRIGERATOR:
+            device_group = DeviceType.DISHWASHER
+        elif device_type == DeviceType.REFRIGERATOR:
             dev = LGEDevice(RefrigeratorDevice(client, device), device_name)
+            device_group = DeviceType.REFRIGERATOR
 
         if dev:
             result = await hass.async_add_executor_job(dev.init_device)
 
         if not result:
             _LOGGER.info(
-                "Found unsupported LGE Device. Name: %s - Type: %s",
+                "Found unsupported LGE Device. Name: %s - Type: %s - InfoUrl: %s",
                 device_name,
-                device.type.name,
+                device_type.name,
+                device.model_info_url,
             )
             continue
 
-        wrapped_devices.setdefault(device.type, []).append(dev)
+        wrapped_devices.setdefault(device_group, []).append(dev)
         _LOGGER.info(
             "LGE Device added. Name: %s - Type: %s - Model: %s - Mac: %s - ID: %s",
             device_name,
-            device.type.name,
+            device_type.name,
             model_name,
             device_mac,
             device_id,

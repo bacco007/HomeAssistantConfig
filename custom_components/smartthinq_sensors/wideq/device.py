@@ -63,6 +63,8 @@ class DeviceType(enum.Enum):
     DRYER = 202
     STYLER = 203
     DISHWASHER = 204
+    TOWER_WASHER = 221
+    TOWER_DRYER = 222
     OVEN = 301
     MICROWAVE = 302
     COOKTOP = 303
@@ -233,7 +235,13 @@ class DeviceInfo(object):
     @property
     def type(self) -> DeviceType:
         """The kind of device, as a `DeviceType` value."""
-        return DeviceType(self._get_data_value("deviceType"))
+        device_type = self._get_data_value("deviceType")
+        try:
+            ret_val = DeviceType(device_type)
+        except ValueError:
+            _LOGGER.warning("Unknown device type with id %s", device_type)
+            ret_val = DeviceType.UNKNOWN
+        return ret_val
 
     @property
     def platform_type(self) -> PlatformType:

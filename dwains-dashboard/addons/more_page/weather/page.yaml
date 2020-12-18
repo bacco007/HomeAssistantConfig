@@ -1,7 +1,7 @@
 # dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
+  items_classes: "col-xs-12 col-md-6 col-lg-3 col-xl-3"
   cards:
     - type: custom:mini-graph-card
       style: |
@@ -90,6 +90,11 @@
         graph: line
         fill: fade
         extrema: true
+    - type: custom:compass-card
+      name: Wind
+      entity: sensor.tamworth_airport_wind_direction
+      secondary_entity: sensor.tamworth_airport_wind_speed_kilometre
+      direction_offset: 0
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"

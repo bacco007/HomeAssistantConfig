@@ -3,6 +3,7 @@
     "config": {
       "step": {
         "user": {
+          "description": "You must get an API key from https://n2yo.com/api to use this integration.",
           "data": {
             "api_key": "Enter your N2YO.com API Key."
           }

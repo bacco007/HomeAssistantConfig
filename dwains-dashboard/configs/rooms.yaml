@@ -288,8 +288,9 @@ rooms:
     humidity: sensor.tamworth_airport_humidity
     page_entities:
       entities:
-        - entity: sensor.bom_max_temp
-        - entity: sensor.bom_min_temp
+        - entity: sensor.blitzortung_lightning_azimuth
+        - entity: sensor.blitzortung_lightning_counter
+        - entity: sensor.blitzortung_lightning_distance
     addons:
       - name: BoM Weather
         icon: mdi:weather-cloudy-alert

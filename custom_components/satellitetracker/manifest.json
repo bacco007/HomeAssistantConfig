@@ -5,7 +5,7 @@
     "documentation": "https://github.com/djtimca/hasatellitetracker",
     "issue_tracker": "https://github.com/djtimca/hasatellitetracker/issues",
     "requirements": [
-      "n2yoasync==0.0.4"
+      "n2yoasync==0.0.6"
     ],
     "ssdp": [],
     "zeroconf": [],

@@ -1,34 +1,39 @@
 # NSW Rural Fire Service Fire Danger.
 import asyncio
-from datetime import timedelta
 import logging
-from pyexpat import ExpatError
+from datetime import timedelta
 
 import voluptuous as vol
 import xmltodict
 from homeassistant.components.rest.data import RestData
-
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import CONF_SCAN_INTERVAL, STATE_OK, STATE_UNKNOWN
+from homeassistant.const import (
+    CONF_SCAN_INTERVAL,
+    MAJOR_VERSION,
+    MINOR_VERSION,
+    STATE_OK,
+    STATE_UNKNOWN,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
+from pyexpat import ExpatError
 
 from .config_flow import configured_instances
 from .const import (
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
+    COMPONENTS,
     CONF_DISTRICT_NAME,
     DEFAULT_METHOD,
-    URL,
+    DEFAULT_SCAN_INTERVAL,
     DEFAULT_VERIFY_SSL,
-    XML_FIRE_DANGER_MAP,
-    XML_DISTRICT,
-    XML_NAME,
+    DOMAIN,
     SENSOR_ATTRIBUTES,
-    COMPONENTS,
+    URL,
+    XML_DISTRICT,
+    XML_FIRE_DANGER_MAP,
+    XML_NAME,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -109,7 +114,14 @@ class NswRfsFireDangerFeedEntityManager:
         self._config_entry_id = config_entry.entry_id
         self._scan_interval = timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
         self._track_time_remove_callback = None
-        self._rest = RestData(DEFAULT_METHOD, URL, None, None, None, DEFAULT_VERIFY_SSL)
+        if MAJOR_VERSION >= 1 or MINOR_VERSION >= 119:
+            self._rest = RestData(
+                DEFAULT_METHOD, URL, None, None, None, None, DEFAULT_VERIFY_SSL
+            )
+        else:
+            self._rest = RestData(
+                DEFAULT_METHOD, URL, None, None, None, DEFAULT_VERIFY_SSL
+            )
         self._attributes = None
 
     @property

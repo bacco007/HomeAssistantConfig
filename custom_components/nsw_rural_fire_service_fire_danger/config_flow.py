@@ -1,14 +1,13 @@
 """Config flow to configure the NSW Rural Fire Service Fire Danger integration."""
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.const import CONF_SCAN_INTERVAL
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 
 from .const import (
+    CONF_DISTRICT_NAME,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
-    CONF_DISTRICT_NAME,
     VALID_DISTRICT_NAMES,
 )
 

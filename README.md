@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 04:59, Sunday, November 29th 2020_
+_Stats as at 05:00, Friday, December 18th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 0.118.4 | 269     | 2651         | 2255 | 24 |
+| 2020.12.0 | 271     | 2416         | 2024 | 24 |
 
 Type | Qty
 -- | --
@@ -85,7 +85,7 @@ Alert | 0
 Automation | 24
 Binary Sensor | 71
 Camera | 1
-Device Tracker | 74
+Device Tracker | 87
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
@@ -95,9 +95,9 @@ Media Player | 33
 Person | 1
 Scene | 1
 Script | 1
-Sensor | 2255
+Sensor | 2024
 Sun | 1
-Switch | 115
+Switch | 93
 Weather | 3
 Zone | 3
 
@@ -202,6 +202,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [history](https://www.home-assistant.io/components/history) |
 | [homeassistant](https://www.home-assistant.io/components/homeassistant) |
 | [homekit](https://www.home-assistant.io/components/homekit) |
+| [homekit_controller](https://www.home-assistant.io/components/homekit_controller) |
 | [http](https://www.home-assistant.io/components/http) |
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
 | [ifttt](https://www.home-assistant.io/components/ifttt) |
@@ -289,6 +290,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time) |
+| [sensor.homekit_controller](https://www.home-assistant.io/components/sensor.homekit_controller) |
 | [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk) |
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
 | [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
@@ -433,7 +435,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [UI Logs](https://github.com/custom-components/uilogs)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
-- [Yahoo Finance](https://github.com/InduPrakash/yahoofinance)
+- [Yahoo Finance](https://github.com/iprak/yahoofinance)
 - [ZHA Network Map](https://github.com/zha-ng/zha-map)</details>
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -456,7 +458,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
 | [Ha Sun2](https://github.com/pnbruckner/ha-sun2) | Home Assistant Sun2 Sensor |
 | [HACS](https://github.com/hacs/integration) | HACS gives you a powerful UI to handle downloads of all your custom needs. |
-| [Hasatellitetracker](https://github.com/djtimca/hasatellitetracker) | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |
 | [Hass Amber Electric](https://github.com/lewisbenge/hass-amber-electric) | Home Assistant Component to pull the latest energy prices from Amber Electric |
 | [Hass Favicon](https://github.com/thomasloven/hass-favicon) | 🔹 Change the favicon of your Home Assistant instance |
 | [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 is a device_tracker custom_component for iPhones, iPads & iWatches that monitors zone & location events triggered by the HA iOS Companion App |
@@ -467,6 +468,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) | OpenNEM Sensor for Home Assistant |
 | [Readme](https://github.com/custom-components/readme) | Use Jinja and data from Home Assistant to generate your README.md file |
+| [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker) | Using the N2YO API, this Home Assistant integration will provide visible satellite passes (general) and to add specific satellites for monitoring. |
 | [Sensor.Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added) | ▶️ Plex component to feed Upcoming Media Card. |
 | [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media) | 🎬 Radarr component to feed Upcoming Media Card. |
 | [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media) | 📺 Sonarr component to feed Upcoming Media Card. |
