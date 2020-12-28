@@ -1,0 +1,5 @@
+---
+# https://www.home-assistant.io/integrations/feedreader/
+feedreader:
+  urls:
+    - https://alerts.home-assistant.io/feed.xml

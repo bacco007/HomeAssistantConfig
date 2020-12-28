@@ -1593,5 +1593,73 @@
                 "file": "/opt/node_modules/node-red-node-mysql/68-mysql.js"
             }
         }
+    },
+    "node-red-contrib-slack": {
+        "name": "node-red-contrib-slack",
+        "version": "2.0.0",
+        "local": false,
+        "nodes": {
+            "slack": {
+                "name": "slack",
+                "types": [
+                    "slack-config",
+                    "slack-state",
+                    "slack-rtm-in",
+                    "slack-rtm-out",
+                    "slack-web-out"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-slack",
+                "file": "/opt/node_modules/node-red-contrib-slack/slackpost.js"
+            }
+        }
+    },
+    "node-red-contrib-twitter": {
+        "name": "node-red-contrib-twitter",
+        "version": "1.1.3",
+        "local": false,
+        "nodes": {
+            "twitter-search": {
+                "name": "twitter-search",
+                "types": [
+                    "twitter-search"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-twitter",
+                "file": "/opt/node_modules/node-red-contrib-twitter/twitter-search.js"
+            },
+            "twitter-favorite": {
+                "name": "twitter-favorite",
+                "types": [
+                    "twitter-favorite"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-twitter",
+                "file": "/opt/node_modules/node-red-contrib-twitter/twitter-favorite.js"
+            },
+            "twitter-user": {
+                "name": "twitter-user",
+                "types": [
+                    "twitter-user"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-twitter",
+                "file": "/opt/node_modules/node-red-contrib-twitter/twitter-user.js"
+            },
+            "twitter-client": {
+                "name": "twitter-client",
+                "types": [
+                    "twitter-client"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-twitter",
+                "file": "/opt/node_modules/node-red-contrib-twitter/twitter-client.js"
+            }
+        }
     }
 }

@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, December 18th 2020_
+_Stats as at 05:00, Monday, December 28th 2020_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2020.12.0 | 271     | 2416         | 2024 | 24 |
+| 2020.12.1 | 276     | 2733         | 2285 | 24 |
 
 Type | Qty
 -- | --
@@ -85,19 +85,19 @@ Alert | 0
 Automation | 24
 Binary Sensor | 71
 Camera | 1
-Device Tracker | 87
+Device Tracker | 90
 Group | 7
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 4
-Media Player | 33
+Media Player | 34
 Person | 1
 Scene | 1
 Script | 1
-Sensor | 2024
+Sensor | 2285
 Sun | 1
-Switch | 93
+Switch | 118
 Weather | 3
 Zone | 3
 
@@ -123,6 +123,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [api](https://www.home-assistant.io/components/api) |
+| [apple_tv](https://www.home-assistant.io/components/apple_tv) |
 | [auth](https://www.home-assistant.io/components/auth) |
 | [automation](https://www.home-assistant.io/components/automation) |
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
@@ -184,6 +185,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fan.deconz](https://www.home-assistant.io/components/fan.deconz) |
 | [fan.dyson](https://www.home-assistant.io/components/fan.dyson) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
+| [feedreader](https://www.home-assistant.io/components/feedreader) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
 | [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
@@ -223,6 +225,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player](https://www.home-assistant.io/components/media_player) |
 | [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
+| [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
@@ -253,6 +256,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [readme](https://www.home-assistant.io/components/readme) |
 | [recorder](https://www.home-assistant.io/components/recorder) |
 | [remote](https://www.home-assistant.io/components/remote) |
+| [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
@@ -358,6 +362,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
+| [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |

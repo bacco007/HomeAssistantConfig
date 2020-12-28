@@ -1,7 +1,8 @@
 """Garbage collection calendar."""
 
+import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from homeassistant.components.calendar import CalendarEventDevice
 from homeassistant.util import Throttle
@@ -9,7 +10,7 @@ from homeassistant.util import Throttle
 from .const import CALENDAR_NAME, CALENDAR_PLATFORM, DOMAIN, SENSOR_PLATFORM
 
 _LOGGER = logging.getLogger(__name__)
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
+MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=60)
 
 
 async def async_setup_platform(
@@ -44,7 +45,7 @@ class GarbageCollectionCalendar(CalendarEventDevice):
 
     async def async_update(self):
         """Update all calendars."""
-        self.hass.data[DOMAIN][CALENDAR_PLATFORM].update()
+        await self.hass.data[DOMAIN][CALENDAR_PLATFORM].async_update()
 
     async def async_get_events(self, hass, start_date, end_date):
         """Get all events in a specific time frame."""
@@ -58,7 +59,6 @@ class GarbageCollectionCalendar(CalendarEventDevice):
         if self.hass.data[DOMAIN][CALENDAR_PLATFORM].event is None:
             # No tasks, we don't need to show anything.
             return None
-
         return {}
 
 
@@ -96,7 +96,7 @@ class EntitiesCalendarData:
                 continue
             garbage_collection = hass.data[DOMAIN][SENSOR_PLATFORM][entity]
             await garbage_collection.async_load_holidays(start_date)
-            start = await garbage_collection.async_find_next_date(start_date)
+            start = await garbage_collection.async_find_next_date(start_date, True)
             while start is not None and start >= start_date and start <= end_date:
                 try:
                     end = start + timedelta(days=1)
@@ -114,61 +114,49 @@ class EntitiesCalendarData:
                     event = {
                         "uid": entity,
                         "summary": garbage_collection.name,
-                        "start": {"date": start.strftime("%Y-%m-%d")},
-                        "end": {"date": end.strftime("%Y-%m-%d")},
-                        "allDay": True,
-                        # "start": {"date": start.strftime("%Y-%m-%d %H:%M")},
-                        # "end": {
-                        #     "date": datetime.combine(
-                        #         start, garbage_collection.expire_after
-                        #     ).strftime("%Y-%m-%d %H:%M")
-                        # },
-                        # "allDay": False,
+                        "start": {"date": start.strftime("%Y-%m-%d %H:%M")},
+                        "end": {
+                            "date": datetime.combine(
+                                start, garbage_collection.expire_after
+                            ).strftime("%Y-%m-%d %H:%M")
+                        },
+                        "allDay": False,
                     }
                 events.append(event)
                 start = await garbage_collection.async_find_next_date(
-                    start + timedelta(days=1)
+                    start + timedelta(days=1), True
                 )
         return events
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self):
+    async def async_update(self):
         """Get the latest data."""
         events = []
+        today = date.today()
         for entity in self.entities:
-            state_object = self._hass.states.get(entity)
             garbage_collection = self._hass.data[DOMAIN][SENSOR_PLATFORM][entity]
-            if state_object is None:
-                continue
-            start = state_object.attributes.get("next_date")
+            try:
+                await asyncio.wait_for(
+                    garbage_collection.async_load_holidays(today), timeout=10
+                )
+                start = await asyncio.wait_for(
+                    garbage_collection.async_find_next_date(today, True), timeout=10
+                )
+            except asyncio.TimeoutError:
+                start = None
+                _LOGGER.error("(%s) Timeout looking for the new date", entity)
             try:
                 end = start + timedelta(days=1)
             except TypeError:
                 continue
             if start is not None:
-                if garbage_collection.expire_after is None:
-                    event = {
-                        "uid": entity,
-                        "summary": state_object.attributes.get("friendly_name"),
-                        "start": {"date": start.strftime("%Y-%m-%d")},
-                        "end": {"date": end.strftime("%Y-%m-%d")},
-                        "allDay": True,
-                    }
-                else:
-                    event = {
-                        "uid": entity,
-                        "summary": state_object.attributes.get("friendly_name"),
-                        "start": {"date": start.strftime("%Y-%m-%d")},
-                        "end": {"date": end.strftime("%Y-%m-%d")},
-                        "allDay": True,
-                        # "start": {"date": start.strftime("%Y-%m-%d %H:%M")},
-                        # "end": {
-                        #     "date": datetime.combine(
-                        #         start, garbage_collection.expire_after
-                        #     ).strftime("%Y-%m-%d %H:%M")
-                        # },
-                        # "allDay": False,
-                    }
+                event = {
+                    "uid": entity,
+                    "summary": garbage_collection.name,
+                    "start": {"date": start.strftime("%Y-%m-%d")},
+                    "end": {"date": end.strftime("%Y-%m-%d")},
+                    "allDay": True,
+                }
                 events.append(event)
         events.sort(key=lambda x: x["start"]["date"])
         if len(events) > 0:

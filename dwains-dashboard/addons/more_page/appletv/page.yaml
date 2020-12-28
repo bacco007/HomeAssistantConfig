@@ -1,0 +1,190 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  item_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
+  cards:
+    - type: vertical-stack
+      cards:
+        - entity: media_player.apple_tv_bedroom
+          type: media-control
+        - type: horizontal-stack
+          cards:
+            - entity: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              icon: "mdi:arrow-left"
+              name: Left arrow
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: left
+                  entity_id: remote.apple_tv_bedroom
+              type: button
+            - entity: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              icon: "mdi:apple"
+              name: Select
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: select
+                  entity_id: remote.apple_tv_bedroom
+              type: button
+            - entity: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              icon: "mdi:arrow-right"
+              name: Right arrow
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: right
+                  entity_id: remote.apple_tv_bedroom
+              type: button
+        - type: horizontal-stack
+          cards:
+            - entity: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              icon: "mdi:arrow-up"
+              name: Up arrow
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: up
+                  entity_id: remote.apple_tv_bedroom
+              type: button
+            - entity: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              icon: "mdi:menu"
+              name: Menu
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: menu
+                  entity_id: remote.apple_tv_bedroom
+              type: button
+            - entity: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              icon: "mdi:arrow-down"
+              name: Down arrow
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: down
+                  entity_id: remote.apple_tv_bedroom
+              type: button
+
+        - type: horizontal-stack
+          cards:
+            - type: button
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: home
+                  entity_id: remote.apple_tv_bedroom
+              hold_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: home_hold
+                  entity_id: remote.living_room
+              show_icon: true
+              show_name: false
+              entity: remote.apple_tv_bedroom
+              icon: "mdi:home"
+              name: Home
+            - type: button
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: suspend
+                  entity_id: remote.apple_tv_bedroom
+              show_icon: true
+              show_name: false
+              entity: remote.apple_tv_bedroom
+              name: Sleep
+              icon: "mdi:sleep"
+              hold_action:
+                action: none
+            - type: button
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: volume_up
+                  entity_id: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              show_icon: true
+              show_name: false
+              entity: remote.apple_tv_bedroom
+              name: Volume up
+              icon: "mdi:volume-plus"
+        - type: horizontal-stack
+          cards:
+            - type: button
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: play_pause
+                  entity_id: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              show_icon: true
+              show_name: false
+              entity: remote.apple_tv_bedroom
+              name: Play/Pause
+              icon: "mdi:play-pause"
+            - type: button
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: next
+                  entity_id: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              show_icon: true
+              show_name: false
+              entity: remote.apple_tv_bedroom
+              icon: "mdi:skip-next"
+              name: Next
+            - type: button
+              tap_action:
+                action: call-service
+                service: remote.send_command
+                service_data:
+                  command: volume_down
+                  entity_id: remote.apple_tv_bedroom
+              hold_action:
+                action: none
+              show_icon: true
+              show_name: false
+              entity: remote.apple_tv_bedroom
+              name: Volume down
+              icon: "mdi:volume-minus"

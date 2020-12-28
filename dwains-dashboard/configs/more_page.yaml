@@ -2,6 +2,12 @@
 
 more_page:
   addons:
+    - name: Alerts
+      icon: mdi:alert
+      path: "dwains-dashboard/addons/more_page/alerts/page.yaml"
+    - name: Apple TV
+      icon: si:appletv
+      path: "dwains-dashboard/addons/more_page/appletv/page.yaml"
     - name: Coronavirus
       icon: mdi:biohazard
       path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
@@ -14,6 +20,9 @@ more_page:
     - name: Folding@Home
       icon: "mdi:state-machine"
       path: "dwains-dashboard/addons/more_page/foldingathome/page.yaml"
+    - name: Lightning
+      icon: mdi:flash-alert
+      path: "dwains-dashboard/addons/more_page/lightning/page.yaml"
     - name: HDHomerun
       icon: mdi:television
       path: "dwains-dashboard/addons/more_page/hdhomerun/page.yaml"

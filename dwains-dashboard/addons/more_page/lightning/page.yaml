@@ -1,0 +1,73 @@
+# dwains_theme
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-3 col-sm-3 col-xl-3"
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.lightning_counter_lasthour
+      name: Lightning
+      # height: 50
+      line_color: "var(--dwains-theme-accent)"
+      line_width: 2
+      font_size: 70
+      hours_to_show: 48
+      points_per_hour: 1
+      align_state: center
+      show:
+        extrema: true
+        fill: true
+    - type: custom:compass-card
+      name: Last Lightning Strike
+      entity: sensor.blitzortung_lightning_azimuth
+      secondary_entity: sensor.blitzortung_lightning_distance
+      direction_offset: 0
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  # padding: true
+  cards:
+    - type: entities
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.lightning_counter_lasthour
+          name: Lightning Counter
+          icon: mdi:flash-circle
+        - entity: sensor.lightning_distance_lasthour
+          name: Lightning Distance
+          type: custom:multiple-entity-row
+          icon: mdi:flash-circle
+          show_state: false
+          entities:
+            - attribute: count
+              name: Num
+            - attribute: min_value
+              name: Near
+            - attribute: max_value
+              name: Far
+
+    - type: map
+      default_zoom: 8
+      entities:
+        - zone.home
+      geo_location_sources:
+        - blitzortung

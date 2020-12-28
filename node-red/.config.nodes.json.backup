@@ -449,7 +449,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.27.4",
+        "version": "0.27.5",
         "local": false,
         "nodes": {
             "server": {
@@ -633,7 +633,7 @@
     },
     "node-red-contrib-influxdb": {
         "name": "node-red-contrib-influxdb",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "local": false,
         "nodes": {
             "influxdb": {
@@ -1294,7 +1294,7 @@
     },
     "node-red-node-ping": {
         "name": "node-red-node-ping",
-        "version": "0.2.1",
+        "version": "0.2.2",
         "local": false,
         "nodes": {
             "ping": {
@@ -1591,6 +1591,27 @@
                 "local": false,
                 "module": "node-red-node-mysql",
                 "file": "/opt/node_modules/node-red-node-mysql/68-mysql.js"
+            }
+        }
+    },
+    "node-red-contrib-slack": {
+        "name": "node-red-contrib-slack",
+        "version": "2.0.0",
+        "local": false,
+        "nodes": {
+            "slack": {
+                "name": "slack",
+                "types": [
+                    "slack-config",
+                    "slack-state",
+                    "slack-rtm-in",
+                    "slack-rtm-out",
+                    "slack-web-out"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-slack",
+                "file": "/opt/node_modules/node-red-contrib-slack/slackpost.js"
             }
         }
     }
