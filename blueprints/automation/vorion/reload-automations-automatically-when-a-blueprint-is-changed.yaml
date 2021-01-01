@@ -1,0 +1,19 @@
+blueprint:
+  name: Reload automations on file change
+  description: 'When you modify a blueprint, automations need to be reloaded to pick
+    up the latest changes. This blueprint automates the reloading when your file changes.
+    It is required to setup the folder_watcher integration with /config/blueprints
+    directory for this to work. https://www.home-assistant.io/integrations/folder_watcher/
+
+    '
+  domain: automation
+  input: {}
+  source_url: https://community.home-assistant.io/t/reload-automations-automatically-when-a-blueprint-is-changed/253977
+trigger:
+- platform: event
+  event_type: folder_watcher
+condition:
+- condition: template
+  value_template: '{{ ''blueprints'' in  trigger.event.data.folder }}'
+action:
+- service: automation.reload

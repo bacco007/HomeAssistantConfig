@@ -1,0 +1,39 @@
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: custom:auto-entities
+      filter:
+        include:
+          - group: group.google_home_speakers
+            options:
+              type: custom:mini-media-player
+              entity: this.entity_id
+              group: true
+              source: icon
+              icon: mdi:google-home
+              info: short
+              tts:
+                platform: google_translate
+              hide:
+                volume: false
+                power: true
+          - group: group.google_home
+            options:
+              type: custom:mini-media-player
+              entity: this.entity_id
+              group: true
+              tts:
+                platform: google_translate
+              hide:
+                icon: true
+                volume: false
+                controls: true
+      show_empty: false
+      sort:
+        method: name
+        numeric: true
+      card:
+        type: entities
+        show_header_toggle: false

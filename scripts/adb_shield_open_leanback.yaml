@@ -1,0 +1,8 @@
+---
+icon: mdi:android-debug-bridge
+alias: ADB - Shield - Home
+sequence:
+  - service: androidtv.adb_command
+    data:
+      entity_id: media_player.nvidia_shield
+      command: HOME

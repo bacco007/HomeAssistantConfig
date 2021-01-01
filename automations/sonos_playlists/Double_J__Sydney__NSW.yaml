@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Double J (Sydney, NSW)
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Double J (Sydney, NSW)"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Double J (Sydney, NSW)"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

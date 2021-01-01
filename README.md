@@ -72,21 +72,21 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Monday, December 28th 2020_
+_Stats as at 05:00, Friday, January 1st 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2020.12.1 | 276     | 2733         | 2285 | 24 |
+| 2020.12.1 | 276     | 2762         | 2295 | 53 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 24
+Automation | 53
 Binary Sensor | 71
 Camera | 1
-Device Tracker | 90
-Group | 7
+Device Tracker | 96
+Group | 8
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
@@ -94,8 +94,8 @@ Light | 4
 Media Player | 34
 Person | 1
 Scene | 1
-Script | 1
-Sensor | 2285
+Script | 10
+Sensor | 2295
 Sun | 1
 Switch | 118
 Weather | 3
@@ -187,6 +187,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [feedreader](https://www.home-assistant.io/components/feedreader) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
+| [folder_watcher](https://www.home-assistant.io/components/folder_watcher) |
 | [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
@@ -275,7 +276,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
-| [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |

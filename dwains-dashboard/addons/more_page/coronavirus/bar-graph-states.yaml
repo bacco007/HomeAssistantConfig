@@ -1,7 +1,39 @@
 type: custom:dwains-flexbox-card
-items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
+items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
 # padding: true
 cards:
+  # - type: custom:stack-in-card
+  #   cards:
+  #     - type: markdown
+  #       content: State by State - Cases
+  #       style: |
+  #         ha-card {
+  #           background-color: var(--dwains-theme-primary)
+  #         }
+  #         ha-markdown {
+  #           padding: 10px 16px 5px !important;
+  #           font-size: 18px;
+  #           font-weight: 700 !important;
+  #         }
+  #         .card-content div {
+  #             margin: 0 !important;
+  #         }
+  #     - type: custom:mod-card
+  #       style: |
+  #         ha-card {
+  #           padding: 0em 3em 0em 1.2em;
+  #           margin-top: -1em;
+  #           margin-bottom: 1em;
+  #         }
+  #       card:
+  #         type: horizontal-stack
+  #         cards:
+  #           - !include
+  #             - bar_graph_template.yaml
+  #             - name: "ACT"
+  #               variable: "sensor.covid_19_esria_aus_cases"
+  #               entity: "sensor.covid_19_esria_act"
+
   - type: custom:stack-in-card
     cards:
       - type: markdown
@@ -28,7 +60,7 @@ cards:
         card:
           type: horizontal-stack
           cards:
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -37,14 +69,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_act
                 name: ACT
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -76,7 +108,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -85,14 +117,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_nsw
                 name: NSW
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -124,7 +156,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -133,14 +165,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_nt
                 name: NT
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -172,7 +204,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -181,14 +213,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_qld
                 name: QLD
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -220,7 +252,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -229,14 +261,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_sa
                 name: SA
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -268,7 +300,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -277,14 +309,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_tas
                 name: TAS
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -316,7 +348,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -325,14 +357,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_vic
                 name: VIC
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -364,7 +396,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_cases'].state
               entities:
@@ -373,14 +405,14 @@ cards:
                 type: custom:bar-card
                 entity: sensor.covid_19_esria_wa
                 name: WA
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -438,7 +470,7 @@ cards:
         card:
           type: horizontal-stack
           cards:
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -448,14 +480,14 @@ cards:
                 entity: sensor.covid_19_esria_act
                 attribute: Tests
                 name: ACT
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -487,7 +519,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -497,14 +529,14 @@ cards:
                 entity: sensor.covid_19_esria_nsw
                 attribute: Tests
                 name: NSW
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -536,7 +568,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -546,14 +578,14 @@ cards:
                 entity: sensor.covid_19_esria_nt
                 name: NT
                 attribute: Tests
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -585,7 +617,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -595,14 +627,14 @@ cards:
                 entity: sensor.covid_19_esria_qld
                 attribute: Tests
                 name: QLD
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -634,7 +666,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -644,14 +676,14 @@ cards:
                 entity: sensor.covid_19_esria_sa
                 attribute: Tests
                 name: SA
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -683,7 +715,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -693,14 +725,14 @@ cards:
                 entity: sensor.covid_19_esria_tas
                 attribute: Tests
                 name: TAS
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -732,7 +764,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -742,14 +774,14 @@ cards:
                 entity: sensor.covid_19_esria_vic
                 attribute: Tests
                 name: VIC
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -781,7 +813,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_tests'].state
               entities:
@@ -791,14 +823,14 @@ cards:
                 entity: sensor.covid_19_esria_wa
                 attribute: Tests
                 name: WA
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -856,7 +888,7 @@ cards:
         card:
           type: horizontal-stack
           cards:
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -866,14 +898,14 @@ cards:
                 entity: sensor.covid_19_esria_act
                 attribute: Deaths
                 name: ACT
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -905,7 +937,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -915,14 +947,14 @@ cards:
                 entity: sensor.covid_19_esria_nsw
                 attribute: Deaths
                 name: NSW
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -954,7 +986,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -964,14 +996,14 @@ cards:
                 entity: sensor.covid_19_esria_nt
                 name: NT
                 attribute: Deaths
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -1003,7 +1035,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -1013,14 +1045,14 @@ cards:
                 entity: sensor.covid_19_esria_qld
                 attribute: Deaths
                 name: QLD
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -1052,7 +1084,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -1062,14 +1094,14 @@ cards:
                 entity: sensor.covid_19_esria_sa
                 attribute: Deaths
                 name: SA
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -1101,7 +1133,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -1111,14 +1143,14 @@ cards:
                 entity: sensor.covid_19_esria_tas
                 attribute: Deaths
                 name: TAS
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -1150,7 +1182,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -1160,14 +1192,14 @@ cards:
                 entity: sensor.covid_19_esria_vic
                 attribute: Deaths
                 name: VIC
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;
@@ -1199,7 +1231,7 @@ cards:
                     margin-left: auto;
                     margin-top: -1.5em;
                   }
-            - type: 'custom:config-template-card'
+            - type: "custom:config-template-card"
               variables:
                 - states['sensor.covid_19_esria_aus_deaths'].state
               entities:
@@ -1209,14 +1241,14 @@ cards:
                 entity: sensor.covid_19_esria_wa
                 attribute: Deaths
                 name: WA
-                color: 'var(--bar)'
-                max: '${vars[0]}'
+                color: "var(--bar)"
+                max: "${vars[0]}"
                 direction: up
                 positions:
                   icon: off
                 height: 18em
                 width: 1.8em
-                unit_of_measurement: ' '
+                unit_of_measurement: " "
                 style: |
                   :host {
                     --bar: #405914;

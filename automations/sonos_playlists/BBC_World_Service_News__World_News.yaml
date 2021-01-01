@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - BBC World Service News (World News)
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "BBC World Service News (World News)"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "BBC World Service News (World News)"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

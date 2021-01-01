@@ -12,3 +12,9 @@ sensor:
     sampling_size: 1000
     max_age:
       hours: 1
+  - platform: template
+    sensors:
+      lightning_countbolts_lasthour:
+        value_template: >
+          {{ states.geo_location |selectattr('attributes.source','eq','blitzortung') | list | length }}
+        unit_of_measurement: "↯"

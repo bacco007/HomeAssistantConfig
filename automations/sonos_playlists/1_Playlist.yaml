@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - 1-Playlist
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "1-Playlist"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "1-Playlist"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

@@ -16,6 +16,7 @@ ignore: |
   ._*.yaml
   esphome/
   notebooks/
+  blueprints/
 rules:
   braces:
     level: error

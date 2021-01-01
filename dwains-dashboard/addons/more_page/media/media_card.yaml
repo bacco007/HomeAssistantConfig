@@ -5,11 +5,17 @@ show_state: true
 show_label: true
 show_name: true
 show_icon: true
-name: '[[[ return entity.attributes.name ]]]'
-entity_picture: '[[[ return entity.attributes.poster ]]]'
+name: "[[[ return entity.attributes.name ]]]"
+entity_picture: "[[[ return entity.attributes.poster ]]]"
 show_entity_picture: true
-entity: {{ entity }}
+entity: { { entity } }
 layout: vertical
+tap_action:
+  action: none
+hold_action:
+  action: none
+double_tap_action:
+  action: none
 custom_fields:
   date: >
     [[[ return entity.attributes.date ]]]

@@ -1,9 +1,9 @@
 # dwains_theme
 
 type: custom:button-card
-name: {{ name }}
-icon: {{ icon }}
-label: {{ label }}
+name: { { name } }
+icon: { { icon } }
+label: { { label } }
 show_state: false
 show_label: true
 show_name: true

@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Absolute Radio 90s
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Absolute Radio 90s"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Absolute Radio 90s"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

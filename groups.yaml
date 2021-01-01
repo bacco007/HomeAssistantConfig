@@ -13,6 +13,12 @@ bedroom_switch:
   entities:
     - binary_sensor.switchmonusb_01_status
     - binary_sensor.switchmonusb_02_status
+google_home_speakers:
+  name: Google Home Speakers
+  entities:
+    - media_player.office_speaker
+    - media_player.shield_2
+    - media_player.bedroom_display
 office_media:
   name: Office - Media
   entities:

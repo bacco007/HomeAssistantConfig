@@ -6,7 +6,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
           cards:
             - type: vertical-stack
               cards:
@@ -22,14 +22,14 @@
                     {{ (data | fromjson)['status']}}
                 - !include
                   - ../../1_Templates/button_link.yaml
-                  - name: 'Synology DSM Console'
-                    icon: 'mdi:nas'
+                  - name: "Synology DSM Console"
+                    icon: "mdi:nas"
                     url: http://192.168.1.100:5000
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          item_classes: "col-xs-12 col-sm-9 col-md-10 col-lg-10"
           cards:
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -129,7 +129,7 @@
                     }
 
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -272,7 +272,8 @@
         fill: fade
 
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  padding: true
   cards:
     - type: vertical-stack
       cards:
@@ -304,6 +305,8 @@
           filter:
             include:
               - { entity_id: sensor.thecube2_cpu* }
+    - type: vertical-stack
+      cards:
         - type: custom:auto-entities
           card:
             type: entities
@@ -332,6 +335,8 @@
           filter:
             include:
               - { entity_id: sensor.thecube2_memory* }
+    - type: vertical-stack
+      cards:
         - type: custom:auto-entities
           card:
             type: entities
@@ -391,6 +396,8 @@
             include:
               - { entity_id: sensor.thecube2_drive_1* }
               - { entity_id: binary_sensor.thecube2_drive_1* }
+    - type: vertical-stack
+      cards:
         - type: custom:auto-entities
           card:
             type: entities
@@ -420,6 +427,8 @@
             include:
               - { entity_id: sensor.thecube2_drive_2* }
               - { entity_id: binary_sensor.thecube2_drive_2* }
+    - type: vertical-stack
+      cards:
         - type: custom:auto-entities
           card:
             type: entities

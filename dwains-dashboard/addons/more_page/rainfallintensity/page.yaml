@@ -1,5 +1,132 @@
 # dwains_theme
 
+- type: custom:auto-entities
+  filter:
+    include:
+      - entity_id: sensor.weather_*_maxrain_lastyr
+        options:
+          type: custom:button-card
+          show_state: true
+          show_name: true
+          styles:
+            grid:
+              - grid-template-areas: '"i n" "i s"'
+              - grid-template-columns: 25% 75%
+              - grid-template-rows: min-content min-content
+            card:
+              - background-color: var(--dwains-theme-primary)
+              - border-radius: 0
+              - box-shadow: none
+            name:
+              - font-size: 15px
+              - font-weight: bold
+              - color: var(--dwains-theme-names)
+              - justify-self: start
+            state:
+              - justify-self: start
+              - font-size: 13px
+              - color: var(--dwains-theme-names)
+            label:
+              - padding-top: 0px
+              - padding-bottom: 0px
+              - font-size: 12px
+              - color: var(--dwains-theme-grey)
+              - justify-self: start
+            icon:
+              - color: var(--dwains-theme-accent)
+  sort:
+    method: name
+    ignore_case: true
+  card:
+    type: custom:dwains-flexbox-card
+    items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  # padding: true
+  cards:
+    - type: custom:flex-table-card
+      title: Rain History - Airport (Rolling)
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+          padding-bottom: 10px;
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        # font-family: { var(--primary-font-family);}
+        # font-weight: {400 !important;}
+      sort_by: sort
+      clickable: true
+      css:
+        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+      entities:
+        include:
+          - sensor.weather_bom_rain_*
+          - sensor.weather_bom_totalrain_*
+      columns:
+        - name: sort
+          attr: sort
+          hidden: true
+        - name: Name
+          prop: name
+        - name: When?
+          attr: countstring
+          align: center
+        - name: Avg
+          attr: average
+          align: right
+        - name: Max
+          attr: highest
+          align: right
+        - name: Total
+          prop: state
+          align: right
+
+    - type: custom:flex-table-card
+      title: Rain History - Home (Rolling)
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+          padding-bottom: 10px;
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        # font-family: { var(--primary-font-family);}
+        # font-weight: {400 !important;}
+      sort_by: sort
+      clickable: true
+      css:
+        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+      entities:
+        include:
+          - sensor.weather_home_rain_*
+          - sensor.weather_home_totalrain_*
+      columns:
+        - name: sort
+          attr: sort
+          hidden: true
+        - name: Name
+          prop: name
+        - name: When?
+          attr: countstring
+          align: center
+        - name: Avg
+          attr: average
+          align: right
+        - name: Max
+          attr: highest
+          align: right
+        - name: Total
+          prop: state
+          align: right
+
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
   cards:

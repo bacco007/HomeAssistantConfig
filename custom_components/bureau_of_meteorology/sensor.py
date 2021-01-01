@@ -3,6 +3,7 @@ import logging
 
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
+    ATTR_DATE,
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_TIMESTAMP,
@@ -13,6 +14,7 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 from .const import (ATTRIBUTION,
+                    COLLECTOR,
                     CONF_FORECASTS_BASENAME,
                     CONF_FORECASTS_CREATE,
                     CONF_FORECASTS_DAYS,
@@ -20,9 +22,8 @@ from .const import (ATTRIBUTION,
                     CONF_OBSERVATIONS_BASENAME,
                     CONF_OBSERVATIONS_CREATE,
                     CONF_OBSERVATIONS_MONITORED,
-                    DOMAIN,
-                    COLLECTOR,
                     COORDINATOR,
+                    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -176,19 +177,22 @@ class ForecastSensor(SensorBase):
         """Return the state attributes of the sensor."""
         attr = self.collector.daily_forecasts_data["metadata"]
         attr[ATTR_ATTRIBUTION] = ATTRIBUTION
+        attr[ATTR_DATE] = self.collector.daily_forecasts_data["data"][self.day]["date"]
         return attr
 
     @property
     def state(self):
         """Return the state of the sensor."""
         if self.day < len(self.collector.daily_forecasts_data["data"]):
+
             new_state = self.collector.daily_forecasts_data["data"][self.day][self.sensor_name]
-            if new_state is None:
-                return self.current_state
+            if type(new_state) == str and len(new_state) > 251:
+                    self.current_state = new_state[:251] + '...'
             else:
                 self.current_state = new_state
-                return (new_state[:251] + '...') if type(new_state) == str and len(
-                        new_state) > 251 else new_state
+
+            return self.current_state
+
         else:
             return None
 

@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Absolute Radio UK (AAC)
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Absolute Radio UK (AAC)"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Absolute Radio UK (AAC)"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

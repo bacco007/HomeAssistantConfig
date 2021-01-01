@@ -1,13 +1,12 @@
 ---
 platform: androidtv
 name: NVIDIA Shield
-device_class: androidtv
 host: 192.168.1.111
 adb_server_ip: 127.0.0.1
 adb_server_port: 5037
 adbkey: "/config/.androidkeys/adbkey"
 get_sources: true
-exclude_unnamed_apps: true
+exclude_unnamed_apps: false
 apps:
   "au.com.ninenow.ctv": "9Now"
   "au.com.kayosports.tv": "Kayo Sports"
@@ -23,6 +22,7 @@ apps:
   "tunein.player": "TuneIn"
   "com.silicondust.view": "HD HomeRun"
   "com.plexapp.android": "Plex"
+  "au.com.streamotion.ares.tv": "Binge"
 state_detection_rules:
   "foxtelnow.box.launcher":
     - "idle"

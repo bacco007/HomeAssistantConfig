@@ -42,7 +42,6 @@ sensor:
   ###
   - platform: uptime
     name: HA Uptime Hours
-    unit_of_measurement: hours
   ###
   ## HA Current Beta Version
   ###

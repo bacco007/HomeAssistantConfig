@@ -4,17 +4,32 @@
   cards:
     - type: custom:mini-graph-card
       entities:
-        - entity: sensor.lightning_counter_lasthour
-      name: Lightning
+        - entity: sensor.blitzortung_lightning_counter
+      name: Count
       # height: 50
       line_color: "var(--dwains-theme-accent)"
       line_width: 2
       font_size: 70
-      hours_to_show: 48
-      points_per_hour: 1
+      hours_to_show: 12
+      points_per_hour: 6
       align_state: center
       show:
-        extrema: true
+        graph: bar
+        # extrema: true
+        fill: true
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.lightning_distance_lasthour
+      name: Distance
+      # height: 50
+      line_color: "var(--dwains-theme-accent)"
+      line_width: 2
+      font_size: 70
+      hours_to_show: 12
+      points_per_hour: 6
+      align_state: center
+      show:
+        # extrema: true
         fill: true
     - type: custom:compass-card
       name: Last Lightning Strike
@@ -49,9 +64,8 @@
           margin-left: 2px !important;
         }
       entities:
-        - entity: sensor.lightning_counter_lasthour
+        - entity: sensor.blitzortung_lightning_counter
           name: Lightning Counter
-          icon: mdi:flash-circle
         - entity: sensor.lightning_distance_lasthour
           name: Lightning Distance
           type: custom:multiple-entity-row

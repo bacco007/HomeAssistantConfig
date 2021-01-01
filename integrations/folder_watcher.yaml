@@ -1,0 +1,4 @@
+---
+# https://www.home-assistant.io/integrations/folder_watcher/
+folder_watcher:
+  - folder: /config/blueprints

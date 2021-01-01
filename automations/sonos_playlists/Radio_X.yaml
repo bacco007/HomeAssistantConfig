@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Radio X
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Radio X"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Radio X"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

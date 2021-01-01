@@ -20,6 +20,9 @@ more_page:
     - name: Folding@Home
       icon: "mdi:state-machine"
       path: "dwains-dashboard/addons/more_page/foldingathome/page.yaml"
+    - name: Google Home
+      icon: "mdi:google-home"
+      path: "dwains-dashboard/addons/more_page/googlehome/page.yaml"
     - name: Lightning
       icon: mdi:flash-alert
       path: "dwains-dashboard/addons/more_page/lightning/page.yaml"
@@ -89,7 +92,7 @@ more_page:
     - name: Pi-Hole
       icon: mdi:pi-hole
       path: "dwains-dashboard/addons/more_page/pi-hole/page.yaml"
-    - name: Rainfall Intensity
+    - name: Rainfall
       icon: mdi:water
       path: "dwains-dashboard/addons/more_page/rainfallintensity/page.yaml"
     - name: Solar

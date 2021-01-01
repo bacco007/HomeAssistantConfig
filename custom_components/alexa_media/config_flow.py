@@ -43,6 +43,7 @@ from .const import (
     CONF_INCLUDE_DEVICES,
     CONF_QUEUE_DELAY,
     CONF_SECURITYCODE,
+    CONF_OAUTH,
     CONF_OTPSECRET,
     CONF_TOTP_REGISTER,
     DATA_ALEXAMEDIA,
@@ -169,10 +170,10 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
 
         if (
             not self.config.get("reauth")
-            and f"{user_input[CONF_EMAIL]} - {user_input[CONF_URL]}"
+            and f"{self.config[CONF_EMAIL]} - {self.config[CONF_URL]}"
             in configured_instances(self.hass)
             and not self.hass.data[DATA_ALEXAMEDIA]["config_flows"].get(
-                f"{user_input[CONF_EMAIL]} - {user_input[CONF_URL]}"
+                f"{self.config[CONF_EMAIL]} - {self.config[CONF_URL]}"
             )
         ):
             _LOGGER.debug("Existing account found")
@@ -194,12 +195,13 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
             if not self.login:
                 _LOGGER.debug("Creating new login")
                 self.login = AlexaLogin(
-                    self.config[CONF_URL],
-                    self.config[CONF_EMAIL],
-                    self.config[CONF_PASSWORD],
-                    self.hass.config.path,
-                    self.config[CONF_DEBUG],
-                    self.config.get(CONF_OTPSECRET, ""),
+                    url=self.config[CONF_URL],
+                    email=self.config[CONF_EMAIL],
+                    password=self.config[CONF_PASSWORD],
+                    outputpath=self.hass.config.path,
+                    debug=self.config[CONF_DEBUG],
+                    otp_secret=self.config.get(CONF_OTPSECRET, ""),
+                    uuid=await self.hass.helpers.instance_id.async_get(),
                 )
             else:
                 _LOGGER.debug("Using existing login")
@@ -359,6 +361,11 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                 self.config.pop("reauth")
             if self.config.get(CONF_SECURITYCODE):
                 self.config.pop(CONF_SECURITYCODE)
+            self.config[CONF_OAUTH] = {
+                "access_token": login.access_token,
+                "refresh_token": login.refresh_token,
+                "expires_in": login.expires_in,
+            }
             if existing_entry:
                 self.hass.config_entries.async_update_entry(
                     existing_entry, data=self.config

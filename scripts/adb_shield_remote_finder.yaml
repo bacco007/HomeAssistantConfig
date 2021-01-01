@@ -1,0 +1,9 @@
+---
+alias: ADB - Shield - Remote Finder
+icon: mdi:target
+mode: single
+sequence:
+  - data:
+      command: "am start -a android.intent.action.VIEW -d -n com.nvidia.remotelocator/.ShieldRemoteLocatorActivity"
+      entity_id: media_player.nvidia_shield
+    service: androidtv.adb_command

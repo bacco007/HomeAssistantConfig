@@ -1,0 +1,8 @@
+---
+# https://www.home-assistant.io/integrations/http/
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.1.0/24
+  server_port: !secret httpserver_port
+  ip_ban_enabled: true
