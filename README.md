@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, January 1st 2021_
+_Stats as at 05:00, Saturday, January 2nd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2020.12.1 | 276     | 2762         | 2295 | 53 |
+| 2020.12.1 | 275     | 2749         | 2292 | 53 |
 
 Type | Qty
 -- | --
@@ -85,7 +85,7 @@ Alert | 0
 Automation | 53
 Binary Sensor | 71
 Camera | 1
-Device Tracker | 96
+Device Tracker | 99
 Group | 8
 Input Boolean | 0
 Input Datetime | 0
@@ -94,8 +94,8 @@ Light | 4
 Media Player | 34
 Person | 1
 Scene | 1
-Script | 10
-Sensor | 2295
+Script | 2
+Sensor | 2292
 Sun | 1
 Switch | 118
 Weather | 3
@@ -166,7 +166,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [config](https://www.home-assistant.io/components/config) |
 | [configurator](https://www.home-assistant.io/components/configurator) |
-| [conversation](https://www.home-assistant.io/components/conversation) |
 | [coronavirus](https://www.home-assistant.io/components/coronavirus) |
 | [counter](https://www.home-assistant.io/components/counter) |
 | [cover](https://www.home-assistant.io/components/cover) |

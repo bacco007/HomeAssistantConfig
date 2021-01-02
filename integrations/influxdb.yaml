@@ -9,6 +9,20 @@ influxdb:
   max_retries: 5
   default_measurement: state
   exclude:
+    domains:
+      - anniversaries
+      - automation
+      - calendar
+      - camera
+      - device_tracker
+      - group
+      - geo_location
+      - light
+      - media_player
+      - persistent_notification
+      - switch
+      - weblink
+      - zone
     entities:
       - sun.sun
       - sensor.plex_tautulli_history
