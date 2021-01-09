@@ -1,6 +1,9 @@
 ---
 id: logs_critical_counter_increment
 alias: Logs - Increment Critical Counter
+mode: queued
+max: 100
+max_exceeded: silent
 trigger:
   platform: event
   event_type: system_log_event

@@ -63,6 +63,8 @@
       clickable: true
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
       entities:
         include:
           - sensor.weather_bom_rain_*
@@ -104,6 +106,8 @@
       clickable: true
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
       entities:
         include:
           - sensor.weather_home_rain_*
@@ -148,6 +152,8 @@
       clickable: true
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
       entities:
         include: sensor.aep_*_last
       columns:
@@ -186,6 +192,8 @@
       clickable: true
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
       entities:
         include: sensor.aep_*_weekly
       columns:
@@ -225,6 +233,8 @@
       clickable: true
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
       entities:
         include: sensor.aep_*_yearly
       columns:

@@ -1,5 +1,8 @@
 ---
 alias: HACS - Updates Available
+mode: queued
+max: 100
+max_exceeded: silent
 trigger:
   - platform: state
     entity_id: sensor.hacs

@@ -19,6 +19,8 @@ cards:
     clickable: true
     css:
       table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+      "tbody tr:nth-child(even)": "background-color: none !important;"
+      "tbody tr:nth-child(odd)": "background-color: none !important;"
     entities:
       include: sensor.covid_19_esria_*
       exclude:
@@ -27,6 +29,7 @@ cards:
     columns:
       - name: Name
         attr: NAME
+        align: center
       - name: Last Update
         attr: Last_Updated
         modify: new Date(x).toDateString()
@@ -34,9 +37,12 @@ cards:
       - name: Cases
         attr: Cases
         align: right
+        modify: parseFloat(x)
       - name: Deaths
         attr: Deaths
         align: right
+        modify: parseFloat(x)
       - name: Tests
         attr: Tests
         align: right
+        modify: parseFloat(x)

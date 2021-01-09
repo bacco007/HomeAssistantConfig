@@ -2,9 +2,9 @@ delete from states where created <= datetime('now', '-7 days');
 
 delete from events where created <= datetime('now', '-2 days');
 
-delete from states where created < curdate()-3;
+delete from states where created < curdate()-7;
 
-delete from events where created < curdate()-3;
+delete from events where created < curdate()-7;
 
 delete from events where event_id not in (select event_id from states);
  

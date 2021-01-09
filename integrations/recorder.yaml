@@ -14,6 +14,7 @@ recorder:
       - sensor.plex_tautulli_toptv
       - sensor.plex_tautulli_topusers
       - sensor.tbsmarthome_overhead_satellites
+      - weather.dark_sky
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
@@ -35,6 +36,9 @@ recorder:
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
+      - sensor.load*
+      - sensor.processor_use*
+      - sensor.memory_*
     domains:
       - anniversaries
       - automation

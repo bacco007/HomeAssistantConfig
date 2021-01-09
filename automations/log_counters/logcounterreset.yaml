@@ -1,6 +1,9 @@
 ---
 id: logs_counter_reset
 alias: Logs - Counters reset on start
+mode: queued
+max: 100
+max_exceeded: silent
 trigger:
   platform: homeassistant
   event: start
