@@ -1,4 +1,7 @@
 ---
+ignored_entities:
+  entities:
+    - binary_sensor.updater
 bedroom_media:
   name: Bedroom - Media
   entities:

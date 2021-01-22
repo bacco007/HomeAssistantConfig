@@ -1,0 +1,25 @@
+---
+id: startup_unavailable_entity_notification
+alias: "Startup Unavailable Entity Notification"
+description: "Create persistent notification if there are unavailable entities on or after startup."
+mode: restart
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: sensor.unavailable_entities
+condition:
+  - condition: numeric_state
+    entity_id: sensor.unavailable_entities
+    above: 0
+action:
+  # delay to allow sensors to come online, prevent false notifications
+  - delay: "00:05:00"
+  - condition: numeric_state
+    entity_id: sensor.unavailable_entities
+    above: 0
+  - service: persistent_notification.create
+    data_template:
+      title: "Unavailable Entities"
+      message: "{{ state_attr('sensor.unavailable_entities','entities').split(', ') | join('\n') }}"
+      notification_id: "unavailable_entities"

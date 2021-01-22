@@ -59,54 +59,36 @@
     - type: custom:dwains-flexbox-card
       item_classes: "col-xs-12 col-sm-12 col-md-12 col-lg-12"
       cards:
-        - type: custom:auto-entities
-          filter:
-            exclude:
-              - state: "None"
-            include:
-              - entity_id: sensor.lovelace_radarr_upcoming_*
-                options:
-                  type: custom:button-card
-                  show_state: true
-                  show_label: true
-                  show_name: true
-                  show_icon: true
-                  name: "[[[ return entity.attributes.name ]]]"
-                  entity_picture: "[[[ return entity.attributes.poster ]]]"
-                  show_entity_picture: true
-                  # entity: this.entity_id
-                  layout: vertical
-                  custom_fields:
-                    date: >
-                      [[[ return entity.attributes.date ]]]
-                  styles:
-                    grid:
-                      - grid-template-areas: '"i" "n" "date"'
-                      - grid-template-columns: 100%
-                      - grid-template-rows: 1fr min-content min-content
-                    card:
-                      - background-color: var(--dwains-theme-primary)
-                      - border-radius: 0
-                      - box-shadow: none
-                    name:
-                      - font-size: 15px
-                      - font-weight: bold
-                      - color: var(--dwains-theme-names)
-                    custom_fields:
-                      episode:
-                        - font-size: 13px
-                        - color: var(--dwains-theme-names)
-                      date:
-                        - font-size: 13px
-                        - color: var(--dwains-theme-names)
-                    icon:
-                      - color: var(--dwains-theme-accent)
-          sort:
-            method: name
-            ignore_case: true
-          card:
-            type: custom:dwains-flexbox-card
-            items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
+        - type: custom:flex-table-card
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          clickable: false
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          entities:
+            include: sensor.radarr_upcoming_media
+          max_rows: 12
+          strict: true
+          columns:
+            - { data: data, modify: x.title, name: "Name" }
+            - {
+                data: data,
+                modify: new Date(x.airdate).toLocaleDateString('en-GB'),
+                name: "Date",
+                align: "center",
+              }
 
 ############
 ### PLEX ###
@@ -178,132 +160,72 @@
     - type: custom:dwains-flexbox-card
       item_classes: "col-xs-12 col-sm-12 col-md-12 col-lg-12"
       cards:
-        - type: custom:auto-entities
-          filter:
-            exclude:
-              - entity_id: sensor.lovelace_plex_recent_movies_*
-            include:
-              - entity_id: sensor.lovelace_plex_recent_tv_*
-                attributes:
-                  name: "! "
-                options:
-                  type: custom:button-card
-                  show_state: true
-                  show_label: true
-                  show_name: true
-                  show_icon: true
-                  name: "[[[ return entity.attributes.name ]]]"
-                  entity_picture: >
-                    [[[
-                      if (entity.attributes.poster == '')
-                        return 'https://via.placeholder.com/340x500?text=No%20Poster%20Available';
-                      else
-                        return entity.attributes.poster;
-                    ]]]
-                  show_entity_picture: true
-                  # entity: this.entity_id
-                  layout: vertical
-                  custom_fields:
-                    date: >
-                      [[[ return entity.attributes.date ]]]
-                    episode: >
-                      [[[ return entity.attributes.episode + ' (' + entity.attributes.number + ')' ]]]
-                  styles:
-                    grid:
-                      - grid-template-areas: '"i" "n" "date" "episode"'
-                      - grid-template-columns: 100%
-                      - grid-template-rows: 1fr min-content min-content min-content
-                    card:
-                      - background-color: var(--dwains-theme-primary)
-                      - opacity: >
-                          [[[
-                            if (entity.attributes.watched == "False") return '0.5';
-                            else return '1';
-                          ]]]
-                      - border-radius: 0
-                      - box-shadow: none
-                    name:
-                      - font-size: 15px
-                      - font-weight: bold
-                      - color: var(--dwains-theme-names)
-                    custom_fields:
-                      episode:
-                        - font-size: 13px
-                        - color: var(--dwains-theme-names)
-                      date:
-                        - font-size: 13px
-                        - color: var(--dwains-theme-names)
-                    icon:
-                      - color: var(--dwains-theme-accent)
-          sort:
-            method: name
-            ignore_case: true
-          card:
-            type: custom:dwains-flexbox-card
-            items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
+        - type: custom:flex-table-card
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          clickable: false
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          entities:
+            include: sensor.plex_recently_added
+          max_rows: 12
+          strict: true
+          columns:
+            - { data: data, modify: x.title, name: "Name" }
+            - { data: data, modify: x.number, name: "No" }
+            - { data: data, modify: x.episode, name: "Ep" }
+            - {
+                data: data,
+                modify: new Date(x.airdate).toLocaleDateString('en-GB'),
+                name: "Date",
+                align: "center",
+              }
 
     - type: custom:dwains-flexbox-card
       item_classes: "col-xs-12 col-sm-12 col-md-12 col-lg-12"
       cards:
-        - type: custom:auto-entities
-          filter:
-            include:
-              - entity_id: sensor.lovelace_plex_recent_movies_*
-                attributes:
-                  name: "! "
-                options:
-                  type: custom:button-card
-                  show_state: true
-                  show_label: true
-                  show_name: true
-                  show_icon: true
-                  name: "[[[ return entity.attributes.name ]]]"
-                  entity_picture: >
-                    [[[
-                      if (entity.attributes.poster == '')
-                        return 'https://via.placeholder.com/340x500?text=No%20Poster%20Available';
-                      else
-                        return entity.attributes.poster;
-                    ]]]
-                  show_entity_picture: true
-                  # entity: this.entity_id
-                  layout: vertical
-                  custom_fields:
-                    date: >
-                      [[[ return entity.attributes.date ]]]
-                  styles:
-                    grid:
-                      - grid-template-areas: '"i" "n" "date"'
-                      - grid-template-columns: 100%
-                      - grid-template-rows: 1fr min-content min-content min-content
-                    card:
-                      - background-color: var(--dwains-theme-primary)
-                      - opacity: >
-                          [[[
-                            if (entity.attributes.watched == "False") return '0.5';
-                            else return '1';
-                          ]]]
-                      - border-radius: 0
-                      - box-shadow: none
-                    name:
-                      - font-size: 15px
-                      - font-weight: bold
-                      - color: var(--dwains-theme-names)
-                    custom_fields:
-                      episode:
-                        - font-size: 13px
-                        - color: var(--dwains-theme-names)
-                      date:
-                        - font-size: 13px
-                        - color: var(--dwains-theme-names)
-                    icon:
-                      - color: var(--dwains-theme-accent)
-          sort:
-            method: name
-            ignore_case: true
-          card:
-            type: custom:dwains-flexbox-card
-            items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-2"
+        - type: custom:flex-table-card
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          clickable: false
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          entities:
+            include: sensor.plex_recently_added_movies
+          max_rows: 12
+          strict: true
+          columns:
+            - { data: data, modify: x.title, name: "Name" }
+            - {
+                data: data,
+                modify: new Date(x.airdate).toLocaleDateString('en-GB'),
+                name: "Date",
+                align: "center",
+              }
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
@@ -314,7 +236,13 @@
         - !include partial_plexhistory.yaml
     - type: vertical-stack
       cards:
+        - !include partial_plextoptv_30days.yaml
+    - type: vertical-stack
+      cards:
         - !include partial_plextoptv.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextopmovies.yaml
     - type: vertical-stack
       cards:
         - !include partial_plextopusers.yaml

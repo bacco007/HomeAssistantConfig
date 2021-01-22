@@ -112,6 +112,9 @@ class MyJDSensor(Entity):
             # get current speed information
             value = device.downloadcontroller.get_speed_in_bytes()
 
+            # get if there are updates available
+            updates = device.update.is_update_available()
+
             # set values
             self._attributes['name'] = device.name
             self._attributes['device_id'] = device.device_id
@@ -119,6 +122,7 @@ class MyJDSensor(Entity):
             self._attributes['status'] = device.downloadcontroller.get_current_state()
             self._attributes['download_list'] = downloadList
             self._attributes['current_downloads'] = currentDownloads
+            self._attributes['updates'] = updates
 
         except myjdapi.myjdapi.MYJDException as e:
             e = str(e).strip()

@@ -45,6 +45,22 @@ sensor:
     resource: !secret plex_tautulli_toptv_url
 
   - platform: rest
+    name: plex_tautulli_toptv_30days
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - rows
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_toptv_30days_url
+
+  - platform: rest
+    name: plex_tautulli_topmovies
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - rows
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_topmovies_url
+
+  - platform: rest
     name: plex_tautulli_topusers
     json_attributes_path: "$.response.data"
     json_attributes:

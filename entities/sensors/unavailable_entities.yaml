@@ -1,0 +1,14 @@
+---
+platform: template
+sensors:
+  unavailable_entities:
+    friendly_name: Unavailable Entities
+    unit_of_measurement: entities
+    icon_template: "{{ 'mdi:check-circle' if is_state('sensor.unavailable_entities','0') else 'mdi:alert-circle' }}"
+    value_template: >
+      {{ states|selectattr('state','in',['unavailable','unknown','none'])|rejectattr('domain','eq','group')
+        |rejectattr('entity_id','in',state_attr('group.ignored_entities','entity_id'))|list|count }}
+    attribute_templates:
+      entities: >
+        {{ states|selectattr('state','in',['unavailable','unknown','none'])|rejectattr('domain','eq','group')
+          |rejectattr('entity_id','in',state_attr('group.ignored_entities','entity_id'))|map(attribute='entity_id')|join(',') }}

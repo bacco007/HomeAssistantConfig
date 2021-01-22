@@ -1,0 +1,4 @@
+---
+# https://github.com/custom-components/authenticated
+platform: authenticated
+enable_notification: true

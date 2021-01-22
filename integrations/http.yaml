@@ -3,6 +3,7 @@
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - 192.168.1.0/24
+    - 192.168.1.1
+    - 192.168.1.20
   server_port: !secret httpserver_port
   ip_ban_enabled: true

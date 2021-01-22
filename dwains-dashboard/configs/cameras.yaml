@@ -2,6 +2,11 @@
 
 cameras:
   entities:
-    - camera.namoi128km
-    - camera.moree256km
-    - camera.bom_satellite
+    - camera.camera_1_last_event
+    - camera.camera_2_last_event
+    - camera.camera_3_last_event
+    - camera.camera_4_last_event
+    - camera.camera_1
+    - camera.camera_2
+    - camera.camera_3
+    - camera.camera_4

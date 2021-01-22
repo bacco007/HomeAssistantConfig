@@ -25,7 +25,7 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - entity: sensor.supervisor_installed
+      - entity: sensor.updater_supervisor
         name: Supervisor Add-Ons to Update
         icon: mdi:home-assistant
         style: |
@@ -43,11 +43,11 @@ cards:
           navigation_path: /hassio/dashboard
   - type: conditional
     conditions:
-      - entity: sensor.supervisor_installed
+      - entity: sensor.updater_supervisor
         state_not: "0"
     card:
       type: custom:list-card
-      entity: sensor.supervisor_installed
+      entity: sensor.updater_supervisor
       columns:
         - { field: name, title: "Addon", style: [text-align: left] }
         - { field: version, title: "Installed", style: [text-align: center] }

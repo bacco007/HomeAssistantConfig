@@ -317,14 +317,14 @@ sensor:
         friendly_name: Formula One
         entity_picture_template: /local/sportlogos/f1.png
         value_template: >-
-          {% set op = state_attr('calendar.f1', 'message') %}
+          {% set op = state_attr('calendar.fia_formula_1_world_championship', 'message') | replace('F1 - ','') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
-            {% if is_state('calendar.f1', 'on') %}
+            {% if is_state('calendar.fia_formula_1_world_championship', 'on') %}
               On Now!
             {% else %}
-              {% set st = state_attr('calendar.f1', 'start_time') %}
+              {% set st = state_attr('calendar.fia_formula_1_world_championship', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {% if diff > 6 %}
@@ -337,25 +337,25 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.f1', 'message') %}
-            {% set st = state_attr('calendar.f1', 'start_time') %}
+            {% set op = state_attr('calendar.fia_formula_1_world_championship', 'message') | replace('F1 - ','')  %}
+            {% set st = state_attr('calendar.fia_formula_1_world_championship', 'start_time') %}
             {% if st != None %}
               {{ op }}
             {% else %}
               No Race Scheduled
             {% endif %}
           nextlocation: >-
-            {% set op = state_attr('calendar.f1', 'location') %}
+            {% set op = state_attr('calendar.fia_formula_1_world_championship', 'location') %}
             {% if op != None %}
               {{ op }}
             {% else %}
               No Location Noted
             {% endif %}
           sortorder: >-
-            {% if is_state('calendar.f1', 'on') %}
+            {% if is_state('calendar.fia_formula_1_world_championship', 'on') %}
               0
             {% else %}
-              {% set st = state_attr('calendar.f1', 'start_time') %}
+              {% set st = state_attr('calendar.fia_formula_1_world_championship', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}
@@ -368,7 +368,7 @@ sensor:
         friendly_name: FIA WEC
         entity_picture_template: /local/sportlogos/wec.png
         value_template: >-
-          {% set op = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'message') | replace('FIA WEC ', '') %}
+          {% set op = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'message') | replace('FIA WEC - ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
@@ -388,7 +388,7 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'message') | replace('FIA WEC ', '') %}
+            {% set op = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'message') | replace('FIA WEC - ', '') %}
             {% set st = state_attr('calendar.lm_wec_fia_world_endurance_championship', 'start_time') %}
             {% if st != None %}
               {{ op }}
@@ -879,7 +879,7 @@ sensor:
         friendly_name: IMSA SportsCar Championship
         entity_picture_template: /local/sportlogos/imsasc.png
         value_template: >-
-          {% set op = state_attr('calendar.imsa_weathertech_sportscar_championship', 'message') | replace('IMSA WeatherTech Championship ', '') %}
+          {% set op = state_attr('calendar.imsa_weathertech_sportscar_championship', 'message') | replace('IMSA WeatherTech Championship - ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
@@ -899,7 +899,7 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.imsa_weathertech_sportscar_championship', 'message') | replace('IMSA WeatherTech Championship ', '') %}
+            {% set op = state_attr('calendar.imsa_weathertech_sportscar_championship', 'message') | replace('IMSA WeatherTech Championship - ', '') %}
             {% set st = state_attr('calendar.imsa_weathertech_sportscar_championship', 'start_time') %}
             {% if st != None %}
               {{ op }}
@@ -929,7 +929,7 @@ sensor:
         friendly_name: MotoGP
         entity_picture_template: /local/sportlogos/motogp.png
         value_template: >-
-          {% set op = state_attr('calendar.motogp', 'message') | replace('MotoGP ', '') %}
+          {% set op = state_attr('calendar.motogp', 'message') | replace('MotoGP - ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
@@ -949,7 +949,7 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.motogp', 'message') | replace('MotoGP ', '') %}
+            {% set op = state_attr('calendar.motogp', 'message') | replace('MotoGP - ', '') %}
             {% set st = state_attr('calendar.motogp', 'start_time') %}
             {% if st != None %}
               {{ op }}

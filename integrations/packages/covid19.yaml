@@ -6,6 +6,17 @@ sensor:
     name: Tamworth
 
   - platform: rest
+    resource: https://api.coronavirus.data.gov.uk/v1/data?filters=areaType=overview&structure={%22date%22:%22date%22,%22PeopleVaccinatedFirstDoseByPublishDate%22:%22cumPeopleVaccinatedFirstDoseByPublishDate%22,%22PeopleVaccinatedSecondDoseByPublishDate%22:%22cumPeopleVaccinatedSecondDoseByPublishDate%22}
+    name: "COVID-19 UK Vaccinations"
+    scan_interval: 3600
+    json_attributes_path: "$.[0]"
+    json_attributes:
+      - date
+      - PeopleVaccinatedFirstDoseByPublishDate
+      - PeopleVaccinatedSecondDoseByPublishDate
+    value_template: "{{ value_json['data'][0]['PeopleVaccinatedFirstDoseByPublishDate'] }}"
+
+  - platform: rest
     timeout: 60
     scan_interval: 3600
     method: GET

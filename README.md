@@ -72,30 +72,30 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, January 9th 2021_
+_Stats as at 05:00, Saturday, January 23rd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.1.0 | 262     | 2469         | 2047 | 53 |
+| 2021.1.4 | 266     | 2282         | 1855 | 51 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 53
-Binary Sensor | 75
-Camera | 1
-Device Tracker | 105
-Group | 8
+Automation | 51
+Binary Sensor | 86
+Camera | 5
+Device Tracker | 113
+Group | 9
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
-Light | 4
-Media Player | 27
+Light | 3
+Media Player | 11
 Person | 1
 Scene | 1
 Script | 2
-Sensor | 2047
+Sensor | 1855
 Sun | 1
 Switch | 80
 Weather | 3
@@ -128,6 +128,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
+| [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
@@ -137,7 +138,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
-| [binary_sensor.threshold](https://www.home-assistant.io/components/binary_sensor.threshold) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
@@ -151,7 +151,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [calendar.google](https://www.home-assistant.io/components/calendar.google) |
 | [camera](https://www.home-assistant.io/components/camera) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
+| [camera.eufy_security](https://www.home-assistant.io/components/camera.eufy_security) |
 | [camera.ha_skyfield](https://www.home-assistant.io/components/camera.ha_skyfield) |
+| [camera.mqtt](https://www.home-assistant.io/components/camera.mqtt) |
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
@@ -174,6 +176,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
 | [dyson](https://www.home-assistant.io/components/dyson) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
+| [eufy_security](https://www.home-assistant.io/components/eufy_security) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.deconz](https://www.home-assistant.io/components/fan.deconz) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
@@ -225,6 +228,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
 | [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
 | [media_player.xbox](https://www.home-assistant.io/components/media_player.xbox) |
+| [media_source](https://www.home-assistant.io/components/media_source) |
 | [met](https://www.home-assistant.io/components/met) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
@@ -261,6 +265,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
+| [sensor.authenticated](https://www.home-assistant.io/components/sensor.authenticated) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
@@ -283,7 +288,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time) |
-| [sensor.homekit_controller](https://www.home-assistant.io/components/sensor.homekit_controller) |
 | [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk) |
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
 | [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
@@ -386,6 +390,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/bom)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
+- [Authenticated](https://github.com/custom-components/authenticated)
 - [Average](https://github.com/Limych/ha-average)
 - [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
 - [Breaking Changes](https://github.com/custom-components/breaking_changes)
@@ -396,6 +401,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [COVID-19 NSW Health Tests]()
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
 - [Dwains Dashboard](https://dwainscheeren.github.io/dwains-lovelace-dashboard/)
+- [Eufy Security](https://www.home-assistant.io/integrations/eufy_security)
 - [Favicon changer]()
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
 - [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
@@ -405,7 +411,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS](https://hacs.xyz/docs/configuration/start)
 - [IAQ UK](https://github.com/Limych/ha-iaquk)
-- [iCloud3 Device Tracker](https://gcobb321.github.io/icloud3_dev/#/)
+- [iCloud3 Device Tracker](https://gcobb321.github.io/icloud3/#/)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [MyJDownloader](https://www.home-assistant.io/integrations/myjdownloader)
 - [Node-RED](https://github.com/zachowj/node-red)
@@ -435,20 +441,23 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- | ---|
 | [Amber Electric](https://github.com/troykelly/hacs-amberelectric) | Unofficial Amber Electric integration for Home Assistant |
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) | Anniversary Countdown Sensor for Home Assistant |
+| [Authenticated](https://github.com/custom-components/authenticated) | A platform which allows you to get information about sucessfull logins to Home Assistant. |
 | [Average Sensor](https://github.com/Limych/ha-average) | Average Sensor for Home Assistant |
 | [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung) | Custom Component for fetching lightning data from blitzortung.org |
 | [Breaking Changes](https://github.com/custom-components/breaking_changes) | Component to show potential breaking_changes in the current published version based on your loaded components |
 | [Browser Mod](https://github.com/thomasloven/hass-browser_mod) | 🔹 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player |
 | [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology) | Custom component for retrieving weather information from the Bureau of Meteorology. |
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |
+| [Dwains Dashboard](https://github.com/dwainscheeren/dwains-lovelace-dashboard) | An auto generating Home Assistant Lovelace UI dashboard for desktop, tablet and mobile by Dwains for desktop, tablet, mobile |
 | [Feedparser](https://github.com/custom-components/feedparser) | 📰 RSS Feed Integration |
 | [Folding@Homecontrol](https://github.com/eifinger/hass-foldingathomecontrol) | Homeassistant integration for FoldingAtHomeControl |
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
+| [Ha Eufy Security](https://github.com/nonsleepr/ha-eufy-security) | Custom integration of Home Assistant with EufySecurity |
 | [Ha Sun2](https://github.com/pnbruckner/ha-sun2) | Home Assistant Sun2 Sensor |
 | [HACS](https://github.com/hacs/integration) | HACS gives you a powerful UI to handle downloads of all your custom needs. |
 | [Hass Amber Electric](https://github.com/lewisbenge/hass-amber-electric) | Home Assistant Component to pull the latest energy prices from Amber Electric |
 | [Hass Favicon](https://github.com/thomasloven/hass-favicon) | 🔹 Change the favicon of your Home Assistant instance |
-| [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 is a device_tracker custom_component for iPhones, iPads & iWatches that monitors zone & location events triggered by the HA iOS Companion App |
+| [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 - An advanced device_tracker custom_component for iPhones, iPads, etc. It monitors zone & location updates triggered by the HA iOS App and supports Apple 2fa verification. |
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) | Indoor Air Quality Sensor Component for Home Assistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
@@ -530,6 +539,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - https://github.com/danielwelch/hassio-zigbee2mqtt
 - https://github.com/esphome/hassio
 - https://github.com/hassio-addons/repository
+- https://github.com/MaxWinterstein/homeassistant-addons/
 - https://github.com/OpenXbox/xboxone-home-assistant
 - https://github.com/sabeechen/hassio-google-drive-backup
 
@@ -539,6 +549,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ADB - Android Debug Bridge]()
 - [AppDaemon 4]()
 - [ESPHome]()
+- [Eufy Home Assistant MQTT Bridge]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab Lite]()

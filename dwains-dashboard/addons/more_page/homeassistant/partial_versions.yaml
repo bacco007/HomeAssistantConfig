@@ -25,180 +25,87 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.ha_current_version
-          name: Home Assistant - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_ha_stable') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+      - entity: binary_sensor.system_update
+        name: System Updates Available?
+      - type: section
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_core
+        name: Home Assistant Core
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_ha_stable
-            name: Home Assistant - Stable
-            icon: mdi:home-assistant
-          - entity: sensor.current_ha_beta
-            name: Home Assistant - Beta
-            icon: mdi:home-assistant
-          - entity: sensor.current_ha_dev
-            name: Home Assistant - Dev
-            icon: mdi:home-assistant
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.hassos_installed_version
-          name: HassOS - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_hassos_stable') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_supervisor
+        name: Home Assistant Supervisor
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_hassos_stable
-            name: HassOS - Stable
-            icon: mdi:home-assistant
-          - entity: sensor.current_hassos_beta
-            name: HassOS - Beta
-            icon: mdi:home-assistant
-          - entity: sensor.current_hassos_dev
-            name: HassOS - Dev
-            icon: mdi:home-assistant
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.current_supervisor_installed
-          name: HA Supervisor - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_supervisor_stable') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
+      - type: custom:multiple-entity-row
+        entity: sensor.hassos_current_version
+        name: Home Assistant OS
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_supervisor_stable
-            name: HA Supervisor - Stable
-            icon: mdi:home-assistant
-          - entity: sensor.current_supervisor_beta
-            name: HA Supervisor - Beta
-            icon: mdi:home-assistant
-          - entity: sensor.current_supervisor_dev
-            name: HA Supervisor - Dev
-            icon: mdi:home-assistant
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.current_audio_installed
-          name: Audio - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_audio_stable') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - entity: sensor.hassos_newest_version
+            name: Available
+          - entity: sensor.hassos_current_version
+            name: Installed
+      - type: section
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_audio
+        name: Audio
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_audio_stable
-            name: Audio - Stable
-          - entity: sensor.current_audio_beta
-            name: Audio - Beta
-          - entity: sensor.current_audio_dev
-            name: Audio - Dev
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.current_cli_installed
-          name: CLI - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_cli_stable') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_cli
+        name: CLI
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_cli_stable
-            name: CLI - Stable
-          - entity: sensor.current_cli_beta
-            name: CLI - Beta
-          - entity: sensor.current_cli_dev
-            name: CLI - Dev
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.current_dns_installed
-          name: DNS - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_dns_stable') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_dns
+        name: DNS
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_dns_stable
-            name: DNS - Stable
-          - entity: sensor.current_dns_beta
-            name: DNS - Beta
-          - entity: sensor.current_dns_dev
-            name: DNS - Dev
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.current_multicast_installed
-          name: Multicast - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_multicast_latest') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_multicast
+        name: Multicast
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_multicast_latest
-            name: Multicast - Latest
-      - type: custom:fold-entity-row
-        head:
-          entity: sensor.current_observer_installed
-          name: Observer - Installed
-          icon: mdi:home-assistant
-          style: |
-            :host {
-            --paper-item-icon-color:
-              {% if states(config.entity) != states('sensor.current_observer_latest') %}
-                rgb(255, 223, 0)
-              {% else %}
-                var(--disabled-text-color)
-              {% endif %}
-              ;
-            }
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
+      - type: custom:multiple-entity-row
+        entity: sensor.updater_observer
+        name: Observer
+        icon: mdi:home-assistant
+        show_state: false
         entities:
-          - entity: sensor.current_observer_latest
-            name: Observer - Latest
+          - attribute: newest_version
+            name: Available
+          - attribute: current_version
+            name: Installed
