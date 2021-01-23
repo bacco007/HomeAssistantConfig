@@ -1,0 +1,117 @@
+---
+type: custom:stack-in-card
+mode: horizontal
+cards:
+  - type: entities
+    title: Plex
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.plex_the_cube_2_electric_boogaloo
+        name: Current User Count
+        icon: mdi:plex
+      - entity: sensor.plex_topuser
+        name: Top User
+        icon: mdi:plex
+      - entity: sensor.plex_topmovie
+        name: Most Watched Movie
+        icon: mdi:plex
+      - entity: sensor.plex_toptvshow
+        name: Most Watched TV Show
+        icon: mdi:plex
+      - type: section
+      - entity: sensor.plexstats_moviecount
+        name: Library Stats - No. Movies
+        icon: mdi:plex
+      - entity: sensor.plexstats_tvshowcount
+        name: Library Stats - No. TV Shows
+        icon: mdi:plex
+      - entity: sensor.plexstats_tvseasoncount
+        name: Library Stats - No. TV Seasons
+        icon: mdi:plex
+      - entity: sensor.plexstats_tvepisodecount
+        name: Library Stats - No. TV Episodes
+        icon: mdi:plex
+
+  - type: custom:flex-table-card
+    style: |
+      ha-card {
+        background-color: var(--dwains-theme-primary);
+        padding-bottom: 10px;
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      # font-family: { var(--primary-font-family);}
+      # font-weight: {400 !important;}
+    clickable: false
+    css:
+      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 10px;"
+      "tbody tr:nth-child(even)": "background-color: none !important;"
+      "tbody tr:nth-child(odd)": "background-color: none !important;"
+    entities:
+      include: sensor.plex_recently_added
+    max_rows: 12
+    strict: true
+    columns:
+      - { data: data, modify: x.title, name: "Name" }
+      - { data: data, modify: x.number, name: "No" }
+      - { data: data, modify: x.episode, name: "Ep" }
+      - {
+          data: data,
+          modify: new Date(x.airdate).toLocaleDateString('en-GB'),
+          name: "Date",
+          align: "center",
+        }
+
+  - type: custom:flex-table-card
+    style: |
+      ha-card {
+        background-color: var(--dwains-theme-primary);
+        padding-bottom: 10px;
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      # font-family: { var(--primary-font-family);}
+      # font-weight: {400 !important;}
+    clickable: false
+    css:
+      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;  font-size: 10px;"
+      "tbody tr:nth-child(even)": "background-color: none !important;"
+      "tbody tr:nth-child(odd)": "background-color: none !important;"
+    entities:
+      include: sensor.plex_recently_added_movies
+    max_rows: 12
+    strict: true
+    columns:
+      - { data: data, modify: x.title, name: "Name" }
+      - {
+          data: data,
+          modify: new Date(x.airdate).toLocaleDateString('en-GB'),
+          name: "Date",
+          align: "center",
+        }

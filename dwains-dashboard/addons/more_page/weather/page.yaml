@@ -91,10 +91,19 @@
         fill: fade
         extrema: true
     - type: custom:compass-card
-      name: Wind
-      entity: sensor.tamworth_airport_wind_direction
-      secondary_entity: sensor.tamworth_airport_wind_speed_kilometre
+      header:
+        title:
+          value: Wind
+          icon: mdi:weather-windy
+      indicator_sensors:
+        - sensor: sensor.tamworth_airport_wind_direction
+      value_sensors:
+        - sensor: sensor.tamworth_airport_wind_speed_kilometre
       direction_offset: 0
+      compass:
+        north:
+          show: true
+          offset: 0
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"

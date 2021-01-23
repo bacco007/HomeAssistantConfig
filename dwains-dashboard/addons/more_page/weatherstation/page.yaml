@@ -224,10 +224,19 @@
         # extrema: true
         fill: fade
     - type: custom:compass-card
-      name: Wind
-      entity: sensor.weather_outside_winddirection
-      secondary_entity: sensor.weather_outside_windspeed
+      header:
+        title:
+          value: Wind
+          icon: mdi:weather-windy
+      indicator_sensors:
+        - sensor: sensor.weather_outside_winddirection
+      value_sensors:
+        - sensor: sensor.weather_outside_windspeed
       direction_offset: 0
+      compass:
+        north:
+          show: true
+          offset: 0
     - type: custom:mini-graph-card
       entities:
         - sensor.weather_outside_pressure

@@ -33,8 +33,10 @@
         fill: true
     - type: custom:compass-card
       name: Last Lightning Strike
-      entity: sensor.blitzortung_lightning_azimuth
-      secondary_entity: sensor.blitzortung_lightning_distance
+      indicator_sensors:
+        - sensor: sensor.blitzortung_lightning_azimuth
+      value_sensors:
+        - sensor: sensor.blitzortung_lightning_distance
       direction_offset: 0
 
 - type: custom:dwains-flexbox-card

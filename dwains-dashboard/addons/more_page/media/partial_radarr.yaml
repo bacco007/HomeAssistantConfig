@@ -3,7 +3,7 @@ type: custom:stack-in-card
 mode: vertical
 cards:
   - type: entities
-    title: Sonarr
+    title: Radarr
     style: |
       ha-card {
         padding-bottom: 10px;
@@ -26,14 +26,12 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - entity: sensor.sonarr_shows
-        name: Tracked Shows
-      - entity: sensor.sonarr_queue
-        name: Queued Episodes
-      - entity: sensor.sonarr_upcoming
-        name: Upcoming Episodes
-      - entity: sensor.sonarr_wanted
-        name: Wanted Episodes
+      - entity: sensor.radarr_status
+        name: Radarr Version
+      - entity: sensor.radarr_movies
+        name: Tracked Movies
+      - entity: sensor.radarr_upcoming
+        name: Upcoming Movies
 
   - type: custom:flex-table-card
     style: |
@@ -50,20 +48,18 @@ cards:
       # font-weight: {400 !important;}
     clickable: false
     css:
-      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 10px;"
+      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px; font-size: 10px;"
       "tbody tr:nth-child(even)": "background-color: none !important;"
       "tbody tr:nth-child(odd)": "background-color: none !important;"
     entities:
-      include: sensor.sonarr_upcoming_media
+      include: sensor.radarr_upcoming_media
     max_rows: 12
     strict: true
     columns:
       - { data: data, modify: x.title, name: "Name" }
-      - { data: data, modify: x.number, name: "No" }
-      - { data: data, modify: x.episode, name: "Ep" }
       - {
           data: data,
-          modify: new Date(x.airdate).toLocaleString('en-GB'),
+          modify: new Date(x.airdate).toLocaleDateString('en-GB'),
           name: "Date",
           align: "center",
         }

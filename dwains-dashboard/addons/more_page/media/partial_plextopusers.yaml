@@ -27,6 +27,11 @@ cards:
         color: darkgray !important;
         margin-left: 2px !important;
       }
+    clickable: false
+    css:
+      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 10px;"
+      "tbody tr:nth-child(even)": "background-color: none !important;"
+      "tbody tr:nth-child(odd)": "background-color: none !important;"
     entities:
       include: sensor.plex_tautulli_topusers
     max_rows: 10

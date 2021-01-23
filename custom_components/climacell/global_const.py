@@ -420,6 +420,8 @@ METRIC_UNITS = {
     "solarDIF": "W/m^2",
     "solarDIR": "W/m^2",
     "solarGHI": "W/m^2",
+    "sunriseTime": "",
+    "sunsetTime": "",
     "temperature": "Celcius",
     "temperatureApparent": "Celcius",
     "treeAcacia": {

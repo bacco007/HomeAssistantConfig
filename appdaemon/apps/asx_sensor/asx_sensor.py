@@ -134,8 +134,12 @@ class Get_ASX_info(hass.Hass):
             #convert output to JSON
             jtags = json.loads(response.text)
 
-            div_y = jtags[0]['year']
-            div_a = jtags[0]['amount']
+            if jtags:
+                div_y = jtags[0]['year']
+                div_a = jtags[0]['amount']
+            else:
+                div_y = ""
+                div_a = ""
 
             #connect to the website and get the JSON dataset for that symbol
             url = self.URLc + tick + self.c_fields
