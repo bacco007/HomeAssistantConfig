@@ -98,9 +98,16 @@ more_page:
     - name: Solar
       icon: mdi:solar-power
       path: "dwains-dashboard/addons/more_page/solar/page.yaml"
+    - name: Sonos
+      icon: si:sonos
+      path: "dwains-dashboard/addons/rooms/office/sonos/page.yaml"
+      data: !include "../addons/rooms/office/sonos/data.yaml"
     - name: SpaceX Launches
       icon: si:spacex
       path: "dwains-dashboard/addons/more_page/spacex/page.yaml"
+    - name: Spotify
+      icon: mdi:spotify
+      path: "dwains-dashboard/addons/more_page/spotify/page.yaml"
     - name: Sun UV Air Quality
       icon: mdi:shield-sun-outline
       path: "dwains-dashboard/addons/more_page/sun_uv/page.yaml"

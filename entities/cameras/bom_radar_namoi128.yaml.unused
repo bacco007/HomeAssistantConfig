@@ -1,6 +1,0 @@
----
-platform: bom
-location: Namoi
-name: Namoi128km
-frames: 10
-filename: /config/www/images/radar_namoi_128km.gif

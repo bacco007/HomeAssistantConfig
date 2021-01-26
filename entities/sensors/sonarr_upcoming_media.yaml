@@ -1,0 +1,7 @@
+---
+platform: sonarr_upcoming_media
+api_key: !secret sonarr_apikey
+host: !secret sonarr_host
+port: !secret sonarr_port
+days: 720
+max: 100

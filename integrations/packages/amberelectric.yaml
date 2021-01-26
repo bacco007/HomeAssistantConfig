@@ -1,0 +1,22 @@
+---
+# https://github.com/lewisbenge/hass-amber-electric/issues/19
+sensor:
+  - platform: amberelectric
+    postcode: "2340"
+
+  - platform: template
+    sensors:
+      amber_peak_predicted_2h:
+        friendly_name: "Amber 2 hour peak predicted"
+        unit_of_measurement: "c/kWh"
+        value_template: >-
+          {% set forecast = states.sensor.amber_general_usage_price.attributes['price_forcecast'] %}
+          {% set highest = forecast[0:4] | sort(reverse=true, attribute='price') | first() %}
+          {{highest['price']}}
+      amber_peak_predicted_4h:
+        friendly_name: "Amber 4 hour peak predicted"
+        unit_of_measurement: "c/kWh"
+        value_template: >-
+          {% set forecast = states.sensor.amber_general_usage_price.attributes['price_forcecast'] %}
+          {% set highest = forecast[0:8] | sort(reverse=true, attribute='price') | first() %}
+          {{highest['price']}}

@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, January 24th 2021_
+_Stats as at 05:00, Tuesday, January 26th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.1.4 | 266     | 2288         | 1858 | 51 |
+| 2021.1.5 | 264     | 2288         | 1858 | 51 |
 
 Type | Qty
 -- | --
@@ -281,7 +281,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
-| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
@@ -315,7 +314,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
-| [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics) |

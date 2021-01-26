@@ -1,0 +1,5 @@
+---
+lounge_media:
+  name: Lounge - Media
+  entities:
+    - media_player.kdl_55w800c

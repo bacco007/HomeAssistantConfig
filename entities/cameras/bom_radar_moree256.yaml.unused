@@ -1,7 +1,0 @@
----
-platform: bom
-id: 532
-delta: 600
-frames: 10
-name: Moree256km
-filename: /config/www/images/radar_moree_256km.gif

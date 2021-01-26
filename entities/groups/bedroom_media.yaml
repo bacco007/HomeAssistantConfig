@@ -1,0 +1,10 @@
+---
+bedroom_media:
+  name: Bedroom - Media
+  entities:
+    - media_player.apple_tv_bedroom
+    - media_player.bedroom_display
+    - media_player.nvidia_shield
+    - media_player.thomas_s_echo_plus
+    - media_player.samsung_ua40es6200
+    - media_player.xbox_one

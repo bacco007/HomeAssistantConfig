@@ -420,14 +420,14 @@ sensor:
         friendly_name: NASCAR Cup Series
         entity_picture_template: /local/sportlogos/nascarcup.png
         value_template: >-
-          {% set op = state_attr('calendar.nascar_cup_series', 'message') | replace('NASCAR Cup ', '') %}
+          {% set op = state_attr('calendar.2021_nascar_schedule_nascar_cup_series', 'message') | replace('🏁 ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
-            {% if is_state('calendar.nascar_cup_series', 'on') %}
+            {% if is_state('calendar.2021_nascar_schedule_nascar_cup_series', 'on') %}
               On Now!
             {% else %}
-              {% set st = state_attr('calendar.nascar_cup_series', 'start_time') %}
+              {% set st = state_attr('calendar.2021_nascar_schedule_nascar_cup_series', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {% if diff > 6 %}
@@ -440,25 +440,25 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.nascar_cup_series', 'message') | replace('NASCAR Cup ', '') %}
-            {% set st = state_attr('calendar.nascar_cup_series', 'start_time') %}
+            {% set op = state_attr('calendar.2021_nascar_schedule_nascar_cup_series', 'message') | replace('🏁 ', '') %}
+            {% set st = state_attr('calendar.2021_nascar_schedule_nascar_cup_series', 'start_time') %}
             {% if st != None %}
               {{ op }}
             {% else %}
               No Race Scheduled
             {% endif %}
           nextlocation: >-
-            {% set op = state_attr('calendar.nascar_cup_series', 'location') %}
+            {% set op = state_attr('calendar.2021_nascar_schedule_nascar_cup_series', 'location') %}
             {% if op != None %}
               {{ op }}
             {% else %}
               No Location Noted
             {% endif %}
           sortorder: >-
-            {% if is_state('calendar.nascar_cup_series', 'on') %}
+            {% if is_state('calendar.2021_nascar_schedule_nascar_cup_series', 'on') %}
               0
             {% else %}
-              {% set st = state_attr('calendar.nascar_cup_series', 'start_time') %}
+              {% set st = state_attr('calendar.2021_nascar_schedule_nascar_cup_series', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}
@@ -471,14 +471,14 @@ sensor:
         friendly_name: NASCAR Xfinity Series
         entity_picture_template: /local/sportlogos/nascarxfinity.png
         value_template: >-
-          {% set op = state_attr('calendar.nascar_xfinity_series', 'message') | replace('NASCAR Xfinity ', '') %}
+          {% set op = state_attr('calendar.2021_nascar_schedule_nascar_xfinity_series', 'message') | replace('🏁 ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
-            {% if is_state('calendar.nascar_xfinity_series', 'on') %}
+            {% if is_state('calendar.2021_nascar_schedule_nascar_xfinity_series', 'on') %}
               On Now!
             {% else %}
-              {% set st = state_attr('calendar.nascar_xfinity_series', 'start_time') %}
+              {% set st = state_attr('calendar.2021_nascar_schedule_nascar_xfinity_series', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {% if diff > 6 %}
@@ -491,25 +491,25 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.nascar_xfinity_series', 'message') | replace('NASCAR Xfinity ', '') %}
-            {% set st = state_attr('calendar.nascar_xfinity_series', 'start_time') %}
+            {% set op = state_attr('calendar.2021_nascar_schedule_nascar_xfinity_series', 'message') | replace('🏁 ', '') %}
+            {% set st = state_attr('calendar.2021_nascar_schedule_nascar_xfinity_series', 'start_time') %}
             {% if st != None %}
               {{ op }}
             {% else %}
               No Race Scheduled
             {% endif %}
           nextlocation: >-
-            {% set op = state_attr('calendar.nascar_xfinity_series', 'location') %}
+            {% set op = state_attr('calendar.2021_nascar_schedule_nascar_xfinity_series', 'location') %}
             {% if op != None %}
               {{ op }}
             {% else %}
               No Location Noted
             {% endif %}
           sortorder: >-
-            {% if is_state('calendar.nascar_xfinity_series', 'on') %}
+            {% if is_state('calendar.2021_nascar_schedule_nascar_xfinity_series', 'on') %}
               0
             {% else %}
-              {% set st = state_attr('calendar.nascar_xfinity_series', 'start_time') %}
+              {% set st = state_attr('calendar.2021_nascar_schedule_nascar_xfinity_series', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}
@@ -728,7 +728,7 @@ sensor:
         friendly_name: NSW Waratahs
         entity_picture_template: /local/sportlogos/nswaratahs.png
         value_template: >-
-          {% set op = state_attr('calendar.nsw_waratahs', 'message') %}
+          {% set op = state_attr('calendar.nsw_waratahs', 'message') | replace('🏉 ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
@@ -748,7 +748,7 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.nsw_waratahs', 'message') %}
+            {% set op = state_attr('calendar.nsw_waratahs', 'message') | replace('🏉 ', '') %}
             {% set st = state_attr('calendar.nsw_waratahs', 'start_time') %}
             {% if st != None %}
               {{ op }}
@@ -979,14 +979,14 @@ sensor:
         friendly_name: World Rally Championship
         entity_picture_template: /local/sportlogos/wrc.png
         value_template: >-
-          {% set op = state_attr('calendar.wrc', 'message') | replace('WRC ', '') %}
+          {% set op = state_attr('calendar.rally_wrc_fia_world_rally_championship', 'message') | replace('WRC - ', '') %}
           {{ op }}
         attribute_templates:
           nexttime: >-
-            {% if is_state('calendar.wrc', 'on') %}
+            {% if is_state('calendar.rally_wrc_fia_world_rally_championship', 'on') %}
               On Now!
             {% else %}
-              {% set st = state_attr('calendar.wrc', 'start_time') %}
+              {% set st = state_attr('calendar.rally_wrc_fia_world_rally_championship', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {% if diff > 6 %}
@@ -999,25 +999,25 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.wrc', 'message') | replace('WRC ', '') %}
-            {% set st = state_attr('calendar.wrc', 'start_time') %}
+            {% set op = state_attr('calendar.rally_wrc_fia_world_rally_championship', 'message') | replace('WRC - ', '') %}
+            {% set st = state_attr('calendar.rally_wrc_fia_world_rally_championship', 'start_time') %}
             {% if st != None %}
               {{ op }}
             {% else %}
               No Race Scheduled
             {% endif %}
           nextlocation: >-
-            {% set op = state_attr('calendar.wrc', 'location') %}
+            {% set op = state_attr('calendar.rally_wrc_fia_world_rally_championship', 'location') %}
             {% if op != None %}
               {{ op }}
             {% else %}
               No Location Noted
             {% endif %}
           sortorder: >-
-            {% if is_state('calendar.wrc', 'on') %}
+            {% if is_state('calendar.rally_wrc_fia_world_rally_championship', 'on') %}
               0
             {% else %}
-              {% set st = state_attr('calendar.wrc', 'start_time') %}
+              {% set st = state_attr('calendar.rally_wrc_fia_world_rally_championship', 'start_time') %}
               {% if st != None %}
                 {% set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}

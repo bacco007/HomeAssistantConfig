@@ -22,12 +22,15 @@
           name: {{ name }}
           info: scroll
           type: 'custom:mini-media-player'
+          artwork: full-cover
           hide:
             power: true
             icon: true
             source: true
             icon_state: false
             power_color: false
+            progress: false
+            runtime: false
           speaker_group:
             platform: {{ (data | fromjson)['platform']|default('sonos') }}
             show_group_count: true
@@ -39,11 +42,10 @@
               {% endif %}
             {% endfor %}
           shortcuts:
-            columns: 3
+            columns: 5
             hide_when_off: true
             label: Select Input
             align_text: center
-            column_height: 70
             buttons:
             {% for buttons in (data | fromjson)['buttons'] %}
               - name: {{ buttons.name }}
@@ -51,7 +53,7 @@
                 icon: {{ buttons.icon }}
               {% endif %}
               {% if buttons.cover %}
-                cover: {{ buttons.cover }}
+                image: {{ buttons.cover }}
               {% endif %}
                 type: {{ buttons.type }}
                 id: {{ buttons.id }}

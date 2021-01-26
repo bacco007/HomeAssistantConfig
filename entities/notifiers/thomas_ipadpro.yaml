@@ -1,0 +1,6 @@
+---
+# https://www.home-assistant.io/integrations/notify.group/
+platform: group
+name: thomas_iphone
+services:
+  - service: mobile_app_tbipadpro

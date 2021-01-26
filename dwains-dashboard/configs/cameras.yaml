@@ -1,12 +1,9 @@
 # https://dwainscheeren.github.io/lovelace-dwains-theme/configuration/cameras.html
 
 cameras:
+  live_view: false
   entities:
     - camera.camera_1_last_event
     - camera.camera_2_last_event
     - camera.camera_3_last_event
     - camera.camera_4_last_event
-    - camera.camera_1
-    - camera.camera_2
-    - camera.camera_3
-    - camera.camera_4

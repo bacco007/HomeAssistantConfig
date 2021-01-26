@@ -237,9 +237,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 continue
             
             name = CLIMACELL_FIELDS[field][ATTR_NAME] + suffix_name
-            
-            unit = UNITS[units][field]
-            if raw and isinstance(unit, dict): 
+           
+            unit = None
+            if field in UNITS[units]:
+              unit = UNITS[units][field]
+
+            if raw and isinstance(unit, dict):
                 unit = None
                 name = RAW_PREFIX + " " + name
 

@@ -1,0 +1,8 @@
+---
+# https://www.home-assistant.io/integrations/workday/
+platform: workday
+name: holiday
+country: AU
+province: NSW
+workdays: [holiday]
+excludes: []

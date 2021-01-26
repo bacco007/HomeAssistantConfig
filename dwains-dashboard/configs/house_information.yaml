@@ -17,25 +17,3 @@ house_information:
   #   - entity: binary_sensor.hallway_door_contact
   #     icon_on: fas:door-open
   #     icon_off: fas:door-closed
-  addons:
-    - name: Calendar
-      icon: mdi:calendar
-      path: "dwains-dashboard/addons/house_information/calendar/page.yaml"
-      data:
-        calendars:
-          - calendar.anaheim_ducks
-          - calendar.cricket_australia
-          - calendar.f1
-          - calendar.garbage_collection
-          - calendar.indycar
-          - calendar.lm_wec_fia_world_endurance_championship
-          - calendar.manchester_united_fixtures
-          - calendar.miscellaneous
-          - calendar.nascar
-          - calendar.new_england_patriots
-          - calendar.new_york_yankees
-          - calendar.newcastle_knights
-          - calendar.other_sport
-          - calendar.supercars
-          - calendar.sydney_fc
-          - calendar.sydney_swans

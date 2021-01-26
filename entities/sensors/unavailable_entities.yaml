@@ -1,4 +1,5 @@
 ---
+# https://github.com/jazzyisj/home-assistant-config/blob/master/packages/package_unavailable_entities_sensor_gist.yaml
 platform: template
 sensors:
   unavailable_entities:
@@ -11,4 +12,4 @@ sensors:
     attribute_templates:
       entities: >
         {{ states|selectattr('state','in',['unavailable','unknown','none'])|rejectattr('domain','eq','group')
-          |rejectattr('entity_id','in',state_attr('group.ignored_entities','entity_id'))|map(attribute='entity_id')|join(',') }}
+            |rejectattr('entity_id','in',state_attr('group.ignored_entities','entity_id'))|map(attribute='entity_id')|list }}

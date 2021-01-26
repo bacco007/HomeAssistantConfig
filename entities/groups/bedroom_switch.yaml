@@ -1,0 +1,6 @@
+---
+bedroom_switch:
+  name: Bedroom - Power Switch
+  entities:
+    - binary_sensor.switchmonusb_01_status
+    - binary_sensor.switchmonusb_02_status

@@ -1,0 +1,116 @@
+---
+sensor:
+  - platform: mqtt
+    name: solar_output_power
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/output_power"
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: solar_daily_yield
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/daily_yield"
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: solar_total_yield
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/total_yield"
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: solar_total_running_time
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/total_running_time"
+    unit_of_measurement: "h"
+  - platform: mqtt
+    name: solar_internal_temperature
+    icon: mdi:thermometer
+    state_topic: "modbus4mqtt/internal_temperature"
+    unit_of_measurement: "°C"
+  - platform: mqtt
+    name: solar_dc_output
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/dc_output"
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: solar_phase_a_voltage
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/phase_a_voltage"
+    unit_of_measurement: "V"
+  - platform: mqtt
+    name: solar_phase_a_current
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/phase_a_current"
+    unit_of_measurement: "A"
+  - platform: mqtt
+    name: solar_ac_output
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/ac_output"
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: solar_power_factor
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/power_factor"
+    unit_of_measurement: ""
+  - platform: mqtt
+    name: solar_grid_frequency
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/grid_frequency"
+    unit_of_measurement: "Hz"
+  - platform: mqtt
+    name: solar_device_state
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/device_state"
+    unit_of_measurement: ""
+  - platform: mqtt
+    name: solar_daily_running_time
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/daily_running_time"
+    unit_of_measurement: "m"
+  - platform: mqtt
+    name: solar_solar_to_house
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/solar_to_house"
+    unit_of_measurement: "kW"
+  - platform: mqtt
+    name: solar_solar_to_grid
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/solar_to_grid"
+    unit_of_measurement: "kW"
+  - platform: mqtt
+    name: solar_solar_generation
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/solar_generation"
+    unit_of_measurement: "kW"
+  - platform: mqtt
+    name: solar_feedin_total
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/feedin_total"
+    unit_of_measurement: "kW"
+  - platform: mqtt
+    name: solar_grid_total
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/grid_total"
+    unit_of_measurement: "kW"
+  - platform: mqtt
+    name: solar_grid_daily
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/grid_daily"
+    unit_of_measurement: "kW"
+  - platform: mqtt
+    name: solar_pv1_voltage
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/pv1_voltage"
+    unit_of_measurement: "V"
+  - platform: mqtt
+    name: solar_pv1_current
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/pv1_current"
+    unit_of_measurement: "A"
+  - platform: mqtt
+    name: solar_pv2_voltage
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/pv2_voltage"
+  - platform: mqtt
+    name: solar_pv2_current
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/pv2_current"
+    unit_of_measurement: "A"

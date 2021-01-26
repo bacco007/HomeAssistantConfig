@@ -15,20 +15,21 @@ persons:
     #   columns: 1 #optional
     #   entities:
     page_entities:
-      columns: 1 #optional
+      # columns: 1 #optional
       entities:
-        - entity: sensor.activity_2
-        - entity: sensor.average_active_pace
-        - entity: sensor.battery_level_2
-        - entity: sensor.battery_state_2
-        - entity: sensor.bssid_2
-        - entity: sensor.connection_type_2
-        - entity: sensor.distance
-        - entity: sensor.floors_ascended
-        - entity: sensor.floors_descended
-        - entity: sensor.geocoded_location_2
-        - entity: sensor.last_update_trigger_2
-        - entity: sensor.sim_1
+        - entity: sensor.tbiphone11_activity
+        - entity: sensor.tbiphone11_average_active_pace
+        - entity: sensor.tbiphone11_battery_level
+        - entity: sensor.tbiphone11_battery_state
+        - entity: sensor.tbiphone11_bssid
+        - entity: sensor.tbiphone11_connection_type
+        - entity: sensor.tbiphone11_distance
+        - entity: sensor.tbiphone11_floors_ascended
+        - entity: sensor.tbiphone11_floors_descended
+        - entity: sensor.tbiphone11_geocoded_location
+        - entity: sensor.tbiphone11_last_update_trigger
+        - entity: sensor.tbiphone11_sim_1
         - entity: sensor.tbiphone11_sim_2
-        - entity: sensor.ssid_2
-        - entity: sensor.steps
+        - entity: sensor.tbiphone11_ssid
+        - entity: sensor.tbiphone11_steps
+        - entity: sensor.tbiphone11_storage

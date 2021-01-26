@@ -1,0 +1,141 @@
+# dwains_theme
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+  # padding: true
+  cards:
+    - artwork: full-cover
+      entity: media_player.spotify_thomas_baxter
+      hide:
+        power: true
+        progress: false
+        runtime: false
+        volume: true
+      style: |
+        :host {
+          left: 46% !important;
+          top: 39.8% !important;
+          width: 33% !important;
+          height: 62.3% !important;
+        }
+        ha-card{
+          overflow: hidden !important;
+          height: 100%;
+        }
+        :host #primaryProgress{
+          background: #474A52 !important;
+        }
+      type: "custom:mini-media-player"
+    - type: custom:spotify-card
+      style: |
+        :host {
+            left: 79.5%;
+            top: 39.8%;
+            width: 31%;
+            height: 62.3%;
+            border-radius: 1vw;
+        }
+        #header{
+            display:none !important;
+        }
+        #content{
+            border:none !important;
+        }
+        .playback-controls{
+            display:none !important;
+        }
+        #header-track{
+            display:none;
+        }
+        .list-item > p{
+            white-space: nowrap;
+                overflow: hidden;
+        }
+        .list-item{
+            border-radius: 0.2vw;
+            overflow:hidden;
+            border:none !important;
+            margin-bottom:2px;
+        }
+      account: default
+      country: AU
+      display_style: list
+      hide_warning: true
+      limit: 10
+      playlist_type: default
+      name: Spotify Playlists
+    # - type: custom:spotify-card
+    #   style: |
+    #     :host {
+    #         left: 79.5%;
+    #         top: 39.8%;
+    #         width: 31%;
+    #         height: 62.3%;
+    #         border-radius: 1vw;
+    #     }
+    #     #header{
+    #         display:none !important;
+    #     }
+    #     #content{
+    #         border:none !important;
+    #     }
+    #     .playback-controls{
+    #         display:none !important;
+    #     }
+    #     #header-track{
+    #         display:none;
+    #     }
+    #     .list-item > p{
+    #         white-space: nowrap;
+    #             overflow: hidden;
+    #     }
+    #     .list-item{
+    #         border-radius: 0.2vw;
+    #         overflow:hidden;
+    #         border:none !important;
+    #         margin-bottom:2px;
+    #     }
+    #   name: Featured Playlists
+    #   account: default
+    #   country: AU
+    #   display_style: list
+    #   hide_warning: true
+    #   limit: 10
+    #   playlist_type: featured
+    - type: custom:spotify-card
+      style: |
+        :host {
+            left: 79.5%;
+            top: 39.8%;
+            width: 31%;
+            height: 62.3%;
+            border-radius: 1vw;
+        }
+        #header{
+            display:none !important;
+        }
+        #content{
+            border:none !important;
+        }
+        .playback-controls{
+            display:none !important;
+        }
+        #header-track{
+            display:none;
+        }
+        .list-item > p{
+            white-space: nowrap;
+                overflow: hidden;
+        }
+        .list-item{
+            border-radius: 0.2vw;
+            overflow:hidden;
+            border:none !important;
+            margin-bottom:2px;
+        }
+      name: Discover Weekly Playlists
+      account: default
+      country: AU
+      hide_warning: true
+      display_style: list
+      limit: 10
+      playlist_type: discover-weekly

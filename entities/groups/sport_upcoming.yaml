@@ -1,0 +1,26 @@
+---
+sport_upcoming:
+  name: Upcoming Sport
+  entities:
+    - sensor.sport_manu
+    - sensor.sport_newengpats
+    - sensor.sport_anaducks
+    - sensor.sport_cricket
+    - sensor.sport_yankees
+    - sensor.sport_supercars
+    - sensor.sport_f1
+    - sensor.sport_wec
+    - sensor.sport_nascar_cup
+    - sensor.sport_nascar_xfinity
+    - sensor.sport_indycar
+    - sensor.sport_newknights
+    - sensor.sport_nswwaratahs
+    - sensor.sport_sydfc
+    - sensor.sport_sydswans
+    - sensor.sport_btcc
+    - sensor.sport_icgtc
+    - sensor.sport_imsasports
+    - sensor.sport_motogp
+    - sensor.sport_wrc
+    - sensor.sport_formula_e
+    - sensor.sport_dtm
