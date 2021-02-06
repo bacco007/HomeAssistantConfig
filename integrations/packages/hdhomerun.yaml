@@ -30,7 +30,7 @@ sensor:
       - TargetIP
     value_template: >-
       {% if value_json[0].VctName is defined %}
-        In Use
+        {{ value_json[0].VctName }}
       {% else %}
         Not In Use
       {% endif %}
@@ -48,7 +48,7 @@ sensor:
       - TargetIP
     value_template: >-
       {% if value_json[0].VctName is defined %}
-        In Use
+        {{ value_json[0].VctName }}
       {% else %}
         Not In Use
       {% endif %}
@@ -66,7 +66,7 @@ sensor:
       - TargetIP
     value_template: >-
       {% if value_json[0].VctName is defined %}
-        In Use
+        {{ value_json[0].VctName }}
       {% else %}
         Not In Use
       {% endif %}
@@ -84,7 +84,61 @@ sensor:
       - TargetIP
     value_template: >-
       {% if value_json[0].VctName is defined %}
-        In Use
+        {{ value_json[0].VctName }}
       {% else %}
         Not In Use
       {% endif %}
+  - platform: template
+    sensors:
+      hdhomerun_tuner_0_channel:
+        friendly_name: HDHomeRun Tuner 0 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_0', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: "{{ state_attr('sensor.hdhomerun_tuner_0', 'VctName') }}"
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_0', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_0', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+      hdhomerun_tuner_1_channel:
+        friendly_name: HDHomeRun Tuner 1 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_1', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: "{{ state_attr('sensor.hdhomerun_tuner_1', 'VctName') }}"
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_1', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_1', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+      hdhomerun_tuner_2_channel:
+        friendly_name: HDHomeRun Tuner 2 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_2', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: "{{ state_attr('sensor.hdhomerun_tuner_2', 'VctName') }}"
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_2', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_2', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+      hdhomerun_tuner_3_channel:
+        friendly_name: HDHomeRun Tuner 3 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_3', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: "{{ state_attr('sensor.hdhomerun_tuner_3', 'VctName') }}"
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_3', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_3', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}

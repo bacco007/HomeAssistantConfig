@@ -4,11 +4,10 @@ The Yahoo finance component.
 https://github.com/iprak/yahoofinance
 """
 
-import asyncio
 from datetime import timedelta
 import logging
+from typing import Union
 
-import aiohttp
 import async_timeout
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.helpers import discovery
@@ -35,6 +34,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 DEFAULT_SCAN_INTERVAL = timedelta(hours=6)
+MINIMUM_SCAN_INTERVAL = timedelta(seconds=30)
 WEBSESSION_TIMEOUT = 15
 
 CONFIG_SCHEMA = vol.Schema(
@@ -44,7 +44,7 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Required(CONF_SYMBOLS): vol.All(cv.ensure_list, [cv.string]),
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): cv.time_period,
+                ): vol.Any("none", "None", cv.positive_time_period),
                 vol.Optional(
                     CONF_SHOW_TRENDING_ICON, default=DEFAULT_CONF_SHOW_TRENDING_ICON
                 ): cv.boolean,
@@ -59,6 +59,22 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
+def parse_scan_interval(scan_interval: Union[timedelta, str]) -> timedelta:
+    """Parse and validate scan_interval."""
+    if isinstance(scan_interval, str):
+        if isinstance(scan_interval, str):
+            if scan_interval.lower() == "none":
+                scan_interval = None
+            else:
+                raise vol.Invalid(
+                    f"Invalid {CONF_SCAN_INTERVAL} specified: {scan_interval}"
+                )
+    elif scan_interval < MINIMUM_SCAN_INTERVAL:
+        raise vol.Invalid("Scan interval should be at least 30 seconds.")
+
+    return scan_interval
+
+
 async def async_setup(hass, config) -> bool:
     """Set up the Yahoo Finance sensors."""
 
@@ -69,12 +85,17 @@ async def async_setup(hass, config) -> bool:
     symbols = [sym.upper() for sym in symbols]
     domain_config[CONF_SYMBOLS] = symbols
 
-    coordinator = YahooSymbolUpdateCoordinator(
-        symbols, hass, domain_config.get(CONF_SCAN_INTERVAL)
-    )
+    scan_interval = parse_scan_interval(domain_config.get(CONF_SCAN_INTERVAL))
+
+    # Populate parsed value into domain_config
+    domain_config[CONF_SCAN_INTERVAL] = scan_interval
+
+    coordinator = YahooSymbolUpdateCoordinator(symbols, hass, scan_interval)
 
     # Refresh coordinator to get initial symbol data
-    _LOGGER.debug("Requesting initial data from coordinator")
+    _LOGGER.info(
+        f"Requesting data from coordinator with update interval of {scan_interval}."
+    )
     await coordinator.async_refresh()
 
     # Pass down the coordinator and config to platforms.
@@ -158,7 +179,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         if json is None:
             raise UpdateFailed("No data received")
 
-        if not "quoteResponse" in json:
+        if "quoteResponse" not in json:
             raise UpdateFailed("Data invalid, 'quoteResponse' not found.")
 
         quoteResponse = json["quoteResponse"]  # pylint: disable=invalid-name
@@ -167,7 +188,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
             if quoteResponse["error"] is not None:
                 raise UpdateFailed(quoteResponse["error"])
 
-        if not "result" in quoteResponse:
+        if "result" not in quoteResponse:
             raise UpdateFailed("Data invalid, no 'result' found")
 
         result = quoteResponse["result"]

@@ -72,18 +72,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, January 26th 2021_
+_Stats as at 05:00, Wednesday, January 27th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.1.5 | 264     | 2288         | 1858 | 51 |
+| 2021.1.5 | 269     | 2343         | 1908 | 51 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 51
-Binary Sensor | 86
+Binary Sensor | 87
 Camera | 5
 Device Tracker | 114
 Group | 9
@@ -91,13 +91,13 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 0
 Light | 3
-Media Player | 11
+Media Player | 12
 Person | 1
 Scene | 1
 Script | 2
-Sensor | 1858
+Sensor | 1908
 Sun | 1
-Switch | 80
+Switch | 82
 Weather | 3
 Zone | 3
 
@@ -116,6 +116,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- |
 | [alexa](https://www.home-assistant.io/components/alexa) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
+| [amberelectric](https://www.home-assistant.io/components/amberelectric) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [api](https://www.home-assistant.io/components/api) |
 | [apple_tv](https://www.home-assistant.io/components/apple_tv) |
@@ -140,6 +141,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
+| [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
@@ -235,6 +237,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
+| [notify.group](https://www.home-assistant.io/components/notify.group) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
@@ -264,6 +267,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
+| [sensor.amberelectric](https://www.home-assistant.io/components/sensor.amberelectric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.authenticated](https://www.home-assistant.io/components/sensor.authenticated) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
@@ -281,6 +285,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
+| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
@@ -314,6 +319,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
+| [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics) |
@@ -332,7 +338,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
-| [sensor.websocket_api](https://www.home-assistant.io/components/sensor.websocket_api) |
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
 | [sensor.xbox](https://www.home-assistant.io/components/sensor.xbox) |
 | [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
@@ -481,6 +486,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Description |
 | --- | ---|
+| [Apexcharts Card](https://github.com/RomRider/apexcharts-card) | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
 | [Atomic Calendar Revive](https://github.com/marksie1988/atomic-calendar-revive) | Custom calendar card for Home Assistant with Lovelace |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) | 🔹Automatically populate the entities-list of lovelace cards |
 | [Bar Card](https://github.com/custom-cards/bar-card) | Customizable Animated Bar card for Home Assistant Lovelace |

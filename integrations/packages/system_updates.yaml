@@ -51,7 +51,7 @@ binary_sensor:
           {% if states('sensor.updater_supervisor')|lower in ['unknown','unavailable','none'] %} false
           {% else %}{{ state_attr('sensor.updater_supervisor','current_version') != state_attr('sensor.updater_supervisor','newest_version') }}
           {% endif %}
-        availability_template: "{{ (states('sensor.updater_supervisor')|int(-1)) > -1 }}"
+        availability_template: "{{ states('sensor.updater_supervisor')|lower not in ['unknown','unavailable','none'] }}"
 
       updater_hacs:
         friendly_name: Updater - HACS
@@ -71,8 +71,8 @@ binary_sensor:
         friendly_name: Updater - Breaking Changes
         unique_id: updater_breaking_changes
         device_class: problem
-        value_template: "{{ states('sensor.breaking_change_warnings')|int > 0 }}"
-        availability_template: "{{ states('sensor.breaking_change_warnings')|lower not in ['unknown','unavailable','none'] }}"
+        value_template: "{{ states('sensor.potential_breaking_changes')|int > 0 }}"
+        availability_template: "{{ states('sensor.potential_breaking_changes')|lower not in ['unknown','unavailable','none'] }}"
 
       updater_multicast:
         friendly_name: Updater - Multicast

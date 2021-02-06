@@ -27,6 +27,7 @@ rooms:
 
   - name: Office
     icon: mdi:briefcase
+    climate: climate.thomas_s_smart_ac
     temperature: sensor.zha_office_temperature
     humidity: sensor.zha_office_humidity
     pressure: sensor.zha_office_pressure

@@ -6,7 +6,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
           cards:
             - type: vertical-stack
               cards:
@@ -21,11 +21,11 @@
                     **Version:** {{ (data | fromjson)['version']}}
                 - !include
                   - ../../1_Templates/button_link.yaml
-                  - name: 'Web Interface'
-                    icon: 'mdi:television'
+                  - name: "Web Interface"
+                    icon: "mdi:television"
                     url: http://192.168.1.120
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          item_classes: "col-xs-12 col-sm-9 col-md-10 col-lg-10"
           cards:
             - type: vertical-stack
               cards:
@@ -79,3 +79,39 @@
                     <b>Signal Strength:</b> {{ (data | fromjson)['tuner3_signalstrength']}}<br/>
                     <b>Signal Quality:</b> {{ (data | fromjson)['tuner3_quality']}}<br/>
                     <b>Target IP:</b> {{ (data | fromjson)['tuner3_targetip']}}<br/>
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: custom:stack-in-card
+          mode: horizontal
+          cards:
+            - type: entities
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.hdhomerun_tuner_0_channel
+                - entity: sensor.hdhomerun_tuner_1_channel
+                - entity: sensor.hdhomerun_tuner_2_channel
+                - entity: sensor.hdhomerun_tuner_3_channel

@@ -16,7 +16,7 @@
     }
   cards:
     - type: custom:dwains-flexbox-card
-      items_classes: 'col-xs-12 col-md-12 col-lg-6 col-xl-6'
+      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
       cards:
         # - type: horizontal-stack
         #   cards:
@@ -170,59 +170,137 @@
                     }
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
   cards:
-    - type: custom:mini-graph-card
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        # title: "Chaffey Dam"
+        show_states: true
+        colorize_states: true
+      span:
+        end: hour
+        ## offset: -23h
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, width: 3, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis: { decimalsInFloat: 2 }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
         - entity: sensor.waternsw_chaffey_dam_storage
-      name: Chaffey Dam
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      height: 30
-      font-size: 10
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: last
-      align_state: center
-      show:
-        extrema: true
-        fill: fade
-    - type: custom:mini-graph-card
-      entities:
+          name: "Chaffey Dam"
+          type: area
+          # color: var(--dwains-theme-accent)
+          extend_to_end: false
+          group_by:
+            func: avg
+            duration: 1h
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        # title: "Chaffey Dam"
+        show_states: true
+        colorize_states: true
+      span:
+        end: hour
+        ## offset: -23h
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, width: 3, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis: { decimalsInFloat: 2 }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
         - entity: sensor.waternsw_keepit_dam_storage
-      name: Keepit Dam
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      height: 30
-      font-size: 10
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: last
-      align_state: center
-      show:
-        extrema: true
-        fill: fade
-    - type: custom:mini-graph-card
-      entities:
-        - sensor.waternsw_split_rock_dam_storage
-      name: Split Rock Dam
-      line_color: 'var(--dwains-theme-accent)'
-      line_width: 2
-      height: 30
-      font-size: 10
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: last
-      align_state: center
-      show:
-        extrema: true
-        fill: fade
+          name: "Keepit Dam"
+          type: area
+          # color: var(--dwains-theme-accent)
+          extend_to_end: false
+          group_by:
+            func: avg
+            duration: 1h
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        # title: "Chaffey Dam"
+        show_states: true
+        colorize_states: true
+      span:
+        end: hour
+        ## offset: -23h
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, width: 3, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis: { decimalsInFloat: 2 }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.waternsw_split_rock_dam_storage
+          name: "Split Rock Dam"
+          type: area
+          # color: var(--dwains-theme-accent)
+          extend_to_end: false
+          group_by:
+            func: avg
+            duration: 1h
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-4 col-sm-4 col-xl-4'
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
   cards:
     - type: vertical-stack
       cards:
@@ -257,13 +335,13 @@
               entities:
                 - attribute: spillway_level
                   name: S/W Lev
-                  unit: ' '
+                  unit: " "
                 - attribute: dead_water_level
                   name: D/W Level
-                  unit: ' '
+                  unit: " "
                 - attribute: capacity
-                  name: 'Capacity (ML)'
-                  unit: ' '
+                  name: "Capacity (ML)"
+                  unit: " "
             - entity: sensor.waternsw_chaffey_dam_storage
               name: Current Storage %
             - entity: sensor.waternsw_chaffey_dam_volume
@@ -317,13 +395,13 @@
               entities:
                 - attribute: spillway_level
                   name: S/W Lev
-                  unit: ' '
+                  unit: " "
                 - attribute: dead_water_level
                   name: D/W Level
-                  unit: ' '
+                  unit: " "
                 - attribute: capacity
-                  name: 'Capacity (ML)'
-                  unit: ' '
+                  name: "Capacity (ML)"
+                  unit: " "
             - entity: sensor.waternsw_keepit_dam_storage
               name: Current Storage %
             - entity: sensor.waternsw_keepit_dam_volume
@@ -372,13 +450,13 @@
               entities:
                 - attribute: spillway_level
                   name: S/W Lev
-                  unit: ' '
+                  unit: " "
                 - attribute: dead_water_level
                   name: D/W Level
-                  unit: ' '
+                  unit: " "
                 - attribute: capacity
-                  name: 'Capacity (ML)'
-                  unit: ' '
+                  name: "Capacity (ML)"
+                  unit: " "
             - entity: sensor.waternsw_split_rock_dam_storage
               name: Current Storage %
             - entity: sensor.waternsw_split_rock_dam_volume

@@ -2,7 +2,7 @@
 # https://github.com/iprak/yahoofinance
 yahoofinance:
   scan_interval:
-    hours: 1
+    minutes: 30
   show_trending_icon: true
   decimal_places: 3
   symbols:

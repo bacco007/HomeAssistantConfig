@@ -1,0 +1,3 @@
+---
+# https://www.home-assistant.io/integrations/climate/
+climate: !include_dir_list ../entities/climate

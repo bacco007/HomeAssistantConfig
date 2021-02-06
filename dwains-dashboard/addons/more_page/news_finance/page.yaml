@@ -69,7 +69,9 @@
           sort_by: friendly_name
           clickable: true
           css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
               - yahoofinance.*ax*
@@ -88,8 +90,13 @@
               align: right
               modify: parseFloat(x).toFixed(3)
               prefix: "$"
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
             - name: PrevCl
-              attr: previousClose
+              attr: regularMarketPreviousClose
               align: right
               modify: parseFloat(x).toFixed(2)
               prefix: "$"
@@ -118,7 +125,9 @@
           sort_by: friendly_name
           clickable: true
           css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
               - yahoofinance.*_x
@@ -130,8 +139,12 @@
               attr: fiftyDayAverage
               align: right
               modify: parseFloat(x).toFixed(3)
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
             - name: PrevCl
-              attr: previousClose
+              attr: regularMarketPreviousClose
               align: right
               modify: parseFloat(x).toFixed(3)
             - name: Current
@@ -158,7 +171,9 @@
           sort_by: friendly_name
           clickable: true
           css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
               - yahoofinance.aord
@@ -174,8 +189,12 @@
               attr: fiftyDayAverage
               align: right
               modify: parseFloat(x).toFixed(3)
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
             - name: PrevCl
-              attr: previousClose
+              attr: regularMarketPreviousClose
               align: right
               modify: parseFloat(x).toFixed(2)
             - name: Current

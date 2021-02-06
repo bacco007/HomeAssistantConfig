@@ -146,11 +146,24 @@ class ListCard extends HTMLElement {
 
                     if (columns[column].hasOwnProperty('type')) {
                       if (columns[column].type === 'image') {
+                        if (columns[column].hasOwnProperty('width')) {
+                          var image_width = columns[column].width;
+                        } else {
+                          var image_width = 70;
+                        }
+                        if (columns[column].hasOwnProperty('height')) {
+                          var image_height = columns[column].height;
+                        } else {
+                          var image_height = 90;
+                        }
                         if (feed[entry][columns[column].field][0].hasOwnProperty('url')) {
-                            card_content += `<img src="${feed[entry][columns[column].field][0].url}" width="70" height="90">`;
-                          } else {
-                            card_content += `<img src="${feed[entry][columns[column].field]}" width="70" height="90">`;
-                          }
+                            var url = feed[entry][columns[column].field][0].url
+                        } else {
+                          var url = feed[entry][columns[column].field]
+                        }
+                          card_content += `<img id="image" src="${url}" width="${image_width}" height="${image_height}">`;
+                      } else if (columns[column].type === 'icon') {
+                        card_content += `<ha-icon class="column-${columns[column].field}" icon=${feed[entry][columns[column].field]}></ha-icon>`;
                       }
                       // else if (columns[column].type === 'button') {
                       //   card_content += `<paper-button raised>${feed[entry][columns[column].button_text]}</paper-button>`;

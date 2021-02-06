@@ -120,7 +120,7 @@ class YahooFinanceSensor(Entity):
         return self._icon
 
     def _round(self, value):
-        """Return formatted value based on decimal_places"""
+        """Return formatted value based on decimal_places."""
         if value is None:
             return None
 
@@ -171,7 +171,7 @@ class YahooFinanceSensor(Entity):
         trending_state = self._calc_trending_state()
 
         # Fall back to currency based icon if there is no trending state
-        if not trending_state is None:
+        if trending_state is not None:
             self._attributes[ATTR_TRENDING] = trending_state
 
             if self._show_trending_icon:

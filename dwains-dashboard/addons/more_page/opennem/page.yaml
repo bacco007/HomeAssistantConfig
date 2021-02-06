@@ -1,79 +1,158 @@
 #dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-md-6 col-lg-4 col-xl-4'
+  items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
   cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - sensor.opennem_nsw1_current_price
-      name: Current Price
-      line_color: 'var(--dwains-theme-accent)'
-      decimals: 2
-      hours_to_show: 168
-      points_per_hour: 2
-      group_by: hour
-      aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      show:
-        extrema: true
-        average: true
-        fill: fade
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
-          name: Fossil Fuels
-        - entity: sensor.opennem_nsw1_gen_from_renewables
-          name: Renewables
-      name: Generation Type
-      line_color: 'var(--dwains-theme-accent)'
-      hours_to_show: 168
-      points_per_hour: 2
-      group_by: hour
-      aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      show:
-        extrema: true
-        average: true
-        fill: fade
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      span:
+        end: day
+      header:
+        show: true
+        title: "Current Price"
+        show_states: true
+        colorize_states: true
+      apex_config:
+        chart:
+          {
+            type: "area",
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, width: 2.5, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
 
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - entity: sensor.opennem_nsw1_electricity_demand
+      series:
+        - entity: sensor.opennem_nsw1_current_price
+          type: area
+          name: Temp
+          extend_to_end: false
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 30m
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      span:
+        end: day
+      header:
+        show: true
+        title: "Generation Type"
+        show_states: true
+        colorize_states: true
+      apex_config:
+        chart:
+          {
+            type: "area",
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, width: 2.5, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+
+      series:
+        - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+          type: area
+          name: Fossil Fuels
+          extend_to_end: false
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 30m
+        - entity: sensor.opennem_nsw1_gen_from_renewables
+          type: area
+          name: Renewables
+          extend_to_end: false
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 30m
+
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      span:
+        end: day
+      header:
+        show: true
+        title: "Generation vs Demand"
+        show_states: true
+        colorize_states: true
+      apex_config:
+        chart:
+          {
+            type: "area",
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, width: 2.5, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+
+      series:
+        - entity: sensor.opennem_nsw1_generationvsdemand
+          type: area
           name: Demand
-        - entity: sensor.opennem_nsw1_electricity_generation
-          name: Generation
-      name: Generation vs Demand
-      line_color: 'var(--dwains-theme-accent)'
-      hours_to_show: 168
-      points_per_hour: 2
-      group_by: hour
-      aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      show:
-        extrema: true
-        average: true
-        fill: fade
+          extend_to_end: false
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 30m
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
     - type: entities
       title: Current State
@@ -116,6 +195,10 @@
           name: Electricity Gen from Fossil Fuels
         - entity: sensor.opennem_nsw1_gen_from_renewables
           name: Electricity Gen from Renewables
+        - type: section
+        - entity: sensor.opennem_nsw1_generationvsdemand
+          name: Generation vs Demand (-ve Excess, +ve Deficit)
+          icon: mdi:power-cycle
 
     - type: custom:config-template-card
       variables:
@@ -198,11 +281,11 @@
                   value: inside
                 entity_row: true
                 min: 0
-                max: '${vars[0]}'
+                max: "${vars[0]}"
                 color: rgb(26,204,147,0.33)
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-md-12 col-lg-12 col-xl-12'
+  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:
     - type: custom:mini-graph-card
       style: |
@@ -217,7 +300,7 @@
         - entity: sensor.amber_currentprice_b1
           name: B1 (Solar)
       name: Amber Prices - Spot Prices
-      line_color: 'var(--dwains-theme-accent)'
+      line_color: "var(--dwains-theme-accent)"
       animate: true
       decimals: 2
       height: 30
@@ -235,7 +318,100 @@
         fill: fade
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 59h
+      header:
+        show: true
+        title: "Amber Price Prediction (General Usage - E1)"
+      span:
+        start: hour
+        offset: -1d
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, width: 3, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.amber_general_usage_price
+          name: Predicted Price
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          data_generator: |
+            return entity.attributes.price_forcecast.map((entry) => {
+              return [new Date(entry.pricing_period), entry.price];
+            });
+        - entity: sensor.amber_general_usage_price
+          name: Historic Price
+          type: area
+          extend_to_end: false
+
+    - type: custom:apexcharts-card
+      graph_span: 59h
+      header:
+        show: true
+        title: "Amber Price Prediction (Solar Feed-In)"
+      span:
+        start: hour
+        offset: -1d
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, width: 3, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: true,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.amber_solar_feed_in_tariff
+          name: Predicted Price
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          data_generator: |
+            return entity.attributes.price_forcecast.map((entry) => {
+              return [new Date(entry.pricing_period), entry.price];
+            });
+        - entity: sensor.amber_solar_feed_in_tariff
+          name: Historic Price
+          type: area
+          extend_to_end: false
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
     - type: entities
       title: Amber Electric

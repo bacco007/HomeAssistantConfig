@@ -75,3 +75,10 @@ sensor:
       - solar
       - temperature
       - wind
+  - platform: template
+    sensors:
+      opennem_nsw1_generationvsdemand:
+        friendly_name: "Generation vs Demand"
+        unit_of_measurement: "MW"
+        value_template: >-
+          {{ ((states('sensor.opennem_nsw1_electricity_demand')|int)-(states('sensor.opennem_nsw1_electricity_generation')|int))|round(3) }}
