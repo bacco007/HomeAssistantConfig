@@ -2,16 +2,22 @@
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
     - type: custom:apexcharts-card
-      graph_span: 8d
+      graph_span: 7d12h
       header:
         show: true
-        title: "Temperature Forecast"
+        title: "Forecast"
       span:
         start: day
-        offset: -12h
+        offset: -6h
       apex_config:
         chart: { type: "area", height: 300 }
-        stroke: { show: true, width: 3, curve: smooth }
+        stroke:
+          {
+            show: true,
+            width: [2, 3, 3],
+            lineCap: "square",
+            dashArray: [10, 0, 0],
+          }
         dataLabels: { enabled: true }
         legend: { show: false }
         fill:
@@ -31,13 +37,37 @@
             type: "datetime",
             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
           }
+        yaxis:
+          - seriesName: "Rainfall"
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+          - seriesName: "High"
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "High"
+            show: false
 
       series:
         - entity: weather.east_tamworth
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          unit: "mm"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation];
+            });
+        - entity: weather.east_tamworth
           name: High
           type: area
-          # color: "#008FFB"
+          color: "da1e28"
           extend_to_end: false
+          unit: "°C"
+          show:
+            datalabels: true
           data_generator: |
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.temperature];
@@ -45,86 +75,158 @@
         - entity: weather.east_tamworth
           name: Low
           type: area
-          # color: "#00E396"
+          color: "#0043ce"
           extend_to_end: false
+          unit: "°C"
+          show:
+            datalabels: true
           data_generator: |
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.templow];
             });
     - type: custom:apexcharts-card
-      graph_span: 24h
-      span:
-        start: day
+      graph_span: 48h1s
       header:
         show: true
-        title: "Outdoor Temperature (Today)"
-        show_states: true
-        colorize_states: true
+        title: "Dark Sky Forecast"
+      span:
+        start: hour
+        offset: -1s
+      apex_config:
+        chart: { type: "area", height: 450 }
+        stroke:
+          { show: true, width: [3, 2], lineCap: "square", dashArray: [0, 10] }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Temp"
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "Rainfall"
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+
+      series:
+        - entity: weather.dark_sky
+          name: Temperature
+          type: area
+          color: "#121619"
+          extend_to_end: false
+          unit: "°C"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.temperature];
+            });
+        - entity: weather.dark_sky
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          unit: "mm"
+          curve: stepline
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation || 0];
+            });
+
+    - type: custom:apexcharts-card
+      graph_span: 24h2s
+      span:
+        end: hour
+      header:
+        show: true
+        title: "Outdoor Temperature (Last 24hrs)"
+        show_states: false
+        colorize_states: false
       apex_config:
         chart:
           {
+            type: "area",
+            height: 350,
             toolbar: { show: true, tools: { reset: true } },
             zoom: { type: "x", enabled: true, autoScaleYaxis: true },
           }
-        stroke: { show: true, width: 2.5, curve: smooth }
+        stroke:
+          {
+            show: true,
+            width: [4, 2, 1.5],
+            lineCap: "square",
+            dashArray: [0, 5, 2],
+          }
+        legend: { show: false }
+        fill:
+          {
+            type: ["solid", "solid"],
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Temp"
+            decimalsInFloat: 0
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "Temp"
+            show: false
+          - seriesName: "Humidity"
+            opposite: true
+            decimalsInFloat: 0
+            title:
+              text: "Humidity (%)"
       series:
         - entity: sensor.weather_outside_temperature
-          type: line
           name: Temp
+          type: line
+          # color: "da1e28"
           extend_to_end: false
-          curve: smooth
+          unit: "°C"
           group_by:
             func: last
-            duration: 30min
+            duration: 10min
         - entity: sensor.weather_outside_temperature
-          type: column
-          color: "#424242"
+          type: line
+          color: "#121619"
           name: Change
           extend_to_end: false
           group_by:
             func: diff
             duration: 30min
-    - type: custom:apexcharts-card
-      graph_span: 24h
-      span:
-        end: hour
-      header:
-        show: true
-        title: "Outdoor Temperature (Today)"
-        show_states: true
-        colorize_states: true
-      apex_config:
-        chart:
-          {
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, width: 2.5, curve: smooth }
-      series:
-        - entity: sensor.weather_outside_temperature
+        - entity: sensor.weather_outside_humidity
           type: line
-          name: Temp
           extend_to_end: false
-          curve: smooth
+          unit: "%"
           group_by:
             func: last
-            duration: 30min
-        - entity: sensor.tamworth_airport_temp
-          type: line
-          name: AP Temp
-          extend_to_end: false
-          curve: smooth
-          group_by:
-            func: last
-            duration: 30min
-        - entity: sensor.weather_outside_temperature
-          type: column
-          color: "#424242"
-          name: Change
-          extend_to_end: false
-          group_by:
-            func: delta
-            duration: 30min
+            duration: 10min
+
     - type: custom:apexcharts-card
       graph_span: 7d
       span:
@@ -132,26 +234,81 @@
       header:
         show: true
         title: "Outdoor Temperature (Week)"
-        show_states: true
+        show_states: false
         colorize_states: true
+      apex_config:
+        chart:
+          {
+            type: "area",
+            height: 350,
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke:
+          {
+            show: true,
+            width: [4, 2, 1.5],
+            lineCap: "square",
+            dashArray: [0, 5, 2],
+          }
+        legend: { show: false }
+        fill:
+          {
+            type: ["solid", "solid"],
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Temp"
+            decimalsInFloat: 0
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "Temp"
+            show: false
+          - seriesName: "Humidity"
+            opposite: true
+            decimalsInFloat: 0
+            title:
+              text: "Humidity (%)"
       series:
         - entity: sensor.weather_outside_temperature
           type: line
           name: Temp
           extend_to_end: false
           curve: smooth
+          unit: "°C"
           group_by:
             func: last
             duration: 1h
         - entity: sensor.weather_outside_temperature
-          type: column
+          type: line
           extend_to_end: false
           color: "#424242"
           name: Change
           curve: smooth
+          unit: "°C"
           group_by:
             func: delta
             duration: 6h
+        - entity: sensor.weather_outside_humidity
+          type: line
+          extend_to_end: false
+          curve: smooth
+          unit: "%"
+          group_by:
+            func: last
+            duration: 1h
     - type: custom:apexcharts-card
       graph_span: 24h
       span:
@@ -173,20 +330,21 @@
           group_by:
             func: delta
             duration: 30min
+
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
     - type: custom:apexcharts-card
-      graph_span: 59h
+      graph_span: 1d1s
       header:
         show: true
-        title: "Amber Price Prediction (General Usage - E1)"
+        title: "Flights Tracked - Last 24hrs"
       span:
-        start: hour
-        offset: -1d
+        end: hour
       apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, width: 3, curve: smooth }
+        chart: { type: "area", height: 200 }
+        stroke:
+          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
         legend: { show: false }
         dataLabels: { enabled: false }
         xaxis:
@@ -194,6 +352,16 @@
             type: "datetime",
             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
           }
+        yaxis:
+          - seriesName: "Flights"
+            decimalsInFloat: 0
+            title:
+              text: "No. Flights"
+          - seriesName: "Distance"
+            decimalsInFloat: 1
+            title:
+              text: "Distance (km)"
+            opposite: true
         fill:
           {
             type: "gradient",
@@ -207,19 +375,77 @@
               },
           }
       series:
-        - entity: sensor.amber_general_usage_price
-          name: Predicted Price
+        - entity: sensor.flighttracker_flights_now
+          name: Flights
           type: area
           # color: "#008FFB"
           extend_to_end: false
-          data_generator: |
-            return entity.attributes.price_forcecast.map((entry) => {
-              return [new Date(entry.pricing_period), entry.price];
-            });
-        - entity: sensor.amber_general_usage_price
-          name: Historic Price
+          group_by:
+            func: max
+            duration: 15min
+        - entity: sensor.flighttracker_maxdistance_km
+          name: Max Distance
           type: area
           extend_to_end: false
+          group_by:
+            func: max
+            duration: 15m
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "Flights Tracked - Last Week"
+      span:
+        end: hour
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke:
+          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Flights"
+            decimalsInFloat: 0
+            title:
+              text: "No. Flights"
+          - seriesName: "Distance"
+            decimalsInFloat: 1
+            title:
+              text: "Distance (km)"
+            opposite: true
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.flighttracker_flights_1hr
+          name: Flights
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          group_by:
+            func: max
+            duration: 1h
+        - entity: sensor.flighttracker_maxdistance_km
+          name: Max Distance
+          type: area
+          extend_to_end: false
+          group_by:
+            func: max
+            duration: 1h
 
     - type: custom:apexcharts-card
       graph_span: 59h

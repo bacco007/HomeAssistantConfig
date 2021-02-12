@@ -1,0 +1,23 @@
+{
+    "title": "Optus",
+    "config": {
+      "step": {
+        "user": {
+          "data": {
+            "username": "Optus Username (Email)",
+            "password": "Optus Password",
+            "mobile": "Optus Mobile Number"
+          }
+        }
+      },
+      "error": {
+        "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+        "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+        "unknown": "[%key:common::config_flow::error::unknown%]"
+      },
+      "abort": {
+        "already_configured": "[%key:common::config_flow::abort::already_configured_account%]"
+      }
+    }
+  }
+    

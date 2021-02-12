@@ -328,6 +328,9 @@
       span:
         start: hour
         offset: -1d
+      now:
+        show: true
+        label: "now"
       apex_config:
         chart: { type: "area", height: 300 }
         stroke: { show: true, width: 3, curve: smooth }
@@ -373,6 +376,9 @@
       span:
         start: hour
         offset: -1d
+      now:
+        show: true
+        label: "now"
       apex_config:
         chart: { type: "area", height: 300 }
         stroke: { show: true, width: 3, curve: smooth }

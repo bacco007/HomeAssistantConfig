@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "1.2.7",
+        "version": "1.2.9",
         "local": false,
         "nodes": {
             "inject": {
@@ -360,7 +360,7 @@
     },
     "node-red-contrib-actionflows": {
         "name": "node-red-contrib-actionflows",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "local": false,
         "nodes": {
             "actionfilters": {
@@ -859,23 +859,6 @@
             }
         }
     },
-    "node-red-contrib-state-machine": {
-        "name": "node-red-contrib-state-machine",
-        "version": "1.2.0",
-        "local": false,
-        "nodes": {
-            "state-machine": {
-                "name": "state-machine",
-                "types": [
-                    "state-machine"
-                ],
-                "enabled": true,
-                "local": false,
-                "module": "node-red-contrib-state-machine",
-                "file": "/opt/node_modules/node-red-contrib-state-machine/state-machine.js"
-            }
-        }
-    },
     "node-red-contrib-statistics": {
         "name": "node-red-contrib-statistics",
         "version": "2.2.2",
@@ -1250,7 +1233,7 @@
     },
     "node-red-node-geofence": {
         "name": "node-red-node-geofence",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "local": false,
         "nodes": {
             "geofence": {
@@ -1669,6 +1652,23 @@
                 "local": false,
                 "module": "node-red-contrib-twitter",
                 "file": "/opt/node_modules/node-red-contrib-twitter/twitter-client.js"
+            }
+        }
+    },
+    "node-red-contrib-persistent-fsm": {
+        "name": "node-red-contrib-persistent-fsm",
+        "version": "1.1.0",
+        "local": false,
+        "nodes": {
+            "state-machine": {
+                "name": "state-machine",
+                "types": [
+                    "state-machine"
+                ],
+                "enabled": true,
+                "local": false,
+                "module": "node-red-contrib-persistent-fsm",
+                "file": "/opt/node_modules/node-red-contrib-persistent-fsm/state-machine.js"
             }
         }
     }

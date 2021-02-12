@@ -91,182 +91,115 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 1d1s
+      header:
+        show: true
+        title: "Flights Tracked - Last 24hrs"
+      span:
+        end: hour
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke:
+          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Flights"
+            decimalsInFloat: 0
+            title:
+              text: "No. Flights"
+          - seriesName: "Distance"
+            decimalsInFloat: 1
+            title:
+              text: "Distance (km)"
+            opposite: true
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
         - entity: sensor.flighttracker_flights_now
-      name: Flights Tracked - Last Day
-      animate: true
-      decimals: 0
-      height: 30
-      font-size: 20
-      hours_to_show: 24
-      points_per_hour: 60
-      # group_by: date
-      aggregate_func: max
-      line_width: 1
-      align_state: center
-      smoothing: true
-      bar_spacing: 1
-      show:
-        graph: bar
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 0.1
-          color: "var(--dwains-theme-accent)"
-        - value: 0
-          color: lightgray
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - entity: sensor.flighttracker_flights_1hr
-      name: Flights Tracked - Last Week
-      line_color: "var(--dwains-theme-accent)"
-      animate: true
-      decimals: 0
-      height: 30
-      font-size: 20
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: max
-      line_width: 1
-      align_state: center
-      bar_spacing: 1
-      show:
-        graph: bar
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 0.1
-          color: "var(--dwains-theme-accent)"
-        - value: 0
-          color: lightgray
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - entity: sensor.flighttracker_flights_6hr
-      name: Flights Tracked - Last Week
-      line_color: "var(--dwains-theme-accent)"
-      animate: true
-      decimals: 0
-      height: 30
-      font-size: 20
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: max
-      line_width: 1
-      align_state: center
-      bar_spacing: 1
-      show:
-        graph: bar
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 0.1
-          color: "var(--dwains-theme-accent)"
-        - value: 0
-          color: lightgray
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - entity: sensor.flighttracker_flights_12hr
-      name: Flights Tracked - Last Week
-      line_color: "var(--dwains-theme-accent)"
-      animate: true
-      decimals: 0
-      height: 30
-      font-size: 20
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: max
-      line_width: 1
-      align_state: center
-      bar_spacing: 1
-      show:
-        graph: bar
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 0.1
-          color: "var(--dwains-theme-accent)"
-        - value: 0
-          color: lightgray
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
-        - entity: sensor.flighttracker_flights_24hr
-      name: Flights Tracked - Last Week
-      line_color: "var(--dwains-theme-accent)"
-      animate: true
-      decimals: 0
-      height: 30
-      font-size: 20
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: max
-      line_width: 1
-      align_state: center
-      bar_spacing: 1
-      show:
-        graph: bar
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 0.1
-          color: "var(--dwains-theme-accent)"
-        - value: 0
-          color: lightgray
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
+          name: Flights
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          group_by:
+            func: max
+            duration: 15min
         - entity: sensor.flighttracker_maxdistance_km
-      name: Max Distance (Km)
-      line_color: "var(--dwains-theme-accent)"
-      animate: true
-      decimals: 0
-      height: 30
-      font-size: 20
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: max
-      line_width: 1
-      align_state: center
-      bar_spacing: 1
-      show:
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 0.1
-          color: "var(--dwains-theme-accent)"
-        - value: 0
-          color: lightgray
+          name: Max Distance
+          type: area
+          extend_to_end: false
+          group_by:
+            func: max
+            duration: 15m
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "Flights Tracked - Last Week"
+      span:
+        end: hour
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke:
+          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Flights"
+            decimalsInFloat: 0
+            title:
+              text: "No. Flights"
+          - seriesName: "Distance"
+            decimalsInFloat: 1
+            title:
+              text: "Distance (km)"
+            opposite: true
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.flighttracker_flights_1hr
+          name: Flights
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          group_by:
+            func: max
+            duration: 1h
+        - entity: sensor.flighttracker_maxdistance_km
+          name: Max Distance
+          type: area
+          extend_to_end: false
+          group_by:
+            func: max
+            duration: 1h

@@ -4,5 +4,6 @@
   "documentation": "https://github.com/bacco007/sensor.opennem",
   "dependencies": [],
   "codeowners": ["@bacco007"],
-  "requirements": []
+  "requirements": [],
+  "version": "0.6"
 }

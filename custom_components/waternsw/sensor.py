@@ -2,51 +2,58 @@
 import datetime
 import json
 import logging
-import requests
 from datetime import timedelta
+
+import requests
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME, CONF_ICON
+from homeassistant.const import ATTR_ATTRIBUTION, CONF_ICON, CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
-__version__ = 'v0.4'
+__version__ = "v0.4"
 _LOGGER = logging.getLogger(__name__)
 
 REQUIREMENTS = []
 
-CONF_SITE = 'site_id'
-CONF_VARFROM = 'from_variable'
-CONF_VARTO = 'to_variable'
-CONF_UOM = 'unit_of_measure'
+CONF_SITE = "site_id"
+CONF_VARFROM = "from_variable"
+CONF_VARTO = "to_variable"
+CONF_UOM = "unit_of_measure"
 
-DEFAULT_UOM = 'Unknown'
-DEFAULT_ICON = 'mdi:water'
+DEFAULT_UOM = "Unknown"
+DEFAULT_ICON = "mdi:water"
 
 MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=10)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_NAME): cv.string,
-    vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.string,
-    vol.Required(CONF_SITE): cv.string,
-    vol.Required(CONF_VARFROM): cv.string,
-    vol.Required(CONF_VARTO): cv.string,
-    vol.Required(CONF_UOM, default=DEFAULT_UOM): cv.string
-})
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Required(CONF_NAME): cv.string,
+        vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.string,
+        vol.Required(CONF_SITE): cv.string,
+        vol.Required(CONF_VARFROM): cv.string,
+        vol.Required(CONF_VARTO): cv.string,
+        vol.Required(CONF_UOM, default=DEFAULT_UOM): cv.string,
+    }
+)
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     "Setup Platform"
-    add_entities([WaterNSWSensor(
-        name=config[CONF_NAME],
-        icon=config[CONF_ICON],
-        site=config[CONF_SITE],
-        varfrom=config[CONF_VARFROM],
-        varto=config[CONF_VARTO],
-        uom=config[CONF_UOM]
-    )])
+    add_entities(
+        [
+            WaterNSWSensor(
+                name=config[CONF_NAME],
+                icon=config[CONF_ICON],
+                site=config[CONF_SITE],
+                varfrom=config[CONF_VARFROM],
+                varto=config[CONF_VARTO],
+                uom=config[CONF_UOM],
+            )
+        ]
+    )
 
 
 class WaterNSWSensor(Entity):
@@ -83,8 +90,15 @@ class WaterNSWSensor(Entity):
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
 
-        url = "https://realtimedata.waternsw.com.au/cgi/webservice.pl?{'function':'get_latest_ts_values','version':'2','params':{'site_list':'" + str(
-            self._site) + "','datasource':'PROV','trace_list':[{'varfrom':'" + str(self._varfrom) + "','varto':'" + str(self._varto) + "'}]}}&ver=2"
+        url = (
+            "https://realtimedata.waternsw.com.au/cgi/webservice.pl?{'function':'get_latest_ts_values','version':'2','params':{'site_list':'"
+            + str(self._site)
+            + "','datasource':'PROV','trace_list':[{'varfrom':'"
+            + str(self._varfrom)
+            + "','varto':'"
+            + str(self._varto)
+            + "'}]}}&ver=2"
+        )
 
         try:
             response = requests.get(url)
@@ -100,20 +114,20 @@ class WaterNSWSensor(Entity):
         self._state = 0
 
         try:
-            reqvalue = results['return'][self._site][0]['values'][0]['v']
+            reqvalue = results["return"][self._site][0]["values"][0]["v"]
         except:
             reqvalue = "unknown"
-            _LOGGER.error('Cannot retrieve date, check config')
+            _LOGGER.error("Cannot retrieve date, check config")
 
         try:
-            time = results['return'][self._site][0]['values'][0]['time']
+            time = results["return"][self._site][0]["values"][0]["time"]
         except:
             time = "unknown"
 
         if time == "unknown":
             datetime_obj = datetime.datetime.now()
         else:
-            datetime_obj = datetime.datetime.strptime(time, '%Y%m%d%H%M%S')
+            datetime_obj = datetime.datetime.strptime(time, "%Y%m%d%H%M%S")
 
         # Check for stale data
         today_obj = datetime.datetime.now()

@@ -69,3 +69,6 @@ recorder:
       - timer_out_of_sync
       - hacs/repository
       - system_log_event
+      - transmission_removed_torrent
+      - transmission_downloaded_torrent
+      - transmission_started_torrent

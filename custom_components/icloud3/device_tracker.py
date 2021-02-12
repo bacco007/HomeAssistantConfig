@@ -22,7 +22,7 @@ Thanks to all
 #pylint: disable=unused-argument, unused-variable
 #pylint: disable=too-many-instance-attributes, too-many-lines
 
-VERSION = '2.3'
+VERSION = '2.3.2'
 
 #Symbols = •▶¦▶ ●►◄ ▬ ▲▼◀▶ oPhone=►▶►
 
@@ -704,6 +704,7 @@ DEVICES_SCHEMA = vol.Schema({
     vol.Optional(CONF_DEVICENAME): cv.string,
     vol.Optional(CONF_EMAIL): cv.string,
     vol.Optional(CONF_DEVICE): cv.string,
+    vol.Optional(CONF_DEVICE_TYPE): cv.string,
     vol.Optional(CONF_NAME): cv.string,
     vol.Optional(CONF_ZONE): cv.string,
     vol.Optional(CONF_PICTURE): cv.string,
@@ -1227,9 +1228,6 @@ class Icloud3:#(DeviceScanner):
             if self.CONF_TRK_METHOD_FMF_FAMSHR:
                 event_msg = (f"Stage 2a > Authenticate iCloud Account, List Trackable Devices")
                 self._save_event_halog_info("*", event_msg)
-                if self.verification_2sa_flag:
-                    self._save_event("*", "2sa Verification Process Selected")
-
                 self._display_info_status_msg("", "Authenticating iCloud Account")
                 self._pyicloud_initialize_device_api()
 
@@ -7206,12 +7204,12 @@ class Icloud3:#(DeviceScanner):
                 if iosapp_info_event_msg:
                     event_msg += (f"{iosapp_info_event_msg}, ")
                 if self.device_type.get(devicename):
-                    event_msg += (f"Type-{DEVICE_TYPE_FNAME.get(self.device_type.get(devicename))}")
+                    event_msg += (f"Type-{self.device_type.get(devicename)}")
 
                 if warning_msg:
                     event_msg += (f", WARNING-{warning_msg}")
 
-                self._save_event("*", event_msg)
+                self._save_event_halog_info("*", event_msg)
 
         except Exception as err:
             _LOGGER.exception(err)
@@ -7249,7 +7247,7 @@ class Icloud3:#(DeviceScanner):
             iosapp_monitor_flag = True
 
             devicename_parameters = track_devices_device.split('>')
-            devicename  = slugify(devicename_parameters[0].replace(' ', '').lower())
+            devicename  = slugify(devicename_parameters[0])
 
             #If tracking method is IOSAPP or FAMSHR, try to make a friendly
             #name from the devicename. If FMF, it will be retrieved from the
@@ -7257,10 +7255,10 @@ class Icloud3:#(DeviceScanner):
             #overridden with the specified name later.
 
             name, device_type = self._extract_name_device_type(devicename)
-            device_fields[CONF_DEVICENAME] = devicename
-            device_fields[CONF_NAME]          = name
-            device_fields[CONF_DEVICE_TYPE]   = device_type
-            device_fields[CONF_SOURCE]        = track_devices_device
+            device_fields[CONF_DEVICENAME]  = devicename
+            device_fields[CONF_NAME]        = name
+            device_fields[CONF_DEVICE_TYPE] = device_type
+            device_fields[CONF_SOURCE]      = track_devices_device
 
             if instr(track_devices_device, '>'):
                 parameter_items = devicename_parameters[1].strip().split(',')
@@ -8733,7 +8731,7 @@ class Icloud3:#(DeviceScanner):
 
                         #Handle '- device_name' - start a new tracked device.
                         if parameter_name == CONF_DEVICENAME:
-                            devicename        = slugify(parameter_value.replace(' ', '').lower())
+                            devicename        = slugify(parameter_value)
                             name, device_type = self._extract_name_device_type(parameter_value)
                             device_fields[CONF_DEVICENAME]  = devicename
                             device_fields[CONF_NAME]        = name
@@ -9537,21 +9535,20 @@ class Icloud3:#(DeviceScanner):
         '''Extract the name and device type from the devicename'''
 
         try:
-            fname       = devicename.title()
+            fname       = devicename.lower()
             device_type = ""
-
             for ic3dev_type in APPLE_DEVICE_TYPES:
                 if devicename == ic3dev_type:
                     return (devicename, devicename)
 
                 elif instr(devicename, ic3dev_type):
                     fnamew = devicename.replace(ic3dev_type, "")
-                    fname  = fnamew.replace("_", "").replace("-", "").title()
-                    device_type  = ic3dev_type
+                    fname  = fnamew.replace("_", "").replace("-", "").title().strip()
+                    device_type = DEVICE_TYPE_FNAME.get(ic3dev_type, ic3dev_type)
                     break
 
             if device_type == "":
-                fname  = fname.replace("_", "").replace("-", "")
+                fname  = fname.replace("_", "").replace("-", "").title().strip()
 
         except Exception as err:
             _LOGGER.exception(err)

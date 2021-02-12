@@ -1,0 +1,13 @@
+{
+    "domain": "optus",
+    "name": "Optus",
+    "config_flow": true,
+    "documentation": "https://github.com/itchannel/optus-ha",
+    "issue_tracker": "https://github.com/itchannel/optus-ha/issues",
+    "requirements": ["dotted==0.1.8", "optus==0.0.1"],
+    "ssdp": [],
+    "zeroconf": [],
+    "homekit": {},
+    "dependencies": [],
+    "codeowners": ["@itchannel"]
+  }

@@ -56,3 +56,4 @@ alexa*.html
 temp.yml
 yamlint_errors.txt
 .ip_authenticated.yaml
+.google_fit.token

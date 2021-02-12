@@ -2,3 +2,4 @@
 ignored_entities:
   entities:
     - binary_sensor.updater
+    - sensor.unavailable_entities
