@@ -7,6 +7,7 @@ from functools import partial
 from typing import List, Optional
 
 from homeassistant.exceptions import ConfigEntryNotReady
+from libdyson import DysonPureHotCoolLink, DysonPureHotCool
 from libdyson.discovery import DysonDiscovery
 from libdyson.dyson_device import DysonDevice
 from libdyson.exceptions import DysonException
@@ -22,7 +23,7 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.components.zeroconf import async_get_instance
 from libdyson import Dyson360Eye, get_device, MessageType
 
-from .const import CONF_DEVICE_TYPE, DATA_COORDINATORS, DATA_DEVICES, DATA_DISCOVERY, DOMAIN, CONF_CREDENTIAL, CONF_SERIAL, DEVICE_TYPE_NAMES
+from .const import CONF_DEVICE_TYPE, DATA_COORDINATORS, DATA_DEVICES, DATA_DISCOVERY, DOMAIN, CONF_CREDENTIAL, CONF_SERIAL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
     async def _async_forward_entry_setup():
-        for component in _async_get_platform(device):
+        for component in _async_get_platforms(device):
             hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(entry, component)
             )
@@ -122,7 +123,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in _async_get_platform(device)
+                for component in _async_get_platforms(device)
             ]
         )
     )
@@ -135,10 +136,13 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 @callback
-def _async_get_platform(device: DysonDevice) -> List[str]:
+def _async_get_platforms(device: DysonDevice) -> List[str]:
     if isinstance(device, Dyson360Eye):
         return ["binary_sensor", "sensor", "vacuum"]
-    return ["air_quality", "fan", "sensor", "switch"]
+    platforms = ["air_quality", "fan", "sensor", "switch"]
+    if isinstance(device, DysonPureHotCool) or isinstance(device, DysonPureHotCoolLink):
+        platforms.append("climate")
+    return platforms
 
 
 class DysonEntity(Entity):

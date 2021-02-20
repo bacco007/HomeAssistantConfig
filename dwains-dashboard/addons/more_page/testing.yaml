@@ -5,19 +5,13 @@
       graph_span: 7d12h
       header:
         show: true
-        title: "Forecast"
+        title: "BOM Weather Forecast - Tamworth Airport"
       span:
         start: day
         offset: -6h
       apex_config:
         chart: { type: "area", height: 300 }
-        stroke:
-          {
-            show: true,
-            width: [2, 3, 3],
-            lineCap: "square",
-            dashArray: [10, 0, 0],
-          }
+        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
         dataLabels: { enabled: true }
         legend: { show: false }
         fill:
@@ -55,6 +49,7 @@
           type: area
           color: "#1192e8"
           extend_to_end: false
+          stroke_width: 2
           unit: "mm"
           data_generator: |
             return entity.attributes.forecast.map((entry) => {
@@ -65,6 +60,7 @@
           type: area
           color: "da1e28"
           extend_to_end: false
+          stroke_width: 3
           unit: "°C"
           show:
             datalabels: true
@@ -77,6 +73,7 @@
           type: area
           color: "#0043ce"
           extend_to_end: false
+          stroke_width: 3
           unit: "°C"
           show:
             datalabels: true
@@ -88,14 +85,13 @@
       graph_span: 48h1s
       header:
         show: true
-        title: "Dark Sky Forecast"
+        title: "Dark Sky Forecast - Tamworth Airport"
       span:
         start: hour
         offset: -1s
       apex_config:
-        chart: { type: "area", height: 450 }
-        stroke:
-          { show: true, width: [3, 2], lineCap: "square", dashArray: [0, 10] }
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, lineCap: "square", dashArray: [0, 10] }
         legend: { show: false }
         fill:
           {
@@ -130,22 +126,30 @@
           type: area
           color: "#121619"
           extend_to_end: false
+          stroke_width: 3
           unit: "°C"
           data_generator: |
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.temperature];
             });
+          group_by:
+            func: last
+            duration: 1h
         - entity: weather.dark_sky
           name: Rainfall
           type: area
           color: "#1192e8"
           extend_to_end: false
+          stroke_width: 2
           unit: "mm"
           curve: stepline
           data_generator: |
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.precipitation || 0];
             });
+          group_by:
+            func: last
+            duration: 1h
 
     - type: custom:apexcharts-card
       graph_span: 24h2s
@@ -164,13 +168,7 @@
             toolbar: { show: true, tools: { reset: true } },
             zoom: { type: "x", enabled: true, autoScaleYaxis: true },
           }
-        stroke:
-          {
-            show: true,
-            width: [4, 2, 1.5],
-            lineCap: "square",
-            dashArray: [0, 5, 2],
-          }
+        stroke: { show: true, lineCap: "square", dashArray: [0, 0] }
         legend: { show: false }
         fill:
           {
@@ -207,6 +205,7 @@
           type: line
           # color: "da1e28"
           extend_to_end: false
+          stroke_width: 4
           unit: "°C"
           group_by:
             func: last
@@ -216,12 +215,14 @@
           color: "#121619"
           name: Change
           extend_to_end: false
+          stroke_width: 2
           group_by:
             func: diff
             duration: 30min
         - entity: sensor.weather_outside_humidity
           type: line
           extend_to_end: false
+          stroke_width: 1.5
           unit: "%"
           group_by:
             func: last
@@ -244,13 +245,7 @@
             toolbar: { show: true, tools: { reset: true } },
             zoom: { type: "x", enabled: true, autoScaleYaxis: true },
           }
-        stroke:
-          {
-            show: true,
-            width: [4, 2, 1.5],
-            lineCap: "square",
-            dashArray: [0, 5, 2],
-          }
+        stroke: { show: true, lineCap: "square", dashArray: [0, 5, 2] }
         legend: { show: false }
         fill:
           {
@@ -286,6 +281,7 @@
           type: line
           name: Temp
           extend_to_end: false
+          stroke_width: 4
           curve: smooth
           unit: "°C"
           group_by:
@@ -294,6 +290,7 @@
         - entity: sensor.weather_outside_temperature
           type: line
           extend_to_end: false
+          stroke_width: 2
           color: "#424242"
           name: Change
           curve: smooth
@@ -304,47 +301,90 @@
         - entity: sensor.weather_outside_humidity
           type: line
           extend_to_end: false
+          stroke_width: 1.5
           curve: smooth
           unit: "%"
           group_by:
             func: last
             duration: 1h
     - type: custom:apexcharts-card
-      graph_span: 24h
+      graph_span: 24h2s
       span:
         end: hour
+
       header:
         show: true
+        title: "Indoor Temperature"
+        show_states: false
+        colorize_states: true
+      apex_config:
+        chart:
+          {
+            type: "area",
+            height: 350,
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, lineCap: "square", dashArray: [0, 5, 2] }
+        legend: { show: false }
+        fill:
+          {
+            type: ["solid", "solid"],
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Temp"
+            decimalsInFloat: 0
+            title:
+              text: "Temperature (°C)"
       series:
         - entity: sensor.weather_inside_temperature
           type: line
-          name: Inside Temperature
+          name: Today
+          stroke_width: 3
+          extend_to_end: false
+          unit: "°C"
           curve: smooth
           group_by:
             func: last
             duration: 30min
         - entity: sensor.weather_inside_temperature
-          type: column
-          name: Change
+          type: line
+          name: Yesterday
+          stroke_width: 3
+          extend_to_end: false
+          unit: "°C"
           curve: smooth
+          offset: -1d
           group_by:
-            func: delta
+            func: last
             duration: 30min
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
     - type: custom:apexcharts-card
-      graph_span: 1d1s
+      graph_span: 7d1s
       header:
         show: true
-        title: "Flights Tracked - Last 24hrs"
+        title: "Starlink - Satellites"
       span:
         end: hour
       apex_config:
         chart: { type: "area", height: 200 }
-        stroke:
-          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
         legend: { show: false }
         dataLabels: { enabled: false }
         xaxis:
@@ -356,12 +396,7 @@
           - seriesName: "Flights"
             decimalsInFloat: 0
             title:
-              text: "No. Flights"
-          - seriesName: "Distance"
-            decimalsInFloat: 1
-            title:
-              text: "Distance (km)"
-            opposite: true
+              text: "No. Sats"
         fill:
           {
             type: "gradient",
@@ -375,21 +410,15 @@
               },
           }
       series:
-        - entity: sensor.flighttracker_flights_now
-          name: Flights
+        - entity: sensor.tbsmarthome_starlink_overhead_satellites
+          name: No. Sats
           type: area
           # color: "#008FFB"
           extend_to_end: false
+          stroke_width: 3
           group_by:
             func: max
             duration: 15min
-        - entity: sensor.flighttracker_maxdistance_km
-          name: Max Distance
-          type: area
-          extend_to_end: false
-          group_by:
-            func: max
-            duration: 15m
     - type: custom:apexcharts-card
       graph_span: 7d1s
       header:
@@ -436,6 +465,7 @@
           type: area
           # color: "#008FFB"
           extend_to_end: false
+          stroke_width: 3
           group_by:
             func: max
             duration: 1h
@@ -443,6 +473,7 @@
           name: Max Distance
           type: area
           extend_to_end: false
+          stroke_width: 1.5
           group_by:
             func: max
             duration: 1h
@@ -491,3 +522,156 @@
           name: Historic Price
           type: area
           extend_to_end: false
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "Solar Production"
+      span:
+        end: hour
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Flights"
+            decimalsInFloat: 0
+            title:
+              text: "No. Sats"
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.solar_solar_generation
+          name: Solar Gen
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: max
+            duration: 15min
+        - entity: sensor.solar_solar_to_house
+          name: Solar to House
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: max
+            duration: 15min
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - UK - 1st Vaccinations"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "No. Vaccinations"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.covid_19_uk_vaccinations
+          attribute: PeopleVaccinatedFirstDoseByPublishDate
+          name: First Dose
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - UK - 2nd Vaccinations"
+      span:
+        end: hour
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "No. Vaccinations"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.covid_19_uk_vaccinations
+          attribute: PeopleVaccinatedSecondDoseByPublishDate
+          name: Second Dose
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d

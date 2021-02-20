@@ -52,66 +52,30 @@ cards:
         name: Library Stats - No. TV Episodes
         icon: mdi:plex
 
-  - type: custom:flex-table-card
-    style: |
-      ha-card {
-        background-color: var(--dwains-theme-primary);
-        padding-bottom: 10px;
-      }
-      .card-header {
-        padding: 5px 16px;
-        font-size: 18px;
-        font-weight: 700 !important;
-      }
-      # font-family: { var(--primary-font-family);}
-      # font-weight: {400 !important;}
-    clickable: false
-    css:
-      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 10px;"
-      "tbody tr:nth-child(even)": "background-color: none !important;"
-      "tbody tr:nth-child(odd)": "background-color: none !important;"
-    entities:
-      include: sensor.plex_recently_added
-    max_rows: 12
-    strict: true
-    columns:
-      - { data: data, modify: x.title, name: "Name" }
-      - { data: data, modify: x.number, name: "No" }
-      - { data: data, modify: x.episode, name: "Ep" }
-      - {
-          data: data,
-          modify: new Date(x.airdate).toLocaleDateString('en-GB'),
-          name: "Date",
-          align: "center",
-        }
+  - type: markdown
+    content: |-
+      {% set prev = namespace(airdate=false) %}
+      {% for item in state_attr('sensor.plex_recently_added', 'data') %}
+      {% if item.airdate %}
+      {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
+      {% if airdate != prev.airdate %}
+        <b><u>{{ airdate }}</b></u>
+        {% set prev.airdate = airdate %}
+      {% endif %}
+        * {{item.title}} ({{item.number}}, {{item.episode}})
+      {% endif %}
+      {% endfor %}
 
-  - type: custom:flex-table-card
-    style: |
-      ha-card {
-        background-color: var(--dwains-theme-primary);
-        padding-bottom: 10px;
-      }
-      .card-header {
-        padding: 5px 16px;
-        font-size: 18px;
-        font-weight: 700 !important;
-      }
-      # font-family: { var(--primary-font-family);}
-      # font-weight: {400 !important;}
-    clickable: false
-    css:
-      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;  font-size: 10px;"
-      "tbody tr:nth-child(even)": "background-color: none !important;"
-      "tbody tr:nth-child(odd)": "background-color: none !important;"
-    entities:
-      include: sensor.plex_recently_added_movies
-    max_rows: 12
-    strict: true
-    columns:
-      - { data: data, modify: x.title, name: "Name" }
-      - {
-          data: data,
-          modify: new Date(x.airdate).toLocaleDateString('en-GB'),
-          name: "Date",
-          align: "center",
-        }
+  - type: markdown
+    content: |-
+      {% set prev = namespace(airdate=false) %}
+      {% for item in state_attr('sensor.plex_recently_added_movies', 'data') %}
+      {% if item.airdate %}
+      {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
+      {% if airdate != prev.airdate %}
+        <b><u>{{ airdate }}</b></u>
+        {% set prev.airdate = airdate %}
+      {% endif %}
+        * {{item.title}}
+      {% endif %}
+      {% endfor %}

@@ -113,6 +113,9 @@
         title: "Generation vs Demand"
         show_states: true
         colorize_states: true
+      experimental:
+        color_threshold: true
+      y_axis_precision: 0
       apex_config:
         chart:
           {
@@ -120,7 +123,7 @@
             toolbar: { show: true, tools: { reset: true } },
             zoom: { type: "x", enabled: true, autoScaleYaxis: true },
           }
-        stroke: { show: true, width: 2.5, curve: smooth }
+        stroke: { show: true, width: 1, curve: smooth }
         legend: { show: false }
         dataLabels: { enabled: false }
         fill:
@@ -147,9 +150,26 @@
           name: Demand
           extend_to_end: false
           curve: smooth
+          color: black
           group_by:
             func: avg
             duration: 30m
+          color_threshold:
+            - value: -3000
+              color: "#23A76A"
+              opacity: 0.7
+            - value: -500
+              color: "#56BF8D"
+              opacity: 0.7
+            - value: 0
+              color: "#FFE8AB"
+              opacity: 0.7
+            - value: 500
+              color: "#FF8D95"
+              opacity: 0.7
+            - value: 1000
+              color: "#FD305F"
+              opacity: 0.7
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
@@ -287,35 +307,80 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        title: "Amber Spot Prices, Last Week"
+        show_states: true
+        colorize_states: true
+      span:
+        end: hour
+      all_series_config:
+        stroke_width: 2
+        type: area
+        extend_to_end: false
+        curve: stepline
+      y_axis_precision: 0
+      apex_config:
+        chart:
+          height: 300
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+        stroke: { show: true }
+        legend:
+          show: false
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
         - entity: sensor.amber_currentprice_e1
           name: E1 (Grid)
+          group_by:
+            func: last
+            duration: 30min
+          show:
+            extremas: true
         - entity: sensor.amber_currentprice_e2
           name: E2 (Controlled Load)
+          group_by:
+            func: last
+            duration: 30min
+          show:
+            extremas: true
         - entity: sensor.amber_currentprice_b1
           name: B1 (Solar)
-      name: Amber Prices - Spot Prices
-      line_color: "var(--dwains-theme-accent)"
-      animate: true
-      decimals: 2
-      height: 30
-      font-size: 20
-      hours_to_show: 168
-      points_per_hour: 1
-      group_by: hour
-      aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      show:
-        extrema: true
-        average: true
-        fill: fade
+          group_by:
+            func: last
+            duration: 30min
+          show:
+            extremas: true
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
@@ -325,16 +390,45 @@
       header:
         show: true
         title: "Amber Price Prediction (General Usage - E1)"
+        show_states: true
+        colorize_states: true
       span:
         start: hour
         offset: -1d
       now:
         show: true
         label: "now"
+        color: orange
+      all_series_config:
+        stroke_width: 2
+        type: area
+        extend_to_end: false
+        curve: stepline
+      experimental:
+        color_threshold: true
+      color_list:
+        - orange
+        - grey
+      y_axis_precision: 0
       apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, width: 3, curve: smooth }
-        legend: { show: false }
+        chart:
+          height: 300
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+        stroke: { show: true }
+        legend:
+          show: false
         dataLabels: { enabled: false }
         xaxis:
           {
@@ -355,34 +449,62 @@
           }
       series:
         - entity: sensor.amber_general_usage_price
+          name: Historic Price
+          show:
+            extremas: true
+        - entity: sensor.amber_general_usage_price
           name: Predicted Price
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
           data_generator: |
             return entity.attributes.price_forcecast.map((entry) => {
               return [new Date(entry.pricing_period), entry.price];
             });
-        - entity: sensor.amber_general_usage_price
-          name: Historic Price
-          type: area
-          extend_to_end: false
+          show:
+            extremas: true
 
     - type: custom:apexcharts-card
       graph_span: 59h
       header:
         show: true
         title: "Amber Price Prediction (Solar Feed-In)"
+        show_states: true
+        colorize_states: true
       span:
         start: hour
         offset: -1d
       now:
         show: true
         label: "now"
+        color: orange
+      all_series_config:
+        stroke_width: 2
+        type: area
+        extend_to_end: false
+        curve: stepline
+      experimental:
+        color_threshold: true
+      color_list:
+        - orange
+        - grey
+      y_axis_precision: 0
       apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, width: 3, curve: smooth }
-        legend: { show: false }
+        chart:
+          height: 300
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+        stroke: { show: true }
+        legend:
+          show: false
         dataLabels: { enabled: false }
         xaxis:
           {
@@ -403,18 +525,17 @@
           }
       series:
         - entity: sensor.amber_solar_feed_in_tariff
+          name: Historic Price
+          show:
+            extremas: true
+        - entity: sensor.amber_solar_feed_in_tariff
           name: Predicted Price
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
+          show:
+            extremas: true
           data_generator: |
             return entity.attributes.price_forcecast.map((entry) => {
               return [new Date(entry.pricing_period), entry.price];
             });
-        - entity: sensor.amber_solar_feed_in_tariff
-          name: Historic Price
-          type: area
-          extend_to_end: false
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"

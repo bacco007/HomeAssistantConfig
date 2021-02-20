@@ -1,10 +1,10 @@
 {
-    "domain": "dyson_local",
-    "name": "Dyson Local",
+    "domain": "dyson_cloud",
+    "name": "Dyson Cloud",
     "config_flow": true,
     "documentation": "https://github.com/shenxn/ha-dyson",
     "issue_tracker": "https://github.com/shenxn/ha-dyson/issues",
-    "dependencies": ["zeroconf"],
+    "dependencies": [],
     "codeowners": ["@shenxn"],
     "requirements": ["libdyson==0.5.1"]
 }

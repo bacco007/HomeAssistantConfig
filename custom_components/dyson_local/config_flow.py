@@ -9,9 +9,9 @@ from libdyson.cloud import DysonDeviceInfo
 import voluptuous as vol
 from libdyson.discovery import DysonDiscovery
 from libdyson.exceptions import DysonException, DysonInvalidCredential
-from libdyson import get_device
+from libdyson import get_device, DEVICE_TYPE_NAMES
 from voluptuous.error import Invalid
-from .const import CONF_CREDENTIAL, CONF_DEVICE_TYPE, CONF_SERIAL, DOMAIN, DEVICE_TYPE_NAMES
+from .const import CONF_CREDENTIAL, CONF_DEVICE_TYPE, CONF_SERIAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -81,6 +81,7 @@ class DysonLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self._device_info.credential,
                     self._device_info.product_type,
                     self._device_info.name,
+                    info.get(CONF_HOST),
                 )
             except CannotConnect:
                 errors["base"] = "cannot_connect"

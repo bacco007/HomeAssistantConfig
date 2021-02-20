@@ -33,33 +33,43 @@ cards:
       - entity: sensor.radarr_upcoming
         name: Upcoming Movies
 
-  - type: custom:flex-table-card
+  - type: markdown
+    title: Upcoming Tracked Movies
     style: |
       ha-card {
-        background-color: var(--dwains-theme-primary);
         padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
       }
       .card-header {
         padding: 5px 16px;
         font-size: 18px;
         font-weight: 700 !important;
       }
-      # font-family: { var(--primary-font-family);}
-      # font-weight: {400 !important;}
-    clickable: false
-    css:
-      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px; font-size: 10px;"
-      "tbody tr:nth-child(even)": "background-color: none !important;"
-      "tbody tr:nth-child(odd)": "background-color: none !important;"
-    entities:
-      include: sensor.radarr_upcoming_media
-    max_rows: 12
-    strict: true
-    columns:
-      - { data: data, modify: x.title, name: "Name" }
-      - {
-          data: data,
-          modify: new Date(x.airdate).toLocaleDateString('en-GB'),
-          name: "Date",
-          align: "center",
+      .card-content div {
+          margin: 0 !important;
+      }
+      p {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+      }
+      ul {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+      }
+      code {
+        font-size: 8pt;
+        line-height: normal;
+        white-space: pre-wrap;
         }
+    content: |-
+      {% set prev = namespace(airdate=false) %}
+      {% for item in state_attr('sensor.radarr_upcoming_media', 'data') %}
+      {% if item.airdate %}
+      {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
+      {% if airdate != prev.airdate %}
+        <b><u>{{ airdate }}</b></u>
+        {% set prev.airdate = airdate %}
+      {% endif %}
+        * {{item.title}}
+      {% endif %}
+      {% endfor %}

@@ -108,7 +108,7 @@
       graph_span: 24h
       header:
         show: true
-        title: "Pi-Hole Ads Blocked Today"
+        title: "Pi-Hole Ads Blocked"
       span:
         start: hour
         offset: -23h
@@ -136,12 +136,22 @@
           }
       series:
         - entity: sensor.pi_hole_ads_blocked_today
+          name: Today
           type: area
           # color: "#008FFB"
           extend_to_end: false
           group_by:
-            func: last
-            duration: 15m
+            func: avg
+            duration: 1h
+        - entity: sensor.pi_hole_ads_blocked_today
+          name: Yesterday
+          type: area
+          # color: "#008FFB"
+          extend_to_end: false
+          offset: -1d
+          group_by:
+            func: avg
+            duration: 1h
 
 - type: custom:dwains-flexbox-card
   padding: true
@@ -179,12 +189,20 @@
           }
       series:
         - entity: sensor.pi_hole_dns_queries_cached
+          name: Today
           type: area
-          color: "#05f248"
           extend_to_end: false
           group_by:
-            func: last
-            duration: 15m
+            func: avg
+            duration: 1h
+        - entity: sensor.pi_hole_dns_queries_cached
+          name: Yesterday
+          type: area
+          extend_to_end: false
+          offset: -1d
+          group_by:
+            func: avg
+            duration: 1h
 
     - type: custom:apexcharts-card
       graph_span: 24h
@@ -218,12 +236,20 @@
           }
       series:
         - entity: sensor.pi_hole_dns_queries_forwarded
+          name: Today
           type: area
-          color: "#0293fa"
           extend_to_end: false
           group_by:
             func: last
-            duration: 15m
+            duration: 1h
+        - entity: sensor.pi_hole_dns_queries_forwarded
+          name: Yesterday
+          type: area
+          extend_to_end: false
+          offset: -1d
+          group_by:
+            func: last
+            duration: 1h
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"

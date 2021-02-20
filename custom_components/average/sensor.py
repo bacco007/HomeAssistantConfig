@@ -230,6 +230,7 @@ class AverageSensor(Entity):
             STATE_UNKNOWN,
             STATE_UNAVAILABLE,
             "None",
+            "",
         ]
 
     def _get_temperature(self, state: LazyState) -> Optional[float]:
@@ -249,7 +250,12 @@ class AverageSensor(Entity):
         if not self._has_state(temperature):
             return None
 
-        temperature = convert_temperature(float(temperature), entity_unit, ha_unit)
+        try:
+            temperature = convert_temperature(float(temperature), entity_unit, ha_unit)
+        except ValueError:
+            _LOGGER.error('Could not convert value "%s" to float', state)
+            return None
+
         return temperature
 
     def _get_state_value(self, state: LazyState) -> Optional[float]:
@@ -463,17 +469,16 @@ class AverageSensor(Entity):
                     # Get the other states
                     for item in history_list.get(entity_id):
                         _LOGGER.debug("Historical state: %s", item)
-                        if self._has_state(item.state):
-                            current_state = self._get_state_value(item)
-                            current_time = item.last_changed.timestamp()
+                        current_state = self._get_state_value(item)
+                        current_time = item.last_changed.timestamp()
 
-                            if last_state is not None:
-                                last_elapsed = current_time - last_time
-                                value += last_state * last_elapsed
-                                elapsed += last_elapsed
+                        if last_state is not None:
+                            last_elapsed = current_time - last_time
+                            value += last_state * last_elapsed
+                            elapsed += last_elapsed
 
-                            last_state = current_state
-                            last_time = current_time
+                        last_state = current_state
+                        last_time = current_time
 
                     # Count time elapsed between last history state and now
                     if last_state is not None:

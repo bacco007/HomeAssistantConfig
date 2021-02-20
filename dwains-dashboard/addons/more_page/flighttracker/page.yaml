@@ -100,8 +100,7 @@
         end: hour
       apex_config:
         chart: { type: "area", height: 200 }
-        stroke:
-          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
+        stroke: { show: true, curve: smooth, dashArray: [0, 2] }
         legend: { show: false }
         dataLabels: { enabled: false }
         xaxis:
@@ -137,6 +136,7 @@
           type: area
           # color: "#008FFB"
           extend_to_end: false
+          stroke_width: 3
           group_by:
             func: max
             duration: 15min
@@ -144,6 +144,7 @@
           name: Max Distance
           type: area
           extend_to_end: false
+          stroke_width: 1.5
           group_by:
             func: max
             duration: 15m
@@ -156,8 +157,7 @@
         end: hour
       apex_config:
         chart: { type: "area", height: 200 }
-        stroke:
-          { show: true, width: [3, 1.5], curve: smooth, dashArray: [0, 2] }
+        stroke: { show: true, curve: smooth, dashArray: [0, 2] }
         legend: { show: false }
         dataLabels: { enabled: false }
         xaxis:
@@ -193,6 +193,7 @@
           type: area
           # color: "#008FFB"
           extend_to_end: false
+          stroke_width: 3
           group_by:
             func: max
             duration: 1h
@@ -200,6 +201,7 @@
           name: Max Distance
           type: area
           extend_to_end: false
+          stroke_width: 1.5
           group_by:
             func: max
             duration: 1h

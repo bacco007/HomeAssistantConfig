@@ -58,11 +58,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     ]
 
     async_add_entities(sensors, update_before_add=False)
-    _LOGGER.info("Platform added sensors for %s", symbols)
+    _LOGGER.info("Entities added for %s", [item["symbol"] for item in symbols])
 
 
 class YahooFinanceSensor(Entity):
-    """Defines a Yahoo finance sensor."""
+    """Represents a Yahoo finance entity."""
 
     _currency = DEFAULT_CURRENCY
     _icon = DEFAULT_ICON
@@ -165,7 +165,7 @@ class YahooFinanceSensor(Entity):
                 else:
                     self._coordinator.add_symbol(conversion_symbol)
 
-            _LOGGER.debug(f"{self._symbol} conversion {conversion_symbol}={value}")
+            _LOGGER.debug("%s conversion %s=%s", self._symbol, conversion_symbol, value)
 
         return value
 
@@ -199,12 +199,12 @@ class YahooFinanceSensor(Entity):
 
         data = self._coordinator.data
         if data is None:
-            _LOGGER.debug(f"{self._symbol} Coordinator data is None")
+            _LOGGER.debug("%s Coordinator data is None", self._symbol)
             return
 
         symbol_data = data.get(self._symbol)
         if symbol_data is None:
-            _LOGGER.debug(f"{self._symbol} Symbol data is None")
+            _LOGGER.debug("%s Symbol data is None", self._symbol)
             return
 
         self._original_currency = self._get_original_currency(symbol_data)
@@ -232,7 +232,8 @@ class YahooFinanceSensor(Entity):
         self._attributes[ATTR_QUOTE_TYPE] = symbol_data[DATA_QUOTE_TYPE]
         self._attributes[ATTR_QUOTE_SOURCE_NAME] = symbol_data[DATA_QUOTE_SOURCE_NAME]
 
-        # Use target_currency if we have conversion data, otherwise keep using the currency from data.
+        # Use target_currency if we have conversion data. Otherwise keep using the
+        # currency from data.
         if conversion is not None:
             currency = self._target_currency or self._original_currency
         else:
