@@ -42,6 +42,9 @@ cards:
           - entity: sensor.covid_19_esria_aus_tests
             name: Tests
             unit: " "
+          - entity: sensor.covid_19_vaccine_australia
+            name: Vaccines
+            unit: " "
       - entity: sensor.covid_19_esria_aus_pct
         name: Australia Percentages
         type: custom:multiple-entity-row
@@ -101,6 +104,9 @@ cards:
             unit: " "
           - attribute: Tests
             name: Tests
+            unit: " "
+          - entity: sensor.covid_19_vaccine_nsw
+            name: Vaccines
             unit: " "
       - entity: sensor.covid_19_esria_nsw_pct
         name: New South Wales Percentages

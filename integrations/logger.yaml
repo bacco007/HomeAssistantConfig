@@ -3,4 +3,4 @@
 logger:
   default: warn
   # logs:
-  # homeassistant.components.netatmo: debug
+  #   custom_components.covid19_covidlive: debug

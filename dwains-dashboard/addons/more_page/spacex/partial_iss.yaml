@@ -1,7 +1,7 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: custom:flex-table-card
+  - type: markdown
     title: Next ISS Passes
     style: |
       ha-card {
@@ -27,18 +27,17 @@ cards:
         color: darkgray !important;
         margin-left: 2px !important;
       }
-    entities:
-      include: sensor.iss_pass_times
-    columns:
-      - {
-          data: response,
-          modify: new Date(x.risetime*1000).toString(),
-          name: "Time",
-        }
-      - {
-          data: response,
-          modify: (x.duration/60).toFixed(2),
-          suffix: " min",
-          align: "center",
-          name: "Duration",
-        }
+    content: |-
+      {% set prev = namespace(risetime=false) %}
+      {% for item in state_attr('sensor.iss_pass_times', 'response') %}
+      {% if item.risetime %}
+      {% set risetime = item.risetime | timestamp_custom('%a %b %d') %}
+      {% if risetime != prev.risetime %}
+      <b>{{ risetime }}</b>
+      {% set prev.risetime = risetime %}
+      {% endif %}
+      {% set passtime = item.risetime | timestamp_custom('%H:%M') %}
+      {% set dur = item.duration/60 %}
+      * {{passtime}} - {{dur|round(2, 'floor')}} min
+      {% endif %}
+      {% endfor %}

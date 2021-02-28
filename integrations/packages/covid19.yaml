@@ -5,6 +5,34 @@ sensor:
   - platform: covid19_nswhealth_tests
     name: Tamworth
 
+  - platform: covid19_covidlive
+    name: Australia
+    region: aus
+  - platform: covid19_covidlive
+    name: Australian Capital Territory
+    region: act
+  - platform: covid19_covidlive
+    name: New South Wales
+    region: nsw
+  - platform: covid19_covidlive
+    name: Northern Territory
+    region: nt
+  - platform: covid19_covidlive
+    name: Queensland
+    region: qld
+  - platform: covid19_covidlive
+    name: South Australia
+    region: sa
+  - platform: covid19_covidlive
+    name: Tasmania
+    region: tas
+  - platform: covid19_covidlive
+    name: Victoria
+    region: vic
+  - platform: covid19_covidlive
+    name: Western Australia
+    region: wa
+
   - platform: rest
     resource: https://api.coronavirus.data.gov.uk/v1/data?filters=areaType=overview&structure={%22date%22:%22date%22,%22PeopleVaccinatedFirstDoseByPublishDate%22:%22cumPeopleVaccinatedFirstDoseByPublishDate%22,%22PeopleVaccinatedSecondDoseByPublishDate%22:%22cumPeopleVaccinatedSecondDoseByPublishDate%22}
     name: "COVID-19 UK Vaccinations"

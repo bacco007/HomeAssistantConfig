@@ -39,6 +39,17 @@ GROUP BY
 ORDER BY COUNT(event_type) DESC
 LIMIT 20;
 
+SELECT 
+    JSON_VALUE(event_data, '$.entity_id') AS entity_id,
+    COUNT(*) AS cnt
+FROM events
+WHERE
+    JSON_VALUE(event_data, '$.entity_id') IS NOT NULL
+GROUP BY
+    JSON_VALUE(event_data, '$.entity_id')
+ORDER BY
+    COUNT(*) DESC;
+
 SELECT entity_id, SUM(LENGTH(attributes)) size, COUNT(*) count, SUM(LENGTH(attributes))/COUNT(*) avg
 FROM states
 GROUP BY entity_id
@@ -57,3 +68,14 @@ SELECT entity_id, SUM(LENGTH(event_data)) size, COUNT(*) count, SUM(LENGTH(event
 FROM step3
 GROUP BY entity_id
 ORDER BY size DESC;
+ 
+SELECT
+    table_name AS `Table Name`,
+	table_rows AS `Row Count`,
+	ROUND(SUM(data_length)/(1024*1024*1024), 3) AS `Table Size [GB]`,
+	ROUND(SUM(index_length)/(1024*1024*1024), 3) AS `Index Size [GB]`,
+	ROUND(SUM(data_length+index_length)/(1024*1024*1024), 3) `Total Size [GB]`
+FROM information_schema.TABLES
+WHERE table_schema = 'homeassistant'
+GROUP BY table_name
+ORDER BY table_name;

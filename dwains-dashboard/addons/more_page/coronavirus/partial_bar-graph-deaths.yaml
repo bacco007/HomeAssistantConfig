@@ -1,0 +1,418 @@
+type: custom:stack-in-card
+cards:
+  - type: markdown
+    content: State by State - Deaths
+    style: |
+      ha-card {
+        background-color: var(--dwains-theme-primary)
+      }
+      ha-markdown {
+        padding: 10px 16px 5px !important;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        padding: 0em 3em 0em 1.2em;
+        margin-top: -1em;
+        margin-bottom: 1em;
+      }
+    card:
+      type: horizontal-stack
+      cards:
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_act
+            attribute: Deaths
+            name: ACT
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_act','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_nsw
+            attribute: Deaths
+            name: NSW
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_nsw','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_nt
+            attribute: Deaths
+            name: NT
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_nt','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_qld
+            attribute: Deaths
+            name: QLD
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_qld','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_sa
+            attribute: Deaths
+            name: SA
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_sa','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_tas
+            attribute: Deaths
+            name: TAS
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_tas','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_vic
+            attribute: Deaths
+            name: VIC
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_vic','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Deaths
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_wa
+            attribute: Deaths
+            name: WA
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_wa','Deaths') | int) / (state_attr('sensor.covid_19_covidlive_aus','Deaths') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }

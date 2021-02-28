@@ -2,7 +2,7 @@
 type: custom:stack-in-card
 cards:
   - type: custom:flex-table-card
-    title: State by State
+    title: State by State (Covid Live)
     style: |
       ha-card {
         padding-bottom: 10px;
@@ -22,27 +22,34 @@ cards:
       "tbody tr:nth-child(even)": "background-color: none !important;"
       "tbody tr:nth-child(odd)": "background-color: none !important;"
     entities:
-      include: sensor.covid_19_esria_*
-      exclude:
-        - sensor.covid_19_esria_*_pct
-        - sensor.covid_19_esria_aus*
+      include: sensor.covid_19_covidlive*
     columns:
       - name: Name
-        attr: NAME
-        align: center
-      - name: Last Update
-        attr: Last_Updated
-        modify: new Date(x).toDateString()
-        align: center
+        attr: Name
       - name: Cases
         attr: Cases
-        align: right
-        modify: parseFloat(x)
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: Active
+        attr: Active
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: New
+        attr: New Cases
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: Overseas
+        attr: Overseas
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: Hospitalised
+        attr: Hospitalised
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: Recovered
+        attr: Recoveries
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
       - name: Deaths
         attr: Deaths
-        align: right
-        modify: parseFloat(x)
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
       - name: Tests
         attr: Tests
-        align: right
-        modify: parseFloat(x)
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: Doses
+        attr: Doses
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')

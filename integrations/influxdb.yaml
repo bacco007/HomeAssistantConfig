@@ -31,3 +31,4 @@ influxdb:
       - sensor.tbsmarthome_overhead_satellites
     entity_globs:
       - sensor.*monitordocker*
+      - sensor.covid_19_covidlive_*

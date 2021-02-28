@@ -3,112 +3,215 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
   cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      name: NSW AQI (72 Hours)
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 72h
+      span:
+        end: hour
+      header:
+        show: true
+        title: "NSW AQI (72 Hours)"
+        show_states: true
+        colorize_states: true
+      experimental:
+        color_threshold: true
+      y_axis_precision: 0
+      apex_config:
+        chart:
+          {
+            type: "area",
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, width: 1.5, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+
+      series:
         - entity: sensor.nsw_air_quality_tamworth
-          name: AQI
-      animate: true
-      decimals: 0
-      hours_to_show: 48
-      points_per_hour: 6
-      line_width: 3
-      lower_bound: 0
-      align_state: center
-      unit: "AQI"
-      show:
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 200
-          color: "#d04730"
-        - value: 150
-          color: "#782d49"
-        - value: 100
-          color: "#ec783a"
-        - value: 67
-          color: "#ffd236"
-        - value: 34
-          color: "#99b964"
-        - value: 0
-          color: "#31add3"
+          type: area
+          name: Air Quality
+          extend_to_end: false
+          curve: smooth
+          color: black
+          group_by:
+            func: last
+            duration: 1h
+          color_threshold:
+            - value: 200
+              color: "#d04730"
+              opacity: 0.45
+            - value: 150
+              color: "#782d49"
+              opacity: 0.45
+            - value: 100
+              color: "#ec783a"
+              opacity: 0.45
+            - value: 67
+              color: "#ffd236"
+              opacity: 0.45
+            - value: 34
+              color: "#99b964"
+              opacity: 0.45
+            - value: 0
+              color: "#31add3"
+              opacity: 0.45
 
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      name: wAQI (72 Hours)
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 72h
+      span:
+        end: hour
+      header:
+        show: true
+        title: "wAQI (72 Hours)"
+        show_states: true
+        colorize_states: true
+      experimental:
+        color_threshold: true
+      y_axis_precision: 0
+      apex_config:
+        chart:
+          {
+            type: "area",
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, width: 1.5, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+
+      series:
         - entity: sensor.waqi_tamworth_north_west_slopes
-          name: wAQI
-      animate: true
-      decimals: 0
-      hours_to_show: 48
-      points_per_hour: 6
-      line_width: 3
-      lower_bound: 0
-      align_state: center
-      unit: "AQI"
-      show:
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 301
-          color: maroon
-        - value: 201
-          color: purple
-        - value: 151
-          color: red
-        - value: 101
-          color: orange
-        - value: 51
-          color: yellow
-        - value: 0
-          color: green
+          type: area
+          name: Air Quality
+          extend_to_end: false
+          curve: smooth
+          color: black
+          group_by:
+            func: last
+            duration: 1h
+          color_threshold:
+            - value: 301
+              color: maroon
+              opacity: 0.45
+            - value: 201
+              color: purple
+              opacity: 0.45
+            - value: 151
+              color: red
+              opacity: 0.45
+            - value: 101
+              color: orange
+              opacity: 0.45
+            - value: 51
+              color: yellow
+              opacity: 0.45
+            - value: 0
+              color: green
+              opacity: 0.45
 
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      name: UV Index (48 Hours)
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 72h
+      span:
+        end: hour
+      header:
+        show: true
+        title: "UV Index (72 Hours)"
+        show_states: true
+        colorize_states: true
+      experimental:
+        color_threshold: true
+      y_axis_precision: 0
+      apex_config:
+        chart:
+          {
+            type: "area",
+            toolbar: { show: true, tools: { reset: true } },
+            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+          }
+        stroke: { show: true, width: 1.5, curve: smooth }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+
+      series:
         - entity: sensor.current_uv_index
+          type: area
           name: UV Index
-      animate: true
-      decimals: 4
-      hours_to_show: 48
-      points_per_hour: 6
-      line_width: 3
-      lower_bound: 0
-      align_state: center
-      unit: "UVi"
-      show:
-        extrema: true
-        average: true
-        fill: fade
-      color_thresholds:
-        - value: 11
-          color: "#6A1B9A"
-        - value: 8
-          color: "#B71C1C"
-        - value: 6
-          color: "#EF6C00"
-        - value: 3
-          color: "#F9A825"
-        - value: 0
-          color: "#558B2F"
+          extend_to_end: false
+          curve: smooth
+          color: black
+          group_by:
+            func: last
+            duration: 1h
+          color_threshold:
+            - value: 11
+              color: "#6A1B9A"
+              opacity: 0.45
+            - value: 8
+              color: "#B71C1C"
+              opacity: 0.45
+            - value: 6
+              color: "#EF6C00"
+              opacity: 0.45
+            - value: 3
+              color: "#F9A825"
+              opacity: 0.45
+            - value: 0
+              color: "#558B2F"
+              opacity: 0.45
 
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
-  # padding: true
+  items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
   cards:
     - type: custom:stack-in-card
       cards:

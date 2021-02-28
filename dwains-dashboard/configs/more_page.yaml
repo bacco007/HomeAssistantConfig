@@ -9,7 +9,7 @@ more_page:
       icon: si:appletv
       path: "dwains-dashboard/addons/more_page/appletv/page.yaml"
     - name: Coronavirus
-      icon: mdi:biohazard
+      icon: custom:corona-virus
       path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
     - name: Downloads
       icon: mdi:download-network
@@ -37,28 +37,28 @@ more_page:
         tuner0_status: "{{ states.sensor.hdhomerun_tuner_0.state }}"
         tuner0_channelno: "{{ states.sensor.hdhomerun_tuner_0.attributes.VctNumber|default('NA') }}"
         tuner0_channelname: "{{ states.sensor.hdhomerun_tuner_0.attributes.VctName|default('Not Tuned') }}"
-        tuner0_frequency: "{{ states.sensor.hdhomerun_tuner_0.attributes.Frequency|default('Not Tuned') }}"
+        tuner0_frequency: "{{ states.sensor.hdhomerun_tuner_0.attributes.Frequency/1000000 ~ ' MHz'|default('Not Tuned') }}"
         tuner0_signalstrength: "{{ states.sensor.hdhomerun_tuner_0.attributes.SignalStrengthPercent|default('Not Tuned') }}"
         tuner0_quality: "{{ states.sensor.hdhomerun_tuner_0.attributes.SymbolQualityPercent|default('Not Tuned') }}"
         tuner0_targetip: "{{ states.sensor.hdhomerun_tuner_0.attributes.TargetIP|default('Not Tuned') }}"
         tuner1_status: "{{ states.sensor.hdhomerun_tuner_1.state }}"
         tuner1_channelno: "{{ states.sensor.hdhomerun_tuner_1.attributes.VctNumber|default('NA') }}"
         tuner1_channelname: "{{ states.sensor.hdhomerun_tuner_1.attributes.VctName|default('Not Tuned') }}"
-        tuner1_frequency: "{{ states.sensor.hdhomerun_tuner_1.attributes.Frequency|default('Not Tuned') }}"
+        tuner1_frequency: "{{ states.sensor.hdhomerun_tuner_1.attributes.Frequency/1000000 ~ ' MHz'|default('Not Tuned') }}"
         tuner1_signalstrength: "{{ states.sensor.hdhomerun_tuner_1.attributes.SignalStrengthPercent|default('Not Tuned') }}"
         tuner1_quality: "{{ states.sensor.hdhomerun_tuner_1.attributes.SymbolQualityPercent|default('Not Tuned') }}"
         tuner1_targetip: "{{ states.sensor.hdhomerun_tuner_1.attributes.TargetIP|default('Not Tuned') }}"
         tuner2_status: "{{ states.sensor.hdhomerun_tuner_2.state }}"
         tuner2_channelno: "{{ states.sensor.hdhomerun_tuner_2.attributes.VctNumber|default('NA') }}"
         tuner2_channelname: "{{ states.sensor.hdhomerun_tuner_2.attributes.VctName|default('Not Tuned') }}"
-        tuner2_frequency: "{{ states.sensor.hdhomerun_tuner_2.attributes.Frequency|default('Not Tuned') }}"
+        tuner2_frequency: "{{ states.sensor.hdhomerun_tuner_2.attributes.Frequency/1000000 ~ ' MHz'|default('Not Tuned') }}"
         tuner2_signalstrength: "{{ states.sensor.hdhomerun_tuner_2.attributes.SignalStrengthPercent|default('Not Tuned') }}"
         tuner2_quality: "{{ states.sensor.hdhomerun_tuner_2.attributes.SymbolQualityPercent|default('Not Tuned') }}"
         tuner2_targetip: "{{ states.sensor.hdhomerun_tuner_2.attributes.TargetIP|default('Not Tuned') }}"
         tuner3_status: "{{ states.sensor.hdhomerun_tuner_3.state }}"
         tuner3_channelno: "{{ states.sensor.hdhomerun_tuner_3.attributes.VctNumber|default('NA') }}"
         tuner3_channelname: "{{ states.sensor.hdhomerun_tuner_3.attributes.VctName|default('Not Tuned') }}"
-        tuner3_frequency: "{{ states.sensor.hdhomerun_tuner_3.attributes.Frequency|default('Not Tuned') }}"
+        tuner3_frequency: "{{ states.sensor.hdhomerun_tuner_3.attributes.Frequency/1000000 ~ ' MHz'|default('Not Tuned') }}"
         tuner3_signalstrength: "{{ states.sensor.hdhomerun_tuner_3.attributes.SignalStrengthPercent|default('Not Tuned') }}"
         tuner3_quality: "{{ states.sensor.hdhomerun_tuner_3.attributes.SymbolQualityPercent|default('Not Tuned') }}"
         tuner3_targetip: "{{ states.sensor.hdhomerun_tuner_3.attributes.TargetIP|default('Not Tuned') }}"

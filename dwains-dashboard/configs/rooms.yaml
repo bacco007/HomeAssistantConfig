@@ -4,7 +4,7 @@ rooms:
   - name: Bedroom
     icon: mdi:bed-king-outline
     light: light.lamp
-    climate: climate.bedroom
+    climate: climate.bedroom_2
     temperature: sensor.zha_bedroom_temperature
     humidity: sensor.zha_bedroom_humidity
     pressure: sensor.zha_bedroom_pressure
@@ -12,6 +12,7 @@ rooms:
     device: group.bedroom_switch
     page_entities:
       entities:
+        - entity: air_quality.bedroom_air_quality
         - entity: sensor.bedroom_iaq_index
         - entity: sensor.xiaomibedroom_max_temp
         - entity: sensor.xiaomibedroom_min_temp
@@ -69,6 +70,7 @@ rooms:
     icon: mdi:home-export-outline
     temperature: sensor.weather_outside_temperature
     humidity: sensor.weather_outside_humidity
+    door: binary_sensor.gate
     addons:
       - name: Weather Station
         icon: mdi:weather-cloudy-alert

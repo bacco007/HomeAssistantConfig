@@ -4,5 +4,6 @@
   "documentation": "",
   "dependencies": [],
   "codeowners": ["@bacco007"],
-  "requirements": ["pandas>=1.0.5"]
+  "requirements": ["pandas>=1.0.5"],
+  "version": "0.1"
 }

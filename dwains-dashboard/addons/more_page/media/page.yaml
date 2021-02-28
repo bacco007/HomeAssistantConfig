@@ -16,21 +16,21 @@
     - type: vertical-stack
       cards:
         - !include partial_plex.yaml
-# - type: custom:dwains-flexbox-card
-#   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
-#   cards:
-#     - type: vertical-stack
-#       cards:
-#         - !include partial_plexhistory.yaml
-#     - type: vertical-stack
-#       cards:
-#         - !include partial_plextoptv_30days.yaml
-#     - type: vertical-stack
-#       cards:
-#         - !include partial_plextoptv.yaml
-#     - type: vertical-stack
-#       cards:
-#         - !include partial_plextopmovies.yaml
-#     - type: vertical-stack
-#       cards:
-#         - !include partial_plextopusers.yaml
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  cards:
+    - type: vertical-stack
+      cards:
+        - !include partial_plexhistory.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextoptv_30days.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextoptv.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextopmovies.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextopusers.yaml

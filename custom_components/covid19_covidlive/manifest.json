@@ -1,0 +1,9 @@
+{
+  "domain": "covid19_covidlive",
+  "name": "covid19_covidlive",
+  "documentation": "",
+  "dependencies": [],
+  "codeowners": ["@bacco007"],
+  "requirements": ["pandas>=1.0.5"],
+  "version": "0.1"
+}
