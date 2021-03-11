@@ -217,7 +217,7 @@
           extend_to_end: false
           stroke_width: 2
           group_by:
-            func: diff
+            func: delta
             duration: 30min
         - entity: sensor.weather_outside_humidity
           type: line
@@ -674,4 +674,648 @@
           stroke_width: 3
           group_by:
             func: last
+            duration: 1d
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Vaccinations"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "No. Vaccinations"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      stacked: true
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Doses
+          name: ACT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Doses
+          name: NSW
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Doses
+          name: NT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Doses
+          name: QLD
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Doses
+          name: SA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Doses
+          name: TAS
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Doses
+          name: VIC
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Doses
+          name: WA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_aus_vaccines
+          name: UNK
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Vaccinations (as % of Population)"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 2
+            title:
+              text: "No. Vaccinations"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Doses
+          transform: "return (x / 431100) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: ACT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Doses
+          transform: "return (x / 8164100) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NSW
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Doses
+          transform: "return (x / 246000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Doses
+          transform: "return (x / 5174400) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: QLD
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Doses
+          transform: "return (x / 1769300) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: SA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Doses
+          transform: "return (x / 540600) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: TAS
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Doses
+          transform: "return (x / 6694900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: VIC
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Doses
+          transform: "return (x / 2661900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: WA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: Doses
+          transform: "return (x / 25687000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: AUS
+          type: area
+          color: black
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Tests"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "No. Tests"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      stacked: true
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Tests
+          unit: "Tests"
+          name: ACT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Tests
+          unit: "Tests"
+          name: NSW
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Tests
+          unit: "Tests"
+          name: NT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Tests
+          unit: "Tests"
+          name: QLD
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Tests
+          unit: "Tests"
+          name: SA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Tests
+          unit: "Tests"
+          name: TAS
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Tests
+          unit: "Tests"
+          name: VIC
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Tests
+          unit: "Tests"
+          name: WA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Tests (as % of Population)"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 3
+            title:
+              text: "No. Tests"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Tests
+          transform: "return (x / 431100) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: ACT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Tests
+          transform: "return (x / 8164100) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NSW
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Tests
+          transform: "return (x / 246000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Tests
+          transform: "return (x / 5174400) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: QLD
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Tests
+          transform: "return (x / 1769300) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: SA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Tests
+          transform: "return (x / 540600) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: TAS
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Tests
+          transform: "return (x / 6694900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: VIC
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Tests
+          transform: "return (x / 2661900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: WA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: Tests
+          transform: "return (x / 25687000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: AUS
+          type: area
+          color: black
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Tests"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "No. Tests"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Tests
+          unit: "Tests"
+          name: ACT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Tests
+          unit: "Tests"
+          name: NSW
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Tests
+          unit: "Tests"
+          name: NT
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Tests
+          unit: "Tests"
+          name: QLD
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Tests
+          unit: "Tests"
+          name: SA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Tests
+          unit: "Tests"
+          name: TAS
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Tests
+          unit: "Tests"
+          name: VIC
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Tests
+          unit: "Tests"
+          name: WA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
             duration: 1d

@@ -1,15 +1,18 @@
 {
-    "codeowners": [
-        "@Limych"
-    ],
+    "domain": "average",
+    "name": "Average Sensor",
+    "version": "1.7.2",
+    "documentation": "https://github.com/Limych/ha-average",
+    "issue_tracker": "https://github.com/Limych/ha-average/issues",
     "dependencies": [
         "history"
     ],
     "after_dependencies": [
         "weather"
     ],
-    "documentation": "https://github.com/Limych/ha-average",
-    "domain": "average",
-    "name": "Average",
+    "config_flow": false,
+    "codeowners": [
+        "@Limych"
+    ],
     "requirements": []
 }

@@ -6,7 +6,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
           cards:
             - type: vertical-stack
               cards:
@@ -18,10 +18,10 @@
                     **TBSH02**<br/>
                     **Uptime:** {{ (data | fromjson)['uptime']}}
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          item_classes: "col-xs-12 col-sm-9 col-md-10 col-lg-10"
           cards:
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -134,7 +134,7 @@
                     }
 
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -238,7 +238,7 @@
                     height: 15px
                     width: 75%
                     min: 0
-                    max: '${vars[0]}'
+                    max: "${vars[0]}"
                     color: rgb(26,204,147,0.33)
                     entities:
                       - entity: sensor.tbsh02_monitordocker_containers_running
@@ -298,7 +298,7 @@
                       }
 
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -313,7 +313,7 @@
                   height: 15px
                   width: 75%
                   entities:
-                    - entity: sensor.tbsh02_cpu_thermal_1_temp
+                    - entity: sensor.tbsh02_cpu_thermal_1_temperature
                       name: Thermal 1
                       icon: mdi:thermometer
                       severity:
@@ -375,7 +375,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-1'
+          item_classes: "col-xs-12 col-sm-3 col-md-1 col-lg-1"
           cards:
             - type: vertical-stack
               cards:
@@ -388,7 +388,7 @@
                     <img width="150" src="/local/systemicons/docker.svg"><br/>
                     </center>
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-11'
+          item_classes: "col-xs-12 col-sm-9 col-md-11 col-lg-11"
           cards:
             - type: custom:dwains-flexbox-card
               padding: true

@@ -12,10 +12,11 @@ import datetime
 import logging
 import math
 import numbers
-from typing import Union, Optional, Dict, Any
+from typing import Any, Dict, Optional, Union
 
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
+from _sha1 import sha1
 from homeassistant.components import history
 from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.group import expand_entity_ids
@@ -23,15 +24,15 @@ from homeassistant.components.history import LazyState
 from homeassistant.components.water_heater import DOMAIN as WATER_HEATER_DOMAIN
 from homeassistant.components.weather import DOMAIN as WEATHER_DOMAIN
 from homeassistant.const import (
-    CONF_NAME,
-    CONF_ENTITIES,
-    EVENT_HOMEASSISTANT_START,
-    ATTR_UNIT_OF_MEASUREMENT,
-    STATE_UNKNOWN,
-    STATE_UNAVAILABLE,
     ATTR_ICON,
+    ATTR_UNIT_OF_MEASUREMENT,
+    CONF_ENTITIES,
+    CONF_NAME,
+    EVENT_HOMEASSISTANT_START,
+    STATE_UNAVAILABLE,
+    STATE_UNKNOWN,
 )
-from homeassistant.core import callback, split_entity_id
+from homeassistant.core import HomeAssistant, callback, split_entity_id
 from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
@@ -42,17 +43,17 @@ from homeassistant.util.temperature import convert as convert_temperature
 from homeassistant.util.unit_system import TEMPERATURE_UNITS
 
 from .const import (
-    VERSION,
-    ISSUE_URL,
-    CONF_PERIOD_KEYS,
-    CONF_DURATION,
-    DEFAULT_NAME,
-    CONF_START,
-    CONF_END,
-    CONF_PRECISION,
     ATTR_TO_PROPERTY,
-    UPDATE_MIN_TIME,
+    CONF_DURATION,
+    CONF_END,
+    CONF_PERIOD_KEYS,
+    CONF_PRECISION,
     CONF_PROCESS_UNDEF_AS,
+    CONF_START,
+    DEFAULT_NAME,
+    DEFAULT_PRECISION,
+    STARTUP_MESSAGE,
+    UPDATE_MIN_TIME,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -78,9 +79,9 @@ PLATFORM_SCHEMA = vol.All(
             vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
             vol.Optional(CONF_START): cv.template,
             vol.Optional(CONF_END): cv.template,
-            vol.Optional(CONF_DURATION): cv.time_period,
-            vol.Optional(CONF_PRECISION, default=2): int,
-            vol.Optional(CONF_PROCESS_UNDEF_AS): float,
+            vol.Optional(CONF_DURATION): cv.positive_time_period,
+            vol.Optional(CONF_PRECISION, default=DEFAULT_PRECISION): int,
+            vol.Optional(CONF_PROCESS_UNDEF_AS): vol.Any(int, float),
         }
     ),
     check_period_keys,
@@ -88,13 +89,12 @@ PLATFORM_SCHEMA = vol.All(
 
 
 # pylint: disable=unused-argument
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(
+    hass: HomeAssistant, config, async_add_entities, discovery_info=None
+):
     """Set up platform."""
     # Print startup message
-    _LOGGER.info("Version %s", VERSION)
-    _LOGGER.info(
-        "If you have ANY issues with this, please report them here: %s", ISSUE_URL
-    )
+    _LOGGER.info(STARTUP_MESSAGE)
 
     name = config.get(CONF_NAME)
     start = config.get(CONF_START)
@@ -120,7 +120,7 @@ class AverageSensor(Entity):
     # pylint: disable=r0913
     def __init__(
         self,
-        hass,
+        hass: HomeAssistant,
         name: str,
         start,
         end,
@@ -148,6 +148,19 @@ class AverageSensor(Entity):
         self.available_sources = 0
         self.count = 0
         self.min_value = self.max_value = None
+
+        self._unique_id = str(
+            sha1(
+                ";".join(
+                    [str(start), str(duration), str(end), ",".join(self.sources)]
+                ).encode("utf-8")
+            ).hexdigest()
+        )
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return self._unique_id
 
     @property
     def _has_period(self) -> bool:
@@ -200,6 +213,7 @@ class AverageSensor(Entity):
 
     async def async_added_to_hass(self) -> None:
         """Register callbacks."""
+
         # pylint: disable=unused-argument
         @callback
         def sensor_state_listener(entity, old_state, new_state):

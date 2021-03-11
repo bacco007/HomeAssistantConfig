@@ -3,3 +3,17 @@ ignored_entities:
   entities:
     - binary_sensor.updater
     - sensor.unavailable_entities
+    - sensor.blitzortung_lightning_azimuth
+    - sensor.blitzortung_lightning_distance
+    - sensor.east_tamworth_fire_danger_4
+    - sensor.east_tamworth_fire_danger_5
+    - sensor.east_tamworth_uv_category_4
+    - sensor.east_tamworth_uv_category_5
+    - sensor.east_tamworth_uv_end_time_4
+    - sensor.east_tamworth_uv_end_time_5
+    - sensor.east_tamworth_uv_max_index_4
+    - sensor.east_tamworth_uv_max_index_5
+    - sensor.east_tamworth_uv_start_time_4
+    - sensor.east_tamworth_uv_start_time_5
+    - sensor.lightning_counter_lasthour
+    - sensor.lightning_distance_lasthour

@@ -149,6 +149,9 @@ more_page:
         uap_ipaddress: "{{ states.sensor.unifipoller_uap.attributes.ip_address }}"
         uap_rxdata: "{{ states.sensor.unifipoller_uap.attributes.rx_data }}"
         uap_txdata: "{{ states.sensor.unifipoller_uap.attributes.tx_data }}"
+    - name: Untappd
+      icon: mdi:untappd
+      path: "dwains-dashboard/addons/more_page/untappd/page.yaml"
     - name: Upcoming Sport
       icon: mdi:football-australian
       path: "dwains-dashboard/addons/more_page/sports/page.yaml"

@@ -2,122 +2,116 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 86,
+        "state": 230,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 194,
+        "state": 304,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 4,
+        "state": 2,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 85,
+        "state": 138,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 19,
+        "state": 26,
         "attributes": {}
       }
     },
     "ae64dbe3_1e2d2": {
       "lastPayload": {
-        "state": 51,
+        "state": 71.7,
         "attributes": {
           "aep": 0,
-          "ey": 1,
-          "time": "16:02 24 Feb 2021",
+          "ey": 0.2,
+          "time": "15:03 08 Mar 2021",
           "sort": 3
         }
       }
     },
     "4b8ffd88_01a24c": {
       "lastPayload": {
-        "state": 11.8,
+        "state": 16.3,
         "attributes": {
           "aep": 0,
-          "ey": 2,
-          "time": "18:02 24 Feb 2021",
+          "ey": 1,
+          "time": "17:03 08 Mar 2021",
           "sort": 6
         }
       }
     },
     "9c32ef9e_198c5": {
       "lastPayload": {
-        "state": 4.7,
+        "state": 6.4,
         "attributes": {
           "aep": 0,
-          "ey": 3,
-          "time": "22:02 24 Feb 2021",
+          "ey": 1,
+          "time": "21:03 10 Mar 2021",
           "sort": 7
         }
       }
     },
     "3e7de169_4cf3ce": {
       "lastPayload": {
-        "state": 21,
+        "state": 29.9,
         "attributes": {
           "aep": 0,
-          "ey": 2,
-          "time": "17:02 24 Feb 2021",
+          "ey": 0.5,
+          "time": "16:03 08 Mar 2021",
           "sort": 5
         }
       }
     },
     "5b2a34dc_cc5e94": {
       "lastPayload": {
-        "state": 87.7,
+        "state": 107.4,
         "attributes": {
-          "aep": 50,
-          "ey": 0.5,
-          "time": "16:02 24 Feb 2021",
+          "aep": 20,
+          "ey": 0.2,
+          "time": "15:03 08 Mar 2021",
           "sort": 2
         }
       }
     },
     "fedcc9b8_2176b8": {
       "lastPayload": {
-        "state": 140.3,
+        "state": 154.3,
         "attributes": {
           "aep": 10,
           "ey": 0.2,
-          "time": "16:02 24 Feb 2021",
+          "time": "15:03 08 Mar 2021",
           "sort": 1
         }
       }
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 16.12,
-        "attributes": {
-          "period": "2021-02-28T11:05:00"
-        }
+        "state": 19.6,
+        "attributes": {}
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 7.02,
-        "attributes": {
-          "period": "2021-02-28T11:05:00"
-        }
+        "state": 10.5,
+        "attributes": {}
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 4.46,
-        "attributes": {
-          "period": "2021-02-28T11:05:00"
-        }
+        "state": 7.94,
+        "attributes": {}
       }
     },
     "842f01fc_12319": {
@@ -133,11 +127,11 @@
     },
     "b16ef0f7_52011": {
       "lastPayload": {
-        "state": 140.3,
+        "state": 154.3,
         "attributes": {
           "aep": 10,
           "ey": 0.2,
-          "time": "16:02 24 Feb 2021",
+          "time": "15:03 08 Mar 2021",
           "sort": 1
         }
       }
@@ -188,13 +182,13 @@
     },
     "fd053220_3acfa": {
       "lastPayload": {
-        "state": 706,
+        "state": 707,
         "attributes": {}
       }
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5618,
+        "state": 5638,
         "attributes": {}
       }
     },
@@ -206,91 +200,91 @@
     },
     "943db8e2_eb4428": {
       "lastPayload": {
-        "state": 332,
+        "state": 333,
         "attributes": {}
       }
     },
     "db8dabb7_51f83": {
       "lastPayload": {
-        "state": 351,
+        "state": 354,
         "attributes": {}
       }
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 0,
+        "state": 26,
         "attributes": {
-          "count": 0,
-          "countstring": "No Rain",
-          "average": 0,
-          "highest": 0,
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 8.67,
+          "highest": 18.4,
           "sort": 2
         }
       }
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 0,
+        "state": 23.06,
         "attributes": {
-          "count": 0,
-          "countstring": "No Rain",
-          "average": 0,
-          "highest": 0,
+          "count": 2,
+          "countstring": "2 Days",
+          "average": 11.53,
+          "highest": 21.36,
           "sort": 2
         }
       }
     },
     "d4f5da6c_a1fc4": {
       "lastPayload": {
-        "state": 46.2,
+        "state": 30.4,
         "attributes": {
-          "count": 4,
-          "countstring": "4 Days",
-          "average": 11.55,
-          "highest": 23,
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 10.13,
+          "highest": 26,
           "sort": "1"
         }
       }
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 99.124,
+        "state": 89.635,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 135.14,
+        "state": 134.96,
         "attributes": {
           "max": 157.9,
           "min": 112.9,
-          "avg": 135.14,
+          "avg": 134.96,
           "mindate": "05 May 2020",
-          "maxdate": "01 Mar 2020",
-          "datestring": "Min: 05 May 2020 - Max: 01 Mar 2020"
+          "maxdate": "11 Mar 2021",
+          "datestring": "Min: 05 May 2020 - Max: 11 Mar 2021"
         }
       }
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 11.293,
+        "state": 11.18,
         "attributes": {
-          "max": 23.5,
+          "max": 23.11,
           "min": -1.28,
-          "avg": 11.293,
+          "avg": 11.18,
           "mindate": "26 Aug 2020",
-          "maxdate": "29 Feb 2020",
-          "datestring": "Min: 26 Aug 2020 - Max: 29 Feb 2020"
+          "maxdate": "02 Dec 2020",
+          "datestring": "Min: 26 Aug 2020 - Max: 02 Dec 2020"
         }
       }
     },
     "9175a68d_c94b78": {
       "lastPayload": {
-        "state": 103,
+        "state": 99.6,
         "attributes": {
           "count": 10,
           "countstring": "10 Days",
-          "average": 10.3,
+          "average": 9.96,
           "highest": 26,
           "sort": 3
         }
@@ -298,35 +292,35 @@
     },
     "6a5bcb5d_8aa50c": {
       "lastPayload": {
-        "state": 107.48,
+        "state": 116.55,
         "attributes": {
-          "count": 9,
-          "countstring": "9 Days",
-          "average": 11.94,
-          "highest": 30.63,
+          "count": 11,
+          "countstring": "11 Days",
+          "average": 10.6,
+          "highest": 33.22,
           "sort": 3
         }
       }
     },
     "1b767a8_196e406": {
       "lastPayload": {
-        "state": 54.23,
+        "state": 47.62,
         "attributes": {
           "count": 4,
           "countstring": "4 Days",
-          "average": 13.56,
-          "highest": 28.17,
+          "average": 11.9,
+          "highest": 33.22,
           "sort": 1
         }
       }
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 24.134,
+        "state": 24.197,
         "attributes": {
           "max": 41.7,
           "min": 9.5,
-          "avg": 24.134,
+          "avg": 24.197,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -335,11 +329,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 27.294,
+        "state": 27.242,
         "attributes": {
           "max": 43.78,
           "min": 8.4,
-          "avg": 27.294,
+          "avg": 27.242,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -348,19 +342,19 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 44.65,
+        "state": 53.24,
         "attributes": {}
       }
     },
     "f757099a_d4cc4": {
       "lastPayload": {
-        "state": 328.33,
+        "state": 420.63,
         "attributes": {}
       }
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "587.2",
+        "state": "105.9",
         "attributes": {
           "units": "GB"
         }
@@ -368,55 +362,55 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "2825.8",
+        "state": "124.1",
         "attributes": {
-          "units": "TB"
+          "units": "GB"
         }
       }
     },
     "8c14123d_0a703": {
       "lastPayload": {
-        "state": "USG",
+        "state": "The Dream Police",
         "attributes": {
-          "model": "UGW3",
-          "version": "4.4.51.5287926",
-          "data": "3.3 TB",
-          "serial": "F09FC212B4F7",
-          "sitename": "TBSmartHome (default)",
-          "type": "ugw",
-          "controller": "https://192.168.1.20:8443",
+          "model": "UDM",
+          "version": "1.9.0.3413",
+          "data": "206.2 GB",
+          "serial": "74ACB9D220ED",
+          "sitename": "Default (default)",
+          "type": "udm",
+          "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "74d 23hr 19min",
+          "uptime": "5d 23hr 18min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "214.7",
+        "state": "0.0",
         "attributes": {
-          "units": "GB"
+          "units": "MB"
         }
       }
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "33.9",
+        "state": "0.0",
         "attributes": {
-          "units": "GB"
+          "units": "KB"
         }
       }
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 134.83,
+        "state": 134.75,
         "attributes": {
           "max": 157.9,
           "min": 112.9,
-          "avg": 134.83,
+          "avg": 134.75,
           "mindate": "23 Apr 2020",
-          "maxdate": "01 Mar 2020",
-          "datestring": "Min: 23 Apr 2020 - Max: 01 Mar 2020"
+          "maxdate": "09 Mar 2021",
+          "datestring": "Min: 23 Apr 2020 - Max: 09 Mar 2021"
         }
       }
     },
@@ -438,17 +432,17 @@
     },
     "2cd48d0a_141992": {
       "lastPayload": {
-        "state": 0.11,
+        "state": 0.12,
         "attributes": {}
       }
     },
     "13d27691_292561": {
       "lastPayload": {
-        "state": 718.8,
+        "state": 731.8,
         "attributes": {
           "count": 100,
           "countstring": "100 Days",
-          "average": 7.19,
+          "average": 7.32,
           "highest": 92.2,
           "sort": "4"
         }
@@ -462,11 +456,11 @@
     },
     "ee3ed6bb_25091": {
       "lastPayload": {
-        "state": 813.76,
+        "state": 846.98,
         "attributes": {
-          "count": 103,
-          "countstring": "103 Days",
-          "average": 7.9,
+          "count": 102,
+          "countstring": "102 Days",
+          "average": 8.3,
           "highest": 64.8,
           "sort": 4
         }
@@ -474,17 +468,14 @@
     },
     "b2a53f98_321f6": {
       "lastPayload": {
-        "state": "Hateful8",
+        "state": "The Dream Police",
         "attributes": {
-          "model": "US8P60",
-          "version": "4.3.20.11298",
-          "serial": "18E8294E9002",
-          "sitename": "TBSmartHome (default)",
-          "type": "usw",
-          "controller": "https://192.168.1.20:8443",
-          "uptime": "74d 23hr 21min",
-          "rx_data": "587.2 GB",
-          "tx_data": "2.8 TB",
+          "model": "UDM",
+          "version": "1.9.0.3413",
+          "serial": "74ACB9D220ED",
+          "sitename": "Default (default)",
+          "type": "udm",
+          "controller": "https://192.168.1.1",
           "lastseen": "a few seconds ago"
         }
       }
@@ -500,24 +491,24 @@
           "serial": "802AA8D38F48",
           "sitename": "TBSmartHome (default)",
           "type": "uap",
-          "cpu": 13,
-          "users": 26,
+          "cpu": 16.2,
+          "users": 24,
           "controller": "https://192.168.1.20:8443",
           "guests": 0,
-          "uptime": "74d 23hr 20min",
+          "uptime": "80d 5hr 57min",
           "lastseen": "a few seconds ago",
-          "tx_data": "214.7 GB",
-          "rx_data": "33.9 GB"
+          "tx_data": "7.4 MB",
+          "rx_data": "430.5 KB"
         }
       }
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.777,
+        "state": 9.683,
         "attributes": {
           "max": 23,
           "min": -4.1,
-          "avg": 9.777,
+          "avg": 9.683,
           "mindate": "06 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 06 Aug 2020 - Max: 02 Dec 2020"
@@ -526,28 +517,28 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 10666,
+        "state": 10721,
         "attributes": {
-          "uptime": "0d 3hr 0min",
-          "drops": 10666
+          "uptime": "0d 0hr 30min",
+          "drops": 10721
         }
       }
     },
     "dceeb46f_6d2508": {
       "lastPayload": {
-        "state": "0.0",
+        "state": "",
         "attributes": {}
       }
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "33.58",
+        "state": "27.00",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "89.00",
+        "state": "95.70",
         "attributes": {}
       }
     },
@@ -595,22 +586,22 @@
     },
     "3016229d_895e2e": {
       "lastPayload": {
-        "state": 1.4,
+        "state": 2,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "23:02 25 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 9
         }
       }
     },
     "ac2847d2_af37a8": {
       "lastPayload": {
-        "state": 2.3,
+        "state": 3.9,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "04:02 25 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 8
         }
       }
@@ -639,95 +630,95 @@
     },
     "69040648_41de6": {
       "lastPayload": {
-        "state": 0.2,
+        "state": 0.4,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 28 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 9
         }
       }
     },
     "897ee7be_103218": {
       "lastPayload": {
-        "state": 0,
+        "state": 0.7,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "00:02 28 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 8
         }
       }
     },
     "ec302af1_dfe74": {
       "lastPayload": {
-        "state": 0,
+        "state": 0.6,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 28 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 3
         }
       }
     },
     "f6e1ae0c_c581a8": {
       "lastPayload": {
-        "state": 0,
+        "state": 0.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 28 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 6
         }
       }
     },
     "5c0e3d5e_5133cc": {
       "lastPayload": {
-        "state": 0,
+        "state": 1.4,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 28 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 7
         }
       }
     },
     "e9019b55_3f106": {
       "lastPayload": {
-        "state": 0,
+        "state": 0.5,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 28 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 5
         }
       }
     },
     "2e04cb49_703f74": {
       "lastPayload": {
-        "state": 1.7,
+        "state": 1.2,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 27 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 2
         }
       }
     },
     "f77adadb_9106f8": {
       "lastPayload": {
-        "state": 3.4,
+        "state": 2.4,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 27 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 1
         }
       }
     },
     "6340f6e7_973668": {
       "lastPayload": {
-        "state": 0.69,
+        "state": 8.81,
         "attributes": {}
       }
     },
@@ -736,28 +727,28 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 29.61,
+        "state": 24,
         "attributes": {}
       }
     },
     "9e7e821c_502f1": {
       "lastPayload": {
-        "state": 35.9,
+        "state": 53.8,
         "attributes": {
-          "aep": 0,
+          "aep": 2,
           "ey": 0.2,
-          "time": "17:02 24 Feb 2021",
+          "time": "15:03 08 Mar 2021",
           "sort": 4
         }
       }
     },
     "57f2b94d_036d48": {
       "lastPayload": {
-        "state": 0.6,
+        "state": 0.4,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "12:02 27 Feb 2021",
+          "time": "01:03 11 Mar 2021",
           "sort": 4
         }
       }

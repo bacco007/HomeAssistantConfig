@@ -1,11 +1,13 @@
 {
+    "domain": "iaquk",
+    "name": "Indoor Air Quality UK Index",
+    "version": "1.3.6",
+    "documentation": "https://github.com/Limych/ha-iaquk",
+    "issue_tracker": "https://github.com/Limych/ha-iaquk/issues",
+    "dependencies": [],
+    "config_flow": false,
     "codeowners": [
         "@Limych"
     ],
-    "config_flow": false,
-    "dependencies": [],
-    "documentation": "https://github.com/Limych/ha-iaquk",
-    "domain": "iaquk",
-    "name": "IAQ UK",
     "requirements": []
 }

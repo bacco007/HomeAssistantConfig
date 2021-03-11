@@ -1,0 +1,45 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:flex-table-card
+    title: Recent Beers (Distinct)
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary);
+      }
+      ha-card table {
+        padding-top: 0px !important;
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    clickable: false
+    css:
+      table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+      "tbody tr:nth-child(even)": "background-color: none !important;"
+      "tbody tr:nth-child(odd)": "background-color: none !important;"
+    entities:
+      include: sensor.untappd_recent_beers_bacco007
+    # max_rows: 10
+    columns:
+      - { data: beerlist, modify: x.beer_name, name: "Beer" }
+      - { data: beerlist, modify: x.brewery, name: "Brewery" }
+      - { data: beerlist, modify: x.beer_style, name: "Style" }
+      - { data: beerlist, modify: x.rating, name: "Rating" }
+      - { data: beerlist, modify: x.count, name: "Count" }
+      - { data: beerlist, modify: x.first_checkin, name: "1st" }
+      - { data: beerlist, modify: x.first_checkin, name: "Latest" }

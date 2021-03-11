@@ -1,5 +1,6 @@
 """Fan platform for dyson."""
 
+import math
 from homeassistant.const import CONF_NAME
 import logging
 from libdyson.const import AirQualityTarget
@@ -10,6 +11,11 @@ from homeassistant.components.fan import FanEntity, SPEED_HIGH, SPEED_LOW, SPEED
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform, config_validation as cv
+from homeassistant.util.percentage import (
+    int_states_in_range,
+    percentage_to_ranged_value,
+    ranged_value_to_percentage,
+)
 
 from libdyson import MessageType, DysonPureCoolLink
 
@@ -30,49 +36,37 @@ AIR_QUALITY_TARGET_STR_TO_ENUM = {
     for key, value in AIR_QUALITY_TARGET_ENUM_TO_STR.items()
 }
 
-ATTR_DYSON_SPEED = "dyson_speed"
-ATTR_DYSON_SPEED_LIST = "dyson_speed_list"
-ATTR_AUTO_MODE = "auto_mode"
 ATTR_AIR_QUALITY_TARGET = "air_quality_target"
+ATTR_ANGLE_LOW = "angle_low"
+ATTR_ANGLE_HIGH = "angle_high"
+ATTR_TIMER = "timer"
 
-SERVICE_SET_AUTO_MODE = "set_auto_mode"
-SERVICE_SET_DYSON_SPEED = "set_speed"
 SERVICE_SET_AIR_QUALITY_TARGET = "set_air_quality_target"
-
-SET_AUTO_MODE_SCHEMA = {
-    vol.Required(ATTR_AUTO_MODE): cv.boolean,
-}
-
-SET_DYSON_SPEED_SCHEMA = {
-    vol.Required(ATTR_DYSON_SPEED): cv.positive_int,
-}
+SERVICE_SET_ANGLE = "set_angle"
+SERVICE_SET_TIMER = "set_timer"
 
 SET_AIR_QUALITY_TARGET_SCHEMA = {
     vol.Required(ATTR_AIR_QUALITY_TARGET): vol.In(AIR_QUALITY_TARGET_STR_TO_ENUM),
 }
 
-SPEED_LIST_HA = [SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH]
-
-SPEED_LIST_DYSON = list(range(1, 11))
-
-SPEED_DYSON_TO_HA = {
-    1: SPEED_LOW,
-    2: SPEED_LOW,
-    3: SPEED_LOW,
-    4: SPEED_LOW,
-    5: SPEED_MEDIUM,
-    6: SPEED_MEDIUM,
-    7: SPEED_MEDIUM,
-    8: SPEED_HIGH,
-    9: SPEED_HIGH,
-    10: SPEED_HIGH,
+SET_ANGLE_SCHEMA = {
+    vol.Required(ATTR_ANGLE_LOW): cv.positive_int,
+    vol.Required(ATTR_ANGLE_HIGH): cv.positive_int,
 }
 
-SPEED_HA_TO_DYSON = {
-    SPEED_LOW: 4,
-    SPEED_MEDIUM: 7,
-    SPEED_HIGH: 10,
+SET_TIMER_SCHEMA = {
+    vol.Required(ATTR_TIMER): cv.positive_int,
 }
+
+PRESET_MODE_AUTO = "auto"
+PRESET_MODES = [PRESET_MODE_AUTO]
+
+SPEED_LIST_DYSON = list(range(1, 11))  # 1, 2, ..., 10
+
+SPEED_RANGE = (
+    SPEED_LIST_DYSON[0],
+    SPEED_LIST_DYSON[-1],
+)
 
 SUPPORTED_FEATURES = SUPPORT_OSCILLATE | SUPPORT_SET_SPEED
 
@@ -91,14 +85,15 @@ async def async_setup_entry(
 
     platform = entity_platform.current_platform.get()
     platform.async_register_entity_service(
-        SERVICE_SET_AUTO_MODE, SET_AUTO_MODE_SCHEMA, "set_auto_mode"
-    )
-    platform.async_register_entity_service(
-        SERVICE_SET_DYSON_SPEED, SET_DYSON_SPEED_SCHEMA, "set_dyson_speed"
+        SERVICE_SET_TIMER, SET_TIMER_SCHEMA, "set_timer"
     )
     if isinstance(device, DysonPureCoolLink):
         platform.async_register_entity_service(
             SERVICE_SET_AIR_QUALITY_TARGET, SET_AIR_QUALITY_TARGET_SCHEMA, "set_air_quality_target"
+        )
+    else:  # DysonPureCool
+        platform.async_register_entity_service(
+            SERVICE_SET_ANGLE, SET_ANGLE_SCHEMA, "set_angle"
         )
 
 
@@ -112,31 +107,28 @@ class DysonFanEntity(DysonEntity, FanEntity):
         return self._device.is_on
 
     @property
-    def speed(self):
-        """Return the current speed."""
-        if self._device.speed is None:
+    def speed_count(self) -> int:
+        """Return the number of speeds the fan supports."""
+        return int_states_in_range(SPEED_RANGE)
+
+    @property
+    def percentage(self) -> Optional[int]:
+        """Return the current speed percentage."""
+        if self._device.auto_mode:
             return None
-        return SPEED_DYSON_TO_HA[self._device.speed]
+        return ranged_value_to_percentage(SPEED_RANGE, int(self._device.speed))
 
     @property
-    def speed_list(self) -> list:
-        """Get the list of available speeds."""
-        return SPEED_LIST_HA
+    def preset_modes(self) -> List[str]:
+        """Return the available preset modes."""
+        return PRESET_MODES
 
     @property
-    def dyson_speed(self):
-        """Return the current speed."""
-        return self._device.speed
-
-    @property
-    def dyson_speed_list(self) -> list:
-        """Get the list of available dyson speeds."""
-        return SPEED_LIST_DYSON
-    
-    @property
-    def auto_mode(self):
-        """Return auto mode."""
-        return self._device.auto_mode
+    def preset_mode(self) -> Optional[str]:
+        """Return the current preset mode."""
+        if self._device.auto_mode:
+            return PRESET_MODE_AUTO
+        return None
 
     @property
     def oscillating(self):
@@ -148,43 +140,38 @@ class DysonFanEntity(DysonEntity, FanEntity):
         """Flag supported features."""
         return SUPPORTED_FEATURES
 
-    @property
-    def device_state_attributes(self) -> dict:
-        """Return optional state attributes."""
-        return {
-            ATTR_AUTO_MODE: self.auto_mode,
-            ATTR_DYSON_SPEED: self.dyson_speed,
-            ATTR_DYSON_SPEED_LIST: self.dyson_speed_list,
-        }
-
     def turn_on(
         self,
         speed: Optional[str] = None,
+        percentage: Optional[int] = None,
+        preset_mode: Optional[str] = None,
         **kwargs,
     ) -> None:
         """Turn on the fan."""
-        _LOGGER.debug("Turn on fan %s with speed %s", self.name, speed)
-        if speed is None:
-            # speed not set, just turn on
+        _LOGGER.debug("Turn on fan %s with percentage %s", self.name, percentage)
+        if preset_mode:
+            self.set_preset_mode(preset_mode)
+        elif percentage is None:
+            # percentage not set, just turn on
             self._device.turn_on()
         else:
-            self.set_speed(speed)
+            self.set_percentage(percentage)
 
     def turn_off(self, **kwargs) -> None:
         """Turn off the fan."""
         _LOGGER.debug("Turn off fan %s", self.name)
         return self._device.turn_off()
 
-    def set_speed(self, speed: str) -> None:
-        """Set the speed of the fan."""
-        if speed not in SPEED_LIST_HA:
-            raise ValueError(f'"{speed}" is not a valid speed')
-        _LOGGER.debug("Set fan speed to: %s", speed)
-        self.set_dyson_speed(SPEED_HA_TO_DYSON[speed])
-
-    def set_dyson_speed(self, dyson_speed: int) -> None:
-        """Set the exact speed of the fan."""
+    def set_percentage(self, percentage: int) -> None:
+        """Set the speed percentage of the fan."""
+        dyson_speed = math.ceil(percentage_to_ranged_value(SPEED_RANGE, percentage))
         self._device.set_speed(dyson_speed)
+
+    def set_preset_mode(self, preset_mode: str) -> None:
+        """Set a preset mode on the fan."""
+        self._valid_preset_mode_or_raise(preset_mode)
+        # There currently is only one
+        self._device.enable_auto_mode()
 
     def oscillate(self, oscillating: bool) -> None:
         """Turn on/of oscillation."""
@@ -194,13 +181,9 @@ class DysonFanEntity(DysonEntity, FanEntity):
         else:
             self._device.disable_oscillation()
 
-    def set_auto_mode(self, auto_mode: bool) -> None:
-        """Turn auto mode on/off."""
-        _LOGGER.debug("Turn auto mode %s for device %s", auto_mode, self.name)
-        if auto_mode:
-            self._device.enable_auto_mode()
-        else:
-            self._device.disable_auto_mode()
+    def set_timer(self, timer: int) -> None:
+        """Set sleep timer."""
+        self._device.set_sleep_timer(timer)
 
 
 class DysonPureCoolLinkEntity(DysonFanEntity):
@@ -214,9 +197,7 @@ class DysonPureCoolLinkEntity(DysonFanEntity):
     @property
     def device_state_attributes(self) -> dict:
         """Return optional state attributes."""
-        attributes = super().device_state_attributes
-        attributes[ATTR_AIR_QUALITY_TARGET] = self.air_quality_target
-        return attributes
+        return {ATTR_AIR_QUALITY_TARGET: self.air_quality_target}
 
     def set_air_quality_target(self, air_quality_target: str) -> None:
         """Set air quality target."""
@@ -225,3 +206,13 @@ class DysonPureCoolLinkEntity(DysonFanEntity):
 
 class DysonPureCoolEntity(DysonFanEntity):
     """Dyson Pure Cool entity."""
+
+    def set_angle(self, angle_low: int, angle_high: int) -> None:
+        """Set oscillation angle."""
+        _LOGGER.debug(
+            "set low %s and high angle %s for device %s",
+            angle_low,
+            angle_high,
+            self.name,
+        )
+        self._device.enable_oscillation(angle_low, angle_high)

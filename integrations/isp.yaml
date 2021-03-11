@@ -1,0 +1,14 @@
+---
+binary_sensor:
+  - platform: ping
+    host: 8.8.8.8
+    name: Online
+    count: 1
+    scan_interval: 300
+
+sensor:
+  - platform: scrape
+    resource: https://www.whoismyisp.org
+    select: ".isp"
+    name: "Internet Provider"
+    scan_interval: 60 #1 mins

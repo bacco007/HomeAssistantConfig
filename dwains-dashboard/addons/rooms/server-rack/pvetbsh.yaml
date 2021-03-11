@@ -6,7 +6,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-2 col-lg-2'
+          item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
           cards:
             - type: vertical-stack
               cards:
@@ -18,10 +18,10 @@
                     **pveTBSH**<br/>
                     **Uptime:** {{ (data | fromjson)['uptime']}}
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-10 col-lg-10'
+          item_classes: "col-xs-12 col-sm-9 col-md-10 col-lg-10"
           cards:
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -134,7 +134,7 @@
                     }
 
             - type: vertical-stack
-              item_classes: 'col-xs-12 col-sm-12 col-md-3 col-lg-4'
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
               cards:
                 - type: markdown
                   style: |
@@ -149,7 +149,7 @@
                   height: 15px
                   width: 75%
                   entities:
-                    - entity: sensor.pvetbsh_acpitz_1_temp
+                    - entity: sensor.pvetbsh_acpitz_1_temperature
                       name: Thermal 1
                       icon: mdi:thermometer
                       severity:
@@ -162,7 +162,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_acpitz_2_temp
+                    - entity: sensor.pvetbsh_acpitz_2_temperature
                       name: Thermal 2
                       icon: mdi:thermometer
                       severity:
@@ -175,7 +175,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_core_0_temp
+                    - entity: sensor.pvetbsh_core_0_temperature
                       name: Core 0
                       icon: mdi:thermometer
                       severity:
@@ -188,7 +188,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_core_1_temp
+                    - entity: sensor.pvetbsh_core_1_temperature
                       name: Core 1
                       icon: mdi:thermometer
                       severity:
@@ -201,7 +201,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_core_2_temp
+                    - entity: sensor.pvetbsh_core_2_temperature
                       name: Core 2
                       icon: mdi:thermometer
                       severity:
@@ -214,7 +214,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.pvetbsh_core_3_temp
+                    - entity: sensor.pvetbsh_core_3_temperature
                       name: Core 3
                       icon: mdi:thermometer
                       severity:
@@ -227,7 +227,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh01_package_id_0_temp
+                    - entity: sensor.tbsh01_package_id_0_temperature
                       name: Package
                       icon: mdi:thermometer
                       severity:
@@ -290,7 +290,7 @@
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-1'
+          item_classes: "col-xs-12 col-sm-3 col-md-1 col-lg-1"
           cards:
             - type: vertical-stack
               cards:
@@ -303,10 +303,10 @@
                     <img width="150" src="https://brands.home-assistant.io/_/proxmoxve/logo.png"><br/>
                     </center>
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-11'
+          item_classes: "col-xs-12 col-sm-9 col-md-11 col-lg-11"
           cards:
             - type: entities
-              item_classes: 'col-xs-12 col-sm-6 col-md-6 col-lg-6'
+              item_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
               style: |
                 ha-card {
                   padding-bottom: 10px;

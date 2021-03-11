@@ -40,32 +40,32 @@ monitor_docker:
       - network_total_up
       - network_total_down
 
-  # - name: TBSH02_monitordocker
-  #   url: tcp://192.168.1.64:2375
-  #   rename:
-  #     glances: "Glances"
-  #     ouroboros: "Ouroboros"
-  #   monitored_conditions:
-  #     - version
-  #     - containers_total
-  #     - containers_running
-  #     - containers_paused
-  #     - containers_stopped
-  #     - images
-  #     - containers_cpu_percentage
-  #     - containers_memory
-  #     - containers_memory_percentage
-  #     - state
-  #     - status
-  #     - uptime
-  #     - image
-  #     - cpu_percentage
-  #     - memory
-  #     - memory_percentage
-  #     - network_speed_up
-  #     - network_speed_down
-  #     - network_total_up
-  #     - network_total_down
+  - name: TBSH02_monitordocker
+    url: tcp://192.168.1.64:2375
+    rename:
+      glances: "Glances"
+      ouroboros: "Ouroboros"
+    monitored_conditions:
+      - version
+      - containers_total
+      - containers_running
+      - containers_paused
+      - containers_stopped
+      - images
+      - containers_cpu_percentage
+      - containers_memory
+      - containers_memory_percentage
+      - state
+      - status
+      - uptime
+      - image
+      - cpu_percentage
+      - memory
+      - memory_percentage
+      - network_speed_up
+      - network_speed_down
+      - network_total_up
+      - network_total_down
 
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
@@ -194,28 +194,29 @@ monitor_docker:
       - network_speed_down
       - network_total_up
       - network_total_down
-# - name: vmTBSH03_monitordocker
-#   url: tcp://192.168.1.63:2375
-#   rename:
-#     ha-dockermon: "HA Dockermon"
-#   monitored_conditions:
-#     - version
-#     - containers_total
-#     - containers_running
-#     - containers_paused
-#     - containers_stopped
-#     - images
-#     - containers_cpu_percentage
-#     - containers_memory
-#     - containers_memory_percentage
-#     - state
-#     - status
-#     - uptime
-#     - image
-#     - cpu_percentage
-#     - memory
-#     - memory_percentage
-#     - network_speed_up
-#     - network_speed_down
-#     - network_total_up
-#     - network_total_down
+
+  # - name: vmTBSH03_monitordocker
+  #   url: tcp://192.168.1.63:2375
+  #   rename:
+  #     ha-dockermon: "HA Dockermon"
+  #   monitored_conditions:
+  #     - version
+  #     - containers_total
+  #     - containers_running
+  #     - containers_paused
+  #     - containers_stopped
+  #     - images
+  #     - containers_cpu_percentage
+  #     - containers_memory
+  #     - containers_memory_percentage
+  #     - state
+  #     - status
+  #     - uptime
+  #     - image
+  #     - cpu_percentage
+  #     - memory
+  #     - memory_percentage
+  #     - network_speed_up
+  #     - network_speed_down
+  #     - network_total_up
+  #     - network_total_down

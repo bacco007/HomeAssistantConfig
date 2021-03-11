@@ -3,6 +3,7 @@
   "name": "UniFi Gateway",
   "documentation": "https://github.com/custom-components/sensor.unifigateway",
   "requirements": ["pyunifi==2.20.1"],
+  "version": "0.2.3",
   "dependencies": [],
   "codeowners": ["@jchasey"]
 }

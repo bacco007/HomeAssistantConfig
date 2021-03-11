@@ -23,6 +23,7 @@ cards:
       "tbody tr:nth-child(odd)": "background-color: none !important;"
     entities:
       include: sensor.covid_19_covidlive*
+      exclude: sensor.covid_19_covidlive_aus_vaccines
     columns:
       - name: Name
         attr: Name

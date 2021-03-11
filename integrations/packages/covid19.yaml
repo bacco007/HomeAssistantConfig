@@ -326,3 +326,41 @@ sensor:
           }}
         unit_of_measurement: People
         icon_template: mdi:biohazard
+      covid_19_covidlive_aus_vaccines:
+        friendly_name: "COVID-19 Covidlive AUS Vaccines"
+        value_template: >
+          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses')|int)
+          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses')|int)
+          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses')|int))
+          }}
+        unit_of_measurement: Doses
+        icon_template: mdi:biohazard
+      covid_19_covidlive_vac_pct:
+        friendly_name: "COVID-19 Covidlive Vaccine Percents"
+        unit_of_measurement: "%"
+        icon_template: mdi:biohazard
+        value_template: >
+          {{ (((state_attr('sensor.covid_19_covidlive_aus', 'Doses')|int)/25687000)*100)|round(3) }}
+        attribute_templates:
+          act_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_act', 'Doses')|int)/431100)*100)|round(3) }}
+          nsw_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_nsw', 'Doses')|int)/8164100)*100)|round(3) }}
+          nt_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_nt', 'Doses')|int)/246000)*100)|round(3) }}
+          qld_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_qld', 'Doses')|int)/5174400)*100)|round(3) }}
+          sa_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_sa', 'Doses')|int)/1769300)*100)|round(3) }}
+          tas_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_tas', 'Doses')|int)/540600)*100)|round(3) }}
+          vic_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_vic', 'Doses')|int)/6694900)*100)|round(3) }}
+          wa_poppct: >
+            {{ (((state_attr('sensor.covid_19_covidlive_wa', 'Doses')|int)/2661900)*100)|round(3) }}

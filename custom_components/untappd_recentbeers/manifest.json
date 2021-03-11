@@ -1,0 +1,9 @@
+{
+  "domain": "untappd_recentbeers",
+  "name": "Untappd Recent Beers",
+  "documentation": "",
+  "dependencies": [],
+  "codeowners": ["@bacco007"],
+  "requirements": [],
+  "version": "0.1"
+}
