@@ -6,6 +6,7 @@ ATTR_QUOTE_TYPE = "quoteType"
 ATTR_QUOTE_SOURCE_NAME = "quoteSourceName"
 ATTR_SYMBOL = "symbol"
 ATTR_TRENDING = "trending"
+ATTR_MARKET_STATE = "marketState"
 
 # Hass data
 HASS_DATA_CONFIG = "config"
@@ -17,6 +18,7 @@ DATA_FINANCIAL_CURRENCY = "financialCurrency"
 DATA_QUOTE_TYPE = "quoteType"
 DATA_QUOTE_SOURCE_NAME = "quoteSourceName"
 DATA_SHORT_NAME = "shortName"
+DATA_MARKET_STATE = "marketState"
 
 DATA_REGULAR_MARKET_PREVIOUS_CLOSE = "regularMarketPreviousClose"
 DATA_REGULAR_MARKET_PRICE = "regularMarketPrice"
@@ -27,9 +29,14 @@ NUMERIC_DATA_KEYS = [
     ("fiftyDayAverage", True),
     ("fiftyDayAverageChange", True),
     ("fiftyDayAverageChangePercent", False),
+    ("preMarketChange", True),
+    ("preMarketChangePercent", False),
+    ("preMarketTime", False),
+    ("preMarketPrice", True),
     ("postMarketChange", True),
     ("postMarketChangePercent", False),
     ("postMarketPrice", True),
+    ("postMarketTime", False),
     ("regularMarketChange", True),
     ("regularMarketChangePercent", False),
     ("regularMarketDayHigh", True),
@@ -37,6 +44,7 @@ NUMERIC_DATA_KEYS = [
     (DATA_REGULAR_MARKET_PREVIOUS_CLOSE, True),
     (DATA_REGULAR_MARKET_PRICE, True),
     ("regularMarketVolume", False),
+    ("regularMarketTime", False),
     ("twoHundredDayAverage", True),
     ("twoHundredDayAverageChange", True),
     ("twoHundredDayAverageChangePercent", False),
@@ -48,6 +56,7 @@ STRING_DATA_KEYS = [
     DATA_QUOTE_TYPE,
     DATA_QUOTE_SOURCE_NAME,
     DATA_SHORT_NAME,
+    DATA_MARKET_STATE,
 ]
 
 

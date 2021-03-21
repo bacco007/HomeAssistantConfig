@@ -1,0 +1,24 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Fehler beim Verbinden",
+            "invalid_auth": "Fehlerhafte Authentifizierung",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "url": "URL",
+                    "name": "Kalender Name",
+                    "max_events": "Anzahl zu erstellender Termin Sensoren",
+                    "days": "Maximale Tage in der Zukunft für Termine",
+                    "verify_ssl": "SSL Zertifikat verifizieren"
+                }
+            }
+        }
+    },
+    "title": "ical"
+}

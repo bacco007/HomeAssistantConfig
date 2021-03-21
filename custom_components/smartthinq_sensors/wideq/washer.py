@@ -2,6 +2,25 @@
 import logging
 from typing import Optional
 
+from . import (
+    FEAT_CHILDLOCK,
+    FEAT_CREASECARE,
+    FEAT_DOORCLOSE,
+    FEAT_DOORLOCK,
+    FEAT_DRYLEVEL,
+    FEAT_ERROR_MSG,
+    FEAT_PRE_STATE,
+    FEAT_PREWASH,
+    FEAT_REMOTESTART,
+    FEAT_RUN_STATE,
+    FEAT_SPINSPEED,
+    FEAT_STEAM,
+    FEAT_STEAMSOFTENER,
+    FEAT_TUBCLEAN_COUNT,
+    FEAT_TURBOWASH,
+    FEAT_WATERTEMP,
+)
+
 from .device import (
     Device,
     DeviceStatus,
@@ -108,27 +127,6 @@ class WasherStatus(DeviceStatus):
         return True
 
     @property
-    def run_state(self):
-        run_state = self._get_run_state()
-        if run_state == STATE_WASHER_POWER_OFF:
-            return STATE_OPTIONITEM_NONE
-        return self._device.get_enum_text(run_state)
-
-    @property
-    def pre_state(self):
-        pre_state = self._get_pre_state()
-        if pre_state == STATE_WASHER_POWER_OFF:
-            return STATE_OPTIONITEM_NONE
-        return self._device.get_enum_text(pre_state)
-
-    @property
-    def error_state(self):
-        if not self.is_error:
-            return STATE_OPTIONITEM_NONE
-        error = self._get_error()
-        return self._device.get_enum_text(error)
-
-    @property
     def current_course(self):
         if self.is_info_v2:
             course_key = self._device.model_info.config_value(
@@ -151,18 +149,6 @@ class WasherStatus(DeviceStatus):
         return self._device.get_enum_text(smart_course)
 
     @property
-    def remaintime_hour(self):
-        if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("remainTimeHour"))
-        return self._data.get("Remain_Time_H")
-
-    @property
-    def remaintime_min(self):
-        if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("remainTimeMinute"))
-        return self._data.get("Remain_Time_M")
-
-    @property
     def initialtime_hour(self):
         if self.is_info_v2:
             return DeviceStatus.int_or_none(self._data.get("initialTimeHour"))
@@ -173,6 +159,18 @@ class WasherStatus(DeviceStatus):
         if self.is_info_v2:
             return DeviceStatus.int_or_none(self._data.get("initialTimeMinute"))
         return self._data.get("Initial_Time_M")
+
+    @property
+    def remaintime_hour(self):
+        if self.is_info_v2:
+            return DeviceStatus.int_or_none(self._data.get("remainTimeHour"))
+        return self._data.get("Remain_Time_H")
+
+    @property
+    def remaintime_min(self):
+        if self.is_info_v2:
+            return DeviceStatus.int_or_none(self._data.get("remainTimeMinute"))
+        return self._data.get("Remain_Time_M")
 
     @property
     def reservetime_hour(self):
@@ -187,25 +185,59 @@ class WasherStatus(DeviceStatus):
         return self._data.get("Reserve_Time_M")
 
     @property
+    def run_state(self):
+        run_state = self._get_run_state()
+        if run_state == STATE_WASHER_POWER_OFF:
+            run_state = STATE_OPTIONITEM_NONE
+        return self._update_feature(
+            FEAT_RUN_STATE, run_state
+        )
+
+    @property
+    def pre_state(self):
+        pre_state = self._get_pre_state()
+        if pre_state == STATE_WASHER_POWER_OFF:
+            pre_state = STATE_OPTIONITEM_NONE
+        return self._update_feature(
+            FEAT_PRE_STATE, pre_state
+        )
+
+    @property
     def spin_option_state(self):
         spin_speed = self.lookup_enum(["SpinSpeed", "spin"])
         if not spin_speed:
-            return STATE_OPTIONITEM_NONE
-        return self._device.get_enum_text(spin_speed)
+            spin_speed = STATE_OPTIONITEM_NONE
+        return self._update_feature(
+            FEAT_SPINSPEED, spin_speed
+        )
 
     @property
     def water_temp_option_state(self):
         water_temp = self.lookup_enum(["WTemp", "WaterTemp", "temp"])
         if not water_temp:
-            return STATE_OPTIONITEM_NONE
-        return self._device.get_enum_text(water_temp)
+            water_temp = STATE_OPTIONITEM_NONE
+        return self._update_feature(
+            FEAT_WATERTEMP, water_temp
+        )
 
     @property
     def dry_level_option_state(self):
         dry_level = self.lookup_enum(["DryLevel", "dryLevel"])
         if not dry_level:
-            return STATE_OPTIONITEM_NONE
-        return self._device.get_enum_text(dry_level)
+            dry_level = STATE_OPTIONITEM_NONE
+        return self._update_feature(
+            FEAT_DRYLEVEL, dry_level
+        )
+
+    @property
+    def error_msg(self):
+        if not self.is_error:
+            error = STATE_OPTIONITEM_NONE
+        else:
+            error = self._get_error()
+        return self._update_feature(
+            FEAT_ERROR_MSG, error
+        )
 
     @property
     def tubclean_count(self):
@@ -214,59 +246,108 @@ class WasherStatus(DeviceStatus):
         else:
             result = self._data.get("TCLCount")
         if result is None:
-            return "N/A"
-        return result
+            result = "N/A"
+        return self._update_feature(
+            FEAT_TUBCLEAN_COUNT, result, False
+        )
 
     @property
     def doorlock_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("doorLock")
-        return self.lookup_bit("DoorLock")
+        status = self.lookup_bit(
+            "doorLock" if self.is_info_v2 else "DoorLock"
+        )
+        return self._update_feature(
+            FEAT_DOORLOCK, status, False
+        )
 
     @property
     def doorclose_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("doorClose")
-        return self.lookup_bit("DoorClose")
+        status = self.lookup_bit(
+            "doorClose" if self.is_info_v2 else "DoorClose"
+        )
+        return self._update_feature(
+            FEAT_DOORCLOSE, status, False
+        )
 
     @property
     def childlock_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("childLock")
-        return self.lookup_bit("ChildLock")
+        status = self.lookup_bit(
+            "childLock" if self.is_info_v2 else "ChildLock"
+        )
+        return self._update_feature(
+            FEAT_CHILDLOCK, status, False
+        )
 
     @property
     def remotestart_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("remoteStart")
-        return self.lookup_bit("RemoteStart")
+        status = self.lookup_bit(
+            "remoteStart" if self.is_info_v2 else "RemoteStart"
+        )
+        return self._update_feature(
+            FEAT_REMOTESTART, status, False
+        )
 
     @property
     def creasecare_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("creaseCare")
-        return self.lookup_bit("CreaseCare")
+        status = self.lookup_bit(
+            "creaseCare" if self.is_info_v2 else "CreaseCare"
+        )
+        return self._update_feature(
+            FEAT_CREASECARE, status, False
+        )
 
     @property
     def steam_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("steam")
-        return self.lookup_bit("Steam")
+        status = self.lookup_bit(
+            "steam" if self.is_info_v2 else "Steam"
+        )
+        return self._update_feature(
+            FEAT_STEAM, status, False
+        )
 
     @property
     def steam_softener_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("steamSoftener")
-        return self.lookup_bit("SteamSoftener")
+        status = self.lookup_bit(
+            "steamSoftener" if self.is_info_v2 else "SteamSoftener"
+        )
+        return self._update_feature(
+            FEAT_STEAMSOFTENER, status, False
+        )
 
     @property
     def prewash_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("preWash")
-        return self.lookup_bit("PreWash")
+        status = self.lookup_bit(
+            "preWash" if self.is_info_v2 else "PreWash"
+        )
+        return self._update_feature(
+            FEAT_PREWASH, status, False
+        )
 
     @property
     def turbowash_state(self):
-        if self.is_info_v2:
-            return self.lookup_bit("turboWash")
-        return self.lookup_bit("TurboWash")
+        status = self.lookup_bit(
+            "turboWash" if self.is_info_v2 else "TurboWash"
+        )
+        return self._update_feature(
+            FEAT_TURBOWASH, status, False
+        )
+
+    def _update_features(self):
+        result = [
+            self.run_state,
+            self.pre_state,
+            self.spin_option_state,
+            self.water_temp_option_state,
+            self.dry_level_option_state,
+            self.error_msg,
+            self.tubclean_count,
+            self.doorlock_state,
+            self.doorclose_state,
+            self.childlock_state,
+            self.remotestart_state,
+            self.creasecare_state,
+            self.steam_state,
+            self.steam_softener_state,
+            self.prewash_state,
+            self.turbowash_state,
+        ]

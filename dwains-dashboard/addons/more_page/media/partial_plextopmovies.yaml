@@ -2,7 +2,7 @@
 type: custom:stack-in-card
 cards:
   - type: custom:flex-table-card
-    title: Plex Top TV
+    title: Plex Top Movies
     style: |
       ha-card {
         padding-bottom: 10px;

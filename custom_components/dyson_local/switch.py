@@ -1,14 +1,16 @@
 """Switch platform for dyson."""
 
 from typing import Callable
-from homeassistant.core import HomeAssistant
+
+from libdyson import DysonPureCool, DysonPureHumidifyCool
+
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME
-from homeassistant.components.switch import SwitchEntity
-from libdyson import DysonPureCool
+from homeassistant.core import HomeAssistant
 
 from . import DysonEntity
-from .const import DOMAIN, DATA_DEVICES
+from .const import DATA_DEVICES, DOMAIN
 
 
 async def async_setup_entry(
@@ -19,9 +21,10 @@ async def async_setup_entry(
     name = config_entry.data[CONF_NAME]
     entities = [
         DysonNightModeSwitchEntity(device, name),
-        DysonContinuousMonitoringSwitchEntity(device, name)
+        DysonContinuousMonitoringSwitchEntity(device, name),
+        DysonAutoModeSwitchEntity(device, name),
     ]
-    if isinstance(device, DysonPureCool):
+    if isinstance(device, DysonPureCool) or isinstance(device, DysonPureHumidifyCool):
         entities.append(DysonFrontAirflowSwitchEntity(device, name))
     async_add_entities(entities)
 
@@ -88,6 +91,39 @@ class DysonContinuousMonitoringSwitchEntity(DysonEntity, SwitchEntity):
     def turn_off(self):
         """Turn off continuous monitoring."""
         return self._device.disable_continuous_monitoring()
+
+
+class DysonAutoModeSwitchEntity(DysonEntity, SwitchEntity):
+    """Dyson auto mode switch."""
+
+    @property
+    def sub_name(self):
+        """Return the name of the entity."""
+        return "Auto Mode"
+
+    @property
+    def sub_unique_id(self):
+        """Return the unique id of the entity."""
+        return "auto_mode"
+
+    @property
+    def icon(self):
+        """Return the icon of the entity."""
+        return "mdi:fan-auto"
+
+    @property
+    def is_on(self):
+        """Return if auto mode is on."""
+        return self._device.auto_mode
+
+    def turn_on(self):
+        """Turn on auto mode."""
+        return self._device.enable_auto_mode()
+
+    def turn_off(self):
+        """Turn off auto mode."""
+        return self._device.disable_auto_mode()
+
 
 class DysonFrontAirflowSwitchEntity(DysonEntity, SwitchEntity):
     """Dyson fan front airflow."""

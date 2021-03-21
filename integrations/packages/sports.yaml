@@ -825,7 +825,7 @@ sensor:
         entity_picture_template: /local/sportlogos/btcc.png
         value_template: >-
           {% if state_attr('calendar.btcc', 'message')  %}
-            {{ state_attr('calendar.btcc', 'message') | replace('BTCC ', '') }}
+            {{ state_attr('calendar.btcc', 'message') | replace('BTCC - ', '') }}
           {% else %}
             Nothing Scheduled
           {% endif %}
@@ -847,7 +847,7 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.btcc', 'message') | replace('BTCC ', '') %}
+            {% set op = state_attr('calendar.btcc', 'message') | replace('BTCC - ', '') %}
             {% set st = state_attr('calendar.btcc', 'start_time') %}
             {% if st != None %}
               {{ op }}
@@ -1090,7 +1090,7 @@ sensor:
         entity_picture_template: /local/sportlogos/dtm.png
         value_template: >-
           {% if state_attr('calendar.dtm', 'message')  %}
-            {{ state_attr('calendar.dtm', 'message') | replace('DTM ', '') }}
+            {{ state_attr('calendar.dtm', 'message') | replace('DTM - ', '') }}
           {% else %}
             Nothing Scheduled
           {% endif %}
@@ -1112,7 +1112,7 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.dtm', 'message') | replace('DTM ', '') %}
+            {% set op = state_attr('calendar.dtm', 'message') | replace('DTM - ', '') %}
             {% set st = state_attr('calendar.dtm', 'start_time') %}
             {% if st != None %}
               {{ op }}

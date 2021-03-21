@@ -1,25 +1,30 @@
 """Fan platform for dyson."""
 
-import math
-from homeassistant.const import CONF_NAME
 import logging
+import math
+from typing import Callable, Optional
+
+from libdyson import (
+    DysonPureCool,
+    DysonPureCoolLink,
+    HumidifyOscillationMode,
+    MessageType,
+)
 from libdyson.const import AirQualityTarget
 import voluptuous as vol
 
-from typing import Callable, List, Optional
-from homeassistant.components.fan import FanEntity, SPEED_HIGH, SPEED_LOW, SPEED_MEDIUM, SUPPORT_OSCILLATE, SUPPORT_SET_SPEED
+from homeassistant.components.fan import SUPPORT_OSCILLATE, SUPPORT_SET_SPEED, FanEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_platform, config_validation as cv
+from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.util.percentage import (
     int_states_in_range,
     percentage_to_ranged_value,
     ranged_value_to_percentage,
 )
 
-from libdyson import MessageType, DysonPureCoolLink
-
-from . import DysonEntity, DOMAIN
+from . import DOMAIN, DysonEntity
 from .const import DATA_DEVICES
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,19 +35,28 @@ AIR_QUALITY_TARGET_ENUM_TO_STR = {
     AirQualityTarget.SENSITIVE: "sensitive",
     AirQualityTarget.VERY_SENSITIVE: "very sensitive",
 }
-
 AIR_QUALITY_TARGET_STR_TO_ENUM = {
-    value: key
-    for key, value in AIR_QUALITY_TARGET_ENUM_TO_STR.items()
+    value: key for key, value in AIR_QUALITY_TARGET_ENUM_TO_STR.items()
+}
+
+OSCILLATION_MODE_ENUM_TO_STR = {
+    HumidifyOscillationMode.DEGREE_45: "45",
+    HumidifyOscillationMode.DEGREE_90: "90",
+    HumidifyOscillationMode.BREEZE: "breeze",
+}
+OSCILLATION_MODE_STR_TO_ENUM = {
+    value: key for key, value in OSCILLATION_MODE_ENUM_TO_STR.items()
 }
 
 ATTR_AIR_QUALITY_TARGET = "air_quality_target"
 ATTR_ANGLE_LOW = "angle_low"
 ATTR_ANGLE_HIGH = "angle_high"
+ATTR_OSCILLATION_MODE = "oscillation_mode"
 ATTR_TIMER = "timer"
 
 SERVICE_SET_AIR_QUALITY_TARGET = "set_air_quality_target"
 SERVICE_SET_ANGLE = "set_angle"
+SERVICE_SET_OSCILLATION_MODE = "set_oscillation_mode"
 SERVICE_SET_TIMER = "set_timer"
 
 SET_AIR_QUALITY_TARGET_SCHEMA = {
@@ -54,12 +68,13 @@ SET_ANGLE_SCHEMA = {
     vol.Required(ATTR_ANGLE_HIGH): cv.positive_int,
 }
 
+SET_OSCILLATION_MODE_SCHEMA = {
+    vol.Required(ATTR_OSCILLATION_MODE): vol.In(OSCILLATION_MODE_STR_TO_ENUM),
+}
+
 SET_TIMER_SCHEMA = {
     vol.Required(ATTR_TIMER): cv.positive_int,
 }
-
-PRESET_MODE_AUTO = "auto"
-PRESET_MODES = [PRESET_MODE_AUTO]
 
 SPEED_LIST_DYSON = list(range(1, 11))  # 1, 2, ..., 10
 
@@ -79,8 +94,10 @@ async def async_setup_entry(
     name = config_entry.data[CONF_NAME]
     if isinstance(device, DysonPureCoolLink):
         entity = DysonPureCoolLinkEntity(device, name)
-    else:
+    elif isinstance(device, DysonPureCool):
         entity = DysonPureCoolEntity(device, name)
+    else:  # DysonPureHumidityCool
+        entity = DysonPureHumidifyCoolEntity(device, name)
     async_add_entities([entity])
 
     platform = entity_platform.current_platform.get()
@@ -89,15 +106,24 @@ async def async_setup_entry(
     )
     if isinstance(device, DysonPureCoolLink):
         platform.async_register_entity_service(
-            SERVICE_SET_AIR_QUALITY_TARGET, SET_AIR_QUALITY_TARGET_SCHEMA, "set_air_quality_target"
+            SERVICE_SET_AIR_QUALITY_TARGET,
+            SET_AIR_QUALITY_TARGET_SCHEMA,
+            "set_air_quality_target",
         )
-    else:  # DysonPureCool
+    elif isinstance(device, DysonPureCool):
         platform.async_register_entity_service(
             SERVICE_SET_ANGLE, SET_ANGLE_SCHEMA, "set_angle"
+        )
+    else:  # DysonPureHumidityCool
+        platform.async_register_entity_service(
+            SERVICE_SET_OSCILLATION_MODE,
+            SET_OSCILLATION_MODE_SCHEMA,
+            "set_oscillation_mode",
         )
 
 
 class DysonFanEntity(DysonEntity, FanEntity):
+    """Dyson fan entity base class."""
 
     _MESSAGE_TYPE = MessageType.STATE
 
@@ -114,21 +140,9 @@ class DysonFanEntity(DysonEntity, FanEntity):
     @property
     def percentage(self) -> Optional[int]:
         """Return the current speed percentage."""
-        if self._device.auto_mode:
+        if self._device.speed is None:
             return None
         return ranged_value_to_percentage(SPEED_RANGE, int(self._device.speed))
-
-    @property
-    def preset_modes(self) -> List[str]:
-        """Return the available preset modes."""
-        return PRESET_MODES
-
-    @property
-    def preset_mode(self) -> Optional[str]:
-        """Return the current preset mode."""
-        if self._device.auto_mode:
-            return PRESET_MODE_AUTO
-        return None
 
     @property
     def oscillating(self):
@@ -149,9 +163,7 @@ class DysonFanEntity(DysonEntity, FanEntity):
     ) -> None:
         """Turn on the fan."""
         _LOGGER.debug("Turn on fan %s with percentage %s", self.name, percentage)
-        if preset_mode:
-            self.set_preset_mode(preset_mode)
-        elif percentage is None:
+        if percentage is None:
             # percentage not set, just turn on
             self._device.turn_on()
         else:
@@ -167,12 +179,6 @@ class DysonFanEntity(DysonEntity, FanEntity):
         dyson_speed = math.ceil(percentage_to_ranged_value(SPEED_RANGE, percentage))
         self._device.set_speed(dyson_speed)
 
-    def set_preset_mode(self, preset_mode: str) -> None:
-        """Set a preset mode on the fan."""
-        self._valid_preset_mode_or_raise(preset_mode)
-        # There currently is only one
-        self._device.enable_auto_mode()
-
     def oscillate(self, oscillating: bool) -> None:
         """Turn on/of oscillation."""
         _LOGGER.debug("Turn oscillation %s for device %s", oscillating, self.name)
@@ -183,6 +189,8 @@ class DysonFanEntity(DysonEntity, FanEntity):
 
     def set_timer(self, timer: int) -> None:
         """Set sleep timer."""
+        if timer == 0:
+            self._device.disable_sleep_timer()
         self._device.set_sleep_timer(timer)
 
 
@@ -201,11 +209,31 @@ class DysonPureCoolLinkEntity(DysonFanEntity):
 
     def set_air_quality_target(self, air_quality_target: str) -> None:
         """Set air quality target."""
-        self._device.set_air_quality_target(AIR_QUALITY_TARGET_STR_TO_ENUM[air_quality_target])
+        self._device.set_air_quality_target(
+            AIR_QUALITY_TARGET_STR_TO_ENUM[air_quality_target]
+        )
 
 
 class DysonPureCoolEntity(DysonFanEntity):
     """Dyson Pure Cool entity."""
+
+    @property
+    def angle_low(self) -> int:
+        """Return oscillation angle low."""
+        return self._device.oscillation_angle_low
+
+    @property
+    def angle_high(self) -> int:
+        """Return oscillation angle high."""
+        return self._device.oscillation_angle_high
+
+    @property
+    def device_state_attributes(self) -> dict:
+        """Return optional state attributes."""
+        return {
+            ATTR_ANGLE_LOW: self.angle_low,
+            ATTR_ANGLE_HIGH: self.angle_high,
+        }
 
     def set_angle(self, angle_low: int, angle_high: int) -> None:
         """Set oscillation angle."""
@@ -216,3 +244,26 @@ class DysonPureCoolEntity(DysonFanEntity):
             self.name,
         )
         self._device.enable_oscillation(angle_low, angle_high)
+
+
+class DysonPureHumidifyCoolEntity(DysonFanEntity):
+    """Dyson Pure Humidify+Cool entity."""
+
+    @property
+    def oscillation_mode(self) -> str:
+        """Return oscillation mode."""
+        return OSCILLATION_MODE_ENUM_TO_STR[self._device.oscillation_mode]
+
+    @property
+    def device_state_attributes(self) -> dict:
+        """Return optional state attributes."""
+        return {ATTR_OSCILLATION_MODE: self.oscillation_mode}
+
+    def set_oscillation_mode(self, oscillation_mode: str) -> None:
+        """Set oscillation mode."""
+        _LOGGER.debug(
+            "set oscillation mode %s for device %s",
+            oscillation_mode,
+            self.name,
+        )
+        self._device.enable_oscillation(OSCILLATION_MODE_STR_TO_ENUM[oscillation_mode])

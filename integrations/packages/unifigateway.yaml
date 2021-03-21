@@ -25,10 +25,12 @@ sensor:
       unifi_gateway_wan_cpu:
         friendly_name: "CPU"
         unit_of_measurement: "%"
+        icon_template: mdi:cpu-64-bit
         value_template: "{{ states.sensor.unifi_gateway_wan.attributes['gw_system-stats']['cpu'] }}"
       unifi_gateway_wan_mem:
         friendly_name: "Memory"
         unit_of_measurement: "%"
+        icon_template: mdi:memory
         value_template: "{{ states.sensor.unifi_gateway_wan.attributes['gw_system-stats']['mem'] }}"
       unifi_gateway_www_xput_down:
         friendly_name: "USG Speedtest Download"
@@ -46,10 +48,12 @@ sensor:
         icon_template: "mdi:progress-clock"
         value_template: "{{ states.sensor.unifi_gateway_www.attributes.speedtest_ping }}"
       unifi_gateway_wlan_num_user:
-        friendly_name: "Users"
+        friendly_name: "WiFi Users"
+        icon_template: mdi:wifi
         value_template: "{{ states.sensor.unifi_gateway_wlan.attributes.num_user }}"
       unifi_gateway_lan_num_user:
-        friendly_name: "Users Lan"
+        friendly_name: "Wired Users"
+        icon_template: mdi:lan
         value_template: "{{ states.sensor.unifi_gateway_lan.attributes.num_user }}"
       unifi_gateway_wan_download:
         friendly_name: "WAN Download"
@@ -67,15 +71,37 @@ sensor:
         icon_template: mdi:wifi
       unifi_gateway_wan_ip:
         friendly_name: "WAN IP"
+        icon_template: mdi:wan
         value_template: "{{ states.sensor.unifi_gateway_wan.attributes.wan_ip }}"
       unifi_gateway_www_uptime:
         friendly_name: "Internet Uptime"
+        icon_template: mdi:av-timer
         value_template: >
-          {%- set time = states.sensor.unifi_gateway_www.attributes.uptime | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set minutes = '{} min'.format(minutes) if minutes > 0 else '' %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set hours = '{} hr '.format(hours) if hours > 0 else '' %}
-          {%- set days = (time // 86400) %}
-          {%- set days = '{} d '.format(days) if days > 0 else '' %}
-          {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+          {% set time = (states.sensor.unifi_gateway_wan.attributes['gw_system-stats']['uptime'] | int) | int %}
+          {% set minutes = ((time % 3600) / 60) | int %}
+          {% set hours = ((time % 86400) / 3600) | int %}
+          {% set days = (time / 86400) | int %}
+
+          {%- if time < 60 -%}
+            Less than a minute
+            {%- else -%}
+            {%- if days > 0 -%}
+              {{ days }}d
+            {%- endif -%}
+            {%- if hours > 0 -%}
+              {%- if days > 0 -%}
+                {{ ' ' }}
+              {%- endif -%}
+              {{ hours }}h
+             {%- endif -%}
+             {%- if minutes > 0 -%}
+               {%- if days > 0 or hours > 0 -%}
+                 {{ ' ' }}
+               {%- endif -%}
+               {{ minutes }}m
+             {%- endif -%}
+           {%- endif -%}
+      unifi_gateway_firmware:
+        friendly_name: "UDM-Firmware Version"
+        value_template: "{{ states.sensor.unifi_gateway_wan.attributes.gw_version }}"
+        icon_template: mdi:counter

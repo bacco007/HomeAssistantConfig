@@ -13,7 +13,6 @@ recorder:
       - sensor.plex_tautulli_history
       - sensor.plex_tautulli_toptv
       - sensor.plex_tautulli_topusers
-      - sensor.tbsmarthome_overhead_satellites
       - weather.dark_sky
     entity_globs:
       - binary_sensor.vmtbsh03*
@@ -39,6 +38,8 @@ recorder:
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
+      - sensor.tbsmarthome_*_overhead_satellites
+      - sensor.bus_stop_*
     domains:
       - anniversaries
       - automation

@@ -684,7 +684,7 @@
         show: true
         title: "COVID-19 - Vaccinations"
       span:
-        end: day
+        end: hour
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -719,7 +719,6 @@
           attribute: Doses
           name: ACT
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -728,7 +727,6 @@
           attribute: Doses
           name: NSW
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -737,7 +735,6 @@
           attribute: Doses
           name: NT
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -746,7 +743,6 @@
           attribute: Doses
           name: QLD
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -755,7 +751,6 @@
           attribute: Doses
           name: SA
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -773,7 +768,6 @@
           attribute: Doses
           name: VIC
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -790,7 +784,6 @@
         - entity: sensor.covid_19_covidlive_aus_vaccines
           name: UNK
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -802,7 +795,7 @@
         show: true
         title: "COVID-19 - Vaccinations (as % of Population)"
       span:
-        end: day
+        end: hour
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -839,7 +832,6 @@
           unit: "%"
           name: ACT
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -863,7 +855,6 @@
           unit: "%"
           name: NT
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -875,7 +866,6 @@
           unit: "%"
           name: QLD
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -887,7 +877,6 @@
           unit: "%"
           name: SA
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -899,7 +888,6 @@
           unit: "%"
           name: TAS
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -911,7 +899,6 @@
           unit: "%"
           name: VIC
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -923,7 +910,6 @@
           unit: "%"
           name: WA
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
@@ -936,18 +922,125 @@
           name: AUS
           type: area
           color: black
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: last
             duration: 1d
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Vaccinations"
+      span:
+        end: hour
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "No. Vaccinations"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      stacked: true
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Doses
+          name: ACT
+          type: area
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Doses
+          name: NSW
+          type: area
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Doses
+          name: NT
+          type: area
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Doses
+          name: QLD
+          type: area
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Doses
+          name: SA
+          type: area
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Doses
+          name: TAS
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Doses
+          name: VIC
+          type: area
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Doses
+          name: WA
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: delta
+            duration: 1d
+
     - type: custom:apexcharts-card
       graph_span: 7d1s
       header:
         show: true
         title: "COVID-19 - Tests"
       span:
-        end: day
+        end: hour
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -1059,12 +1152,12 @@
             func: last
             duration: 1d
     - type: custom:apexcharts-card
-      graph_span: 7d1s
       header:
         show: true
         title: "COVID-19 - Tests (as % of Population)"
+      graph_span: 7d
       span:
-        end: day
+        end: hour
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -1204,12 +1297,12 @@
             func: last
             duration: 1d
     - type: custom:apexcharts-card
-      graph_span: 7d1s
       header:
         show: true
         title: "COVID-19 - Tests"
+      graph_span: 7d
       span:
-        end: day
+        end: hour
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -1244,7 +1337,6 @@
           unit: "Tests"
           name: ACT
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1254,7 +1346,6 @@
           unit: "Tests"
           name: NSW
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1264,7 +1355,6 @@
           unit: "Tests"
           name: NT
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1274,7 +1364,6 @@
           unit: "Tests"
           name: QLD
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1284,7 +1373,6 @@
           unit: "Tests"
           name: SA
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1294,7 +1382,6 @@
           unit: "Tests"
           name: TAS
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1304,7 +1391,6 @@
           unit: "Tests"
           name: VIC
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta
@@ -1314,7 +1400,6 @@
           unit: "Tests"
           name: WA
           type: area
-          extend_to_end: true
           stroke_width: 3
           group_by:
             func: delta

@@ -1,13 +1,21 @@
 """Binary sensor platform for dyson."""
 
 from typing import Callable
+
+from libdyson import Dyson360Heurist
+
+from homeassistant.components.binary_sensor import (
+    DEVICE_CLASS_BATTERY_CHARGING,
+    BinarySensorEntity,
+)
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
-from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_BATTERY_CHARGING
-from homeassistant.config_entries import ConfigEntry
 
 from . import DysonEntity
 from .const import DATA_DEVICES, DOMAIN
+
+ICON_BIN_FULL = "mdi:delete-variant"
 
 
 async def async_setup_entry(
@@ -15,15 +23,19 @@ async def async_setup_entry(
 ) -> None:
     """Set up Dyson binary sensor from a config entry."""
     device = hass.data[DOMAIN][DATA_DEVICES][config_entry.entry_id]
-    entity = Dyson360EyeBatteryChargingSensor(device, config_entry.data[CONF_NAME])
-    async_add_entities([entity])
+    name = config_entry.data[CONF_NAME]
+    entities = [DysonVacuumBatteryChargingSensor(device, name)]
+    if isinstance(device, Dyson360Heurist):
+        entities.append(Dyson360HeuristBinFullSensor(device, name))
+    async_add_entities(entities)
 
 
-class Dyson360EyeBatteryChargingSensor(DysonEntity, BinarySensorEntity):
+class DysonVacuumBatteryChargingSensor(DysonEntity, BinarySensorEntity):
+    """Dyson vacuum battery charging sensor."""
 
     @property
-    def state(self) -> bool:
-        """Return the state of the sensor."""
+    def is_on(self) -> bool:
+        """Return if the sensor is on."""
         return self._device.is_charging
 
     @property
@@ -35,3 +47,32 @@ class Dyson360EyeBatteryChargingSensor(DysonEntity, BinarySensorEntity):
     def sub_name(self) -> str:
         """Return the name of the sensor."""
         return "Battery Charging"
+
+    @property
+    def sub_unique_id(self):
+        """Return the sensor's unique id."""
+        return "battery_charging"
+
+
+class Dyson360HeuristBinFullSensor(DysonEntity, BinarySensorEntity):
+    """Dyson 360 Heurist bin full sensor."""
+
+    @property
+    def is_on(self) -> bool:
+        """Return if the sensor is on."""
+        return self._device.is_bin_full
+
+    @property
+    def icon(self) -> str:
+        """Return the sensor icon."""
+        return ICON_BIN_FULL
+
+    @property
+    def sub_name(self) -> str:
+        """Return the name of the sensor."""
+        return "Bin Full"
+
+    @property
+    def sub_unique_id(self):
+        """Return the sensor's unique id."""
+        return "bin_full"

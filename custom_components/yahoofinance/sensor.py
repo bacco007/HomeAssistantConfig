@@ -11,6 +11,7 @@ from homeassistant.helpers.entity import Entity, async_generate_entity_id
 
 from .const import (
     ATTR_CURRENCY_SYMBOL,
+    ATTR_MARKET_STATE,
     ATTR_QUOTE_SOURCE_NAME,
     ATTR_QUOTE_TYPE,
     ATTR_SYMBOL,
@@ -23,6 +24,7 @@ from .const import (
     CURRENCY_CODES,
     DATA_CURRENCY_SYMBOL,
     DATA_FINANCIAL_CURRENCY,
+    DATA_MARKET_STATE,
     DATA_QUOTE_SOURCE_NAME,
     DATA_QUOTE_TYPE,
     DATA_REGULAR_MARKET_PREVIOUS_CLOSE,
@@ -91,6 +93,7 @@ class YahooFinanceSensor(Entity):
             ATTR_SYMBOL: symbol,
             ATTR_QUOTE_TYPE: None,
             ATTR_QUOTE_SOURCE_NAME: None,
+            ATTR_MARKET_STATE: None,
         }
 
         # Initialize all numeric attributes to None
@@ -231,6 +234,7 @@ class YahooFinanceSensor(Entity):
         # Add some other string attributes
         self._attributes[ATTR_QUOTE_TYPE] = symbol_data[DATA_QUOTE_TYPE]
         self._attributes[ATTR_QUOTE_SOURCE_NAME] = symbol_data[DATA_QUOTE_SOURCE_NAME]
+        self._attributes[ATTR_MARKET_STATE] = symbol_data[DATA_MARKET_STATE]
 
         # Use target_currency if we have conversion data. Otherwise keep using the
         # currency from data.

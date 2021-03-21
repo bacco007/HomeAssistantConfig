@@ -39,6 +39,12 @@ GROUP BY
 ORDER BY COUNT(event_type) DESC
 LIMIT 20;
 
+SELECT verrijkt.entity_id, SUM(LENGTH(attributes)) size, COUNT(*) count, SUM(LENGTH(attributes))/COUNT(*) avg
+FROM (SELECT new_states.entity_id, events.event_id, new_states.attributes FROM events LEFT JOIN states as new_states ON events.event_id = new_states.event_id) as verrijkt
+GROUP BY verrijkt.entity_id
+ORDER BY size DESC
+limit 20;
+
 SELECT 
     JSON_VALUE(event_data, '$.entity_id') AS entity_id,
     COUNT(*) AS cnt
