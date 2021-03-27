@@ -1,6 +1,5 @@
 ---
 homekit:
-  auto_start: true
   name: Home Assistant
   filter:
     include_entities:

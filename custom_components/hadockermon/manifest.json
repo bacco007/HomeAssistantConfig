@@ -4,5 +4,6 @@
   "documentation": "https://github.com/custom-components/switch.hadockermon",
   "dependencies": [],
   "codeowners": ["@ludeeus"],
-  "requirements": ["pydockermon==1.0.0"]
+  "requirements": ["pydockermon==1.0.0"],
+  "version": "0.1"
 }

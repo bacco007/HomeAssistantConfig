@@ -4,5 +4,6 @@
   "documentation": "https://gcobb321.github.io/icloud3/#/",
   "hdependencies": [],
   "codeowners": ["@gcobb321"],
-  "requirements": []
+  "requirements": [],
+  "version": "0.1"
 }

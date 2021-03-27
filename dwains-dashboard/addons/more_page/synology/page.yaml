@@ -183,6 +183,19 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
+                    - entity: sensor.thecube2_drive_4_temperature
+                      name: Disk 4
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
                   style: |
                     ha-card {
                       --paper-item-icon-color: rgb(47,186,229);
@@ -432,7 +445,7 @@
         - type: custom:auto-entities
           card:
             type: entities
-            title: Drive 3
+            title: Drive 4
             style: |
               ha-card {
                 background-color: var(--dwains-theme-primary);
@@ -456,8 +469,8 @@
               }
           filter:
             include:
-              - { entity_id: sensor.thecube2_drive_3* }
-              - { entity_id: binary_sensor.thecube2_drive_3* }
+              - { entity_id: sensor.thecube2_drive_4* }
+              - { entity_id: binary_sensor.thecube2_drive_4* }
     - type: vertical-stack
       cards:
         - type: custom:auto-entities
@@ -489,3 +502,34 @@
             include:
               - { entity_id: sensor.thecube2_volume_1* }
               - { entity_id: binary_sensor.thecube2_volume_1* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Volume 2
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_volume_2* }
+              - { entity_id: binary_sensor.thecube2_volume_2* }

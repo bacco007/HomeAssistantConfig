@@ -965,7 +965,6 @@
                 stops: [20, 100, 100, 100],
               },
           }
-      stacked: true
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Doses

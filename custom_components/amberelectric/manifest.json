@@ -2,5 +2,6 @@
   "domain": "amberelectric",
   "name": "Amber Electric",
   "documentation": "https://www.home-assistant.io/integrations/bom",
-  "codeowners": ["@lewisbenge"]
+  "codeowners": ["@lewisbenge"],
+  "version": "0.1"
 }

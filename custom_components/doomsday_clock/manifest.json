@@ -4,5 +4,6 @@
   "documentation": "https://github.com/renemarc/home-assistant-doomsday-clock",
   "requirements": ["countdoom==0.2.1"],
   "dependencies": [],
-  "codeowners": ["@renemarc"]
+  "codeowners": ["@renemarc"],
+  "version": "0.1"
 }

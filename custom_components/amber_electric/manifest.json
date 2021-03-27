@@ -3,14 +3,11 @@
   "name": "Amber Electric",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/amber_electric",
-  "requirements": [
-    "amber-electric==0.0.17"
-  ],
+  "requirements": ["amber-electric==0.0.17"],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
   "dependencies": [],
-  "codeowners": [
-    "@troykelly"
-  ]
+  "codeowners": ["@troykelly"],
+  "version": "0.1"
 }

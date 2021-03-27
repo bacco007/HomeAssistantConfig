@@ -3,13 +3,8 @@
   "name": "Eufy Security",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/eufy_security",
-  "requirements": [
-    "python-eufy-security==0.3.0"
-  ],
-  "dependencies": [
-    "ffmpeg"
-  ],
-  "codeowners": [
-      "@nonsleepr"
-  ]
+  "requirements": ["python-eufy-security==0.3.0"],
+  "dependencies": ["ffmpeg"],
+  "codeowners": ["@nonsleepr"],
+  "version": "0.1"
 }

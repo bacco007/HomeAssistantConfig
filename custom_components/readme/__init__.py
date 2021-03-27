@@ -4,25 +4,24 @@ Use Jinja and data from Home Assistant to generate your README.md file
 For more details about this component, please refer to
 https://github.com/custom-components/readme
 """
-import os
 import json
+import os
 from datetime import timedelta
-from jinja2 import Template
+
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers import discovery
 from homeassistant.helpers.template import AllStates
 from homeassistant.util import Throttle
-
 from integrationhelper import Logger
 from integrationhelper.const import CC_STARTUP_VERSION
+from jinja2 import Template
 
-from .const import DOMAIN_DATA, DOMAIN, ISSUE_URL, REQUIRED_FILES, VERSION
+from .const import DOMAIN, DOMAIN_DATA, ISSUE_URL, REQUIRED_FILES, VERSION
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.Schema({vol.Optional("convert_lovelace"): cv.boolean})},
-    extra=vol.ALLOW_EXTRA,
+    {DOMAIN: vol.Schema({vol.Optional("convert_lovelace"): cv.boolean})}, extra=vol.ALLOW_EXTRA,
 )
 
 
@@ -40,9 +39,7 @@ async def async_setup(hass, config):
 
     # Print startup message
     Logger("custom_components.readme").info(
-        CC_STARTUP_VERSION.format(
-            name=DOMAIN.capitalize(), version=VERSION, issue_link=ISSUE_URL
-        )
+        CC_STARTUP_VERSION.format(name=DOMAIN.capitalize(), version=VERSION, issue_link=ISSUE_URL)
     )
 
     # Check that all required files are present
@@ -71,16 +68,12 @@ async def async_setup_entry(hass, config_entry):
     conf = hass.data.get(DOMAIN_DATA)
     if config_entry.source == config_entries.SOURCE_IMPORT:
         if conf is None:
-            hass.async_create_task(
-                hass.config_entries.async_remove(config_entry.entry_id)
-            )
+            hass.async_create_task(hass.config_entries.async_remove(config_entry.entry_id))
         return False
 
     # Print startup message
     Logger("custom_components.readme").info(
-        CC_STARTUP_VERSION.format(
-            name=DOMAIN.capitalize(), version=VERSION, issue_link=ISSUE_URL
-        )
+        CC_STARTUP_VERSION.format(name=DOMAIN.capitalize(), version=VERSION, issue_link=ISSUE_URL)
     )
 
     # Check that all required files are present
@@ -131,8 +124,7 @@ def create_initial_files(hass):
         from shutil import copyfile
 
         copyfile(
-            f"{base}/custom_components/readme/default.j2",
-            f"{base}/templates/README.j2",
+            f"{base}/custom_components/readme/default.j2", f"{base}/templates/README.j2",
         )
 
 
@@ -167,9 +159,9 @@ async def add_services(hass):
         custom_components = get_custom_components(hass)
         hacs_components = get_hacs_components(hass)
         variables = {
-            "custom_components": custom_components, 
-            "states": AllStates(hass), 
-            "hacs_components": hacs_components
+            "custom_components": custom_components,
+            "states": AllStates(hass),
+            "hacs_components": hacs_components,
         }
 
         with open(f"{base}/templates/README.j2", "r") as readme:
@@ -185,50 +177,46 @@ async def add_services(hass):
 
     hass.services.async_register(DOMAIN, "generate", service_generate)
 
+
 def get_hacs_components(hass):
-    base = hass.config.path()
-    keys = []
-    hacs_components = []
+    try:
+        from custom_components.hacs.share import get_hacs
+    except ImportError:
+        return []
 
-    for file in os.listdir(f"{base}/.storage/hacs"):
-        if file.endswith(".hacs"):
-            keys.append(os.path.splitext(file)[0])
+    hacs = get_hacs()
+    repositories = hacs.repositories
+    installed = []
 
-    if os.path.exists(f"{base}/.storage/hacs.repositories"):
-        with open(f"{base}/.storage/hacs.repositories", "r") as repositories:
-            content = repositories.read()
-            content = json.loads(content)
-        
-        for key in keys:
-            repository = content["data"][key]
+    for repo in repositories:
+        if repo.data.installed:
+            repo_json = repo.data.to_json()
 
-            hacs_components.append(
-                {
-                    "category": repository["category"],
-                    "name": get_repository_name(repository),
-                    "description": repository["description"],
-                    "authors": repository["authors"],
-                    "documentation": "https://github.com/"+repository["full_name"]
-                }
-            )
+            # Add additional properites to json
+            repo_json["name"] = get_repository_name(repo)
+            repo_json["documentation"] = "https://github.com/" + repo.data.full_name
 
-    return hacs_components
+            installed.append(repo_json)
+
+    return installed
+
 
 def get_repository_name(repository) -> str:
     """Return the name of the repository for use in the frontend."""
     name = None
-    if repository["repository_manifest"]:
-        name = repository["repository_manifest"]["name"]
+
+    if repository.repository_manifest.name:
+        name = repository.repository_manifest.name
     else:
-        name = repository["full_name"].split("/")[-1]
+        name = repository.data.full_name.split("/")[-1]
+
+    name = name.replace("-", " ").replace("_", " ").strip()
 
     if name.isupper():
         return name
 
-    return (name.replace("-", " ")
-                .replace("_", " ")
-                .replace("homeassistant", "")
-                .title().strip())
+    return name.title()
+
 
 def get_custom_components(hass):
     """Return a list with custom_component info."""
@@ -237,9 +225,7 @@ def get_custom_components(hass):
 
     for integration in os.listdir(f"{base}/custom_components"):
         if os.path.exists(f"{base}/custom_components/{integration}/manifest.json"):
-            with open(
-                f"{base}/custom_components/{integration}/manifest.json", "r"
-            ) as manifest:
+            with open(f"{base}/custom_components/{integration}/manifest.json", "r") as manifest:
                 content = manifest.read()
                 content = json.loads(content)
             custom_components.append(

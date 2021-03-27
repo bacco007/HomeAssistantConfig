@@ -13,12 +13,12 @@ sensor:
       - alerts
       - firmware
 
-  - platform: my_unifi
-    name: my_unifi
-    region: default
-    url: https://192.168.1.1
-    username: !secret unifi_username
-    password: !secret unifi_password
+  # - platform: my_unifi
+  #   name: my_unifi
+  #   region: default
+  #   url: https://192.168.1.1
+  #   username: !secret unifi_username
+  #   password: !secret unifi_password
 
   - platform: template
     sensors:

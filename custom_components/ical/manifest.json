@@ -4,15 +4,11 @@
   "config_flow": true,
   "issue_tracker": "https://github.com/tybritten/ical-sensor-homeassistant/issues",
   "documentation": "https://www.home-assistant.io/integrations/ical",
-  "requirements": [
-    "icalendar==4.0.7"
-  ],
+  "requirements": ["icalendar==4.0.7"],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
   "dependencies": [],
-  "codeowners": [
-    "@Olen",
-    "@TyBritten"
-  ]
+  "codeowners": ["@Olen", "@TyBritten"],
+  "version": "0.1"
 }
