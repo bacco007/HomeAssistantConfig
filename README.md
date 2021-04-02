@@ -72,18 +72,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 17:10, Saturday, March 27th 2021_
+_Stats as at 05:00, Friday, April 2nd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.3.4 | 294     | 2305         | 1916 | 52 |
+| 2021.3.4 | 298     | 2324         | 1917 | 52 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 52
-Binary Sensor | 90
+Binary Sensor | 91
 Camera | 5
 Device Tracker | 59
 Group | 9
@@ -95,7 +95,7 @@ Media Player | 12
 Person | 1
 Scene | 1
 Script | 2
-Sensor | 1916
+Sensor | 1917
 Sun | 1
 Switch | 84
 Weather | 3
@@ -131,6 +131,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
+| [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
@@ -160,6 +161,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [camera.dyson_cloud](https://www.home-assistant.io/components/camera.dyson_cloud) |
 | [camera.eufy_security](https://www.home-assistant.io/components/camera.eufy_security) |
 | [camera.ha_skyfield](https://www.home-assistant.io/components/camera.ha_skyfield) |
+| [camera.mqtt](https://www.home-assistant.io/components/camera.mqtt) |
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
@@ -321,6 +323,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
+| [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
@@ -383,6 +386,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
+| [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |

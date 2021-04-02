@@ -81,6 +81,105 @@
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.templow];
             });
+    - type: "custom:config-template-card"
+      entities:
+        - sensor.sunrise
+        - sensor.sunset
+        - sensor.weather_outside_uvindex
+        - sensor.weather_outside_radiation
+      card:
+        type: "custom:apexcharts-card"
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+          title: UV Index and Radiation
+        span:
+          start: day
+        graph_span: 24h
+        all_series_config:
+          stroke_width: 2
+          type: area
+          extend_to_end: false
+          float_precision: 0
+        color_list:
+          - yellow
+          - yellow
+          - green
+          - grey
+        series:
+          - entity: sensor.weather_outside_uvindex
+            name: UV Index
+            group_by:
+              func: last
+              duration: 10min
+          - entity: sensor.weather_outside_uvindex
+            name: UV Index
+            offset: "-24h"
+            type: line
+            opacity: 0.2
+            group_by:
+              func: last
+              duration: 10min
+            show:
+              in_header: false
+          - entity: sensor.weather_outside_radiation
+            name: Radiation
+            group_by:
+              func: last
+              duration: 10min
+        y_axis_precision: 0
+        apex_config:
+          annotations:
+            xaxis:
+              - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+                label:
+                  text: ☼
+                  borderWidth: 0
+                  style:
+                    background: "#0000"
+              - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+                label:
+                  text: ☾
+                  borderWidth: 0
+                  style:
+                    background: "#0000"
+          yaxis:
+            - seriesName: UV Index
+              decimalsInFloat: 0
+            - seriesName: UV Index
+              show: false
+            - seriesName: Radiation
+              decimalsInFloat: 0
+              opposite: true
+            - seriesName: Night time
+              opposite: true
+              show: false
+          tooltip:
+            x:
+              format: "ddd dd MMM - HH:mm"
+          xaxis:
+            tooltip:
+              enabled: false
+          legend:
+            show: false
+          grid:
+            borderColor: "#7B7B7B"
+          chart:
+            foreColor: "#7B7B7B"
+            zoom:
+              type: x
+              enabled: true
+              autoScaleYaxis: true
+            toolbar:
+              show: true
+              autoSelected: zoom
+              tools:
+                zoom: true
+                zoomin: false
+                zoomout: false
+                pan: false
+                reset: true
     - type: custom:apexcharts-card
       graph_span: 48h1s
       header:
@@ -151,82 +250,116 @@
             func: last
             duration: 1h
 
-    - type: custom:apexcharts-card
-      graph_span: 24h2s
-      span:
-        end: hour
-      header:
-        show: true
-        title: "Outdoor Temperature (Last 24hrs)"
-        show_states: false
-        colorize_states: false
-      apex_config:
-        chart:
-          {
-            type: "area",
-            height: 350,
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, lineCap: "square", dashArray: [0, 0] }
-        legend: { show: false }
-        fill:
-          {
-            type: ["solid", "solid"],
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Temp"
-            decimalsInFloat: 0
-            title:
-              text: "Temperature (°C)"
-          - seriesName: "Temp"
-            show: false
-          - seriesName: "Humidity"
-            opposite: true
-            decimalsInFloat: 0
-            title:
-              text: "Humidity (%)"
-      series:
-        - entity: sensor.weather_outside_temperature
-          name: Temp
-          type: line
-          # color: "da1e28"
-          extend_to_end: false
-          stroke_width: 4
-          unit: "°C"
-          group_by:
-            func: last
-            duration: 10min
-        - entity: sensor.weather_outside_temperature
-          type: line
-          color: "#121619"
-          name: Change
-          extend_to_end: false
-          stroke_width: 2
-          group_by:
-            func: delta
-            duration: 30min
-        - entity: sensor.weather_outside_humidity
-          type: line
-          extend_to_end: false
-          stroke_width: 1.5
-          unit: "%"
-          group_by:
-            func: last
-            duration: 10min
+    - type: "custom:config-template-card"
+      entities:
+        - sensor.sunrise
+        - sensor.sunset
+        - sensor.weather_outside_temperature
+        - sensor.weather_outside_humidity
+      card:
+        type: custom:apexcharts-card
+        header:
+          show: true
+          # show_states: true
+          colorize_states: true
+          title: "Outdoor Temperature"
+        span:
+          start: day
+        graph_span: 24h
+        apex_config:
+          annotations:
+            xaxis:
+              - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+                label:
+                  text: ☼
+                  borderWidth: 0
+                  style:
+                    background: "#0000"
+              - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+                label:
+                  text: ☾
+                  borderWidth: 0
+                  style:
+                    background: "#0000"
+          chart:
+            {
+              type: "area",
+              height: 350,
+              toolbar: { show: true, tools: { reset: true } },
+              zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+            }
+          stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0, 5] }
+          legend: { show: false }
+          fill:
+            {
+              type: ["solid", "solid"],
+              gradient:
+                {
+                  shadeIntensity: 1,
+                  inverseColors: false,
+                  opacityFrom: 0.45,
+                  opacityTo: 0.05,
+                  stops: [20, 100, 100, 100],
+                },
+            }
+          xaxis:
+            {
+              type: "datetime",
+              labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+            }
+          yaxis:
+            - seriesName: "Temp"
+              decimalsInFloat: 0
+              title:
+                text: "Temperature (°C)"
+            - seriesName: "Temp"
+              show: false
+            - seriesName: "Humidity"
+              opposite: true
+              decimalsInFloat: 0
+              title:
+                text: "Humidity (%)"
+            - seriesName: "Temp"
+              show: false
+        series:
+          - entity: sensor.weather_outside_temperature
+            name: Temp
+            type: line
+            # color: "da1e28"
+            extend_to_end: false
+            stroke_width: 4
+            unit: "°C"
+            group_by:
+              func: last
+              duration: 10min
+          - entity: sensor.weather_outside_temperature
+            type: line
+            color: "#121619"
+            name: Change
+            extend_to_end: false
+            stroke_width: 2
+            group_by:
+              func: delta
+              duration: 30min
+          - entity: sensor.weather_outside_humidity
+            type: line
+            extend_to_end: false
+            stroke_width: 1.5
+            unit: "%"
+            group_by:
+              func: last
+              duration: 10min
+          - entity: sensor.weather_outside_temperature
+            type: line
+            name: Yesterday
+            stroke_width: 1.8
+            extend_to_end: false
+            unit: "°C"
+            curve: smooth
+            offset: -1d
+            group_by:
+              func: last
+              duration: 1h
 
     - type: custom:apexcharts-card
       graph_span: 7d
@@ -276,6 +409,8 @@
             decimalsInFloat: 0
             title:
               text: "Humidity (%)"
+          - seriesName: "Temp"
+            show: false
       series:
         - entity: sensor.weather_outside_temperature
           type: line

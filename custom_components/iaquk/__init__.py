@@ -119,7 +119,7 @@ async def async_setup(hass, config):
         sensors = cfg.get(CONF_SENSORS)
 
         if not sensors:
-            sensors = SENSORS.keys()
+            sensors = list(SENSORS.keys())
 
         _LOGGER.debug(
             "Initialize controller %s for sources: %s",

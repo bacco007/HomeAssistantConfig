@@ -11,7 +11,7 @@ from requests import exceptions as reqExc
 from typing import Dict
 
 from .wideq.core import Client
-from .wideq.core_v2 import ClientV2
+from .wideq.core_v2 import ClientV2, CoreV2HttpAdapter
 from .wideq.device import DeviceType
 from .wideq.dishwasher import DishWasherDevice
 from .wideq.dryer import DryerDevice
@@ -38,12 +38,13 @@ from homeassistant.util import Throttle
 from homeassistant.const import CONF_REGION, CONF_TOKEN
 
 from .const import (
-    ATTR_CONFIG,
     CLIENT,
+    CONF_EXCLUDE_DH,
     CONF_LANGUAGE,
     CONF_OAUTH_URL,
     CONF_OAUTH_USER_NUM,
     CONF_USE_API_V2,
+    CONF_USE_TLS_V1,
     DOMAIN,
     LGE_DEVICES,
     SMARTTHINQ_COMPONENTS,
@@ -89,6 +90,10 @@ class LGEAuthentication:
             client = Client(country=self._region, language=self._language)
 
         return client
+
+    def initHttpAdapter(self, use_tls_v1, exclude_dh):
+        if self._use_api_v2:
+            CoreV2HttpAdapter.init_http_adapter(use_tls_v1, exclude_dh)
 
     def getLoginUrl(self) -> str:
 
@@ -142,7 +147,6 @@ async def async_setup(hass, config):
     """
     conf = config.get(DOMAIN)
     hass.data[DOMAIN] = {}
-    hass.data[DOMAIN][ATTR_CONFIG] = conf
 
     if conf is not None:
         hass.async_create_task(
@@ -162,9 +166,11 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
     refresh_token = config_entry.data.get(CONF_TOKEN)
     region = config_entry.data.get(CONF_REGION)
     language = config_entry.data.get(CONF_LANGUAGE)
-    use_apiv2 = config_entry.data.get(CONF_USE_API_V2, False)
+    use_api_v2 = config_entry.data.get(CONF_USE_API_V2, False)
     oauth_url = config_entry.data.get(CONF_OAUTH_URL)
     oauth_user_num = config_entry.data.get(CONF_OAUTH_USER_NUM)
+    use_tls_v1 = config_entry.data.get(CONF_USE_TLS_V1, False)
+    exclude_dh = config_entry.data.get(CONF_EXCLUDE_DH, False)
 
     _LOGGER.info(STARTUP)
     _LOGGER.info(
@@ -177,7 +183,8 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
 
     # if network is not connected we can have some error
     # raising ConfigEntryNotReady platform setup will be retried
-    lgeauth = LGEAuthentication(region, language, use_apiv2)
+    lgeauth = LGEAuthentication(region, language, use_api_v2)
+    lgeauth.initHttpAdapter(use_tls_v1, exclude_dh)
     client = await hass.async_add_executor_job(
         lgeauth.createClientFromToken, refresh_token, oauth_url, oauth_user_num
     )
@@ -199,7 +206,7 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
         )
         raise ConfigEntryNotReady()
 
-    if not use_apiv2:
+    if not use_api_v2:
         _LOGGER.warning(
             "Integration configuration is using ThinQ APIv1 that is obsolete"
             " and not able to manage all ThinQ devices."
@@ -208,7 +215,7 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
         )
 
     hass.data.setdefault(DOMAIN, {}).update(
-        {CLIENT: client, LGE_DEVICES: lge_devices,}
+        {CLIENT: client, LGE_DEVICES: lge_devices}
     )
 
     for platform in SMARTTHINQ_COMPONENTS:
@@ -250,7 +257,6 @@ class LGEDevice:
 
         self._state = None
         self._coordinator = None
-        self._retry_count = 0
         self._disconnected = True
         self._not_logged = False
         self._available = True
@@ -377,6 +383,8 @@ class LGEDevice:
 
     def _restart_monitor(self):
         """Restart the device monitor"""
+        if not (self._disconnected or self._not_logged):
+            return
 
         refresh_gateway = False
         if self._refresh_gateway:
@@ -416,25 +424,26 @@ class LGEDevice:
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def _device_update(self):
         """Update device state"""
-        _LOGGER.debug("Updating smartthinq device %s", self.name)
+        _LOGGER.debug("Updating ThinQ device %s", self.name)
 
         if self._disconnected or self._not_logged:
             if self._update_fail_count < MAX_UPDATE_FAIL_ALLOWED:
                 self._update_fail_count += 1
             self._set_available()
 
+        conn_retry = 0
         for iteration in range(MAX_RETRIES):
             _LOGGER.debug("Polling...")
 
-            if self._disconnected or self._not_logged:
-                if iteration >= MAX_CONN_RETRIES and iteration > 0:
-                    _LOGGER.debug("Connection not available. Status update failed")
-                    return
+            # Wait one second between iteration
+            if iteration > 0:
+                time.sleep(1)
 
-                self._retry_count = 0
-                self._restart_monitor()
+            # Try to restart monitor
+            self._restart_monitor()
 
             if self._disconnected or self._not_logged:
+                conn_retry += 1
                 if self._update_fail_count >= MAX_UPDATE_FAIL_ALLOWED:
 
                     if self._critical_status():
@@ -447,77 +456,65 @@ class LGEDevice:
                         self._set_available()
 
                     if self._state.is_on:
+                        _LOGGER.debug("Connection not available. Device status reset")
                         self._state = self._device.reset_status()
                         return
 
-            if self._disconnected:
+                if conn_retry >= MAX_CONN_RETRIES or self._disconnected:
+                    _LOGGER.debug("Connection not available. Status update failed")
+                    return
+
+                continue
+
+            try:
+                state = self._device.poll()
+
+            except NotLoggedInError:
+                self._not_logged = True
+                continue
+
+            except NotConnectedError:
+                self._disconnected = True
                 return
 
-            if not (self._disconnected or self._not_logged):
+            except InvalidCredentialError:
+                self._log_error(
+                    "Connection to ThinQ failed. Check your login credential"
+                )
+                self._not_logged = True
+                return
 
-                try:
-                    state = self._device.poll()
+            except (
+                reqExc.ConnectionError,
+                reqExc.ConnectTimeout,
+                reqExc.ReadTimeout,
+            ):
+                self._log_error(
+                    "Connection to ThinQ failed. Network connection error"
+                )
+                self._not_logged = True
+                return
 
-                except NotLoggedInError:
-                    self._not_logged = True
+            except Exception:
+                self._log_error(
+                    "ThinQ error while updating device status", exc_info=True
+                )
+                self._not_logged = True
+                return
 
-                except NotConnectedError:
-                    self._disconnected = True
+            else:
+                if state:
+                    _LOGGER.debug("ThinQ status updated")
+                    # l = dir(state)
+                    # _LOGGER.debug('Status attributes: %s', l)
+
+                    self._update_fail_count = 0
+                    self._set_available()
+                    self._state = state
+
                     return
-                    # time.sleep(1)
-
-                except InvalidCredentialError:
-                    self._log_error(
-                        "Connection to ThinQ failed. Check your login credential"
-                    )
-                    self._not_logged = True
-                    return
-
-                except (
-                    reqExc.ConnectionError,
-                    reqExc.ConnectTimeout,
-                    reqExc.ReadTimeout,
-                ):
-                    self._log_error(
-                        "Connection to ThinQ failed. Network connection error"
-                    )
-                    self._not_logged = True
-                    return
-
-                except Exception:
-                    self._log_error(
-                        "ThinQ error while updating device status", exc_info=True
-                    )
-                    self._not_logged = True
-                    return
-
                 else:
-                    if state:
-                        _LOGGER.debug("ThinQ status updated")
-                        # l = dir(state)
-                        # _LOGGER.debug('Status attributes: %s', l)
-
-                        self._update_fail_count = 0
-                        self._set_available()
-                        self._retry_count = 0
-                        self._state = state
-
-                        return
-                    else:
-                        _LOGGER.debug("No status available yet")
-
-            # time.sleep(2 ** iteration)
-            time.sleep(1)
-
-        # We tried several times but got no result. This might happen
-        # when the monitoring request gets into a bad state, so we
-        # restart the task.
-        if self._retry_count >= MAX_LOOP_WARN:
-            self._retry_count = 0
-            _LOGGER.warning("Status update failed")
-        else:
-            self._retry_count += 1
-            _LOGGER.debug("Status update failed")
+                    _LOGGER.debug("No status available yet")
 
 
 async def lge_devices_setup(hass, client) -> dict:

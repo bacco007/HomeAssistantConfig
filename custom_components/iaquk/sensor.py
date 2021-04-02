@@ -106,6 +106,11 @@ class IaqukSensor(Entity):
         )
 
     @property
+    def device_class(self) -> Optional[str]:
+        """Return the class of this device, from component DEVICE_CLASSES."""
+        return f"{DOMAIN}__level" if self._sensor_type == SENSOR_LEVEL else None
+
+    @property
     def unit_of_measurement(self) -> Optional[str]:
         """Return the unit of measurement of this entity, if any."""
         return "IAQI" if self._sensor_type == SENSOR_INDEX else None
