@@ -1,0 +1,10 @@
+---
+platform: template
+sensors:
+  office_sonos_source:
+    value_template: >-
+      {% if states('media_player.office_sonos') == 'playing' %}
+        {{ states.media_player.office_sonos.attributes.source }}
+      {% else %}
+        Not Playing
+      {% endif %}

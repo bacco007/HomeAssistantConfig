@@ -7,184 +7,310 @@
       cards:
         - entity: media_player.apple_tv_bedroom
           type: media-control
-        - type: horizontal-stack
+        - type: grid
+          columns: 3
+          square: false
           cards:
-            - entity: remote.apple_tv_bedroom
+            - entity: media_player.lounge_amp
               hold_action:
                 action: none
-              icon: "mdi:arrow-left"
-              name: Left arrow
+              icon: "mdi:volume-minus"
               show_icon: true
               show_name: false
+              styles:
+                card:
+                  - height: 90px
               tap_action:
                 action: call-service
+                haptic: success
+                service: media_player.volume_down
+                service_data:
+                  entity_id: media_player.lounge_amp
+              type: "custom:button-card"
+            - color: blue
+              entity: media_player.lounge_amp
+              hold_action:
+                action: none
+              icon: "mdi:volume-off"
+              show_icon: true
+              show_name: false
+              state:
+                - operator: template
+                  styles:
+                    card:
+                      - icon: "mdi:volume-high"
+                    icon:
+                      - color: red
+                    value: >
+                      return
+                      states['media_player.lounge_amp'].attributes.is_volume_muted
+                      === true
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: script.lounge_amp_toggle_mute
+              type: "custom:button-card"
+            - entity: media_player.lounge_amp
+              hold_action:
+                action: none
+              icon: "mdi:volume-plus"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: media_player.volume_up
+                service_data:
+                  entity_id: media_player.lounge_amp
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              hold_action:
+                action: none
+              icon: "mdi:backburger"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
                 service: remote.send_command
                 service_data:
-                  command: left
+                  command: top_menu
                   entity_id: remote.apple_tv_bedroom
-              type: button
-            - entity: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
               hold_action:
                 action: none
-              icon: "mdi:apple"
-              name: Select
+              icon: "mdi:arrow-up-bold"
               show_icon: true
               show_name: false
+              styles:
+                card:
+                  - height: 90px
               tap_action:
                 action: call-service
-                service: remote.send_command
-                service_data:
-                  command: select
-                  entity_id: remote.apple_tv_bedroom
-              type: button
-            - entity: remote.apple_tv_bedroom
-              hold_action:
-                action: none
-              icon: "mdi:arrow-right"
-              name: Right arrow
-              show_icon: true
-              show_name: false
-              tap_action:
-                action: call-service
-                service: remote.send_command
-                service_data:
-                  command: right
-                  entity_id: remote.apple_tv_bedroom
-              type: button
-        - type: horizontal-stack
-          cards:
-            - entity: remote.apple_tv_bedroom
-              hold_action:
-                action: none
-              icon: "mdi:arrow-up"
-              name: Up arrow
-              show_icon: true
-              show_name: false
-              tap_action:
-                action: call-service
+                haptic: success
                 service: remote.send_command
                 service_data:
                   command: up
                   entity_id: remote.apple_tv_bedroom
-              type: button
-            - entity: remote.apple_tv_bedroom
-              hold_action:
-                action: none
-              icon: "mdi:menu"
-              name: Menu
-              show_icon: true
-              show_name: false
-              tap_action:
-                action: call-service
-                service: remote.send_command
-                service_data:
-                  command: menu
-                  entity_id: remote.apple_tv_bedroom
-              type: button
-            - entity: remote.apple_tv_bedroom
-              hold_action:
-                action: none
-              icon: "mdi:arrow-down"
-              name: Down arrow
-              show_icon: true
-              show_name: false
-              tap_action:
-                action: call-service
-                service: remote.send_command
-                service_data:
-                  command: down
-                  entity_id: remote.apple_tv_bedroom
-              type: button
+              type: "custom:button-card"
 
-        - type: horizontal-stack
-          cards:
-            - type: button
+            - entity: remote.apple_tv
+              hold_action:
+                action: none
+              icon: "mdi:sleep"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
               tap_action:
                 action: call-service
+                haptic: success
+                service: remote.send_command
+                service_data:
+                  command: suspend
+                  entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              hold_action:
+                action: none
+              icon: "mdi:arrow-left-bold"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: remote.send_command
+                service_data:
+                  command: left
+                  entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              hold_action:
+                action: none
+              icon: "mdi:selection-ellipse"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: remote.send_command
+                service_data:
+                  command: select
+                  entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              hold_action:
+                action: none
+              icon: "mdi:arrow-right-bold"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: remote.send_command
+                service_data:
+                  command: right
+                  entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              icon: "mdi:home"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
                 service: remote.send_command
                 service_data:
                   command: home
                   entity_id: remote.apple_tv_bedroom
               hold_action:
                 action: call-service
+                haptic: success
                 service: remote.send_command
                 service_data:
                   command: home_hold
-                  entity_id: remote.living_room
-              show_icon: true
-              show_name: false
-              entity: remote.apple_tv_bedroom
-              icon: "mdi:home"
-              name: Home
-            - type: button
-              tap_action:
-                action: call-service
-                service: remote.send_command
-                service_data:
-                  command: suspend
                   entity_id: remote.apple_tv_bedroom
-              show_icon: true
-              show_name: false
-              entity: remote.apple_tv_bedroom
-              name: Sleep
-              icon: "mdi:sleep"
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
               hold_action:
                 action: none
-            - type: button
-              tap_action:
-                action: call-service
-                service: remote.send_command
-                service_data:
-                  command: volume_up
-                  entity_id: remote.apple_tv_bedroom
-              hold_action:
-                action: none
+              icon: "mdi:arrow-down-bold"
               show_icon: true
               show_name: false
-              entity: remote.apple_tv_bedroom
-              name: Volume up
-              icon: "mdi:volume-plus"
-        - type: horizontal-stack
-          cards:
-            - type: button
+              styles:
+                card:
+                  - height: 90px
               tap_action:
                 action: call-service
+                haptic: success
+                service: remote.send_command
+                service_data:
+                  command: down
+                  entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              icon: "mdi:menu"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: remote.send_command
+                service_data:
+                  command: menu
+                  entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+
+            - entity: remote.apple_tv
+              icon: "mdi:play-pause"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
+              tap_action:
+                action: call-service
+                haptic: success
                 service: remote.send_command
                 service_data:
                   command: play_pause
                   entity_id: remote.apple_tv_bedroom
+              type: "custom:button-card"
+            - entity: remote.apple_tv
               hold_action:
                 action: none
+              icon: ""
               show_icon: true
               show_name: false
-              entity: remote.apple_tv_bedroom
-              name: Play/Pause
-              icon: "mdi:play-pause"
-            - type: button
+              styles:
+                card:
+                  - height: 90px
+              type: "custom:button-card"
+            - entity: remote.apple_tv
+              icon: "mdi:skip-next"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 90px
               tap_action:
                 action: call-service
+                haptic: success
                 service: remote.send_command
                 service_data:
                   command: next
                   entity_id: remote.apple_tv_bedroom
-              hold_action:
-                action: none
-              show_icon: true
-              show_name: false
-              entity: remote.apple_tv_bedroom
-              icon: "mdi:skip-next"
-              name: Next
-            - type: button
-              tap_action:
-                action: call-service
-                service: remote.send_command
-                service_data:
-                  command: volume_down
-                  entity_id: remote.apple_tv_bedroom
-              hold_action:
-                action: none
-              show_icon: true
-              show_name: false
-              entity: remote.apple_tv_bedroom
-              name: Volume down
-              icon: "mdi:volume-minus"
+              type: "custom:button-card"
+
+            # - entity: media_player.lounge_skytv
+            #   icon: "mdi:remote"
+            #   show_icon: true
+            #   show_name: false
+            #   styles:
+            #     card:
+            #       - height: 90px
+            #   tap_action:
+            #     action: navigate
+            #     haptic: success
+            #     navigation_path: remote
+            #   type: "custom:button-card"
+
+            # - entity: media_player.lounge_skytv
+            #   icon: "mdi:grid"
+            #   show_icon: true
+            #   show_name: false
+            #   styles:
+            #     card:
+            #       - height: 90px
+            #   tap_action:
+            #     action: navigate
+            #     haptic: success
+            #     navigation_path: channels
+            #   type: "custom:button-card"
+
+            # - entity: media_player.lounge_skytv
+            #   icon: "mdi:dialpad"
+            #   show_icon: true
+            #   show_name: false
+            #   styles:
+            #     card:
+            #       - height: 90px
+            #   tap_action:
+            #     action: navigate
+            #     haptic: success
+            #     navigation_path: keypad
+            #   type: "custom:button-card"

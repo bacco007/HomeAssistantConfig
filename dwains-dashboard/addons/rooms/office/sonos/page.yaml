@@ -3,77 +3,31 @@
 ## Created by Jeroen Klompen
 ## Version: 1.0.5
 
+# - !include partial_station_grid.yaml
+
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6'
+  items_classes: 'col-xs-12 col-sm-12 col-sm-12'
   cards:
-    - type: entities
-      style: |
-        ha-card {
-          border-radius: 5px;
-          background-color: var(--dwains-theme-primary);
-          --paper-slider-knob-color: var(--dwains-theme-names);
-          --paper-slider-active-color: var(--dwains-theme-names);
-          --paper-slider-knob-start-color: var(--dwains-theme-grey);
-          --paper-slider-container-color: var(--dwains-theme-grey);
-        }
-      entities:
-        - entity: {{ (data | fromjson)['speakers'][0].entity }}
-          group: true
-          name: {{ name }}
-          info: scroll
-          type: 'custom:mini-media-player'
-          artwork: full-cover
-          hide:
-            power: true
-            icon: true
-            source: true
-            icon_state: false
-            power_color: false
-            progress: false
-            runtime: false
-          speaker_group:
-            platform: {{ (data | fromjson)['platform']|default('sonos') }}
-            show_group_count: true
-            entities:
-            {% for speakers in (data | fromjson)['speakers'] %}
-              - entity_id: {{ speakers.entity }}
-              {% if speakers.name %}
-                name: {{ speakers.name }}
-              {% endif %}
-            {% endfor %}
-          shortcuts:
-            columns: 5
-            hide_when_off: true
-            label: Select Input
-            align_text: center
-            buttons:
-            {% for buttons in (data | fromjson)['buttons'] %}
-              - name: {{ buttons.name }}
-              {% if buttons.icon %}
-                icon: {{ buttons.icon }}
-              {% endif %}
-              {% if buttons.cover %}
-                image: {{ buttons.cover }}
-              {% endif %}
-                type: {{ buttons.type }}
-                id: {{ buttons.id }}
-            {% endfor %}
-    - type: entities
-      style: |
-        ha-card {
-          border-radius: 5px;
-          background-color: var(--dwains-theme-primary);
-          --paper-slider-knob-color: var(--dwains-theme-names);
-          --paper-slider-active-color: var(--dwains-theme-names);
-          --paper-slider-knob-start-color: var(--dwains-theme-grey);
-          --paper-slider-container-color: var(--dwains-theme-grey);
-        }
-      entities:
-      {% for speakers in (data | fromjson)['speakers'] %}
-        - type: 'custom:slider-entity-row'
-          entity: {{ speakers.entity }}
-          icon: 'mdi:speaker'
-        {% if speakers.name %}
-          name: {{ speakers.name }}
-        {% endif %}
-      {% endfor %}
+    - entity: {{ (data | fromjson)['speakers'][0].entity }}
+      name: {{ name }}
+      type: media-control
+    - !include partial_station_grid.yaml
+    # - type: entities
+    #   style: |
+    #     ha-card {
+    #       border-radius: 5px;
+    #       background-color: var(--dwains-theme-primary);
+    #       --paper-slider-knob-color: var(--dwains-theme-names);
+    #       --paper-slider-active-color: var(--dwains-theme-names);
+    #       --paper-slider-knob-start-color: var(--dwains-theme-grey);
+    #       --paper-slider-container-color: var(--dwains-theme-grey);
+    #     }
+    #   entities:
+    #   {% for speakers in (data | fromjson)['speakers'] %}
+    #     - type: 'custom:slider-entity-row'
+    #       entity: {{ speakers.entity }}
+    #       icon: 'mdi:speaker'
+    #     {% if speakers.name %}
+    #       name: {{ speakers.name }}
+    #     {% endif %}
+    #   {% endfor %}

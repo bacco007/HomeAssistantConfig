@@ -149,3 +149,54 @@ sensor:
               will rise in a few minutes
             {% endif %}
           {% endif %}
+      daylight_remaining_min:
+        friendly_name: Daylight remaining minutes
+        value_template: >
+          {{((as_timestamp(state_attr('sun.sun','next_setting')) - now().timestamp())/60)|int}}
+        unit_of_measurement: min
+      daylight_remaining_hm:
+        friendly_name: "Daylight remaining hh:mm"
+        value_template: >
+          {{(as_timestamp(state_attr('sun.sun','next_setting')) - now().timestamp())
+             |timestamp_custom('%H:%M',false)}}
+      nextsunrise:
+        friendly_name: "Next Sunrise"
+        value_template: >
+          {{ as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+        icon_template: mdi:weather-sunset-up
+      nextsunset:
+        friendly_name: "Next Sunset"
+        value_template: >
+          {{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+        icon_template: mdi:weather-sunset-down
+      sunrisetoday:
+        friendly_name: "Sunrise"
+        value_template: >
+          {{ as_timestamp(states('sensor.sunrise')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+        icon_template: mdi:weather-sunset-up
+      sunsettoday:
+        friendly_name: "Sunset"
+        value_template: >
+          {{ as_timestamp(states('sensor.sunset')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+        icon_template: mdi:weather-sunset-down
+      daylightyesterday:
+        friendly_name: "Day Length Yesterday"
+        value_template: >
+          {{ state_attr('sensor.daylight_2', 'yesterday_hms') }}
+        icon_template: mdi:weather-sunny
+      daylighttoday:
+        friendly_name: "Day Length Today"
+        value_template: >
+          {{ state_attr('sensor.daylight_2', 'today_hms') }}
+        icon_template: mdi:weather-sunny
+      daylighttomorrow:
+        friendly_name: "Day Length Tomorrow"
+        value_template: >
+          {{ state_attr('sensor.daylight_2', 'tomorrow_hms') }}
+        icon_template: mdi:weather-sunny
+      daylengthchange:
+        friendly_name: "Change in Day Length"
+        unit_of_measurement: "seconds"
+        value_template: >
+          {{ ((state_attr('sensor.daylight_2', 'today') - state_attr('sensor.daylight_2', 'yesterday')) * 3600) | round(0) }}
+        icon_template: mdi:weather-sunny

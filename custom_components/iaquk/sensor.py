@@ -5,7 +5,9 @@ from typing import Any, Dict, Optional, Union
 
 from homeassistant.components.sensor import ENTITY_ID_FORMAT
 from homeassistant.const import CONF_NAME, CONF_SENSORS
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     DOMAIN,
@@ -33,7 +35,9 @@ SENSORS = {
 
 
 # pylint: disable=w0613
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(
+    hass: HomeAssistant, config: ConfigType, async_add_entities, discovery_info=None
+):
     """Set up a sensors to calculate IAQ UK index."""
     if discovery_info is None:
         return
@@ -52,7 +56,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class IaqukSensor(Entity):
     """IAQ UK sensor."""
 
-    def __init__(self, hass, controller, sensor_type: str):
+    def __init__(self, hass: HomeAssistant, controller, sensor_type: str):
         """Initialize sensor."""
         self._hass = hass
         self._controller = controller

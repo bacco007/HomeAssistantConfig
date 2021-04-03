@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Sky Sports Radio
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Sky Sports Radio"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Sky Sports Radio"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

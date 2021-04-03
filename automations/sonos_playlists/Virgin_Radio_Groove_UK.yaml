@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Virgin Radio Groove UK
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Virgin Radio Groove UK"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Virgin Radio Groove UK"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

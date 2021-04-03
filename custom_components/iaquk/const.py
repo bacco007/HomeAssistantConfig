@@ -5,7 +5,7 @@ from homeassistant.components.sensor import DOMAIN as SENSOR
 # Base component constants
 NAME = "Indoor Air Quality UK Index"
 DOMAIN = "iaquk"
-VERSION = "1.3.7"
+VERSION = "1.4.0"
 ISSUE_URL = "https://github.com/Limych/ha-iaquk/issues"
 
 STARTUP_MESSAGE = f"""
@@ -49,6 +49,7 @@ CONF_RADON = "radon"
 # Attributes
 ATTR_SOURCES_SET = "sources_set"
 ATTR_SOURCES_USED = "sources_used"
+ATTR_SOURCE_INDEX_TPL = "{}_index"
 
 
 LEVEL_EXCELLENT = "Excellent"

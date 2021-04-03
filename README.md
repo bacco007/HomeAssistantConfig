@@ -72,17 +72,17 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, April 2nd 2021_
+_Stats as at 05:00, Saturday, April 3rd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.3.4 | 298     | 2324         | 1917 | 52 |
+| 2021.3.4 | 299     | 2361         | 1952 | 66 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 52
+Automation | 66
 Binary Sensor | 91
 Camera | 5
 Device Tracker | 59
@@ -94,8 +94,8 @@ Light | 3
 Media Player | 12
 Person | 1
 Scene | 1
-Script | 2
-Sensor | 1917
+Script | 3
+Sensor | 1952
 Sun | 1
 Switch | 84
 Weather | 3
@@ -209,6 +209,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
 | [glances](https://www.home-assistant.io/components/glances) |
 | [google](https://www.home-assistant.io/components/google) |
+| [google_home](https://www.home-assistant.io/components/google_home) |
 | [group](https://www.home-assistant.io/components/group) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
@@ -306,12 +307,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
-| [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
+| [sensor.google_home](https://www.home-assistant.io/components/sensor.google_home) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time) |
 | [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk) |
@@ -447,12 +448,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Google Home](https://github.com/leikoilja/ha-google-home)
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS](https://hacs.xyz/docs/configuration/start)
+- [HDHomeRun](https://github.com/burnnat/ha-hdhomerun)
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
 - [iCloud3 Device Tracker](https://gcobb321.github.io/icloud3/#/)
 - [Indoor Air Quality UK Index](https://github.com/Limych/ha-iaquk)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [my_unifi]()
 - [MyJDownloader](https://www.home-assistant.io/integrations/myjdownloader)
+- [NHL API](https://github.com/JayBlackedOut/hass-nhlapi)
 - [Node-RED](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
 - [NSW Air Quality]()
 - [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
@@ -502,11 +505,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [HACS](https://github.com/hacs/integration) | HACS gives you a powerful UI to handle downloads of all your custom needs. |
 | [Hass Amber Electric](https://github.com/lewisbenge/hass-amber-electric) | Home Assistant Component to pull the latest energy prices from Amber Electric |
 | [Hass Favicon](https://github.com/thomasloven/hass-favicon) | 🔹 Change the favicon of your Home Assistant instance |
+| [Hdhomerun](https://github.com/burnnat/ha-hdhomerun) | HDHomeRun integration for Home Assistant. |
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) | an iCal Sensor for Home Assistant |
 | [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 - An advanced device_tracker custom_component for iPhones, iPads, etc. It monitors zone & location updates triggered by the HA iOS App and supports Apple 2fa verification. |
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) | Indoor Air Quality Sensor Component for Home Assistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
+| [NHL API](https://github.com/JayBlackedOut/hass-nhlapi) | NHL Stats API Integration Into Home Assistant |
 | [Node Red](https://github.com/zachowj/hass-node-red) | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) | OpenNEM Sensor for Home Assistant |

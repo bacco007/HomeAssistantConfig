@@ -15,14 +15,12 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .api import GlocaltokensApiClient
 from .const import (
     CONF_ANDROID_ID,
+    CONF_DATA_COLLECTION,
     CONF_MASTER_TOKEN,
     CONF_PASSWORD,
     CONF_USERNAME,
-    PLATFORMS,
+    DOMAIN,
 )
-
-# Pylint issue should be fixed by https://github.com/PyCQA/pylint/pull/4207
-from .const import DOMAIN  # pylint: disable=unused-import
 from .exceptions import InvalidMasterToken
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
@@ -52,9 +50,9 @@ class GoogleHomeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: 
             session = async_create_clientsession(self.hass)
             client = GlocaltokensApiClient(
                 hass=self.hass,
+                session=session,
                 username=user_input[CONF_USERNAME],
                 password=user_input[CONF_PASSWORD],
-                session=session,
             )
             valid, master_token = await self._test_credentials(client)
             if valid:
@@ -83,7 +81,10 @@ class GoogleHomeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: 
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
-                {vol.Required(CONF_USERNAME): str, vol.Required(CONF_PASSWORD): str}
+                {
+                    vol.Required(CONF_USERNAME): str,
+                    vol.Required(CONF_PASSWORD): str,
+                }
             ),
             errors=self._errors,
         )
@@ -120,8 +121,7 @@ class GoogleHomeOptionsFlowHandler(config_entries.OptionsFlow):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required(x, default=self.options.get(x, True)): bool
-                    for x in sorted(PLATFORMS)
+                    vol.Optional(CONF_DATA_COLLECTION, default=True): bool,
                 }
             ),
         )

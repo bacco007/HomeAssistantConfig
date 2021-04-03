@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - Nova Throwbacks
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Nova Throwbacks"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Nova Throwbacks"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

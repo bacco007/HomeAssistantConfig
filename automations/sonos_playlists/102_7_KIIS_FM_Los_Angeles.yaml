@@ -1,0 +1,15 @@
+---
+alias: Sonos - Playlist - 102.7 KIIS-FM Los Angeles
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "102.7 KIIS-FM Los Angeles"
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "102.7 KIIS-FM Los Angeles"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

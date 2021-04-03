@@ -1,0 +1,1164 @@
+---
+type: custom:dwains-flexbox-card
+items_classes: 'col-xs-4 col-sm-2'
+cards:
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: 1-Playlist
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/1_Playlist.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == '1-Playlist')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == '1-Playlist')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_1_Playlist
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: 102.7 KIIS-FM Los Angeles
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/102_7_KIIS_FM_Los_Angeles.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == '102.7 KIIS-FM Los Angeles')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == '102.7 KIIS-FM Los Angeles')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_102_7_KIIS_FM_Los_Angeles
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: ABC New England North West
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/ABC_New_England_North_West.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC New England North West')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC New England North West')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_ABC_New_England_North_West
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: ABC News
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/ABC_News.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC News')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC News')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_ABC_News
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: ABC Radio National (Sydney, NSW)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/ABC_Radio_National__Sydney__NSW.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC Radio National (Sydney, NSW)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC Radio National (Sydney, NSW)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_ABC_Radio_National__Sydney__NSW
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: ABC Radio Sydney
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/ABC_Radio_Sydney.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC Radio Sydney')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC Radio Sydney')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_ABC_Radio_Sydney
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: ABC Sport
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/ABC_Sport.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC Sport')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ABC Sport')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_ABC_Sport
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio 00s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_00s.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 00s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 00s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_00s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio 10s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_10s.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 10s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 10s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_10s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio 20s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_20s.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 20s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 20s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_20s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio 80s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_80s.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 80s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 80s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_80s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio 90s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_90s.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 90s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio 90s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_90s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio Classic Rock
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_Classic_Rock.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio Classic Rock')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio Classic Rock')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_Classic_Rock
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Absolute Radio UK (AAC)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Absolute_Radio_UK__AAC.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio UK (AAC)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Absolute Radio UK (AAC)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Absolute_Radio_UK__AAC
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: BBC Radio 1
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_Radio_1.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 1')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 1')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_Radio_1
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: BBC Radio 2
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_Radio_2.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 2')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 2')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_Radio_2
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: BBC Radio 5 live
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_Radio_5_live.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 5 live')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 5 live')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_Radio_5_live
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: BBC Radio 6 Music
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_Radio_6_Music.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 6 Music')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 6 Music')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_Radio_6_Music
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: BBC World Service News
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_World_Service_News.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC World Service News')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC World Service News')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_World_Service_News
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: CNN International
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/CNN_International.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'CNN International')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'CNN International')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_CNN_International
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: COVID-19 Social Distancing Sucks
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/COVID_19_Social_Distancing_Sucks.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'COVID-19 Social Distancing Sucks')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'COVID-19 Social Distancing Sucks')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_COVID_19_Social_Distancing_Sucks
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Double J (Sydney, NSW)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Double_J__Sydney__NSW.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Double J (Sydney, NSW)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Double J (Sydney, NSW)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Double_J__Sydney__NSW
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: ESPN Radio
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/ESPN_Radio.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ESPN Radio')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'ESPN Radio')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_ESPN_Radio
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: GOLD 104.3
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/GOLD_104_3.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'GOLD 104.3')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'GOLD 104.3')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_GOLD_104_3
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: MSNBC
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/MSNBC.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'MSNBC')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'MSNBC')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_MSNBC
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Nova 90s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Nova_90s.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Nova 90s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Nova 90s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Nova_90s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Nova 96.9
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Nova_96_9.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Nova 96.9')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Nova 96.9')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Nova_96_9
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Nova Throwbacks
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Nova_Throwbacks.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Nova Throwbacks')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Nova Throwbacks')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Nova_Throwbacks
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Playlists
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Playlists.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Playlists')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Playlists')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Playlists
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Radio X
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Radio_X.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Radio X')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Radio X')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Radio_X
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Sky News Radio
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Sky_News_Radio.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Sky News Radio')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Sky News Radio')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Sky_News_Radio
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Sky Sports Radio
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Sky_Sports_Radio.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Sky Sports Radio')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Sky Sports Radio')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Sky_Sports_Radio
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: triple j (New South Wales)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/triple_j__New_South_Wales.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'triple j (New South Wales)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'triple j (New South Wales)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_triple_j__New_South_Wales
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Triple M 104.9 Sydney
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Triple_M_104_9_Sydney.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 104.9 Sydney')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 104.9 Sydney')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Triple_M_104_9_Sydney
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Triple M 105.1 Melbourne
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Triple_M_105_1_Melbourne.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 105.1 Melbourne')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 105.1 Melbourne')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Triple_M_105_1_Melbourne
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Triple M 90s (Sydney)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Triple_M_90s__Sydney.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 90s (Sydney)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 90s (Sydney)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Triple_M_90s__Sydney
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Virgin Radio Anthems UK
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Virgin_Radio_Anthems_UK.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio Anthems UK')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio Anthems UK')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Virgin_Radio_Anthems_UK
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Virgin Radio Chilled UK
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Virgin_Radio_Chilled_UK.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio Chilled UK')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio Chilled UK')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Virgin_Radio_Chilled_UK
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Virgin Radio Groove UK
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Virgin_Radio_Groove_UK.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio Groove UK')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio Groove UK')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Virgin_Radio_Groove_UK
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Virgin Radio UK
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Virgin_Radio_UK.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio UK')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Virgin Radio UK')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Virgin_Radio_UK

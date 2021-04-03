@@ -9,6 +9,7 @@ MANUFACTURER = "google_home"
 
 ATTRIBUTION = "json"
 ISSUE_URL = "https://github.com/leikoilja/ha-google-home/issues"
+CONF_DATA_COLLECTION = "data_collection"
 
 # Icons
 ICON_TOKEN = "mdi:form-textbox-password"
@@ -50,13 +51,6 @@ HEADERS = {
     HEADER_CONTENT_TYPE: "application/json; charset=UTF-8",
 }
 TIMEOUT = 10  # Request Timeout in seconds
-
-# TIMERS & ALARMS ATTRIBUTE NAMES
-ID = "id"
-LABEL = "label"
-RECURRENCE = "recurrence"
-FIRE_TIME = "fire_time"
-ORIGINAL_DURATION = "original_duration"
 
 # TIMESTRINGS
 TIME_STR_FORMAT = "%H:%M:%S"

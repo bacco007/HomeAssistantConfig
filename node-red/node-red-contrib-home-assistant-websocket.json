@@ -2,31 +2,31 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 144,
+        "state": 204,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 423,
+        "state": 362,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 3,
+        "state": 2,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 142,
+        "state": 157,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 26,
+        "state": 20,
         "attributes": {}
       }
     },
@@ -98,25 +98,25 @@
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 11.15,
+        "state": 17.16,
         "attributes": {
-          "period": "2021-04-02T10:50:00"
+          "period": "2021-04-03T14:45:00"
         }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 2.04,
+        "state": 8.06,
         "attributes": {
-          "period": "2021-04-02T10:50:00"
+          "period": "2021-04-03T14:45:00"
         }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": -0.52,
+        "state": 5.5,
         "attributes": {
-          "period": "2021-04-02T10:50:00"
+          "period": "2021-04-03T14:45:00"
         }
       }
     },
@@ -188,13 +188,13 @@
     },
     "fd053220_3acfa": {
       "lastPayload": {
-        "state": 715,
+        "state": 717,
         "attributes": {}
       }
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5700,
+        "state": 5706,
         "attributes": {}
       }
     },
@@ -218,11 +218,11 @@
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 49.8,
+        "state": 47.8,
         "attributes": {
-          "count": 4,
-          "countstring": "4 Days",
-          "average": 12.45,
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 15.93,
           "highest": 22.2,
           "sort": 2
         }
@@ -230,11 +230,11 @@
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 63.29,
+        "state": 61.18,
         "attributes": {
-          "count": 5,
-          "countstring": "5 Days",
-          "average": 12.66,
+          "count": 4,
+          "countstring": "4 Days",
+          "average": 15.3,
           "highest": 29.03,
           "sort": 2
         }
@@ -254,17 +254,17 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 127.06,
+        "state": 95.597,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 135.24,
+        "state": 135.23,
         "attributes": {
           "max": 159.9,
           "min": 112.9,
-          "avg": 135.24,
+          "avg": 135.23,
           "mindate": "05 May 2020",
           "maxdate": "17 Mar 2021",
           "datestring": "Min: 05 May 2020 - Max: 17 Mar 2021"
@@ -273,11 +273,11 @@
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 11.163,
+        "state": 11.15,
         "attributes": {
           "max": 23.11,
           "min": -1.28,
-          "avg": 11.163,
+          "avg": 11.15,
           "mindate": "26 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 26 Aug 2020 - Max: 02 Dec 2020"
@@ -322,11 +322,11 @@
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 24.115,
+        "state": 24.13,
         "attributes": {
           "max": 41.7,
           "min": 9.5,
-          "avg": 24.115,
+          "avg": 24.13,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -335,11 +335,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 26.848,
+        "state": 26.847,
         "attributes": {
           "max": 43.78,
           "min": 8.4,
-          "avg": 26.848,
+          "avg": 26.847,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -380,13 +380,13 @@
         "attributes": {
           "model": "UDM",
           "version": "1.9.2.3432",
-          "data": "180.4 GB",
+          "data": "239.6 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "5d 11hr 41min",
+          "uptime": "6d 15hr 40min",
           "lastseen": "a few seconds ago"
         }
       }
@@ -444,11 +444,11 @@
     },
     "13d27691_292561": {
       "lastPayload": {
-        "state": 796.4,
+        "state": 790.4,
         "attributes": {
-          "count": 102,
-          "countstring": "102 Days",
-          "average": 7.81,
+          "count": 101,
+          "countstring": "101 Days",
+          "average": 7.83,
           "highest": 92.2,
           "sort": "4"
         }
@@ -456,17 +456,17 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 3,
+        "state": 6,
         "attributes": {}
       }
     },
     "ee3ed6bb_25091": {
       "lastPayload": {
-        "state": 971.42,
+        "state": 967.82,
         "attributes": {
-          "count": 104,
-          "countstring": "104 Days",
-          "average": 9.34,
+          "count": 103,
+          "countstring": "103 Days",
+          "average": 9.4,
           "highest": 64.8,
           "sort": 4
         }
@@ -510,11 +510,11 @@
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.728,
+        "state": 9.721,
         "attributes": {
           "max": 23,
           "min": -4.1,
-          "avg": 9.728,
+          "avg": 9.721,
           "mindate": "06 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 06 Aug 2020 - Max: 02 Dec 2020"
@@ -538,13 +538,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "29.02",
+        "state": "27.05",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "73.12",
+        "state": "71.12",
         "attributes": {}
       }
     },
@@ -733,7 +733,7 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 23.22,
+        "state": 28,
         "attributes": {}
       }
     },
@@ -786,3 +786,4 @@
       }
     }
   }
+}

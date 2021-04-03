@@ -30,6 +30,7 @@ from homeassistant.helpers.event import async_track_state_change
 from homeassistant.util.temperature import convert as convert_temperature
 
 from .const import (
+    ATTR_SOURCE_INDEX_TPL,
     ATTR_SOURCES_SET,
     ATTR_SOURCES_USED,
     CONF_CO,
@@ -155,6 +156,7 @@ class Iaquk:
         self._iaq_index = None
         self._iaq_sources = 0
         self._added = False
+        self._indexes = {}
 
     def async_added_to_hass(self):
         """Register callbacks."""
@@ -228,6 +230,10 @@ class Iaquk:
             ATTR_SOURCES_SET: len(self._sources),
             ATTR_SOURCES_USED: self._iaq_sources,
         }
+
+        for src, idx in self._indexes.items():
+            state_attr[ATTR_SOURCE_INDEX_TPL.format(src)] = idx
+
         return state_attr
 
     def update(self):
@@ -236,17 +242,20 @@ class Iaquk:
 
         iaq = 0
         sources = 0
+        indexes = {}
         for src in self._sources:
             try:
-                index = self.__getattribute__("_%s_index" % src)
-                _LOGGER.debug("[%s] %s_index=%s", self._entity_id, src, index)
-                if index is not None:
-                    iaq += index
+                idx = self.__getattribute__("_%s_index" % src)
+                _LOGGER.debug("[%s] %s_index=%s", self._entity_id, src, idx)
+                if idx is not None:
+                    iaq += idx
                     sources += 1
+                    indexes[src] = idx
             except Exception:  # pylint: disable=broad-except; pragma: no cover
                 pass
 
         if iaq:
+            self._indexes = indexes
             self._iaq_index = int((65 * iaq) / (5 * sources))
             self._iaq_sources = int(sources)
             _LOGGER.debug(
