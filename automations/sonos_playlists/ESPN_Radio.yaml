@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - ESPN Radio
+id: 2cb1c73d-fd0a-49e9-89be-ac3267937e51
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "ESPN Radio"
+  - platform: webhook
+    webhook_id: sonos_ESPN_Radio
 action:
   - service: media_player.select_source
     data:

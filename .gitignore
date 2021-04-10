@@ -13,6 +13,7 @@ custom_components_dev
 .androidkeys
 temp
 neighbours
+.ssh
 
 # Ignore File Extensions
 *.conf

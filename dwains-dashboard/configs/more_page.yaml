@@ -5,6 +5,9 @@ more_page:
     - name: Alerts
       icon: mdi:alert
       path: "dwains-dashboard/addons/more_page/alerts/page.yaml"
+    - name: Android TV
+      icon: mdi:cast
+      path: "dwains-dashboard/addons/more_page/androidtv/page.yaml"
     - name: Apple TV
       icon: si:appletv
       path: "dwains-dashboard/addons/more_page/appletv/page.yaml"

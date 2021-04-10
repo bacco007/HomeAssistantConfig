@@ -103,8 +103,16 @@ rooms:
   - name: Server Rack
     icon: mdi:server-network
     # device: group.serverrack_device
-    # page_entities:
-    #   entities:
+    page_entities:
+      entities:
+      - entity: sensor.tbsh01_package_updates
+      - entity: sensor.tbsh01_security_updates
+      - entity: sensor.tbsh03_package_updates
+      - entity: sensor.tbsh03_security_updates
+      - entity: sensor.vmtbsh01_package_updates
+      - entity: sensor.vmtbsh01_security_updates
+      - entity: sensor.vmtbsh02_package_updates
+      - entity: sensor.vmtbsh02_security_updates
     addons:
       - name: piServ
         icon: mdi:server

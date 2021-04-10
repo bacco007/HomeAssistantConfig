@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - 1-Playlist
+id: 1b830bc9-ac87-4e92-8281-08d723c1367b
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "1-Playlist"
+  - platform: webhook
+    webhook_id: sonos_1_Playlist
 action:
   - service: media_player.select_source
     data:

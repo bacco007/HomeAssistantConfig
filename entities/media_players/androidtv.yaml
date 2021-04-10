@@ -2,11 +2,11 @@
 platform: androidtv
 name: NVIDIA Shield
 host: 192.168.1.111
-adb_server_ip: 127.0.0.1
-adb_server_port: 5037
+# adb_server_ip: 127.0.0.1
+# adb_server_port: 5037
 adbkey: "/config/.androidkeys/adbkey"
 get_sources: true
-exclude_unnamed_apps: false
+exclude_unnamed_apps: true
 apps:
   "au.com.ninenow.ctv": "9Now"
   "au.com.kayosports.tv": "Kayo Sports"
@@ -14,7 +14,7 @@ apps:
   "au.com.stan.and": "Stan"
   "au.com.tenplay": "10play"
   "au.net.abc.iview": "ABC iView"
-  "com.google.android.tv": "Live TV"
+  "com.google.android.tv": "Live Channels"
   "com.sbs.ondemand.tv": "SBS On Demand"
   "com.spotify.tv.android": "Spotify"
   "com.swm.live": "7plus"
@@ -23,15 +23,15 @@ apps:
   "com.silicondust.view": "HD HomeRun"
   "com.plexapp.android": "Plex"
   "au.com.streamotion.ares.tv": "Binge"
-state_detection_rules:
-  "foxtelnow.box.launcher":
-    - "idle"
-  "com.plexapp.android":
-    - "paused":
-        "media_session_state": 3
-        "wake_lock_size": 1
-    - "playing":
-        "media_session_state": 3
-    - "standby"
-  "com.netflix.ninja":
-    - "media_session_state"
+# state_detection_rules:
+#   "foxtelnow.box.launcher":
+#     - "idle"
+#   "com.plexapp.android":
+#     - "paused":ß
+#         "media_session_state": 3
+#         "wake_lock_size": 1
+#     - "playing":
+#         "media_session_state": 3
+#     - "standby"
+#   "com.netflix.ninja":
+#     - "media_session_state"

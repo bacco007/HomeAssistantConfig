@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Triple M 105.1 Melbourne
+id: 4fcce136-847d-4baf-bad4-b18d1315821e
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Triple M 105.1 Melbourne"
+  - platform: webhook
+    webhook_id: sonos_Triple_M_105_1_Melbourne
 action:
   - service: media_player.select_source
     data:

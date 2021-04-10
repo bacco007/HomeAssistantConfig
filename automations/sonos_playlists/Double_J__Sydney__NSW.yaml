@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Double J (Sydney, NSW)
+id: f7deb2a0-16e3-4a12-a6af-4eba3943c61e
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Double J (Sydney, NSW)"
+  - platform: webhook
+    webhook_id: sonos_Double_J__Sydney__NSW
 action:
   - service: media_player.select_source
     data:

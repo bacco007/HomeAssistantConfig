@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Virgin Radio Chilled UK
+id: 11bef734-ad11-4bcc-b652-1698a90dfd76
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Virgin Radio Chilled UK"
+  - platform: webhook
+    webhook_id: sonos_Virgin_Radio_Chilled_UK
 action:
   - service: media_player.select_source
     data:

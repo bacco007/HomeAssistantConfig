@@ -1,0 +1,53 @@
+---
+homeassistant:
+  customize:
+    sensor.vmtbsh01_package_updates:
+      icon: mdi:upload-network-outline
+    sensor.vmtbsh02_package_updates:
+      icon: mdi:upload-network-outline
+    sensor.tbsh03_package_updates:
+      icon: mdi:upload-network-outline
+    sensor.tbsh01_package_updates:
+      icon: mdi:upload-network-outline
+    sensor.vmtbsh01_security_updates:
+      icon: mdi:security-network
+    sensor.vmtbsh02_security_updates:
+      icon: mdi:security-network
+    sensor.tbsh01_security_updates:
+      icon: mdi:security-network
+    sensor.tbsh03_security_updates:
+      icon: mdi:security-network
+
+sensor:
+- platform: command_line
+  name: vmTBSH01 Package Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.61 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 1
+  
+- platform: command_line
+  name: vmTBSH01 Security Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.61 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 2
+
+- platform: command_line
+  name: vmTBSH02 Package Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.62 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 1
+  
+- platform: command_line
+  name: vmTBSH02 Security Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.62 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 2  
+
+- platform: command_line
+  name: TBSH03 Package Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.65 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 1
+  
+- platform: command_line
+  name: TBSH03 Security Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.65 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 2  
+
+- platform: command_line
+  name: TBSH01 Package Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.20 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 1
+  
+- platform: command_line
+  name: TBSH01 Security Updates
+  command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.20 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 2  
+

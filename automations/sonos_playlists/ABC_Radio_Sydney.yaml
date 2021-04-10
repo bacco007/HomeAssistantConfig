@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - ABC Radio Sydney
+id: 4e400e1a-9c6d-48cc-8f6f-b21df178bf5d
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "ABC Radio Sydney"
+  - platform: webhook
+    webhook_id: sonos_ABC_Radio_Sydney
 action:
   - service: media_player.select_source
     data:

@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Absolute Radio 80s
+id: 0ffe736d-94e5-4c0a-a31e-be846bf687d4
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Absolute Radio 80s"
+  - platform: webhook
+    webhook_id: sonos_Absolute_Radio_80s
 action:
   - service: media_player.select_source
     data:

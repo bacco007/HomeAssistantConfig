@@ -11,7 +11,7 @@ import logging
 from homeassistant.components import zeroconf
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-from homeassistant.core import Config, HomeAssistant
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -20,6 +20,8 @@ from .api import GlocaltokensApiClient
 from .const import (
     CONF_ANDROID_ID,
     CONF_MASTER_TOKEN,
+    DATA_CLIENT,
+    DATA_COORDINATOR,
     DOMAIN,
     PLATFORMS,
     SENSOR,
@@ -30,7 +32,11 @@ from .const import (
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-async def async_setup(_hass: HomeAssistant, _config: Config) -> bool:
+# Remove after updating to 2021.4.0
+async def async_setup(
+    _hass: HomeAssistant,
+    _config: dict,  # type: ignore[type-arg]
+) -> bool:
     """Set up this integration using YAML is not supported."""
     return True
 
@@ -72,11 +78,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
+    hass.data[DOMAIN][entry.entry_id] = {
+        DATA_CLIENT: glocaltokens_client,
+        DATA_COORDINATOR: coordinator,
+    }
 
     # Offload the loading of entities to the platform
     for platform in PLATFORMS:
-        hass.async_add_job(
+        hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, platform)
         )
 

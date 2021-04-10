@@ -4,7 +4,7 @@ import logging
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.camera import Camera
-from libdyson.const import DEVICE_TYPE_360_EYE
+from libdyson.const import DEVICE_TYPE_360_EYE, DEVICE_TYPE_360_HEURIST
 from libdyson.cloud.cloud_360_eye import DysonCloud360Eye
 from libdyson.cloud import DysonDeviceInfo
 from datetime import timedelta
@@ -25,7 +25,7 @@ async def async_setup_entry(
     devices = data[DATA_DEVICES]
     entities = []
     for device in devices:
-        if device.product_type != DEVICE_TYPE_360_EYE:
+        if device.product_type not in [DEVICE_TYPE_360_EYE, DEVICE_TYPE_360_HEURIST]:
             continue
         entities.append(DysonCleaningMapEntity(
             DysonCloud360Eye(account, device.serial),

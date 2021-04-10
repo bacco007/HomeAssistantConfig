@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Absolute Radio UK (AAC)
+id: 4ab8e00b-1d0b-41d8-b71b-76c30f0ab0d3
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Absolute Radio UK (AAC)"
+  - platform: webhook
+    webhook_id: sonos_Absolute_Radio_UK__AAC
 action:
   - service: media_player.select_source
     data:

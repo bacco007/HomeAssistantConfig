@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - ABC New England North West
+id: 86e20dd6-5f53-4bfa-a244-390efd570268
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "ABC New England North West"
+  - platform: webhook
+    webhook_id: sonos_ABC_New_England_North_West
 action:
   - service: media_player.select_source
     data:

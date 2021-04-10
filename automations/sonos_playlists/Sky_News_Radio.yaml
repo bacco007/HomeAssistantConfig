@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Sky News Radio
+id: 8b3353d8-8973-4934-b689-0a0846c50f15
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Sky News Radio"
+  - platform: webhook
+    webhook_id: sonos_Sky_News_Radio
 action:
   - service: media_player.select_source
     data:

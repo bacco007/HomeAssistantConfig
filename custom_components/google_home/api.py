@@ -1,10 +1,11 @@
 """Sample API Client."""
 from asyncio import gather
+import json
 import logging
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from aiohttp import ClientError, ClientSession
-from aiohttp.client_exceptions import ClientConnectorError
+from aiohttp.client_exceptions import ClientConnectorError, ContentTypeError
 from glocaltokens.client import Device, GLocalAuthenticationTokens
 from glocaltokens.utils.token import is_aas_et
 from zeroconf import Zeroconf
@@ -14,6 +15,8 @@ from homeassistant.core import HomeAssistant
 
 from .const import (
     API_ENDPOINT_ALARMS,
+    API_ENDPOINT_DELETE,
+    API_ENDPOINT_REBOOT,
     API_RETURNED_UNKNOWN,
     HEADER_CAST_LOCAL_AUTH,
     HEADERS,
@@ -65,7 +68,7 @@ class GlocaltokensApiClient:
             return self._client.get_master_token()
 
         master_token = await self.hass.async_add_executor_job(_get_master_token)
-        if is_aas_et(master_token) is False:
+        if master_token is None or is_aas_et(master_token) is False:
             raise InvalidMasterToken
         return master_token
 
@@ -86,7 +89,7 @@ class GlocaltokensApiClient:
                 GoogleHomeDevice(
                     name=device.device_name,
                     auth_token=device.local_auth_token,
-                    ip_address=device.ip,
+                    ip_address=device.ip_address,
                     hardware=device.hardware,
                 )
                 for device in google_devices
@@ -105,13 +108,10 @@ class GlocaltokensApiClient:
     def create_url(ip_address: str, port: int, api_endpoint: str) -> str:
         """Creates url to endpoint.
         Note: port argument is unused because all request must be done to 8443"""
-        url = "https://{ip_address}:{port}/{endpoint}".format(
-            ip_address=ip_address, port=str(port), endpoint=api_endpoint
-        )
-        return url
+        return f"https://{ip_address}:{port}/{api_endpoint}"
 
     async def get_alarms_and_timers(
-        self, device: GoogleHomeDevice, ip_address: str
+        self, device: GoogleHomeDevice, ip_address: str, auth_token: str
     ) -> GoogleHomeDevice:
         """Fetches timers and alarms from google device"""
         url = self.create_url(ip_address, PORT, API_ENDPOINT_ALARMS)
@@ -120,7 +120,7 @@ class GlocaltokensApiClient:
             device.name,
             url,
         )
-        HEADERS[HEADER_CAST_LOCAL_AUTH] = device.auth_token
+        HEADERS[HEADER_CAST_LOCAL_AUTH] = auth_token
 
         resp = None
 
@@ -163,7 +163,7 @@ class GlocaltokensApiClient:
                         (
                             "Failed to fetch data from %s, API returned %d. "
                             "The device(hardware='%s') is possibly not Google Home "
-                            "compatable and has no alarms/timers. "
+                            "compatible and has no alarms/timers. "
                             "Will retry later."
                         ),
                         device.name,
@@ -213,7 +213,7 @@ class GlocaltokensApiClient:
                     (
                         "Failed to fetch timers/alarms information "
                         "from device %s. We could not determine it's IP address, "
-                        "the device is either offline or is not compatable "
+                        "the device is either offline or is not compatible "
                         "Google Home device. Will try again later."
                     ),
                     device.name,
@@ -221,9 +221,135 @@ class GlocaltokensApiClient:
 
         coordinator_data = await gather(
             *[
-                self.get_alarms_and_timers(device, device.ip_address)
+                self.get_alarms_and_timers(device, device.ip_address, device.auth_token)
                 for device in devices
-                if device.ip_address
+                if device.ip_address and device.auth_token
             ]
         )
         return coordinator_data
+
+    async def delete_alarm_or_timer(
+        self, device: GoogleHomeDevice, item_to_delete: str
+    ) -> None:
+        """Deletes a timer or alarm.
+        Can also delete multiple if a list is provided (Not implemented yet)."""
+
+        data = {"ids": [item_to_delete]}
+
+        item_type = item_to_delete.split("/")[0]
+
+        _LOGGER.debug(
+            "Deleting %s from Google Home device %s - Raw data: %s",
+            item_type,
+            device.name,
+            data,
+        )
+
+        response = await self.post(
+            endpoint=API_ENDPOINT_DELETE, data=json.dumps(data), device=device
+        )
+
+        if response:
+            if "success" in response:
+                if response["success"]:
+                    _LOGGER.debug(
+                        "Successfully deleted %s for %s",
+                        item_type,
+                        device.name,
+                    )
+                else:
+                    _LOGGER.error(
+                        "Couldn't delete %s for %s - %s",
+                        item_type,
+                        device.name,
+                        response,
+                    )
+            else:
+                _LOGGER.error(
+                    (
+                        "Failed to get a confirmation that the %s"
+                        "was deleted for device %s. "
+                        "Received = %s"
+                    ),
+                    item_type,
+                    device.name,
+                    response,
+                )
+
+    async def reboot_google_device(self, device: GoogleHomeDevice) -> None:
+        """Reboots a Google Home device if it supports this."""
+
+        # "now" means reboot and "fdr" means factory reset (Not implemented).
+        data = {"params": "now"}
+
+        _LOGGER.debug(
+            "Trying to reboot Google Home device %s",
+            device.name,
+        )
+
+        response = await self.post(
+            endpoint=API_ENDPOINT_REBOOT, data=json.dumps(data), device=device
+        )
+
+        if response:
+            # It will return true even if the device does not support rebooting.
+            _LOGGER.info(
+                "Successfully asked %s to reboot.",
+                device.name,
+            )
+
+    async def post(
+        self, endpoint: str, data: str, device: GoogleHomeDevice
+    ) -> Optional[Dict[str, str]]:
+        """Shared post request"""
+
+        if device.ip_address is None:
+            _LOGGER.warning("Device %s doesn't have an IP address!", device.name)
+            return None
+
+        if device.auth_token is None:
+            _LOGGER.warning("Device %s doesn't have an auth token!", device.name)
+            return None
+
+        url = self.create_url(device.ip_address, PORT, endpoint)
+
+        HEADERS[HEADER_CAST_LOCAL_AUTH] = device.auth_token
+
+        _LOGGER.debug(
+            "Requesting endpoint %s for Google Home device %s - %s",
+            endpoint,
+            device.name,
+            url,
+        )
+
+        resp = None
+
+        try:
+            async with self._session.post(
+                url, data=data, headers=HEADERS, timeout=TIMEOUT
+            ) as response:
+                if response.status == HTTP_OK:
+                    try:
+                        resp = await response.json()
+                    except ContentTypeError:
+                        resp = True
+                else:
+                    _LOGGER.error(
+                        "Failed to access %s, API returned" " %d: %s",
+                        device.name,
+                        response.status,
+                        response,
+                    )
+        except ClientConnectorError:
+            _LOGGER.warning(
+                "Failed to connect to %s device. The device is probably offline.",
+                device.name,
+            )
+        except ClientError as ex:
+            # Make sure that we log the exception from the client if one occurred.
+            _LOGGER.error(
+                "Request error: %s",
+                ex,
+            )
+
+        return resp

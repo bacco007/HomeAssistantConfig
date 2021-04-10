@@ -1,12 +1,14 @@
 """Defines base entities for Google Home"""
 
 from abc import ABC, abstractmethod
+from typing import List, Optional
 
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
 
+from .api import GlocaltokensApiClient
 from .const import DEFAULT_NAME, DOMAIN, MANUFACTURER
 from .models import GoogleHomeDevice
 from .types import DeviceInfo
@@ -15,8 +17,14 @@ from .types import DeviceInfo
 class GoogleHomeBaseEntity(CoordinatorEntity, ABC):
     """Base entity base for Google Home sensors"""
 
-    def __init__(self, coordinator: DataUpdateCoordinator, device_name: str):
+    def __init__(
+        self,
+        coordinator: DataUpdateCoordinator,
+        client: GlocaltokensApiClient,
+        device_name: str,
+    ):
         super().__init__(coordinator)
+        self.client = client
         self.device_name = device_name
 
     @property
@@ -43,10 +51,10 @@ class GoogleHomeBaseEntity(CoordinatorEntity, ABC):
             "manufacturer": MANUFACTURER,
         }
 
-    def get_device(self) -> GoogleHomeDevice:
+    def get_device(self) -> Optional[GoogleHomeDevice]:
         """Return the device matched by device name
         from the list of google devices in coordinator_data"""
-        matched_devices = [
+        matched_devices: List[GoogleHomeDevice] = [
             device
             for device in self.coordinator.data
             if device.name == self.device_name

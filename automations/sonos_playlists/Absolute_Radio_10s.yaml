@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Absolute Radio 10s
+id: ef53e7e6-928d-41cf-901b-b365022d5cdd
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Absolute Radio 10s"
+  - platform: webhook
+    webhook_id: sonos_Absolute_Radio_10s
 action:
   - service: media_player.select_source
     data:

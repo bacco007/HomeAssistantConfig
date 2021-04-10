@@ -1,0 +1,288 @@
+---
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-12'
+  cards:
+    - entity: media_player.nvidia_shield
+      name: Nvidia Shield
+      type: media-control
+- type: custom:dwains-flexbox-card
+  items_classes: 'col-xs-12 col-sm-6'
+  cards:      
+    - type: custom:dwains-flexbox-card
+      items_classes: 'col-xs-4 col-sm-2'
+      cards:
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Binge
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/binge.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.streamotion.ares.tv/.main.MainActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Kayo
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/kayo.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Netflix
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/netflix.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.netflix.ninja/.MainActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Spotify
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/spotify.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.spotify.tv.android/.SpotifyTVActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Live Channels
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/livechannels.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.google.android.tv/com.android.tv.TvActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: 9 Now
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/9now.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.ninenow.ctv/.TvActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: SBS On Demand
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/sbsondemand.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.sbs.ondemand.tv/.MainActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: ABC iView
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/abciview.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.net.abc.iview/.ui.router.TvLauncherActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: 10 Play
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/10play.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.tenplay/tv.youi.youiengine.CYIActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Optus Sport
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/optussport.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.optus.sport.androidtv/com.diagnal.dtal.MainActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: YouTube
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/youtube.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: 7+
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/7plus.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.swm.live/au.com.seven.inferno.ui.setup.SetupActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Stan
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/stan.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.stan.and/.ui.screens.splash.SplashActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Plex
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/plex.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n com.plexapp.android/com.plexapp.plex.activities.SplashActivity'
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Foxtel
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/foxtel.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: 'am start -a android.intent.action.VIEW -d -n au.com.foxtel.atv/foxtel.play.droid.SplashView'                                                                                                                
+        - type: custom:button-card
+          entity: media_player.nvidia_shield
+          show_state: false
+          name: Prime Video
+          show_name: false
+          show_entity_picture: true
+          entity_picture: ../local/images/apps/primevideo.png
+          aspect_ratio: 1/1
+          styles:
+            entity_picture:
+              - width: 80%
+          tap_action:
+            action: call-service
+            service: media_player.select_source
+            service_data:
+                entity_id: media_player.nvidia_shield
+                source: "com.amazon.amazonvideo.livingroom"
+    - !include partial_station_grid.yaml

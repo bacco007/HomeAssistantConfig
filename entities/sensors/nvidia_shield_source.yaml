@@ -1,0 +1,6 @@
+---
+platform: template
+sensors:
+  nvidia_shield_source:
+    value_template: >-
+      {{ states.media_player.nvidia_shield.attributes.source }}

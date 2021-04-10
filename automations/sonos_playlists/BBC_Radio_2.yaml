@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - BBC Radio 2
+id: a7ffac7d-85ac-4f65-8bad-00c41be3b2b0
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "BBC Radio 2"
+  - platform: webhook
+    webhook_id: sonos_BBC_Radio_2
 action:
   - service: media_player.select_source
     data:

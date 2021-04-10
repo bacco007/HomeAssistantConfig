@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Nova Throwbacks
+id: 16364cd3-65a7-43b0-8890-f9185b379cc2
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Nova Throwbacks"
+  - platform: webhook
+    webhook_id: sonos_Nova_Throwbacks
 action:
   - service: media_player.select_source
     data:

@@ -1,3 +1,5 @@
+import uuid
+
 from soco import SoCo
 
 
@@ -87,10 +89,13 @@ for fav in favorites["favorites"]:
     f.write("---")
     f.write("\n")
     f.write("alias: Sonos - Playlist - " + title + "\n")
+    f.write("id: " + str(uuid.uuid4()) + "\n")
     f.write("trigger:" + "\n")
     f.write("  - platform: state" + "\n")
     f.write("    entity_id: input_select.sonosplaylist" + "\n")
     f.write('    to: "' + title + '"\n')
+    f.write("  - platform: webhook" + "\n")
+    f.write("    webhook_id: sonos_" + titleClean + "\n")
     f.write("action:" + "\n")
     f.write("  - service: media_player.select_source" + "\n")
     f.write("    data:" + "\n")

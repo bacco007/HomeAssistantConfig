@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Nova 96.9
+id: 90350df4-6ccc-4c60-9cb2-4139a7e4581c
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Nova 96.9"
+  - platform: webhook
+    webhook_id: sonos_Nova_96_9
 action:
   - service: media_player.select_source
     data:

@@ -1,9 +1,12 @@
 ---
 alias: Sonos - Playlist - Virgin Radio Anthems UK
+id: e9a82dd0-8371-4ab5-a804-ef34bae879f4
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
     to: "Virgin Radio Anthems UK"
+  - platform: webhook
+    webhook_id: sonos_Virgin_Radio_Anthems_UK
 action:
   - service: media_player.select_source
     data:

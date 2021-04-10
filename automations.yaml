@@ -1,0 +1,22 @@
+- id: '1618018165807'
+  alias: New Automation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_select.radio_station
+    to: Test
+  - platform: webhook
+    webhook_id: abc
+  condition: []
+  action:
+  - service: media_player.select_source
+    target:
+      device_id: 68de45dcbb7f4a3ea545c62e767c7c8b
+    data:
+      source: Test
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.radio_station
+    data:
+      option: -- Select --
+  mode: single
