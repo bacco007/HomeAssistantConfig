@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Virgin Radio Anthems UK
-id: e9a82dd0-8371-4ab5-a804-ef34bae879f4
+id: Virgin_Radio_Anthems_UK
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - ESPN Radio
-id: 2cb1c73d-fd0a-49e9-89be-ac3267937e51
+id: ESPN_Radio
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

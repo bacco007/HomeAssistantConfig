@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Absolute Radio Classic Rock
-id: 75bf0156-9acf-4dbf-89a1-a490eafafc6d
+id: Absolute_Radio_Classic_Rock
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

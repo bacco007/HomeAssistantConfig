@@ -1,0 +1,110 @@
+type: "custom:config-template-card"
+entities:
+  - sensor.sunrise
+  - sensor.sunset
+  - sensor.weather_inside_temperature
+  - sensor.weather_inside_humidity
+card:
+  type: custom:apexcharts-card
+  header:
+    show: true
+    show_states: true
+    colorize_states: true
+    title: "Inside Temperature"
+  span:
+    start: day
+  graph_span: 24h
+  apex_config:
+    annotations:
+      xaxis:
+        - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+          label:
+            text: ☼
+            borderWidth: 0
+            style:
+              background: "#0000"
+        - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+          label:
+            text: ☾
+            borderWidth: 0
+            style:
+              background: "#0000"
+    chart:
+      {
+        type: "area",
+        height: 350,
+        toolbar: { show: true, tools: { reset: true } },
+        zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+      }
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0, 5] }
+    legend: { show: false }
+    fill:
+      {
+        type: ["solid", "solid"],
+        gradient:
+          {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [20, 100, 100, 100],
+          },
+      }
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
+    yaxis:
+      - seriesName: "Temp"
+        decimalsInFloat: 0
+        title:
+          text: "Temperature (°C)"
+      - seriesName: "Temp"
+        show: false
+      - seriesName: "Humidity"
+        opposite: true
+        decimalsInFloat: 0
+        title:
+          text: "Humidity (%)"
+      - seriesName: "Temp"
+        show: false
+  series:
+    - entity: sensor.weather_inside_temperature
+      name: Temp
+      type: line
+      # color: "da1e28"
+      extend_to_end: false
+      stroke_width: 4
+      unit: "°C"
+      group_by:
+        func: last
+        duration: 10min
+    - entity: sensor.weather_inside_temperature
+      type: line
+      color: "#121619"
+      name: Change
+      extend_to_end: false
+      stroke_width: 2
+      group_by:
+        func: delta
+        duration: 30min
+    - entity: sensor.weather_inside_humidity
+      type: line
+      extend_to_end: false
+      stroke_width: 1.5
+      unit: "%"
+      group_by:
+        func: last
+        duration: 10min
+    - entity: sensor.weather_inside_temperature
+      type: line
+      name: Yesterday
+      stroke_width: 1.8
+      extend_to_end: false
+      unit: "°C"
+      curve: smooth
+      offset: -1d
+      group_by:
+        func: last
+        duration: 1h

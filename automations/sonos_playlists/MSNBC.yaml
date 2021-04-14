@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - MSNBC
-id: ed7046bc-9bd3-4c55-8bf7-2dacef5f2316
+id: MSNBC
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

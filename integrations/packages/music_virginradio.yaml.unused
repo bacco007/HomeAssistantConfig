@@ -1,0 +1,20 @@
+sensor:
+  - platform: rest
+    name: Virgin Radio On Air
+    json_attributes:
+      - vir
+      - vir_anthems
+      - vir_chilled
+      - vir_groove
+    value_template: '{{ value_json["vir"]["show"] }}'
+    resource: "https://virginradio.co.uk/sites/default/files/on_air_now_json_virgin.js"
+
+  - platform: rest
+    name: Virgin Radio Now Playing
+    # json_attributes:
+    #   - vir
+    #   - vir_anthems
+    #   - vir_chilled
+    #   - vir_groove
+    value_template: "{{ value_json }}"
+    resource: https://virginradio.co.uk/sites/virginradio.co.uk/files/nocache/now_lastsongs_json.json

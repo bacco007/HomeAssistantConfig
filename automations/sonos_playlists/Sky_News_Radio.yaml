@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Sky News Radio
-id: 8b3353d8-8973-4934-b689-0a0846c50f15
+id: Sky_News_Radio
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

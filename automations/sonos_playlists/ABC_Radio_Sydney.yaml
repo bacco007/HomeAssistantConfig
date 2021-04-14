@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - ABC Radio Sydney
-id: 4e400e1a-9c6d-48cc-8f6f-b21df178bf5d
+id: ABC_Radio_Sydney
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

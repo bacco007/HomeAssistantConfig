@@ -4,6 +4,7 @@ sensor:
     sensors:
       # ----- Count All Entities
       count_all_entities:
+        unique_id: count_all_entities
         friendly_name: "All Entities"
         icon_template: mdi:code-tags
         value_template: "{{ states | count }}"

@@ -4,11 +4,74 @@
 ## Version: 1.0.5
 
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-12 col-sm-12'
+  items_classes: 'col-xs-12 col-sm-6 col-sm-6'
   cards:
-    - entity: {{ (data | fromjson)['speakers'][0].entity }}
-      name: {{ name }}
-      type: media-control
+    - type: vertical-stack
+      cards:
+      - entity: {{ (data | fromjson)['speakers'][0].entity }}
+        name: {{ name }}
+        type: media-control
+      - type: grid
+        rows: 1
+        square: false
+        cards:
+          - entity: media_player.office_sonos
+            hold_action:
+              action: none
+            icon: "mdi:volume-minus"
+            show_icon: true
+            show_name: false
+            styles:
+              card:
+                - height: 50px
+            tap_action:
+              action: call-service
+              haptic: success
+              service: media_player.volume_down
+              service_data:
+                entity_id: media_player.office_sonos
+            type: "custom:button-card"
+          - entity: media_player.office_sonos
+            hold_action:
+              action: none
+            icon: "mdi:volume-off"
+            show_icon: true
+            show_name: false
+            state:
+              - operator: template
+                styles:
+                  card:
+                    - icon: "mdi:volume-high"
+                  icon:
+                    - color: red
+                  value: >
+                    return
+                    states['media_player.office_sonos'].attributes.is_volume_muted
+                    === true
+            styles:
+              card:
+                - height: 50px
+            tap_action:
+              action: call-service
+              haptic: success
+              service: script.sonos_mute
+            type: "custom:button-card"
+          - type: "custom:button-card"
+            entity: media_player.office_sonos
+            hold_action:
+              action: none
+            icon: "mdi:volume-plus"
+            show_icon: true
+            show_name: false
+            styles:
+              card:
+                - height: 50px
+            tap_action:
+              action: call-service
+              haptic: success
+              service: media_player.volume_up
+              service_data:
+                entity_id: media_player.office_sonos
     - !include partial_station_grid.yaml
     # - type: entities
     #   style: |

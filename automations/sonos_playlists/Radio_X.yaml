@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Radio X
-id: 59d27f68-67a3-4687-8d3c-dedfdb0c4841
+id: Radio_X
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

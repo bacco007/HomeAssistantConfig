@@ -20,13 +20,15 @@ ALARM_AND_TIMER_ID_LENGTH = 42
 ICON_TOKEN = "mdi:form-textbox-password"
 ICON_ALARMS = "mdi:alarm-multiple"
 ICON_TIMERS = "mdi:timer-sand"
+ICON_DO_NOT_DISTURB = "mdi:minus-circle"
 
 # Device classes
 BINARY_SENSOR_DEVICE_CLASS = "connectivity"
 
 # Platforms
 SENSOR = "sensor"
-PLATFORMS = [SENSOR]
+SWITCH = "switch"
+PLATFORMS = [SENSOR, SWITCH]
 
 # Services
 SERVICE_REBOOT = "reboot_device"
@@ -48,6 +50,7 @@ LABEL_ALARMS = "alarms"
 LABEL_AVAILABLE = "available"
 LABEL_TIMERS = "timers"
 LABEL_DEVICE = "device"
+LABEL_DO_NOT_DISTURB = "Do Not Disturb"
 
 # DEVICE PORT
 PORT = 8443
@@ -56,6 +59,7 @@ PORT = 8443
 API_ENDPOINT_ALARMS = "setup/assistant/alarms"
 API_ENDPOINT_DELETE = "setup/assistant/alarms/delete"
 API_ENDPOINT_REBOOT = "setup/reboot"
+API_ENDPOINT_DO_NOT_DISTURB = "setup/assistant/notifications"
 HEADER_CAST_LOCAL_AUTH = "cast-local-authorization-token"
 HEADER_CONTENT_TYPE = "content-type"
 
@@ -64,7 +68,7 @@ HEADERS = {
     HEADER_CAST_LOCAL_AUTH: "",
     HEADER_CONTENT_TYPE: "application/json",
 }
-TIMEOUT = 10  # Request Timeout in seconds
+TIMEOUT = 2  # Request Timeout in seconds
 
 # TIMESTRINGS
 TIME_STR_FORMAT = "%H:%M:%S"
@@ -80,6 +84,7 @@ UPDATE_INTERVAL = 10  # sec
 # JSON parameter values when retrieving information from devices
 JSON_ALARM = "alarm"
 JSON_TIMER = "timer"
+JSON_NOTIFICATIONS_ENABLED = "notifications_enabled"
 
 STARTUP_MESSAGE = f"""
 -------------------------------------------------------------------

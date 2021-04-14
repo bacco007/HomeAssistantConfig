@@ -4,6 +4,5 @@
   "documentation": "https://github.com/partofthething/ha_skyfield",
   "dependencies": [],
   "codeowners": [],
-  "requirements": ["skyfield", "matplotlib", "numpy"],
-  "version": "0.1"
+  "requirements": ["skyfield", "matplotlib", "numpy"]
 }

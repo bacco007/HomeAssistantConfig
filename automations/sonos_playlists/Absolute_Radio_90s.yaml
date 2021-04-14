@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Absolute Radio 90s
-id: 18b24ae4-aaaa-47c4-8be0-4e560164993a
+id: Absolute_Radio_90s
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

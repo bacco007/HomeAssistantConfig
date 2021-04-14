@@ -1,0 +1,7 @@
+---
+alias: "Sonos - Toggle Mute"
+sequence:
+  - service: media_player.volume_mute
+    data_template:
+      entity_id: media_player.office_sonos
+      is_volume_muted: "{{ not state_attr('media_player.office_sonos', 'is_volume_muted') }}"

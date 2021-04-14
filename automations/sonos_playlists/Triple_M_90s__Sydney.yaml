@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Triple M 90s (Sydney)
-id: 10bba184-b883-49f5-a4a2-55ff506996b1
+id: Triple_M_90s__Sydney
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

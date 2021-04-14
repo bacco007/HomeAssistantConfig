@@ -1,41 +1,111 @@
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-md-12 col-lg-12 col-xl-12'
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
+    - type: custom:config-template-card
       entities:
-        - entity: sensor.solar_sungrow_house_load
-          name: House Load
-        - entity: sensor.solar_sungrow_pv_power
-          name: Solar
-        - entity: sensor.solar_sungrow_grid_power
-          name: Grid
-      name: Power
-      line_color: 'var(--dwains-theme-accent)'
-      animate: true
-      decimals: 2
-      height: 30
-      font-size: 20
-      hours_to_show: 24
-      points_per_hour: 30
-      # group_by: hour
-      # aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      show:
-        extrema: true
-        average: true
-        fill: fade
+        - sensor.sunrise
+        - sensor.sunset
+        - sensor.solar_solar_generation
+        - sensor.solar_solar_to_house
+      card:
+        type: custom:apexcharts-card
+        graph_span: 24h
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+          title: "Solar Production"
+        span:
+          start: day
 
+        all_series_config:
+          stroke_width: 2
+          type: area
+          extend_to_end: false
+        color_list:
+          - blue
+          - orange
+          - grey
+        apex_config:
+          annotations:
+            xaxis:
+              - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+                label:
+                  text: ☼
+                  borderWidth: 0
+                  style:
+                    background: "#0000"
+              - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+                label:
+                  text: ☾
+                  borderWidth: 0
+                  style:
+                    background: "#0000"
+          tooltip:
+            x:
+              format: "ddd dd MMM - HH:mm"
+          legend:
+            show: false
+          grid:
+            borderColor: "#7B7B7B"
+          chart:
+            height: 450
+            foreColor: "#7B7B7B"
+            zoom:
+              type: x
+              enabled: true
+              autoScaleYaxis: true
+            toolbar:
+              show: true
+              autoSelected: zoom
+              tools:
+                zoom: true
+                zoomin: false
+                zoomout: false
+                pan: false
+                reset: true
+          xaxis:
+            {
+              type: "datetime",
+              labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+            }
+          yaxis:
+            - seriesName: "kW"
+              decimalsInFloat: 0
+              title:
+                text: "kW"
+            - seriesName: Night time
+              opposite: true
+              show: false
+          fill:
+            {
+              type: "gradient",
+              gradient:
+                {
+                  shadeIntensity: 1,
+                  inverseColors: false,
+                  opacityFrom: 0.45,
+                  opacityTo: 0.05,
+                  stops: [20, 100, 100, 100],
+                },
+            }
+        series:
+          - entity: sensor.solar_solar_generation
+            name: Solar Generation
+            group_by:
+              func: avg
+              duration: 5min
+          - entity: sensor.solar_solar_to_house
+            name: House Consumption
+            group_by:
+              func: avg
+              duration: 5min
 - type: custom:dwains-flexbox-card
-  items_classes: 'col-xs-12 col-sm-6 col-sm-6 col-xl-6'
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  # padding: true
   cards:
     - type: entities
-      title: Solar Stats
+      title: Latest SpaceX Launch
       style: |
         ha-card {
           padding-bottom: 10px;
@@ -58,39 +128,17 @@
           margin-left: 2px !important;
         }
       entities:
-        - entity: sensor.solar_sungrow_house_solar_percent
-          name: Solar to House Load
-        - type: divider
-        - entity: sensor.solar_sungrow_solar_percent_tohouse
-          name: Solar Generation to House
-        - entity: sensor.solar_sungrow_solar_percent_togrid
-          name: Solar Generation to Grid
-
-    - type: entities
-      title: Solar Stats
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - entity: sensor.solar_sungrow_daily_grid_energy
-          name: Daily Grid Energy
-        - entity: sensor.solar_sungrow_daily_yield
-          name: Daily Solar Yield
+        - entity: sensor.solar_daily_running_time_clean
+        - entity: sensor.solar_daily_yield_clean
+        - entity: sensor.solar_total_yield_clean
+        - entity: sensor.solar_dc_output_clean
+        - entity: sensor.solar_phase_a_voltage
+          name: Phase A - Voltage
+        - entity: sensor.solar_phase_a_current
+          name: Phase A - Current
+        - entity: sensor.solar_solar_generation
+          name: Current Generation
+        - entity: sensor.solar_solar_to_house
+          name: Solar to House
+        - entity: sensor.solar_to_grid_clean
+          name: Solar to Grid

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Triple M 104.9 Sydney
-id: 731a6909-5c17-4165-a75d-85f89f5ed52a
+id: Triple_M_104_9_Sydney
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Playlists
-id: 3e0e3153-4069-45c8-8e6e-48fc9a183ee9
+id: Playlists
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

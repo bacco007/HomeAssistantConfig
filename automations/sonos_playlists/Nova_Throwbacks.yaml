@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Nova Throwbacks
-id: 16364cd3-65a7-43b0-8890-f9185b379cc2
+id: Nova_Throwbacks
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

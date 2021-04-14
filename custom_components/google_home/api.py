@@ -1,6 +1,5 @@
 """Sample API Client."""
-from asyncio import gather
-import json
+import asyncio
 import logging
 from typing import Dict, List, Optional
 
@@ -16,17 +15,20 @@ from homeassistant.core import HomeAssistant
 from .const import (
     API_ENDPOINT_ALARMS,
     API_ENDPOINT_DELETE,
+    API_ENDPOINT_DO_NOT_DISTURB,
     API_ENDPOINT_REBOOT,
     API_RETURNED_UNKNOWN,
     HEADER_CAST_LOCAL_AUTH,
     HEADERS,
     JSON_ALARM,
+    JSON_NOTIFICATIONS_ENABLED,
     JSON_TIMER,
     PORT,
     TIMEOUT,
 )
 from .exceptions import InvalidMasterToken
 from .models import GoogleHomeDevice
+from .types import JsonDict
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -135,6 +137,9 @@ class GlocaltokensApiClient:
                         if JSON_TIMER in resp or JSON_ALARM in resp:
                             device.set_timers(resp.get(JSON_TIMER))
                             device.set_alarms(resp.get(JSON_ALARM))
+                            _LOGGER.debug(
+                                "Succesfully retrieved data from %s.", device.name
+                            )
                         else:
                             _LOGGER.error(
                                 (
@@ -193,10 +198,29 @@ class GlocaltokensApiClient:
             # The only reason we do this broad is so we easily can
             # debug the application.
             _LOGGER.error(
-                "Request error: %s",
+                "Request error from %s device: %s",
+                device.name,
                 ex,
             )
             device.available = False
+        except asyncio.TimeoutError:
+            _LOGGER.debug(
+                "%s device timed out while trying to get alarms and timers.",
+                device.name,
+            )
+            device.available = False
+
+        return device
+
+    async def collect_data_from_endpoints(
+        self, device: GoogleHomeDevice, ip_address: str, auth_token: str
+    ) -> GoogleHomeDevice:
+        """Collect data from different endpoints."""
+
+        device = await self.get_alarms_and_timers(device, ip_address, auth_token)
+
+        device = await self.update_do_not_disturb(device)
+
         return device
 
     async def update_google_devices_information(self) -> List[GoogleHomeDevice]:
@@ -219,9 +243,13 @@ class GlocaltokensApiClient:
                     device.name,
                 )
 
-        coordinator_data = await gather(
+        coordinator_data = await asyncio.gather(
             *[
-                self.get_alarms_and_timers(device, device.ip_address, device.auth_token)
+                self.collect_data_from_endpoints(
+                    device=device,
+                    ip_address=device.ip_address,
+                    auth_token=device.auth_token,
+                )
                 for device in devices
                 if device.ip_address and device.auth_token
             ]
@@ -246,7 +274,7 @@ class GlocaltokensApiClient:
         )
 
         response = await self.post(
-            endpoint=API_ENDPOINT_DELETE, data=json.dumps(data), device=device
+            endpoint=API_ENDPOINT_DELETE, data=data, device=device
         )
 
         if response:
@@ -288,7 +316,7 @@ class GlocaltokensApiClient:
         )
 
         response = await self.post(
-            endpoint=API_ENDPOINT_REBOOT, data=json.dumps(data), device=device
+            endpoint=API_ENDPOINT_REBOOT, data=data, device=device
         )
 
         if response:
@@ -298,8 +326,52 @@ class GlocaltokensApiClient:
                 device.name,
             )
 
+    async def update_do_not_disturb(
+        self, device: GoogleHomeDevice, enable: Optional[bool] = None
+    ) -> GoogleHomeDevice:
+        """Gets or sets the do not disturb setting on a Google Home device."""
+
+        data = None
+
+        if enable is not None:
+            # Setting is inverted on device
+            data = {JSON_NOTIFICATIONS_ENABLED: not enable}
+            _LOGGER.debug(
+                "Setting Do Not Disturb setting to %s on Google Home device %s",
+                enable,
+                device.name,
+            )
+        else:
+            _LOGGER.debug(
+                "Getting Do Not Disturb setting from Google Home device %s",
+                device.name,
+            )
+
+        response = await self.post(
+            endpoint=API_ENDPOINT_DO_NOT_DISTURB, data=data, device=device
+        )
+        if response:
+            if JSON_NOTIFICATIONS_ENABLED in response:
+                enabled = not bool(response[JSON_NOTIFICATIONS_ENABLED])
+                _LOGGER.debug(
+                    "Received Do Not Disturb setting from Google Home device %s"
+                    " - Enabled: %s",
+                    device.name,
+                    enabled,
+                )
+
+                device.set_do_not_disturb(enabled)
+            else:
+                _LOGGER.debug(
+                    "Response not expected from Google Home device %s - %s",
+                    device.name,
+                    response,
+                )
+
+        return device
+
     async def post(
-        self, endpoint: str, data: str, device: GoogleHomeDevice
+        self, endpoint: str, data: Optional[JsonDict], device: GoogleHomeDevice
     ) -> Optional[Dict[str, str]]:
         """Shared post request"""
 
@@ -326,13 +398,25 @@ class GlocaltokensApiClient:
 
         try:
             async with self._session.post(
-                url, data=data, headers=HEADERS, timeout=TIMEOUT
+                url, json=data, headers=HEADERS, timeout=TIMEOUT
             ) as response:
                 if response.status == HTTP_OK:
                     try:
                         resp = await response.json()
                     except ContentTypeError:
                         resp = True
+                elif response.status == HTTP_NOT_FOUND:
+                    _LOGGER.debug(
+                        (
+                            "Failed to post data to %s, API returned %d. "
+                            "The device(hardware='%s') is possibly not Google Home "
+                            "compatible and has no alarms/timers. "
+                            "Will retry later."
+                        ),
+                        device.name,
+                        response.status,
+                        device.hardware,
+                    )
                 else:
                     _LOGGER.error(
                         "Failed to access %s, API returned" " %d: %s",
@@ -350,6 +434,12 @@ class GlocaltokensApiClient:
             _LOGGER.error(
                 "Request error: %s",
                 ex,
+            )
+        except asyncio.TimeoutError:
+            _LOGGER.debug(
+                "%s device timed out while trying to post data to it - Raw data: %s",
+                device.name,
+                data,
             )
 
         return resp

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - BBC Radio 5 live
-id: 2c921b60-ca12-429a-b5b2-2f5c33c63ac7
+id: BBC_Radio_5_live
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - triple j (New South Wales)
-id: bd1b5f6b-bec6-47f8-8496-9500597fdc5d
+id: triple_j__New_South_Wales
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 10th 2021_
+_Stats as at 05:00, Wednesday, April 14th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.4.1 | 307     | 2437         | 2007 | 66 |
+| 2021.4.4 | 309     | 2494         | 2055 | 64 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 66
+Automation | 64
 Binary Sensor | 104
 Camera | 5
-Device Tracker | 62
+Device Tracker | 64
 Group | 9
 Input Boolean | 0
 Input Datetime | 0
@@ -94,10 +94,10 @@ Light | 4
 Media Player | 16
 Person | 1
 Scene | 1
-Script | 3
-Sensor | 2007
+Script | 4
+Sensor | 2055
 Sun | 1
-Switch | 84
+Switch | 89
 Weather | 3
 Zone | 3
 
@@ -146,7 +146,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
-| [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
@@ -383,6 +382,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [spacex](https://www.home-assistant.io/components/spacex) |
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |
+| [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
 | [stt](https://www.home-assistant.io/components/stt) |
@@ -392,6 +392,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
+| [switch.google_home](https://www.home-assistant.io/components/switch.google_home) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
@@ -408,8 +409,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [trace](https://www.home-assistant.io/components/trace) |
 | [transmission](https://www.home-assistant.io/components/transmission) |
 | [tts](https://www.home-assistant.io/components/tts) |
+| [tts.cloud](https://www.home-assistant.io/components/tts.cloud) |
+| [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
-| [updater](https://www.home-assistant.io/components/updater) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
@@ -428,8 +430,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>Expand Custom Components List</summary>
 
-- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/bom)
+- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
@@ -615,7 +617,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Addons
 
-Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ESPHome]()
+Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [Check Home Assistant configuration]()
+- [ESPHome]()
 - [Eufy Home Assistant MQTT Bridge]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()

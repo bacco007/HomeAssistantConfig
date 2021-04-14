@@ -4,10 +4,17 @@
             "view": {
                 "view-show-grid": true,
                 "view-snap-grid": true,
-                "view-grid-size": 20,
+                "view-grid-size": "20",
                 "view-node-status": true,
                 "view-node-show-label": true,
                 "view-show-tips": true
+            },
+            "keymap": {
+                "core:disable-selected-nodes": {
+                    "scope": "*",
+                    "key": "ctrl-q",
+                    "user": true
+                }
             }
         }
     }

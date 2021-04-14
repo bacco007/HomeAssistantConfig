@@ -2,7 +2,6 @@
 import asyncio
 import json
 import logging
-import os
 from datetime import datetime, timedelta
 from socket import error as socketError
 from time import sleep

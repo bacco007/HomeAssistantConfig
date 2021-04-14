@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - COVID-19 Social Distancing Sucks
-id: abe14297-c034-413a-8a16-5489c8f35f5a
+id: COVID_19_Social_Distancing_Sucks
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

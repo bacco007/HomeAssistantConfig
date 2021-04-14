@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - 102.7 KIIS-FM Los Angeles
-id: 752b3c01-836b-4772-9a66-73c0f31d6d01
+id: 102_7_KIIS_FM_Los_Angeles
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

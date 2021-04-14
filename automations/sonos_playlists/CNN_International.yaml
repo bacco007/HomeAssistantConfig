@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - CNN International
-id: a78a4c85-01f4-4e94-a1d9-6de5c3f95b00
+id: CNN_International
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

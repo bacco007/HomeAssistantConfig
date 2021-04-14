@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - ABC News
-id: b144dc72-379f-428a-86b5-b2da73631fae
+id: ABC_News
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

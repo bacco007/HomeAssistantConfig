@@ -4,7 +4,7 @@ from typing import List, Optional
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
-from .const import DOMAIN, SENSOR_TYPES
+from .const import CLIENT, DOMAIN, SENSOR_TYPES, UNSUB_DISPATCHERS
 from .foldingathomecontrol_client import FoldingAtHomeControlClient
 from .foldingathomecontrol_device import FoldingAtHomeControlDevice
 
@@ -16,7 +16,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     def async_add_sensors(new_slots: List[dict]) -> None:
         """add sensors callback."""
 
-        client = hass.data[DOMAIN][config_entry.entry_id]
+        client = hass.data[DOMAIN][config_entry.entry_id][CLIENT]
         dev: list = []
         for slot in new_slots:
             for sensor_type in SENSOR_TYPES:
@@ -32,13 +32,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         async_add_entities(dev, True)
 
-    async_dispatcher_connect(
+    unsub_dispatcher = async_dispatcher_connect(
         hass,
-        hass.data[DOMAIN][config_entry.entry_id].sensor_added_identifer,
+        hass.data[DOMAIN][config_entry.entry_id][CLIENT].sensor_added_identifer,
         async_add_sensors,
     )
-    if len(hass.data[DOMAIN][config_entry.entry_id].slot_data) > 0:
-        async_add_sensors(hass.data[DOMAIN][config_entry.entry_id].slot_data.keys())
+    hass.data[DOMAIN][config_entry.entry_id][UNSUB_DISPATCHERS].append(unsub_dispatcher)
+    if len(hass.data[DOMAIN][config_entry.entry_id][CLIENT].slot_data) > 0:
+        async_add_sensors(
+            hass.data[DOMAIN][config_entry.entry_id][CLIENT].slot_data.keys()
+        )
 
 
 class FoldingAtHomeControlSensor(FoldingAtHomeControlDevice):
@@ -82,8 +85,9 @@ class FoldingAtHomeControlSensor(FoldingAtHomeControlDevice):
 
     @property
     def state(self):
-        """Return the state of the resources."""
-        return self._client.slot_data[self._slot_id][self._sensor_type]
+        """Return the state of the resources if it has been received yet."""
+        if self._sensor_type in self._client.slot_data[self._slot_id]:
+            return self._client.slot_data[self._slot_id][self._sensor_type]
 
     @property
     def device_state_attributes(self):

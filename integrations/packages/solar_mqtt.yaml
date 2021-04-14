@@ -71,7 +71,7 @@ sensor:
     state_topic: "modbus4mqtt/solar_to_house"
     unit_of_measurement: "kW"
   - platform: mqtt
-    name: solar_solar_to_grid
+    name: solar_solar_to_grid_raw
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/solar_to_grid"
     unit_of_measurement: "kW"
@@ -109,8 +109,108 @@ sensor:
     name: solar_pv2_voltage
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/pv2_voltage"
+    unit_of_measurement: "W"
   - platform: mqtt
     name: solar_pv2_current
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/pv2_current"
     unit_of_measurement: "A"
+  - platform: template
+    sensors:
+      solar_daily_yield_clean:
+        friendly_name: Daily Yield
+        unit_of_measurement: "kWh"
+        icon_template: mdi:solar-power
+        value_template: "{{ ( states.sensor.solar_daily_yield.state | float ) / (10) }}"
+      solar_total_yield_clean:
+        friendly_name: Total Yield
+        unit_of_measurement: "MWh"
+        icon_template: mdi:solar-power
+        value_template: "{{ ( states.sensor.solar_total_yield.state | float ) / (1000) }}"
+
+      solar_dc_output_clean:
+        friendly_name: DC Output
+        unit_of_measurement: "kW"
+        icon_template: mdi:solar-power
+        value_template: "{{ ( states.sensor.solar_dc_output.state | float ) / (1000) }}"
+      solar_to_grid_clean:
+        friendly_name: Solar to Grid
+        unit_of_measurement: "kW"
+        icon_template: mdi:solar-power
+        value_template: >
+          {% set gen = states.sensor.solar_solar_generation | float %}
+          {% set hse = states.sensor.solar_solar_to_house | float %}
+          {% if hse >= gen %}
+            0.00
+          {% else %}
+          { { (gen - hse) | round(2) }}
+          {% endif %}
+      solar_house_from_grid_clean:
+        friendly_name: Solar Power from Grid
+        unit_of_measurement: "kW"
+        icon_template: mdi:solar-power
+        value_template: >
+          {% set gen = states.sensor.solar_solar_generation | float %}
+          {% set hse = states.sensor.solar_solar_to_house | float %}
+          {% if hse >= gen %}
+            {{ (gen - hse) | round(2) }}
+          {% else %}
+            0.00
+          {% endif %}
+      solar_daily_running_time_clean:
+        friendly_name: Daily Running Time
+        icon_template: mdi:solar-power
+        value_template: >
+          {% set time = states.sensor.solar_daily_running_time.state | float %}
+          {% set time = time * 60 %}
+          {% set minutes = ((time % 3600) / 60) | int %}
+          {% set hours = ((time % 86400) / 3600) | int %}
+          {% set days = (time / 86400) | int %}
+
+          {%- if time < 60 -%}
+            Less than a minute
+          {%- else -%}
+            {%- if days > 0 -%}
+              {%- if days == 1 -%}
+                1 day
+              {%- else -%}
+                {{ days }} days
+              {%- endif -%}
+            {%- endif -%}
+            {%- if hours > 0 -%}
+              {%- if days > 0 -%}
+                {{ ', ' }}
+              {%- endif -%}
+              {%- if hours == 1 -%}
+                1 hour
+              {%- else -%}
+                {{ hours }} hours
+              {%- endif -%}
+            {%- endif -%}
+            {%- if minutes > 0 -%}
+              {%- if days > 0 or hours > 0 -%}
+                {{ ', ' }}
+              {%- endif -%}
+              {%- if minutes == 1 -%}
+                1 minute
+              {%- else -%}
+                {{ minutes }} minutes
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
+  - platform: filter
+    name: solar_house_consumption_filtered_test1
+    entity_id: sensor.solar_solar_to_house
+    filters:
+      - filter: outlier
+        window_size: 4
+        radius: 4
+      - filter: lowpass
+        time_constant: 10
+        precision: 2
+  - platform: filter
+    name: solar_house_consumption_filtered_test2
+    entity_id: sensor.solar_solar_to_house
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"

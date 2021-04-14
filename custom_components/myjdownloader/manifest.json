@@ -2,8 +2,8 @@
   "domain": "myjdownloader",
   "name": "MyJDownloader",
   "documentation": "https://www.home-assistant.io/integrations/myjdownloader",
-  "requirements": ["myjdapi==1.0.5"],
+  "requirements": ["myjdapi==1.0.6"],
   "dependencies": [],
   "codeowners": ["doudz"],
-  "version": "0.1"
+  "version": 1.0
 }

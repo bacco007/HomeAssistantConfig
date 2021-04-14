@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Absolute Radio 20s
-id: dd61cc2f-728c-4f70-a894-50b149b28d3c
+id: Absolute_Radio_20s
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

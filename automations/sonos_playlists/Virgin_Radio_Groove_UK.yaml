@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Virgin Radio Groove UK
-id: 2a277ef1-7fb9-4892-b594-ae98f9b89eaf
+id: Virgin_Radio_Groove_UK
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

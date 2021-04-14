@@ -89,7 +89,7 @@ for fav in favorites["favorites"]:
     f.write("---")
     f.write("\n")
     f.write("alias: Sonos - Playlist - " + title + "\n")
-    f.write("id: " + str(uuid.uuid4()) + "\n")
+    f.write("id: " + titleClean + "\n")
     f.write("trigger:" + "\n")
     f.write("  - platform: state" + "\n")
     f.write("    entity_id: input_select.sonosplaylist" + "\n")

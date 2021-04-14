@@ -146,8 +146,7 @@ class FoldingAtHomeControlClient:
             if unit["slot"] not in slots_in_data_handled or unit["state"] == "Running":
                 #  For more than one unit for a slot take the one which is running
                 slots_in_data_handled.append(unit["slot"])
-                if self.slot_data.get(unit["slot"]) is None:
-                    self.slot_data[unit["slot"]] = {}
+                self.slot_data.setdefault(unit["id"], {})
                 self.slot_data[unit["slot"]]["Error"] = unit.get("error")
                 self.slot_data[unit["slot"]]["Project"] = unit.get("project")
                 percent_done = unit.get("percentdone")
@@ -212,6 +211,7 @@ class FoldingAtHomeControlClient:
     def update_slots_data(self, data: Any) -> None:
         """Store received slots data."""
         for slot in data:
+            self.slot_data.setdefault(slot["id"], {})
             self.slot_data[slot["id"]]["Status"] = slot.get("status")
             self.slot_data[slot["id"]]["Description"] = slot.get("description")
             self.slot_data[slot["id"]]["Reason"] = slot.get("reason")

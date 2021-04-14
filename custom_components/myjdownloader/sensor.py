@@ -87,7 +87,7 @@ class MyJDSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
-        return "byte"
+        return "MB/s"
 
     def update(self):
         """Get the latest data and updates the state."""
@@ -110,7 +110,7 @@ class MyJDSensor(Entity):
                 currentDownloads = [x for x in downloadList if not x.get('finished', False)]
 
             # get current speed information
-            value = device.downloadcontroller.get_speed_in_bytes()
+            value = round(device.downloadcontroller.get_speed_in_bytes() / 1_000_000, 2)
 
             # get if there are updates available
             updates = device.update.is_update_available()

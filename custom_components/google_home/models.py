@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 from enum import Enum
+import sys
 from typing import List, Optional
 
 from homeassistant.util.dt import as_local, utc_from_timestamp
@@ -37,6 +38,7 @@ class GoogleHomeDevice:
         self.ip_address = ip_address
         self.hardware = hardware
         self.available = True
+        self._do_not_disturb = False
         self._timers: List[GoogleHomeTimer] = []
         self._alarms: List[GoogleHomeAlarm] = []
 
@@ -58,7 +60,7 @@ class GoogleHomeDevice:
         self._timers = [
             GoogleHomeTimer(
                 timer_id=timer["id"],
-                fire_time=timer["fire_time"],
+                fire_time=timer.get("fire_time"),
                 duration=timer["original_duration"],
                 status=timer["status"],
                 label=timer.get("label"),
@@ -76,13 +78,24 @@ class GoogleHomeDevice:
         return alarms[0] if alarms else None
 
     def get_sorted_timers(self) -> List[GoogleHomeTimer]:
-        """Returns timers in a sorted order"""
-        return sorted(self._timers, key=lambda k: k.fire_time)
+        """Returns timers in a sorted order. If timer is paused, put it in the end."""
+        return sorted(
+            self._timers,
+            key=lambda k: k.fire_time if k.fire_time is not None else sys.maxsize,
+        )
 
     def get_next_timer(self) -> Optional[GoogleHomeTimer]:
         """Returns next alarm"""
         timers = self.get_sorted_timers()
         return timers[0] if timers else None
+
+    def set_do_not_disturb(self, status: bool) -> None:
+        """Set Do Not Disturb status."""
+        self._do_not_disturb = status
+
+    def get_do_not_disturb(self) -> bool:
+        """Return Do Not Disturb status."""
+        return self._do_not_disturb
 
 
 class GoogleHomeTimer:
@@ -91,27 +104,34 @@ class GoogleHomeTimer:
     def __init__(
         self,
         timer_id: str,
-        fire_time: int,
+        fire_time: Optional[int],
         duration: int,
         status: int,
         label: Optional[str],
     ) -> None:
         self.timer_id = timer_id
         self.duration = str(timedelta(seconds=convert_from_ms_to_s(duration)))
-        self.fire_time = convert_from_ms_to_s(fire_time)
         self.status = GoogleHomeTimerStatus(status)
         self.label = label
 
-        dt_utc = utc_from_timestamp(self.fire_time)
-        dt_local = as_local(dt_utc)
-        self.local_time = dt_local.strftime(DATETIME_STR_FORMAT)
-        self.local_time_iso = dt_local.isoformat()
+        if fire_time is None:
+            self.fire_time = None
+            self.local_time = None
+            self.local_time_iso = None
+        else:
+            self.fire_time = convert_from_ms_to_s(fire_time)
+            dt_utc = utc_from_timestamp(self.fire_time)
+            dt_local = as_local(dt_utc)
+            self.local_time = dt_local.strftime(DATETIME_STR_FORMAT)
+            self.local_time_iso = dt_local.isoformat()
 
     def as_dict(self) -> GoogleHomeTimerDict:
         """Return typed dict representation."""
         return {
             "timer_id": self.timer_id,
             "fire_time": self.fire_time,
+            "local_time": self.local_time,
+            "local_time_iso": self.local_time_iso,
             "duration": self.duration,
             "status": self.status.name.lower(),
             "label": self.label,
@@ -145,6 +165,8 @@ class GoogleHomeAlarm:
         return {
             "alarm_id": self.alarm_id,
             "fire_time": self.fire_time,
+            "local_time": self.local_time,
+            "local_time_iso": self.local_time_iso,
             "status": self.status.name.lower(),
             "label": self.label,
             "recurrence": self.recurrence,
@@ -158,6 +180,7 @@ class GoogleHomeAlarmStatus(Enum):
     SET = 1
     RINGING = 2
     SNOOZED = 3
+    INACTIVE = 4
 
 
 class GoogleHomeTimerStatus(Enum):
@@ -165,4 +188,5 @@ class GoogleHomeTimerStatus(Enum):
 
     NONE = 0
     SET = 1
+    PAUSED = 2
     RINGING = 3

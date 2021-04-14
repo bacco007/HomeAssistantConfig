@@ -8,12 +8,14 @@ from homeassistant.config_entries import SOURCE_IMPORT
 from homeassistant.core import Config, HomeAssistant
 
 from .const import (
+    CLIENT,
     CONF_ADDRESS,
     CONF_PASSWORD,
     CONF_PORT,
     CONF_READ_TIMEOUT,
     CONF_UPDATE_RATE,
     DOMAIN,
+    UNSUB_DISPATCHERS,
 )
 from .foldingathomecontrol_client import FoldingAtHomeControlClient
 from .services import async_setup_services, async_unload_services
@@ -48,7 +50,9 @@ async def async_setup(hass: HomeAssistant, config: Config) -> bool:
 async def async_setup_entry(hass, config_entry):
     """Set up PyFoldingAtHomeControl from config entry."""
     client = FoldingAtHomeControlClient(hass, config_entry)
-    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = client
+    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = {}
+    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id][CLIENT] = client
+    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id][UNSUB_DISPATCHERS] = []
     if not await client.async_setup():
         return False
 
@@ -61,7 +65,9 @@ async def async_setup_entry(hass, config_entry):
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
     await hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
-    await hass.data[DOMAIN][config_entry.entry_id].async_remove()
+    await hass.data[DOMAIN][config_entry.entry_id][CLIENT].async_remove()
+    for unsub_dispatcher in hass.data[DOMAIN][config_entry.entry_id][CLIENT]:
+        unsub_dispatcher()
     hass.data[DOMAIN].pop(config_entry.entry_id)
     # If there is no instance of this integration registered anymore
     if not hass.data[DOMAIN]:
@@ -71,9 +77,9 @@ async def async_unload_entry(hass, config_entry):
 
 async def async_options_updated(hass, config_entry):
     """Triggered by config entry options updates."""
-    await hass.data[DOMAIN][config_entry.entry_id].async_set_update_rate(
+    await hass.data[DOMAIN][config_entry.entry_id][CLIENT].async_set_update_rate(
         config_entry.options[CONF_UPDATE_RATE]
     )
-    hass.data[DOMAIN][config_entry.entry_id].set_read_timeout(
+    hass.data[DOMAIN][config_entry.entry_id][CLIENT].set_read_timeout(
         config_entry.options[CONF_READ_TIMEOUT]
     )

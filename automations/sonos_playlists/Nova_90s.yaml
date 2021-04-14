@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Nova 90s
-id: 12360691-06ab-459b-8cab-00994fe93a1a
+id: Nova_90s
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

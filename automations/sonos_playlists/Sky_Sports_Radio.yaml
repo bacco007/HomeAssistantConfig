@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Sky Sports Radio
-id: 94cb8040-3935-49bc-961f-2a457f8840bf
+id: Sky_Sports_Radio
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist

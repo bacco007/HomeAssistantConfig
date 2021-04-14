@@ -1,0 +1,11 @@
+{
+  "domain": "solcast",
+  "name": "Solcast PV forecast",
+  "version": "0.2.5",
+  "documentation": "https://github.com/dannerph/homeassistant-solcast",
+  "requirements": ["aiohttp>=3.6.2", "datetime>=4.3", "isodate>=0.6.0"],
+  "dependencies": [],
+  "codeowners": [
+    "@dannerph"
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - BBC World Service News
-id: 559d01da-e20c-42cb-a29b-b18eb94819e7
+id: BBC_World_Service_News
 trigger:
   - platform: state
     entity_id: input_select.sonosplaylist
