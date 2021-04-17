@@ -3,4 +3,4 @@ solcast:
   api_key: !secret solcast_apikey
   resource_id: !secret solcast_resourceid
   api_limit: 50
-  disable_ssl_check: False
+  disable_ssl_check: false

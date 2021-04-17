@@ -2,31 +2,31 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 271,
+        "state": 316,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 419,
+        "state": 398,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 5,
+        "state": 4,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 189,
+        "state": 179,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 36,
+        "state": 28,
         "attributes": {}
       }
     },
@@ -98,25 +98,25 @@
     },
     "cffaf137_0ce64": {
       "lastPayload": {
-        "state": 17.74,
+        "state": 43.08,
         "attributes": {
-          "period": "2021-04-17T16:25:00"
+          "period": "2021-04-17T18:45:00"
         }
       }
     },
     "91249862_5694a": {
       "lastPayload": {
-        "state": 8.63,
+        "state": 33.98,
         "attributes": {
-          "period": "2021-04-17T16:25:00"
+          "period": "2021-04-17T18:45:00"
         }
       }
     },
     "247b555a_f45482": {
       "lastPayload": {
-        "state": 6.07,
+        "state": 31.42,
         "attributes": {
-          "period": "2021-04-17T16:25:00"
+          "period": "2021-04-17T18:45:00"
         }
       }
     },
@@ -254,7 +254,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 140.113,
+        "state": 56.409,
         "attributes": {}
       }
     },
@@ -273,11 +273,11 @@
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 11.074,
+        "state": 11.073,
         "attributes": {
           "max": 23.11,
           "min": -1.28,
-          "avg": 11.074,
+          "avg": 11.073,
           "mindate": "26 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 26 Aug 2020 - Max: 02 Dec 2020"
@@ -322,11 +322,11 @@
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 24.139,
+        "state": 24.119,
         "attributes": {
           "max": 41.7,
           "min": 9.5,
-          "avg": 24.139,
+          "avg": 24.119,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -335,11 +335,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 26.694,
+        "state": 26.662,
         "attributes": {
           "max": 43.78,
           "min": 8.4,
-          "avg": 26.694,
+          "avg": 26.662,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -360,7 +360,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "4.9",
+        "state": "8.5",
         "attributes": {
           "units": "GB"
         }
@@ -368,7 +368,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "5.2",
+        "state": "8.2",
         "attributes": {
           "units": "GB"
         }
@@ -380,13 +380,13 @@
         "attributes": {
           "model": "UDM",
           "version": "1.9.3.3438",
-          "data": "203.1 GB",
+          "data": "214.1 GB",
           "serial": "74ACB9D220ED",
           "sitename": "default",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "6d 16hr 18min",
+          "uptime": "6d 18hr 39min",
           "lastseen": "a few seconds ago"
         }
       }
@@ -538,7 +538,7 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "15.60",
+        "state": "14.60",
         "attributes": {}
       }
     },
@@ -554,7 +554,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:23 17 Apr 2021",
+          "time": "13:38 17 Apr 2021",
           "sort": 9
         }
       }
@@ -565,7 +565,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:23 17 Apr 2021",
+          "time": "13:38 17 Apr 2021",
           "sort": 8
         }
       }
@@ -598,84 +598,84 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:38 17 Apr 2021",
+          "time": "16:26 17 Apr 2021",
           "sort": 9
         }
       }
     },
     "897ee7be_103218": {
       "lastPayload": {
-        "state": 2.3,
+        "state": 2,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:38 17 Apr 2021",
+          "time": "16:26 17 Apr 2021",
           "sort": 8
         }
       }
     },
     "ec302af1_dfe74": {
       "lastPayload": {
-        "state": 0.8,
+        "state": 0.9,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:38 17 Apr 2021",
+          "time": "13:57 17 Apr 2021",
           "sort": 3
         }
       }
     },
     "f6e1ae0c_c581a8": {
       "lastPayload": {
-        "state": 2.2,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:38 17 Apr 2021",
+          "time": "16:26 17 Apr 2021",
           "sort": 6
         }
       }
     },
     "5c0e3d5e_5133cc": {
       "lastPayload": {
-        "state": 3.6,
+        "state": 1.5,
         "attributes": {
           "aep": 0,
-          "ey": 6,
-          "time": "13:38 17 Apr 2021",
+          "ey": 0,
+          "time": "16:26 17 Apr 2021",
           "sort": 7
         }
       }
     },
     "e9019b55_3f106": {
       "lastPayload": {
-        "state": 1,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:38 17 Apr 2021",
+          "time": "16:26 17 Apr 2021",
           "sort": 5
         }
       }
     },
     "2e04cb49_703f74": {
       "lastPayload": {
-        "state": 1.7,
+        "state": 1.8,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:32 17 Apr 2021",
+          "time": "13:47 17 Apr 2021",
           "sort": 2
         }
       }
     },
     "f77adadb_9106f8": {
       "lastPayload": {
-        "state": 3.4,
+        "state": 3.6,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:27 17 Apr 2021",
+          "time": "13:42 17 Apr 2021",
           "sort": 1
         }
       }
@@ -691,7 +691,7 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 13.61,
+        "state": 12.78,
         "attributes": {}
       }
     },
@@ -708,11 +708,11 @@
     },
     "57f2b94d_036d48": {
       "lastPayload": {
-        "state": 1,
+        "state": 0.6,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "13:38 17 Apr 2021",
+          "time": "14:07 17 Apr 2021",
           "sort": 4
         }
       }

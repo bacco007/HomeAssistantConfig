@@ -11,4 +11,4 @@ sensor:
     resource: https://www.whoismyisp.org
     select: ".isp"
     name: "Internet Provider"
-    scan_interval: 60 #1 mins
+    scan_interval: 60
