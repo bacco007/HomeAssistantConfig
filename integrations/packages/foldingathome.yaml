@@ -48,15 +48,15 @@ sensor:
     timeout: 60
     scan_interval: 600
     force_update: true
-    resource: https://stats.foldingathome.org/api/donor/bacco007
+    resource: https://api2.foldingathome.org/user/bacco007
     name: Folding at Home Points
-    value_template: "{{ value_json.credit }}"
+    value_template: "{{ value_json.score }}"
 
   - platform: rest
     timeout: 60
     scan_interval: 600
     force_update: true
-    resource: https://stats.foldingathome.org/api/donor/bacco007
+    resource: https://api2.foldingathome.org/user/bacco007
     name: Folding at Home Work Units
     value_template: "{{ value_json.wus }}"
 
@@ -64,14 +64,14 @@ sensor:
     timeout: 60
     scan_interval: 600
     force_update: true
-    resource: https://stats.foldingathome.org/api/team/247478
+    resource: https://api2.foldingathome.org/team/247478
     name: Folding at Home Team Points
-    value_template: "{{ value_json.credit }}"
+    value_template: "{{ value_json.score }}"
 
   - platform: rest
     timeout: 60
     scan_interval: 600
     force_update: true
-    resource: https://stats.foldingathome.org/api/team/247478
+    resource: https://api2.foldingathome.org/team/247478
     name: Folding at Home Team Work Units
     value_template: "{{ value_json.wus }}"

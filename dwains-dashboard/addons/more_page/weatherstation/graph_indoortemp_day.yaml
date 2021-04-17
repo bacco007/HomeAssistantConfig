@@ -40,7 +40,6 @@ card:
     legend: { show: false }
     fill:
       {
-        type: ["solid", "solid"],
         gradient:
           {
             shadeIntensity: 1,

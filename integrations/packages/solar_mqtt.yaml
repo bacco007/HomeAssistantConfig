@@ -109,12 +109,17 @@ sensor:
     name: solar_pv2_voltage
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/pv2_voltage"
-    unit_of_measurement: "W"
+    unit_of_measurement: "V"
   - platform: mqtt
     name: solar_pv2_current
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/pv2_current"
     unit_of_measurement: "A"
+  - platform: mqtt
+    name: solar_grid_voltage
+    icon: mdi:solar-power
+    state_topic: "modbus4mqtt/grid_voltage"
+    unit_of_measurement: "V"
   - platform: template
     sensors:
       solar_daily_yield_clean:
@@ -138,22 +143,30 @@ sensor:
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
         value_template: >
-          {% set gen = states.sensor.solar_solar_generation | float %}
-          {% set hse = states.sensor.solar_solar_to_house | float %}
+          {% set gen = states.sensor.solar_solar_generation.state | float %}
+          {% set hse = states.sensor.solar_solar_to_house.state | float %}
           {% if hse >= gen %}
             0.00
           {% else %}
-          { { (gen - hse) | round(2) }}
+            {{ (gen - hse) | round(2) }}
           {% endif %}
+      solar_grid_usage:
+        friendly_name: Grid Usage
+        unit_of_measurement: "kW"
+        icon_template: mdi:solar-power
+        value_template: >
+          {% set gen = states.sensor.solar_solar_generation.state | float %}
+          {% set hse = states.sensor.solar_solar_to_house.state | float %}
+          {{ (gen - hse) | round(2) }}
       solar_house_from_grid_clean:
         friendly_name: Solar Power from Grid
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
         value_template: >
-          {% set gen = states.sensor.solar_solar_generation | float %}
-          {% set hse = states.sensor.solar_solar_to_house | float %}
+          {% set gen = states.sensor.solar_solar_generation.state | float %}
+          {% set hse = states.sensor.solar_solar_to_house.state | float %}
           {% if hse >= gen %}
-            {{ (gen - hse) | round(2) }}
+            {{ (hse - gen) | round(2) }}
           {% else %}
             0.00
           {% endif %}
@@ -198,13 +211,52 @@ sensor:
               {%- endif -%}
             {%- endif -%}
           {%- endif -%}
+
+      solar_total_running_time_clean:
+        friendly_name: Total Running Time
+        icon_template: mdi:solar-power
+        value_template: >
+          {% set time = states.sensor.solar_total_running_time.state | float %}
+          {% set time = time * 60 %}
+          {% set minutes = ((time % 3600) / 60) | int %}
+          {% set hours = ((time % 86400) / 3600) | int %}
+          {% set days = (time / 86400) | int %}
+
+          {%- if time < 60 -%}
+            Less than a minute
+          {%- else -%}
+            {%- if days > 0 -%}
+              {%- if days == 1 -%}
+                1 day
+              {%- else -%}
+                {{ days }} days
+              {%- endif -%}
+            {%- endif -%}
+            {%- if hours > 0 -%}
+              {%- if days > 0 -%}
+                {{ ', ' }}
+              {%- endif -%}
+              {%- if hours == 1 -%}
+                1 hour
+              {%- else -%}
+                {{ hours }} hours
+              {%- endif -%}
+            {%- endif -%}
+            {%- if minutes > 0 -%}
+              {%- if days > 0 or hours > 0 -%}
+                {{ ', ' }}
+              {%- endif -%}
+              {%- if minutes == 1 -%}
+                1 minute
+              {%- else -%}
+                {{ minutes }} minutes
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
   - platform: filter
     name: solar_house_consumption_filtered_test1
     entity_id: sensor.solar_solar_to_house
     filters:
-      - filter: outlier
-        window_size: 4
-        radius: 4
       - filter: lowpass
         time_constant: 10
         precision: 2
@@ -213,4 +265,4 @@ sensor:
     entity_id: sensor.solar_solar_to_house
     filters:
       - filter: time_throttle
-        window_size: "00:01"
+        window_size: "00:05"

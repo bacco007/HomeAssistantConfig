@@ -13,6 +13,7 @@ more_page:
       path: "dwains-dashboard/addons/more_page/appletv/page.yaml"
     - name: Coronavirus
       icon: custom:corona-virus
+      main_menu: "true"
       path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
     - name: Downloads
       icon: mdi:download-network
@@ -23,6 +24,9 @@ more_page:
     - name: Folding@Home
       icon: "mdi:state-machine"
       path: "dwains-dashboard/addons/more_page/foldingathome/page.yaml"
+    - name: Github
+      icon: mdi:github
+      path: "dwains-dashboard/addons/more_page/github/page.yaml"
     - name: Google Home
       icon: "mdi:google-home"
       path: "dwains-dashboard/addons/more_page/googlehome/page.yaml"
@@ -97,9 +101,11 @@ more_page:
       path: "dwains-dashboard/addons/more_page/pi-hole/page.yaml"
     - name: Rainfall
       icon: mdi:water
+      main_menu: "true"
       path: "dwains-dashboard/addons/more_page/rainfallintensity/page.yaml"
     - name: Solar
       icon: mdi:solar-power
+      main_menu: "true"
       path: "dwains-dashboard/addons/more_page/solar/page.yaml"
     - name: Sonos
       icon: si:sonos
@@ -165,7 +171,7 @@ more_page:
       icon: mdi:weather-partly-rainy
       path: "dwains-dashboard/addons/more_page/weather/page.yaml"
     - name: Weather Station
-      main_menu: true
+      main_menu: "true"
       icon: mdi:gauge
       path: "dwains-dashboard/addons/more_page/weatherstation/page.yaml"
     - name: Xbox

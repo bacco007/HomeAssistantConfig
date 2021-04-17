@@ -1,0 +1,107 @@
+---
+type: custom:config-template-card
+entities:
+  - sensor.sunrise
+  - sensor.sunset
+  - sensor.solar_daily_yield_clean
+  - sensor.solcast_forecast
+card:
+  type: custom:apexcharts-card
+  graph_span: 24h
+  header:
+    show: true
+    show_states: true
+    colorize_states: true
+    title: "Solar Yield"
+  span:
+    start: day
+
+  all_series_config:
+    stroke_width: 2
+    type: area
+    extend_to_end: false
+  apex_config:
+    annotations:
+      yaxis:
+        - y: "${states['sensor.solcast_forecast'].state}"
+          label:
+            text: Pred
+            borderWidth: 0
+            style:
+              background: "#0000"
+      xaxis:
+        - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+          label:
+            text: ☼
+            borderWidth: 0
+            style:
+              background: "#0000"
+        - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+          label:
+            text: ☾
+            borderWidth: 0
+            style:
+              background: "#0000"
+    tooltip:
+      x:
+        format: "ddd dd MMM - HH:mm"
+    legend:
+      show: false
+    grid:
+      borderColor: "#7B7B7B"
+    chart:
+      height: 450
+      foreColor: "#7B7B7B"
+      zoom:
+        type: x
+        enabled: true
+        autoScaleYaxis: true
+      toolbar:
+        show: true
+        autoSelected: zoom
+        tools:
+          zoom: true
+          zoomin: false
+          zoomout: false
+          pan: false
+          reset: true
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
+    yaxis:
+      - seriesName: "kW"
+        decimalsInFloat: 0
+        title:
+          text: "kW"
+      # - seriesName: Night time
+      #   opposite: true
+      #   show: false
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5] }
+    fill:
+      {
+        type: ["gradient", "gradient", "solid"],
+        gradient:
+          {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [20, 100, 100, 100],
+          },
+      }
+  series:
+    - entity: sensor.solar_daily_yield_clean
+      name: Yield
+      curve: smooth
+      group_by:
+        func: last
+        duration: 15min
+    - entity: sensor.solar_daily_yield_clean
+      name: Yield
+      curve: smooth
+      offset: -1d
+      group_by:
+        func: last
+        duration: 15min

@@ -29,7 +29,6 @@ sensor:
           {% else  %}
             https://www.mlbstatic.com/mlb.com/builds/site-core/f1bd3a33969d8febdbcb23b1161db091cf3ae918_1561045539/images/logos/team-primary-on-light/{{ states.sensor.mlb_newyork_game_status.attributes.dates[0]["games"][0]["teams"]["away"]["team"]["id"] | int }}.svg
           {% endif %}
-        entity_id: sensor.mlb_newyork_game_status
       mlb_newyork_home_score:
         value_template: >-
           {% if states('sensor.mlb_newyork_game_status') == 'unknown' %}
@@ -49,4 +48,3 @@ sensor:
           {% else  %}
             https://www.mlbstatic.com/mlb.com/builds/site-core/f1bd3a33969d8febdbcb23b1161db091cf3ae918_1561045539/images/logos/team-primary-on-light/{{ states.sensor.mlb_newyork_game_status.attributes.dates[0]["games"][0]["teams"]["home"]["team"]["id"] | int }}.svg
           {% endif %}
-        entity_id: sensor.mlb_newyork_game_status
