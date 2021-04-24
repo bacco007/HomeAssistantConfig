@@ -1,16 +1,15 @@
-import logging
-import yaml
-import os
-import logging
-import json
 import io
+import json
+import logging
+import os
+import shutil
 import time
 from collections import OrderedDict
-import jinja2
-import shutil
 
-from homeassistant.util.yaml import Secrets, loader
+import jinja2
+import yaml
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.util.yaml import Secrets, loader
 
 from .const import DOMAIN, VERSION
 
@@ -116,9 +115,9 @@ def process_yaml(hass, config_entry):
     #_LOGGER.warning('Start of function to process all yaml files!')
 
     #Check for HKI intallation
-    if os.path.exists(hass.config.path("homekit-infused/user/config")):
+    if os.path.exists(hass.config.path("hki-user/config")):
         _LOGGER.warning("HKI Installed!")
-        for fname in loader._find_files(hass.config.path("homekit-infused/user/config"), "*.yaml"):
+        for fname in loader._find_files(hass.config.path("hki-user/config"), "*.yaml"):
             loaded_yaml = load_yamll(fname)
             if isinstance(loaded_yaml, dict):
                 llgen_config.update(loaded_yaml)

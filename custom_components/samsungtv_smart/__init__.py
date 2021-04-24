@@ -309,20 +309,15 @@ async def async_setup(hass: HomeAssistantType, config: ConfigEntry):
     """Set up the Samsung TV integration."""
     if DOMAIN in config:
         hass.data[DOMAIN] = {}
+        entries_list = hass.config_entries.async_entries(DOMAIN)
         for entry_config in config[DOMAIN]:
 
             # get ip address
             ip_address = entry_config[CONF_HOST]
 
             # check if already configured
-            entry_found = False
-            entries_list = hass.config_entries.async_entries(DOMAIN)
-            for entry in entries_list:
-                if entry.unique_id == ip_address:
-                    entry_found = True
-                    break
-
-            if not entry_found:
+            valid_entries = [entry for entry in entries_list if entry.unique_id == ip_address]
+            if not valid_entries:
                 _LOGGER.warning(
                     "Found yaml configuration for not configured device %s. Please use UI to configure",
                     ip_address

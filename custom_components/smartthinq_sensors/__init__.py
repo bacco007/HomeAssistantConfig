@@ -6,8 +6,9 @@ Support for LG SmartThinQ device.
 import asyncio
 import logging
 import time
-from datetime import timedelta
+from datetime import datetime, timedelta
 from requests import exceptions as reqExc
+from threading import Lock
 from typing import Dict
 
 from .wideq.core import Client
@@ -55,9 +56,8 @@ ATTR_MODEL = "model"
 ATTR_MAC_ADDRESS = "mac_address"
 
 MAX_RETRIES = 3
-MAX_CONN_RETRIES = 2
-MAX_LOOP_WARN = 3
 MAX_UPDATE_FAIL_ALLOWED = 10
+MIN_TIME_BETWEEN_CLI_REFRESH = 10
 # not stress to match cloud if multiple call
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
 
@@ -122,16 +122,12 @@ class LGEAuthentication:
 
     def createClientFromToken(self, token, oauth_url=None, oauth_user_num=None):
 
-        client = None
-        try:
-            if self._use_api_v2:
-                client = ClientV2.from_token(
-                    oauth_url, token, oauth_user_num, self._region, self._language
-                )
-            else:
-                client = Client.from_token(token, self._region, self._language)
-        except Exception:
-            _LOGGER.exception("Error connecting to ThinQ")
+        if self._use_api_v2:
+            client = ClientV2.from_token(
+                oauth_url, token, oauth_user_num, self._region, self._language
+            )
+        else:
+            client = Client.from_token(token, self._region, self._language)
 
         return client
 
@@ -174,7 +170,7 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
 
     _LOGGER.info(STARTUP)
     _LOGGER.info(
-        "Initializing SmartThinQ platform with region: %s - language: %s",
+        "Initializing ThinQ platform with region: %s - language: %s",
         region,
         language,
     )
@@ -185,24 +181,31 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
     # raising ConfigEntryNotReady platform setup will be retried
     lgeauth = LGEAuthentication(region, language, use_api_v2)
     lgeauth.initHttpAdapter(use_tls_v1, exclude_dh)
-    client = await hass.async_add_executor_job(
-        lgeauth.createClientFromToken, refresh_token, oauth_url, oauth_user_num
-    )
-    if not client:
-        _LOGGER.warning("Connection not available. SmartThinQ platform not ready")
+    try:
+        client = await hass.async_add_executor_job(
+            lgeauth.createClientFromToken, refresh_token, oauth_url, oauth_user_num
+        )
+    except InvalidCredentialError:
+        _LOGGER.error("Invalid ThinQ credential error. Component setup aborted")
+        return False
+
+    except Exception:
+        _LOGGER.warning(
+            "Connection not available. ThinQ platform not ready", exc_info=True
+        )
         raise ConfigEntryNotReady()
 
     if not client.hasdevices:
-        _LOGGER.error("No SmartThinQ devices found. Component setup aborted")
+        _LOGGER.error("No ThinQ devices found. Component setup aborted")
         return False
 
-    _LOGGER.info("SmartThinQ client connected")
+    _LOGGER.info("ThinQ client connected")
 
     try:
         lge_devices = await lge_devices_setup(hass, client)
     except Exception:
         _LOGGER.warning(
-            "Connection not available. SmartThinQ platform not ready", exc_info=True,
+            "Connection not available. ThinQ platform not ready", exc_info=True
         )
         raise ConfigEntryNotReady()
 
@@ -241,6 +244,11 @@ async def async_unload_entry(hass, config_entry):
 
 
 class LGEDevice:
+
+    _client_lock = Lock()
+    _client_connected = True
+    _last_client_refresh = datetime.min
+
     def __init__(self, device, hass):
         """initialize a LGE Device."""
 
@@ -381,6 +389,22 @@ class LGEDevice:
         else:
             _LOGGER.debug(msg, *args, **kwargs)
 
+    def _refresh_client(self, refresh_gateway=False):
+        """Refresh the devices shared client"""
+        with LGEDevice._client_lock:
+            call_time = datetime.now()
+            difference = (call_time - LGEDevice._last_client_refresh).total_seconds()
+            if difference <= MIN_TIME_BETWEEN_CLI_REFRESH:
+                return LGEDevice._client_connected
+
+            LGEDevice._last_client_refresh = datetime.now()
+            LGEDevice._client_connected = False
+            _LOGGER.debug("ThinQ session not connected. Trying to reconnect....")
+            self._device.client.refresh(refresh_gateway)
+            _LOGGER.debug("ThinQ session reconnected")
+            LGEDevice._client_connected = True
+            return True
+
     def _restart_monitor(self):
         """Restart the device monitor"""
         if not (self._disconnected or self._not_logged):
@@ -393,7 +417,9 @@ class LGEDevice:
 
         try:
             if self._not_logged:
-                self._device.client.refresh(refresh_gateway)
+                if not self._refresh_client(refresh_gateway):
+                    return
+
                 self._not_logged = False
                 self._disconnected = True
 
@@ -401,15 +427,17 @@ class LGEDevice:
             self._disconnected = False
 
         except NotConnectedError:
-            self._log_error("Device not connected. Status not available")
+            self._log_error("Device %s not connected. Status not available", self._name)
             self._disconnected = True
 
         except NotLoggedInError:
-            self._log_error("ThinQ Session expired. Refreshing")
+            _LOGGER.warning("Connection to ThinQ not available, will be retried")
             self._not_logged = True
 
         except InvalidCredentialError:
-            self._log_error("Connection to ThinQ failed. Check your login credential")
+            _LOGGER.error(
+                "Invalid credential connecting to ThinQ. Reconfigure integration with valid login credential"
+            )
             self._not_logged = True
 
         except (reqExc.ConnectionError, reqExc.ConnectTimeout, reqExc.ReadTimeout):
@@ -424,14 +452,13 @@ class LGEDevice:
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def _device_update(self):
         """Update device state"""
-        _LOGGER.debug("Updating ThinQ device %s", self.name)
+        _LOGGER.debug("Updating ThinQ device %s", self._name)
 
         if self._disconnected or self._not_logged:
             if self._update_fail_count < MAX_UPDATE_FAIL_ALLOWED:
                 self._update_fail_count += 1
             self._set_available()
 
-        conn_retry = 0
         for iteration in range(MAX_RETRIES):
             _LOGGER.debug("Polling...")
 
@@ -443,28 +470,27 @@ class LGEDevice:
             self._restart_monitor()
 
             if self._disconnected or self._not_logged:
-                conn_retry += 1
                 if self._update_fail_count >= MAX_UPDATE_FAIL_ALLOWED:
 
                     if self._critical_status():
                         _LOGGER.error(
                             "Connection to ThinQ for device %s is not available. Connection will be retried",
-                            self.name,
+                            self._name,
                         )
                         if self._not_logged_count >= 60:
                             self._refresh_gateway = True
                         self._set_available()
 
                     if self._state.is_on:
-                        _LOGGER.debug("Connection not available. Device status reset")
+                        _LOGGER.warning(
+                            "Status for device %s was reset because not connected",
+                            self._name
+                        )
                         self._state = self._device.reset_status()
                         return
 
-                if conn_retry >= MAX_CONN_RETRIES or self._disconnected:
-                    _LOGGER.debug("Connection not available. Status update failed")
-                    return
-
-                continue
+                _LOGGER.debug("Connection not available. Status update failed")
+                return
 
             try:
                 state = self._device.poll()
@@ -478,8 +504,8 @@ class LGEDevice:
                 return
 
             except InvalidCredentialError:
-                self._log_error(
-                    "Connection to ThinQ failed. Check your login credential"
+                _LOGGER.error(
+                    "Invalid credential connecting to ThinQ. Reconfigure integration with valid login credential"
                 )
                 self._not_logged = True
                 return

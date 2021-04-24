@@ -32,10 +32,11 @@ from .const import (
     DATA_SHORT_NAME,
     DEFAULT_CURRENCY,
     DEFAULT_ICON,
+    DEFAULT_NUMERIC_DATA_GROUP,
     DOMAIN,
     HASS_DATA_CONFIG,
     HASS_DATA_COORDINATOR,
-    NUMERIC_DATA_KEYS,
+    NUMERIC_DATA_GROUPS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,14 +50,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     domain_config = hass.data[DOMAIN][HASS_DATA_CONFIG]
     symbols = domain_config[CONF_SYMBOLS]
 
-    options = {
-        CONF_TARGET_CURRENCY: domain_config.get(CONF_TARGET_CURRENCY),
-        CONF_DECIMAL_PLACES: domain_config[CONF_DECIMAL_PLACES],
-        CONF_SHOW_TRENDING_ICON: domain_config[CONF_SHOW_TRENDING_ICON],
-    }
-
     sensors = [
-        YahooFinanceSensor(hass, coordinator, symbol, options) for symbol in symbols
+        YahooFinanceSensor(hass, coordinator, symbol, domain_config)
+        for symbol in symbols
     ]
 
     async_add_entities(sensors, update_before_add=False)
@@ -73,19 +69,18 @@ class YahooFinanceSensor(Entity):
     _target_currency = None
     _original_currency = None
 
-    def __init__(self, hass, coordinator, symbol_definition, options) -> None:
+    def __init__(self, hass, coordinator, symbol_definition, domain_config) -> None:
         """Initialize the sensor."""
         symbol = symbol_definition.get("symbol")
         self._hass = hass
         self._symbol = symbol
         self._coordinator = coordinator
-        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, symbol, hass=hass)
-        self._show_trending_icon = options[CONF_SHOW_TRENDING_ICON]
-        self._decimal_places = options[CONF_DECIMAL_PLACES]
+        self._show_trending_icon = domain_config[CONF_SHOW_TRENDING_ICON]
+        self._decimal_places = domain_config[CONF_DECIMAL_PLACES]
         self._previous_close = None
-
-        # if not symbol.endswith("=X"):
         self._target_currency = symbol_definition.get(CONF_TARGET_CURRENCY)
+
+        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, symbol, hass=hass)
 
         self._attributes = {
             ATTR_ATTRIBUTION: ATTRIBUTION,
@@ -96,10 +91,17 @@ class YahooFinanceSensor(Entity):
             ATTR_MARKET_STATE: None,
         }
 
-        # Initialize all numeric attributes to None
-        for value in NUMERIC_DATA_KEYS:
-            key = value[0]
-            self._attributes[key] = None
+        # List of groups to include as attributes
+        self._numeric_data_to_include = []
+
+        # Initialize all numeric attributes which we want to include to None
+        for group in NUMERIC_DATA_GROUPS:
+            if group == DEFAULT_NUMERIC_DATA_GROUP or domain_config.get(group, True):
+                for value in NUMERIC_DATA_GROUPS[group]:
+                    self._numeric_data_to_include.append(value)
+
+                    key = value[0]
+                    self._attributes[key] = None
 
         # Delay initial data population to `available` which is called from `_async_write_ha_state`
         _LOGGER.debug(
@@ -221,7 +223,7 @@ class YahooFinanceSensor(Entity):
             symbol_data[DATA_REGULAR_MARKET_PREVIOUS_CLOSE], conversion
         )
 
-        for value in NUMERIC_DATA_KEYS:
+        for value in self._numeric_data_to_include:
             key = value[0]
             attr_value = symbol_data[key]
 

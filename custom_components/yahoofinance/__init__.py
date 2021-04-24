@@ -22,16 +22,24 @@ import voluptuous as vol
 from .const import (
     BASE,
     CONF_DECIMAL_PLACES,
+    CONF_INCLUDE_FIFTY_DAY_VALUES,
+    CONF_INCLUDE_POST_VALUES,
+    CONF_INCLUDE_PRE_VALUES,
+    CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
     DATA_REGULAR_MARKET_PRICE,
+    DEFAULT_CONF_DECIMAL_PLACES,
+    DEFAULT_CONF_INCLUDE_FIFTY_DAY_VALUES,
+    DEFAULT_CONF_INCLUDE_POST_VALUES,
+    DEFAULT_CONF_INCLUDE_PRE_VALUES,
+    DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
     DEFAULT_CONF_SHOW_TRENDING_ICON,
-    DEFAULT_DECIMAL_PLACES,
     DOMAIN,
     HASS_DATA_CONFIG,
     HASS_DATA_COORDINATOR,
-    NUMERIC_DATA_KEYS,
+    NUMERIC_DATA_GROUPS,
     SERVICE_REFRESH,
     STRING_DATA_KEYS,
 )
@@ -71,8 +79,22 @@ CONFIG_SCHEMA = vol.Schema(
                     CONF_SHOW_TRENDING_ICON, default=DEFAULT_CONF_SHOW_TRENDING_ICON
                 ): cv.boolean,
                 vol.Optional(
-                    CONF_DECIMAL_PLACES, default=DEFAULT_DECIMAL_PLACES
+                    CONF_DECIMAL_PLACES, default=DEFAULT_CONF_DECIMAL_PLACES
                 ): vol.Coerce(int),
+                vol.Optional(
+                    CONF_INCLUDE_FIFTY_DAY_VALUES,
+                    default=DEFAULT_CONF_INCLUDE_FIFTY_DAY_VALUES,
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_INCLUDE_POST_VALUES, default=DEFAULT_CONF_INCLUDE_POST_VALUES
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_INCLUDE_PRE_VALUES, default=DEFAULT_CONF_INCLUDE_PRE_VALUES
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+                    default=DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+                ): cv.boolean,
             }
         )
     },
@@ -173,9 +195,10 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         data = {}
 
         # get() ensures that we have an entry in symbol_data.
-        for value in NUMERIC_DATA_KEYS:
-            key = value[0]
-            data[key] = symbol_data.get(key, 0)
+        for group in NUMERIC_DATA_GROUPS:
+            for value in NUMERIC_DATA_GROUPS[group]:
+                key = value[0]
+                data[key] = symbol_data.get(key, 0)
 
         for key in STRING_DATA_KEYS:
             data[key] = symbol_data.get(key)
@@ -226,7 +249,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         if update_interval is not None:
             self._unsub_refresh = async_track_point_in_utc_time(
                 self.hass,
-                self._job,
+                self._handle_refresh_interval,
                 utcnow().replace(microsecond=0) + update_interval,
             )
 

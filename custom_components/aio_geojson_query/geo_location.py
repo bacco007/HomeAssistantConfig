@@ -3,26 +3,22 @@ from datetime import timedelta
 from typing import Optional
 
 import voluptuous as vol
-from aio_geojson_query import GeoJsonQueryFeedManager
 from aiohttp import ClientSession
-from homeassistant.components.geo_location import PLATFORM_SCHEMA, GeolocationEvent
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LOCATION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    CONF_SCAN_INTERVAL,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    LENGTH_KILOMETERS,
-)
+from homeassistant.components.geo_location import (PLATFORM_SCHEMA,
+                                                   GeolocationEvent)
+from homeassistant.const import (ATTR_ATTRIBUTION, ATTR_LOCATION,
+                                 CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS,
+                                 CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START,
+                                 EVENT_HOMEASSISTANT_STOP, LENGTH_KILOMETERS)
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, async_dispatcher_send
+from homeassistant.helpers.dispatcher import (async_dispatcher_connect,
+                                              async_dispatcher_send)
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType
+
+from aio_geojson_query import GeoJsonQueryFeedManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -54,7 +50,7 @@ CONF_XTRAFIELDS = "extra_fields"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_SOURCE, default="aio_geo_query"): ycv.string,
+        vol.Optional(CONF_SOURCE, default="aio_geo_query"): cv.string,
         vol.Optional(CONF_ENDPOINT): cv.string,
         vol.Optional(CONF_LATITUDE): cv.latitude,
         vol.Optional(CONF_LONGITUDE): cv.longitude,
