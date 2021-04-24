@@ -183,6 +183,9 @@ more_page:
     - name: Testing
       icon: mdi:widgets
       path: "dwains-dashboard/addons/more_page/testing.yaml"
+    - name: UptimeRobot
+      icon: "mdi:robot-industrial"
+      path: "dwains-dashboard/addons/more_page/uptimerobot/page.yaml"
     - name: Zigbee
       icon: mdi:zigbee
       path: "dwains-dashboard/addons/more_page/zigbee/page.yaml"

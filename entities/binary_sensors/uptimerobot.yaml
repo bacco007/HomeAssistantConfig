@@ -1,0 +1,4 @@
+---
+# https://www.home-assistant.io/integrations/uptimerobot/
+platform: uptimerobot
+api_key: !secret uptimerobot_apikey
