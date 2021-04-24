@@ -170,6 +170,9 @@ more_page:
     - name: Weather
       icon: mdi:weather-partly-rainy
       path: "dwains-dashboard/addons/more_page/weather/page.yaml"
+    - name: Weather Data Archive
+      icon: mdi:weather-partly-rainy
+      path: "dwains-dashboard/addons/more_page/weather_archive/page.yaml"
     - name: Weather Station
       main_menu: "true"
       icon: mdi:gauge

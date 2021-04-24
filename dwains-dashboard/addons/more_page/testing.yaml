@@ -81,6 +81,7 @@
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.templow];
             });
+
     - type: "custom:config-template-card"
       entities:
         - sensor.sunrise
@@ -99,34 +100,22 @@
         graph_span: 24h
         all_series_config:
           stroke_width: 2
-          type: area
+          type: line
           extend_to_end: false
           float_precision: 0
         color_list:
-          - yellow
-          - yellow
+          - orange
           - green
-          - grey
         series:
           - entity: sensor.weather_outside_uvindex
             name: UV Index
             group_by:
-              func: last
+              func: avg
               duration: 10min
-          - entity: sensor.weather_outside_uvindex
-            name: UV Index
-            offset: "-24h"
-            type: line
-            opacity: 0.2
-            group_by:
-              func: last
-              duration: 10min
-            show:
-              in_header: false
           - entity: sensor.weather_outside_radiation
             name: Radiation
             group_by:
-              func: last
+              func: avg
               duration: 10min
         y_axis_precision: 0
         apex_config:
@@ -147,14 +136,9 @@
           yaxis:
             - seriesName: UV Index
               decimalsInFloat: 0
-            - seriesName: UV Index
-              show: false
             - seriesName: Radiation
               decimalsInFloat: 0
               opposite: true
-            - seriesName: Night time
-              opposite: true
-              show: false
           tooltip:
             x:
               format: "ddd dd MMM - HH:mm"

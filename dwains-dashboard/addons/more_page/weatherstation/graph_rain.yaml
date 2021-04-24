@@ -2,18 +2,17 @@ type: "custom:config-template-card"
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.weather_inside_temperature
-  - sensor.weather_inside_humidity
+  - sensor.weather_outside_rain_day
 card:
   type: custom:apexcharts-card
   header:
     show: true
     show_states: true
     colorize_states: true
-    title: "Inside Temperature"
+    title: "Rainfall"
   span:
     start: day
-  graph_span: 24h
+  graph_span: 1d
   apex_config:
     annotations:
       xaxis:
@@ -36,7 +35,7 @@ card:
         toolbar: { show: true, tools: { reset: true } },
         zoom: { type: "x", enabled: true, autoScaleYaxis: true },
       }
-    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0, 5] }
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5] }
     legend: { show: false }
     fill:
       {
@@ -61,16 +60,11 @@ card:
           text: "Temperature (°C)"
       - seriesName: "Temp"
         show: false
-      - seriesName: "Humidity"
-        opposite: true
-        decimalsInFloat: 0
-        title:
-          text: "Humidity (%)"
       - seriesName: "Temp"
         show: false
   series:
-    - entity: sensor.weather_inside_temperature
-      name: Temp
+    - entity: sensor.weather_outside_rain_day
+      name: Rainfall
       type: line
       # color: "da1e28"
       extend_to_end: false
@@ -78,8 +72,8 @@ card:
       unit: "°C"
       group_by:
         func: last
-        duration: 10min
-    - entity: sensor.weather_inside_temperature
+        duration: 5min
+    - entity: sensor.weather_outside_rain_day
       type: line
       color: "#121619"
       name: Change
@@ -88,15 +82,7 @@ card:
       group_by:
         func: delta
         duration: 30min
-    - entity: sensor.weather_inside_humidity
-      type: line
-      extend_to_end: false
-      stroke_width: 1.5
-      unit: "%"
-      group_by:
-        func: last
-        duration: 10min
-    - entity: sensor.weather_inside_temperature
+    - entity: sensor.weather_outside_rain_day
       type: line
       name: Yesterday
       stroke_width: 1.8
@@ -106,4 +92,14 @@ card:
       offset: -1d
       group_by:
         func: last
-        duration: 1h
+        duration: 5min
+    - entity: sensor.weather_outside_rain_day
+      type: line
+      color: "#a7adba"
+      name: Change
+      extend_to_end: false
+      stroke_width: 2
+      offset: -1d
+      group_by:
+        func: delta
+        duration: 30min

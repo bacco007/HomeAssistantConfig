@@ -343,10 +343,6 @@
                   entitypart: vmtbsh02_monitordocker_kapacitor
                 - type: custom:docker-card
                   # name:
-                  logo: /local/systemicons/netdata.png
-                  entitypart: vmtbsh02_monitordocker_netdata
-                - type: custom:docker-card
-                  # name:
                   # logo:
                   entitypart: vmtbsh02_monitordocker_ouroboros
                 - type: custom:docker-card

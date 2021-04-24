@@ -28,3 +28,14 @@ sensor:
           {% else %}
           0
           {%- endfor %}
+      gdacs_near_me:
+        friendly_name: "GDACS Alerts Near Me"
+        icon_template: mdi:alert
+        value_template: |
+          {% for state in states if ('gdacs' in state.entity_id and state.domain in ['geo_location']) -%}
+          {% if loop.last -%}
+          {{ loop.index }}
+          {%- endif %}
+          {% else %}
+          0
+          {%- endfor %}

@@ -1,0 +1,98 @@
+# Theme based on Dwains Dashboard
+# Creator: LRvdLinden
+# Website: https://github.com/LRvdLinden
+# v2.0.1
+#
+Dwains Dark Theme:
+  # Header:
+  app-header-background-color: "#262628"
+  app-header-text-color: "#ffffff"
+  # Main Interface Colors
+  primary-color: rgb(41, 158, 194)
+  light-primary-color: var(--primary-color)
+  primary-background-color: "#1c1c1e"
+  secondary-background-color: "#1c1c1e"
+  divider-color: var(--primary-background-color)
+  accent-color: rgb(41, 158, 194)
+  # Text
+  primary-text-color: "#f2f2f7"
+  secondary-text-color: rgb(174, 174, 178)
+  text-primary-color: var(--primary-text-color)
+  disabled-text-color: rgb(41, 158, 194)
+  # Sidebar Menu
+  sidebar-icon-color: rgb(41, 158, 194)
+  sidebar-text-color: var(--primary-text-color)
+  sidebar-background-color: "#262628"
+  sidebar-selected-background-color: "#1c1c1e"
+  sidebar-selected-icon-color: rgb(41, 158, 194)
+  sidebar-selected-text-color: rgb(41, 158, 194)
+  # Buttons
+  paper-item-icon-color: "#f2f2f7"
+  paper-item-icon-active-color: rgb(41, 158, 194)
+  # States and Badges
+  state-icon-color: rgb(41, 158, 194)
+  state-icon-active-color: rgb(255, 214, 10)
+  state-icon-unavailable-color: rgb(169, 177, 188)
+  # Sliders
+  paper-slider-knob-color: rgb(242, 242, 247)
+  paper-slider-knob-start-color: rgb(242, 242, 247)
+  paper-slider-pin-color: rgb(41, 158, 194)
+  paper-slider-active-color: rgb(41, 158, 194)
+  paper-slider-secondary-color: rgb(41, 158, 194)
+  # Labels
+  label-badge-background-color: var(--primary-background-color)
+  label-badge-text-color: var(--primary-text-color)
+  label-badge-red: rgb(255, 69, 58)
+  label-badge-green: rgb(48, 209, 88)
+  label-badge-blue: rgb(41, 158, 194)
+  label-badge-yellow: rgb(255, 214, 10)
+  label-badge-gray: rgb(72, 72, 74)
+  # Cards
+  card-background-color: var(--primary-background-color)
+  ha-card-border-radius: "10px"
+  ha-card-box-shadow: none
+  paper-card-header-color: "#f2f2f7"
+  paper-card-background-color: "#36373a"
+  paper-dialog-background-color: "#36373a"
+  paper-item-icon_-_color: "#f2f2f7"
+  paper-item-selected_-_background-color: "#36373a"
+  paper-tabs-selection-bar-color: "#f2f2f7"
+  paper-listbox-background-color: "#262628"
+  # Switches
+  switch-checked-button-color: "#f2f2f7"
+  switch-unchecked-button-color: "#616161"
+  switch-checked-track-color: rgb(41, 158, 194)
+  switch-unchecked-track-color: "#131314"
+  # Toggles
+  paper-toggle-button-checked-button-color: var(--switch-checked-button-color)
+  paper-toggle-button-checked-bar-color: var(--switch-checked-track-color)
+  paper-toggle-button-unchecked-button-color: var(--switch-unchecked-button-color)
+  paper-toggle-button-unchecked-bar-color: var(--switch-unchecked-track-color)
+  # Table
+  table-row-background-color: "#262628"
+  table-row-alternative-background-color: "#262628"
+  data-table-background-color: "#262628"
+  mdc-checkbox-unchecked-color: rgb(169, 177, 188)
+  # Dropdowns
+  material-background-color: "#1c1c1e"
+  material-secondary-background-color: "#1c1c1e"
+  mdc-theme-primary: "#6c6c75"
+  # Pre/Code
+  markdown-code-background-color: rgb(23, 23, 23)
+  #Popups settings
+  more-info-header-background: "#262628"
+  more-info-header-color: "#f2f2f7"
+
+  #DWAINS DASHBOARD
+  primary-font-family: "Open Sans"
+  dwains-theme-accent: "placeholder_primary_color"
+  dwains-theme-background: "#1c1c1e"
+  dwains-theme-primary: "#262628"
+  dwains-theme-names: "#f2f2f7"
+  dwains-theme-grey: "#6c6c75"
+  dwains-theme-header-background: "var(--dwains-theme-primary)"
+  dwains-theme-header-text: "var(--dwains-theme-names)"
+  dwains-theme-header-button-text: "#f2f2f7"
+  dwains-theme-header-button-background: "#1c1c1e"
+  dwains-theme-unavailable: "#303030"
+  dwains-theme-off: "#606060"

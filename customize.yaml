@@ -78,3 +78,38 @@ sensor.weather_outside_windgust:
 
 sensor.weather_outside_windspeed:
   friendly_name: Wind Speed
+
+yahoofinance.amx_ax:
+  friendly_name: "Aerometrex"
+yahoofinance.aord:
+  friendly_name: "Aus - All Ords"
+yahoofinance.axjo:
+  friendly_name: "Aus - ASX200"
+yahoofinance.dji:
+  friendly_name: "US - DJIA"
+yahoofinance.ftse:
+  friendly_name: "UK - FTSE100"
+yahoofinance.goog:
+  friendly_name: "Alphabet Inc (Google)"
+yahoofinance.ixic:
+  friendly_name: "US - NASDAQ"
+yahoofinance.jbh_ax:
+  friendly_name: "JB Hi-Fi"
+yahoofinance.manu:
+  friendly_name: "Manchester United plc"
+yahoofinance.nec_ax:
+  friendly_name: "Nine Entertainment"
+yahoofinance.prt_ax:
+  friendly_name: "Prime Media"
+yahoofinance.rex_ax:
+  friendly_name: "Regional Express Airlines"
+yahoofinance.rio_ax:
+  friendly_name: "Rio Tinto"
+yahoofinance.swm_ax:
+  friendly_name: "Seven West Media"
+yahoofinance.sxl_ax:
+  friendly_name: "Southern Cross Austereo"
+yahoofinance.tls_ax:
+  friendly_name: "Telstra"
+yahoofinance.tne_ax:
+  friendly_name: "TechnologyOne"

@@ -13,6 +13,9 @@ recorder:
       - sensor.plex_tautulli_history
       - sensor.plex_tautulli_toptv
       - sensor.plex_tautulli_topusers
+      - sensor.radarr_movies
+      - sensor.solar_power_factor
+      - sensor.solar_phase_a_voltage
       - weather.dark_sky
     entity_globs:
       - binary_sensor.vmtbsh03*
@@ -40,11 +43,13 @@ recorder:
       - sensor.memory_*
       - sensor.tbsmarthome_*_overhead_satellites
       - sensor.bus_stop_*
+      - sensor.archive_*
     domains:
       - anniversaries
       - automation
       - calendar
       - camera
+      - counter
       - device_tracker
       - group
       - geo_location

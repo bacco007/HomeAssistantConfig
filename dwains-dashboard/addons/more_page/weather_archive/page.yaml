@@ -1,0 +1,196 @@
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-12 col-xl-12"
+  cards:
+    - type: "custom:apexcharts-card"
+      header:
+        title: Weather - Last 30 Days
+        show: true
+        show_states: false
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, lineCap: "square", dashArray: [0, 0, 10] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        yaxis:
+          - seriesName: "High"
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "High"
+            show: false
+          - seriesName: "Rainfall"
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+      series:
+        - entity: sensor.archive_homeoutsidetemp_max_30day
+          name: High
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "°C"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+        - entity: sensor.archive_homeoutsidetemp_min_30day
+          name: Low
+          type: area
+          color: "#0043ce"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "°C"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+
+        - entity: sensor.archive_homerain_30day
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "mm"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+      graph_span: 30days
+      all_series_config:
+        type: line
+        group_by:
+          func: sum
+          duration: 1d
+    - type: "custom:apexcharts-card"
+      header:
+        title: Weather - Last 365 Days
+        show: true
+        show_states: false
+      apex_config:
+        chart:
+          type: "area"
+          height: 300,
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+        stroke: { show: true, lineCap: "square", dashArray: [0, 0, 10] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        yaxis:
+          - seriesName: "High"
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "High"
+            show: false
+          - seriesName: "Rainfall"
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+      series:
+        - entity: sensor.archive_homeoutsidetemp_max_365day
+          name: High
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "°C"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+        - entity: sensor.archive_homeoutsidetemp_min_365day
+          name: Low
+          type: area
+          color: "#0043ce"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "°C"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+
+        - entity: sensor.archive_homerain_365day
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "mm"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+      graph_span: 365days
+      all_series_config:
+        type: line
+        group_by:
+          func: sum
+          duration: 1d

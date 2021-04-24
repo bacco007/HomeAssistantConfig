@@ -313,7 +313,7 @@
                   height: 15px
                   width: 75%
                   entities:
-                    - entity: sensor.tbsh01_acpitz_1_temperature
+                    - entity: sensor.tbsh01_acpitz_1_temperature_2
                       name: Thermal 1
                       icon: mdi:thermometer
                       severity:
@@ -326,7 +326,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh01_acpitz_2_temperature
+                    - entity: sensor.tbsh01_acpitz_2_temperature_2
                       name: Thermal 2
                       icon: mdi:thermometer
                       severity:
@@ -339,7 +339,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh01_core_0_temperature
+                    - entity: sensor.tbsh01_core_0_temperature_2
                       name: Core 0
                       icon: mdi:thermometer
                       severity:
@@ -352,7 +352,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh01_core_1_temperature
+                    - entity: sensor.tbsh01_core_1_temperature_2
                       name: Core 1
                       icon: mdi:thermometer
                       severity:
@@ -365,7 +365,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh01_package_id_0_temperature
+                    - entity: sensor.tbsh01_package_id_0_temperature_2
                       name: Package
                       icon: mdi:thermometer
                       severity:
@@ -447,9 +447,13 @@
               items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
               cards:
                 - type: custom:docker-card
-                  # name:
+                  name: Adminer
                   # logo:
-                  entitypart: tbsh01_monitordocker_db
+                  entitypart: tbsh01_monitordocker_adminer
+                - type: custom:docker-card
+                  name: Authelia
+                  # logo:
+                  entitypart: tbsh01_monitordocker_authelia
                 - type: custom:docker-card
                   # name:
                   logo: /local/systemicons/deconz.jpg
@@ -475,21 +479,17 @@
                   logo: /local/systemicons/guacamole.png
                   entitypart: tbsh01_monitordocker_guacamole
                 - type: custom:docker-card
-                  # name:
-                  logo: /local/systemicons/homeassistant.png
-                  entitypart: tbsh01_monitordocker_ha_dockermon
+                  name: Guac Daemon
+                  logo: /local/systemicons/guacamole.png
+                  entitypart: tbsh01_monitordocker_guacd
                 - type: custom:docker-card
                   # name:
                   # logo:
                   entitypart: tbsh01_monitordocker_homer
                 - type: custom:docker-card
-                  # name:
-                  logo: /local/systemicons/netdata.png
-                  entitypart: tbsh01_monitordocker_netdata
-                - type: custom:docker-card
-                  # name:
-                  logo: /local/systemicons/nginx.png
-                  entitypart: tbsh01_monitordocker_nginxproxymanager
+                  name: MariaDB
+                  # logo: /local/systemicons/netdata.png
+                  entitypart: tbsh01_monitordocker_mariadb
                 - type: custom:docker-card
                   # name:
                   # logo:
@@ -503,6 +503,6 @@
                   # logo:
                   entitypart: tbsh01_monitordocker_sonos_web
                 - type: custom:docker-card
-                  # name:
-                  logo: /local/systemicons/ubnt.png
-                  entitypart: tbsh01_monitordocker_unifi
+                  name: SWAG
+                  # logo: /local/systemicons/ubnt.png
+                  entitypart: tbsh01_monitordocker_swag

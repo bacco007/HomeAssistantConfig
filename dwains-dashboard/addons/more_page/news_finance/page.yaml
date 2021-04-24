@@ -3,49 +3,90 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
   cards:
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        title: "ASX - All Ords"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
         - entity: yahoofinance.aord
-          unit: ""
-      name: ASX - All Ords
-      line_color: "var(--dwains-theme-accent)"
-      decimals: 2
-      hours_to_show: 168
-      points_per_hour: 2
-      group_by: hour
-      aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      unit: ""
-      show:
-        extrema: true
-        average: true
-        fill: fade
-    - type: custom:mini-graph-card
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-        }
-      entities:
+          name: ASX - All Ords
+          type: area
+          extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1h
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        title: "ASX - ASX200"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
         - entity: yahoofinance.axjo
-      name: ASX - ASX200
-      line_color: "var(--dwains-theme-accent)"
-      hours_to_show: 168
-      points_per_hour: 2
-      group_by: hour
-      aggregate_func: last
-      line_width: 1
-      align_state: center
-      smoothing: true
-      show:
-        extrema: true
-        average: true
-        fill: fade
+          name: ASX - ASX200
+          type: area
+          extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1h
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
@@ -105,6 +146,65 @@
               align: right
               modify: parseFloat(x).toFixed(2)
               prefix: "$"
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Overseas
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          entities:
+            include:
+              - yahoofinance.aapl
+              - yahoofinance.amzn
+              - yahoofinance.goog
+              - yahoofinance.manu
+              - yahoofinance.nflx
+              - yahoofinance.tsla
+          columns:
+            - name: Name
+              data: friendly_name
+              modify: x.replace(" FPO", "")
+              align: center
+            - name: Sym
+              data: symbol
+              modify: x.replace(".AX", "")
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: PrevCl
+              attr: regularMarketPreviousClose
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
 
     - type: custom:stack-in-card
       cards:
@@ -131,6 +231,54 @@
           entities:
             include:
               - yahoofinance.*_x
+          columns:
+            - name: Name
+              data: friendly_name
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: PrevCl
+              attr: regularMarketPreviousClose
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(3)
+
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Crypto Exchange Rates
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css:
+            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
+            "tbody tr:nth-child(even)": "background-color: none !important;"
+            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          entities:
+            include:
+              - yahoofinance.btc_aud
+              - yahoofinance.doge_aud
+              - yahoofinance.eth_aud
           columns:
             - name: Name
               data: friendly_name

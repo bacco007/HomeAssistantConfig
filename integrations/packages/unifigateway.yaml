@@ -2,8 +2,10 @@
 sensor:
   - platform: unifigateway
     host: !secret unifi_ipaddress
+    port: 443
     username: !secret unifi_username
     password: !secret unifi_password
+    version: "UDMP-unifiOS"
     monitored_conditions:
       - vpn
       - lan

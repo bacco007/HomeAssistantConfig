@@ -4,45 +4,129 @@
     - !include graph_production.yaml
     - !include graph_yield.yaml
 - type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+  cards:
+    - !include graph_usage.yaml
+- type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   # padding: true
   cards:
-    - type: entities
-      title: Latest SpaceX Launch
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - entity: sensor.solar_daily_running_time_clean
-        - entity: sensor.solar_daily_yield_clean
-        - entity: sensor.solar_total_yield_clean
-        - entity: sensor.solar_dc_output_clean
-        - entity: sensor.solar_phase_a_voltage
-          name: Phase A - Voltage
-        - entity: sensor.solar_phase_a_current
-          name: Phase A - Current
-        - entity: sensor.solar_solar_generation
-          name: Current Generation
-        - entity: sensor.solar_solar_to_house
-          name: Solar to House
-        - entity: sensor.solar_to_grid_clean
-          name: Grid Usage (Import/Export)
-        - sensor.solar_house_from_grid_clean
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Latest SpaceX Launch
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.solar_daily_running_time_clean
+            - entity: sensor.solar_daily_yield_clean
+            - entity: sensor.solar_total_yield_clean
+            - entity: sensor.solar_dc_output_clean
+            - entity: sensor.solar_phase_a_voltage
+              name: Phase A - Voltage
+            - entity: sensor.solar_phase_a_current
+              name: Phase A - Current
+            - entity: sensor.solar_solar_generation
+              name: Current Generation
+            - entity: sensor.solar_solar_to_house
+              name: Solar to House
+            - entity: sensor.solar_to_grid_clean
+              name: Grid Usage (Import/Export)
+            - sensor.solar_house_from_grid_clean
+            - sensor.solar_grid_usage
+
+        - type: entities
+          title: PV Current & Voltage
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.solar_pv1_current
+              name: PV1 - Current
+            - entity: sensor.solar_pv1_voltage
+              name: PV1 - Voltage
+            - entity: sensor.solar_pv2_current
+              name: PV2 - Current
+            - entity: sensor.solar_pv2_voltage
+              name: PV2 - Voltage
+
+    - type: vertical-stack
+      cards:
+        - type: entities
+          title: Latest SpaceX Launch
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - sensor.solar_ac_output
+            - sensor.solar_dc_output
+            - sensor.solar_dc_output_clean
+            - sensor.solar_device_state
+            - sensor.solar_feedin_total
+            - sensor.solar_grid_daily
+            - sensor.solar_grid_frequency
+            - sensor.solar_grid_total
+            - sensor.solar_grid_voltage
+            - sensor.solar_house_consumption_filtered_test1
+            - sensor.solar_house_consumption_filtered_test2
+            - sensor.solar_house_from_grid_clean
+            - sensor.solar_internal_temperature
+            - sensor.solar_output_power
+            - sensor.solar_phase_a_current
+            - sensor.solar_phase_a_voltage
+            - sensor.solar_power_factor

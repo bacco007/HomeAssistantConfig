@@ -32,7 +32,7 @@ card:
     chart:
       {
         type: "area",
-        height: 350,
+        height: 300,
         toolbar: { show: true, tools: { reset: true } },
         zoom: { type: "x", enabled: true, autoScaleYaxis: true },
       }

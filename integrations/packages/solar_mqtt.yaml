@@ -266,3 +266,11 @@ sensor:
     filters:
       - filter: time_throttle
         window_size: "00:05"
+
+utility_meter:
+  meter_solar_house_daily:
+    source: sensor.solar_solar_to_house
+    cycle: daily
+  meter_solar_grid_daily:
+    source: sensor.solar_to_grid_clean
+    cycle: daily

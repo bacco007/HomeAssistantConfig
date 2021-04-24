@@ -1,0 +1,11 @@
+---
+# https://github.com/custom-components/pyscript
+pyscript:
+  allow_all_imports: true
+  hass_is_global: true
+  apps:
+    influxdb_query_to_sensor:
+      host: !secret influxdb_host
+      port: !secret influxdb_port
+      username: !secret influxdb_username
+      password: !secret influxdb_password

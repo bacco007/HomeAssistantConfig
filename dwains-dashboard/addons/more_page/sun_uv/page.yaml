@@ -225,6 +225,15 @@
           group_by:
             func: last
             duration: 1h
+        - entity: sensor.weather_outside_uvindex
+          type: area
+          name: Outside UVI
+          extend_to_end: false
+          curve: smooth
+          color: red
+          group_by:
+            func: last
+            duration: 1h
     - type: custom:sun-card
       name:
       meridiem: true

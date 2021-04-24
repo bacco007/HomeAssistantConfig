@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 17th 2021_
+_Stats as at 05:00, Saturday, April 24th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.4.4 | 312     | 2499         | 2062 | 64 |
+| 2021.4.6 | 311     | 2685         | 2173 | 63 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 64
-Binary Sensor | 104
+Automation | 63
+Binary Sensor | 102
 Camera | 5
-Device Tracker | 64
+Device Tracker | 67
 Group | 9
-Input Boolean | 0
+Input Boolean | 9
 Input Datetime | 0
-Input Text | 0
+Input Text | 4
 Light | 4
-Media Player | 16
+Media Player | 13
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2062
+Sensor | 2173
 Sun | 1
-Switch | 89
+Switch | 101
 Weather | 3
 Zone | 3
 
@@ -209,7 +209,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
 | [glances](https://www.home-assistant.io/components/glances) |
 | [google](https://www.home-assistant.io/components/google) |
-| [google_home](https://www.home-assistant.io/components/google_home) |
 | [group](https://www.home-assistant.io/components/group) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
@@ -317,7 +316,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
-| [sensor.google_home](https://www.home-assistant.io/components/sensor.google_home) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
 | [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time) |
@@ -371,6 +369,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.untappd_recentbeers](https://www.home-assistant.io/components/sensor.untappd_recentbeers) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
+| [sensor.utility_meter](https://www.home-assistant.io/components/sensor.utility_meter) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
@@ -395,7 +394,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
-| [switch.google_home](https://www.home-assistant.io/components/switch.google_home) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
@@ -415,6 +413,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tts.cloud](https://www.home-assistant.io/components/tts.cloud) |
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
+| [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
@@ -465,11 +464,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
 - [iCloud3 Device Tracker](https://gcobb321.github.io/icloud3/#/)
 - [Indoor Air Quality UK Index](https://github.com/Limych/ha-iaquk)
+- [Lovelace Gen]()
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [my_unifi]()
 - [MyJDownloader](https://www.home-assistant.io/integrations/myjdownloader)
 - [NHL API](https://github.com/JayBlackedOut/hass-nhlapi)
-- [Node-RED](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
+- [Node-RED Companion](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
 - [NSW Air Quality]()
 - [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
@@ -524,10 +524,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant) | an iCal Sensor for Home Assistant |
 | [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3) | iCloud3 - An advanced device_tracker custom_component for iPhones, iPads, etc. It monitors zone & location updates triggered by the HA iOS App and supports Apple 2fa verification. |
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) | Indoor Air Quality Sensor Component for Home Assistant |
+| [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen) | 🔹 Improve the lovelace yaml parser for Home Assistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
 | [NHL API](https://github.com/JayBlackedOut/hass-nhlapi) | NHL Stats API Integration Into Home Assistant |
-| [Node Red](https://github.com/zachowj/hass-node-red) | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |
+| [Node Red Companion](https://github.com/zachowj/hass-node-red) | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) | OpenNEM Sensor for Home Assistant |
 | [Optus](https://github.com/itchannel/optus-ha) | Optus Mobile Home Assistant Integration |
@@ -553,6 +554,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name | Description |
 | --- | ---|
+| [Air Visual Card](https://github.com/dnguyen800/air-visual-card) | A Lovelace card showing air quality data from airvisual.com. Requires the AirVisual component. |
 | [Apexcharts Card](https://github.com/RomRider/apexcharts-card) | 📈 A Lovelace card to display advanced graphs and charts based on ApexChartsJS for Home Assistant |
 | [Atomic Calendar Revive](https://github.com/marksie1988/atomic-calendar-revive) | Custom calendar card for Home Assistant with Lovelace |
 | [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities) | 🔹Automatically populate the entities-list of lovelace cards |
@@ -570,20 +572,28 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Flexible Horseshoe Card For Lovelace](https://github.com/Lau-ie/flex-horseshoe-card) | Flexible Horseshoe card for Home Assistant Lovelace UI. A card with a flexible layout,  a horseshoe-like donut graph, multiple entities or attributes, graphics and animations! |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) | 🔹 A foldable row for entities card, containing other rows |
 | [Github Flexi Card / Entity Row](https://github.com/maxwroc/github-flexi-card) | Github stats card for Home Assistant |
+| [Gui Sandbox](https://github.com/thomasloven/lovelace-gui-sandbox) | 🔹 Lets you play around with the GUI editors even if you're using YAML mode |
+| [Layout Card](https://github.com/thomasloven/lovelace-layout-card) | 🔹 Get more control over the placement of lovelace cards. |
 | [Light Entity Card](https://github.com/ljmerza/light-entity-card) | Control any light or switch entity |
+| [Light Popup Card (Homekit Style)](https://github.com/DBuit/light-popup-card) | Lovelace card to use as custom pop-up for light in homekit style |
 | [List Card](https://github.com/iantrich/list-card) | 📰 Display sensor list data in a table |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) | Minimalistic graph card for Home Assistant Lovelace UI |
 | [Mini Media Player](https://github.com/kalkih/mini-media-player) | Minimalistic media card for Home Assistant Lovelace UI |
 | [More Info Card](https://github.com/thomasloven/lovelace-more-info-card) | 🔹 Display the more-info dialog of any entity as a lovelace card |
 | [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row) | Show multiple entity states and attributes on entity rows in Home Assistant's Lovelace UI |
+| [Search Card](https://github.com/postlund/search-card) | Quickly search for entities from a Lovelace card. |
 | [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row) | Custom entity row for HomeAssistant, providing additional types of data to be displayed in the secondary info area of the Lovelace Entities card |
+| [Sidebar Card](https://github.com/DBuit/sidebar-card) | None |
+| [Simple Weather Card](https://github.com/kalkih/simple-weather-card) | Minimalistic weather card for Home Assistant |
 | [Slider Entity Row](https://github.com/thomasloven/lovelace-slider-entity-row) | 🔹 Add sliders to entity cards |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) | 🔹Dynamically replace lovelace cards depending on occasion |
 | [Sun Card](https://github.com/mishaaq/sun-card) | Lovelace card for sun component - Home Assistant |
+| [Swipe Card](https://github.com/bramkragten/swipe-card) | Card that allows you to swipe throught multiple cards for Home Assistant Lovelace |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) | 🔹 Display whatever you want in an entities card row. |
 | [Themable Grid](https://github.com/nervetattoo/themable-grid) | 🀹 Lovelace responsive grid card that can be tweaked in your theme definition. |
+| [Thermostat Popup Card](https://github.com/DBuit/thermostat-popup-card) | Lovelace card to use as custom pop-up for thermostat in homekit style |
 | [Uptime Card](https://github.com/dylandoamaral/uptime-card) | Minimalistic uptime card for Home Assistant Lovelace UI |
 
 #### HACS - Themes

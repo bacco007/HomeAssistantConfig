@@ -8,6 +8,7 @@
         - !include partial_uptime.yaml
         - !include partial_unavailable_entities.yaml
         - !include partial_db.yaml
+        - !include partial_automations.yaml
     - type: vertical-stack
       cards:
         - !include partial_updates_supervisor.yaml

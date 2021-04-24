@@ -15,6 +15,13 @@ yahoofinance:
     - JBH.AX
     - SWM.AX
     - SXL.AX
+    - REX.AX
+    - AMZN
+    - AAPL
+    - GOOG
+    - TSLA
+    - NFLX
+    - MANU
     - ^AXJO
     - ^AORD
     - ^DJI
@@ -24,3 +31,6 @@ yahoofinance:
     - AUDGBP=X
     - AUDNZD=X
     - AUDEUR=X
+    - BTC-AUD
+    - ETH-AUD
+    - DOGE-AUD

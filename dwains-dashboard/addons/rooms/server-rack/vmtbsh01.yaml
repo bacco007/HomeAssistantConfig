@@ -339,10 +339,6 @@
                   entitypart: vmtbsh01_monitordocker_jdownloader
                 - type: custom:docker-card
                   # name:
-                  logo: /local/systemicons/netdata.png
-                  entitypart: vmtbsh01_monitordocker_netdata
-                - type: custom:docker-card
-                  # name:
                   # logo:
                   entitypart: vmtbsh01_monitordocker_nice_johnson
                 - type: custom:docker-card

@@ -1,28 +1,15 @@
 # dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
     - !include graph_indoortemp_day.yaml
     - !include graph_outdoortemp_day.yaml
+    - !include graph_rain.yaml
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-3 col-sm-3 col-xl-3"
   cards:
-    - type: custom:mini-graph-card
-      entities:
-        - sensor.weather_outside_rain_day
-      name: Rainfall
-      # height: 50
-      line_color: "var(--dwains-theme-accent)"
-      line_width: 2
-      font_size: 70
-      hours_to_show: 168
-      points_per_hour: 1
-      align_state: center
-      show:
-        # extrema: true
-        fill: fade
     - type: custom:compass-card
       header:
         title:
@@ -41,20 +28,6 @@
       entities:
         - sensor.weather_outside_pressure
       name: Pressure
-      # height: 50
-      line_color: "var(--dwains-theme-accent)"
-      line_width: 2
-      font_size: 70
-      hours_to_show: 24
-      points_per_hour: 6
-      align_state: center
-      show:
-        # extrema: true
-        fill: fade
-    - type: custom:mini-graph-card
-      entities:
-        - sensor.weather_outside_humidity
-      name: Humidity
       # height: 50
       line_color: "var(--dwains-theme-accent)"
       line_width: 2

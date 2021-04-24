@@ -313,7 +313,7 @@
                   height: 15px
                   width: 75%
                   entities:
-                    - entity: sensor.tbsh03_acpitz_1_temp
+                    - entity: sensor.tbsh03_acpitz_1_temperature_2
                       name: Thermal 1
                       icon: mdi:thermometer
                       severity:
@@ -326,7 +326,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh03_acpitz_2_temp
+                    - entity: sensor.tbsh03_acpitz_2_temperature_2
                       name: Thermal 2
                       icon: mdi:thermometer
                       severity:
@@ -339,7 +339,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh03_core_0_temp
+                    - entity: sensor.tbsh03_core_0_temperature_2
                       name: Core 0
                       icon: mdi:thermometer
                       severity:
@@ -352,7 +352,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh03_core_1_temp
+                    - entity: sensor.tbsh03_core_1_temperature_2
                       name: Core 1
                       icon: mdi:thermometer
                       severity:
@@ -365,7 +365,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh03_core_2_temp
+                    - entity: sensor.tbsh03_core_2_temperature_2
                       name: Core 2
                       icon: mdi:thermometer
                       severity:
@@ -378,7 +378,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh03_core_3_temp
+                    - entity: sensor.tbsh03_core_3_temperature_2
                       name: Core 3
                       icon: mdi:thermometer
                       severity:
@@ -391,7 +391,7 @@
                         - color: rgb(163,0,0,0.60)
                           from: 85
                           to: 150
-                    - entity: sensor.tbsh03_package_id_0_temp
+                    - entity: sensor.tbsh03_package_id_0_temperature_2
                       name: Package
                       icon: mdi:thermometer
                       severity:
@@ -494,7 +494,7 @@
                 - type: custom:docker-card
                   # name:
                   # logo:
-                  entitypart: tbsh03_monitordocker_clarkson
+                  entitypart: tbsh03_monitordocker_cyberchef
 
                 - type: custom:docker-card
                   # name:
@@ -540,6 +540,11 @@
                   # name:
                   # logo:
                   entitypart: tbsh03_monitordocker_mm2
+
+                - type: custom:docker-card
+                  # name:
+                  # logo:
+                  entitypart: tbsh03_monitordocker_modbus4mqtt
 
                 - type: custom:docker-card
                   # name:
