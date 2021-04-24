@@ -1,8 +1,6 @@
 ---
 alias: HACS - New Repository Added
-mode: queued
-max: 100
-max_exceeded: silent
+id: hacs_newrepo
 trigger:
   - platform: event
     event_type: hacs/repository
