@@ -1,8 +1,0 @@
----
-sensor:
-  - platform: rest
-    resource: http://ergast.com/api/f1/current/constructorStandings.json
-    name: f1_constructor_standings
-    scan_interval:
-      minutes: 30
-    value_template: "{{ value_json.MRData }}"

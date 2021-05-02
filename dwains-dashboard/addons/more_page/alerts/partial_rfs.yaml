@@ -36,7 +36,11 @@ cards:
       type: markdown
       content: >-
         {% for state in states.geo_location %}
+
+
           {% if state.attributes.source=="nsw_rural_fire_service_feed" %}
+
+          
             <ha-icon icon="{{ state.attributes.icon }}"></ha-icon> **{{ state.name }}**
             {{ state.attributes.category }}, {{ state.attributes.type }} ({{ state.attributes.size }})
             {{ state.attributes.location }}

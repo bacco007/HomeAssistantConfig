@@ -127,6 +127,9 @@ more_page:
         uptime: "{{ states.sensor.thecube2_uptime.state }}"
         version: "{{ states.sensor.synology_dsm_version.state }}"
         status: "{{ states.sensor.synology_dsm_update.state }}"
+    - name: TV Guide
+      icon: mdi:television-guide
+      path: "dwains-dashboard/addons/more_page/tv_guide/page.yaml"
     - name: Ubiquiti UniFi
       icon: mdi:router-wireless
       path: "dwains-dashboard/addons/more_page/ubiquiti/unifi.yaml"

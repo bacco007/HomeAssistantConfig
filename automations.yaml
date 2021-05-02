@@ -1,1 +1,11 @@
-
+- id: '1619927783047'
+  alias: Admin - Generate Fake Secrets
+  description: Generate Fake Secrets file every night
+  trigger:
+  - platform: time_pattern
+    hours: '2'
+    minutes: '30'
+  condition: []
+  action:
+  - service: shell_command.gen_fakesecrets
+  mode: single

@@ -7,6 +7,7 @@
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
     - !include graph_usage.yaml
+    - !include graph_yield_year.yaml
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   # padding: true

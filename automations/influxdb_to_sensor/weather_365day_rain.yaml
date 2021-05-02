@@ -14,7 +14,7 @@ action:
       database: homeassistant
       query: >-
         SELECT max("value") FROM "homeassistant"."autogen"."mm"
-        WHERE time >= now() - 365d AND "entity_id"='weather_outside_rain_day'
+        WHERE time >= now() - 365d AND ("entity_id"='netatmo_rain_sum_rain_24' OR "entity_id"='netatmo_brisbane_street_rain_sum_rain_24' or "entity_id"='weather_outside_rain_day') 
         GROUP BY time(1d) FILL(null) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: max

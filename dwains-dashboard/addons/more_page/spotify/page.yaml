@@ -1,141 +1,321 @@
 # dwains_theme
 - type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12"
+  # padding: true
+  cards:
+    - type: "custom:mini-media-player"
+      hide:
+        power: true
+        source: true
+        progress: true
+        shuffle: false
+        icon_state: false
+        runtime: false
+      toggle_power: false
+      info: short
+      shortcuts:
+        columns: 1
+        buttons:
+          - icon: "mdi:spotify"
+            type: service
+            id: input_text.set_value
+            data:
+              entity_id: input_text.spotify_active_sonos_player_id
+              value: media_player.office_sonos
+            name: Selected playlist
+      source: icon
+      sound_mode: icon
+      entity: media_player.office_sonos
+      artwork: material
+- type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
   # padding: true
   cards:
-    - artwork: full-cover
-      entity: media_player.spotify_thomas_baxter
-      hide:
-        power: true
-        progress: false
-        runtime: false
-        volume: true
-      style: |
-        :host {
-          left: 46% !important;
-          top: 39.8% !important;
-          width: 33% !important;
-          height: 62.3% !important;
-        }
-        ha-card{
-          overflow: hidden !important;
-          height: 100%;
-        }
-        :host #primaryProgress{
-          background: #474A52 !important;
-        }
-      type: "custom:mini-media-player"
-    - type: custom:spotify-card
-      style: |
-        :host {
-            left: 79.5%;
-            top: 39.8%;
-            width: 31%;
-            height: 62.3%;
-            border-radius: 1vw;
-        }
-        #header{
-            display:none !important;
-        }
-        #content{
-            border:none !important;
-        }
-        .playback-controls{
-            display:none !important;
-        }
-        #header-track{
-            display:none;
-        }
-        .list-item > p{
-            white-space: nowrap;
-                overflow: hidden;
-        }
-        .list-item{
-            border-radius: 0.2vw;
-            overflow:hidden;
-            border:none !important;
-            margin-bottom:2px;
-        }
-      account: default
-      country: AU
-      display_style: list
-      hide_warning: true
-      limit: 10
-      playlist_type: default
-      name: Spotify Playlists
-    # - type: custom:spotify-card
-    #   style: |
-    #     :host {
-    #         left: 79.5%;
-    #         top: 39.8%;
-    #         width: 31%;
-    #         height: 62.3%;
-    #         border-radius: 1vw;
-    #     }
-    #     #header{
-    #         display:none !important;
-    #     }
-    #     #content{
-    #         border:none !important;
-    #     }
-    #     .playback-controls{
-    #         display:none !important;
-    #     }
-    #     #header-track{
-    #         display:none;
-    #     }
-    #     .list-item > p{
-    #         white-space: nowrap;
-    #             overflow: hidden;
-    #     }
-    #     .list-item{
-    #         border-radius: 0.2vw;
-    #         overflow:hidden;
-    #         border:none !important;
-    #         margin-bottom:2px;
-    #     }
-    #   name: Featured Playlists
-    #   account: default
-    #   country: AU
-    #   display_style: list
-    #   hide_warning: true
-    #   limit: 10
-    #   playlist_type: featured
-    - type: custom:spotify-card
-      style: |
-        :host {
-            left: 79.5%;
-            top: 39.8%;
-            width: 31%;
-            height: 62.3%;
-            border-radius: 1vw;
-        }
-        #header{
-            display:none !important;
-        }
-        #content{
-            border:none !important;
-        }
-        .playback-controls{
-            display:none !important;
-        }
-        #header-track{
-            display:none;
-        }
-        .list-item > p{
-            white-space: nowrap;
-                overflow: hidden;
-        }
-        .list-item{
-            border-radius: 0.2vw;
-            overflow:hidden;
-            border:none !important;
-            margin-bottom:2px;
-        }
-      name: Discover Weekly Playlists
-      account: default
-      country: AU
-      hide_warning: true
-      display_style: list
-      limit: 10
-      playlist_type: discover-weekly
+    - type: grid
+      cards:
+        - type: "custom:button-card"
+          entity: sensor.daily_mix_1
+          show_entity_picture: true
+          show_label: true
+          size: 80%
+          styles:
+            card:
+              - height: 250px
+            label:
+              - font-size: 14px
+            name:
+              - font-size: 14px
+          name: |
+            [[[ return entity.attributes.name; ]]]
+          label: |
+            [[[ return entity.attributes.label; ]]]
+          entity_picture: |
+            [[[ return entity.attributes.image; ]]]
+          tap_action:
+            action: call-service
+            service: input_text.set_value
+            service_data:
+              entity_id: input_text.spotify_selected_playlist
+              value: |
+                [[[ return entity.attributes.url; ]]]
+        - type: "custom:button-card"
+          entity: sensor.daily_mix_2
+          show_entity_picture: true
+          show_label: true
+          size: 80%
+          styles:
+            card:
+              - height: 250px
+            label:
+              - font-size: 14px
+            name:
+              - font-size: 14px
+          name: |
+            [[[ return entity.attributes.name; ]]]
+          label: |
+            [[[ return entity.attributes.label; ]]]
+          entity_picture: |
+            [[[ return entity.attributes.image; ]]]
+          tap_action:
+            action: call-service
+            service: input_text.set_value
+            service_data:
+              entity_id: input_text.spotify_selected_playlist
+              value: |
+                [[[ return entity.attributes.url; ]]]
+      columns: 2
+      square: false
+    - type: grid
+      cards:
+        - type: "custom:button-card"
+          entity: sensor.daily_mix_3
+          show_entity_picture: true
+          show_label: true
+          size: 80%
+          styles:
+            card:
+              - height: 250px
+            label:
+              - font-size: 14px
+            name:
+              - font-size: 14px
+          name: |
+            [[[ return entity.attributes.name; ]]]
+          label: |
+            [[[ return entity.attributes.label; ]]]
+          entity_picture: |
+            [[[ return entity.attributes.image; ]]]
+          tap_action:
+            action: call-service
+            service: input_text.set_value
+            service_data:
+              entity_id: input_text.spotify_selected_playlist
+              value: |
+                [[[ return entity.attributes.url; ]]]
+        - type: "custom:button-card"
+          entity: sensor.daily_mix_4
+          show_entity_picture: true
+          show_label: true
+          size: 80%
+          styles:
+            card:
+              - height: 250px
+            label:
+              - font-size: 14px
+            name:
+              - font-size: 14px
+          name: |
+            [[[ return entity.attributes.name; ]]]
+          label: |
+            [[[ return entity.attributes.label; ]]]
+          entity_picture: |
+            [[[ return entity.attributes.image; ]]]
+          tap_action:
+            action: call-service
+            service: input_text.set_value
+            service_data:
+              entity_id: input_text.spotify_selected_playlist
+              value: |
+                [[[ return entity.attributes.url; ]]]
+      columns: 2
+      square: false
+    - type: grid
+      cards:
+        - type: "custom:button-card"
+          entity: sensor.daily_mix_5
+          show_entity_picture: true
+          show_label: true
+          size: 80%
+          styles:
+            card:
+              - height: 250px
+            label:
+              - font-size: 14px
+            name:
+              - font-size: 14px
+          name: |
+            [[[ return entity.attributes.name; ]]]
+          label: |
+            [[[ return entity.attributes.label; ]]]
+          entity_picture: |
+            [[[ return entity.attributes.image; ]]]
+          tap_action:
+            action: call-service
+            service: input_text.set_value
+            service_data:
+              entity_id: input_text.spotify_selected_playlist
+              value: |
+                [[[ return entity.attributes.url; ]]]
+        - type: "custom:button-card"
+          entity: sensor.daily_mix_6
+          show_entity_picture: true
+          show_label: true
+          size: 80%
+          styles:
+            card:
+              - height: 250px
+            label:
+              - font-size: 14px
+            name:
+              - font-size: 14px
+          name: |
+            [[[ return entity.attributes.name; ]]]
+          label: |
+            [[[ return entity.attributes.label; ]]]
+          entity_picture: |
+            [[[ return entity.attributes.image; ]]]
+          tap_action:
+            action: call-service
+            service: input_text.set_value
+            service_data:
+              entity_id: input_text.spotify_selected_playlist
+              value: |
+                [[[ return entity.attributes.url; ]]]
+      columns: 2
+      square: false
+    - type: "custom:button-card"
+      entity: sensor.playlist_1
+      show_entity_picture: true
+      size: 80%
+      styles:
+        card:
+          - height: 390px
+        name:
+          - font-size: 16px
+          - margin-top: 6px
+      name: |
+        [[[ return entity.attributes.name; ]]]
+      entity_picture: |
+        [[[ return entity.attributes.image; ]]]
+      tap_action:
+        action: call-service
+        service: input_text.set_value
+        service_data:
+          entity_id: input_text.spotify_selected_playlist
+          value: |
+            [[[ return entity.attributes.url; ]]]
+    - type: "custom:button-card"
+      entity: sensor.playlist_2
+      show_entity_picture: true
+      size: 80%
+      styles:
+        card:
+          - height: 390px
+        name:
+          - font-size: 16px
+          - margin-top: 6px
+      name: |
+        [[[ return entity.attributes.name; ]]]
+      entity_picture: |
+        [[[ return entity.attributes.image; ]]]
+      tap_action:
+        action: call-service
+        service: input_text.set_value
+        service_data:
+          entity_id: input_text.spotify_selected_playlist
+          value: |
+            [[[ return entity.attributes.url; ]]]
+    - type: "custom:button-card"
+      entity: sensor.playlist_3
+      show_entity_picture: true
+      size: 80%
+      styles:
+        card:
+          - height: 390px
+        name:
+          - font-size: 16px
+          - margin-top: 6px
+      name: |
+        [[[ return entity.attributes.name; ]]]
+      entity_picture: |
+        [[[ return entity.attributes.image; ]]]
+      tap_action:
+        action: call-service
+        service: input_text.set_value
+        service_data:
+          entity_id: input_text.spotify_selected_playlist
+          value: |
+            [[[ return entity.attributes.url; ]]]
+    - type: "custom:button-card"
+      entity: sensor.playlist_4
+      show_entity_picture: true
+      size: 80%
+      styles:
+        card:
+          - height: 390px
+        name:
+          - font-size: 16px
+          - margin-top: 6px
+      name: |
+        [[[ return entity.attributes.name; ]]]
+      entity_picture: |
+        [[[ return entity.attributes.image; ]]]
+      tap_action:
+        action: call-service
+        service: input_text.set_value
+        service_data:
+          entity_id: input_text.spotify_selected_playlist
+          value: |
+            [[[ return entity.attributes.url; ]]]
+    - type: "custom:button-card"
+      entity: sensor.playlist_5
+      show_entity_picture: true
+      size: 80%
+      styles:
+        card:
+          - height: 390px
+        name:
+          - font-size: 16px
+          - margin-top: 6px
+      name: |
+        [[[ return entity.attributes.name; ]]]
+      entity_picture: |
+        [[[ return entity.attributes.image; ]]]
+      tap_action:
+        action: call-service
+        service: input_text.set_value
+        service_data:
+          entity_id: input_text.spotify_selected_playlist
+          value: |
+            [[[ return entity.attributes.url; ]]]
+    - type: "custom:button-card"
+      entity: sensor.playlist_6
+      show_entity_picture: true
+      size: 80%
+      styles:
+        card:
+          - height: 390px
+        name:
+          - font-size: 16px
+          - margin-top: 6px
+      name: |
+        [[[ return entity.attributes.name; ]]]
+      entity_picture: |
+        [[[ return entity.attributes.image; ]]]
+      tap_action:
+        action: call-service
+        service: input_text.set_value
+        service_data:
+          entity_id: input_text.spotify_selected_playlist
+          value: |
+            [[[ return entity.attributes.url; ]]]

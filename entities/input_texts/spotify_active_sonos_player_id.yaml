@@ -1,0 +1,4 @@
+---
+spotify_active_sonos_player_id:
+  name: spotify_active_sonos_player_id
+  icon: mdi:spotify

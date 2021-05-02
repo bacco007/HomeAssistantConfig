@@ -1,0 +1,4 @@
+---
+# https://www.home-assistant.io/integrations/shell_command/
+shell_command:
+  gen_fakesecrets: bash /config/bin/make_fake_secrets.sh

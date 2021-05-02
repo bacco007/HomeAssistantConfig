@@ -1737,7 +1737,7 @@
     },
     "node-red-node-mysql": {
         "name": "node-red-node-mysql",
-        "version": "0.1.7",
+        "version": "0.1.8",
         "local": false,
         "user": false,
         "nodes": {
@@ -1846,6 +1846,36 @@
                 "user": false,
                 "module": "node-red-contrib-persistent-fsm",
                 "file": "/opt/node_modules/node-red-contrib-persistent-fsm/state-machine.js"
+            }
+        }
+    },
+    "node-red-contrib-spotify": {
+        "name": "node-red-contrib-spotify",
+        "version": "0.1.4",
+        "local": false,
+        "user": false,
+        "nodes": {
+            "spotify": {
+                "name": "spotify",
+                "types": [
+                    "spotify"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-spotify",
+                "file": "/opt/node_modules/node-red-contrib-spotify/src/spotify.js"
+            },
+            "spotify-auth": {
+                "name": "spotify-auth",
+                "types": [
+                    "spotify-auth"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-spotify",
+                "file": "/opt/node_modules/node-red-contrib-spotify/src/authorize.js"
             }
         }
     }

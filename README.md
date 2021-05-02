@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 24th 2021_
+_Stats as at 05:00, Sunday, May 2nd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.4.6 | 311     | 2685         | 2173 | 63 |
+| 2021.4.6 | 324     | 2640         | 2163 | 71 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 63
-Binary Sensor | 102
+Automation | 71
+Binary Sensor | 105
 Camera | 5
-Device Tracker | 67
+Device Tracker | 68
 Group | 9
-Input Boolean | 9
+Input Boolean | 0
 Input Datetime | 0
-Input Text | 4
+Input Text | 2
 Light | 4
-Media Player | 13
+Media Player | 23
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2173
+Sensor | 2163
 Sun | 1
-Switch | 101
+Switch | 99
 Weather | 3
 Zone | 3
 
@@ -146,6 +146,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
+| [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
+| [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
@@ -178,6 +180,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cover](https://www.home-assistant.io/components/cover) |
 | [cover.deconz](https://www.home-assistant.io/components/cover.deconz) |
 | [deconz](https://www.home-assistant.io/components/deconz) |
+| [default_config](https://www.home-assistant.io/components/default_config) |
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
@@ -186,7 +189,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.tile](https://www.home-assistant.io/components/device_tracker.tile) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
-| [discovery](https://www.home-assistant.io/components/discovery) |
 | [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
 | [dyson_cloud](https://www.home-assistant.io/components/dyson_cloud) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
@@ -198,8 +200,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [feedreader](https://www.home-assistant.io/components/feedreader) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
-| [folder_watcher](https://www.home-assistant.io/components/folder_watcher) |
 | [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
+| [forked_daapd](https://www.home-assistant.io/components/forked_daapd) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
@@ -223,7 +225,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ifttt](https://www.home-assistant.io/components/ifttt) |
 | [image](https://www.home-assistant.io/components/image) |
 | [influxdb](https://www.home-assistant.io/components/influxdb) |
+| [input_boolean](https://www.home-assistant.io/components/input_boolean) |
+| [input_datetime](https://www.home-assistant.io/components/input_datetime) |
+| [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
+| [input_text](https://www.home-assistant.io/components/input_text) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [lifx](https://www.home-assistant.io/components/lifx) |
 | [light](https://www.home-assistant.io/components/light) |
@@ -232,6 +238,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [light.lifx](https://www.home-assistant.io/components/light.lifx) |
 | [lock](https://www.home-assistant.io/components/lock) |
 | [lock.deconz](https://www.home-assistant.io/components/lock.deconz) |
+| [logbook](https://www.home-assistant.io/components/logbook) |
 | [logger](https://www.home-assistant.io/components/logger) |
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
@@ -240,6 +247,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
+| [media_player.forked_daapd](https://www.home-assistant.io/components/media_player.forked_daapd) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
@@ -269,6 +277,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
 | [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
+| [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [readme](https://www.home-assistant.io/components/readme) |
 | [recorder](https://www.home-assistant.io/components/recorder) |
@@ -328,7 +337,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
-| [sensor.nhl_api](https://www.home-assistant.io/components/sensor.nhl_api) |
+| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -344,6 +353,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
+| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
@@ -387,6 +397,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
+| [stream](https://www.home-assistant.io/components/stream) |
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
@@ -407,12 +418,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tag](https://www.home-assistant.io/components/tag) |
 | [template](https://www.home-assistant.io/components/template) |
 | [tile](https://www.home-assistant.io/components/tile) |
+| [timer](https://www.home-assistant.io/components/timer) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [transmission](https://www.home-assistant.io/components/transmission) |
 | [tts](https://www.home-assistant.io/components/tts) |
 | [tts.cloud](https://www.home-assistant.io/components/tts.cloud) |
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
+| [updater](https://www.home-assistant.io/components/updater) |
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
@@ -476,6 +489,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Optus](https://github.com/itchannel/optus-ha)
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Polar plots of the sun, moon, and planets](https://github.com/partofthething/ha_skyfield)
+- [Pyscript Python scripting](https://github.com/custom-components/pyscript)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Rocket Launch Live - Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
 - [SamsungTV Smart](https://github.com/ollo69/ha-samsungtv-smart)
@@ -532,6 +546,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |
 | [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem) | OpenNEM Sensor for Home Assistant |
 | [Optus](https://github.com/itchannel/optus-ha) | Optus Mobile Home Assistant Integration |
+| [Pyscript](https://github.com/custom-components/pyscript) | Pyscript adds rich Python scripting to HASS |
 | [Readme](https://github.com/custom-components/readme) | Use Jinja and data from Home Assistant to generate your README.md file |
 | [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive) | Home Assistant custom HACS integration to integrate the next 5 global rocket launches from https://rocketlaunch.live |
 | [Samsungtv Smart](https://github.com/ollo69/ha-samsungtv-smart) | 📺 Home Assistant SamsungTV Smart Component with simplified SmartThings API Support configurable from User Interface. |
@@ -629,6 +644,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - https://github.com/MaxWinterstein/homeassistant-addons/
 - https://github.com/OpenXbox/xboxone-home-assistant
 - https://github.com/sabeechen/hassio-google-drive-backup
+- https://github.com/Ulrar/hassio-addons
 
 
 ### Addons
@@ -636,6 +652,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [Check Home Assistant configuration]()
 - [ESPHome]()
 - [Eufy Home Assistant MQTT Bridge]()
+- [Forked DAAPD]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab]()
