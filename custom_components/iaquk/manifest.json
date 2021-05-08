@@ -1,13 +1,14 @@
 {
-    "domain": "iaquk",
-    "name": "Indoor Air Quality UK Index",
-    "version": "1.4.0",
-    "documentation": "https://github.com/Limych/ha-iaquk",
-    "issue_tracker": "https://github.com/Limych/ha-iaquk/issues",
-    "dependencies": [],
-    "config_flow": false,
-    "codeowners": [
-        "@Limych"
-    ],
-    "requirements": []
+  "domain": "iaquk",
+  "name": "Indoor Air Quality UK Index",
+  "version": "1.5.0",
+  "documentation": "https://github.com/Limych/ha-iaquk",
+  "issue_tracker": "https://github.com/Limych/ha-iaquk/issues",
+  "dependencies": [],
+  "config_flow": false,
+  "codeowners": [
+    "@Limych"
+  ],
+  "requirements": [],
+  "iot_class": "calculated"
 }

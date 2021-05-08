@@ -93,7 +93,7 @@ class FoldingAtHomeControlClient:
         if self._available:
             self._available = False
             _LOGGER.error(
-                "Got disconnected from %s:%s. Trying to reconnect.",
+                "Got disconnected from %s:%s. Trying to reconnect. If this happens a lot try increasing the Read Timeout in the Integration Options",
                 self.config_entry.data[CONF_ADDRESS],
                 self.config_entry.data[CONF_PORT],
             )

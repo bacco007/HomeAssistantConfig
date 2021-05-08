@@ -76,7 +76,7 @@ class NSWHSensor(Entity):
         df_trc_earliest = df_trc["notification_date"].min().strftime("%a %d %b")
         df_trc_latest = df_trc["notification_date"].max().strftime("%a %d %b")
 
-        df_tamw = df[df.postcode == 2340.0]
+        df_tamw = df[df.postcode == "2340"]
         df_tamw_count = len(df_tamw)
         df_tamw_earliest = df_tamw["notification_date"].min().strftime("%a %d %b")
         df_tamw_latest = df_tamw["notification_date"].max().strftime("%a %d %b")

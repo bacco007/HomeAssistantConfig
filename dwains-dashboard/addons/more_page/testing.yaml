@@ -234,6 +234,95 @@
             func: last
             duration: 1h
 
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 14d12h
+      header:
+        show: true
+        title: "Climacell Daily Forecast - Tamworth Airport"
+      span:
+        start: day
+        offset: -6h
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Rainfall"
+            decimalsInFloat: 0
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+          - seriesName: "High"
+            decimalsInFloat: 0
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "High"
+            show: false
+
+      series:
+        - entity: weather.climacell_daily
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "mm"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation];
+            });
+        - entity: weather.climacell_daily
+          name: High
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "°C"
+          show:
+            datalabels: true
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.temperature];
+            });
+        - entity: weather.climacell_daily
+          name: Low
+          type: area
+          color: "#0043ce"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "°C"
+          show:
+            datalabels: true
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.templow];
+            });
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
     - type: custom:apexcharts-card
       graph_span: 7d
       span:
@@ -754,7 +843,7 @@
           stroke_width: 3
           group_by:
             func: delta
-            duration: 1d
+            duration: 24h
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Doses
           name: NSW
@@ -762,7 +851,7 @@
           stroke_width: 3
           group_by:
             func: delta
-            duration: 1d
+            duration: 24h
         - entity: sensor.covid_19_covidlive_nt
           attribute: Doses
           name: NT

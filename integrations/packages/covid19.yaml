@@ -63,157 +63,157 @@ sensor:
       - Last_Update
     unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27NSW%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA NSW"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27NSW%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA NSW"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27VIC%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA VIC"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27VIC%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA VIC"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27QLD%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA QLD"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27QLD%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA QLD"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27WA%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA WA"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27WA%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA WA"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27SA%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA SA"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27SA%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA SA"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27ACT%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA ACT"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27ACT%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA ACT"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27TAS%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA TAS"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27TAS%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA TAS"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
-  - platform: rest
-    timeout: 60
-    scan_interval: 1800
-    method: GET
-    headers:
-      User-Agent: "Home Assistant REST sensor"
-    resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27NT%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
-    name: "COVID-19 ESRIA NT"
-    value_template: >-
-      {{ value_json.features[0].attributes.Cases }}
-    json_attributes_path: "$.features[0].attributes"
-    json_attributes:
-      - NAME
-      - Cases
-      - Deaths
-      - Tests
-      - Last_Updated
-    unit_of_measurement: "People"
+  # - platform: rest
+  #   timeout: 60
+  #   scan_interval: 1800
+  #   method: GET
+  #   headers:
+  #     User-Agent: "Home Assistant REST sensor"
+  #   resource: "https://services1.arcgis.com/vHnIGBHHqDR6y0CR/arcgis/rest/services/Current_Cases_by_State/FeatureServer/0/query?where=ISO_SUB+%3D+%27NT%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=false&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
+  #   name: "COVID-19 ESRIA NT"
+  #   value_template: >-
+  #     {{ value_json.features[0].attributes.Cases }}
+  #   json_attributes_path: "$.features[0].attributes"
+  #   json_attributes:
+  #     - NAME
+  #     - Cases
+  #     - Deaths
+  #     - Tests
+  #     - Last_Updated
+  #   unit_of_measurement: "People"
 
   - platform: template
     sensors:
@@ -248,84 +248,84 @@ sensor:
             {{ (((state_attr('sensor.covid_19_nswh_local_tests', 'trc')|int)/62156)*100)|round(3) }}
           tamw_percent_tests: >
             {{ (((state_attr('sensor.covid_19_nswh_local_tests', 'tamw')|int)/49072)*100)|round(3) }}
-      covid_19_esria_aus_pct:
-        friendly_name: "COVID-19 ESRIA AUS Percents"
-        unit_of_measurement: "%"
-        icon_template: mdi:biohazard
-        value_template: >
-          {{ (((states('sensor.covid_19_esria_aus_cases')|int)/25464100)*100)|round(3) }}
-        attribute_templates:
-          casestotests_percent: >
-            {{ (((states('sensor.covid_19_esria_aus_cases')|int) / (states('sensor.covid_19_esria_aus_tests')|int))*100)|round(3) }}
-          casestodeaths_percent: >
-            {{ (((states('sensor.covid_19_esria_aus_deaths')|int) / (states('sensor.covid_19_esria_aus_cases')|int))*100)|round(3) }}
-          casespermillion: >
-            {{ (((states('sensor.covid_19_esria_aus_cases')|int) / 25.464))|round(0) }}
-          testspermillion: >
-            {{ (((states('sensor.covid_19_esria_aus_tests')|int) / 25.464))|round(0) }}
-          deathspermillion: >
-            {{ (((states('sensor.covid_19_esria_aus_deaths')|int) / 25.464))|round(0) }}
-      covid_19_esria_nsw_pct:
-        friendly_name: "COVID-19 ESRIA NSW Percents"
-        unit_of_measurement: "%"
-        icon_template: mdi:biohazard
-        value_template: >
-          {{ (((state_attr('sensor.covid_19_esria_nsw', 'Cases')|int)/8118000)*100)|round(3) }}
-        attribute_templates:
-          casestotests_percent: >
-            {{ (((state_attr('sensor.covid_19_esria_nsw', 'Cases')|int) / (state_attr('sensor.covid_19_esria_nsw', 'Tests')|int))*100)|round(3) }}
-          casestodeaths_percent: >
-            {{ (((state_attr('sensor.covid_19_esria_nsw', 'Deaths')|int) / (state_attr('sensor.covid_19_esria_nsw', 'Cases')|int))*100)|round(3) }}
-          teststopopulation_percent: >
-            {{ (((state_attr('sensor.covid_19_esria_nsw', 'Tests')|int)/8118000)*100)|round(3) }}
-          casespermillion: >
-            {{ (((state_attr('sensor.covid_19_esria_nsw', 'Cases')|int) / 8.118))|round(0) }}
-          testspermillion: >
-            {{ (((state_attr('sensor.covid_19_esria_nsw', 'Tests')|int) / 8.118))|round(0) }}
-          deathspermillion: >
-            {{ (((state_attr('sensor.covid_19_esria_nsw', 'Deaths')|int) / 8.118))|round(0) }}
-      covid_19_esria_aus_cases:
-        friendly_name: "COVID-19 ESRIA AUS Cases"
-        value_template: >
-          {{ (state_attr('sensor.covid_19_esria_act', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_nsw', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_vic', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_qld', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_tas', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_sa', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_nt', 'Cases')|int)
-          + (state_attr('sensor.covid_19_esria_wa', 'Cases')|int)
-          }}
-        unit_of_measurement: People
-        icon_template: mdi:biohazard
-      covid_19_esria_aus_tests:
-        friendly_name: "COVID-19 ESRIA AUS Tests"
-        value_template: >
-          {{ (state_attr('sensor.covid_19_esria_act', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_nsw', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_vic', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_qld', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_tas', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_sa', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_nt', 'Tests')|int)
-          + (state_attr('sensor.covid_19_esria_wa', 'Tests')|int)
-          }}
-        unit_of_measurement: People
-        icon_template: mdi:biohazard
-      covid_19_esria_aus_deaths:
-        friendly_name: "COVID-19 ESRIA AUS Deaths"
-        value_template: >
-          {{ (state_attr('sensor.covid_19_esria_act', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_nsw', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_vic', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_qld', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_tas', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_sa', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_nt', 'Deaths')|int)
-          + (state_attr('sensor.covid_19_esria_wa', 'Deaths')|int)
-          }}
-        unit_of_measurement: People
-        icon_template: mdi:biohazard
+      # covid_19_esria_aus_pct:
+      #   friendly_name: "COVID-19 ESRIA AUS Percents"
+      #   unit_of_measurement: "%"
+      #   icon_template: mdi:biohazard
+      #   value_template: >
+      #     {{ (((states('sensor.covid_19_esria_aus_cases')|int)/25464100)*100)|round(3) }}
+      #   attribute_templates:
+      #     casestotests_percent: >
+      #       {{ (((states('sensor.covid_19_esria_aus_cases')|int) / (states('sensor.covid_19_esria_aus_tests')|int))*100)|round(3) }}
+      #     casestodeaths_percent: >
+      #       {{ (((states('sensor.covid_19_esria_aus_deaths')|int) / (states('sensor.covid_19_esria_aus_cases')|int))*100)|round(3) }}
+      #     casespermillion: >
+      #       {{ (((states('sensor.covid_19_esria_aus_cases')|int) / 25.464))|round(0) }}
+      #     testspermillion: >
+      #       {{ (((states('sensor.covid_19_esria_aus_tests')|int) / 25.464))|round(0) }}
+      #     deathspermillion: >
+      #       {{ (((states('sensor.covid_19_esria_aus_deaths')|int) / 25.464))|round(0) }}
+      # covid_19_esria_nsw_pct:
+      #   friendly_name: "COVID-19 ESRIA NSW Percents"
+      #   unit_of_measurement: "%"
+      #   icon_template: mdi:biohazard
+      #   value_template: >
+      #     {{ (((state_attr('sensor.covid_19_esria_nsw', 'Cases')|int)/8118000)*100)|round(3) }}
+      #   attribute_templates:
+      #     casestotests_percent: >
+      #       {{ (((state_attr('sensor.covid_19_esria_nsw', 'Cases')|int) / (state_attr('sensor.covid_19_esria_nsw', 'Tests')|int))*100)|round(3) }}
+      #     casestodeaths_percent: >
+      #       {{ (((state_attr('sensor.covid_19_esria_nsw', 'Deaths')|int) / (state_attr('sensor.covid_19_esria_nsw', 'Cases')|int))*100)|round(3) }}
+      #     teststopopulation_percent: >
+      #       {{ (((state_attr('sensor.covid_19_esria_nsw', 'Tests')|int)/8118000)*100)|round(3) }}
+      #     casespermillion: >
+      #       {{ (((state_attr('sensor.covid_19_esria_nsw', 'Cases')|int) / 8.118))|round(0) }}
+      #     testspermillion: >
+      #       {{ (((state_attr('sensor.covid_19_esria_nsw', 'Tests')|int) / 8.118))|round(0) }}
+      #     deathspermillion: >
+      #       {{ (((state_attr('sensor.covid_19_esria_nsw', 'Deaths')|int) / 8.118))|round(0) }}
+      # covid_19_esria_aus_cases:
+      #   friendly_name: "COVID-19 ESRIA AUS Cases"
+      #   value_template: >
+      #     {{ (state_attr('sensor.covid_19_esria_act', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_nsw', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_vic', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_qld', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_tas', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_sa', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_nt', 'Cases')|int)
+      #     + (state_attr('sensor.covid_19_esria_wa', 'Cases')|int)
+      #     }}
+      #   unit_of_measurement: People
+      #   icon_template: mdi:biohazard
+      # covid_19_esria_aus_tests:
+      #   friendly_name: "COVID-19 ESRIA AUS Tests"
+      #   value_template: >
+      #     {{ (state_attr('sensor.covid_19_esria_act', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_nsw', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_vic', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_qld', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_tas', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_sa', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_nt', 'Tests')|int)
+      #     + (state_attr('sensor.covid_19_esria_wa', 'Tests')|int)
+      #     }}
+      #   unit_of_measurement: People
+      #   icon_template: mdi:biohazard
+      # covid_19_esria_aus_deaths:
+      #   friendly_name: "COVID-19 ESRIA AUS Deaths"
+      #   value_template: >
+      #     {{ (state_attr('sensor.covid_19_esria_act', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_nsw', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_vic', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_qld', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_tas', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_sa', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_nt', 'Deaths')|int)
+      #     + (state_attr('sensor.covid_19_esria_wa', 'Deaths')|int)
+      #     }}
+      #   unit_of_measurement: People
+      #   icon_template: mdi:biohazard
       covid_19_covidlive_aus_vaccines:
         friendly_name: "COVID-19 Covidlive AUS Vaccines"
         value_template: >

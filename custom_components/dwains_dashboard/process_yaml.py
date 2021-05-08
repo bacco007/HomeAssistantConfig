@@ -1,15 +1,16 @@
-import io
-import json
 import logging
+import yaml
 import os
-import shutil
+import logging
+import json
+import io
 import time
 from collections import OrderedDict
-
 import jinja2
-import yaml
-from homeassistant.exceptions import HomeAssistantError
+import shutil
+
 from homeassistant.util.yaml import Secrets, loader
+from homeassistant.exceptions import HomeAssistantError
 
 from .const import DOMAIN, VERSION
 

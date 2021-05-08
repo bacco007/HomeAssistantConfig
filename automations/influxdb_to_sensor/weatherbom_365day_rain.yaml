@@ -1,7 +1,7 @@
 ---
-id: "influx2sensor_365dayrainbom"
-alias: "InfluxDB to Sensor: 365 Day Rain BOM"
-description: "InfluxDB to Sensor: 365 Day Rain BOM"
+id: "influx2entity_365dayrainbom"
+alias: "InfluxDB to Entity: 365 Day Rain BOM"
+description: "InfluxDB to Entity: 365 Day Rain BOM"
 trigger:
   - platform: homeassistant
     event: start
@@ -9,7 +9,7 @@ trigger:
     hours: "/1"
 condition: []
 action:
-  - service: pyscript.influxdb_query_to_sensor
+  - service: pyscript.influxdb_query_to_entity
     data:
       database: homeassistant
       query: >-
@@ -18,7 +18,7 @@ action:
         GROUP BY time(1d,9h) FILL(null) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: max
-      sensor: sensor.archive_bomrain_365day
+      entity_id: sensor.archive_bomrain_365day
       unit_of_measurement: mm
       friendly_name: BOM - 365 Day - Rain
       icon: "mdi:water"

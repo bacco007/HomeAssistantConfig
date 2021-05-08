@@ -1,7 +1,7 @@
 ---
-id: "influx2sensor_365daymaxtemp"
-alias: "InfluxDB to Sensor: 365 Day Max Temp"
-description: "InfluxDB to Sensor: 365 Day Max Temp"
+id: "influx2entity_365daymaxtemp"
+alias: "InfluxDB to Entity: 365 Day Max Temp"
+description: "InfluxDB to Entity: 365 Day Max Temp"
 trigger:
   - platform: homeassistant
     event: start
@@ -9,7 +9,7 @@ trigger:
     hours: "/1"
 condition: []
 action:
-  - service: pyscript.influxdb_query_to_sensor
+  - service: pyscript.influxdb_query_to_entity
     data:
       database: homeassistant
       query: >-
@@ -19,7 +19,7 @@ action:
         GROUP BY time(1d) FILL(null) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: max
-      sensor: sensor.archive_homeoutsidetemp_max_365day
+      entity_id: sensor.archive_homeoutsidetemp_max_365day
       unit_of_measurement: °C
       friendly_name: Home - 365 Day - Max Temp
       icon: "mdi:thermometer"

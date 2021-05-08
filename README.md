@@ -72,18 +72,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, May 2nd 2021_
+_Stats as at 05:00, Saturday, May 8th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.4.6 | 324     | 2640         | 2163 | 71 |
+| 2021.5.0 | 331     | 2775         | 2251 | 76 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 71
-Binary Sensor | 105
+Automation | 76
+Binary Sensor | 136
 Camera | 5
 Device Tracker | 68
 Group | 9
@@ -91,14 +91,14 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 2
 Light | 4
-Media Player | 23
+Media Player | 25
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2163
+Sensor | 2251
 Sun | 1
-Switch | 99
-Weather | 3
+Switch | 105
+Weather | 6
 Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -116,7 +116,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | --- |
 | [air_quality](https://www.home-assistant.io/components/air_quality) |
 | [air_quality.dyson_local](https://www.home-assistant.io/components/air_quality.dyson_local) |
-| [alexa](https://www.home-assistant.io/components/alexa) |
+| [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
+| [alarm_control_panel.deconz](https://www.home-assistant.io/components/alarm_control_panel.deconz) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
 | [amberelectric](https://www.home-assistant.io/components/amberelectric) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
@@ -141,6 +142,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
+| [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
 | [binary_sensor.spacex](https://www.home-assistant.io/components/binary_sensor.spacex) |
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
@@ -168,6 +170,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
+| [climacell](https://www.home-assistant.io/components/climacell) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
 | [climate.dyson_local](https://www.home-assistant.io/components/climate.dyson_local) |
@@ -211,6 +214,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
 | [glances](https://www.home-assistant.io/components/glances) |
 | [google](https://www.home-assistant.io/components/google) |
+| [google_assistant](https://www.home-assistant.io/components/google_assistant) |
 | [group](https://www.home-assistant.io/components/group) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
@@ -307,6 +311,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
+| [sensor.climacell](https://www.home-assistant.io/components/sensor.climacell) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |
 | [sensor.covid19_covidlive](https://www.home-assistant.io/components/sensor.covid19_covidlive) |
@@ -319,7 +324,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
-| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
@@ -353,7 +357,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
-| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
@@ -362,6 +365,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.solcast](https://www.home-assistant.io/components/sensor.solcast) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
+| [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
@@ -387,6 +391,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
 | [sensor.xbox](https://www.home-assistant.io/components/sensor.xbox) |
 | [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
+| [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [solcast](https://www.home-assistant.io/components/solcast) |
@@ -427,8 +432,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [updater](https://www.home-assistant.io/components/updater) |
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
+| [waze_travel_time](https://www.home-assistant.io/components/waze_travel_time) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
+| [weather.climacell](https://www.home-assistant.io/components/weather.climacell) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.met](https://www.home-assistant.io/components/weather.met) |
 | [webhook](https://www.home-assistant.io/components/webhook) |
@@ -652,7 +659,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [Check Home Assistant configuration]()
 - [ESPHome]()
 - [Eufy Home Assistant MQTT Bridge]()
-- [Forked DAAPD]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab]()

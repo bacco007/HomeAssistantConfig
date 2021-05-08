@@ -2,3 +2,5 @@
 # https://www.home-assistant.io/integrations/shell_command/
 shell_command:
   gen_fakesecrets: bash /config/bin/make_fake_secrets.sh
+  run_yamllint: pip3 install yamllint && cd config && yamllint . > yamlint_error.txt
+  run_sonosfavs: pip3 install soco && cd /config/bin && python3 sonos_favourites.py

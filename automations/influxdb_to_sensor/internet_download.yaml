@@ -1,7 +1,7 @@
 ---
-id: "influx2sensor_internetdownload365day"
-alias: "InfluxDB to Sensor: 365 Day Internet Download"
-description: "InfluxDB to Sensor: 365 Day Internet Download"
+id: "influx2entity_internetdownload365day"
+alias: "InfluxDB to Entity: 365 Day Internet Download"
+description: "InfluxDB to Entity: 365 Day Internet Download"
 trigger:
   - platform: homeassistant
     event: start
@@ -9,7 +9,7 @@ trigger:
     hours: "/1"
 condition: []
 action:
-  - service: pyscript.influxdb_query_to_sensor
+  - service: pyscript.influxdb_query_to_entity
     data:
       database: homeassistant
       query: >-
@@ -19,11 +19,11 @@ action:
         GROUP BY time(1d) FILL(linear) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: value
-      sensor: sensor.archive_internet_download_max_365day
+      entity_id: sensor.archive_internet_download_max_365day
       unit_of_measurement: mbit/s
       friendly_name: Internet Download Speed - Max Speed - 365 Day
       icon: "mdi:download-network"
-  - service: pyscript.influxdb_query_to_sensor
+  - service: pyscript.influxdb_query_to_entity
     data:
       database: homeassistant
       query: >-
@@ -33,11 +33,11 @@ action:
         GROUP BY time(1d) FILL(linear) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: value
-      sensor: sensor.archive_internet_download_min_365day
+      entity_id: sensor.archive_internet_download_min_365day
       unit_of_measurement: mbit/s
       friendly_name: Internet Download Speed - Min Speed - 365 Day
       icon: "mdi:download-network"
-  - service: pyscript.influxdb_query_to_sensor
+  - service: pyscript.influxdb_query_to_entity
     data:
       database: homeassistant
       query: >-
@@ -47,7 +47,7 @@ action:
         GROUP BY time(1d) FILL(linear) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: value
-      sensor: sensor.archive_internet_download_mean_365day
+      entity_id: sensor.archive_internet_download_mean_365day
       unit_of_measurement: mbit/s
       friendly_name: Internet Download Speed - Mean Speed - 365 Day
       icon: "mdi:download-network"

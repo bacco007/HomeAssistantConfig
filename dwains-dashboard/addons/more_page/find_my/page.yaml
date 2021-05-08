@@ -1,0 +1,382 @@
+## Created by Léon van der Linden
+## https://github.com/LRvdLinden
+## More-page add-on: Find My
+## Version-2: 2.0.2
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12"
+  cards:
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-3"
+      cards:
+        #Start of rooms and devices
+        - type: custom:dwains-hash-switch-card
+          default: persons
+          states:
+            #PERSONS VIEW
+            persons:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: People
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#persons"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          name: Devices
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#devices"
+                        - type: custom:button-card
+                          name: Objects
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#objects"
+                - type: vertical-stack
+                  cards:
+                    - type: entities
+                      title: Where is my family?
+                      style: |
+                        ha-card {
+                          border-radius: 10px;
+                          padding-bottom: 10px;
+                          background-color: var(--dwains-theme-primary)
+                        }
+                        :host {
+                          --paper-item-icon-color: var(--dwains-theme-accent) !important;
+                        }
+                        .card-header {
+                          padding: 5px 16px;
+                          font-size: 15px;
+                          font-weight: 700 !important;
+                        }
+                        #states {
+                          padding-top: 0px !important;
+                          padding-bottom: 0px !important;
+                        }
+                        .secondary {
+                          color: darkgray !important;
+                          margin-left: 2px !important;
+                        }
+                      entities:
+                        - entity: person.thomas_baxter
+                          secondary_info: last-updated
+
+            #DEVICES VIEW
+            devices:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: People
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#persons"
+                        - type: custom:button-card
+                          name: Devices
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#devices"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          name: Objects
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#objects"
+                  #devices row 1
+                - type: vertical-stack
+                  cards:
+                    - type: entities
+                      title: Devices
+                      style: |
+                        ha-card {
+                          border-radius: 10px;
+                          padding-bottom: 10px;
+                          background-color: var(--dwains-theme-primary)
+                        }
+                        :host {
+                          --paper-item-icon-color: var(--dwains-theme-accent) !important;
+                        }
+                        .card-header {
+                          padding: 5px 16px;
+                          font-size: 15px;
+                          font-weight: 700 !important;
+                        }
+                        #states {
+                          padding-top: 0px !important;
+                          padding-bottom: 0px !important;
+                        }
+                        .secondary {
+                          color: darkgray !important;
+                          margin-left: 2px !important;
+                        }
+                      entities:
+                        - entity: device_tracker.tbapplewatch_3
+                          name: Apple Watch (tbAppleWatch)
+                          image: /local/apple_entity_picture/watch.png
+                          secondary_info: last-updated
+                          type: "custom:multiple-entity-row"
+                          entities:
+                            - entity: sensor.tbapplewatch_battery_state
+                              name: Battery
+                              unit: "%"
+
+            #OBJECTS VIEW
+            objects:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: People
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#persons"
+                        - type: custom:button-card
+                          name: Devices
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#devices"
+                        - type: custom:button-card
+                          name: Objects
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#objects"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                  #objects row 1
+                - type: vertical-stack
+                  cards:
+                    - type: entities
+                      title: Objecten NAME PERSON # <- fill in the right name
+                      style: |
+                        ha-card {
+                          border-radius: 10px;
+                          padding-bottom: 10px;
+                          background-color: var(--dwains-theme-primary)
+                        }
+                        :host {
+                          --paper-item-icon-color: var(--dwains-theme-accent) !important;
+                        }
+                        .card-header {
+                          padding: 5px 16px;
+                          font-size: 15px;
+                          font-weight: 700 !important;
+                        }
+                        #states {
+                          padding-top: 0px !important;
+                          padding-bottom: 0px !important;
+                        }
+                        .secondary {
+                          color: darkgray !important;
+                          margin-left: 2px !important;
+                        }
+                      entities:
+                        - entity: device_tracker.1 # <- fill in the right device_tracker
+                          name: Keys
+                          icon: ios:key
+                          secondary_info: last-updated
+                        - entity: device_tracker.2 # <- fill in the right device_tracker
+                          name: Bagpack
+                          icon: mdi:bag-personal-outline
+                          secondary_info: last-updated
+                        - entity: device_tracker.3 # <- fill in the right device_tracker
+                          name: Car
+                          icon: mdi:car
+                          secondary_info: last-updated
+
+                  #objects row 2
+                - type: vertical-stack
+                  cards:
+                    - type: entities
+                      title: Objecten #NAME PERSON
+                      style: |
+                        ha-card {
+                          border-radius: 10px;
+                          padding-bottom: 10px;
+                          background-color: var(--dwains-theme-primary)
+                        }
+                        :host {
+                          --paper-item-icon-color: var(--dwains-theme-accent) !important;
+                        }
+                        .card-header {
+                          padding: 5px 16px;
+                          font-size: 15px;
+                          font-weight: 700 !important;
+                        }
+                        #states {
+                          padding-top: 0px !important;
+                          padding-bottom: 0px !important;
+                        }
+                        .secondary {
+                          color: darkgray !important;
+                          margin-left: 2px !important;
+                        }
+                      entities:
+                        - entity: device_tracker.1 # <- fill in the right device_tracker
+                          name: Keys
+                          icon: ios:key
+                          secondary_info: last-updated
+                        - entity: device_tracker.2 # <- fill in the right device_tracker
+                          name: Handbag
+                          icon: ios:bag
+                          secondary_info: last-updated
+                        - entity: device_tracker.3 # <- fill in the right device_tracker
+                          name: Car
+                          icon: mdi:car
+                          secondary_info: last-updated
+
+    #MAP VIEWS
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-9"
+      cards:
+        #Start of rooms and devices
+        - type: custom:dwains-hash-switch-card
+          default: persons
+          states:
+            #PERSONS VIEW MAP
+            persons:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          #name: Personen # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#persons"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          #name: Apparaten # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#devices"
+                        - type: custom:button-card
+                          #name: Objecten # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#objects"
+                - type: map
+                  entities:
+                    - entity: person.thomas_baxter
+                  dark_mode: true
+                  hours_to_show: 24
+
+            #DEVICES VIEW MAP
+            devices:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          #name: Personen # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#persons"
+                        - type: custom:button-card
+                          #name: Apparaten # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#devices"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          #name: Objecten # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#objects"
+                  #devices row 1
+                - type: map
+                  entities:
+                    - entity: device_tracker.tbapplewatch_3
+                      name: Apple Watch (tbAppleWatch)
+                      image: /local/apple_entity_picture/watch.png
+                    - entity: device_tracker.2 # <- fill in the right device_tracker
+                  dark_mode: true
+                  hours_to_show: 24
+
+            #OBJECTS VIEW MAP
+            objects:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          #name: #Personen # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#persons"
+                        - type: custom:button-card
+                          #name: #Apparaten # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#devices"
+                        - type: custom:button-card
+                          #name: #Objecten # <- DONT CHANGE THIS LINE
+                          template: partials_heading_switch
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#objects"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                  #objects row 1
+                - type: map
+                  entities:
+                    - entity: device_tracker.1 # <- fill in the right device_tracker
+                    - entity: device_tracker.2 # <- fill in the right device_tracker
+                  dark_mode: true
+                  hours_to_show: 2
