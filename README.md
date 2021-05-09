@@ -72,34 +72,34 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 8th 2021_
+_Stats as at 05:00, Sunday, May 9th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.5.0 | 331     | 2775         | 2251 | 76 |
+| 2021.5.1 | 332     | 2945         | 2417 | 76 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 76
-Binary Sensor | 136
+Binary Sensor | 137
 Camera | 5
-Device Tracker | 68
+Device Tracker | 53
 Group | 9
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 2
 Light | 4
-Media Player | 25
+Media Player | 20
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2251
+Sensor | 2417
 Sun | 1
-Switch | 105
+Switch | 107
 Weather | 6
-Zone | 3
+Zone | 10
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -187,9 +187,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
+| [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
-| [device_tracker.tile](https://www.home-assistant.io/components/device_tracker.tile) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
@@ -324,6 +324,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
+| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
@@ -357,6 +358,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
+| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
@@ -422,7 +424,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [system_log](https://www.home-assistant.io/components/system_log) |
 | [tag](https://www.home-assistant.io/components/tag) |
 | [template](https://www.home-assistant.io/components/template) |
-| [tile](https://www.home-assistant.io/components/tile) |
 | [timer](https://www.home-assistant.io/components/timer) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [transmission](https://www.home-assistant.io/components/transmission) |
@@ -477,7 +478,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Generate readme](https://github.com/custom-components/readme)
 - [GeoJson Rich Integration](https://github.com/Fusion/python-aio-geojson-query/tree/master/examples/homeassistant)
 - [Google Fit](https://github.com/cyberjunky/home-assistant-google_fit)
-- [Google Home](https://github.com/leikoilja/ha-google-home)
 - [HA Dockermon](https://github.com/custom-components/switch.hadockermon)
 - [HACS](https://hacs.xyz/docs/configuration/start)
 - [HDHomeRun](https://github.com/burnnat/ha-hdhomerun)
@@ -533,7 +533,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Feedparser](https://github.com/custom-components/feedparser) | 📰 RSS Feed Integration |
 | [Folding@Homecontrol](https://github.com/eifinger/hass-foldingathomecontrol) | Homeassistant integration for FoldingAtHomeControl |
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
-| [Google Home](https://github.com/leikoilja/ha-google-home) | Home Assistant Google Home custom component  |
 | [Ha Dyson](https://github.com/shenxn/ha-dyson) | HomeAssitant custom integration for dyson |
 | [Ha Dyson Cloud](https://github.com/shenxn/ha-dyson-cloud) | Cloud integration for ha-dyson (https://github.com/shenxn/ha-dyson/) |
 | [Ha Eufy Security](https://github.com/nonsleepr/ha-eufy-security) | Custom integration of Home Assistant with EufySecurity |

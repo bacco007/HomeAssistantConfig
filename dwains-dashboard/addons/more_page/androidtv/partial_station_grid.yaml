@@ -1,23 +1,38 @@
 ---
-type: conditional
-conditions:
-  - entity: sensor.nvidia_shield_source
-    state: "Live Channels"
-card:
-  type: vertical-stack
-  cards:
-    - name: TV Channels
-      styles:
-        card:
-          - text-transform: uppercase
-          - color: "var(--dwains-theme-accent)"
-          - font-size: 125%
-          - border-radius: 0%
-          - font-weight: 100
-          - height: 15px
-      type: "custom:button-card"
-    - type: custom:dwains-flexbox-card
-      items_classes: "col-xs-4 col-sm-3"
+type: vertical-stack
+cards:
+  - type: conditional
+    conditions:
+      - entity: sensor.nvidia_shield_source
+        state_not: Live Channels
+    card:
+      type: custom:dwains-flexbox-card
+      items_classes: "col-xs-12"
+      cards:
+        - type: custom:button-card
+          name: Launch Live Channels
+          styles:
+            card:
+              - text-transform: uppercase
+              - color: "var(--dwains-theme-accent)"
+              - font-size: 125%
+              - border-radius: 0%
+              - font-weight: 100
+              - height: 10px
+          tap_action:
+            action: call-service
+            service: androidtv.adb_command
+            service_data:
+              entity_id: media_player.nvidia_shield
+              command: "am start -a android.intent.action.VIEW -d -n com.google.android.tv/com.android.tv.TvActivity"
+
+  - type: conditional
+    conditions:
+      - entity: sensor.nvidia_shield_source
+        state: Live Channels
+    card:
+      type: custom:dwains-flexbox-card
+      items_classes: "col-xs-4 col-sm-2"
       cards:
         - type: custom:button-card
           entity: media_player.nvidia_shield

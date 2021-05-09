@@ -34,3 +34,25 @@ influxdb:
       - sensor.covid_19_covidlive_*
       - sensor.tbsmarthome_*_overhead_satellites
       - sensor.archive_*
+      - sensor.getdata_*
+      - binary_sensor.vmtbsh03*
+      - sensor.192_168_1_50*
+      - sensor.date*
+      - sensor.plexstats_*
+      - sensor.rssfeed_*
+      - sensor.time*
+      - sensor.switchmonusb*
+      - sensor.sport_*
+      - sensor.*_uptime
+      - sensor.pvetbsh*
+      - sensor.piserv*
+      - sensor.tbsh01*
+      - sensor.tbsh02*
+      - sensor.tbsh03*
+      - sensor.vmtbsh01*
+      - sensor.vmtbsh02*
+      - sensor.vmtbsh03*
+      - sensor.load*
+      - sensor.processor_use*
+      - sensor.memory_*
+      - sensor.2340_*

@@ -16,6 +16,7 @@ recorder:
       - sensor.radarr_movies
       - sensor.solar_power_factor
       - sensor.solar_phase_a_voltage
+      - sensor.unavailable_entities
       - weather.dark_sky
     entity_globs:
       - binary_sensor.vmtbsh03*
@@ -44,6 +45,8 @@ recorder:
       - sensor.tbsmarthome_*_overhead_satellites
       - sensor.bus_stop_*
       - sensor.archive_*
+      - sensor.2340_*
+      - sensor.getdata_*
     domains:
       - anniversaries
       - automation

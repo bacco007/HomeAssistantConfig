@@ -4,6 +4,14 @@ pyscript:
   allow_all_imports: true
   hass_is_global: true
   apps:
+    getdata_afldraw:
+      friendly_name: "AFL Draw (Sydney Swans)"
+    getdata_f1constructorstandings:
+      friendly_name: "F1 Constructor Standings"
+    getdata_f1driverstandings:
+      friendly_name: "F1 Driver Standings"
+    getdata_nrldraw:
+      friendly_name: "NRL Draw (Newcastle Knights)"
     influxdb_query_to_sensor:
       host: !secret influxdb_host
       port: !secret influxdb_port

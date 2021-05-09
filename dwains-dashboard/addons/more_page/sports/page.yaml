@@ -15,3 +15,101 @@
     type: custom:dwains-flexbox-card
     padding: true
     items_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: custom:stack-in-card
+          cards:
+            - type: custom:flex-table-card
+              title: Swans Draw
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary);
+                }
+                ha-card table {
+                  padding-top: 0px !important;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              clickable: false
+              css:
+                table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+                "tbody tr:nth-child(even)": "background-color: none !important;"
+                "tbody tr:nth-child(odd)": "background-color: none !important;"
+              entities:
+                include: sensor.getdata_afl_draw
+              # max_rows: 10
+              columns:
+                - { data: draw, modify: x.round, name: "Rd" }
+                - { data: draw, modify: x.match, name: "Match" }
+                - {
+                    data: draw,
+                    modify: new Date(x.time).toLocaleString('en-GB'),
+                    name: "Time",
+                  }
+                - { data: draw, modify: x.result, name: "Result" }
+    - type: vertical-stack
+      cards:
+        - type: custom:stack-in-card
+          cards:
+            - type: custom:flex-table-card
+              title: Knights Draw
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary);
+                }
+                ha-card table {
+                  padding-top: 0px !important;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              clickable: false
+              css:
+                table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+                "tbody tr:nth-child(even)": "background-color: none !important;"
+                "tbody tr:nth-child(odd)": "background-color: none !important;"
+              entities:
+                include: sensor.getdata_nrl_draw
+              # max_rows: 10
+              columns:
+                - { data: draw, modify: x.round, name: "Rd" }
+                - { data: draw, modify: x.match, name: "Match" }
+                - {
+                    data: draw,
+                    modify: new Date(x.time).toLocaleString('en-GB'),
+                    name: "Time",
+                  }
+                - { data: draw, modify: x.result, name: "Result" }

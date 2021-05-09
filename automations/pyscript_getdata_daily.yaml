@@ -1,0 +1,24 @@
+---
+id: "pyscript_getdata_daily"
+alias: "PyScript, GetData: Daily"
+description: "PyScript, GetData: Daily"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/12"
+condition: []
+action:
+  - service: pyscript.getdata_f1driverstandings
+    data:
+      icon: "mdi:racing-helmet"
+  - service: pyscript.getdata_f1constructorstandings
+    data:
+      icon: "mdi:racing-helmet"
+  - service: pyscript.getdata_afldraw
+    data:
+      icon: "mdi:football-australian"
+  - service: pyscript.getdata_nrldraw
+    data:
+      icon: "mdi:football"
+mode: single

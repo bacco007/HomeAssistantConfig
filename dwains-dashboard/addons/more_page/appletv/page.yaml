@@ -1,12 +1,18 @@
+---
 # dwains_theme
 
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  items_classes: "col-xs-12 col-sm-12"
+  cards:
+    - entity: media_player.apple_tv_bedroom
+      name: Apple TV
+      type: media-control
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12"
   cards:
     - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-3"
       cards:
-        - entity: media_player.apple_tv_bedroom
-          type: media-control
         - type: grid
           columns: 3
           square: false
@@ -17,9 +23,7 @@
               icon: "mdi:volume-minus"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -45,9 +49,7 @@
                       return
                       states['media_player.lounge_amp'].attributes.is_volume_muted
                       === true
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -59,9 +61,7 @@
               icon: "mdi:volume-plus"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -76,9 +76,7 @@
               icon: "mdi:backburger"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -94,9 +92,7 @@
               icon: "mdi:arrow-up-bold"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -112,9 +108,7 @@
               icon: "mdi:sleep"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -130,9 +124,7 @@
               icon: "mdi:arrow-left-bold"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -148,9 +140,7 @@
               icon: "mdi:selection-ellipse"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -166,9 +156,7 @@
               icon: "mdi:arrow-right-bold"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -182,9 +170,7 @@
               icon: "mdi:home"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -207,9 +193,7 @@
               icon: "mdi:arrow-down-bold"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -223,9 +207,7 @@
               icon: "mdi:menu"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -239,9 +221,7 @@
               icon: "mdi:play-pause"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success
@@ -256,17 +236,13 @@
               icon: ""
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               type: "custom:button-card"
             - entity: remote.apple_tv
               icon: "mdi:skip-next"
               show_icon: true
               show_name: false
-              styles:
-                card:
-                  - height: 90px
+
               tap_action:
                 action: call-service
                 haptic: success

@@ -29,6 +29,7 @@ from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
     CONF_ENTITIES,
     CONF_NAME,
+    CONF_UNIQUE_ID,
     DEVICE_CLASS_TEMPERATURE,
     EVENT_HOMEASSISTANT_START,
     STATE_UNAVAILABLE,
@@ -78,6 +79,7 @@ PLATFORM_SCHEMA = vol.All(
     PLATFORM_SCHEMA.extend(
         {
             vol.Required(CONF_ENTITIES): cv.entity_ids,
+            vol.Optional(CONF_UNIQUE_ID): cv.string,
             vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
             vol.Optional(CONF_START): cv.template,
             vol.Optional(CONF_END): cv.template,
@@ -98,20 +100,27 @@ async def async_setup_platform(
     # Print startup message
     _LOGGER.info(STARTUP_MESSAGE)
 
-    name = config.get(CONF_NAME)
     start = config.get(CONF_START)
     end = config.get(CONF_END)
-    duration = config.get(CONF_DURATION)
-    entities = config.get(CONF_ENTITIES)
-    precision = config.get(CONF_PRECISION)
-    undef = config.get(CONF_PROCESS_UNDEF_AS)
 
     for template in [start, end]:
         if template is not None:
             template.hass = hass
 
     async_add_entities(
-        [AverageSensor(hass, name, start, end, duration, entities, precision, undef)]
+        [
+            AverageSensor(
+                hass,
+                config.get(CONF_UNIQUE_ID),
+                config.get(CONF_NAME),
+                start,
+                end,
+                config.get(CONF_DURATION),
+                config.get(CONF_ENTITIES),
+                config.get(CONF_PRECISION),
+                config.get(CONF_PROCESS_UNDEF_AS),
+            )
+        ]
     )
 
 
@@ -123,6 +132,7 @@ class AverageSensor(Entity):
     def __init__(
         self,
         hass: HomeAssistant,
+        unique_id: Optional[str],
         name: str,
         start,
         end,
@@ -132,7 +142,6 @@ class AverageSensor(Entity):
         undef,
     ):
         """Initialize the sensor."""
-        self._hass = hass
         self._name = name
         self._start_template = start
         self._end_template = end
@@ -152,12 +161,16 @@ class AverageSensor(Entity):
         self.count = 0
         self.min_value = self.max_value = None
 
-        self._unique_id = str(
-            sha1(
-                ";".join(
-                    [str(start), str(duration), str(end), ",".join(self.sources)]
-                ).encode("utf-8")
-            ).hexdigest()
+        self._unique_id = (
+            str(
+                sha1(
+                    ";".join(
+                        [str(start), str(duration), str(end), ",".join(self.sources)]
+                    ).encode("utf-8")
+                ).hexdigest()
+            )
+            if unique_id == "__legacy__"
+            else unique_id
         )
 
     @property
@@ -238,12 +251,10 @@ class AverageSensor(Entity):
             if self._has_period:
                 self.async_schedule_update_ha_state(True)
             else:
-                async_track_state_change(
-                    self._hass, self.sources, sensor_state_listener
-                )
+                async_track_state_change(self.hass, self.sources, sensor_state_listener)
                 sensor_state_listener(None, None, None)
 
-        self._hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, sensor_startup)
+        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, sensor_startup)
 
     @staticmethod
     def _has_state(state) -> bool:
@@ -257,7 +268,7 @@ class AverageSensor(Entity):
 
     def _get_temperature(self, state: LazyState) -> Optional[float]:
         """Get temperature value from entity."""
-        ha_unit = self._hass.config.units.temperature_unit
+        ha_unit = self.hass.config.units.temperature_unit
         domain = split_entity_id(state.entity_id)[0]
         if domain == WEATHER_DOMAIN:
             temperature = state.attributes.get("temperature")
@@ -435,7 +446,7 @@ class AverageSensor(Entity):
         for entity_id in self.sources:
             _LOGGER.debug('Processing entity "%s"', entity_id)
 
-            state = self._hass.states.get(entity_id)  # type: LazyState
+            state = self.hass.states.get(entity_id)  # type: LazyState
 
             if state is None:
                 _LOGGER.error('Unable to find an entity "%s"', entity_id)
@@ -455,7 +466,7 @@ class AverageSensor(Entity):
                 if self._temperature_mode:
                     _LOGGER.debug("%s is a temperature entity.", entity_id)
                     self._device_class = DEVICE_CLASS_TEMPERATURE
-                    self._unit_of_measurement = self._hass.config.units.temperature_unit
+                    self._unit_of_measurement = self.hass.config.units.temperature_unit
                 else:
                     _LOGGER.debug("%s is NOT a temperature entity.", entity_id)
                     self._icon = state.attributes.get(ATTR_ICON)

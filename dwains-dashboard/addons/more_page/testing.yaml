@@ -164,75 +164,75 @@
                 zoomout: false
                 pan: false
                 reset: true
-    - type: custom:apexcharts-card
-      graph_span: 48h1s
-      header:
-        show: true
-        title: "Dark Sky Forecast - Tamworth Airport"
-      span:
-        start: hour
-        offset: -1s
-      apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, lineCap: "square", dashArray: [0, 10] }
-        legend: { show: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Temp"
-            title:
-              text: "Temperature (°C)"
-          - seriesName: "Rainfall"
-            title:
-              text: "Rainfall (mm)"
-            min: 0
-            opposite: true
+    # - type: custom:apexcharts-card
+    #   graph_span: 48h1s
+    #   header:
+    #     show: true
+    #     title: "Dark Sky Forecast - Tamworth Airport"
+    #   span:
+    #     start: hour
+    #     offset: -1s
+    #   apex_config:
+    #     chart: { type: "area", height: 300 }
+    #     stroke: { show: true, lineCap: "square", dashArray: [0, 10] }
+    #     legend: { show: false }
+    #     fill:
+    #       {
+    #         type: "gradient",
+    #         gradient:
+    #           {
+    #             shadeIntensity: 1,
+    #             inverseColors: false,
+    #             opacityFrom: 0.45,
+    #             opacityTo: 0.05,
+    #             stops: [20, 100, 100, 100],
+    #           },
+    #       }
+    #     xaxis:
+    #       {
+    #         type: "datetime",
+    #         labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+    #       }
+    #     yaxis:
+    #       - seriesName: "Temp"
+    #         title:
+    #           text: "Temperature (°C)"
+    #       - seriesName: "Rainfall"
+    #         title:
+    #           text: "Rainfall (mm)"
+    #         min: 0
+    #         opposite: true
 
-      series:
-        - entity: weather.dark_sky
-          name: Temperature
-          type: area
-          color: "#121619"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "°C"
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.temperature];
-            });
-          group_by:
-            func: last
-            duration: 1h
-        - entity: weather.dark_sky
-          name: Rainfall
-          type: area
-          color: "#1192e8"
-          extend_to_end: false
-          stroke_width: 2
-          unit: "mm"
-          curve: stepline
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.precipitation || 0];
-            });
-          group_by:
-            func: last
-            duration: 1h
+    #   series:
+    #     - entity: weather.dark_sky
+    #       name: Temperature
+    #       type: area
+    #       color: "#121619"
+    #       extend_to_end: false
+    #       stroke_width: 3
+    #       unit: "°C"
+    #       data_generator: |
+    #         return entity.attributes.forecast.map((entry) => {
+    #           return [new Date(entry.datetime), entry.temperature];
+    #         });
+    #       group_by:
+    #         func: last
+    #         duration: 1h
+    #     - entity: weather.dark_sky
+    #       name: Rainfall
+    #       type: area
+    #       color: "#1192e8"
+    #       extend_to_end: false
+    #       stroke_width: 2
+    #       unit: "mm"
+    #       curve: stepline
+    #       data_generator: |
+    #         return entity.attributes.forecast.map((entry) => {
+    #           return [new Date(entry.datetime), entry.precipitation || 0];
+    #         });
+    #       group_by:
+    #         func: last
+    #         duration: 1h
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
@@ -318,6 +318,93 @@
           data_generator: |
             return entity.attributes.forecast.map((entry) => {
               return [new Date(entry.datetime), entry.templow];
+            });
+
+    - type: custom:apexcharts-card
+      graph_span: 24h30min
+      header:
+        show: true
+        title: "Climacell Hourly Forecast - Tamworth Airport"
+      span:
+        start: hour
+        offset: -30min
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Rainfall"
+            decimalsInFloat: 0
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+          - seriesName: "High"
+            decimalsInFloat: 0
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "Prob"
+            title:
+              text: "Rain Probability (%)"
+            show: true
+            min: 0
+            max: 100
+            decimalsInFloat: 0
+            opposite: true
+
+      series:
+        - entity: weather.climacell_hourly
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "mm"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation];
+            });
+        - entity: weather.climacell_hourly
+          name: High
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "°C"
+          show:
+            datalabels: true
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.temperature];
+            });
+        - entity: weather.climacell_hourly
+          name: Low
+          type: area
+          color: "#0043ce"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "%"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation_probability];
             });
 
 - type: custom:dwains-flexbox-card

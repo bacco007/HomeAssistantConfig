@@ -71,7 +71,7 @@ rules:
       themes.yaml
       switch.yaml
       fake-secrets.yaml
-      lovelace/custom_header/settings.yaml
+      integrations/packages/covid19.yaml
     level: warning
     max: 600
     allow-non-breakable-words: true

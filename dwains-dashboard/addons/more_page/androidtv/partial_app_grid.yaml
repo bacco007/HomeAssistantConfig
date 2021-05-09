@@ -1,6 +1,6 @@
 ---
 type: custom:dwains-flexbox-card
-items_classes: "col-xs-4 col-sm-3"
+items_classes: "col-xs-4 col-sm-2"
 cards:
   - type: custom:button-card
     entity: media_player.nvidia_shield
@@ -13,6 +13,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Binge')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Binge')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -30,6 +43,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Kayo')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Kayo')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -47,6 +73,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Netflix')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Netflix')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -64,6 +103,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Spotify')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Spotify')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -81,6 +133,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Live Channels')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Live Channels')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -98,6 +163,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == '9Now')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == '9Now')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -115,6 +193,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'SBS On Demand')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'SBS On Demand')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -132,6 +223,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'ABC iView')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'ABC iView')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -149,6 +253,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == '10play')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == '10play')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -166,6 +283,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Optus Sport')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Optus Sport')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -183,6 +313,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'YouTube')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'YouTube')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -200,6 +343,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == '7 Plus')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == '7 Plus')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -217,6 +373,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Stan')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Stan')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -234,6 +403,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Plex')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Plex')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -251,6 +433,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Foxtel')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Foxtel')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: androidtv.adb_command
@@ -268,6 +463,19 @@ cards:
     styles:
       entity_picture:
         - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Prime Video')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.nvidia_shield_source'].state == 'Prime Video')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
     tap_action:
       action: call-service
       service: media_player.select_source

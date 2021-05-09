@@ -1,174 +1,5 @@
 # dwains_theme
 
-# - type: picture
-#   image: 'https://wallpaperscave.com/images/original/17/12-14/earth-bougainvillea-3407.jpg'
-#   style: |
-#     ha-card {
-#       height: 125px;
-#       border-radius: 2.5px;
-#     }
-
-- type: custom:stack-in-card
-  style: |
-    ha-card {
-      color: teal;
-      border-radius: 2.5px;
-    }
-  cards:
-    - type: custom:dwains-flexbox-card
-      items_classes: "col-xs-12 col-md-12 col-lg-6 col-xl-6"
-      cards:
-        # - type: horizontal-stack
-        #   cards:
-        - type: vertical-stack
-          cards:
-            - type: markdown
-              style: |
-                ha-card { box-shadow: none; }
-                ha-markdown { padding-bottom: 1px !important; }
-              content: >
-                **WaterNSW**
-
-        - type: vertical-stack
-          cards:
-            - type: entities
-              style: |
-                ha-card { box-shadow: none; }
-              #   #states { padding-top: 0px; padding-bottom: 0px }
-              entities:
-                - type: custom:bar-card
-                  name: Chaffey Dam
-                  entity: sensor.waternsw_chaffey_dam_storage
-                  entity_row: true
-                  animation:
-                    state: on
-                  positions:
-                    minmax: inside
-                    title: inside
-                    value: inside
-                  icon: mdi:water
-                  severity:
-                    - color: rgb(141, 252, 124)
-                      from: 0
-                      to: 100
-                  style: |
-                    ha-icon {
-                      color: var(--dwains-theme-accent) !important;
-                    }
-                    .contentbar-direction-right {
-                    flex-direction: column;
-                    }
-                    .min-direction-right {
-                      margin: 0px;
-                      margin-left: 4px;
-                      margin-right: auto;
-                      margin-bottom: -20px;
-                      bottom: 10px;
-                    }
-                      bar-card-value {
-                      margin: 0px;
-                    }
-                    bar-card-name {
-                      margin: 0px;
-                    }
-                    bar-card-max {
-                      margin: 0px;
-                      margin-left: auto;
-                      margin-top: -20px;
-                      top: 10px;
-                    }
-                    bar-card-divider {
-                      display: none;
-                    }
-                - type: custom:bar-card
-                  name: Keepit Dam
-                  entity: sensor.waternsw_keepit_dam_storage
-                  entity_row: true
-                  animation:
-                    state: on
-                  positions:
-                    minmax: inside
-                    title: inside
-                    value: inside
-                  icon: mdi:water
-                  severity:
-                    - color: rgb(141, 252, 124)
-                      from: 0
-                      to: 100
-                  style: |
-                    ha-icon {
-                      color: var(--dwains-theme-accent) !important;
-                    }
-                    .contentbar-direction-right {
-                    flex-direction: column;
-                    }
-                    .min-direction-right {
-                      margin: 0px;
-                      margin-left: 4px;
-                      margin-right: auto;
-                      margin-bottom: -20px;
-                      bottom: 10px;
-                    }
-                      bar-card-value {
-                      margin: 0px;
-                    }
-                    bar-card-name {
-                      margin: 0px;
-                    }
-                    bar-card-max {
-                      margin: 0px;
-                      margin-left: auto;
-                      margin-top: -20px;
-                      top: 10px;
-                    }
-                    bar-card-divider {
-                      display: none;
-                    }
-                - type: custom:bar-card
-                  name: Split Rock Dam
-                  entity: sensor.waternsw_split_rock_dam_storage
-                  entity_row: true
-                  animation:
-                    state: on
-                  positions:
-                    minmax: inside
-                    title: inside
-                    value: inside
-                  icon: mdi:water
-                  severity:
-                    - color: rgb(141, 252, 124)
-                      from: 0
-                      to: 100
-                  style: |
-                    ha-icon {
-                      color: var(--dwains-theme-accent) !important;
-                    }
-                    .contentbar-direction-right {
-                    flex-direction: column;
-                    }
-                    .min-direction-right {
-                      margin: 0px;
-                      margin-left: 4px;
-                      margin-right: auto;
-                      margin-bottom: -20px;
-                      bottom: 10px;
-                    }
-                      bar-card-value {
-                      margin: 0px;
-                    }
-                    bar-card-name {
-                      margin: 0px;
-                    }
-                    bar-card-max {
-                      margin: 0px;
-                      margin-left: auto;
-                      margin-top: -20px;
-                      top: 10px;
-                    }
-                    bar-card-divider {
-                      display: none;
-                    }
-
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
   cards:
@@ -471,3 +302,87 @@
               name: Releases (24hrs)
             - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
               name: Evaporation (24hrs)
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-12 col-xl-12"
+  cards:
+    - type: "custom:apexcharts-card"
+      header:
+        title: Dams - Last 365 Days
+        show: true
+        show_states: false
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, lineCap: "square" }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        yaxis:
+          - seriesName: "High"
+            decimalsInFloat: 0
+            title:
+              text: "Dam Storage (%)"
+            min: 0
+            max: 100
+      series:
+        - entity: sensor.archive_waternsw_chaffeydam_30day
+          name: Chaffey Dam
+          type: area
+          extend_to_end: false
+          stroke_width: 3
+          unit: "%"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+        - entity: sensor.archive_waternsw_keepitdam_30day
+          name: Keepit Dam
+          type: area
+          extend_to_end: false
+          stroke_width: 3
+          unit: "%"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+        - entity: sensor.archive_waternsw_splitrockdam_30day
+          name: Split Rock Dam
+          type: area
+          extend_to_end: false
+          stroke_width: 3
+          unit: "%"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+      graph_span: 365days
+      all_series_config:
+        type: line
+        group_by:
+          func: sum
+          duration: 1d

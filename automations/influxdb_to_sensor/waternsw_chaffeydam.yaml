@@ -1,0 +1,54 @@
+---
+id: "influx2entity_365daychaffeydam"
+alias: "InfluxDB to Entity: 365 Day Chaffey Dam"
+description: "InfluxDB to Entity: 365 Day Chaffey Dam"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/1"
+condition: []
+action:
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT mean("value")
+        FROM "homeassistant"."autogen"."%"
+        WHERE time >= now() - 365d AND "entity_id"='waternsw_chaffey_dam_storage'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: mean
+      entity_id: sensor.archive_waternsw_chaffeydam_30day
+      unit_of_measurement: "%"
+      friendly_name: Chaffey Dam - 365 Day - Percent
+      icon: "mdi:water"
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT mean("value")
+        FROM "homeassistant"."autogen"."%"
+        WHERE time >= now() - 365d AND "entity_id"='waternsw_keepit_dam_storage'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: mean
+      entity_id: sensor.archive_waternsw_keepitdam_30day
+      unit_of_measurement: "%"
+      friendly_name: Keepit Dam - 365 Day - Percent
+      icon: "mdi:water"
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT mean("value")
+        FROM "homeassistant"."autogen"."%"
+        WHERE time >= now() - 365d AND "entity_id"='waternsw_split_rock_dam_storage'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: mean
+      entity_id: sensor.archive_waternsw_splitrockdam_30day
+      unit_of_measurement: "%"
+      friendly_name: Split Rock Dam - 365 Day - Percent
+      icon: "mdi:water"
+mode: single
