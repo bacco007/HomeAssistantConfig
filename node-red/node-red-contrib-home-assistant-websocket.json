@@ -2,31 +2,31 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 252,
+        "state": 268,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 326,
+        "state": 322,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 7,
+        "state": 4,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 176,
+        "state": 182,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 39,
+        "state": 36,
         "attributes": {}
       }
     },
@@ -230,7 +230,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 123.412,
+        "state": 95.255,
         "attributes": {}
       }
     },
@@ -298,11 +298,11 @@
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 24.114,
+        "state": 24.109,
         "attributes": {
           "max": 41.7,
           "min": 9.5,
-          "avg": 24.114,
+          "avg": 24.109,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -311,11 +311,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 26.406,
+        "state": 26.404,
         "attributes": {
           "max": 43.78,
           "min": 8.4,
-          "avg": 26.406,
+          "avg": 26.404,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -324,7 +324,7 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 63.19,
+        "state": 63.6,
         "attributes": {}
       }
     },
@@ -356,13 +356,13 @@
         "attributes": {
           "model": "UDM",
           "version": "1.9.3.3438",
-          "data": "75.4 GB",
+          "data": "78.1 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "1d 7hr 14min",
+          "uptime": "1d 8hr 4min",
           "lastseen": "a few seconds ago"
         }
       }
@@ -514,7 +514,7 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "18.93",
+        "state": "17.80",
         "attributes": {}
       }
     },
@@ -667,7 +667,7 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 17.11,
+        "state": 14.78,
         "attributes": {}
       }
     },
