@@ -37,12 +37,12 @@ jobs:
       matrix:
         version: ["stable", "beta", "dev"]
     steps:
-      - name: ⤵️ Check out configuration from GitHub
+      - name: ⤵️  Check out configuration from GitHub
         uses: actions/checkout@v2.3.4
-      - name: ➕ Create dummy files
+      - name: ➕  Create dummy files
         run: |
           touch ./home-assistant.log
-      - name: 🚀 Run Home Assistant Configuration Check
+      - name: 🚀  Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.0.4
         with:
           secrets: ./fake_secrets.yaml
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [yamllint]
     steps:
-      - name: ⤵️ Check out configuration from GitHub
+      - name: ⤵️  Check out configuration from GitHub
         uses: actions/checkout@v2.3.4
       - name: Set up Python 3.8
         uses: actions/setup-python@v2.2.2
@@ -71,25 +71,3 @@ jobs:
         # yamllint disable rule:line-length
         run: |
           for file in $(find ./esphome -type f -name "*.yaml" -not -name "secrets.yaml"); do esphome "${file}" config; done
-
-  # home_assistant_stable:
-  #   name: "Home Assistant - Stable"
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Getting configuration from GitHub
-  #       uses: actions/checkout@master
-  #     - name: Create secrets.yaml
-  #       run: mv fake_secrets.yaml secrets.yaml
-  #     - name: Delete Android TV
-  #       run: rm entities/media_players/androidtv.yaml
-  #     - name: Make Config/Blueprints folder
-  #       run: mkdir ./config && mkdir ./config/blueprints
-  #     - name: Home Assistant Version
-  #       uses: "docker://homeassistant/home-assistant:stable"
-  #       with:
-  #         args: |
-  #           python -m homeassistant --version
-  #     - name: Home Assistant Check Stable
-  #       uses: "docker://homeassistant/home-assistant:stable"
-  #       with:
-  #         args: python -m homeassistant --config . --script check_config --info all

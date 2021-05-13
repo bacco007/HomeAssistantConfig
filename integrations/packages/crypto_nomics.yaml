@@ -3,7 +3,6 @@ rest:
   - resource: !secret nomics_url
     scan_interval: 600
     sensor:
-      ### BTC
       - name: "Crypto - BTC"
         json_attributes_path: "$.[0]"
         value_template: "{{ value_json[0].price | round(4) }}"
@@ -42,7 +41,6 @@ rest:
         value_template: '{{ value_json[0]["30d"]["price_change"] | round(4) }}'
         json_attributes:
           - price_change_pct
-      ### ETH
       - name: "Crypto - ETH"
         json_attributes_path: "$.[1]"
         value_template: "{{ value_json[1].price | round(4) }}"
@@ -81,7 +79,6 @@ rest:
         value_template: '{{ value_json[1]["30d"]["price_change"] | round(4) }}'
         json_attributes:
           - price_change_pct
-        ### DOGE
       - name: "Crypto - DOGE"
         json_attributes_path: "$.[2]"
         value_template: "{{ value_json[2].price | round(4) }}"
