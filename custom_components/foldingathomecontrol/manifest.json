@@ -5,12 +5,12 @@
   "issue_tracker": "https://github.com/eifinger/hass-foldingathomecontrol/issues",
   "dependencies": [],
   "config_flow": true,
-  "version": "2.0.12",
+  "version": "2.0.13",
   "codeowners": [
     "@eifinger"
   ],
   "requirements": [
-    "PyFoldingAtHomeControl==2.0.0"
+    "PyFoldingAtHomeControl==2.0.1"
   ],
   "iot_class": "local_push"
 }

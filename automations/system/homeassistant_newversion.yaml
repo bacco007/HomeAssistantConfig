@@ -1,5 +1,6 @@
 ---
-alias: Admin - New Home Assistant Version
+alias: System - New Home Assistant Version
+id: 49e48ef4-c7e2-4c71-8de7-f1f04dd990f1
 trigger:
   - platform: state
     entity_id: sensor.ha_latest_version

@@ -1,0 +1,160 @@
+---
+rest:
+  - resource: !secret nomics_url
+    scan_interval: 600
+    sensor:
+      ### BTC
+      - name: "Crypto - BTC"
+        json_attributes_path: "$.[0]"
+        value_template: "{{ value_json[0].price | round(4) }}"
+        unit_of_measurement: "AUD"
+        json_attributes:
+          - name
+          - symbol
+          - price
+          - logo_url
+          - rank
+          - high
+          - high_timestamp
+          - market_cap
+          - first_trade
+      - name: "Crypto - BTC - 1 Hr"
+        json_attributes_path: "$.[0].1h"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[0]["1h"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - BTC - 1 D"
+        json_attributes_path: "$.[0].1d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[0]["1d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - BTC - 7 D"
+        json_attributes_path: "$.[0].7d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[0]["7d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - BTC - 30 D"
+        json_attributes_path: "$.[0].30d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[0]["30d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      ### ETH
+      - name: "Crypto - ETH"
+        json_attributes_path: "$.[1]"
+        value_template: "{{ value_json[1].price | round(4) }}"
+        unit_of_measurement: "AUD"
+        json_attributes:
+          - name
+          - symbol
+          - price
+          - logo_url
+          - rank
+          - high
+          - high_timestamp
+          - market_cap
+          - first_trade
+      - name: "Crypto - ETH - 1 Hr"
+        json_attributes_path: "$.[1].1h"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[1]["1h"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - ETH - 1 D"
+        json_attributes_path: "$.[1].1d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[1]["1d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - ETH - 7 D"
+        json_attributes_path: "$.[1].7d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[1]["7d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - ETH - 30 D"
+        json_attributes_path: "$.[1].30d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[1]["30d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+        ### DOGE
+      - name: "Crypto - DOGE"
+        json_attributes_path: "$.[2]"
+        value_template: "{{ value_json[2].price | round(4) }}"
+        unit_of_measurement: "AUD"
+        json_attributes:
+          - name
+          - symbol
+          - price
+          - logo_url
+          - rank
+          - high
+          - high_timestamp
+          - market_cap
+          - first_trade
+      - name: "Crypto - DOGE - 1 Hr"
+        json_attributes_path: "$.[2].1h"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[2]["1h"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - DOGE - 1 D"
+        json_attributes_path: "$.[3].1d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[2]["1d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - DOGE - 7 D"
+        json_attributes_path: "$.[3].7d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[2]["7d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - DOGE - 30 D"
+        json_attributes_path: "$.[3].30d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[2]["30d"]["price_change"] | round(4) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - SHIB"
+        json_attributes_path: "$.[3]"
+        value_template: "{{ value_json[3].price | round(8) }}"
+        unit_of_measurement: "AUD"
+        json_attributes:
+          - name
+          - symbol
+          - price
+          - logo_url
+          - rank
+          - high
+          - high_timestamp
+          - market_cap
+          - first_trade
+      - name: "Crypto - SHIB - 1 Hr"
+        json_attributes_path: "$.[3].1h"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[3]["1h"]["price_change"] | round(8) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - SHIB - 1 D"
+        json_attributes_path: "$.[3].1d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[3]["1d"]["price_change"] | round(8) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - SHIB - 7 D"
+        json_attributes_path: "$.[3].7d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[3]["7d"]["price_change"] | round(8) }}'
+        json_attributes:
+          - price_change_pct
+      - name: "Crypto - SHIB - 30 D"
+        json_attributes_path: "$.[3].30d"
+        unit_of_measurement: "AUD"
+        value_template: '{{ value_json[3]["30d"]["price_change"] | round(8) }}'
+        json_attributes:
+          - price_change_pct

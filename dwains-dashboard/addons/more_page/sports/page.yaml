@@ -14,7 +14,7 @@
   card:
     type: custom:dwains-flexbox-card
     padding: true
-    items_classes: "col-xs-12 col-sm-6 col-md-6 col-lg-6"
+    items_classes: "col-xs-12 col-sm-4 col-md-4 col-lg-4"
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
@@ -58,14 +58,66 @@
                 include: sensor.getdata_afl_draw
               # max_rows: 10
               columns:
-                - { data: draw, modify: x.round, name: "Rd" }
-                - { data: draw, modify: x.match, name: "Match" }
+                - { data: draw, align: center, modify: x.round, name: "Rd" }
+                - { data: draw, align: center, modify: x.match, name: "Match" }
                 - {
                     data: draw,
+                    align: center,
                     modify: new Date(x.time).toLocaleString('en-GB'),
                     name: "Time",
                   }
-                - { data: draw, modify: x.result, name: "Result" }
+                - {
+                    data: draw,
+                    align: center,
+                    modify: x.result,
+                    name: "Result",
+                  }
+            - type: custom:flex-table-card
+              title: AFL Table
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary);
+                }
+                ha-card table {
+                  padding-top: 0px !important;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              clickable: false
+              css:
+                table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+                "tbody tr:nth-child(even)": "background-color: none !important;"
+                "tbody tr:nth-child(odd)": "background-color: none !important;"
+              entities:
+                include: sensor.getdata_afl_ladder
+              # max_rows: 10
+              columns:
+                - { data: ladder, align: center, modify: x.position, name: "#" }
+                - { data: ladder, align: center, modify: x.team, name: "Team" }
+                - { data: ladder, align: center, modify: x.form, name: "Form" }
+                - { data: ladder, align: right, modify: x.percent, name: "%" }
+                - {
+                    data: ladder,
+                    align: center,
+                    modify: x.nextgame,
+                    name: "Next",
+                  }
+                - { data: ladder, align: right, modify: x.points, name: "Pts" }
     - type: vertical-stack
       cards:
         - type: custom:stack-in-card
@@ -105,11 +157,68 @@
                 include: sensor.getdata_nrl_draw
               # max_rows: 10
               columns:
-                - { data: draw, modify: x.round, name: "Rd" }
-                - { data: draw, modify: x.match, name: "Match" }
+                - { data: draw, align: center, modify: x.round, name: "Rd" }
+                - { data: draw, align: center, modify: x.match, name: "Match" }
                 - {
                     data: draw,
+                    align: center,
                     modify: new Date(x.time).toLocaleString('en-GB'),
                     name: "Time",
                   }
-                - { data: draw, modify: x.result, name: "Result" }
+                - {
+                    data: draw,
+                    align: center,
+                    modify: x.result,
+                    name: "Result",
+                  }
+            - type: custom:flex-table-card
+              title: NRL Table
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary);
+                }
+                ha-card table {
+                  padding-top: 0px !important;
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              clickable: false
+              css:
+                table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+                "tbody tr:nth-child(even)": "background-color: none !important;"
+                "tbody tr:nth-child(odd)": "background-color: none !important;"
+              entities:
+                include: sensor.getdata_nrl_ladder
+              # max_rows: 10
+              columns:
+                - { data: ladder, align: center, modify: x.position, name: "#" }
+                - { data: ladder, align: center, modify: x.team, name: "Team" }
+                - { data: ladder, align: center, modify: x.form, name: "Form" }
+                - {
+                    data: ladder,
+                    align: right,
+                    modify: x.difference,
+                    name: "Diff",
+                  }
+                - {
+                    data: ladder,
+                    align: center,
+                    modify: x.nextgame,
+                    name: "Next",
+                  }
+                - { data: ladder, align: right, modify: x.points, name: "Pts" }

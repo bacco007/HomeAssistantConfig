@@ -1,5 +1,6 @@
 ---
-alias: Admin - HA Supervisor Addon Available
+alias: System - HA Supervisor Addon Available
+id: 5c460e93-8cb2-45ef-bbb5-a62b0035c9bc
 trigger:
   - platform: state
     entity_id: sensor.supervisor_installed

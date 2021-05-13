@@ -4,7 +4,7 @@ import {
   css,
 } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
 
-const VERSION = "0.0.1";
+const VERSION = "0.0.2";
 
 function hasConfigOrEntityChanged(element, changedProps) {
   if (changedProps.has("_config")) {
@@ -44,17 +44,16 @@ class SportsCard extends LitElement {
     var picture = this.hass.states[sensor].attributes.entity_picture;
     var nexttime = this.hass.states[sensor].attributes.nexttime;
     var nextevent = this.hass.states[sensor].attributes.nextevent;
-    var nextlocation = this.hass.states[sensor].attributes.nextlocation;
     return html`
       <div class="schedule">
         <div class="schedule-main">
           <div class="schedule-main-left">
             <div class="schedule-main-left-info">
               <div class="left-title">${name}</div>
-              <!-- <div class="left-subtitle">Subtitle</div> -->
+              <div class="left-subtitle">${nextevent}</div>
             </div>
           </div>
-          <div class="schedule-main-middle"></div>
+          <!-- <div class="schedule-main-middle"></div> -->
           <div class="schedule-main-right">
             <div class="schedule-main-right-date">${nexttime}</div>
             <div class="schedule-main-right-logo">
@@ -62,7 +61,9 @@ class SportsCard extends LitElement {
             </div>
           </div>
         </div>
-        <div class="schedule-detail">${nextevent}</div>
+        <!--
+        <div class="schedule-detail"></div>
+        -->
       </div>
     `;
   }
@@ -91,7 +92,7 @@ class SportsCard extends LitElement {
     return css`
       body {
         font-family: Open Sans, Helvetica, Arial, Verdana, sans-serif;
-        background: #f2f2f7;
+        #background: #f2f2f7;
       }
       .schedule {
         max-width: 100%;
@@ -100,7 +101,7 @@ class SportsCard extends LitElement {
         #padding-bottom: 10px;
       }
       .schedule-main {
-        background: #e2e2e2;
+        #background: #e2e2e2;
         display: flex;
       }
       .schedule-main-left {
@@ -152,7 +153,7 @@ class SportsCard extends LitElement {
         width: 105px;
         margin-left: 10px;
         overflow: hidden;
-        background: #fff;
+        #background: #fff;
         z-index: 1;
       }
       .schedule-main-middle:before,
@@ -162,9 +163,9 @@ class SportsCard extends LitElement {
         top: 0;
         left: 0;
         bottom: 0;
-        border-color: transparent transparent transparent #e2e2e2;
-        border-style: solid;
-        border-width: 60px 0 0 15px;
+        #border-color: transparent transparent transparent #e2e2e2;
+        #border-style: solid;
+        #border-width: 60px 0 0 15px;
       }
       .schedule-main-middle:after {
         content: "";
@@ -172,15 +173,15 @@ class SportsCard extends LitElement {
         top: 0;
         right: 0;
         bottom: 0;
-        border-color: transparent #e2e2e2 transparent transparent;
-        border-style: solid;
-        border-width: 0 15px 60px 0;
+        #border-color: transparent #e2e2e2 transparent transparent;
+        #border-style: solid;
+        #border-width: 0 15px 60px 0;
       }
       .schedule-main-right-logo img {
         display: block;
         text-align: center;
-        color: #212121;
-        background: #fff;
+        #color: #212121;
+        #background: #fff;
         max-height: 95%;
         max-width: 80%;
         width: auto;
@@ -208,9 +209,9 @@ class SportsCard extends LitElement {
         text-overflow: ellipsis;
       }
       .schedule-detail {
-        background: #fff;
+        #background: #fff;
         padding: 10px !important;
-        border-radius: 0 0 5px 5px;
+        #border-radius: 0 0 5px 5px;
         text-align: center;
       }
     `;

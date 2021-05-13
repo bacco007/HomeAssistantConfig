@@ -1,5 +1,6 @@
 ---
-alias: Admin - Home Assistant Stopped
+alias: System - Home Assistant Stopped
+id: d1ad0063-ee92-4584-8b72-0084511e4609
 trigger:
   - platform: homeassistant
     event: shutdown

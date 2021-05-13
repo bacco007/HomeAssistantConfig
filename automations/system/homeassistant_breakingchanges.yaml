@@ -1,5 +1,6 @@
 ---
-alias: Admin - Potential Breaking Changes
+alias: System - Potential Breaking Changes
+id: 42799bfa-bae3-41d6-be4e-c1fd21798e0c
 initial_state: true
 trigger:
   - platform: numeric_state

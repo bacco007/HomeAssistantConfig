@@ -1,0 +1,183 @@
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: custom:flex-table-card
+      title: WUD - tbsh01
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary);
+        }
+        ha-card table {
+          padding-top: 0px !important;
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      clickable: false
+      css:
+        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
+      entities:
+        include: binary_sensor.wud_tbsh01*
+      # max_rows: 10
+      sort_by: containerName+
+      columns:
+        - data: containerName
+          name: Container Name
+        - data: image
+          name: Image
+        - data: versionDate
+          modify: new Date(x).toLocaleString('en-GB')
+          name: "Date"
+        - data: state
+          name: "Update?"
+    - type: custom:flex-table-card
+      title: WUD - tbsh03
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary);
+        }
+        ha-card table {
+          padding-top: 0px !important;
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      clickable: false
+      css:
+        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
+      entities:
+        include: binary_sensor.wud_tbsh03*
+      # max_rows: 10
+      sort_by: containerName+
+      columns:
+        - data: containerName
+          name: Container Name
+        - data: image
+          name: Image
+        - data: versionDate
+          modify: new Date(x).toLocaleString('en-GB')
+          name: "Date"
+        - data: state
+          name: "Update?"
+    - type: custom:flex-table-card
+      title: WUD - vmtbsh01
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary);
+        }
+        ha-card table {
+          padding-top: 0px !important;
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      clickable: false
+      css:
+        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
+      entities:
+        include: binary_sensor.wud_vmtbsh01*
+      # max_rows: 10
+      sort_by: containerName+
+      columns:
+        - data: containerName
+          name: Container Name
+        - data: image
+          name: Image
+        - data: versionDate
+          modify: new Date(x).toLocaleString('en-GB')
+          name: "Date"
+        - data: state
+          name: "Update?"
+    - type: custom:flex-table-card
+      title: WUD - vmtbsh02
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary);
+        }
+        ha-card table {
+          padding-top: 0px !important;
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      clickable: false
+      css:
+        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+        "tbody tr:nth-child(even)": "background-color: none !important;"
+        "tbody tr:nth-child(odd)": "background-color: none !important;"
+      entities:
+        include: binary_sensor.wud_vmtbsh02*
+      # max_rows: 10
+      sort_by: containerName+
+      columns:
+        - data: containerName
+          name: Container Name
+        - data: image
+          name: Image
+        - data: versionDate
+          modify: new Date(x).toLocaleString('en-GB')
+          name: "Date"
+        - data: state
+          name: "Update?"

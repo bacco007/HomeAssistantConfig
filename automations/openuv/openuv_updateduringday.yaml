@@ -1,5 +1,6 @@
 ---
 alias: OpenUV - Update During Day (30min Interval)
+id: 003780ee-c3a1-475a-b54f-8f2ef3a5c2dcß
 trigger:
   platform: time_pattern
   minutes: "/30"

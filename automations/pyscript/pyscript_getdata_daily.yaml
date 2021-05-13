@@ -18,7 +18,13 @@ action:
   - service: pyscript.getdata_afldraw
     data:
       icon: "mdi:football-australian"
+  - service: pyscript.getdata_aflladder
+    data:
+      icon: "mdi:football-australian"
   - service: pyscript.getdata_nrldraw
+    data:
+      icon: "mdi:football"
+  - service: pyscript.getdata_nrlladder
     data:
       icon: "mdi:football"
 mode: single

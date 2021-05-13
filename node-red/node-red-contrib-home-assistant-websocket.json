@@ -2,96 +2,96 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 268,
+        "state": 352,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 322,
+        "state": 443,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 4,
+        "state": 2,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 182,
+        "state": 181,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 36,
+        "state": 30,
         "attributes": {}
       }
     },
     "ae64dbe3_1e2d2": {
       "lastPayload": {
-        "state": 6,
+        "state": 9.8,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:33 09 May 2021",
+          "time": "06:16 11 May 2021",
           "sort": 3
         }
       }
     },
     "4b8ffd88_01a24c": {
       "lastPayload": {
-        "state": 2.5,
+        "state": 3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:36 09 May 2021",
+          "time": "07:28 11 May 2021",
           "sort": 6
         }
       }
     },
     "9c32ef9e_198c5": {
       "lastPayload": {
-        "state": 0.9,
+        "state": 1.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:36 09 May 2021",
+          "time": "07:28 11 May 2021",
           "sort": 7
         }
       }
     },
     "3e7de169_4cf3ce": {
       "lastPayload": {
-        "state": 4.1,
+        "state": 5.4,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:09 09 May 2021",
+          "time": "06:56 11 May 2021",
           "sort": 5
         }
       }
     },
     "5b2a34dc_cc5e94": {
       "lastPayload": {
-        "state": 6.8,
+        "state": 17.1,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:23 09 May 2021",
+          "time": "06:06 11 May 2021",
           "sort": 2
         }
       }
     },
     "fedcc9b8_2176b8": {
       "lastPayload": {
-        "state": 8.6,
+        "state": 29.9,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:18 09 May 2021",
+          "time": "06:01 11 May 2021",
           "sort": 1
         }
       }
@@ -164,13 +164,13 @@
     },
     "fd053220_3acfa": {
       "lastPayload": {
-        "state": 728,
+        "state": 729,
         "attributes": {}
       }
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5803,
+        "state": 5815,
         "attributes": {}
       }
     },
@@ -182,78 +182,78 @@
     },
     "943db8e2_eb4428": {
       "lastPayload": {
-        "state": 338,
+        "state": 339,
         "attributes": {}
       }
     },
     "db8dabb7_51f83": {
       "lastPayload": {
-        "state": 377,
+        "state": 357,
         "attributes": {}
       }
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 0,
+        "state": 6.2,
         "attributes": {
-          "count": 0,
-          "countstring": "No Rain",
-          "average": 0,
-          "highest": 0,
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 2.07,
+          "highest": 4.6,
           "sort": 2
         }
       }
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 0,
+        "state": 5.59,
         "attributes": {
-          "count": 0,
-          "countstring": "No Rain",
-          "average": 0,
-          "highest": 0,
+          "count": 2,
+          "countstring": "2 Days",
+          "average": 2.8,
+          "highest": 4.88,
           "sort": 2
         }
       }
     },
     "d4f5da6c_a1fc4": {
       "lastPayload": {
-        "state": 14.8,
+        "state": 19.8,
         "attributes": {
           "count": 6,
           "countstring": "6 Days",
-          "average": 2.47,
-          "highest": 7,
+          "average": 3.3,
+          "highest": 9.4,
           "sort": "1"
         }
       }
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 95.255,
+        "state": 72.17,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 140.16,
+        "state": 140.69,
         "attributes": {
           "max": 162.9,
-          "min": 119.9,
-          "avg": 140.16,
-          "mindate": "10 May 2020",
+          "min": 122.9,
+          "avg": 140.69,
+          "mindate": "14 May 2020",
           "maxdate": "06 Apr 2021",
-          "datestring": "Min: 10 May 2020 - Max: 06 Apr 2021"
+          "datestring": "Min: 14 May 2020 - Max: 06 Apr 2021"
         }
       }
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 10.994,
+        "state": 11.03,
         "attributes": {
           "max": 23.11,
           "min": -1.28,
-          "avg": 10.994,
+          "avg": 11.03,
           "mindate": "26 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 26 Aug 2020 - Max: 02 Dec 2020"
@@ -262,11 +262,11 @@
     },
     "9175a68d_c94b78": {
       "lastPayload": {
-        "state": 36.6,
+        "state": 46.4,
         "attributes": {
-          "count": 8,
-          "countstring": "8 Days",
-          "average": 4.58,
+          "count": 10,
+          "countstring": "10 Days",
+          "average": 4.64,
           "highest": 12.2,
           "sort": 3
         }
@@ -274,11 +274,11 @@
     },
     "6a5bcb5d_8aa50c": {
       "lastPayload": {
-        "state": 41.47,
+        "state": 49.27,
         "attributes": {
-          "count": 6,
-          "countstring": "6 Days",
-          "average": 6.91,
+          "count": 7,
+          "countstring": "7 Days",
+          "average": 7.04,
           "highest": 28.09,
           "sort": 3
         }
@@ -286,23 +286,23 @@
     },
     "1b767a8_196e406": {
       "lastPayload": {
-        "state": 13.18,
+        "state": 16.1,
         "attributes": {
           "count": 4,
           "countstring": "4 Days",
-          "average": 3.3,
-          "highest": 5.49,
+          "average": 4.02,
+          "highest": 7.8,
           "sort": 1
         }
       }
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 24.109,
+        "state": 24.141,
         "attributes": {
           "max": 41.7,
           "min": 9.5,
-          "avg": 24.109,
+          "avg": 24.141,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -311,11 +311,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 26.404,
+        "state": 26.395,
         "attributes": {
           "max": 43.78,
           "min": 8.4,
-          "avg": 26.404,
+          "avg": 26.395,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -324,13 +324,13 @@
     },
     "fc09a2d1_e54b4": {
       "lastPayload": {
-        "state": 63.6,
+        "state": 65.29,
         "attributes": {}
       }
     },
     "f757099a_d4cc4": {
       "lastPayload": {
-        "state": 869.84,
+        "state": 783.72,
         "attributes": {}
       }
     },
@@ -356,13 +356,13 @@
         "attributes": {
           "model": "UDM",
           "version": "1.9.3.3438",
-          "data": "78.1 GB",
+          "data": "216.7 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "1d 8hr 4min",
+          "uptime": "5d 9hr 2min",
           "lastseen": "a few seconds ago"
         }
       }
@@ -385,14 +385,14 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 140.54,
+        "state": 141.03,
         "attributes": {
           "max": 163.9,
-          "min": 120.9,
-          "avg": 140.54,
-          "mindate": "10 May 2020",
+          "min": 121.9,
+          "avg": 141.03,
+          "mindate": "19 May 2020",
           "maxdate": "19 Mar 2021",
-          "datestring": "Min: 10 May 2020 - Max: 19 Mar 2021"
+          "datestring": "Min: 19 May 2020 - Max: 19 Mar 2021"
         }
       }
     },
@@ -414,17 +414,17 @@
     },
     "2cd48d0a_141992": {
       "lastPayload": {
-        "state": 0.17,
+        "state": 0.16,
         "attributes": {}
       }
     },
     "13d27691_292561": {
       "lastPayload": {
-        "state": 762.4,
+        "state": 768.2,
         "attributes": {
-          "count": 104,
-          "countstring": "104 Days",
-          "average": 7.33,
+          "count": 105,
+          "countstring": "105 Days",
+          "average": 7.32,
           "highest": 92.2,
           "sort": "4"
         }
@@ -432,17 +432,17 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 1,
+        "state": 2,
         "attributes": {}
       }
     },
     "ee3ed6bb_25091": {
       "lastPayload": {
-        "state": 945.89,
+        "state": 949.29,
         "attributes": {
           "count": 103,
           "countstring": "103 Days",
-          "average": 9.18,
+          "average": 9.22,
           "highest": 64.8,
           "sort": 4
         }
@@ -486,11 +486,11 @@
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.613,
+        "state": 9.634,
         "attributes": {
           "max": 23,
           "min": -4.1,
-          "avg": 9.613,
+          "avg": 9.634,
           "mindate": "06 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 06 Aug 2020 - Max: 02 Dec 2020"
@@ -508,13 +508,13 @@
     },
     "dceeb46f_6d2508": {
       "lastPayload": {
-        "state": "0.2",
+        "state": "0.0",
         "attributes": {}
       }
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "17.80",
+        "state": "14.98",
         "attributes": {}
       }
     },
@@ -526,22 +526,22 @@
     },
     "3016229d_895e2e": {
       "lastPayload": {
-        "state": 0.2,
+        "state": 0.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:36 09 May 2021",
+          "time": "07:28 11 May 2021",
           "sort": 9
         }
       }
     },
     "ac2847d2_af37a8": {
       "lastPayload": {
-        "state": 0.4,
+        "state": 0.6,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:36 09 May 2021",
+          "time": "07:28 11 May 2021",
           "sort": 8
         }
       }
@@ -570,55 +570,55 @@
     },
     "69040648_41de6": {
       "lastPayload": {
-        "state": 0.2,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "09:41 09 May 2021",
+          "time": "07:27 12 May 2021",
           "sort": 9
         }
       }
     },
     "897ee7be_103218": {
       "lastPayload": {
-        "state": 0.4,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "09:41 09 May 2021",
+          "time": "19:27 11 May 2021",
           "sort": 8
         }
       }
     },
     "ec302af1_dfe74": {
       "lastPayload": {
-        "state": 0.9,
+        "state": 0.6,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:55 09 May 2021",
+          "time": "07:47 11 May 2021",
           "sort": 3
         }
       }
     },
     "f6e1ae0c_c581a8": {
       "lastPayload": {
-        "state": 1.2,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "09:41 09 May 2021",
+          "time": "07:27 12 May 2021",
           "sort": 6
         }
       }
     },
     "5c0e3d5e_5133cc": {
       "lastPayload": {
-        "state": 0.9,
+        "state": 0,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "09:41 09 May 2021",
+          "time": "07:27 12 May 2021",
           "sort": 7
         }
       }
@@ -629,36 +629,36 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "09:41 09 May 2021",
+          "time": "07:27 12 May 2021",
           "sort": 5
         }
       }
     },
     "2e04cb49_703f74": {
       "lastPayload": {
-        "state": 1.8,
+        "state": 1.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:45 09 May 2021",
+          "time": "07:37 11 May 2021",
           "sort": 2
         }
       }
     },
     "f77adadb_9106f8": {
       "lastPayload": {
-        "state": 3.6,
+        "state": 2.5,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "08:40 09 May 2021",
+          "time": "07:32 11 May 2021",
           "sort": 1
         }
       }
     },
     "6340f6e7_973668": {
       "lastPayload": {
-        "state": 5.49,
+        "state": 0,
         "attributes": {}
       }
     },
@@ -667,28 +667,28 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 14.78,
+        "state": 10.89,
         "attributes": {}
       }
     },
     "9e7e821c_502f1": {
       "lastPayload": {
-        "state": 5.2,
+        "state": 7.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "07:43 09 May 2021",
+          "time": "06:26 11 May 2021",
           "sort": 4
         }
       }
     },
     "57f2b94d_036d48": {
       "lastPayload": {
-        "state": 0.6,
+        "state": 0.4,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "09:05 09 May 2021",
+          "time": "07:57 11 May 2021",
           "sort": 4
         }
       }
@@ -737,56 +737,56 @@
     },
     "7602a753_a54078": {
       "lastPayload": {
-        "state": "The Delta Riggs, Alex Lloyd,",
+        "state": "Robbie Williams, Simple Minds,",
         "attributes": {
-          "image": "https://dailymix-images.scdn.co/v2/img/1694792653078dd0db39bce4b6d069edf427a0e1/2/en/large",
+          "image": "https://dailymix-images.scdn.co/v2/img/1a59fd7c426a37d747accafe173f96d5442067c3/2/en/large",
           "url": "https://open.spotify.com/playlist/37i9dQZF1E3abc1jxGbwHT",
-          "name": "The Delta Riggs, Alex Lloyd,",
-          "label": "Jebediah and more"
+          "name": "Robbie Williams, Simple Minds,",
+          "label": "Will To Power and more"
         }
       }
     },
     "82a17460_937a78": {
       "lastPayload": {
-        "state": "Madness, Robbie Williams,",
+        "state": "Mental As Anything, Kate Ceberano,",
         "attributes": {
-          "image": "https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb4a6d12b5a7e900d3b445df43/3/en/large",
+          "image": "https://dailymix-images.scdn.co/v2/img/235f5828697332f3c7cd28a8eded7b908dfa38cd/3/en/large",
           "url": "https://open.spotify.com/playlist/37i9dQZF1E37RVIXYh2Pm0",
-          "name": "Madness, Robbie Williams,",
-          "label": "Altered Images and more"
+          "name": "Mental As Anything, Kate Ceberano,",
+          "label": "The Badloves and more"
         }
       }
     },
     "ac3ad3d4_b9cba": {
       "lastPayload": {
-        "state": "Foo Fighters, Wolfmother,",
+        "state": "Foo Fighters, Oasis,",
         "attributes": {
           "image": "https://dailymix-images.scdn.co/v2/img/bbdf2bc486fde7c370e14ced32702157a5e24b32/4/en/large",
           "url": "https://open.spotify.com/playlist/37i9dQZF1E38DA9zKjcUrB",
-          "name": "Foo Fighters, Wolfmother,",
-          "label": "Oasis and more"
+          "name": "Foo Fighters, Oasis,",
+          "label": "Radiohead and more"
         }
       }
     },
     "4dc350c7_63fcd": {
       "lastPayload": {
-        "state": "Mental As Anything, Hunters & Collectors,",
+        "state": "Silverchair, Daryl Braithwaite,",
         "attributes": {
-          "image": "https://dailymix-images.scdn.co/v2/img/235f5828697332f3c7cd28a8eded7b908dfa38cd/5/en/large",
+          "image": "https://dailymix-images.scdn.co/v2/img/9e2b188b8b813485452b2d58c6655c6af7042b61/5/en/large",
           "url": "https://open.spotify.com/playlist/37i9dQZF1E39pcIk2jWOdc",
-          "name": "Mental As Anything, Hunters & Collectors,",
-          "label": "THE SPORTS and more"
+          "name": "Silverchair, Daryl Braithwaite,",
+          "label": "Nirvana and more"
         }
       }
     },
     "2c92859b_aa5a3a": {
       "lastPayload": {
-        "state": "Kate Bush, Cyndi Lauper,",
+        "state": "Biffy Clyro, Kings of Leon,",
         "attributes": {
-          "image": "https://dailymix-images.scdn.co/v2/img/3b2db6840f31b367518f97b1a5d6bea653ea56ae/6/en/large",
+          "image": "https://dailymix-images.scdn.co/v2/img/dd48385cbd75d4689ba2e01a30acce193862387f/6/en/large",
           "url": "https://open.spotify.com/playlist/37i9dQZF1E378GOA9wAzwU",
-          "name": "Kate Bush, Cyndi Lauper,",
-          "label": "R.E.M. and more"
+          "name": "Biffy Clyro, Kings of Leon,",
+          "label": "Noel Gallagher's High Flying Birds and more"
         }
       }
     },

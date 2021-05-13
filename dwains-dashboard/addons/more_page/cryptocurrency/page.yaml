@@ -1,0 +1,10 @@
+---
+# dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-3"
+  cards:
+    - !include partial_btc.yaml
+    - !include partial_eth.yaml
+    - !include partial_doge.yaml
+    - !include partial_shib.yaml

@@ -1,6 +1,0 @@
----
-id: "1609131965961"
-alias: Admin - Reload Automation on Blueprint Change
-description: ""
-use_blueprint:
-  path: vorion/reload-automations-automatically-when-a-blueprint-is-changed.yaml

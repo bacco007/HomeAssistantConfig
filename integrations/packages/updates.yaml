@@ -1,0 +1,139 @@
+---
+homeassistant:
+  customize:
+    package.node_anchors:
+      customize: &customize
+        package: "updates"
+    binary_sensor.plex_updateavailable:
+      <<: *customize
+      friendly_name: "Plex Update Available?"
+      icon: mdi:plex
+    binary_sensor.radarr_updateavailable:
+      <<: *customize
+      friendly_name: "Radarr Update Available?"
+      icon: mdi:movie-search
+    binary_sensor.sonarr_updateavailable:
+      <<: *customize
+      friendly_name: "Sonarr Update Available?"
+      icon: mdi:television-guide
+    sensor.plex_latest_version:
+      <<: *customize
+      friendly_name: "Plex Latest Version"
+      icon: mdi:plex
+    sensor.plex_installed_version:
+      <<: *customize
+      friendly_name: "Plex Installed Version"
+      icon: mdi:plex
+    sensor.radarr_latest_update:
+      <<: *customize
+      friendly_name: "Radarr Latest Version"
+      icon: mdi:movie-search
+    sensor.radarr_installed_version:
+      <<: *customize
+      friendly_name: "Radarr Installed Version"
+      icon: mdi:movie-search
+    sensor.sonarr_latest_update:
+      <<: *customize
+      friendly_name: "Sonarr Latest Version"
+      icon: mdi:television-guide
+    sensor.sonarr_installed_version:
+      <<: *customize
+      friendly_name: "Sonarr Installed Version"
+      icon: mdi:television-guide
+
+binary_sensor:
+  - platform: template
+    sensors:
+      plex_updateavailable:
+        unique_id: plex_updateavailable
+        device_class: problem
+        value_template: >
+          {% if states('sensor.plex_latest_version')|lower in ['unknown','unavailable','none'] %} false
+          {% else %}{{ states('sensor.plex_latest_version') != states('sensor.plex_installed_version') }}
+          {% endif %}
+        availability_template: "{{ states('sensor.plex_latest_version')|lower not in ['unknown','unavailable','none'] }}"
+      radarr_updateavailable:
+        unique_id: radarr_updateavailable
+        device_class: problem
+        value_template: >
+          {% if states('sensor.radarr_latest_version')|lower in ['unknown','unavailable','none'] %} false
+          {% elif state_attr('sensor.radarr_latest_version','installed') in ['true'] %} false
+          {% else %}{{ states('sensor.radarr_latest_version') != states('sensor.radarr_installed_version') }}
+          {% endif %}
+        availability_template: "{{ states('sensor.radarr_latest_version')|lower not in ['unknown','unavailable','none'] }}"
+      sonarr_updateavailable:
+        unique_id: sonarr_updateavailable
+        device_class: problem
+        value_template: >
+          {% if states('sensor.sonarr_latest_version')|lower in ['unknown','unavailable','none'] %} false
+          {% elif state_attr('sensor.sonarr_latest_version','installed') in ['true'] %} false
+          {% else %}{{ states('sensor.sonarr_latest_version') != states('sensor.sonarr_installed_version') }}
+          {% endif %}
+        availability_template: "{{ states('sensor.sonarr_latest_version')|lower not in ['unknown','unavailable','none'] }}"
+
+sensor:
+  - platform: rest
+    timeout: 60
+    scan_interval: 3600
+    resource: "https://plex.tv/pms/downloads/5.json?channel=plexpass"
+    name: plex_latest_version
+    value_template: >-
+      {{ value_json.nas.Synology.version }}
+    json_attributes_path: "$.nas.Synology"
+    json_attributes:
+      - release_date
+      - version
+      - items_added
+      - items_fixed
+
+  - platform: rest
+    timeout: 60
+    scan_interval: 3600
+    name: plex_installed_version
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - data
+    value_template: "{{ value_json['response']['data']['pms_version'] }}"
+    resource: !secret plex_tautulli_serverinfo_url
+
+  - platform: rest
+    timeout: 60
+    scan_interval: 3600
+    resource: !secret radarr_latestupdate_url
+    name: radarr_latest_update
+    value_template: >-
+      {{ value_json.0.version }}
+    json_attributes_path: "$.[0]"
+    json_attributes:
+      - version
+      - installed
+      - latest
+
+  - platform: rest
+    timeout: 60
+    scan_interval: 3600
+    resource: !secret radarr_currentversion_url
+    name: radarr_installed_version
+    value_template: >-
+      {{ value_json.version }}
+
+  - platform: rest
+    timeout: 60
+    scan_interval: 3600
+    resource: !secret sonarr_latestupdate_url
+    name: sonarr_latest_update
+    value_template: >-
+      {{ value_json.0.version }}
+    json_attributes_path: "$.[0]"
+    json_attributes:
+      - version
+      - installed
+      - latest
+
+  - platform: rest
+    timeout: 60
+    scan_interval: 3600
+    resource: !secret sonarr_currentversion_url
+    name: sonarr_installed_version
+    value_template: >-
+      {{ value_json.version }}

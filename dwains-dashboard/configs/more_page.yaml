@@ -13,13 +13,14 @@ more_page:
       path: "dwains-dashboard/addons/more_page/appletv/page.yaml"
     - name: Coronavirus
       icon: custom:corona-virus
-      main_menu: "true"
       path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
+    - name: Cryptocurrency
+      icon: mdi:bitcoin
+      path: "dwains-dashboard/addons/more_page/cryptocurrency/page.yaml"
     - name: Downloads
       icon: mdi:download-network
       path: "dwains-dashboard/addons/more_page/downloads/page.yaml"
     - name: Find My
-      # main_menu: 'true' #Show this addon in the main navigation bar!
       icon: mdi:radar
       path: "dwains-dashboard/addons/more_page/find_my/page.yaml"
     - name: Flight Tracker
@@ -193,6 +194,9 @@ more_page:
     - name: UptimeRobot
       icon: "mdi:robot-industrial"
       path: "dwains-dashboard/addons/more_page/uptimerobot/page.yaml"
+    - name: WUD
+      icon: mdi:docker
+      path: "dwains-dashboard/addons/more_page/docker/page.yaml"
     - name: Zigbee
       icon: mdi:zigbee
       path: "dwains-dashboard/addons/more_page/zigbee/page.yaml"

@@ -1,5 +1,6 @@
 ---
 alias: Admin - Generate README.md
+id: a7c427e6-ce03-49eb-9a23-c5bbe7625aa4
 initial_state: true
 trigger:
   - platform: time

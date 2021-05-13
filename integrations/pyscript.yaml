@@ -6,12 +6,16 @@ pyscript:
   apps:
     getdata_afldraw:
       friendly_name: "AFL Draw (Sydney Swans)"
+    getdata_aflladder:
+      friendly_name: "AFL Ladder"
     getdata_f1constructorstandings:
       friendly_name: "F1 Constructor Standings"
     getdata_f1driverstandings:
       friendly_name: "F1 Driver Standings"
     getdata_nrldraw:
       friendly_name: "NRL Draw (Newcastle Knights)"
+    getdata_nrlladder:
+      friendly_name: "NRL Ladder"
     influxdb_query_to_sensor:
       host: !secret influxdb_host
       port: !secret influxdb_port
