@@ -8,19 +8,19 @@
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 443,
+        "state": 445,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 2,
+        "state": 5,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 181,
+        "state": 180,
         "attributes": {}
       }
     },
@@ -230,7 +230,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 72.17,
+        "state": 153.079,
         "attributes": {}
       }
     },
@@ -356,13 +356,13 @@
         "attributes": {
           "model": "UDM",
           "version": "1.9.3.3438",
-          "data": "216.7 GB",
+          "data": "216.8 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "5d 9hr 2min",
+          "uptime": "5d 9hr 7min",
           "lastseen": "a few seconds ago"
         }
       }
@@ -514,7 +514,7 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "14.98",
+        "state": "14.90",
         "attributes": {}
       }
     },
@@ -667,7 +667,7 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 10.89,
+        "state": 11.28,
         "attributes": {}
       }
     },
