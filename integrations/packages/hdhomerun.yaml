@@ -1,4 +1,32 @@
 ---
+homeassistant:
+  customize:
+    package.node_anchors:
+      customize: &customize
+        package: "hdhomerun"
+    sensor.hdhomerun_info:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_0:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_0_channel:
+      <<: *customize
+    sensor.hdhomerun_tuner_1:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_1_channel:
+      <<: *customize
+    sensor.hdhomerun_tuner_2:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_2_channel:
+      <<: *customize
+    sensor.hdhomerun_tuner_3:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_3_channel:
+      <<: *customize
 sensor:
   - platform: rest
     resource: http://192.168.1.120/discover.json
@@ -16,78 +44,6 @@ sensor:
       - TunerCount
       - ConditionalAccess
     value_template: "OK"
-  - platform: rest
-    resource: http://192.168.1.120/status.json
-    name: HDHomeRun - Tuner 0
-    json_attributes_path: "$..[?(@.Resource=='tuner0')]"
-    json_attributes:
-      - Resource
-      - VctNumber
-      - VctName
-      - Frequency
-      - SignalStrengthPercent
-      - SymbolQualityPercent
-      - TargetIP
-    value_template: >-
-      {% if value_json[0].VctName is defined %}
-        {{ value_json[0].VctName }}
-      {% else %}
-        Not In Use
-      {% endif %}
-  - platform: rest
-    resource: http://192.168.1.120/status.json
-    name: HDHomeRun - Tuner 1
-    json_attributes_path: "$..[?(@.Resource=='tuner1')]"
-    json_attributes:
-      - Resource
-      - VctNumber
-      - VctName
-      - Frequency
-      - SignalStrengthPercent
-      - SymbolQualityPercent
-      - TargetIP
-    value_template: >-
-      {% if value_json[0].VctName is defined %}
-        {{ value_json[0].VctName }}
-      {% else %}
-        Not In Use
-      {% endif %}
-  - platform: rest
-    resource: http://192.168.1.120/status.json
-    name: HDHomeRun - Tuner 2
-    json_attributes_path: "$..[?(@.Resource=='tuner2')]"
-    json_attributes:
-      - Resource
-      - VctNumber
-      - VctName
-      - Frequency
-      - SignalStrengthPercent
-      - SymbolQualityPercent
-      - TargetIP
-    value_template: >-
-      {% if value_json[0].VctName is defined %}
-        {{ value_json[0].VctName }}
-      {% else %}
-        Not In Use
-      {% endif %}
-  - platform: rest
-    resource: http://192.168.1.120/status.json
-    name: HDHomeRun - Tuner 3
-    json_attributes_path: "$..[?(@.Resource=='tuner3')]"
-    json_attributes:
-      - Resource
-      - VctNumber
-      - VctName
-      - Frequency
-      - SignalStrengthPercent
-      - SymbolQualityPercent
-      - TargetIP
-    value_template: >-
-      {% if value_json[0].VctName is defined %}
-        {{ value_json[0].VctName }}
-      {% else %}
-        Not In Use
-      {% endif %}
   - platform: template
     sensors:
       hdhomerun_tuner_0_channel:
@@ -162,3 +118,71 @@ sensor:
           {%- if state_attr('sensor.hdhomerun_tuner_3', 'VctName') %}
               /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_3', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
           {%- endif %}
+
+rest:
+  - resource: http://192.168.1.120/status.json
+    sensor:
+      - name: HDHomeRun - Tuner 0
+        json_attributes_path: "$..[?(@.Resource=='tuner0')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}
+      - name: HDHomeRun - Tuner 1
+        json_attributes_path: "$..[?(@.Resource=='tuner1')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}
+      - name: HDHomeRun - Tuner 2
+        json_attributes_path: "$..[?(@.Resource=='tuner2')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}
+      - name: HDHomeRun - Tuner 3
+        json_attributes_path: "$..[?(@.Resource=='tuner3')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}

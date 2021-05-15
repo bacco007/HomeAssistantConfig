@@ -18671,6 +18671,7 @@ class Plex {
     constructor(ip, port = 32400, token, protocol = 'http') {
         this.serverInfo = {};
         this.clients = [];
+        this.requestTimeout = 5000;
         this.init = async () => {
             await this.getClients();
             /*
@@ -18681,8 +18682,15 @@ class Plex {
         };
         this.getClients = async () => {
             const url = `${this.protocol}://${this.ip}:${this.port}/clients?X-Plex-Token=${this.token}`;
-            const result = await axios.get(url);
-            this.clients = result.data.MediaContainer.Server;
+            try {
+                const result = await axios.get(url, {
+                    timeout: this.requestTimeout
+                });
+                this.clients = result.data.MediaContainer.Server;
+            }
+            catch (err) {
+                throw Error(`${err.message} while requesting URL "${url}".`);
+            }
             return this.clients;
         };
         this.getServerID = async () => {
@@ -18693,24 +18701,32 @@ class Plex {
         };
         this.getServerInfo = async () => {
             const url = `${this.protocol}://${this.ip}:${this.port}/?X-Plex-Token=${this.token}`;
-            this.serverInfo = (await axios.get(url)).data.MediaContainer;
+            this.serverInfo = (await axios.get(url, {
+                timeout: this.requestTimeout
+            })).data.MediaContainer;
             return this.serverInfo;
         };
         this.getSections = async () => {
             const url = `${this.protocol}://${this.ip}:${this.port}/library/sections?X-Plex-Token=${this.token}`;
-            return (await axios.get(url)).data.MediaContainer.Directory;
+            return (await axios.get(url, {
+                timeout: this.requestTimeout
+            })).data.MediaContainer.Directory;
         };
         this.getSectionsData = async () => {
             const sections = await this.getSections();
             const sectionsRequests = [];
             lodash.forEach(sections, section => {
-                sectionsRequests.push(axios.get(`${this.protocol}://${this.ip}:${this.port}/library/sections/${section.key}/all?X-Plex-Token=${this.token}`));
+                sectionsRequests.push(axios.get(`${this.protocol}://${this.ip}:${this.port}/library/sections/${section.key}/all?X-Plex-Token=${this.token}`, {
+                    timeout: this.requestTimeout
+                }));
             });
             return this.exportSectionsData(await Promise.all(sectionsRequests));
         };
         this.getLibraryData = async (id) => {
             const url = `${this.protocol}://${this.ip}:${this.port}/library/metadata/${id}/children?X-Plex-Token=${this.token}`;
-            return (await axios.get(url)).data.MediaContainer.Metadata;
+            return (await axios.get(url, {
+                timeout: this.requestTimeout
+            })).data.MediaContainer.Metadata;
         };
         this.exportSectionsData = (sectionsData) => {
             const processedData = [];
@@ -19560,7 +19576,6 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.episodesElemHidden = true;
         this.data = {};
         this.config = {};
-        this.requestTimeout = 3000;
         this.loading = false;
         this.maxCount = false;
         this.error = '';
@@ -19569,11 +19584,9 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.loadInitialData = async () => {
             this.loading = true;
             this.renderPage();
-            if (this.plex) {
-                await this.plex.init();
-            }
             try {
                 if (this.plex) {
+                    await this.plex.init();
                     const [serverID, plexSections] = await Promise.all([this.plex.getServerID(), this.plex.getSectionsData()]);
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     this.data.serverID = serverID;
@@ -19591,7 +19604,6 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 }
             }
             catch (err) {
-                // todo: proper timeout here
                 this.error = `Plex server did not respond.<br/>Details of the error: ${escapeHtml(err.message)}`;
                 this.renderPage();
             }

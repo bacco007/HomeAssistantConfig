@@ -42,6 +42,8 @@ jobs:
       - name: ➕  Create dummy files
         run: |
           touch ./home-assistant.log
+          mkdir .androidkeys
+          touch ./.androidkeys/adbkey
       - name: 🚀  Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.0.4
         with:

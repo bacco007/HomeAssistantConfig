@@ -59,7 +59,7 @@ entity_fire_danger_summary: sensor.east_tamworth_fire_danger_0
 locale: en
 sunset: true
 static_icons: false
-old_icon: hybrid
+old_icon: "hybrid"
 tooltip_bg_color: "var(--dwains-theme-primary)"
 tooltip_border_color: "rgb(255,161,0)"
 tooltip_border_width: 1
@@ -71,9 +71,9 @@ tooltips: true
 old_daily_format: false
 time_format: 12
 show_beaufort: false
-#           show_decimals: true
+show_decimals: true
 refresh_interval: 60
-#           tempformat: highlow OPTIONAL to show max/min in daily
+tempformat: highlow #OPTIONAL to show max/min in daily
 show_separator: false
 temp_top_margin: 0px #default 0px px or em Note: pre-0.109.x default was -0.3em
 temp_font_weight: 300 #default 300 numeric

@@ -1,0 +1,9 @@
+{
+  "title": "FontAwesome",
+  "config": {
+    "abort": {
+      "single_instance_allowed": "Only a single configuration of FontAwesome is allowed."
+    },
+    "step": {}
+  }
+}

@@ -1,0 +1,83 @@
+type: custom:config-template-card
+variables:
+  - states['sensor.opennem_nsw1_electricity_generation'].state
+entities:
+  - sensor.opennem_nsw1_electricity_generation
+card:
+  type: custom:auto-entities
+  card:
+    type: entities
+    title: Current Generation
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+  sort:
+    method: state
+    reverse: true
+    numeric: true
+  filter:
+    include:
+      - group: group.opennem
+        options:
+          type: custom:bar-card
+          style: |
+            ha-icon {
+              color: var(--dwains-theme-accent) !important;
+            }
+            ha-icon	 {
+              margin-top: -7px;
+              padding-right: 5px;
+            }
+            bar-card-indicator	 {
+              margin-top: -12px;
+              padding-right: 5px;
+            }
+            bar-card-name	 {
+              margin-top: -4.5px;
+              padding-left: 5px;
+            }
+            bar-card-backgroundbar	 {
+              margin-top: -3.5px;
+              # border-radius: 2.5px;
+            }
+            bar-card-currentbar	 {
+              margin-top: -3.5px;
+              # border-radius: 2.5px;
+            }
+            bar-card-targetbar	 {
+              margin-top: -3.5px;
+              # border-radius: 2.5px;
+            }
+            bar-card-targetmarker	 {
+              margin-top: -3.5px;
+              # border-radius: 2.5px;
+            }
+            bar-card-value	 {
+              margin-top: -4.5px;
+              padding-left: 5px;
+            }
+          positions:
+            title: inside
+            value: inside
+          entity_row: true
+          min: 0
+          max: "${vars[0]}"
+          color: rgb(26,204,147,0.33)

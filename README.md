@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Thursday, May 13th 2021_
+_Stats as at 05:00, Saturday, May 15th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.5.2 | 323     | 3051         | 2474 | 79 |
+| 2021.5.3 | 328     | 3063         | 2482 | 79 |
 
 Type | Qty
 -- | --
@@ -95,7 +95,7 @@ Media Player | 22
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2474
+Sensor | 2482
 Sun | 1
 Switch | 111
 Weather | 6
@@ -151,6 +151,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
+| [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
@@ -253,6 +254,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
 | [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
+| [media_player.xbox](https://www.home-assistant.io/components/media_player.xbox) |
 | [media_source](https://www.home-assistant.io/components/media_source) |
 | [met](https://www.home-assistant.io/components/met) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
@@ -283,6 +285,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [remote](https://www.home-assistant.io/components/remote) |
 | [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
+| [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [rest](https://www.home-assistant.io/components/rest) |
 | [rocketlaunchlive](https://www.home-assistant.io/components/rocketlaunchlive) |
 | [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
@@ -318,6 +321,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
+| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
@@ -384,6 +388,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
+| [sensor.xbox](https://www.home-assistant.io/components/sensor.xbox) |
 | [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
 | [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |

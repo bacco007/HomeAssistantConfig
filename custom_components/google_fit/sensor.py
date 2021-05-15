@@ -23,8 +23,8 @@ CONF_CLIENT_SECRET = "client_secret"
 DEFAULT_NAME = "Google Fit"
 DEFAULT_CREDENTIALS_FILE = ".google_fit.credentials.json"
 ICON = "mdi:heart-pulse"
-MIN_TIME_BETWEEN_SCANS = timedelta(minutes=10)
-MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=10)
+MIN_TIME_BETWEEN_SCANS = timedelta(minutes=30)
+MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=30)
 TOKEN_FILE = ".{}.token".format(SENSOR)
 SENSOR_NAME = "{} {}"
 
@@ -76,11 +76,11 @@ def _today_dataset_end():
 
 def _get_client(token_file):
     """Get the Google Fit service with the storage file token.
-        Args:
-        token_file: str, File path for API token.
-        Return:
-        Google Fit API client.
-        """
+    Args:
+    token_file: str, File path for API token.
+    Return:
+    Google Fit API client.
+    """
     import httplib2
     from googleapiclient import discovery as google_discovery
     from oauth2client import file as oauth2file
@@ -267,7 +267,10 @@ class GoogleFitSensor(entity.Entity):
         datasources_request = (
             self._client.users()
             .dataSources()
-            .list(userId=API_USER_ID, dataTypeName=data_type_name,)
+            .list(
+                userId=API_USER_ID,
+                dataTypeName=data_type_name,
+            )
         )
         data = datasources_request.execute()
         return data.get("dataSource")
@@ -315,7 +318,10 @@ class GoogleFitWeightSensor(GoogleFitSensor):
                 self._client.users()
                 .dataSources()
                 .dataPointChanges()
-                .list(userId=API_USER_ID, dataSourceId=datasource_id,)
+                .list(
+                    userId=API_USER_ID,
+                    dataSourceId=datasource_id,
+                )
             )
             weight_data = weight_request.execute()
             weight_inserted_datapoints = weight_data.get("insertedDataPoint")
@@ -374,7 +380,10 @@ class GoogleFitHeightSensor(GoogleFitSensor):
                 self._client.users()
                 .dataSources()
                 .dataPointChanges()
-                .list(userId=API_USER_ID, dataSourceId=datasource_id,)
+                .list(
+                    userId=API_USER_ID,
+                    dataSourceId=datasource_id,
+                )
             )
             height_data = height_request.execute()
             height_inserted_datapoints = height_data.get("insertedDataPoint")
@@ -437,7 +446,10 @@ class GoogleFitHeartRateSensor(GoogleFitSensor):
                 self._client.users()
                 .dataSources()
                 .dataPointChanges()
-                .list(userId=API_USER_ID, dataSourceId=datasource_id,)
+                .list(
+                    userId=API_USER_ID,
+                    dataSourceId=datasource_id,
+                )
             )
             heart_data = heart_request.execute()
             heart_inserted_datapoints = heart_data.get("insertedDataPoint")

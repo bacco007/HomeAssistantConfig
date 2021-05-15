@@ -1,4 +1,12 @@
 ---
+homeassistant:
+  customize_glob:
+    package.node_anchors:
+      customize: &customize
+        package: "monitordocker"
+    "*monitordocker*":
+      <<: *customize
+
 monitor_docker:
   - name: TBSH01_monitordocker
     url: tcp://192.168.1.20:2375
@@ -19,53 +27,7 @@ monitor_docker:
       sonos-web: "Sonos Web"
       unifi: "Unifi Controller"
     monitored_conditions:
-      - version
-      - containers_total
-      - containers_running
-      - containers_paused
-      - containers_stopped
-      - images
-      - containers_cpu_percentage
-      - containers_memory
-      - containers_memory_percentage
-      - state
-      - status
-      - uptime
-      - image
-      - cpu_percentage
-      - memory
-      - memory_percentage
-      - network_speed_up
-      - network_speed_down
-      - network_total_up
-      - network_total_down
-
-  # - name: TBSH02_monitordocker
-  #   url: tcp://192.168.1.64:2375
-  #   rename:
-  #     glances: "Glances"
-  #     ouroboros: "Ouroboros"
-  #   monitored_conditions:
-  #     - version
-  #     - containers_total
-  #     - containers_running
-  #     - containers_paused
-  #     - containers_stopped
-  #     - images
-  #     - containers_cpu_percentage
-  #     - containers_memory
-  #     - containers_memory_percentage
-  #     - state
-  #     - status
-  #     - uptime
-  #     - image
-  #     - cpu_percentage
-  #     - memory
-  #     - memory_percentage
-  #     - network_speed_up
-  #     - network_speed_down
-  #     - network_total_up
-  #     - network_total_down
+      - allinone
 
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
@@ -92,26 +54,7 @@ monitor_docker:
       tar1090: "tar1090"
       vrs: "Virtual Radar Server"
     monitored_conditions:
-      - version
-      - containers_total
-      - containers_running
-      - containers_paused
-      - containers_stopped
-      - images
-      - containers_cpu_percentage
-      - containers_memory
-      - containers_memory_percentage
-      - state
-      - status
-      - uptime
-      - image
-      - cpu_percentage
-      - memory
-      - memory_percentage
-      - network_speed_up
-      - network_speed_down
-      - network_total_up
-      - network_total_down
+      - allinone
 
   - name: vmTBSH01_monitordocker
     url: tcp://192.168.1.61:2375
@@ -136,26 +79,7 @@ monitor_docker:
       tvheadend: "TV Headend"
       varken: "Varken"
     monitored_conditions:
-      - version
-      - containers_total
-      - containers_running
-      - containers_paused
-      - containers_stopped
-      - images
-      - containers_cpu_percentage
-      - containers_memory
-      - containers_memory_percentage
-      - state
-      - status
-      - uptime
-      - image
-      - cpu_percentage
-      - memory
-      - memory_percentage
-      - network_speed_up
-      - network_speed_down
-      - network_total_up
-      - network_total_down
+      - allinone
 
   - name: vmTBSH02_monitordocker
     url: tcp://192.168.1.62:2375
@@ -174,49 +98,11 @@ monitor_docker:
       telegraf: "Telegraf"
       unifipoller: "UniFi Poller"
     monitored_conditions:
-      - version
-      - containers_total
-      - containers_running
-      - containers_paused
-      - containers_stopped
-      - images
-      - containers_cpu_percentage
-      - containers_memory
-      - containers_memory_percentage
-      - state
-      - status
-      - uptime
-      - image
-      - cpu_percentage
-      - memory
-      - memory_percentage
-      - network_speed_up
-      - network_speed_down
-      - network_total_up
-      - network_total_down
+      - allinone
 
   - name: vmTBSH03_monitordocker
     url: tcp://192.168.1.63:2375
     rename:
       ha-dockermon: "HA Dockermon"
     monitored_conditions:
-      - version
-      - containers_total
-      - containers_running
-      - containers_paused
-      - containers_stopped
-      - images
-      - containers_cpu_percentage
-      - containers_memory
-      - containers_memory_percentage
-      - state
-      - status
-      - uptime
-      - image
-      - cpu_percentage
-      - memory
-      - memory_percentage
-      - network_speed_up
-      - network_speed_down
-      - network_total_up
-      - network_total_down
+      - allinone

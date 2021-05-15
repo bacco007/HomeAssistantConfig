@@ -1,5 +1,0 @@
----
-sensor:
-  - platform: myjdownloader
-    email: !secret jdownloader_email
-    password: !secret jdownloader_password

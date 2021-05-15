@@ -1,0 +1,11 @@
+{
+    "domain": "fontawesome",
+    "name": "Fontawesome icons",
+    "documentation": "https://github.com/thomasloven/hass-fontawesome",
+    "dependencies": ["frontend"],
+    "codeowners": [],
+    "requirements": [],
+    "config_flow": true,
+    "version": "2.1.0",
+    "iot_class": "local_polling"
+}

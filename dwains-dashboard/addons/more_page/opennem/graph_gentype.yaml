@@ -1,0 +1,55 @@
+type: custom:apexcharts-card
+graph_span: 7d
+span:
+  end: day
+header:
+  show: true
+  title: "Generation Type"
+  show_states: true
+  colorize_states: true
+apex_config:
+  chart:
+    {
+      type: "area",
+      height: 300,
+      toolbar: { show: true, tools: { reset: true } },
+      zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+    }
+  stroke: { show: true, width: 2.5, curve: smooth }
+  legend: { show: false }
+  dataLabels: { enabled: false }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+  xaxis:
+    {
+      type: "datetime",
+      labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+    }
+
+series:
+  - entity: sensor.opennem_nsw1_gen_from_fossil_fuels
+    type: area
+    name: Fossil Fuels
+    extend_to_end: false
+    curve: smooth
+    group_by:
+      func: avg
+      duration: 30m
+  - entity: sensor.opennem_nsw1_gen_from_renewables
+    type: area
+    name: Renewables
+    extend_to_end: false
+    curve: smooth
+    group_by:
+      func: avg
+      duration: 30m

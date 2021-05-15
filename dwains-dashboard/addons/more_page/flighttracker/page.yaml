@@ -1,207 +1,214 @@
-# dwains_theme
+---
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
-  # padding: true
+  item_classes: "col-xs-12"
   cards:
-    - type: entities
-      title: Flightaware
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - entity: sensor.adsb_fa_adsbfeed
-          name: ADS-B Feed
-          type: custom:multiple-entity-row
-          secondary_info:
-            attribute: message
-            name: "Message: "
-        - entity: sensor.adsb_fa_mlat
-          name: MLAT Feed
-          type: custom:multiple-entity-row
-          secondary_info:
-            attribute: message
-            name: "Message: "
-        - entity: sensor.adsb_fa_piaware
-          name: PiAware Status
-          type: custom:multiple-entity-row
-          secondary_info:
-            attribute: message
-            name: "Message: "
-        - entity: sensor.adsb_fa_flightaware
-          name: Connection to FlightAware
-          type: custom:multiple-entity-row
-          secondary_info:
-            attribute: message
-            name: "Message: "
-    - type: entities
-      title: FlightRadar24
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - entity: sensor.adsb_fr24_feeder_radar_code
-          type: custom:multiple-entity-row
-          name: FR24 Radar Code
-        - entity: sensor.adsb_fr24_feeder_version
-          type: custom:multiple-entity-row
-          name: FR24 Version
-        - entity: binary_sensor.adsb_fr24_feeder_link_connected
-          type: custom:multiple-entity-row
-        - entity: binary_sensor.adsb_fr24_feeder_receiver_connected
-          type: custom:multiple-entity-row
-        - entity: binary_sensor.adsb_fr24_mlat_connected
-          type: custom:multiple-entity-row
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-4"
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: entities
+              title: Flightaware
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.adsb_fa_adsbfeed
+                  name: ADS-B Feed
+                  type: custom:multiple-entity-row
+                  secondary_info:
+                    attribute: message
+                    name: "Message: "
+                - entity: sensor.adsb_fa_mlat
+                  name: MLAT Feed
+                  type: custom:multiple-entity-row
+                  secondary_info:
+                    attribute: message
+                    name: "Message: "
+                - entity: sensor.adsb_fa_piaware
+                  name: PiAware Status
+                  type: custom:multiple-entity-row
+                  secondary_info:
+                    attribute: message
+                    name: "Message: "
+                - entity: sensor.adsb_fa_flightaware
+                  name: Connection to FlightAware
+                  type: custom:multiple-entity-row
+                  secondary_info:
+                    attribute: message
+                    name: "Message: "
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
-  cards:
-    - type: custom:apexcharts-card
-      graph_span: 1d1s
-      header:
-        show: true
-        title: "Flights Tracked - Last 24hrs"
-      span:
-        end: hour
-      apex_config:
-        chart: { type: "area", height: 200 }
-        stroke: { show: true, curve: smooth, dashArray: [0, 2] }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Flights"
-            decimalsInFloat: 0
-            title:
-              text: "No. Flights"
-          - seriesName: "Distance"
-            decimalsInFloat: 1
-            title:
-              text: "Distance (km)"
-            opposite: true
-        fill:
-          {
-            type: "gradient",
-            gradient:
+        - type: vertical-stack
+          cards:
+            - type: entities
+              title: FlightRadar24
+              style: |
+                ha-card {
+                  margin-top: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+              entities:
+                - entity: sensor.adsb_fr24_feeder_radar_code
+                  type: custom:multiple-entity-row
+                  name: FR24 Radar Code
+                - entity: sensor.adsb_fr24_feeder_version
+                  type: custom:multiple-entity-row
+                  name: FR24 Version
+                - entity: binary_sensor.adsb_fr24_feeder_link_connected
+                  type: custom:multiple-entity-row
+                - entity: binary_sensor.adsb_fr24_feeder_receiver_connected
+                  type: custom:multiple-entity-row
+                - entity: binary_sensor.adsb_fr24_mlat_connected
+                  type: custom:multiple-entity-row
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-8"
+      cards:
+        - type: custom:apexcharts-card
+          graph_span: 1d1s
+          header:
+            show: true
+            title: "Flights Tracked - Last 24hrs"
+          span:
+            end: hour
+          apex_config:
+            chart: { type: "area", height: 200 }
+            stroke: { show: true, curve: smooth, dashArray: [0, 2] }
+            legend: { show: false }
+            dataLabels: { enabled: false }
+            xaxis:
               {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-      series:
-        - entity: sensor.flighttracker_flights_now
-          name: Flights
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
-          stroke_width: 3
-          group_by:
-            func: max
-            duration: 15min
-        - entity: sensor.flighttracker_maxdistance_km
-          name: Max Distance
-          type: area
-          extend_to_end: false
-          stroke_width: 1.5
-          group_by:
-            func: max
-            duration: 15m
-    - type: custom:apexcharts-card
-      graph_span: 7d1s
-      header:
-        show: true
-        title: "Flights Tracked - Last Week"
-      span:
-        end: hour
-      apex_config:
-        chart: { type: "area", height: 200 }
-        stroke: { show: true, curve: smooth, dashArray: [0, 2] }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Flights"
-            decimalsInFloat: 0
-            title:
-              text: "No. Flights"
-          - seriesName: "Distance"
-            decimalsInFloat: 1
-            title:
-              text: "Distance (km)"
-            opposite: true
-        fill:
-          {
-            type: "gradient",
-            gradient:
+                type: "datetime",
+                labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+              }
+            yaxis:
+              - seriesName: "Flights"
+                decimalsInFloat: 0
+                title:
+                  text: "No. Flights"
+              - seriesName: "Distance"
+                decimalsInFloat: 1
+                title:
+                  text: "Distance (km)"
+                opposite: true
+            fill:
               {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-      series:
-        - entity: sensor.flighttracker_flights_1hr
-          name: Flights
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
-          stroke_width: 3
-          group_by:
-            func: max
-            duration: 1h
-        - entity: sensor.flighttracker_maxdistance_km
-          name: Max Distance
-          type: area
-          extend_to_end: false
-          stroke_width: 1.5
-          group_by:
-            func: max
-            duration: 1h
+                type: "gradient",
+                gradient:
+                  {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.45,
+                    opacityTo: 0.05,
+                    stops: [20, 100, 100, 100],
+                  },
+              }
+          series:
+            - entity: sensor.flighttracker_flights_now
+              name: Flights
+              type: area
+              # color: "#008FFB"
+              extend_to_end: false
+              stroke_width: 3
+              group_by:
+                func: max
+                duration: 15min
+            - entity: sensor.flighttracker_maxdistance_km
+              name: Max Distance
+              type: area
+              extend_to_end: false
+              stroke_width: 1.5
+              group_by:
+                func: max
+                duration: 15m
+        - type: custom:apexcharts-card
+          graph_span: 7d1s
+          header:
+            show: true
+            title: "Flights Tracked - Last Week"
+          span:
+            end: hour
+          apex_config:
+            chart: { type: "area", height: 200 }
+            stroke: { show: true, curve: smooth, dashArray: [0, 2] }
+            legend: { show: false }
+            dataLabels: { enabled: false }
+            xaxis:
+              {
+                type: "datetime",
+                labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+              }
+            yaxis:
+              - seriesName: "Flights"
+                decimalsInFloat: 0
+                title:
+                  text: "No. Flights"
+              - seriesName: "Distance"
+                decimalsInFloat: 1
+                title:
+                  text: "Distance (km)"
+                opposite: true
+            fill:
+              {
+                type: "gradient",
+                gradient:
+                  {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.45,
+                    opacityTo: 0.05,
+                    stops: [20, 100, 100, 100],
+                  },
+              }
+          series:
+            - entity: sensor.flighttracker_flights_1hr
+              name: Flights
+              type: area
+              # color: "#008FFB"
+              extend_to_end: false
+              stroke_width: 3
+              group_by:
+                func: max
+                duration: 1h
+            - entity: sensor.flighttracker_maxdistance_km
+              name: Max Distance
+              type: area
+              extend_to_end: false
+              stroke_width: 1.5
+              group_by:
+                func: max
+                duration: 1h

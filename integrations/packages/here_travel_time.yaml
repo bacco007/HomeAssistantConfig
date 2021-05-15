@@ -1,4 +1,12 @@
 ---
+homeassistant:
+  customize_glob:
+    package.node_anchors:
+      customize: &customize
+        package: "heretravel"
+    "*here_travel*":
+      <<: *customize
+
 sensor:
   - platform: here_travel_time
     entity_namespace: here_travel
@@ -6,6 +14,7 @@ sensor:
     api_key: !secret here_apikey
     origin_entity_id: zone.home
     destination_entity_id: zone.trc
+    scan_interval: 720
     mode: car
 
   - platform: here_travel_time
@@ -14,6 +23,7 @@ sensor:
     api_key: !secret here_apikey
     origin_entity_id: zone.home
     destination_entity_id: zone.trc
+    scan_interval: 720
     mode: pedestrian
 
   - platform: here_travel_time
@@ -22,6 +32,7 @@ sensor:
     api_key: !secret here_apikey
     origin_entity_id: device_tracker.tbiphone11_haapp
     destination_entity_id: zone.home
+    scan_interval: 30
     mode: car
 
   - platform: here_travel_time
@@ -30,6 +41,7 @@ sensor:
     api_key: !secret here_apikey
     origin_entity_id: device_tracker.tbiphone11_haapp
     destination_entity_id: zone.trc
+    scan_interval: 30
     mode: car
 
   - platform: template

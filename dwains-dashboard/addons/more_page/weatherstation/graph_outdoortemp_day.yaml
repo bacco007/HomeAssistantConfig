@@ -69,6 +69,8 @@ card:
           text: "Humidity (%)"
       - seriesName: "Temp"
         show: false
+      - seriesName: "Temp"
+        show: false
   series:
     - entity: sensor.weather_outside_temperature
       name: Temp
@@ -108,3 +110,13 @@ card:
       group_by:
         func: last
         duration: 1h
+    - entity: sensor.weather_outside_feels_like_au
+      type: line
+      name: Feels Like
+      stroke_width: 2
+      extend_to_end: false
+      unit: "°C"
+      curve: smooth
+      group_by:
+        func: avg
+        duration: 10min

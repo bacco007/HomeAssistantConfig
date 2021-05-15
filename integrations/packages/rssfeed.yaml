@@ -7,6 +7,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: news.com.au
@@ -15,6 +16,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: Sky News UK
@@ -23,6 +25,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: Sydney Morning Herald
@@ -31,6 +34,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: Fox Sports
@@ -39,6 +43,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: Northern Daily Leader
@@ -47,6 +52,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: The Guardian (AU)
@@ -63,6 +69,7 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
   - platform: feedparser
     name: Sky Sports (UK)
@@ -71,4 +78,5 @@ sensor:
     show_topn: 10
     inclusions:
       - title
+      - pubDate
       - link
