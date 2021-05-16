@@ -17,3 +17,14 @@ ignored_entities:
     - sensor.east_tamworth_uv_start_time_5
     - sensor.lightning_counter_lasthour
     - sensor.lightning_distance_lasthour
+    - sensor.climacell_grass_pollen_index
+    - sensor.climacell_tree_pollen_index
+    - sensor.climacell_weed_pollen_index
+    - sensor.east_tamworth_fire_danger_0
+    - sensor.east_tamworth_fire_danger_1
+    - sensor.east_tamworth_fire_danger_2
+    - sensor.east_tamworth_fire_danger_3
+    - sensor.east_tamworth_temp_min_0
+    - sensor.waternsw_chaffey_dam_evaporation_24hrs
+    - sensor.waternsw_split_rock_dam_evaporation_24hrs
+    - sensor.weather_outside_cloudbase

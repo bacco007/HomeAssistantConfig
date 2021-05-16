@@ -85,12 +85,12 @@ sensor:
         icon_template: mdi:calendar-today
         friendly_name_template: >-
           {% set date = states('sensor.date') %}
-          {% set datetime = strptime(date, '%Y-%m-%d') %}
+          {% set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
           {{ datetime.strftime('%A') }}
         value_template: >-
           {% set date = states('sensor.date') %}
-          {% set datetime = strptime(date, '%Y-%m-%d') %}
-          {% set month = datetime.strftime('%B') %}
+          {% set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
+          {% set month = datetime.strftime('%B') | default('', true) %}
           {% set day = datetime.strftime('%d') | int %}
           {{ month }} {{ day }}
       date_long:
@@ -99,8 +99,8 @@ sensor:
         value_template: >-
           {% set date = states('sensor.date') %}
           {% set datetime = strptime(date, '%Y-%m-%d') %}
-          {% set weekday = datetime.strftime('%A') %}
-          {% set month = datetime.strftime('%B') %}
+          {% set weekday = datetime.strftime('%A') | default('', true) %}
+          {% set month = datetime.strftime('%B') | default('', true) %}
           {% set day = datetime.strftime('%d') | int %}
           {%
             set suffix = 'st' if (day % 10 == 1 and day != 11)
@@ -186,7 +186,7 @@ sensor:
         friendly_name: After Tomorrow
         value_template: >-
           {% set date = states('sensor.date') %}
-          {% set datetime = strptime(date, '%Y-%m-%d') %}
+          {% set datetime = strptime(date, '%Y-%m-%d') | default('', true) %}
           {% set timestamp = as_timestamp(datetime) + 2*24*60*60 %}
           {{ timestamp | timestamp_custom('%A') }}
       day_phase:

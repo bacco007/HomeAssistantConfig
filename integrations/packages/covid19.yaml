@@ -222,32 +222,103 @@ sensor:
         unit_of_measurement: "%"
         icon_template: mdi:biohazard
         value_template: >
-          {{ (((state_attr('sensor.covid_19_nswh_local', 'hneh')|int)/912352)*100)|round(3) }}
+          {% set val = state_attr('sensor.covid_19_nswh_local', 'hneh') %}
+          {% if val == 0 %}
+            {{ 0 }}
+          {% else %}
+            {{ (((val|int)/912352)*100)|round(3) }}
+          {% endif %}
         attribute_templates:
           hneh_percent: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'hneh')|int)/912352)*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'hneh') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/912352)*100)|round(3) }}
+            {% endif %}
           trc_percent: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'trc')|int)/62156)*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'trc') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/62156)*100)|round(3) }}
+            {% endif %}
           tamw_percent: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'tamw')|int)/49072)*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'tamw') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/49072)*100)|round(3) }}
+            {% endif %}
           hneh_percent_cases: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'hneh')|int)/(state_attr('sensor.covid_19_esria_nsw', 'Cases')|int))*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'hneh') %}
+            {% set val2 = state_attr('sensor.covid_19_covidlive_nsw', 'Cases') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int))*100)|round(3) }}
+            {% endif %}
           trc_percent_cases: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'trc')|int)/(state_attr('sensor.covid_19_esria_nsw', 'Cases')|int))*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'trc') %}
+            {% set val2 = state_attr('sensor.covid_19_covidlive_nsw', 'Cases') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int))*100)|round(3) }}
+            {% endif %}
           tamw_percent_cases: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'tamw')|int)/(state_attr('sensor.covid_19_esria_nsw', 'Cases')|int))*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'tamw') %}
+            {% set val2 = state_attr('sensor.covid_19_covidlive_nsw', 'Cases') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
           hneh_percent_casestotests: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'hneh')|int)/(state_attr('sensor.covid_19_nswh_local_tests', 'hneh')|int))*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'hneh') %}
+            {% set val2 = state_attr('sensor.covid_19_nswh_local_tests', 'hneh') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
           trc_percent_casestotests: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'trc')|int)/(state_attr('sensor.covid_19_nswh_local_tests', 'trc')|int))*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'trc') %}
+            {% set val2 = state_attr('sensor.covid_19_nswh_local_tests', 'trc') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
           tamw_percent_casestotests: >
-            {{ (((state_attr('sensor.covid_19_nswh_local', 'tamw')|int)/(state_attr('sensor.covid_19_nswh_local_tests', 'tamw')|int))*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'tamw') %}
+            {% set val2 = state_attr('sensor.covid_19_nswh_local_tests', 'tamw') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
           hneh_percent_tests: >
-            {{ (((state_attr('sensor.covid_19_nswh_local_tests', 'hneh')|int)/912352)*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local_tests', 'hneh') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/912352)*100)|round(3) }}
+            {% endif %}
           trc_percent_tests: >
-            {{ (((state_attr('sensor.covid_19_nswh_local_tests', 'trc')|int)/62156)*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local_tests', 'trc') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/62156)*100)|round(3) }}
+            {% endif %}
           tamw_percent_tests: >
-            {{ (((state_attr('sensor.covid_19_nswh_local_tests', 'tamw')|int)/49072)*100)|round(3) }}
+            {% set val = state_attr('sensor.covid_19_nswh_local_tests', 'tamw') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/49072)*100)|round(3) }}
+            {% endif %}
       # covid_19_esria_aus_pct:
       #   friendly_name: "COVID-19 ESRIA AUS Percents"
       #   unit_of_measurement: "%"

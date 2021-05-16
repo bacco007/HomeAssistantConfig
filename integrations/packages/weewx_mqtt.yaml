@@ -375,12 +375,55 @@ sensor:
           {{(temperature + 0.33 * wvp - 0.70 * windspeedmps - 4.00)|round(2)}}
         unit_of_measurement: "°C"
 
+  - platform: filter
+    name: weather_outdoor_humidity_filtered
+    entity_id: sensor.weather_outside_humidity
+    filters:
+      - filter: time_throttle
+        window_size: "00:10"
+
+  - platform: filter
+    name: weather_outdoor_pressure_filtered
+    entity_id: sensor.weather_outside_pressure
+    filters:
+      - filter: time_throttle
+        window_size: "00:10"
+
+  - platform: filter
+    name: weather_outside_temperature_filtered
+    entity_id: sensor.weather_outside_temperature
+    filters:
+      - filter: time_throttle
+        window_size: "00:10"
+
+  - platform: filter
+    name: weather_outside_temperature_filtered_avg
+    entity_id: sensor.weather_outside_temperature
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:01"
+        precision: 2
+
+  - platform: filter
+    name: weather_outside_windspeed_filtered
+    entity_id: sensor.weather_outside_windspeed
+    filters:
+      - filter: time_throttle
+        window_size: "00:10"
+
+  - platform: filter
+    name: weather_outside_winddirection_filtered
+    entity_id: sensor.weather_outside_winddirection
+    filters:
+      - filter: time_throttle
+        window_size: "00:10"
+
 weather:
   - platform: template
     name: home
     condition_template: "{{ states('weather.east_tamworth') }}"
-    temperature_template: "{{ states('sensor.weather_outside_temperature') | float }}"
-    humidity_template: "{{ states('sensor.weather_outside_humidity') | float }}"
-    wind_speed_template: "{{ states('sensor.weather_outside_windspeed') | float }}"
-    wind_bearing_template: "{{ states('sensor.weather_outside_winddirection') | float }}"
-    pressure_template: "{{ states('sensor.weather_outside_pressure') | float }}"
+    temperature_template: "{{ states('sensor.weather_outside_temperature_filtered') | float }}"
+    humidity_template: "{{ states('sensor.weather_outside_humidity_filtered') | float }}"
+    wind_speed_template: "{{ states('sensor.weather_outside_windspeed_filtered') | float }}"
+    wind_bearing_template: "{{ states('sensor.weather_outside_winddirection_filtered') | float }}"
+    pressure_template: "{{ states('sensor.weather_outside_pressure_filtered') | float }}"

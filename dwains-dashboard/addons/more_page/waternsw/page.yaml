@@ -42,9 +42,10 @@
           type: area
           # color: var(--dwains-theme-accent)
           extend_to_end: false
+          fill_raw: last
           group_by:
             func: avg
-            duration: 1h
+            duration: 6h
     - type: custom:apexcharts-card
       graph_span: 7d
       header:
@@ -84,9 +85,10 @@
           type: area
           # color: var(--dwains-theme-accent)
           extend_to_end: false
+          fill_raw: last
           group_by:
             func: avg
-            duration: 1h
+            duration: 6h
     - type: custom:apexcharts-card
       graph_span: 7d
       header:
@@ -126,9 +128,10 @@
           type: area
           # color: var(--dwains-theme-accent)
           extend_to_end: false
+          fill_raw: last
           group_by:
             func: avg
-            duration: 1h
+            duration: 6h
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"

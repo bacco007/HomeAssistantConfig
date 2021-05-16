@@ -4,7 +4,7 @@ sensors:
   office_sonos_source:
     value_template: >-
       {% if states('media_player.office_sonos') == 'playing' %}
-        {{ states.media_player.office_sonos.attributes.source }}
+        {{ state_attr('media_player.office_sonos', 'source') }}
       {% else %}
         Not Playing
       {% endif %}

@@ -64,7 +64,7 @@ cards:
     content: |-
       {% set prev = namespace(airdate=false) %}
       {% for item in state_attr('sensor.radarr_upcoming_media', 'data') %}
-      {% if item.airdate %}
+      {% if item.airdate | default('', true) %}
       {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
       {% if airdate != prev.airdate %}
         <b><u>{{ airdate }}</b></u>

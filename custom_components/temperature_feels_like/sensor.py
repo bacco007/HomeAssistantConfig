@@ -26,7 +26,9 @@ from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     EVENT_HOMEASSISTANT_START,
     PERCENTAGE,
+    SPEED_KILOMETERS_PER_HOUR,
     SPEED_METERS_PER_SECOND,
+    SPEED_MILES_PER_HOUR,
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
     TEMP_CELSIUS,
@@ -73,6 +75,13 @@ async def async_setup_platform(
             )
         ]
     )
+
+
+WIND_SPEED_UNITS = {
+    SPEED_METERS_PER_SECOND: 1,
+    SPEED_KILOMETERS_PER_HOUR: 3.6,
+    SPEED_MILES_PER_HOUR: 2.237,
+}
 
 
 class TemperatureFeelingSensor(Entity):
@@ -143,7 +152,7 @@ class TemperatureFeelingSensor(Entity):
             """Update entity on startup."""
             if not self._name:
                 state = self.hass.states.get(self._sources[0])  # type: LazyState
-                self._name = state.attributes["friendly_name"]
+                self._name = state.name
                 if self._name.lower().find("temperature") < 0:
                     self._name += " Temperature"
                 self._name += " Feels Like"
@@ -175,7 +184,7 @@ class TemperatureFeelingSensor(Entity):
 
                 if (
                     domain == WEATHER
-                    or unit_of_measurement == SPEED_METERS_PER_SECOND
+                    or unit_of_measurement in WIND_SPEED_UNITS
                     or entity_id.find("wind") >= 0
                 ):
                     self._wind = entity_id
@@ -261,19 +270,28 @@ class TemperatureFeelingSensor(Entity):
         domain = split_entity_id(state.entity_id)[0]
         if domain == WEATHER:
             wind_speed = state.attributes.get(ATTR_WEATHER_WIND_SPEED)
+            entity_unit = (
+                SPEED_KILOMETERS_PER_HOUR
+                if self.hass.config.units.is_metric
+                else SPEED_MILES_PER_HOUR
+            )
         else:
             wind_speed = state.state
+            entity_unit = state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
 
         if not self._has_state(wind_speed):
             return None
+
+        if entity_unit != SPEED_METERS_PER_SECOND:
+            wind_speed = float(wind_speed) / WIND_SPEED_UNITS[entity_unit]
 
         return float(wind_speed)
 
     async def async_update(self):
         """Update sensor state."""
         temp = self._get_temperature(self._temp)  # °C
-        humd = self._get_humidity(self._humd)
-        wind = self._get_wind_speed(self._wind)
+        humd = self._get_humidity(self._humd)  # %
+        wind = self._get_wind_speed(self._wind)  # m/s
 
         _LOGGER.debug("Temp: %s °C  Hum: %s %%  Wind: %s m/s", temp, humd, wind)
 

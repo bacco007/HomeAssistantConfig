@@ -167,7 +167,7 @@ class UnifiSensorData(object):
         :return: None
         """
         self._current_status_code = self._session.post(
-            "{}/api/login".format(self._baseurl),
+            "{}/api/auth/login".format(self._baseurl),
             data=json.dumps(self._login_data),
             verify=self._verify_ssl,
         ).status_code
@@ -277,4 +277,3 @@ class UnifiSensorData(object):
             self.attrs["wired"] = devices_wired
 
         self.logout()
-

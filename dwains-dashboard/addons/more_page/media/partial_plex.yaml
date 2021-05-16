@@ -56,7 +56,7 @@ cards:
     content: |-
       {% set prev = namespace(airdate=false) %}
       {% for item in state_attr('sensor.plex_recently_added', 'data') %}
-      {% if item.airdate %}
+      {% if item.airdate | default('', true) %}
       {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
       {% if airdate != prev.airdate %}
         <b><u>{{ airdate }}</b></u>
@@ -68,9 +68,9 @@ cards:
 
   - type: markdown
     content: |-
-      {% set prev = namespace(airdate=false) %}
+      {% set prev = namespace(airdate=false) | default('', true) %}
       {% for item in state_attr('sensor.plex_recently_added_movies', 'data') %}
-      {% if item.airdate %}
+      {% if item.airdate | default('', true) %}
       {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
       {% if airdate != prev.airdate %}
         <b><u>{{ airdate }}</b></u>

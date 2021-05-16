@@ -72,18 +72,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 15th 2021_
+_Stats as at 05:00, Sunday, May 16th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.5.3 | 328     | 3063         | 2482 | 79 |
+| 2021.5.3 | 331     | 2197         | 1628 | 77 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 79
-Binary Sensor | 186
+Automation | 77
+Binary Sensor | 184
 Camera | 4
 Device Tracker | 60
 Group | 9
@@ -91,14 +91,14 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 2
 Light | 4
-Media Player | 22
+Media Player | 19
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2482
+Sensor | 1628
 Sun | 1
-Switch | 111
-Weather | 6
+Switch | 109
+Weather | 7
 Zone | 10
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -201,6 +201,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [feedreader](https://www.home-assistant.io/components/feedreader) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
 | [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
+| [fontawesome](https://www.home-assistant.io/components/fontawesome) |
 | [forked_daapd](https://www.home-assistant.io/components/forked_daapd) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
@@ -373,6 +374,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.synology_dsm](https://www.home-assistant.io/components/sensor.synology_dsm) |
 | [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor) |
 | [sensor.tautulli](https://www.home-assistant.io/components/sensor.tautulli) |
+| [sensor.temperature_feels_like](https://www.home-assistant.io/components/sensor.temperature_feels_like) |
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission) |
@@ -436,6 +438,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [weather.climacell](https://www.home-assistant.io/components/weather.climacell) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.met](https://www.home-assistant.io/components/weather.met) |
+| [weather.template](https://www.home-assistant.io/components/weather.template) |
 | [webhook](https://www.home-assistant.io/components/webhook) |
 | [websocket_api](https://www.home-assistant.io/components/websocket_api) |
 | [xbox](https://www.home-assistant.io/components/xbox) |
@@ -470,6 +473,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Favicon changer](https://github.com/thomasloven/hass-favicon)
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
 - [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
+- [Fontawesome icons](https://github.com/thomasloven/hass-fontawesome)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
 - [GeoJson Rich Integration](https://github.com/Fusion/python-aio-geojson-query/tree/master/examples/homeassistant)
@@ -501,6 +505,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
 - [Start Spotify on chromecast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
+- [Temperature Feels Like](https://github.com/Limych/ha-temperature-feeling)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [Untappd Recent Beers]()
@@ -525,6 +530,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dwains Dashboard](https://github.com/dwainscheeren/dwains-lovelace-dashboard) | An auto generating Home Assistant Lovelace UI dashboard for desktop, tablet and mobile by Dwains for desktop, tablet, mobile |
 | [Feedparser](https://github.com/custom-components/feedparser) | 📰 RSS Feed Integration |
 | [Folding@Homecontrol](https://github.com/eifinger/hass-foldingathomecontrol) | Homeassistant integration for FoldingAtHomeControl |
+| [Fontawesome](https://github.com/thomasloven/hass-fontawesome) | 🔹 Use icons from fontawesome in home-assistant |
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
 | [Ha Dyson](https://github.com/shenxn/ha-dyson) | HomeAssitant custom integration for dyson |
 | [Ha Dyson Cloud](https://github.com/shenxn/ha-dyson-cloud) | Cloud integration for ha-dyson (https://github.com/shenxn/ha-dyson/) |
@@ -558,6 +564,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Solcast](https://github.com/dannerph/homeassistant-solcast) | None |
 | [Spacex Next Launch And Starman](https://github.com/djtimca/HASpaceX) | Home Assistant integration for SpaceX Next Launch and Starman data. |
 | [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
+| [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) | Sensor of Temperature Feels Like for Home Assistant. |
 | [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw) | Home Assistant Sensor for WaterNSW Real Time Data |
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
 

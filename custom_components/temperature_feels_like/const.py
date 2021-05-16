@@ -3,7 +3,7 @@
 # Base component constants
 NAME = "Temperature Feels Like"
 DOMAIN = "temperature_feels_like"
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 ISSUE_URL = "https://github.com/Limych/ha-temperature-feeling/issues"
 
 STARTUP_MESSAGE = f"""

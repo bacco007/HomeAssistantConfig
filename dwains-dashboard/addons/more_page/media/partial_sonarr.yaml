@@ -39,7 +39,7 @@ cards:
     content: |-
       {% set prev = namespace(airdate=false) %}
       {% for item in state_attr('sensor.sonarr_upcoming_media', 'data') %}
-      {% if item.airdate %}
+      {% if item.airdate | default('', true) %}
       {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
       {% set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}
       {% if airdate != prev.airdate %}

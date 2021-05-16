@@ -25,22 +25,36 @@ influxdb:
       - zone
     entities:
       - sun.sun
+      - sensor.ha_uptime_hours
+      - binary_sensor.iss
+      - sensor.iss_location
+      - sensor.date_time
       - sensor.plex_tautulli_history
       - sensor.plex_tautulli_toptv
       - sensor.plex_tautulli_topusers
-      - sensor.tbsmarthome_overhead_satellites
+      - sensor.radarr_movies
+      - sensor.solar_power_factor
+      - sensor.solar_phase_a_voltage
+      - sensor.unavailable_entities
+      - weather.dark_sky
+      - sensor.weather_outside_apptemperature
+      - sensor.weather_outside_dewpoint
+      - sensor.weather_outside_heatindex
+      - sensor.weather_outside_humidex
+      - sensor.weather_outside_altimeter
+      - sensor.launch_library
+      - sensor.adsb_fa_feeder
+      - weather.home
     entity_globs:
-      - sensor.*monitordocker*
-      - sensor.covid_19_covidlive_*
-      - sensor.tbsmarthome_*_overhead_satellites
-      - sensor.archive_*
-      - sensor.getdata_*
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
       - sensor.date*
+      - sensor.here_travel_*
+      - sensor.waze_travel_*
       - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*
+      - sensor.*monitordocker*
       - sensor.switchmonusb*
       - sensor.sport_*
       - sensor.*_uptime
@@ -55,4 +69,12 @@ influxdb:
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
+      - sensor.tbsmarthome_*_overhead_satellites
+      - sensor.bus_stop_*
+      - sensor.archive_*
       - sensor.2340_*
+      - sensor.getdata_*
+      - sensor.next_launch_*
+      - sensor.unifi_*
+      - sensor.space_*
+      - weather.climacell*

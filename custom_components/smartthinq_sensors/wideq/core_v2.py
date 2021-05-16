@@ -48,6 +48,7 @@ OAUTH_SECRET_KEY = "c053c2a6ddeb7ad97cb0eed0dcb31cf8"
 DATE_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
 
 API2_ERRORS = {
+    "0101": exc.DeviceNotFound,
     "0102": exc.NotLoggedInError,
     "0106": exc.NotConnectedError,
     "0100": exc.FailedRequestError,
@@ -181,7 +182,7 @@ def lgedm2_post(
 
     res = s.post(
         url,
-        json={DATA_ROOT: data},
+        json=data if is_api_v2 else {DATA_ROOT: data},
         headers=thinq2_headers(
             access_token=access_token,
             user_number=user_number,
@@ -571,6 +572,14 @@ class Session(object):
             },
         )
 
+    def set_device_v2_controls(self, device_id, values):
+        """Control a device's settings based on api V2.
+
+        `values` is a key/value map containing the settings to update.
+        """
+        path = f"service/devices/{device_id}/control-sync"
+        return self.post2(path, values)
+
     def get_device_config(self, device_id, key, category="Config"):
         """Get a device configuration option.
 
@@ -631,8 +640,11 @@ class ClientV2(object):
     def _inject_thinq2_device(self):
         """This is used only for debug"""
         data_file = os.path.dirname(os.path.realpath(__file__)) + "/deviceV2.txt"
-        with open(data_file, "r") as f:
-            device_v2 = json.load(f)
+        try:
+            with open(data_file, "r") as f:
+                device_v2 = json.load(f)
+        except FileNotFoundError:
+            return
         for d in device_v2:
             self._devices.append(d)
             _LOGGER.debug("Injected debug device: %s", d)

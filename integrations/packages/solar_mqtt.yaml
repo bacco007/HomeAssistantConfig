@@ -253,24 +253,47 @@ sensor:
               {%- endif -%}
             {%- endif -%}
           {%- endif -%}
+
   - platform: filter
-    name: solar_house_consumption_filtered_test1
+    name: solar_solar_to_house_filtered
     entity_id: sensor.solar_solar_to_house
     filters:
-      - filter: lowpass
-        time_constant: 10
-        precision: 2
+      - filter: time_throttle
+        window_size: "00:05"
+
   - platform: filter
-    name: solar_house_consumption_filtered_test2
-    entity_id: sensor.solar_solar_to_house
+    name: solar_house_from_grid_clean_filtered
+    entity_id: sensor.solar_house_from_grid_clean
+    filters:
+      - filter: time_throttle
+        window_size: "00:05"
+
+  - platform: filter
+    name: solar_solar_generation_filtered
+    entity_id: sensor.solar_solar_generation
+    filters:
+      - filter: time_throttle
+        window_size: "00:05"
+
+  - platform: filter
+    name: solar_solar_generation_filtered_avg
+    entity_id: sensor.solar_solar_generation
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:01"
+        precision: 2
+
+  - platform: filter
+    name: solar_daily_yield_clean_filtered
+    entity_id: sensor.solar_daily_yield_clean
     filters:
       - filter: time_throttle
         window_size: "00:05"
 
 utility_meter:
   meter_solar_house_daily:
-    source: sensor.solar_solar_to_house
+    source: sensor.solar_solar_to_house_filtered
     cycle: daily
   meter_solar_grid_daily:
-    source: sensor.solar_to_grid_clean
+    source: sensor.solar_to_grid_clean_filtered
     cycle: daily

@@ -26,7 +26,7 @@ cards:
             state: "{{ state_attr(config.entity, 'rank') }}"
             secondary: '${{"{:,}".format(state_attr(config.entity, ''market_cap'')|int)}}'
       - type: "custom:mini-graph-card"
-        hours_to_show: 3
+        hours_to_show: 24
         points_per_hour: 60
         show:
           icon: false

@@ -301,7 +301,7 @@ class ModelInfo(object):
             return EnumValue(d["option"])
         elif d["type"] == "Range":
             return RangeValue(
-                d["option"]["min"], d["option"]["max"], d["option"]["step"]
+                d["option"]["min"], d["option"]["max"], d["option"].get("step", 0)
             )
         elif d["type"] == "Bit":
             bit_values = {}
@@ -672,6 +672,52 @@ class ModelInfoV2(object):
         return data.get(key)
 
 
+class ModelInfoV2AC(ModelInfo):
+
+    @property
+    def is_info_v2(self):
+        return True
+
+    def value_type(self, name):
+        if name in self._data["Value"]:
+            return self._data["Value"][name]["data_type"]
+        else:
+            return None
+
+    def value(self, name):
+        """Look up information about a value.
+
+        Return either an `EnumValue` or a `RangeValue`.
+        """
+        d = self._data["Value"][name]
+        if d["data_type"] in ("Enum", "enum"):
+            return EnumValue(d["value_mapping"])
+        elif d["data_type"] in ("Range", "range"):
+            return RangeValue(
+                d["value_validation"]["min"], d["value_validation"]["max"], d["value_validation"].get("step", 0)
+            )
+        # elif d["type"] == "Bit":
+        #    bit_values = {}
+        #    for bit in d["option"]:
+        #        bit_values[bit["startbit"]] = {
+        #            "value": bit["value"],
+        #            "length": bit["length"],
+        #        }
+        #    return BitValue(bit_values)
+        # elif d["type"] == "Reference":
+        #    ref = d["option"][0]
+        #    return ReferenceValue(self._data[ref])
+        # elif d["type"] == "Boolean":
+        #    return EnumValue({"0": "False", "1": "True"})
+        elif d["data_type"] == "String":
+            pass
+        else:
+            assert False, "unsupported value type {}".format(d["data_type"])
+
+    def decode_snapshot(self, data, key):
+        return data
+
+
 class Device(object):
     """A higher-level interface to a specific device.
         
@@ -740,13 +786,31 @@ class Device(object):
             self._available_features[feature_name] = title
         return title
 
-    def _set_control(self, key, value):
+    def _set_control(self, key, value, ctrl_key, command):
         """Set a device's control for `key` to `value`.
         """
+        if self._should_poll:
+            self._client.session.set_device_controls(
+                self._device_info.id, {key: value},
+            )
+            return
 
-        self._client.session.set_device_controls(
-            self._device_info.id, {key: value},
+        self._client.session.set_device_v2_controls(
+            self._device_info.id,
+            {
+                "ctrlKey": ctrl_key,
+                "command": command,
+                "dataKey": key,
+                "dataValue": value,
+            }
         )
+
+    def set(self, key, value, ctrl_key="basicCtrl", command="Set"):
+        """Set a device's control for `key` to `value`."""
+        _LOGGER.debug("Setting new state: %s - %s - %s", key, value, ctrl_key)
+        self._set_control(key, value, ctrl_key, command)
+        if self._status:
+            self._status.update_status(key, value)
 
     def _get_config(self, key):
         """Look up a device's configuration for a given value.
@@ -778,10 +842,15 @@ class Device(object):
                 )
 
             model_data = self._model_data
-            if model_data.get("Monitoring") and model_data.get("Value"):
+            if "Monitoring" in model_data and "Value" in model_data:
+                # this are old V1 model
                 self._model_info = ModelInfo(model_data)
-            elif model_data.get("MonitoringValue"):
+            elif "MonitoringValue" in model_data:
+                # this are new V2 devices
                 self._model_info = ModelInfoV2(model_data)
+            elif "ControlDevice" in model_data and "Value" in model_data:
+                # this are new V2 ac
+                self._model_info = ModelInfoV2AC(model_data)
 
         if self._model_info is not None:
             # load model language pack
@@ -936,12 +1005,19 @@ class DeviceStatus(object):
 
         return STATE_UNKNOWN.UNKNOWN
 
-    def lookup_enum(self, key):
+    def update_status(self, key, value):
+        self._data[key] = value
+
+    def lookup_enum(self, key, data_is_num=False):
         curr_key = self._get_data_key(key)
         if not curr_key:
             return None
+        value = self._data[curr_key]
+        if data_is_num:
+            value = str(int(value))
+
         return self._device.model_info.enum_name(
-            curr_key, self._data[curr_key]
+            curr_key, value
         )
 
     def lookup_reference(self, key, ref_key="_comment"):
