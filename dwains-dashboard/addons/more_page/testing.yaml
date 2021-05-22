@@ -6,14 +6,14 @@
         - sensor.weather_outside_temperature
         - sensor.weather_outside_temperature_filtered
         - sensor.weather_outside_temperature_filtered_avg
-      hours_to_show: 6
+      hours_to_show: 24
       refresh_interval: 120
     - type: history-graph
       entities:
         - sensor.solar_solar_generation
         - sensor.solar_solar_generation_filtered
         - sensor.solar_solar_generation_filtered_avg
-      hours_to_show: 6
+      hours_to_show: 24
       refresh_interval: 120
 
 - type: custom:dwains-flexbox-card
@@ -576,7 +576,7 @@
         show: true
         title: "COVID-19 - Vaccinations"
       span:
-        end: hour
+        end: day
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -687,7 +687,7 @@
         show: true
         title: "COVID-19 - Vaccinations (as % of Population)"
       span:
-        end: hour
+        end: day
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }

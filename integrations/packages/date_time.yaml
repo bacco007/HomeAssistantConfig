@@ -98,7 +98,7 @@ sensor:
         icon_template: mdi:calendar-today
         value_template: >-
           {% set date = states('sensor.date') %}
-          {% set datetime = strptime(date, '%Y-%m-%d') %}
+          {% set datetime = strptime(date, '%Y-%m-%d') | default('', true)  %}
           {% set weekday = datetime.strftime('%A') | default('', true) %}
           {% set month = datetime.strftime('%B') | default('', true) %}
           {% set day = datetime.strftime('%d') | int %}

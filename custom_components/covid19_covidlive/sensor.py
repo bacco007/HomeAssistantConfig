@@ -1,7 +1,6 @@
 """Sensor platform for Covid Live """
 import datetime
 import logging
-from datetime import timedelta
 from unicodedata import normalize
 
 import homeassistant.helpers.config_validation as cv
@@ -102,6 +101,8 @@ class CovidLiveSensor(Entity):
             "Cases": 0,
             "Overseas": 0,
             "Doses": 0,
+            "Doses1st": 0,
+            "Doses2nd": 0,
             "Tests": 0,
             "Active": 0,
             "Recoveries": 0,
@@ -116,6 +117,30 @@ class CovidLiveSensor(Entity):
             _LOGGER.debug("CovidLive: Category - %s", row["CATEGORY"])
             _LOGGER.debug("CovidLive: Value - %s", row["TOTAL"])
             self._attributes[row["CATEGORY"]] = row["TOTAL"]
+
+        url2 = "https://covidlive.com.au/report/vaccinations-people"
+        tables2 = pd.read_html(url2, attrs={"class": "VACCINATIONS-PEOPLE"})
+        df2 = tables2[0]
+        df2 = df2.applymap(clean_normalize_whitespace)
+        df2.columns = df2.columns.to_series().apply(clean_normalize_whitespace)
+        col_type2 = {"STATE": "string", "FIRST": "int", "SECOND": "int"}
+        df2 = df2.fillna(0).astype(col_type2)
+        state_match = {
+            "vic": "Victoria",
+            "nsw": "NSW",
+            "qld": "Queensland",
+            "wa": "WA",
+            "sa": "SA",
+            "tas": "Tasmania",
+            "nt": "NT",
+            "act": "ACT",
+            "aus": "Australia",
+        }
+        statevax = state_match.get(self._region)
+        for index, row in df2.iterrows():
+            if row["STATE"] == statevax:
+                self._attributes["Doses1st"] = row["FIRST"]
+                self._attributes["Doses2nd"] = row["SECOND"]
 
         self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         self._state = self._attributes["Cases"]

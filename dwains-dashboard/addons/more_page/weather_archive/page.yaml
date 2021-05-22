@@ -86,6 +86,8 @@
             }
             return res.sort((a, b) => { return a[0] - b[0] });
       graph_span: 30days
+      span:
+        end: day
       all_series_config:
         type: line
         group_by:
@@ -190,6 +192,8 @@
             }
             return res.sort((a, b) => { return a[0] - b[0] });
       graph_span: 365days
+      span:
+        end: day
       all_series_config:
         type: line
         group_by:
@@ -294,6 +298,8 @@
             }
             return res.sort((a, b) => { return a[0] - b[0] });
       graph_span: 365days
+      span:
+        end: day
       all_series_config:
         type: line
         group_by:

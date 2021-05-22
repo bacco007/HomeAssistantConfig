@@ -144,6 +144,7 @@
                       port: !secret plex_port
                       libraryName: TV Shows
                       maxCount: 20
+                      sort: episode.addedAt:desc
                       entity:
                         androidtv: media_player.nvidia_shield
 
@@ -191,5 +192,6 @@
                       port: !secret plex_port
                       libraryName: Movies
                       maxCount: 20
+                      sort: addedAt:desc
                       entity:
                         androidtv: media_player.nvidia_shield

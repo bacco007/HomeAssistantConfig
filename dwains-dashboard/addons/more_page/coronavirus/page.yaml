@@ -227,6 +227,16 @@
     - type: vertical-stack
       cards:
         - !include partial_bar-graph-deaths.yaml
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-4 col-lg-4 col-xl-4"
+  cards:
     - type: vertical-stack
       cards:
         - !include partial_bar-graph-doses.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_bar-graph-doses1st.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_bar-graph-doses2nd.yaml

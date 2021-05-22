@@ -9,6 +9,7 @@ from homeassistant.components.climate import (
     ATTR_CURRENT_TEMPERATURE,
 )
 from homeassistant.components.climate import DOMAIN as CLIMATE
+from homeassistant.components.group import expand_entity_ids
 from homeassistant.components.history import LazyState
 from homeassistant.components.weather import (
     ATTR_WEATHER_HUMIDITY,
@@ -71,7 +72,7 @@ async def async_setup_platform(
             TemperatureFeelingSensor(
                 config.get(CONF_UNIQUE_ID),
                 config.get(CONF_NAME),
-                config.get(CONF_SOURCE),
+                expand_entity_ids(hass, config.get(CONF_SOURCE)),
             )
         ]
     )

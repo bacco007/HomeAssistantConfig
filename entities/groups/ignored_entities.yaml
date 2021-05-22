@@ -28,3 +28,9 @@ ignored_entities:
     - sensor.waternsw_chaffey_dam_evaporation_24hrs
     - sensor.waternsw_split_rock_dam_evaporation_24hrs
     - sensor.weather_outside_cloudbase
+    - sensor.skin_type_1_safe_exposure_time
+    - sensor.skin_type_2_safe_exposure_time
+    - sensor.skin_type_3_safe_exposure_time
+    - sensor.skin_type_4_safe_exposure_time
+    - sensor.skin_type_5_safe_exposure_time
+    - sensor.skin_type_6_safe_exposure_time

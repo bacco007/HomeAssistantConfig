@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, May 16th 2021_
+_Stats as at 05:00, Saturday, May 22nd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.5.3 | 331     | 2197         | 1628 | 77 |
+| 2021.5.5 | 331     | 2215         | 1641 | 77 |
 
 Type | Qty
 -- | --
@@ -91,11 +91,11 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 2
 Light | 4
-Media Player | 19
+Media Player | 22
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1628
+Sensor | 1641
 Sun | 1
 Switch | 109
 Weather | 7
@@ -173,6 +173,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [climate.deconz](https://www.home-assistant.io/components/climate.deconz) |
 | [climate.dyson_local](https://www.home-assistant.io/components/climate.dyson_local) |
 | [climate.sensibo](https://www.home-assistant.io/components/climate.sensibo) |
+| [climate.smartthinq_sensors](https://www.home-assistant.io/components/climate.smartthinq_sensors) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [config](https://www.home-assistant.io/components/config) |
 | [configurator](https://www.home-assistant.io/components/configurator) |
@@ -340,7 +341,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
-| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -486,7 +486,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Lovelace Gen]()
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [my_unifi]()
-- [MyJDownloader](https://www.home-assistant.io/integrations/myjdownloader)
+- [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
 - [Node-RED Companion](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
 - [NSW Air Quality]()
 - [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)

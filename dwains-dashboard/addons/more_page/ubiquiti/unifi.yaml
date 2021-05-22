@@ -854,6 +854,8 @@
         clickable: true
         css:
           table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+          "tbody tr:nth-child(even)": "background-color: none !important;"
+          "tbody tr:nth-child(odd)": "background-color: none !important;"
         columns:
           - name: Name / Host Name
             data: name,hostname
@@ -894,6 +896,8 @@
         clickable: true
         css:
           table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
+          "tbody tr:nth-child(even)": "background-color: none !important;"
+          "tbody tr:nth-child(odd)": "background-color: none !important;"
         columns:
           - name: Name / Host Name
             data: name,hostname

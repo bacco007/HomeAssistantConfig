@@ -27,7 +27,7 @@
           color: darkgray !important;
           margin-left: 2px !important;
         }
-      clickable: false
+
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
         "tbody tr:nth-child(even)": "background-color: none !important;"
@@ -72,7 +72,7 @@
           color: darkgray !important;
           margin-left: 2px !important;
         }
-      clickable: false
+
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
         "tbody tr:nth-child(even)": "background-color: none !important;"
@@ -117,7 +117,7 @@
           color: darkgray !important;
           margin-left: 2px !important;
         }
-      clickable: false
+
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
         "tbody tr:nth-child(even)": "background-color: none !important;"
@@ -162,7 +162,7 @@
           color: darkgray !important;
           margin-left: 2px !important;
         }
-      clickable: false
+
       css:
         table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
         "tbody tr:nth-child(even)": "background-color: none !important;"

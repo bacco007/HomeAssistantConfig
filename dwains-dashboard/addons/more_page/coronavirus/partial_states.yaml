@@ -23,7 +23,9 @@ cards:
       "tbody tr:nth-child(odd)": "background-color: none !important;"
     entities:
       include: sensor.covid_19_covidlive*
-      exclude: sensor.covid_19_covidlive_aus_vaccines
+      exclude:
+        - sensor.covid_19_covidlive_aus_vaccines
+        - sensor.covid_19_covidlive_vac_pct
     columns:
       - name: Name
         attr: Name
@@ -53,4 +55,10 @@ cards:
         modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
       - name: Doses
         attr: Doses
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: 1st Doses
+        attr: Doses1st
+        modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      - name: 2nd Doses
+        attr: Doses2nd
         modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')

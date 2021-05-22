@@ -15,6 +15,7 @@ sensor:
     name: weather_outside_pressure
     icon: mdi:gauge
     state_topic: "weather/loop"
+    device_class: pressure
     value_template: >-
       {% if value_json.pressure_mbar is defined %}
         {{ value_json.pressure_mbar | round(2) | float }}
@@ -28,6 +29,7 @@ sensor:
     name: weather_outside_humidity
     icon: mdi:water-percent
     state_topic: "weather/loop"
+    device_class: humidity
     value_template: >-
       {% if value_json.outHumidity is defined %}
         {{ value_json.outHumidity | round(1) | float }}
@@ -41,6 +43,7 @@ sensor:
     name: weather_inside_humidity
     icon: mdi:water-percent
     state_topic: "weather/loop"
+    device_class: humidity
     value_template: >-
       {% if value_json.inHumidity is defined %}
         {{ value_json.inHumidity | round(1) | float }}
@@ -54,6 +57,7 @@ sensor:
     name: weather_outside_temperature
     icon: mdi:thermometer
     state_topic: "weather/loop"
+    device_class: temperature
     value_template: >-
       {% if value_json.outTemp_C is defined %}
         {{ value_json.outTemp_C | round(2) | float }}
@@ -66,6 +70,7 @@ sensor:
     name: weather_inside_temperature
     icon: mdi:thermometer
     state_topic: "weather/loop"
+    device_class: temperature
     value_template: >-
       {% if value_json.inTemp_C is defined %}
         {{ value_json.inTemp_C | round(2) | float }}
@@ -158,6 +163,7 @@ sensor:
     name: weather_outside_altimeter
     icon: mdi:gauge
     state_topic: "weather/loop"
+    device_class: pressure
     value_template: >-
       {% if value_json.altimeter_mbar is defined %}
         {{ value_json.altimeter_mbar | round(2) | float }}
@@ -171,6 +177,7 @@ sensor:
     name: weather_outside_apptemperature
     icon: mdi:thermometer
     state_topic: "weather/loop"
+    device_class: temperature
     value_template: >-
       {% if value_json.appTemp_C is defined %}
         {{ value_json.appTemp_C | round(2) | float }}
@@ -184,6 +191,7 @@ sensor:
     name: weather_outside_barometer
     icon: mdi:gauge
     state_topic: "weather/loop"
+    device_class: pressure
     value_template: >-
       {% if value_json.barometer_mbar is defined %}
         {{ value_json.barometer_mbar | round(2) | float }}
@@ -380,28 +388,28 @@ sensor:
     entity_id: sensor.weather_outside_humidity
     filters:
       - filter: time_throttle
-        window_size: "00:10"
+        window_size: "00:05"
 
   - platform: filter
     name: weather_outdoor_pressure_filtered
     entity_id: sensor.weather_outside_pressure
     filters:
       - filter: time_throttle
-        window_size: "00:10"
+        window_size: "00:05"
 
   - platform: filter
     name: weather_outside_temperature_filtered
     entity_id: sensor.weather_outside_temperature
     filters:
       - filter: time_throttle
-        window_size: "00:10"
+        window_size: "00:05"
 
   - platform: filter
     name: weather_outside_temperature_filtered_avg
     entity_id: sensor.weather_outside_temperature
     filters:
       - filter: time_simple_moving_average
-        window_size: "00:01"
+        window_size: "00:05"
         precision: 2
 
   - platform: filter
@@ -409,14 +417,14 @@ sensor:
     entity_id: sensor.weather_outside_windspeed
     filters:
       - filter: time_throttle
-        window_size: "00:10"
+        window_size: "00:05"
 
   - platform: filter
     name: weather_outside_winddirection_filtered
     entity_id: sensor.weather_outside_winddirection
     filters:
       - filter: time_throttle
-        window_size: "00:10"
+        window_size: "00:05"
 
 weather:
   - platform: template

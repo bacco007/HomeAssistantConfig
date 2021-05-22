@@ -1,0 +1,78 @@
+---
+type: custom:apexcharts-card
+graph_span: 72h
+span:
+  end: hour
+header:
+  show: true
+  title: "wAQI (72 Hours)"
+  show_states: true
+  colorize_states: true
+y_axis_precision: 0
+apex_config:
+  chart:
+    {
+      type: "area",
+      height: 300,
+      toolbar: { show: true, tools: { reset: true } },
+      zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+    }
+  stroke: { show: true, width: 2.5, curve: smooth }
+  legend: { show: false }
+  dataLabels: { enabled: false }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+  xaxis:
+    {
+      type: "datetime",
+      labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+    }
+  yaxis: { max: 350, min: 0 }
+  annotations:
+    positions: back
+    yaxis:
+      - y: 50
+        y2: 0
+        strokeDashArray: 0
+        fillColor: green
+      - y: 100
+        y2: 50
+        strokeDashArray: 0
+        fillColor: yellow
+      - y: 150
+        y2: 100
+        strokeDashArray: 0
+        fillColor: orange
+      - y: 150
+        y2: 200
+        strokeDashArray: 0
+        fillColor: red
+      - y: 300
+        y2: 200
+        strokeDashArray: 0
+        fillColor: purple
+      - y: 350
+        y2: 300
+        strokeDashArray: 0
+        fillColor: maroon
+
+series:
+  - entity: sensor.waqi_tamworth_north_west_slopes
+    type: area
+    name: Air Quality
+    extend_to_end: false
+    curve: smooth
+    color: black
+    group_by:
+      func: last
+      duration: 1h

@@ -1,0 +1,24 @@
+restart_and_update:
+  name: Restart and update JDownloader
+  description: Updates all plugins and restarts JDownloader
+  target:
+    device:
+      integration: myjdownloader
+run_update_check:
+  name: Run update check
+  description: Run update check of JDownloader
+  target:
+    device:
+      integration: myjdownloader
+start_downloads:
+  name: Start downloads
+  description: Start downloads of JDownloader
+  target:
+    device:
+      integration: myjdownloader
+stop_downloads:
+  name: Stop downloads
+  description: Stop downloads of JDownloader
+  target:
+    device:
+      integration: myjdownloader

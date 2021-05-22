@@ -1,7 +1,7 @@
 type: custom:stack-in-card
 cards:
   - type: markdown
-    content: State by State - Vaccines (All Doses)
+    content: State by State - Vaccines (2nd Dose)
     style: |
       ha-card {
         background-color: var(--dwains-theme-primary)
@@ -26,13 +26,13 @@ cards:
       cards:
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_act
-            attribute: Doses
+            attribute: Doses2nd
             name: ACT
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -45,7 +45,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_act','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_act','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -75,13 +75,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_nsw
-            attribute: Doses
+            attribute: Doses2nd
             name: NSW
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -94,7 +94,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_nsw','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_nsw','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -124,13 +124,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_nt
-            attribute: Doses
+            attribute: Doses2nd
             name: NT
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -143,7 +143,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_nt','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_nt','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -173,13 +173,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_qld
-            attribute: Doses
+            attribute: Doses2nd
             name: QLD
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -192,7 +192,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_qld','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_qld','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -222,13 +222,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_sa
-            attribute: Doses
+            attribute: Doses2nd
             name: SA
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -241,7 +241,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_sa','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_sa','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -271,13 +271,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_tas
-            attribute: Doses
+            attribute: Doses2nd
             name: TAS
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -290,7 +290,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_tas','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_tas','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -320,13 +320,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_vic
-            attribute: Doses
+            attribute: Doses2nd
             name: VIC
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -339,7 +339,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_vic','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_vic','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;
@@ -369,13 +369,13 @@ cards:
               }
         - type: "custom:config-template-card"
           variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses2nd
           entities:
             - sensor.covid_19_covidlive_aus
           card:
             type: custom:bar-card
             entity: sensor.covid_19_covidlive_wa
-            attribute: Doses
+            attribute: Doses2nd
             name: WA
             color: "var(--bar)"
             max: "${vars[0]}"
@@ -388,55 +388,7 @@ cards:
             style: |
               :host {
                 --bar: #405914;
-                --pos: {{ ((state_attr('sensor.covid_19_covidlive_wa','Doses') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
-              }
-              bar-card-name, bar-card-iconbar {
-                padding-left: 0 !important;
-              }
-              ha-card, bar-card-backgroundbar {
-                box-shadow: none !important;
-                background: none !important;
-              }
-              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
-                border-radius: .3em;
-              }
-              bar-card-value {
-                color: var(--bar);
-                filter: brightness(1.5);
-                font-size: 1em;
-                text-shadow: none;
-                font-weight: 700;
-                margin-bottom: var(--pos);
-              }
-              bar-card-name {
-                font-weight: 700;
-              }
-              bar-card-title {
-                overflow: visible;
-                margin-left: auto;
-                margin-top: -1.5em;
-              }
-        - type: "custom:config-template-card"
-          variables:
-            - states['sensor.covid_19_covidlive_aus'].attributes.Doses
-          entities:
-            - sensor.covid_19_covidlive_aus
-          card:
-            type: custom:bar-card
-            entity: sensor.covid_19_covidlive_aus_vaccines
-            name: UNK
-            color: "var(--bar)"
-            max: "${vars[0]}"
-            direction: up
-            positions:
-              icon: off
-            height: 18em
-            width: 1.8em
-            unit_of_measurement: " "
-            style: |
-              :host {
-                --bar: #405914;
-                --pos: {{ ((states('sensor.covid_19_covidlive_aus_vaccines') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses') | int)) * 19 }}em;
+                --pos: {{ ((state_attr('sensor.covid_19_covidlive_wa','Doses2nd') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses2nd') | int)) * 19 }}em;
               }
               bar-card-name, bar-card-iconbar {
                 padding-left: 0 !important;

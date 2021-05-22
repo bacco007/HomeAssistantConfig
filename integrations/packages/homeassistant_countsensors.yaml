@@ -9,6 +9,16 @@ sensor:
         icon_template: mdi:code-tags
         value_template: "{{ states | count }}"
 
+      count_all_domains:
+        unique_id: count_all_domains
+        friendly_name: "Domains in Use"
+        icon_template: mdi:domain
+        value_template: >
+          {%- for d in states | groupby('domain') %}
+          {% if loop.first %}{{loop.length}}
+          {% endif %}
+          {%- endfor %}
+
       # ----- Count Automations
       count_automations:
         friendly_name: "Automations"
@@ -121,3 +131,8 @@ sensor:
         friendly_name: "Calendars"
         icon_template: mdi:calendar
         value_template: "{{ states.calendar | list | length }}"
+
+      count_counters:
+        friendly_name: "Counters"
+        icon_template: mdi:counter
+        value_template: "{{ states.counter | list | length }}"

@@ -1,416 +1,186 @@
+---
 # dwains_theme
-
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-6 col-lg-4 col-xl-4"
+  item_classes: "col-xs-12"
   cards:
-    - type: custom:apexcharts-card
-      graph_span: 72h
-      span:
-        end: hour
-      header:
-        show: true
-        title: "NSW AQI (72 Hours)"
-        show_states: true
-        colorize_states: true
-      y_axis_precision: 0
-      apex_config:
-        chart:
-          {
-            type: "area",
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, width: 2.5, curve: smooth }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis: { max: 200, min: 0 }
-        annotations:
-          positions: back
-          yaxis:
-            - y: 34
-              y2: 0
-              strokeDashArray: 0
-              fillColor: "#31add3"
-            - y: 67
-              y2: 34
-              strokeDashArray: 0
-              fillColor: "#99b964"
-            - y: 67
-              y2: 100
-              strokeDashArray: 0
-              fillColor: "#ec783a"
-            - y: 100
-              y2: 150
-              strokeDashArray: 0
-              fillColor: "#782d49"
-            - y: 200
-              y2: 150
-              strokeDashArray: 0
-              fillColor: "#d04730"
-
-      series:
-        - entity: sensor.nsw_air_quality_tamworth
-          type: area
-          name: Air Quality
-          extend_to_end: false
-          curve: smooth
-          color: black
-          group_by:
-            func: last
-            duration: 1h
-
-    - type: custom:apexcharts-card
-      graph_span: 72h
-      span:
-        end: hour
-      header:
-        show: true
-        title: "wAQI (72 Hours)"
-        show_states: true
-        colorize_states: true
-      y_axis_precision: 0
-      apex_config:
-        chart:
-          {
-            type: "area",
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, width: 2.5, curve: smooth }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis: { max: 350, min: 0 }
-        annotations:
-          positions: back
-          yaxis:
-            - y: 50
-              y2: 0
-              strokeDashArray: 0
-              fillColor: green
-            - y: 100
-              y2: 50
-              strokeDashArray: 0
-              fillColor: yellow
-            - y: 150
-              y2: 100
-              strokeDashArray: 0
-              fillColor: orange
-            - y: 150
-              y2: 200
-              strokeDashArray: 0
-              fillColor: red
-            - y: 300
-              y2: 200
-              strokeDashArray: 0
-              fillColor: purple
-            - y: 350
-              y2: 300
-              strokeDashArray: 0
-              fillColor: maroon
-
-      series:
-        - entity: sensor.waqi_tamworth_north_west_slopes
-          type: area
-          name: Air Quality
-          extend_to_end: false
-          curve: smooth
-          color: black
-          group_by:
-            func: last
-            duration: 1h
-
-    - type: custom:apexcharts-card
-      graph_span: 72h
-      span:
-        end: hour
-      header:
-        show: true
-        title: "UV Index (72 Hours)"
-        show_states: true
-        colorize_states: true
-      y_axis_precision: 0
-      apex_config:
-        chart:
-          {
-            type: "area",
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, width: 2.5, curve: smooth }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-
-        yaxis: { max: 15, min: 0 }
-        annotations:
-          positions: back
-          yaxis:
-            - y: 3
-              y2: 0
-              strokeDashArray: 0
-              fillColor: "#558B2F"
-            - y: 6
-              y2: 3
-              strokeDashArray: 0
-              fillColor: "#F9A825"
-            - y: 8
-              y2: 6
-              strokeDashArray: 0
-              fillColor: "#EF6C00"
-            - y: 11
-              y2: 8
-              strokeDashArray: 0
-              fillColor: "#B71C1C"
-            - y: 15
-              y2: 11
-              strokeDashArray: 0
-              fillColor: "#6A1B9A"
-      series:
-        - entity: sensor.current_uv_index
-          type: area
-          name: UV Index
-          extend_to_end: false
-          curve: smooth
-          color: black
-          group_by:
-            func: last
-            duration: 1h
-        - entity: sensor.weather_outside_uvindex
-          type: area
-          name: Outside UVI
-          extend_to_end: false
-          curve: smooth
-          color: red
-          group_by:
-            func: last
-            duration: 1h
-    - type: custom:sun-card
-      name:
-      meridiem: true
-      entities:
-        time: sensor.time_utc
-        max_elevation: sun.sun
-        sunrise: sensor.sunrise
-        sunset: sensor.sunset
-        noon: sensor.solar_noon
-        moon: sensor.moon
-
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
-  # padding: true
-  cards:
-    - type: entities
-      title: Sun
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - type: custom:fold-entity-row
-          head: sensor.sun_state
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-4"
+      cards:
+        - type: entities
+          title: Sun
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
           entities:
-            - sensor.sun_solarangle
-            - sensor.sun_nextrising
-            - sensor.sun_nextdawn
-            - sensor.sun_nextnoon
-            - sensor.sun_nextdusk
-            - sensor.sun_nextsetting
-            - sensor.sun_nextmidnight
+            - type: custom:fold-entity-row
+              head: sensor.sun_state
+              entities:
+                - sensor.sun_solarangle
+                - sensor.sun_nextrising
+                - sensor.sun_nextdawn
+                - sensor.sun_nextnoon
+                - sensor.sun_nextdusk
+                - sensor.sun_nextsetting
+                - sensor.sun_nextmidnight
+                - type: section
+                - sensor.solar_midnight
+                - sensor.astronomical_dawn
+                - sensor.nautical_dawn
+                - sensor.dawn
+                - sensor.sunrise
+                - sensor.solar_noon
+                - sensor.sunset
+                - sensor.dusk
+                - sensor.nautical_dusk
+                - sensor.astronomical_dusk
+                - type: section
+                - sensor.daylight
+                - sensor.civil_daylight
+                - sensor.nautical_daylight
+                - sensor.astronomical_daylight
+                - sensor.night
+                - sensor.civil_night
+                - sensor.nautical_night
+                - sensor.astronomical_night
+                - type: section
+                - sensor.elevation
+                - sensor.max_elevation
+
+        - type: custom:sun-card
+          showAzimuth: true
+          showElevation: true
+          timeFormat: 24h
+          title: ""
+        - type: entities
+          title: Air Quality
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
+          entities:
+            - entity: sensor.nsw_air_quality_tamworth
+              name: Tamworth AQI (NSW DoE)
+              type: custom:multiple-entity-row
+              entities:
+                - attribute: pm10
+                  name: PM10
+                  unit: AQI
+                - attribute: pm25
+                  name: PM2.5
+                  unit: AQI
+              secondary_info:
+                entity: sensor.nsw_air_quality_tamworth_airpollev
+            - entity: sensor.nsw_air_quality_tamworth_change_aqi
+              type: custom:multiple-entity-row
+              name: Extremes (24hrs)
+              state_header: 24hr Chg
+              entities:
+                - entity: sensor.nsw_air_quality_tamworth_min_aqi
+                  name: Min
+                - entity: sensor.nsw_air_quality_tamworth_max_aqi
+                  name: Max
             - type: section
-            - sensor.solar_midnight
-            - sensor.astronomical_dawn
-            - sensor.nautical_dawn
-            - sensor.dawn
-            - sensor.sunrise
-            - sensor.solar_noon
-            - sensor.sunset
-            - sensor.dusk
-            - sensor.nautical_dusk
-            - sensor.astronomical_dusk
-            - type: section
-            - sensor.daylight
-            - sensor.civil_daylight
-            - sensor.nautical_daylight
-            - sensor.astronomical_daylight
-            - sensor.night
-            - sensor.civil_night
-            - sensor.nautical_night
-            - sensor.astronomical_night
-            - type: section
-            - sensor.elevation
-            - sensor.max_elevation
-    - type: entities
-      title: Air Quality
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - entity: sensor.nsw_air_quality_tamworth
-          name: Tamworth AQI (NSW DoE)
-          type: custom:multiple-entity-row
+            - entity: sensor.waqi_tamworth_north_west_slopes
+              name: Tamworth AQI (wAQI)
+              type: custom:multiple-entity-row
+              entities:
+                - attribute: pm_10
+                  name: PM10
+                  unit: AQI
+                - attribute: pm_2_5
+                  name: PM2.5
+                  unit: AQI
+              secondary_info:
+                entity: sensor.waqi_tamworth_airpollev
+            - entity: sensor.waqi_tamworth_change_aqi
+              type: custom:multiple-entity-row
+              name: Extremes (24hrs)
+              state_header: 24hr Chg
+              entities:
+                - entity: sensor.waqi_tamworth_min_aqi
+                  name: Min
+                - entity: sensor.waqi_tamworth_max_aqi
+                  name: Max
+        - type: entities
+          title: UV Index
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
           entities:
-            - attribute: pm10
-              name: PM10
-              unit: AQI
-            - attribute: pm25
-              name: PM2.5
-              unit: AQI
-          secondary_info:
-            entity: sensor.nsw_air_quality_tamworth_airpollev
-        - entity: sensor.nsw_air_quality_tamworth_change_aqi
-          type: custom:multiple-entity-row
-          name: Extremes (24hrs)
-          state_header: 24hr Chg
-          entities:
-            - entity: sensor.nsw_air_quality_tamworth_min_aqi
-              name: Min
-            - entity: sensor.nsw_air_quality_tamworth_max_aqi
-              name: Max
-        - type: section
-        - entity: sensor.waqi_tamworth_north_west_slopes
-          name: Tamworth AQI (wAQI)
-          type: custom:multiple-entity-row
-          entities:
-            - attribute: pm_10
-              name: PM10
-              unit: AQI
-            - attribute: pm_2_5
-              name: PM2.5
-              unit: AQI
-          secondary_info:
-            entity: sensor.waqi_tamworth_airpollev
-        - entity: sensor.waqi_tamworth_change_aqi
-          type: custom:multiple-entity-row
-          name: Extremes (24hrs)
-          state_header: 24hr Chg
-          entities:
-            - entity: sensor.waqi_tamworth_min_aqi
-              name: Min
-            - entity: sensor.waqi_tamworth_max_aqi
-              name: Max
-    - type: entities
-      title: UV Index
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - binary_sensor.protection_window
-        - type: custom:multiple-entity-row
-          entity: sensor.current_uv_index
-          secondary_info:
-            entity: sensor.current_uv_level
-        - sensor.max_uv_index
-        - sensor.current_ozone_level
-        - type: custom:fold-entity-row
-          head:
-            type: section
-            label: Safe Exposure Times
-          entities:
-            - sensor.skin_type_1_safe_exposure_time
-            - sensor.skin_type_2_safe_exposure_time
-            - sensor.skin_type_3_safe_exposure_time
-            - sensor.skin_type_4_safe_exposure_time
-            - sensor.skin_type_5_safe_exposure_time
+            - binary_sensor.protection_window
+            - type: custom:multiple-entity-row
+              entity: sensor.current_uv_index
+              secondary_info:
+                entity: sensor.current_uv_level
+            - sensor.max_uv_index
+            - sensor.current_ozone_level
+            - type: custom:fold-entity-row
+              head:
+                type: section
+                label: Safe Exposure Times
+              entities:
+                - sensor.skin_type_1_safe_exposure_time
+                - sensor.skin_type_2_safe_exposure_time
+                - sensor.skin_type_3_safe_exposure_time
+                - sensor.skin_type_4_safe_exposure_time
+                - sensor.skin_type_5_safe_exposure_time
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-8"
+      cards:
+        - !include graph_nswaqi.yaml
+        - !include graph_waqi.yaml
+        - !include graph_uvindex.yaml
