@@ -1,328 +1,65 @@
 # dwains_theme
-
-- type: custom:auto-entities
-  filter:
-    include:
-      - entity_id: sensor.weather_*_maxrain_lastyr
-        options:
-          type: custom:button-card
-          show_state: true
-          show_name: true
-          styles:
-            grid:
-              - grid-template-areas: '"i n" "i s"'
-              - grid-template-columns: 25% 75%
-              - grid-template-rows: min-content min-content
-            card:
-              - background-color: var(--dwains-theme-primary)
-              - border-radius: 0
-              - box-shadow: none
-            name:
-              - font-size: 15px
-              - font-weight: bold
-              - color: var(--dwains-theme-names)
-              - justify-self: start
-            state:
-              - justify-self: start
-              - font-size: 13px
-              - color: var(--dwains-theme-names)
-            label:
-              - padding-top: 0px
-              - padding-bottom: 0px
-              - font-size: 12px
-              - color: var(--dwains-theme-grey)
-              - justify-self: start
-            icon:
-              - color: var(--dwains-theme-accent)
-  sort:
-    method: name
-    ignore_case: true
-  card:
-    type: custom:dwains-flexbox-card
-    items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
-
+---
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-12 col-xl-12"
+  item_classes: "col-xs-12"
   cards:
-    - type: "custom:apexcharts-card"
-      header:
-        title: Rainfall - Last 365 Days (by Week)
-        show: true
-        show_states: false
-      apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, lineCap: "square", dashArray: [10, 10] }
-        dataLabels: { enabled: true }
-        legend: { show: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        yaxis:
-          - seriesName: "Rainfall"
-            title:
-              text: "Rainfall (mm)"
-            min: 0
-            decimalsInFloat: 1
-      series:
-        - entity: sensor.archive_homerain_365day
-          name: Home
-          type: area
-          color: "#1192e8"
-          extend_to_end: false
-          stroke_width: 2
-          unit: "mm"
-          show:
-            extremas: true
-          data_generator: |
-            let res = [];
-            for (const [key, value] of
-                Object.entries(entity.attributes)) {
-                res.push([new Date(key).getTime(), value]);
-            }
-            return res.sort((a, b) => { return a[0] - b[0] });
-        - entity: sensor.archive_bomrain_365day
-          name: Tamworth Airport
-          type: area
-          color: "#ee92e8"
-          extend_to_end: false
-          stroke_width: 2
-          unit: "mm"
-          show:
-            extremas: true
-          data_generator: |
-            let res = [];
-            for (const [key, value] of
-                Object.entries(entity.attributes)) {
-                res.push([new Date(key).getTime(), value]);
-            }
-            return res.sort((a, b) => { return a[0] - b[0] });
-      graph_span: 365days
-      all_series_config:
-        type: line
-        group_by:
-          func: sum
-          duration: 7d
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-4"
+      cards:
+        - type: custom:auto-entities
+          filter:
+            include:
+              - entity_id: sensor.weather_*_maxrain_lastyr
+                options:
+                  type: custom:button-card
+                  show_state: true
+                  show_name: true
+                  styles:
+                    grid:
+                      - grid-template-areas: '"i n" "i s"'
+                      - grid-template-columns: 25% 75%
+                      - grid-template-rows: min-content min-content
+                    card:
+                      - background-color: var(--dwains-theme-primary)
+                      - border-radius: 0
+                      - box-shadow: none
+                    name:
+                      - font-size: 15px
+                      - font-weight: bold
+                      - color: var(--dwains-theme-names)
+                      - justify-self: start
+                    state:
+                      - justify-self: start
+                      - font-size: 13px
+                      - color: var(--dwains-theme-names)
+                    label:
+                      - padding-top: 0px
+                      - padding-bottom: 0px
+                      - font-size: 12px
+                      - color: var(--dwains-theme-grey)
+                      - justify-self: start
+                    icon:
+                      - color: var(--dwains-theme-accent)
+          sort:
+            method: name
+            ignore_case: true
+          card:
+            type: custom:dwains-flexbox-card
+            items_classes: "col-xs-12"
+        - type: vertical-stack
+          cards:
+            - !include partial_rainhist_airport.yaml
+        - type: vertical-stack
+          cards:
+            - !include partial_rainhist_home.yaml
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
-  # padding: true
-  cards:
-    - type: custom:flex-table-card
-      title: Rain History - Airport (Rolling)
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: sort
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-        "tbody tr:nth-child(even)": "background-color: none !important;"
-        "tbody tr:nth-child(odd)": "background-color: none !important;"
-      entities:
-        include:
-          - sensor.weather_bom_rain_*
-          - sensor.weather_bom_totalrain_*
-      columns:
-        - name: sort
-          attr: sort
-          hidden: true
-        - name: Name
-          prop: name
-        - name: When?
-          attr: countstring
-          align: center
-        - name: Avg
-          attr: average
-          align: right
-        - name: Max
-          attr: highest
-          align: right
-        - name: Total
-          prop: state
-          align: right
-
-    - type: custom:flex-table-card
-      title: Rain History - Home (Rolling)
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: sort
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-        "tbody tr:nth-child(even)": "background-color: none !important;"
-        "tbody tr:nth-child(odd)": "background-color: none !important;"
-      entities:
-        include:
-          - sensor.weather_home_rain_*
-          - sensor.weather_home_totalrain_*
-      columns:
-        - name: sort
-          attr: sort
-          hidden: true
-        - name: Name
-          prop: name
-        - name: When?
-          attr: countstring
-          align: center
-        - name: Avg
-          attr: average
-          align: right
-        - name: Max
-          attr: highest
-          align: right
-        - name: Total
-          prop: state
-          align: right
-
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
-  cards:
-    - type: custom:flex-table-card
-      title: Rain Intensity - Home (Last)
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: sort
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-        "tbody tr:nth-child(even)": "background-color: none !important;"
-        "tbody tr:nth-child(odd)": "background-color: none !important;"
-      entities:
-        include: sensor.aep_*_last
-      columns:
-        - name: sort
-          attr: sort
-          hidden: true
-        - name: Name
-          prop: name
-        - name: When?
-          attr: time
-          align: center
-        - name: AEP %
-          attr: aep
-          align: right
-        - name: EY
-          attr: ey
-          align: right
-        - name: mm/h
-          prop: state
-          align: right
-    - type: custom:flex-table-card
-      title: Rain Intensity - Home (Last 7 Days)
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: sort
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-        "tbody tr:nth-child(even)": "background-color: none !important;"
-        "tbody tr:nth-child(odd)": "background-color: none !important;"
-      entities:
-        include: sensor.aep_*_weekly
-      columns:
-        - name: sort
-          attr: sort
-          hidden: true
-        - name: Name
-          prop: name
-        - name: When?
-          attr: time
-          align: center
-        - name: AEP %
-          attr: aep
-          align: right
-        - name: EY
-          attr: ey
-          align: right
-        - name: mm/h
-          prop: state
-          align: right
-
-    - type: custom:flex-table-card
-      title: Rain Intensity - Home (Last 365 Days)
-      style: |
-        ha-card {
-          background-color: var(--dwains-theme-primary);
-          padding-bottom: 10px;
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        # font-family: { var(--primary-font-family);}
-        # font-weight: {400 !important;}
-      sort_by: sort
-      clickable: true
-      css:
-        table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-        "tbody tr:nth-child(even)": "background-color: none !important;"
-        "tbody tr:nth-child(odd)": "background-color: none !important;"
-      entities:
-        include: sensor.aep_*_yearly
-      columns:
-        - name: sort
-          attr: sort
-          hidden: true
-        - name: Name
-          prop: name
-        - name: When?
-          attr: time
-          align: center
-        - name: AEP %
-          attr: aep
-          align: right
-        - name: EY
-          attr: ey
-          align: right
-        - name: mm/h
-          prop: state
-          align: right
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-8"
+      cards:
+        - !include graph_rainfall365days.yaml
+        - type: custom:dwains-flexbox-card
+          items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
+          cards:
+            - !include partial_intensity_last.yaml
+            - !include partial_intensity_7days.yaml
+            - !include partial_intensity_year.yaml

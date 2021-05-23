@@ -30,33 +30,26 @@
                     #heading
                     - type: horizontal-stack
                       cards:
-                        - type: custom:button-card
-                          name: Apps
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#apps"
-                          styles:
-                            name:
-                              - color: var(--dwains-theme-accent)
-                        - type: custom:button-card
-                          name: Live TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#livechannels"
-                        - type: custom:button-card
-                          name: Plex TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plextvshows"
-                        - type: custom:button-card
-                          name: Plex Movies
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plexmovies"
+                        - !include
+                          - ../../1_Templates/button_switch_active.yaml
+                          - name: "Apps"
+                            icon: "mdi:apps"
+                            navpath: "#apps"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Live TV"
+                            icon: "mdi:television-clean"
+                            navpath: "#livechannels"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "TV Shows"
+                            icon: "mdi:plex"
+                            navpath: "#plextvshows"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Movies"
+                            icon: "mdi:plex"
+                            navpath: "#plexmovies"
                 - type: vertical-stack
                   cards:
                     - !include partial_app_grid.yaml
@@ -69,33 +62,26 @@
                     #heading
                     - type: horizontal-stack
                       cards:
-                        - type: custom:button-card
-                          name: Apps
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#apps"
-                        - type: custom:button-card
-                          name: Live TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#livechannels"
-                          styles:
-                            name:
-                              - color: var(--dwains-theme-accent)
-                        - type: custom:button-card
-                          name: Plex TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plextvshows"
-                        - type: custom:button-card
-                          name: Plex Movies
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plexmovies"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Apps"
+                            icon: "mdi:apps"
+                            navpath: "#apps"
+                        - !include
+                          - ../../1_Templates/button_switch_active.yaml
+                          - name: "Live TV"
+                            icon: "mdi:television-clean"
+                            navpath: "#livechannels"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "TV Shows"
+                            icon: "mdi:plex"
+                            navpath: "#plextvshows"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Movies"
+                            icon: "mdi:plex"
+                            navpath: "#plexmovies"
                 - type: vertical-stack
                   cards:
                     - !include partial_station_grid.yaml
@@ -109,33 +95,26 @@
                     #heading
                     - type: horizontal-stack
                       cards:
-                        - type: custom:button-card
-                          name: Apps
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#apps"
-                        - type: custom:button-card
-                          name: Live TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#livechannels"
-                        - type: custom:button-card
-                          name: Plex TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plextvshows"
-                          styles:
-                            name:
-                              - color: var(--dwains-theme-accent)
-                        - type: custom:button-card
-                          name: Plex Movies
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plexmovies"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Apps"
+                            icon: "mdi:apps"
+                            navpath: "#apps"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Live TV"
+                            icon: "mdi:television-clean"
+                            navpath: "#livechannels"
+                        - !include
+                          - ../../1_Templates/button_switch_active.yaml
+                          - name: "TV Shows"
+                            icon: "mdi:plex"
+                            navpath: "#plextvshows"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Movies"
+                            icon: "mdi:plex"
+                            navpath: "#plexmovies"
                 - type: vertical-stack
                   cards:
                     - type: custom:plex-meets-homeassistant
@@ -157,33 +136,26 @@
                     #heading
                     - type: horizontal-stack
                       cards:
-                        - type: custom:button-card
-                          name: Apps
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#apps"
-                        - type: custom:button-card
-                          name: Live TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#livechannels"
-                        - type: custom:button-card
-                          name: Plex TV
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plextvshows"
-                        - type: custom:button-card
-                          name: Plex Movies
-                          template: partials_heading_switch
-                          tap_action:
-                            action: navigate
-                            navigation_path: "#plexmovies"
-                          styles:
-                            name:
-                              - color: var(--dwains-theme-accent)
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Apps"
+                            icon: "mdi:apps"
+                            navpath: "#apps"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "Live TV"
+                            icon: "mdi:television-clean"
+                            navpath: "#livechannels"
+                        - !include
+                          - ../../1_Templates/button_switch.yaml
+                          - name: "TV Shows"
+                            icon: "mdi:plex"
+                            navpath: "#plextvshows"
+                        - !include
+                          - ../../1_Templates/button_switch_active.yaml
+                          - name: "Movies"
+                            icon: "mdi:plex"
+                            navpath: "#plexmovies"
                 - type: vertical-stack
                   cards:
                     - type: custom:plex-meets-homeassistant

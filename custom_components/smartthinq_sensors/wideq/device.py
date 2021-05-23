@@ -65,7 +65,7 @@ class DeviceType(enum.Enum):
     DISHWASHER = 204
     TOWER_WASHER = 221
     TOWER_DRYER = 222
-    OVEN = 301
+    RANGE = 301
     MICROWAVE = 302
     COOKTOP = 303
     HOOD = 304
@@ -98,6 +98,15 @@ class PlatformType(enum.Enum):
 
     THINQ1 = "thinq1"
     THINQ2 = "thinq2"
+    UNKNOWN = STATE_OPTIONITEM_UNKNOWN
+
+
+class NetworkType(enum.Enum):
+    """The type of network."""
+
+    WIFI = "02"
+    NFC3 = "03"
+    NFC4 = "04"
     UNKNOWN = STATE_OPTIONITEM_UNKNOWN
 
 
@@ -239,19 +248,38 @@ class DeviceInfo(object):
         try:
             ret_val = DeviceType(device_type)
         except ValueError:
-            _LOGGER.warning("Unknown device type with id %s", device_type)
+            _LOGGER.warning("Device %s: unknown device type with id %s", self.id, device_type)
             ret_val = DeviceType.UNKNOWN
         return ret_val
 
     @property
     def platform_type(self) -> PlatformType:
-        """The kind of device, as a `DeviceType` value."""
-        ptype = self._data.get("platformType")
-        if not ptype:
-            return (
-                PlatformType.THINQ1
-            )  # for the moment, probably not available in APIv1
-        return PlatformType(ptype)
+        """The kind of platform, as a `PlatformType` value."""
+        plat_type = self._data.get("platformType")
+        if plat_type is None:
+            # for the moment, probably not available in APIv1
+            return PlatformType.THINQ1
+        try:
+            ret_val = PlatformType(plat_type)
+        except ValueError:
+            _LOGGER.warning("Device %s: unknown platform type with id %s", self.id, plat_type)
+            ret_val = PlatformType.UNKNOWN
+        return ret_val
+
+    @property
+    def network_type(self) -> NetworkType:
+        """The kind of network, as a `NetworkType` value."""
+        net_type = self._data.get("networkType")
+        if net_type is None:
+            # for the moment we set WIFI if not available
+            return NetworkType.WIFI
+        try:
+            ret_val = NetworkType(net_type)
+        except ValueError:
+            _LOGGER.warning("Device %s: unknown network type with id %s", self.id, net_type)
+            # for the moment we set WIFI if unknown
+            ret_val = NetworkType.WIFI
+        return ret_val
 
     @property
     def snapshot(self) -> Optional[Dict[str, Any]]:
@@ -480,11 +508,24 @@ class ModelInfo(object):
         if not info:
             return decoded
         protocol = self._data["Monitoring"]["protocol"]
-        for data_key, value_key in protocol.items():
-            value = info.get(data_key, "")
-            if value is not None and isinstance(value, Number):
-                value = int(value)
-            decoded[value_key] = str(value)
+        if isinstance(protocol, list):
+            for elem in protocol:
+                if "superSet" in elem: 
+                    key = elem["value"]
+                    value = data
+                    for ident in elem["superSet"].split("."):
+                        if value is not None:
+                            value = value.get(ident)
+                    if value is not None:
+                        if isinstance(value, Number):
+                            value = int(value)
+                        decoded[key] = str(value)
+        else:
+            for data_key, value_key in protocol.items():
+                value = info.get(data_key, "")
+                if value is not None and isinstance(value, Number):
+                    value = int(value)
+                decoded[value_key] = str(value)
         return decoded
 
 
@@ -834,6 +875,8 @@ class Device(object):
         return value
 
     def init_device_info(self):
+        """Initialize the information for the device"""
+
         if self._model_info is None:
             if self._model_data is None:
                 self._model_data = self._client.model_url_info(

@@ -288,9 +288,11 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
     async def get_json(self):
         """Get the JSON data."""
         json = None
+        url = BASE + ",".join(self._symbols)
+        _LOGGER.debug("Requesting data from '%s'", url)
 
         async with async_timeout.timeout(WEBSESSION_TIMEOUT, loop=self.loop):
-            response = await self.websession.get(BASE + ",".join(self._symbols))
+            response = await self.websession.get(url)
             json = await response.json()
 
         _LOGGER.debug("Data = %s", json)
@@ -336,5 +338,5 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
                 data[symbol][DATA_REGULAR_MARKET_PRICE],
             )
 
-        _LOGGER.info("Data updated")
+        _LOGGER.info("All data updated")
         return data

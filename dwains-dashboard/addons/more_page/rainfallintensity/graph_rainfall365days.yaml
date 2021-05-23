@@ -1,0 +1,68 @@
+---
+type: "custom:apexcharts-card"
+header:
+  title: Rainfall - Last 365 Days (by Week)
+  show: true
+  show_states: false
+apex_config:
+  chart: { type: "area", height: 300 }
+  stroke: { show: true, lineCap: "square", dashArray: [10, 10] }
+  dataLabels: { enabled: true }
+  legend: { show: false }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+  yaxis:
+    - seriesName: "Rainfall"
+      title:
+        text: "Rainfall (mm)"
+      min: 0
+      decimalsInFloat: 1
+series:
+  - entity: sensor.archive_homerain_365day
+    name: Home
+    type: area
+    color: "#1192e8"
+    extend_to_end: false
+    stroke_width: 2
+    unit: "mm"
+    show:
+      extremas: true
+    data_generator: |
+      let res = [];
+      for (const [key, value] of
+          Object.entries(entity.attributes)) {
+          res.push([new Date(key).getTime(), value]);
+      }
+      return res.sort((a, b) => { return a[0] - b[0] });
+  - entity: sensor.archive_bomrain_365day
+    name: Tamworth Airport
+    type: area
+    color: "#ee92e8"
+    extend_to_end: false
+    stroke_width: 2
+    unit: "mm"
+    show:
+      extremas: true
+    data_generator: |
+      let res = [];
+      for (const [key, value] of
+          Object.entries(entity.attributes)) {
+          res.push([new Date(key).getTime(), value]);
+      }
+      return res.sort((a, b) => { return a[0] - b[0] });
+graph_span: 365days
+all_series_config:
+  type: line
+  group_by:
+    func: sum
+    duration: 7d

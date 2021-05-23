@@ -416,3 +416,51 @@ cards:
                 margin-left: auto;
                 margin-top: -1.5em;
               }
+        - type: "custom:config-template-card"
+          variables:
+            - states['sensor.covid_19_covidlive_aus'].attributes.Doses1st
+          entities:
+            - sensor.covid_19_covidlive_aus
+          card:
+            type: custom:bar-card
+            entity: sensor.covid_19_covidlive_aus_vaccines_1stdose
+            name: ACre
+            color: "var(--bar)"
+            max: "${vars[0]}"
+            direction: up
+            positions:
+              icon: off
+            height: 18em
+            width: 1.8em
+            unit_of_measurement: " "
+            style: |
+              :host {
+                --bar: #405914;
+                --pos: {{ ((states('sensor.covid_19_covidlive_aus_vaccines_1stdose') | int) / (state_attr('sensor.covid_19_covidlive_aus','Doses1st') | int)) * 19 }}em;
+              }
+              bar-card-name, bar-card-iconbar {
+                padding-left: 0 !important;
+              }
+              ha-card, bar-card-backgroundbar {
+                box-shadow: none !important;
+                background: none !important;
+              }
+              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, bar-card-indicatorcontainer, bar-card-indicator {
+                border-radius: .3em;
+              }
+              bar-card-value {
+                color: var(--bar);
+                filter: brightness(1.5);
+                font-size: 1em;
+                text-shadow: none;
+                font-weight: 700;
+                margin-bottom: var(--pos);
+              }
+              bar-card-name {
+                font-weight: 700;
+              }
+              bar-card-title {
+                overflow: visible;
+                margin-left: auto;
+                margin-top: -1.5em;
+              }

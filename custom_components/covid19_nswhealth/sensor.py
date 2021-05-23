@@ -68,18 +68,18 @@ class NSWHSensor(Entity):
 
         df_hneh = df[df.lhd_2010_code == "X800"]
         df_hneh_count = len(df_hneh)
-        df_hneh_earliest = df_hneh["notification_date"].min().strftime("%a %d %b")
-        df_hneh_latest = df_hneh["notification_date"].max().strftime("%a %d %b")
+        df_hneh_earliest = df_hneh["notification_date"].min().strftime("%a %d %b %Y")
+        df_hneh_latest = df_hneh["notification_date"].max().strftime("%a %d %b %Y")
 
         df_trc = df[df.lga_code19 == 17310.0]
         df_trc_count = len(df_trc)
-        df_trc_earliest = df_trc["notification_date"].min().strftime("%a %d %b")
-        df_trc_latest = df_trc["notification_date"].max().strftime("%a %d %b")
+        df_trc_earliest = df_trc["notification_date"].min().strftime("%a %d %b %Y")
+        df_trc_latest = df_trc["notification_date"].max().strftime("%a %d %b %Y")
 
         df_tamw = df[df.postcode == "2340"]
         df_tamw_count = len(df_tamw)
-        df_tamw_earliest = df_tamw["notification_date"].min().strftime("%a %d %b")
-        df_tamw_latest = df_tamw["notification_date"].max().strftime("%a %d %b")
+        df_tamw_earliest = df_tamw["notification_date"].min().strftime("%a %d %b %Y")
+        df_tamw_latest = df_tamw["notification_date"].max().strftime("%a %d %b %Y")
 
         self._attributes = {}
         self._state = 0

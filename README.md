@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 22nd 2021_
+_Stats as at 05:00, Sunday, May 23rd 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.5.5 | 331     | 2215         | 1641 | 77 |
+| 2021.5.5 | 335     | 2226         | 1646 | 77 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 77
-Binary Sensor | 184
+Binary Sensor | 185
 Camera | 4
-Device Tracker | 60
+Device Tracker | 61
 Group | 9
 Input Boolean | 0
 Input Datetime | 0
@@ -95,9 +95,9 @@ Media Player | 22
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1641
+Sensor | 1646
 Sun | 1
-Switch | 109
+Switch | 111
 Weather | 7
 Zone | 10
 
@@ -135,6 +135,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
+| [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
@@ -263,6 +264,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [monitor_docker](https://www.home-assistant.io/components/monitor_docker) |
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
 | [my](https://www.home-assistant.io/components/my) |
+| [myjdownloader](https://www.home-assistant.io/components/myjdownloader) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [notify.group](https://www.home-assistant.io/components/notify.group) |
@@ -341,6 +343,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
+| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -413,6 +416,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
+| [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
 | [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
@@ -608,7 +612,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) | 🛠 group multiple cards into one card without the borders |
 | [State Switch](https://github.com/thomasloven/lovelace-state-switch) | 🔹Dynamically replace lovelace cards depending on occasion |
-| [Sun Card](https://github.com/mishaaq/sun-card) | Lovelace card for sun component - Home Assistant |
+| [Sun Card](https://github.com/AitorDB/home-assistant-sun-card) | Home assistant sun card based on Google weather design |
 | [Swipe Card](https://github.com/bramkragten/swipe-card) | Card that allows you to swipe throught multiple cards for Home Assistant Lovelace |
 | [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row) | 🔹 Display whatever you want in an entities card row. |
 | [Themable Grid](https://github.com/nervetattoo/themable-grid) | 🀹 Lovelace responsive grid card that can be tweaked in your theme definition. |

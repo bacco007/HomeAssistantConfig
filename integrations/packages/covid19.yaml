@@ -412,6 +412,36 @@ sensor:
           }}
         unit_of_measurement: Doses
         icon_template: mdi:biohazard
+      covid_19_covidlive_aus_vaccines_1stdose:
+        friendly_name: "COVID-19 Covidlive AUS Vaccines 1st Dose"
+        value_template: >
+          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses1st')|int)
+          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses1st')|int)
+          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses1st')|int))
+          }}
+        unit_of_measurement: Doses
+        icon_template: mdi:biohazard
+      covid_19_covidlive_aus_vaccines_2nddose:
+        friendly_name: "COVID-19 Covidlive AUS Vaccines 2nd Dose"
+        value_template: >
+          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses2nd')|int)
+          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses2nd')|int)
+          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses2nd')|int))
+          }}
+        unit_of_measurement: Doses
+        icon_template: mdi:biohazard
       covid_19_covidlive_vac_pct:
         friendly_name: "COVID-19 Covidlive Vaccine Percents"
         unit_of_measurement: "%"

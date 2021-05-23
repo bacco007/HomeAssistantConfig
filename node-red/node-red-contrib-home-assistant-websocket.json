@@ -2,31 +2,31 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 136,
+        "state": 179,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 435,
+        "state": 339,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 1,
+        "state": 6,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 124,
+        "state": 159,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 31,
+        "state": 39,
         "attributes": {}
       }
     },
@@ -170,7 +170,7 @@
     },
     "8fcacd47_e3f83": {
       "lastPayload": {
-        "state": 5864,
+        "state": 5866,
         "attributes": {}
       }
     },
@@ -194,11 +194,11 @@
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 17,
+        "state": 10,
         "attributes": {
-          "count": 4,
-          "countstring": "4 Days",
-          "average": 4.25,
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 3.33,
           "highest": 9.4,
           "sort": 2
         }
@@ -230,20 +230,20 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 53.504,
+        "state": 130.325,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 141.79,
+        "state": 141.87,
         "attributes": {
           "max": 162.9,
-          "min": 123.9,
-          "avg": 141.79,
-          "mindate": "22 May 2020",
+          "min": 126.9,
+          "avg": 141.87,
+          "mindate": "23 May 2020",
           "maxdate": "06 Apr 2021",
-          "datestring": "Min: 22 May 2020 - Max: 06 Apr 2021"
+          "datestring": "Min: 23 May 2020 - Max: 06 Apr 2021"
         }
       }
     },
@@ -298,11 +298,11 @@
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 24.131,
+        "state": 24.165,
         "attributes": {
           "max": 41.7,
           "min": 9.5,
-          "avg": 24.131,
+          "avg": 24.165,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -311,11 +311,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 26.297,
+        "state": 26.343,
         "attributes": {
           "max": 43.78,
           "min": 8.4,
-          "avg": 26.297,
+          "avg": 26.343,
           "mindate": "23 May 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 23 May 2020 - Max: 02 Dec 2020"
@@ -336,7 +336,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "919.4",
+        "state": "961.1",
         "attributes": {
           "units": "GB"
         }
@@ -344,7 +344,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "1011.3",
+        "state": "1057.9",
         "attributes": {
           "units": "TB"
         }
@@ -356,20 +356,20 @@
         "attributes": {
           "model": "UDM",
           "version": "1.9.3.3438",
-          "data": "529.4 GB",
+          "data": "575.1 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "14d 1hr 13min",
+          "uptime": "15d 3hr 52min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "143.1",
+        "state": "18.2",
         "attributes": {
           "units": "GB"
         }
@@ -377,7 +377,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "50.2",
+        "state": "7.7",
         "attributes": {
           "units": "GB"
         }
@@ -385,14 +385,14 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 142.08,
+        "state": 142.15,
         "attributes": {
           "max": 163.9,
-          "min": 121.9,
-          "avg": 142.08,
-          "mindate": "22 May 2020",
+          "min": 126.9,
+          "avg": 142.15,
+          "mindate": "23 May 2020",
           "maxdate": "19 Mar 2021",
-          "datestring": "Min: 22 May 2020 - Max: 19 Mar 2021"
+          "datestring": "Min: 23 May 2020 - Max: 19 Mar 2021"
         }
       }
     },
@@ -420,11 +420,11 @@
     },
     "13d27691_292561": {
       "lastPayload": {
-        "state": 759.2,
+        "state": 759,
         "attributes": {
-          "count": 103,
-          "countstring": "103 Days",
-          "average": 7.37,
+          "count": 102,
+          "countstring": "102 Days",
+          "average": 7.44,
           "highest": 92.2,
           "sort": "4"
         }
@@ -432,7 +432,7 @@
     },
     "506bee74_0a6ac8": {
       "lastPayload": {
-        "state": 5,
+        "state": 2,
         "attributes": {}
       }
     },
@@ -458,9 +458,9 @@
           "sitename": "Default (default)",
           "type": "usw",
           "controller": "https://192.168.1.1",
-          "uptime": "34d 21hr 56min",
-          "rx_data": "919.4 GB",
-          "tx_data": "1.0 TB",
+          "uptime": "36d 0hr 35min",
+          "rx_data": "961.1 GB",
+          "tx_data": "1.1 TB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -477,23 +477,23 @@
           "sitename": "Default (default)",
           "type": "udm",
           "cpu": null,
-          "users": 40,
+          "users": 38,
           "controller": "https://192.168.1.1",
           "guests": 0,
-          "uptime": "14d 1hr 13min",
+          "uptime": "15d 3hr 52min",
           "lastseen": "a few seconds ago",
-          "tx_data": "143.1 GB",
-          "rx_data": "50.2 GB"
+          "tx_data": "18.2 GB",
+          "rx_data": "7.7 GB"
         }
       }
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.511,
+        "state": 9.523,
         "attributes": {
           "max": 23,
           "min": -4.1,
-          "avg": 9.511,
+          "avg": 9.523,
           "mindate": "06 Aug 2020",
           "maxdate": "02 Dec 2020",
           "datestring": "Min: 06 Aug 2020 - Max: 02 Dec 2020"
@@ -502,10 +502,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 149,
+        "state": 158,
         "attributes": {
-          "uptime": "0d 0hr 41min",
-          "drops": 149
+          "uptime": "0d 3hr 11min",
+          "drops": 158
         }
       }
     },
@@ -517,13 +517,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "22.08",
+        "state": "22.80",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "88.60",
+        "state": "69.55",
         "attributes": {}
       }
     },
@@ -670,7 +670,7 @@
     },
     "f4aab464_9cb8c8": {
       "lastPayload": {
-        "state": 18.89,
+        "state": 22.22,
         "attributes": {}
       }
     },
@@ -731,7 +731,7 @@
       "lastPayload": {
         "state": "Madness, Tight Fit,",
         "attributes": {
-          "image": "https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb4a6d12b5a7e900d3b445df43/1/en/large",
+          "image": "https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb8d9260168dbf0b8841a9ef88/1/en/large",
           "url": "https://open.spotify.com/playlist/37i9dQZF1E36KiYKgPfxvc",
           "name": "Madness, Tight Fit,",
           "label": "Don Johnson and more"
@@ -835,7 +835,7 @@
     },
     "4f06ab2a_82eeb4": {
       "lastPayload": {
-        "state": "397.6",
+        "state": "436.9",
         "attributes": {
           "units": "GB"
         }
@@ -843,7 +843,7 @@
     },
     "8fe1ef33_7ab9f": {
       "lastPayload": {
-        "state": "131.9",
+        "state": "138.2",
         "attributes": {
           "units": "GB"
         }
@@ -859,9 +859,9 @@
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
-          "uptime": "14d 1hr 13min",
-          "rx_data": "131.9 GB",
-          "tx_data": "397.6 GB",
+          "uptime": "15d 3hr 52min",
+          "rx_data": "138.2 GB",
+          "tx_data": "436.9 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -876,7 +876,7 @@
     },
     "199b69d1_723e46": {
       "lastPayload": {
-        "state": 6,
+        "state": 5,
         "attributes": {
           "ssid": "IoT"
         }
