@@ -2,19 +2,21 @@
 alias: System - HA Supervisor Addon Available
 id: 5c460e93-8cb2-45ef-bbb5-a62b0035c9bc
 trigger:
+  - platform: homeassistant
+    event: start
   - platform: state
-    entity_id: sensor.supervisor_installed
+    entity_id: sensor.updater_supervisor
 condition:
   - condition: template
-    value_template: "{{ states.sensor.supervisor_installed.state != 'unknown'}}"
+    value_template: "{{ (states.sensor.updater_supervisor.attributes.addons | count) != 'unknown' }}"
   - condition: template
-    value_template: "{{ (states.sensor.supervisor_installed.state | float) != 0}}"
+    value_template: "{{ (states.sensor.updater_supervisor.attributes.addons | count) != 0 }}"
 action:
   - service: persistent_notification.create
     data_template:
       title: HA Add-ons - Updates Available
       message: >-
-        {% for repo in states.sensor.supervisor_installed.attributes.addons %}
+        {% for repo in states.sensor.updater_supervisor.attributes.addons %}
           **{{ repo.name }}** _{{ repo["version"] }}_ -> _{{ repo["version_latest"] }}_
         {% endfor %}
   - service: notify.slack
@@ -31,6 +33,6 @@ action:
             text:
               type: mrkdwn
               text: >-
-                {% for repo in states.sensor.supervisor_installed.attributes.addons %}
+                {% for repo in states.sensor.updater_supervisor.attributes.addons %}
                   **{{ repo.name }}** _{{ repo["version"] }}_ -> _{{ repo["version_latest"] }}_
                 {% endfor %}

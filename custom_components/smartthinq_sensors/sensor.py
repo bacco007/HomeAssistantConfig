@@ -10,8 +10,12 @@ from .wideq import (
     FEAT_DOOROPEN,
     FEAT_DRYLEVEL,
     FEAT_DUALZONE,
+    FEAT_ENERGY_CURRENT,
     FEAT_ERROR_MSG,
     FEAT_HALFLOAD,
+    FEAT_HOT_WATER_TEMP,
+    FEAT_IN_WATER_TEMP,
+    FEAT_OUT_WATER_TEMP,
     FEAT_PRE_STATE,
     FEAT_PROCESS_STATE,
     FEAT_RUN_STATE,
@@ -46,7 +50,9 @@ from homeassistant.components.binary_sensor import (
 )
 
 from homeassistant.const import (
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
+    ENERGY_KILO_WATT_HOUR,
     STATE_ON,
     STATE_OFF,
     STATE_UNAVAILABLE,
@@ -299,7 +305,30 @@ AC_SENSORS = {
         ATTR_UNIT_FN: lambda x: x._temp_unit,
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_VALUE_FN: lambda x: x._curr_temp,
-        ATTR_ENABLED: False,
+    },
+    FEAT_HOT_WATER_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Hot Water Temperature",
+        ATTR_UNIT_FN: lambda x: x._temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_HOT_WATER_TEMP,
+    },
+    FEAT_IN_WATER_TEMP: {
+        ATTR_MEASUREMENT_NAME: "In Water Temperature",
+        ATTR_UNIT_FN: lambda x: x._temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_IN_WATER_TEMP,
+    },
+    FEAT_OUT_WATER_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Out Water Temperature",
+        ATTR_UNIT_FN: lambda x: x._temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_OUT_WATER_TEMP,
+    },
+    FEAT_ENERGY_CURRENT: {
+        ATTR_MEASUREMENT_NAME: "Energy Current",
+        ATTR_UNIT_FN: lambda x: ENERGY_KILO_WATT_HOUR,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_VALUE_FEAT: FEAT_ENERGY_CURRENT,
     },
 }
 
@@ -391,8 +420,9 @@ def _sensor_exist(lge_device, sensor_def):
 
     if ATTR_VALUE_FEAT in sensor_def:
         feature = sensor_def[ATTR_VALUE_FEAT]
-        if feature in lge_device.available_features:
-            return True
+        for feat_name in lge_device.available_features.values():
+            if feat_name == feature:
+                return True
 
     return False
 

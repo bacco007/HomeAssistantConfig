@@ -1,4 +1,4 @@
-#  Copyright (c) 2019-2020, Andrey "Limych" Khrolenok <andrey@khrolenok.ru>
+#  Copyright (c) 2019-2021, Andrey "Limych" Khrolenok <andrey@khrolenok.ru>
 #  Creative Commons BY-NC-SA 4.0 International Public License
 #  (see LICENSE.md or https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -17,10 +17,8 @@ from typing import Any, Dict, Optional, Union
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from _sha1 import sha1
-from homeassistant.components import history
 from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.group import expand_entity_ids
-from homeassistant.components.history import LazyState
 from homeassistant.components.water_heater import DOMAIN as WATER_HEATER_DOMAIN
 from homeassistant.components.weather import DOMAIN as WEATHER_DOMAIN
 from homeassistant.const import (
@@ -58,6 +56,16 @@ from .const import (
     STARTUP_MESSAGE,
     UPDATE_MIN_TIME,
 )
+
+try:
+    # HA version >=2021.6
+    from homeassistant.components.recorder import history
+    from homeassistant.components.recorder.models import LazyState
+except ImportError:
+    # HA version <=2021.5
+    from homeassistant.components import history
+    from homeassistant.components.history import LazyState
+
 
 _LOGGER = logging.getLogger(__name__)
 

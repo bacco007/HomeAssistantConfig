@@ -3,13 +3,13 @@ type: custom:apexcharts-card
 graph_span: 24h
 header:
   show: true
-  title: "Pi-Hole Ads Blocked"
+  title: "Pi-Hole Ads Blocked (as % of Traffic)"
 span:
   start: hour
   offset: -23h
-y_axis_precision: 0
+y_axis_precision: 1
 apex_config:
-  chart: { type: "area", height: 250 }
+  chart: { type: "area", height: 200 }
   stroke: { show: true, width: 3, curve: smooth }
   legend: { show: false }
   dataLabels: { enabled: false }
@@ -31,7 +31,7 @@ apex_config:
         },
     }
 series:
-  - entity: sensor.pi_hole_ads_blocked_today
+  - entity: sensor.pi_hole_ads_percentage_blocked_today
     name: Today
     type: area
     # color: "#008FFB"
@@ -39,7 +39,7 @@ series:
     group_by:
       func: avg
       duration: 1h
-  - entity: sensor.pi_hole_ads_blocked_today
+  - entity: sensor.pi_hole_ads_percentage_blocked_today
     name: Yesterday
     type: area
     # color: "#008FFB"

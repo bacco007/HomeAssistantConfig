@@ -2,5 +2,5 @@
 # https://www.home-assistant.io/integrations/logger/
 logger:
   default: warn
-  # logs:
-  #   custom_components.covid19_covidlive: debug
+  logs:
+    custom_components.untappd_recentbeers: debug

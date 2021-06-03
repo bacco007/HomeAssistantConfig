@@ -1,31 +1,44 @@
 ---
 alias: System - New Home Assistant Version
 id: 49e48ef4-c7e2-4c71-8de7-f1f04dd990f1
+
 trigger:
+  - platform: homeassistant
+    event: start
   - platform: state
-    entity_id: sensor.ha_latest_version
+    entity_id: sensor.updater_core
+
+condition:
+  - condition: template
+    value_template: >
+      {{
+      state_attr("sensor.updater_core", "current_version") != state_attr("sensor.updater_core", "newest_version")
+      and state_attr("sensor.updater_core", "newest_version") != "unknown"
+      }}
+
 action:
   - service: notify.slack
     data_template:
       message: "New Home Assistant Version"
       target: "#tbsmarthome"
-      blocks:
-        - type: section
-          text:
-            type: mrkdwn
-            text: "*New Home Assistant Version*"
-        - type: section
-          text:
-            type: mrkdwn
-            text: |
-              New Home Assistant Version
-              Current - {{ states.sensor.ha_current_version.state }}
-              New - {{ states.sensor.ha_latest_version.state }}
+      data:
+        blocks:
+          - type: section
+            text:
+              type: mrkdwn
+              text: "*New Home Assistant Version*"
+          - type: section
+            text:
+              type: mrkdwn
+              text: |
+                New Home Assistant Version
+                Current - {{ state_attr("sensor.updater_core", "current_version") }}
+                New - {{ state_attr("sensor.updater_core", "newest_version") }}
   - service: persistent_notification.create
     data_template:
       title: New HA Version
       message: >-
         New Home Assistant Version
-        Current - {{ states.sensor.ha_current_version.state }}
-        New - {{ states.sensor.ha_latest_version.state }}
+        Current - {{ state_attr("sensor.updater_core", "current_version") }}
+        New - {{ state_attr("sensor.updater_core", "newest_version") }}
       notification_id: hassio_upgrade

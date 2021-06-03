@@ -554,31 +554,54 @@ class Session(object):
             {"cmd": "Mon", "cmdOpt": "Stop", "deviceId": device_id, "workId": work_id},
         )
 
-    def set_device_controls(self, device_id, values):
+    def set_device_controls(self, device_id, ctrl_key, command, value="", data=""):
         """Control a device's settings.
 
         `values` is a key/value map containing the settings to update.
         """
+        res = {}
+        payload = None
+        if isinstance(ctrl_key, dict):
+            payload = ctrl_key
+        elif command is not None:
+            payload = {
+                "cmd": ctrl_key,
+                "cmdOpt": command,
+                "value": value,
+                "data": data,
+            }
 
-        return self.post(
-            "rti/rtiControl",
-            {
-                "cmd": "Control",
-                "cmdOpt": "Set",
-                "value": values,
+        if payload:
+            payload.update({
                 "deviceId": device_id,
                 "workId": gen_uuid(),
-                "data": "",
-            },
-        )
+            })
+            res = self.post("rti/rtiControl", payload)
+            _LOGGER.debug("Set V1 result: %s", str(res))
 
-    def set_device_v2_controls(self, device_id, values):
-        """Control a device's settings based on api V2.
+        return res
 
-        `values` is a key/value map containing the settings to update.
-        """
+    def set_device_v2_controls(self, device_id, ctrl_key, command=None, key=None, value=None):
+        """Control a device's settings based on api V2."""
+
+        res = {}
+        payload = None
         path = f"service/devices/{device_id}/control-sync"
-        return self.post2(path, values)
+        if isinstance(ctrl_key, dict):
+            payload = ctrl_key
+        elif command is not None:
+            payload = {
+                "ctrlKey": ctrl_key,
+                "command": command,
+                "dataKey": key,
+                "dataValue": value,
+            }
+
+        if payload:
+            res = self.post2(path, payload)
+            _LOGGER.debug("Set V2 result: %s", str(res))
+
+        return res
 
     def get_device_config(self, device_id, key, category="Config"):
         """Get a device configuration option.
@@ -600,7 +623,12 @@ class Session(object):
         )
         return res["returnData"]
 
+    def get_device_v2_settings(self, device_id):
+        """Get a device's settings based on api V2."""
+        return self.get2(f"service/devices/{device_id}")
+
     def delete_permission(self, device_id):
+        """Delete permission on V1 device after a control command"""
         self.post("rti/delControlPermission", {"deviceId": device_id})
 
 

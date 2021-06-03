@@ -92,6 +92,14 @@ class StylerStatus(DeviceStatus):
                 self._error = error
         return self._error
 
+    def update_status(self, key, value, upd_features=False):
+        if not super().update_status(key, value):
+            return False
+        self._run_state = None
+        if upd_features:
+            self._update_features()
+        return True
+
     @property
     def is_on(self):
         run_state = self._get_run_state()

@@ -32,6 +32,9 @@ STATE_DRYER_ERROR_NO_ERROR = [
     "No_Error",
 ]
 
+POWER_STATUS_KEY = ["State", "state"]
+CMD_POWER_OFF = [["Control", "WMControl"], ["Power", "WMOff"], ["Off", None]]
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -39,6 +42,28 @@ class DryerDevice(Device):
     """A higher-level interface for a dryer."""
     def __init__(self, client, device):
         super().__init__(client, device, DryerStatus(self, None))
+
+    def _update_status(self, key, value):
+        if self._status:
+            status_key = self._get_state_key(key)
+            status_value = self.model_info.enum_value(status_key, value)
+            if status_value:
+                self._status.update_status(status_key, status_value)
+
+    def _prepare_command(self, ctrl_key, command, key, value):
+        """Prepare command for specific device."""
+        cmd = self.model_info.get_control_cmd(command, ctrl_key)
+        if not cmd:
+            return None
+        if "data" in cmd:
+            cmd["dataSetList"] = cmd.pop("data")
+        return cmd
+
+    def power_off(self):
+        """Power off the device."""
+        keys = self._get_cmd_keys(CMD_POWER_OFF)
+        self.set(keys[0], keys[1], value=keys[2])
+        self._update_status(POWER_STATUS_KEY, STATE_DRYER_POWER_OFF)
 
     def reset_status(self):
         self._status = DryerStatus(self, None)
@@ -93,6 +118,14 @@ class DryerStatus(DeviceStatus):
             else:
                 self._error = error
         return self._error
+
+    def update_status(self, key, value, upd_features=False):
+        if not super().update_status(key, value):
+            return False
+        self._run_state = None
+        if upd_features:
+            self._update_features()
+        return True
 
     @property
     def is_on(self):

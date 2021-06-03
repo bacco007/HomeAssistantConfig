@@ -5,6 +5,26 @@ sensor:
     client_id: !secret untappd_id
     client_secret: !secret untappd_secret
 
+  - platform: untappd_recentbeers
+    username: !secret untappd_username
+    client_id: !secret untappd_id
+    client_secret: !secret untappd_secret
+    sort: "highest_rated_you"
+    limit: "20"
+
+  - platform: untappd_recentbeers
+    username: !secret untappd_username
+    client_id: !secret untappd_id
+    client_secret: !secret untappd_secret
+    sort: lowest_rated_you
+    limit: "20"
+  - platform: untappd_recentbeers
+    username: !secret untappd_username
+    client_id: !secret untappd_id
+    client_secret: !secret untappd_secret
+    sort: checkin
+    limit: "20"
+
   - platform: template
     sensors:
       untappd_badge:

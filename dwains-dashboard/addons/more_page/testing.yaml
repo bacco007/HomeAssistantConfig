@@ -685,7 +685,7 @@
       graph_span: 7d1s
       header:
         show: true
-        title: "COVID-19 - Vaccinations (as % of Population)"
+        title: "COVID-19 - Vaccinations 1st Dose (as % of Population)"
       span:
         end: day
       apex_config:
@@ -718,8 +718,8 @@
           }
       series:
         - entity: sensor.covid_19_covidlive_act
-          attribute: Doses
-          transform: "return (x / 431100) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 344800) * 100;"
           float_precision: 3
           unit: "%"
           name: ACT
@@ -729,8 +729,8 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
-          attribute: Doses
-          transform: "return (x / 8164100) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 6532800) * 100;"
           float_precision: 3
           unit: "%"
           name: NSW
@@ -741,8 +741,8 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_nt
-          attribute: Doses
-          transform: "return (x / 246000) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 196800) * 100;"
           float_precision: 3
           unit: "%"
           name: NT
@@ -752,8 +752,8 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_qld
-          attribute: Doses
-          transform: "return (x / 5174400) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 4148000) * 100;"
           float_precision: 3
           unit: "%"
           name: QLD
@@ -763,8 +763,8 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_sa
-          attribute: Doses
-          transform: "return (x / 1769300) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 1416000) * 100;"
           float_precision: 3
           unit: "%"
           name: SA
@@ -774,8 +774,8 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_tas
-          attribute: Doses
-          transform: "return (x / 540600) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 432800) * 100;"
           float_precision: 3
           unit: "%"
           name: TAS
@@ -785,8 +785,8 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_vic
-          attribute: Doses
-          transform: "return (x / 6694900) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 5344800) * 100;"
           float_precision: 3
           unit: "%"
           name: VIC
@@ -796,7 +796,7 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_wa
-          attribute: Doses
+          attribute: Doses1st
           transform: "return (x / 2661900) * 100;"
           float_precision: 3
           unit: "%"
@@ -807,8 +807,146 @@
             func: last
             duration: 1d
         - entity: sensor.covid_19_covidlive_aus
-          attribute: Doses
-          transform: "return (x / 25687000) * 100;"
+          attribute: Doses1st
+          transform: "return (x / 20616090) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: AUS
+          type: area
+          color: black
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "COVID-19 - Vaccinations 2nd Dose (as % of Population)"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 2
+            title:
+              text: "No. Vaccinations"
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Doses2nd
+          transform: "return (x / 344800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: ACT
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Doses2nd
+          transform: "return (x / 6532800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NSW
+          type: area
+          extend_to_end: true
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Doses2nd
+          transform: "return (x / 196800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NT
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Doses2nd
+          transform: "return (x / 4148000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: QLD
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Doses2nd
+          transform: "return (x / 1416000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: SA
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Doses2nd
+          transform: "return (x / 432800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: TAS
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Doses2nd
+          transform: "return (x / 5344800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: VIC
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Doses2nd
+          transform: "return (x / 2661900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: WA
+          type: area
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1d
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: Doses2nd
+          transform: "return (x / 20616090) * 100;"
           float_precision: 3
           unit: "%"
           name: AUS

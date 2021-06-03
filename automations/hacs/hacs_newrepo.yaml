@@ -1,6 +1,7 @@
 ---
 alias: HACS - New Repository Added
 id: hacs_newrepo
+mode: single
 trigger:
   - platform: event
     event_type: hacs/repository

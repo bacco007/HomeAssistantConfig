@@ -17,6 +17,29 @@ sensor:
             mdi:weather-night
           {% endif %}
 
+      period_of_day:
+        friendly_name: "period of the day"
+        value_template: >-
+          {% if (as_timestamp(states.sun.sun.attributes.next_dusk)) - (as_timestamp(states.sun.sun.attributes.next_setting)) < 0 %}
+            dusk
+          {% elif (as_timestamp(states.sun.sun.attributes.next_rising)) - (as_timestamp(states.sun.sun.attributes.next_dawn)) < 0 %}
+            dawn
+          {% elif (states.sun.sun.attributes.elevation) < -4 %}
+            night
+          {% else %}
+            day
+          {% endif %}
+        icon_template: >-
+          {% if (as_timestamp(states.sun.sun.attributes.next_dusk)) - (as_timestamp(states.sun.sun.attributes.next_setting)) < 0 %}
+            mdi:weather-sunset-down
+          {% elif (as_timestamp(states.sun.sun.attributes.next_rising)) - (as_timestamp(states.sun.sun.attributes.next_dawn)) < 0 %}
+            mdi:weather-sunset-up
+          {% elif (states.sun.sun.attributes.elevation) < -4 %}
+            mdi:weather-night
+          {% else %}
+            mdi:weather-sunny
+          {% endif %}
+
       sun_nextdawn:
         friendly_name: Next Dawn
         value_template: "{{ as_timestamp(states.sun.sun.attributes.next_dawn) | timestamp_custom('%a %H:%M') }}"

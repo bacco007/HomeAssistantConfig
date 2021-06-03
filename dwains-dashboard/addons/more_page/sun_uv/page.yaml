@@ -6,136 +6,144 @@
     - type: vertical-stack
       item_classes: "col-xs-12 col-sm-4"
       cards:
-        - type: entities
-          title: Sun
-          style: |
-            ha-card {
-              padding-bottom: 10px;
-              background-color: var(--dwains-theme-primary)
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            .card-content div {
-                margin: 0 !important;
-            }
-            #states {
-              padding-top: 0px !important;
-              padding-bottom: 0px !important;
-            }
-            .secondary {
-              color: darkgray !important;
-              margin-left: 2px !important;
-            }
-          entities:
-            - type: custom:fold-entity-row
-              head: sensor.sun_state
+        - type: custom:stack-in-card
+          cards:
+            - type: entities
+              title: Sun
+              style: |
+                ha-card {
+                  #padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
               entities:
-                - sensor.sun_solarangle
-                - sensor.sun_nextrising
-                - sensor.sun_nextdawn
-                - sensor.sun_nextnoon
-                - sensor.sun_nextdusk
-                - sensor.sun_nextsetting
-                - sensor.sun_nextmidnight
-                - type: section
-                - sensor.solar_midnight
-                - sensor.astronomical_dawn
-                - sensor.nautical_dawn
-                - sensor.dawn
-                - sensor.sunrise
-                - sensor.solar_noon
-                - sensor.sunset
-                - sensor.dusk
-                - sensor.nautical_dusk
-                - sensor.astronomical_dusk
-                - type: section
-                - sensor.daylight
-                - sensor.civil_daylight
-                - sensor.nautical_daylight
-                - sensor.astronomical_daylight
-                - sensor.night
-                - sensor.civil_night
-                - sensor.nautical_night
-                - sensor.astronomical_night
-                - type: section
-                - sensor.elevation
-                - sensor.max_elevation
+                - type: custom:fold-entity-row
+                  head: sensor.sun_state
+                  entities:
+                    - sensor.sun_solarangle
+                    - sensor.sun_nextrising
+                    - sensor.sun_nextdawn
+                    - sensor.sun_nextnoon
+                    - sensor.sun_nextdusk
+                    - sensor.sun_nextsetting
+                    - sensor.sun_nextmidnight
+                    - type: section
+                    - sensor.solar_midnight
+                    - sensor.astronomical_dawn
+                    - sensor.nautical_dawn
+                    - sensor.dawn
+                    - sensor.sunrise
+                    - sensor.solar_noon
+                    - sensor.sunset
+                    - sensor.dusk
+                    - sensor.nautical_dusk
+                    - sensor.astronomical_dusk
+                    - type: section
+                    - sensor.daylight
+                    - sensor.civil_daylight
+                    - sensor.nautical_daylight
+                    - sensor.astronomical_daylight
+                    - sensor.night
+                    - sensor.civil_night
+                    - sensor.nautical_night
+                    - sensor.astronomical_night
+                    - type: section
+                    - sensor.elevation
+                    - sensor.max_elevation
 
-        - type: custom:sun-card
-          showAzimuth: true
-          showElevation: true
-          timeFormat: 24h
-          title: ""
-        - type: entities
-          title: Air Quality
-          style: |
-            ha-card {
-              padding-bottom: 10px;
-              background-color: var(--dwains-theme-primary)
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            .card-content div {
-                margin: 0 !important;
-            }
-            #states {
-              padding-top: 0px !important;
-              padding-bottom: 0px !important;
-            }
-            .secondary {
-              color: darkgray !important;
-              margin-left: 2px !important;
-            }
-          entities:
-            - entity: sensor.nsw_air_quality_tamworth
-              name: Tamworth AQI (NSW DoE)
-              type: custom:multiple-entity-row
+            - type: custom:sun-card
+              style: |
+                .sun-card-title {
+                  display: none;
+                }
+              showAzimuth: true
+              showElevation: true
+              timeFormat: 24h
+              title: ""
+        - type: custom:stack-in-card
+          cards:
+            - type: entities
+              title: Air Quality
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
               entities:
-                - attribute: pm10
-                  name: PM10
-                  unit: AQI
-                - attribute: pm25
-                  name: PM2.5
-                  unit: AQI
-              secondary_info:
-                entity: sensor.nsw_air_quality_tamworth_airpollev
-            - entity: sensor.nsw_air_quality_tamworth_change_aqi
-              type: custom:multiple-entity-row
-              name: Extremes (24hrs)
-              state_header: 24hr Chg
-              entities:
-                - entity: sensor.nsw_air_quality_tamworth_min_aqi
-                  name: Min
-                - entity: sensor.nsw_air_quality_tamworth_max_aqi
-                  name: Max
-            - type: section
-            - entity: sensor.waqi_tamworth_north_west_slopes
-              name: Tamworth AQI (wAQI)
-              type: custom:multiple-entity-row
-              entities:
-                - attribute: pm_10
-                  name: PM10
-                  unit: AQI
-                - attribute: pm_2_5
-                  name: PM2.5
-                  unit: AQI
-              secondary_info:
-                entity: sensor.waqi_tamworth_airpollev
-            - entity: sensor.waqi_tamworth_change_aqi
-              type: custom:multiple-entity-row
-              name: Extremes (24hrs)
-              state_header: 24hr Chg
-              entities:
-                - entity: sensor.waqi_tamworth_min_aqi
-                  name: Min
-                - entity: sensor.waqi_tamworth_max_aqi
-                  name: Max
+                - entity: sensor.nsw_air_quality_tamworth
+                  name: Tamworth AQI (NSW DoE)
+                  type: custom:multiple-entity-row
+                  entities:
+                    - attribute: pm10
+                      name: PM10
+                      unit: AQI
+                    - attribute: pm25
+                      name: PM2.5
+                      unit: AQI
+                  secondary_info:
+                    entity: sensor.nsw_air_quality_tamworth_airpollev
+                - entity: sensor.nsw_air_quality_tamworth_change_aqi
+                  type: custom:multiple-entity-row
+                  name: Extremes (24hrs)
+                  state_header: 24hr Chg
+                  entities:
+                    - entity: sensor.nsw_air_quality_tamworth_min_aqi
+                      name: Min
+                    - entity: sensor.nsw_air_quality_tamworth_max_aqi
+                      name: Max
+                - type: section
+                - entity: sensor.waqi_tamworth_north_west_slopes
+                  name: Tamworth AQI (wAQI)
+                  type: custom:multiple-entity-row
+                  entities:
+                    - attribute: pm_10
+                      name: PM10
+                      unit: AQI
+                    - attribute: pm_2_5
+                      name: PM2.5
+                      unit: AQI
+                  secondary_info:
+                    entity: sensor.waqi_tamworth_airpollev
+                - entity: sensor.waqi_tamworth_change_aqi
+                  type: custom:multiple-entity-row
+                  name: Extremes (24hrs)
+                  state_header: 24hr Chg
+                  entities:
+                    - entity: sensor.waqi_tamworth_min_aqi
+                      name: Min
+                    - entity: sensor.waqi_tamworth_max_aqi
+                      name: Max
         - type: entities
           title: UV Index
           style: |

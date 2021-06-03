@@ -1,20 +1,23 @@
 ---
 alias: HACS - Updates Available
 id: hacs_updates
+mode: single
+
 trigger:
   - platform: state
     entity_id: sensor.hacs
+
 condition:
-  - condition: template
-    value_template: "{{ states(trigger.entity_id) != 'unknown'}}"
-  - condition: template
-    value_template: "{{ (states(trigger.entity_id) | float) != 0}}"
+  - condition: numeric_state
+    entity_id: sensor.hacs
+    above: 0
+
 action:
   - service: persistent_notification.create
     data_template:
       title: HACS - Updates Available
       message: >-
-        {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+        {% for repo in state_attr('sensor.hacs', 'repositories') %}
           *{{ repo.display_name }}* _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
         {% endfor %}
   - service: notify.slack
@@ -31,6 +34,6 @@ action:
             text:
               type: mrkdwn
               text: >-
-                {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+                {% for repo in state_attr('sensor.hacs', 'repositories') %}
                   *{{ repo.display_name }}* _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_
                 {% endfor %}

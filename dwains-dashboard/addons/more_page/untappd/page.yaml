@@ -16,13 +16,13 @@
           show_state: true
           show_name: true
           show_label: true
-          show_icon: true
+          show_entity_picture: true
           styles:
             card:
               - background-size: contain
               - background-repeat: no-repeat
               - background-position: center
-            icon:
+            entity_picture:
               - width: 20%
               - margin-top: 1%
         - type: "custom:button-card"
@@ -36,13 +36,13 @@
           show_state: true
           show_name: true
           show_label: true
-          show_icon: true
+          show_entity_picture: true
           styles:
             card:
               - background-size: contain
               - background-repeat: no-repeat
               - background-position: center
-            icon:
+            entity_picture:
               - width: 20%
               - margin-top: 1%
         - type: "custom:button-card"
@@ -56,13 +56,13 @@
           show_state: true
           show_name: true
           show_label: true
-          show_icon: true
+          show_entity_picture: true
           styles:
             card:
               - background-size: contain
               - background-repeat: no-repeat
               - background-position: center
-            icon:
+            entity_picture:
               - width: 20%
               - margin-top: 1%
         - type: "custom:button-card"
@@ -76,13 +76,13 @@
           show_state: true
           show_name: true
           show_label: true
-          show_icon: true
+          show_entity_picture: true
           styles:
             card:
               - background-size: contain
               - background-repeat: no-repeat
               - background-position: center
-            icon:
+            entity_picture:
               - width: 20%
               - margin-top: 1%
         - type: "custom:button-card"
@@ -96,13 +96,13 @@
           show_state: true
           show_name: true
           show_label: true
-          show_icon: true
+          show_entity_picture: true
           styles:
             card:
               - background-size: contain
               - background-repeat: no-repeat
               - background-position: center
-            icon:
+            entity_picture:
               - width: 20%
               - margin-top: 1%
 - type: custom:dwains-flexbox-card

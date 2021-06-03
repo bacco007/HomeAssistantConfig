@@ -1,0 +1,23 @@
+---
+alias: "Weather - Lightning Notification"
+id: weather_lightningnotification
+mode: single
+
+trigger:
+  - platform: state
+    entity_id: sensor.blitzortung_lightning_counter
+
+condition:
+  - condition: numeric_state
+    entity_id: sensor.blitzortung_lightning_distance
+    below: 10
+
+action:
+  - service: notify.mobile_app_tbiphone11
+    data:
+      title: Weather Alert
+      message: Lightning within 10km of home!
+      data:
+        tag: "weather-lightning"
+        subtitle: "⚡️ Lightning within 10km ⚡"
+        url: "/dwains-dashboard/more_page_addon_lightning"

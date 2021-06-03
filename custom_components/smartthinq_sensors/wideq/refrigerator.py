@@ -13,6 +13,7 @@ from . import (
 )
 
 from .device import (
+    LABEL_BIT_OFF,
     LABEL_BIT_ON,
     STATE_OPTIONITEM_NONE,
     UNIT_TEMP_FAHRENHEIT,
@@ -40,6 +41,12 @@ REFRTEMPUNIT = {
 #     "\u02daF": UNITTEMPMODES.Fahrenheit,
 #     "\u02daC": UNITTEMPMODES.Celsius,
 # }
+
+REFR_ROOT_DATA = "refState"
+REFR_CTRL_BASIC = ["Control", "basicCtrl"]
+
+REFR_STATE_ECO_FRIENDLY = ["EcoFriendly", "ecoFriendly"]
+CMD_STATE_ECO_FRIENDLY = [REFR_CTRL_BASIC, ["Set", "basicCtrl"], ["REEF", "ecoFriendly"]]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -76,6 +83,38 @@ class RefrigeratorDevice(Device):
             return def_value
         return FEATURE_DESCR.get(title_value, def_value)
 
+    def _prepare_command(self, ctrl_key, command, key, value):
+        """Prepare command for specific device."""
+        cmd = self.model_info.get_control_cmd(command, ctrl_key)
+        if not cmd:
+            return None
+
+        data_set = cmd.pop("data", None)
+        if not data_set:
+            return None
+
+        for cmd_key, cmd_value in data_set[REFR_ROOT_DATA].items():
+            if cmd_key == key:
+                replace_item = value
+            else:
+                replace_item = "IGNORE"
+            data_set[REFR_ROOT_DATA][cmd_key] = replace_item
+        cmd["dataSetList"] = data_set
+
+        return cmd
+
+    def set_eco_friendly(self, turn_on=False):
+        """Switch the echo friendly status."""
+
+        status_key = self._get_state_key(REFR_STATE_ECO_FRIENDLY)
+        status_name = LABEL_BIT_ON if turn_on else LABEL_BIT_OFF
+        status_value = self.model_info.enum_value(status_key, status_name)
+        if not status_value:
+            return
+        keys = self._get_cmd_keys(CMD_STATE_ECO_FRIENDLY)
+        self.set(keys[0], keys[1], key=keys[2], value=status_value)
+        self._status.update_status(status_key, status_value, True)
+
     def reset_status(self):
         self._status = RefrigeratorStatus(self, None)
         return self._status
@@ -83,7 +122,7 @@ class RefrigeratorDevice(Device):
     def poll(self) -> Optional["RefrigeratorStatus"]:
         """Poll the device's current state."""
 
-        res = self.device_poll("refState")
+        res = self.device_poll(REFR_ROOT_DATA)
         if not res:
             return None
 
@@ -198,6 +237,14 @@ class RefrigeratorStatus(DeviceStatus):
         return self._device.model_info.enum_name(
             ref_key, temp
         )
+
+    def update_status(self, key, value, upd_features=False):
+        if not super().update_status(key, value):
+            return False
+        self._eco_friendly_state = None
+        if upd_features:
+            self._update_features()
+        return True
 
     @property
     def is_on(self):

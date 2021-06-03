@@ -142,6 +142,28 @@ class CovidLiveSensor(Entity):
                 self._attributes["Doses1st"] = row["FIRST"]
                 self._attributes["Doses2nd"] = row["SECOND"]
 
+        url3 = "https://covidlive.com.au/report/source-of-infection"
+        tables3 = pd.read_html(url3, attrs={"class": "SOURCE-OF-INFECTION"})
+        df3 = tables3[0]
+        df3 = df3.applymap(clean_normalize_whitespace)
+        df3.columns = df3.columns.to_series().apply(clean_normalize_whitespace)
+        col_type3 = {
+            "STATE": "string",
+            "OSEAS": "int",
+            "I/STATE": "int",
+            "CONT": "int",
+            "UNKN": "int",
+            "INVES": "int",
+        }
+        df3 = df3.fillna(0).astype(col_type3)
+        for index, row in df3.iterrows():
+            if row["STATE"] == statevax:
+                self._attributes["CasesSourceOverseas"] = row["OSEAS"]
+                self._attributes["CasesSourceInterstate"] = row["I/STATE"]
+                self._attributes["CasesSourceKnownContact"] = row["CONT"]
+                self._attributes["CasesSourceUnknown"] = row["UNKN"]
+                self._attributes["CasesSourceInvestigation"] = row["INVES"]
+
         self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         self._state = self._attributes["Cases"]
         self._attributes["Name"] = self._name
