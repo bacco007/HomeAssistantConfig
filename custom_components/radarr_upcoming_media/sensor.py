@@ -135,7 +135,7 @@ class RadarrUpcomingMediaSensor(Entity):
         start = get_date(self._tz)
         end = get_date(self._tz, self.days)
         try:
-            api = radarr.get(('http{0}://{1}:{2}/{3}api/calendar?start={4}'
+            api = radarr.get(('http{0}://{1}:{2}/{3}api/v3/calendar?start={4}'
                               '&end={5}').format(self.ssl, self.host,
                                                  self.port, self.urlbase,
                                                  start, end),

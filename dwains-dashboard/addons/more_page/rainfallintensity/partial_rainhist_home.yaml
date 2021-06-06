@@ -16,9 +16,13 @@ style: |
 sort_by: sort
 clickable: true
 css:
-  table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;"
-  "tbody tr:nth-child(even)": "background-color: none !important;"
+  table+: "width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);"
+  "tbody tr:nth-child(even)": "background-color: var(--table-row-background-color);"
   "tbody tr:nth-child(odd)": "background-color: none !important;"
+  "th": "background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;"
+  "th:first-child": "border-top-left-radius: var(--ha-card-border-radius);"
+  "th:last-child": "border-top-right-radius: var(--ha-card-border-radius);"
+  "tbody td": "padding: 4px;"
 entities:
   include:
     - sensor.weather_home_rain_*

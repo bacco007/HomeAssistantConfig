@@ -1433,3 +1433,151 @@
           group_by:
             func: delta
             duration: 1d
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+  cards:
+    - type: custom:apexcharts-card
+      chart_type: radialBar
+      header:
+        show: true
+        title: "COVID-19 - Vaccinations 1st Dose (as % of Population)"
+      apex_config:
+        chart: { height: 400 }
+        legend: { show: false }
+        plotOptions:
+          {
+            radialBar:
+              {
+                startAngle: -90,
+                endAngle: 90,
+                track: { startAngle: -90, endAngle: 90 },
+              },
+          }
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Doses1st
+          transform: "return (x / 344800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: ACT
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Doses1st
+          transform: "return (x / 6532800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NSW
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Doses1st
+          transform: "return (x / 196800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NT
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Doses1st
+          transform: "return (x / 4148000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: QLD
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Doses1st
+          transform: "return (x / 1416000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: SA
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Doses1st
+          transform: "return (x / 432800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: TAS
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Doses1st
+          transform: "return (x / 5344800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: VIC
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Doses1st
+          transform: "return (x / 2661900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: WA
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: Doses1st
+          transform: "return (x / 20616090) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: AUS
+    - type: custom:apexcharts-card
+      chart_type: radialBar
+      header:
+        show: true
+        title: "COVID-19 - Vaccinations 2nd Dose (as % of Population)"
+      apex_config:
+        chart: { height: 400 }
+        legend: { show: false }
+        plotOptions:
+          {
+            radialBar:
+              {
+                startAngle: -90,
+                endAngle: 90,
+                track: { startAngle: -90, endAngle: 90 },
+              },
+          }
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: Doses2nd
+          transform: "return (x / 344800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: ACT
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: Doses2nd
+          transform: "return (x / 6532800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NSW
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: Doses2nd
+          transform: "return (x / 196800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: NT
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: Doses2nd
+          transform: "return (x / 4148000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: QLD
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: Doses2nd
+          transform: "return (x / 1416000) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: SA
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: Doses2nd
+          transform: "return (x / 432800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: TAS
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: Doses2nd
+          transform: "return (x / 5344800) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: VIC
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: Doses2nd
+          transform: "return (x / 2661900) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: WA
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: Doses2nd
+          transform: "return (x / 20616090) * 100;"
+          float_precision: 3
+          unit: "%"
+          name: AUS

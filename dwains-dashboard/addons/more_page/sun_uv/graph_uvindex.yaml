@@ -42,24 +42,24 @@ apex_config:
   annotations:
     positions: back
     yaxis:
-      - y: 3
+      - y: 2.5
         y2: 0
         strokeDashArray: 0
         fillColor: "#558B2F"
-      - y: 6
-        y2: 3
+      - y: 5.5
+        y2: 2.5
         strokeDashArray: 0
         fillColor: "#F9A825"
-      - y: 8
-        y2: 6
+      - y: 7.5
+        y2: 5.5
         strokeDashArray: 0
         fillColor: "#EF6C00"
-      - y: 11
-        y2: 8
+      - y: 10.5
+        y2: 7.5
         strokeDashArray: 0
         fillColor: "#B71C1C"
       - y: 15
-        y2: 11
+        y2: 10.5
         strokeDashArray: 0
         fillColor: "#6A1B9A"
 series:

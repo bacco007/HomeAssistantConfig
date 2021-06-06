@@ -7,6 +7,7 @@ https://github.com/iprak/yahoofinance
 import logging
 from timeit import default_timer as timer
 
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
 
@@ -41,7 +42,7 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-ENTITY_ID_FORMAT = DOMAIN + ".{}"
+ENTITY_ID_FORMAT = SENSOR_DOMAIN + "." + DOMAIN + "_{}"
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

@@ -37,7 +37,7 @@
               },
           }
       series:
-        - entity: yahoofinance.aord
+        - entity: sensor.yahoofinance_aord
           name: ASX - All Ords
           type: area
           extend_to_end: false
@@ -79,7 +79,7 @@
               },
           }
       series:
-        - entity: yahoofinance.axjo
+        - entity: sensor.yahoofinance_axjo
           name: ASX - ASX200
           type: area
           extend_to_end: false
@@ -115,8 +115,8 @@
             "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
-              - yahoofinance.*ax*
-            exclude: yahoofinance.axjo
+              - sensor.yahoofinance_*ax*
+            exclude: sensor.yahoofinance_axjo
           columns:
             - name: Name
               data: friendly_name
@@ -170,12 +170,12 @@
             "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
-              - yahoofinance.aapl
-              - yahoofinance.amzn
-              - yahoofinance.goog
-              - yahoofinance.manu
-              - yahoofinance.nflx
-              - yahoofinance.tsla
+              - sensor.yahoofinance_aapl
+              - sensor.yahoofinance_amzn
+              - sensor.yahoofinance_goog
+              - sensor.yahoofinance_manu
+              - sensor.yahoofinance_nflx
+              - sensor.yahoofinance_tsla
           columns:
             - name: Name
               data: friendly_name
@@ -230,7 +230,7 @@
             "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
-              - yahoofinance.*_x
+              - sensor.yahoofinance_*_x
           columns:
             - name: Name
               data: friendly_name
@@ -276,9 +276,9 @@
             "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
-              - yahoofinance.btc_aud
-              - yahoofinance.doge_aud
-              - yahoofinance.eth_aud
+              - sensor.yahoofinance_btc_aud
+              - sensor.yahoofinance_doge_aud
+              - sensor.yahoofinance_eth_aud
           columns:
             - name: Name
               data: friendly_name
@@ -324,11 +324,11 @@
             "tbody tr:nth-child(odd)": "background-color: none !important;"
           entities:
             include:
-              - yahoofinance.aord
-              - yahoofinance.axjo
-              - yahoofinance.dji
-              - yahoofinance.ftse
-              - yahoofinance.ixic
+              - sensor.yahoofinance_aord
+              - sensor.yahoofinance_axjo
+              - sensor.yahoofinance_dji
+              - sensor.yahoofinance_ftse
+              - sensor.yahoofinance_ixic
           columns:
             - name: Name
               data: friendly_name

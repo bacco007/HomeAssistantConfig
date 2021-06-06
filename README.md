@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Thursday, June 3rd 2021_
+_Stats as at 05:00, Sunday, June 6th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.5.5 | 336     | 2234         | 1651 | 78 |
+| 2021.6.1 | 337     | 2237         | 1681 | 78 |
 
 Type | Qty
 -- | --
@@ -91,13 +91,13 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 2
 Light | 4
-Media Player | 22
+Media Player | 26
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1651
+Sensor | 1681
 Sun | 1
-Switch | 112
+Switch | 113
 Weather | 7
 Zone | 10
 
@@ -265,6 +265,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [mqtt](https://www.home-assistant.io/components/mqtt) |
 | [my](https://www.home-assistant.io/components/my) |
 | [myjdownloader](https://www.home-assistant.io/components/myjdownloader) |
+| [network](https://www.home-assistant.io/components/network) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [notify.group](https://www.home-assistant.io/components/notify.group) |
@@ -325,7 +326,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
-| [sensor.foldingathomecontrol](https://www.home-assistant.io/components/sensor.foldingathomecontrol) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
@@ -419,6 +419,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
 | [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.smartthinq_sensors](https://www.home-assistant.io/components/switch.smartthinq_sensors) |
+| [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
@@ -457,8 +458,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>Expand Custom Components List</summary>
 
-- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/bom)
+- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)

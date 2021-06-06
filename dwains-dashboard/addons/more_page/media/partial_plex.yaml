@@ -53,29 +53,39 @@ cards:
         icon: mdi:plex
 
   - type: markdown
-    content: |-
-      {% set prev = namespace(airdate=false) %}
-      {% for item in state_attr('sensor.plex_recently_added', 'data') %}
-      {% if item.airdate | default('', true) %}
-      {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
-      {% if airdate != prev.airdate %}
-        <b><u>{{ airdate }}</b></u>
-        {% set prev.airdate = airdate %}
-      {% endif %}
-        * {{item.title}} ({{item.number}}, {{item.episode}})
-      {% endif %}
-      {% endfor %}
+    card_mod:
+      style:
+        ha-markdown:
+          $:
+            ha-markdown-element: |
+              table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
+              th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
+              th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
+              th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
+              td { padding: 4px; }
+              td em { font-size: 10px; }
+              tr:nth-child(even) { background-color: var(--table-row-background-color); }
+    content: |
+      |Date|Detail|
+      |:---:|:---:|:---|
+      {% for item in state_attr('sensor.plex_recently_added', 'data') %}{% if item.airdate | default('', true) %}{% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}|{{ airdate }}|{{item.title}}<br/>_({{item.number}}, {{item.episode}})_|
+      {% endif %}{% endfor %}
 
   - type: markdown
-    content: |-
-      {% set prev = namespace(airdate=false) | default('', true) %}
-      {% for item in state_attr('sensor.plex_recently_added_movies', 'data') %}
-      {% if item.airdate | default('', true) %}
-      {% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
-      {% if airdate != prev.airdate %}
-        <b><u>{{ airdate }}</b></u>
-        {% set prev.airdate = airdate %}
-      {% endif %}
-        * {{item.title}}
-      {% endif %}
-      {% endfor %}
+    card_mod:
+      style:
+        ha-markdown:
+          $:
+            ha-markdown-element: |
+              table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
+              th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
+              th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
+              th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
+              td { padding: 4px; }
+              td em { font-size: 10px; }
+              tr:nth-child(even) { background-color: var(--table-row-background-color); }
+    content: |
+      |Date|Detail|
+      |:---:|:---:|:---|
+      {% for item in state_attr('sensor.plex_recently_added_movies', 'data') %}{% if item.airdate | default('', true) %}{% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}|{{ airdate }}|{{item.title}}|
+      {% endif %}{% endfor %}
