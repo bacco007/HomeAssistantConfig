@@ -1,89 +1,55 @@
+---
 # dwains_theme
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-3 col-sm-3 col-xl-3"
+  item_classes: "col-xs-12"
   cards:
-    - type: custom:mini-graph-card
-      entities:
-        - entity: sensor.blitzortung_lightning_counter
-      name: Count
-      # height: 50
-      line_color: "var(--dwains-theme-accent)"
-      line_width: 2
-      font_size: 70
-      hours_to_show: 12
-      points_per_hour: 6
-      align_state: center
-      show:
-        graph: bar
-        # extrema: true
-        fill: true
-    - type: custom:mini-graph-card
-      entities:
-        - entity: sensor.lightning_distance_lasthour
-      name: Distance
-      # height: 50
-      line_color: "var(--dwains-theme-accent)"
-      line_width: 2
-      font_size: 70
-      hours_to_show: 12
-      points_per_hour: 6
-      align_state: center
-      show:
-        # extrema: true
-        fill: true
-    - type: custom:compass-card
-      name: Last Lightning Strike
-      indicator_sensors:
-        - sensor: sensor.blitzortung_lightning_azimuth
-      value_sensors:
-        - sensor: sensor.blitzortung_lightning_distance
-      direction_offset: 0
-
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
-  # padding: true
-  cards:
-    - type: entities
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-      entities:
-        - entity: sensor.blitzortung_lightning_counter
-          name: Lightning Counter
-        - entity: sensor.lightning_distance_lasthour
-          name: Lightning Distance
-          type: custom:multiple-entity-row
-          icon: mdi:flash-circle
-          show_state: false
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-4"
+      cards:
+        - type: entities
+          style: |
+            ha-card {
+              padding-bottom: 10px;
+              background-color: var(--dwains-theme-primary)
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            .card-content div {
+                margin: 0 !important;
+            }
+            #states {
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+            }
+            .secondary {
+              color: darkgray !important;
+              margin-left: 2px !important;
+            }
           entities:
-            - attribute: count
-              name: Num
-            - attribute: min_value
-              name: Near
-            - attribute: max_value
-              name: Far
+            - entity: sensor.blitzortung_lightning_counter
+              name: Lightning Counter
+            - entity: sensor.lightning_distance_lasthour
+              name: Lightning Distance
+              type: custom:multiple-entity-row
+              icon: mdi:flash-circle
+              show_state: false
+              entities:
+                - attribute: count
+                  name: Num
+                - attribute: min_value
+                  name: Near
+                - attribute: max_value
+                  name: Far
 
-    - type: map
-      default_zoom: 8
-      entities:
-        - zone.home
-      geo_location_sources:
-        - blitzortung
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-8"
+      cards:
+        - type: map
+          default_zoom: 8
+          entities:
+            - zone.home
+          geo_location_sources:
+            - blitzortung

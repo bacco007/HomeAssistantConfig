@@ -42,7 +42,12 @@ from homeassistant.helpers.typing import ConfigType
 from homeassistant.util.temperature import convert as convert_temperature
 from homeassistant.util.unit_system import TEMPERATURE_UNITS
 
-from .const import STARTUP_MESSAGE
+from .const import (
+    ATTR_HUMIDITY_SOURCE,
+    ATTR_TEMPERATURE_SOURCE,
+    ATTR_WIND_SPEED_SOURCE,
+    STARTUP_MESSAGE,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -138,6 +143,15 @@ class TemperatureFeelingSensor(Entity):
         """Return the unit of measurement of this entity."""
         return self.hass.config.units.temperature_unit
 
+    @property
+    def state_attributes(self):
+        """Return the state attributes."""
+        return {
+            ATTR_TEMPERATURE_SOURCE: self._temp,
+            ATTR_HUMIDITY_SOURCE: self._humd,
+            ATTR_WIND_SPEED_SOURCE: self._wind,
+        }
+
     async def async_added_to_hass(self):
         """Register callbacks."""
 
@@ -151,13 +165,6 @@ class TemperatureFeelingSensor(Entity):
         @callback
         def sensor_startup(event):
             """Update entity on startup."""
-            if not self._name:
-                state = self.hass.states.get(self._sources[0])  # type: LazyState
-                self._name = state.name
-                if self._name.lower().find("temperature") < 0:
-                    self._name += " Temperature"
-                self._name += " Feels Like"
-
             entities = set()
             for entity_id in self._sources:
                 state = self.hass.states.get(entity_id)  # type: LazyState
@@ -190,6 +197,13 @@ class TemperatureFeelingSensor(Entity):
                 ):
                     self._wind = entity_id
                     entities.add(entity_id)
+
+            if not self._name:
+                state = self.hass.states.get(self._temp)  # type: LazyState
+                self._name = state.name
+                if self._name.lower().find("temperature") < 0:
+                    self._name += " Temperature"
+                self._name += " Feels Like"
 
             async_track_state_change(self.hass, list(entities), sensor_state_listener)
 

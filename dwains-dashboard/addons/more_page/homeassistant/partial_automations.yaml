@@ -1,12 +1,12 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: markdown
+  - type: entities
     title: Automations - Last Triggered
     style: |
       ha-card {
-        padding-bottom: 10px;
-        background-color: var(--dwains-theme-primary);
+        # padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
       }
       .card-header {
         padding: 5px 16px;
@@ -24,6 +24,9 @@ cards:
         color: darkgray !important;
         margin-left: 2px !important;
       }
+    entities:
+      - entity: sensor.count_automations
+  - type: markdown
     content: |
       |D|H|M||Name|
       |----:|----:|----:|:--:|:----|
@@ -34,5 +37,17 @@ cards:
         {%- set days = t.days if t.days > 0 else 0 -%}
         {%- set hrs = t.seconds//3600 %}
         {%- set hrs = hrs if hrs > 0 else 0 -%}
-        |{{days}}|{{hrs}}|{{(t.seconds//60)%60}}||_{{state.name}}_|
+        |{{days}}|{{hrs}}|{{(t.seconds//60)%60}}||{{state.name}}|
       {% endfor %}
+    card_mod:
+      style:
+        ha-markdown:
+          $:
+            ha-markdown-element: |
+              table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
+              th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
+              th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
+              th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
+              td { padding: 4px; }
+              td em { font-size: 10px; }
+              tr:nth-child(even) { background-color: var(--table-row-background-color); }

@@ -1,9 +1,10 @@
 ---
 # dwains_theme
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
+  items_classes: "col-xs-12"
   cards:
-    - type: horizontal-stack
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-2"
       cards:
         - type: "custom:button-card"
           style: |
@@ -105,9 +106,25 @@
             entity_picture:
               - width: 20%
               - margin-top: 1%
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-12 col-sm-12 col-xl-12"
-  cards:
+
     - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-10"
       cards:
-        - !include partial_recentbeers.yaml
+        - type: custom:dwains-flexbox-card
+          items_classes: "col-xs-12 col-md-12 col-sm-12 col-xl-12"
+          cards:
+            - type: vertical-stack
+              cards:
+                - !include partial_recentbeers.yaml
+            - type: vertical-stack
+              cards:
+                - !include partial_mostbeers.yaml
+        - type: custom:dwains-flexbox-card
+          items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+          cards:
+            - type: vertical-stack
+              cards:
+                - !include partial_highrankbeers.yaml
+            - type: vertical-stack
+              cards:
+                - !include partial_lowrankbeers.yaml

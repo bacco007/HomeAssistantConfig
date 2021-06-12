@@ -55,7 +55,7 @@
               border-radius: 4px;
               box-shadow: 10px;
               background-position: center;
-          entity: sensor.covid_19_esria_aus_cases
+          entity: sensor.covid_19_covidlive_aus
           icon: custom:corona-virus
           name: Australia Cases
           show_state: true
@@ -76,13 +76,18 @@
               border-radius: 4px;
               box-shadow: 10px;
               background-position: center;
-          entity: sensor.covid_19_esria_aus_deaths
+          entity: sensor.covid_19_covidlive_aus
           icon: custom:corona-virus
           name: Australia Deaths
-          show_state: true
+          show_state: false
           show_name: true
           show_label: true
           show_icon: true
+          label: >
+            [[[
+              var bri = states['sensor.covid_19_covidlive_aus'].attributes.Deaths;
+              return bri + ' people';
+            ]]]
           styles:
             card:
               - background-size: contain
@@ -131,7 +136,7 @@
           label: >
             [[[
               var bri = states['sensor.covid_19_covidlive_nsw'].attributes.Deaths;
-              return bri + ' People';
+              return bri + ' people';
             ]]]
           styles:
             card:

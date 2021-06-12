@@ -11,6 +11,9 @@ house_information:
     - entity: sensor.tamworth_airport_rain_since_9am
       icon_on: mdi:weather-rainy
       icon_off: mdi:weather-rainy
+    - entity: binary_sensor.updater_available
+      icon_on: mdi:cloud-upload
+      icon_off: mdi:cloud-check
   #   - entity: binary_sensor.doorbell_button
   #     icon_on: fas:bell
   #     icon_off: fas:bell

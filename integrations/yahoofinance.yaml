@@ -32,6 +32,3 @@ yahoofinance:
     - AUDGBP=X
     - AUDNZD=X
     - AUDEUR=X
-    - BTC-AUD
-    - ETH-AUD
-    - DOGE-AUD

@@ -1,9 +1,8 @@
-from typing import Optional, Any, List, TypeVar, Type, cast, Callable
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
+
 import dateutil.parser
-
-
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -128,32 +127,20 @@ class B1:
         data_available = from_bool(obj.get("dataAvailable"))
         network_daily_price = from_str(obj.get("networkDailyPrice"))
         basic_meter_daily_price = from_str(obj.get("basicMeterDailyPrice"))
-        additional_smart_meter_daily_price = from_str(
-            obj.get("additionalSmartMeterDailyPrice")
-        )
+        additional_smart_meter_daily_price = from_str(obj.get("additionalSmartMeterDailyPrice"))
         amber_daily_price = from_str(obj.get("amberDailyPrice"))
         total_daily_price = from_str(obj.get("totalDailyPrice"))
-        network_kwh_price = from_union(
-            [from_str, from_none], obj.get("networkKWHPrice")
-        )
+        network_kwh_price = from_union([from_str, from_none], obj.get("networkKWHPrice"))
         market_kwh_price = from_str(obj.get("marketKWHPrice"))
         green_kwh_price = from_str(obj.get("greenKWHPrice"))
         carbon_neutral_kwh_price = from_str(obj.get("carbonNeutralKWHPrice"))
         loss_factor = from_str(obj.get("lossFactor"))
         offset_kwh_price = from_str(obj.get("offsetKWHPrice"))
         totalfixed_kwh_price = from_str(obj.get("totalfixedKWHPrice"))
-        total_black_peak_fixed_kwh_price = from_str(
-            obj.get("totalBlackPeakFixedKWHPrice")
-        )
-        total_black_shoulder_fixed_kwh_price = from_str(
-            obj.get("totalBlackShoulderFixedKWHPrice")
-        )
-        total_black_offpeak_fixed_kwh_price = from_str(
-            obj.get("totalBlackOffpeakFixedKWHPrice")
-        )
-        network_peak_kwh_price = from_union(
-            [from_str, from_none], obj.get("networkPeakKWHPrice")
-        )
+        total_black_peak_fixed_kwh_price = from_str(obj.get("totalBlackPeakFixedKWHPrice"))
+        total_black_shoulder_fixed_kwh_price = from_str(obj.get("totalBlackShoulderFixedKWHPrice"))
+        total_black_offpeak_fixed_kwh_price = from_str(obj.get("totalBlackOffpeakFixedKWHPrice"))
+        network_peak_kwh_price = from_union([from_str, from_none], obj.get("networkPeakKWHPrice"))
         network_shoulder_kwh_price = from_union(
             [from_str, from_none], obj.get("networkShoulderKWHPrice")
         )
@@ -192,18 +179,14 @@ class B1:
         )
         result["amberDailyPrice"] = from_str(self.amber_daily_price)
         result["totalDailyPrice"] = from_str(self.total_daily_price)
-        result["networkKWHPrice"] = from_union(
-            [from_str, from_none], self.network_kwh_price
-        )
+        result["networkKWHPrice"] = from_union([from_str, from_none], self.network_kwh_price)
         result["marketKWHPrice"] = from_str(self.market_kwh_price)
         result["greenKWHPrice"] = from_str(self.green_kwh_price)
         result["carbonNeutralKWHPrice"] = from_str(self.carbon_neutral_kwh_price)
         result["lossFactor"] = from_str(self.loss_factor)
         result["offsetKWHPrice"] = from_str(self.offset_kwh_price)
         result["totalfixedKWHPrice"] = from_str(self.totalfixed_kwh_price)
-        result["totalBlackPeakFixedKWHPrice"] = from_str(
-            self.total_black_peak_fixed_kwh_price
-        )
+        result["totalBlackPeakFixedKWHPrice"] = from_str(self.total_black_peak_fixed_kwh_price)
         result["totalBlackShoulderFixedKWHPrice"] = from_str(
             self.total_black_shoulder_fixed_kwh_price
         )
@@ -238,16 +221,16 @@ class StaticPrices:
     def from_dict(obj: Any) -> "StaticPrices":
         assert isinstance(obj, dict)
         E1 = None
-        if(obj.get("E1")):
+        if obj.get("E1"):
             e1 = B1.from_dict(obj.get("E1"))
         E2 = None
-        if(obj.get("E2")):
+        if obj.get("E2"):
             e2 = B1.from_dict(obj.get("E2"))
         b1 = None
-        if(obj.get("B1")):
+        if obj.get("B1"):
             b1 = B1.from_dict(obj.get("B1"))
         e1_tou = None
-        if(obj.get("E1TOU")):
+        if obj.get("E1TOU"):
             e1_tou = B1.from_dict(obj.get("E1TOU"))
         return StaticPrices(e1, e2, b1, e1_tou)
 
@@ -268,6 +251,7 @@ class PeriodSource(Enum):
 class PeriodType(Enum):
     ACTUAL = "ACTUAL"
     FORECAST = "FORECAST"
+
 
 class VariablePricesAndRenewable:
     period_type: PeriodType
@@ -315,9 +299,9 @@ class VariablePricesAndRenewable:
     def from_dict(obj: Any) -> "VariablePricesAndRenewable":
         assert isinstance(obj, dict)
         period_type = PeriodType(obj.get("periodType"))
-        created_at = None  
-        if(obj.get("createdAt") is not None):
-            created_at = from_datetime(obj.get("createdAt"))         
+        created_at = None
+        if obj.get("createdAt") is not None:
+            created_at = from_datetime(obj.get("createdAt"))
         wholesale_kwh_price = from_str(obj.get("wholesaleKWHPrice"))
         usage = from_union([from_str, from_none], obj.get("usage"))
         region = from_str(obj.get("region"))
@@ -327,10 +311,10 @@ class VariablePricesAndRenewable:
         percentile_rank = from_str(obj.get("percentileRank"))
         latest_period = from_union([from_datetime, from_none], obj.get("latestPeriod"))
         forecasted_at = None
-        if(obj.get("forecastedAt") is not None):
+        if obj.get("forecastedAt") is not None:
             forecasted_at = from_union([from_datetime, from_none], obj.get("forecastedAt"))
         forecasted_at_period = None
-        if(obj.get("forecastedAt+period") is not None):        
+        if obj.get("forecastedAt+period") is not None:
             forecasted_at_period = from_union(
                 [from_str, from_none], obj.get("forecastedAt+period")
             )

@@ -121,6 +121,13 @@
                       token: !secret plex_token
                       ip: !secret plex_host
                       port: !secret plex_port
+                      libraryName: Recently Added
+                      entity:
+                        androidtv: media_player.nvidia_shield
+                    - type: custom:plex-meets-homeassistant
+                      token: !secret plex_token
+                      ip: !secret plex_host
+                      port: !secret plex_port
                       libraryName: TV Shows
                       maxCount: 20
                       sort: episode.addedAt:desc

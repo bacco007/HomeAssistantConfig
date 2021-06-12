@@ -16,6 +16,9 @@ pyscript:
       friendly_name: "NRL Draw (Newcastle Knights)"
     getdata_nrlladder:
       friendly_name: "NRL Ladder"
+    getdata_untappd:
+      clientid: !secret untappd_id
+      clientsecret: !secret untappd_secret
     influxdb_query_to_sensor:
       host: !secret influxdb_host
       port: !secret influxdb_port

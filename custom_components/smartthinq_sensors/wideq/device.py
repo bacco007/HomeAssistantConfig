@@ -112,6 +112,13 @@ class NetworkType(enum.Enum):
     UNKNOWN = STATE_OPTIONITEM_UNKNOWN
 
 
+WM_DEVICE_TYPES = [
+    DeviceType.DRYER,
+    DeviceType.TOWER_DRYER,
+    DeviceType.TOWER_WASHER,
+    DeviceType.WASHER,
+]
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -329,6 +336,9 @@ class ModelInfo(object):
         else:
             return None
 
+    def value_exist(self, name):
+        return name in self._data["Value"]
+
     def value(self, name):
         """Look up information about a value.
         
@@ -357,7 +367,12 @@ class ModelInfo(object):
         elif d["type"] == "String":
             pass
         else:
-            assert False, "unsupported value type {}".format(d["type"])
+            _LOGGER.error(
+                "ModelInfo: unsupported value type (%s) - value: %s",
+                d["type"],
+                d,
+            )
+            return None
 
     def default(self, name):
         """Get the default value, if it exists, for a given value.
@@ -478,15 +493,27 @@ class ModelInfo(object):
             return reference[value].get("label")
         return None
 
+    @property
+    def binary_control_data(self):
+        """Check that type of control is BINARY(BYTE).
+        """
+        return self._data["ControlWifi"]["type"] == "BINARY(BYTE)"
+
     def get_control_cmd(self, cmd_key, ctrl_key=None):
         """Get the payload used to send the command."""
-        return None
+        control = None
+        if "ControlWifi" in self._data:
+            control_data = self._data["ControlWifi"].get("action", {}).get(cmd_key)
+            if control_data:
+                control = control_data.copy()  # we copy so that we can manipulate
+                if ctrl_key:
+                    control["cmd"] = ctrl_key
+        return control
 
     @property
     def binary_monitor_data(self):
         """Check that type of monitoring is BINARY(BYTE).
         """
-
         return self._data["Monitoring"]["type"] == "BINARY(BYTE)"
 
     def decode_monitor_binary(self, data):
@@ -497,7 +524,7 @@ class ModelInfo(object):
         for item in self._data["Monitoring"]["protocol"]:
             key = item["value"]
             value = 0
-            for v in data[item["startByte"] : item["startByte"] + item["length"]]:
+            for v in data[item["startByte"]: item["startByte"] + item["length"]]:
                 value = (value << 8) + v
             decoded[key] = str(value)
         return decoded
@@ -515,6 +542,23 @@ class ModelInfo(object):
         else:
             return self.decode_monitor_json(data)
 
+    @staticmethod
+    def _get_current_temp_key(key: str, data):
+        """Special case for oven current temperature, that in protocol
+        is represented with a suffix "F" or "C" depending from the unit
+        """
+        if key.count("CurrentTemperature") == 0:
+            return key
+        new_key = key[:-1]
+        if not new_key.endswith("CurrentTemperature"):
+            return key
+        unit_key = f"{new_key}Unit"
+        if unit_key not in data:
+            return key
+        if data[unit_key][0] == key[-1]:
+            return f"{new_key}Value"
+        return key
+
     def decode_snapshot(self, data, key):
         """Decode  status data."""
         decoded = {}
@@ -523,6 +567,7 @@ class ModelInfo(object):
         info = data.get(key)
         if not info:
             return decoded
+
         protocol = self._data["Monitoring"]["protocol"]
         if isinstance(protocol, list):
             for elem in protocol:
@@ -530,18 +575,21 @@ class ModelInfo(object):
                     key = elem["value"]
                     value = data
                     for ident in elem["superSet"].split("."):
-                        if value is not None:
-                            value = value.get(ident)
+                        if value is None:
+                            break
+                        pr_key = self._get_current_temp_key(ident, value)
+                        value = value.get(pr_key)
                     if value is not None:
                         if isinstance(value, Number):
                             value = int(value)
                         decoded[key] = str(value)
-        else:
-            for data_key, value_key in protocol.items():
-                value = info.get(data_key, "")
-                if value is not None and isinstance(value, Number):
-                    value = int(value)
-                decoded[value_key] = str(value)
+            return decoded
+
+        for data_key, value_key in protocol.items():
+            value = info.get(data_key, "")
+            if value is not None and isinstance(value, Number):
+                value = int(value)
+            decoded[value_key] = str(value)
         return decoded
 
 
@@ -566,14 +614,16 @@ class ModelInfoV2(object):
     def value_type(self, name):
         return None
 
+    def value_exist(self, name):
+        return name in self._data["MonitoringValue"]
+
     def data_root(self, name):
         if name in self._data["MonitoringValue"]:
-            if self._data["MonitoringValue"][name].get("dataType"):
+            if "dataType" in self._data["MonitoringValue"][name]:
                 return self._data["MonitoringValue"][name]
-            else:
-                ref = self._data["MonitoringValue"][name].get("ref")
-                if ref:
-                    return self._data.get(ref)
+            ref = self._data["MonitoringValue"][name].get("ref")
+            if ref:
+                return self._data.get(ref)
 
         return None
 
@@ -604,12 +654,19 @@ class ModelInfoV2(object):
         #    return ReferenceValue(
         #            self.data[ref]
         #            )
-        # elif d['dataType'] == 'Boolean':
-        #    return EnumValue({'0': 'False', '1' : 'True'})
+        elif data_type in ("Boolean", "boolean"):
+            ret_val = {"BOOL": True}
+            ret_val.update(data["valueMapping"])
+            return ret_val
         # elif d['dataType'] == 'String':
         #    pass
         else:
-            assert False, "unsupported value type {}".format(data_type)
+            _LOGGER.error(
+                "ModelInfoV2: unsupported value type (%s) - value: %s",
+                data_type,
+                data,
+            )
+            return None
 
     def default(self, name):
         """Get the default value, if it exists, for a given value.
@@ -640,6 +697,9 @@ class ModelInfoV2(object):
 
         options = self.value(data)
         item = options.get(value, {})
+        if options.get("BOOL", False):
+            index = item.get("index", 0)
+            return LABEL_BIT_ON if index == 1 else LABEL_BIT_OFF
         return item.get("label", "")
 
     def enum_index(self, key, index):
@@ -698,6 +758,12 @@ class ModelInfoV2(object):
 
         return data.get("targetKey", {}).get(target, {}).get(value)
 
+    @property
+    def binary_control_data(self):
+        """Check that type of control is BINARY(BYTE).
+        """
+        return False
+
     def get_control_cmd(self, cmd_key, ctrl_key=None):
         """Get the payload used to send the command."""
         control = None
@@ -713,7 +779,6 @@ class ModelInfoV2(object):
     def binary_monitor_data(self):
         """Check that type of monitoring is BINARY(BYTE).
         """
-
         return False
 
     def decode_monitor_binary(self, data):
@@ -810,6 +875,7 @@ class Device(object):
         self._mon = None
         self._control_set = 0
         self._last_dev_query = datetime.now()
+        self._last_additional_poll = datetime.now()
         self._available_features = available_features or {}
 
         # for logging unknown states received
@@ -918,14 +984,16 @@ class Device(object):
             
         The response is parsed as base64-encoded JSON.
         """
-
+        if not self._should_poll:
+            return
         data = self._client.session.get_device_config(self._device_info.id, key,)
         return json.loads(base64.b64decode(data).decode("utf8"))
 
     def _get_control(self, key):
         """Look up a device's control value.
             """
-
+        if not self._should_poll:
+            return
         data = self._client.session.get_device_config(
             self._device_info.id, key, "Control",
         )
@@ -1023,7 +1091,25 @@ class Device(object):
             self._client.session.delete_permission(self._device_info.id)
         self._control_set -= 1
 
-    def device_poll(self, snapshot_key="", *, device_update=False):
+    def _get_device_info(self):
+        """Call additional method to get device information.
+
+        Override in specific device to call requested methods
+        """
+        return
+
+    def _additional_poll(self, poll_interval: int):
+        """Perform dedicated additional device poll with a slower rate."""
+
+        if poll_interval <= 0:
+            return
+        call_time = datetime.now()
+        difference = (call_time - self._last_additional_poll).total_seconds()
+        if difference >= poll_interval:
+            self._last_additional_poll = datetime.now()
+            self._get_device_info()
+
+    def device_poll(self, snapshot_key="", *, device_update=False, additional_poll_interval=0):
         """Poll the device's current state.
         
         Monitoring must be started first with `monitor_start`. Return
@@ -1053,6 +1139,10 @@ class Device(object):
             if not data:
                 return None
             res = self._model_info.decode_monitor(data)
+            try:
+                self._additional_poll(additional_poll_interval)
+            except Exception as exc:
+                _LOGGER.warning("Error calling additional poll methods. Error %s", exc)
 
         """
             with open('/config/wideq/washer_polled_data.json','w', encoding="utf-8") as dumpfile:
@@ -1106,6 +1196,10 @@ class DeviceStatus(object):
         return True if self._data else False
 
     @property
+    def data(self):
+        return self._data
+
+    @property
     def is_on(self) -> bool:
         return False
 
@@ -1144,6 +1238,14 @@ class DeviceStatus(object):
             self._data[key] = value
             return True
         return False
+
+    def key_exist(self, keys):
+        if isinstance(keys, list):
+            for key in keys:
+                if self._device.model_info.value_exist(key):
+                    return True
+            return False
+        return self._device.model_info.value_exist(keys)
 
     def lookup_enum(self, key, data_is_num=False):
         curr_key = self._get_data_key(key)

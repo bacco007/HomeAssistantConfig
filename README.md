@@ -72,30 +72,30 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, June 6th 2021_
+_Stats as at 05:00, Saturday, June 12th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.6.1 | 337     | 2237         | 1681 | 78 |
+| 2021.6.3 | 335     | 2208         | 1650 | 80 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 78
-Binary Sensor | 186
+Automation | 80
+Binary Sensor | 189
 Camera | 4
-Device Tracker | 62
-Group | 9
+Device Tracker | 64
+Group | 10
 Input Boolean | 0
 Input Datetime | 0
-Input Text | 2
-Light | 4
-Media Player | 26
+Input Text | 3
+Light | 3
+Media Player | 20
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1681
+Sensor | 1650
 Sun | 1
 Switch | 113
 Weather | 7
@@ -202,7 +202,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [favicon](https://www.home-assistant.io/components/favicon) |
 | [feedreader](https://www.home-assistant.io/components/feedreader) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
-| [foldingathomecontrol](https://www.home-assistant.io/components/foldingathomecontrol) |
 | [fontawesome](https://www.home-assistant.io/components/fontawesome) |
 | [forked_daapd](https://www.home-assistant.io/components/forked_daapd) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
@@ -385,7 +384,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
-| [sensor.untappd_recentbeers](https://www.home-assistant.io/components/sensor.untappd_recentbeers) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.utility_meter](https://www.home-assistant.io/components/sensor.utility_meter) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
@@ -458,7 +456,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>Expand Custom Components List</summary>
 
-- [Amber Electric](https://www.home-assistant.io/integrations/bom)
+- [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
@@ -476,7 +474,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Dyson Local](https://github.com/shenxn/ha-dyson)
 - [Favicon changer](https://github.com/thomasloven/hass-favicon)
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
-- [Folding@HomeControl](https://github.com/eifinger/hass-foldingathomecontrol)
 - [Fontawesome icons](https://github.com/thomasloven/hass-fontawesome)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
@@ -508,7 +505,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Temperature Feels Like](https://github.com/Limych/ha-temperature-feeling)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
-- [Untappd Recent Beers]()
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 - [Yahoo Finance](https://github.com/iprak/yahoofinance)</details>
 
@@ -522,6 +518,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Abfall Api (Jumomind)](https://github.com/tuxuser/abfallapi_jumomind_ha) | Abfall API (Jumomind) custom component for home assistant - Get an alert when garbage collection is due |
 | [Abfall Api (Regioit)](https://github.com/tuxuser/abfallapi_regioit_ha) | Abfall API (RegioIT) custom component for home assistant - Get an alert when garbage collection is due |
 | [Acv Garbage Collection Sensor](https://github.com/Cadsters/acv-hass-component) | 🗑️ Integration for bin/waste collection  by acv-groep |
+| [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting) | Adaptive Lighting custom component for Home Assistant |
 | [Adax Heaters](https://github.com/Danielhiversen/home_assistant_adax) | Integration for Adax heaters |
 | [Adt Pulse](https://github.com/rsnodgrass/hass-adtpulse) | ADT Pulse sensor for Home Assistant |
 | [Afvalinfo](https://github.com/heyajohnny/afvalinfo) | Provides Home Assistant sensors for multiple Dutch waste collectors. The idea is to add more cities and features in the future. |
@@ -758,7 +755,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk) | Indoor Air Quality Sensor Component for Home Assistant |
 | [Ingv Istituto Nazionale Di Geofisica E Vulcanologia](https://github.com/caiosweet/Home-Assistant-custom-components-INGV) | INGV - National Institute of Geophysics and Volcanology [Istituto Nazionale di Geofisica e Vulcanologia] Terremoti Italia. |
 | [Iphone Device Tracker](https://github.com/mudape/iphonedetect) | A custom component for Home Assistant to detect iPhones connected to local LAN, even if the phone is in deep sleep. |
-| [Irrigation Unlimited](https://github.com/rgc99/irrigation_unlimited) | Irrigation controller for Home Assistant |
+| [Irrigation Unlimited](https://github.com/rgc99/irrigation_unlimited) | ♒Irrigation controller for Home Assistant |
 | [Jablotron 100](https://github.com/kukulich/home-assistant-jablotron100) | Home Assistant custom component for JABLOTRON 100+ alarm system |
 | [Jaguar Landrover Incontrol](https://github.com/msp1974/homeassistant-jlrincontrol) | An integration for JLR InControl to Home Assistant |
 | [Jellyfin](https://github.com/koying/jellyfin_ha) | Jellyfin integration for Home Assistant |
@@ -821,6 +818,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mosenergosbyt (Мосэнергосбыт)](https://github.com/alryaz/hass-mosenergosbyt) | Home Assistant Mosenergosbyt personal cabinet data and statistics sensor |
 | [Mqtt Template Switch](https://github.com/lukich48/hass_mqtt_template_switch) | mqtt template switch for homeassistant |
 | [Multiscrape   A Home Assistant Custom Scraping Component](https://github.com/danieldotnl/ha-multiscrape) | Home Assistant custom component for scraping multiple values (from a single HTTP request) with a separate sensor for each value.  |
+| [Multizone Controller](https://github.com/Petro31/ha-integration-multizone-controller) | Integration that creates a multi-zone volume controller for media_players in Home Assistant |
 | [Musiccast Yamaha](https://github.com/ppanagiotis/pymusiccast) | Group MusicCast Speakers with Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
 | [Mylar Sensor Card](https://github.com/DarkSir23/sensor.mylar) | HomeAssistant Sensor for Mylar (Compatible with Upcoming Meda Card) |
@@ -1040,10 +1038,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Xiaomi Mi Smart Wifi Socket Integration](https://github.com/syssi/xiaomiplug) | Xiaomi Mi Smart WiFi Socket integration for Home Assistant |
 | [Xiaomi Miio For Yeelink](https://github.com/al-one/hass-miio-yeelink) | Xiaomi Miio Yeelink/Yeelight devices for Home Assistant |
 | [Xiaomi Miio Raw](https://github.com/syssi/xiaomi_raw) | Custom component for Home Assistant to faciliate the reverse engeneering of Xiaomi MiIO devices |
+| [Xiaomi Mijia Multifunctional Mjysh01Ym](https://github.com/fineemb/Xiaomi-Smart-Multipurpose-Kettle) | 小米养生壶 |
 | [Xiaomi Miot](https://github.com/ha0y/xiaomi_miot_raw) | Universal Xiaomi MIoT integration for Home Assistant |
 | [Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot) | Auto integrate xiaomi devices by miot-spec for HomeAssistant |
 | [Xiaomi Philips Lights Integration](https://github.com/syssi/philipslight) | Xiaomi Philips Lights integration for Home Assistant |
-| [Xiaomi Smart Multipurpose Kettle](https://github.com/fineemb/Xiaomi-Smart-Multipurpose-Kettle) | 小米养生壶 |
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
 | [Yandex Smart Home](https://github.com/dmitry-k/yandex_smart_home) | Adds support for Yandex Smart Home (Alice voice assistant) into Home Assistant |
 | [Yandex.Station](https://github.com/AlexxIT/YandexStation) | Управление Яндекс.Станцией и другими колонками с Алисой из Home Assistant |
@@ -1090,7 +1088,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bkk Stop Card](https://github.com/amaximus/bkk-stop-card) | Custom Lovelace card for Budapest Public Transportation custom component |
 | [Ble Bulb Card](https://github.com/marcomow/ble-bulb-card) | Custom card for bluetooth bulb (BLE light) control for Homeassistant |
 | [Bom Radar Card](https://github.com/theOzzieRat/bom-radar-card) | A rain radar card using the new tiled images from the Australian BOM |
-| [Bom Weather Card](https://github.com/DavidFW1960/bom-weather-card) | Custom BOM Australia Animated Weather Card |
 | [Bootstrap Grid Card](https://github.com/idittansikte/bootstrap-grid-card) | Home-assistance lovelace card enabling bootstrap grid css. |
 | [Button Card](https://github.com/custom-cards/button-card) | ❇️ Lovelace button-card for home assistant |
 | [Button Text Card](https://github.com/Savjee/button-text-card) | Custom, "neumorphism" Lovelace card |
@@ -1113,6 +1110,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Cover Element](https://github.com/custom-cards/cover-element) | None |
 | [Cover Position Preset Row](https://github.com/finity69x2/cover-position-preset-row) | pluig-in for Home Assistant that provides an easy means set 3 fixed positions for a programmable cover entity. |
 | [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons) | Apple iOS-like Cupertino style icons for Home Assistant |
+| [Custom Animated Weather Card](https://github.com/DavidFW1960/bom-weather-card) | Custom Animated Weather Card for any weather provider |
 | [Custom Brand Icons](https://github.com/elax46/custom-brand-icons) | Custom brand icons for Home Assistant |
 | [Custom Card For Warsaw Ztm Information](https://github.com/peetereczek/ztm-stop-card) | Custom Lovelace card for Warsaw public transport |
 | [Custom Sidebar](https://github.com/Villhellm/custom-sidebar) | Custom Sidebar for Home Assistant |

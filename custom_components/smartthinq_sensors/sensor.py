@@ -20,6 +20,7 @@ from .wideq import (
     FEAT_PROCESS_STATE,
     FEAT_RUN_STATE,
     FEAT_SPINSPEED,
+    FEAT_STANDBY,
     FEAT_REMOTESTART,
     FEAT_RINSEREFILL,
     FEAT_SALTREFILL,
@@ -31,7 +32,9 @@ from .wideq import (
     FEAT_COOKTOP_CENTER_STATE,
     FEAT_COOKTOP_RIGHT_FRONT_STATE,
     FEAT_COOKTOP_RIGHT_REAR_STATE,
+    FEAT_OVEN_LOWER_CURRENT_TEMP,
     FEAT_OVEN_LOWER_STATE,
+    FEAT_OVEN_UPPER_CURRENT_TEMP,
     FEAT_OVEN_UPPER_STATE,
 )
 
@@ -40,6 +43,7 @@ from .wideq.device import (
     STATE_OPTIONITEM_ON,
     UNIT_TEMP_CELSIUS,
     UNIT_TEMP_FAHRENHEIT,
+    WM_DEVICE_TYPES,
     DeviceType,
 )
 
@@ -52,7 +56,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
-    ENERGY_KILO_WATT_HOUR,
+    POWER_WATT,
     STATE_ON,
     STATE_OFF,
     STATE_UNAVAILABLE,
@@ -60,10 +64,15 @@ from homeassistant.const import (
     TEMP_FAHRENHEIT,
 )
 from homeassistant.core import callback
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, LGE_DEVICES
 from . import LGEDevice
+
+# service definition
+SERVICE_REMOTE_START = "remote_start"
+SERVICE_WAKE_UP = "wake_up"
 
 # sensor definition
 ATTR_MEASUREMENT_NAME = "measurement_name"
@@ -140,6 +149,12 @@ WASH_DEV_SENSORS = {
         ATTR_VALUE_FN: lambda x: x._power_state,
         ATTR_ENABLED: True,
     },
+    ATTR_CURRENT_COURSE: {
+        ATTR_MEASUREMENT_NAME: "Current Course",
+        ATTR_ICON: "mdi:pin-outline",
+        ATTR_VALUE_FN: lambda x: x._current_course,
+        ATTR_ENABLED: True,
+    },
     FEAT_RUN_STATE: {
         ATTR_MEASUREMENT_NAME: "Run State",
         ATTR_ICON: DEFAULT_ICON,
@@ -152,50 +167,50 @@ WASH_DEV_SENSORS = {
         ATTR_VALUE_FEAT: FEAT_PROCESS_STATE,
         ATTR_ENABLED: True,
     },
-    FEAT_PRE_STATE: {
-        ATTR_MEASUREMENT_NAME: "Pre State",
-        ATTR_ICON: DEFAULT_ICON,
-        ATTR_VALUE_FEAT: FEAT_PRE_STATE,
+    FEAT_SPINSPEED: {
+        ATTR_MEASUREMENT_NAME: "Spin Speed",
+        ATTR_ICON: "mdi:rotate-3d",
+        ATTR_VALUE_FEAT: FEAT_SPINSPEED,
+        ATTR_ENABLED: True,
+    },
+    FEAT_WATERTEMP: {
+        ATTR_MEASUREMENT_NAME: "Water Temp",
+        ATTR_ICON: "mdi:thermometer-lines",
+        ATTR_VALUE_FEAT: FEAT_WATERTEMP,
+        ATTR_ENABLED: True,
+    },
+    FEAT_TEMPCONTROL: {
+        ATTR_MEASUREMENT_NAME: "Temp Control",
+        ATTR_ICON: "mdi:thermometer-lines",
+        ATTR_VALUE_FEAT: FEAT_TEMPCONTROL,
+        ATTR_ENABLED: True,
+    },
+    FEAT_DRYLEVEL: {
+        ATTR_MEASUREMENT_NAME: "Dry Level",
+        ATTR_ICON: "mdi:tumble-dryer",
+        ATTR_VALUE_FEAT: FEAT_DRYLEVEL,
+        ATTR_ENABLED: True,
     },
     FEAT_ERROR_MSG: {
         ATTR_MEASUREMENT_NAME: "Error Message",
         ATTR_ICON: "mdi:alert-circle-outline",
         ATTR_VALUE_FEAT: FEAT_ERROR_MSG,
+        ATTR_ENABLED: True,
+    },
+    FEAT_PRE_STATE: {
+        ATTR_MEASUREMENT_NAME: "Pre State",
+        ATTR_ICON: DEFAULT_ICON,
+        ATTR_VALUE_FEAT: FEAT_PRE_STATE,
     },
     FEAT_TUBCLEAN_COUNT: {
         ATTR_MEASUREMENT_NAME: "Tube Clean Counter",
         ATTR_ICON: DEFAULT_ICON,
         ATTR_VALUE_FEAT: FEAT_TUBCLEAN_COUNT,
     },
-    FEAT_SPINSPEED: {
-        ATTR_MEASUREMENT_NAME: "Spin Speed",
-        ATTR_ICON: "mdi:rotate-3d",
-        ATTR_VALUE_FEAT: FEAT_SPINSPEED,
-    },
-    FEAT_WATERTEMP: {
-        ATTR_MEASUREMENT_NAME: "Water Temp",
-        ATTR_ICON: "mdi:thermometer-lines",
-        ATTR_VALUE_FEAT: FEAT_WATERTEMP,
-    },
-    FEAT_TEMPCONTROL: {
-        ATTR_MEASUREMENT_NAME: "Temp Control",
-        ATTR_ICON: "mdi:thermometer-lines",
-        ATTR_VALUE_FEAT: FEAT_TEMPCONTROL,
-    },
-    FEAT_DRYLEVEL: {
-        ATTR_MEASUREMENT_NAME: "Dry Level",
-        ATTR_ICON: "mdi:tumble-dryer",
-        ATTR_VALUE_FEAT: FEAT_DRYLEVEL,
-    },
     FEAT_HALFLOAD: {
         ATTR_MEASUREMENT_NAME: "Half Load",
         ATTR_ICON: "mdi:circle-half-full",
         ATTR_VALUE_FEAT: FEAT_HALFLOAD,
-    },
-    ATTR_CURRENT_COURSE: {
-        ATTR_MEASUREMENT_NAME: "Current Course",
-        ATTR_ICON: "mdi:pin-outline",
-        ATTR_VALUE_FN: lambda x: x._current_course,
     },
     ATTR_INITIAL_TIME: {
         ATTR_MEASUREMENT_NAME: "Initial Time",
@@ -225,6 +240,10 @@ WASH_DEV_BINARY_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PROBLEM,
         ATTR_VALUE_FN: lambda x: x._error_state,
         ATTR_ENABLED: True,
+    },
+    FEAT_STANDBY: {
+        ATTR_MEASUREMENT_NAME: "Standby",
+        ATTR_VALUE_FEAT: FEAT_STANDBY,
     },
     FEAT_CHILDLOCK: {
         ATTR_MEASUREMENT_NAME: "Child Lock",
@@ -326,7 +345,7 @@ AC_SENSORS = {
     },
     FEAT_ENERGY_CURRENT: {
         ATTR_MEASUREMENT_NAME: "Energy Current",
-        ATTR_UNIT_FN: lambda x: ENERGY_KILO_WATT_HOUR,
+        ATTR_UNIT_FN: lambda x: POWER_WATT,
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_VALUE_FEAT: FEAT_ENERGY_CURRENT,
     },
@@ -383,6 +402,13 @@ RANGE_SENSORS = {
         ATTR_VALUE_FN: lambda x: x._oven_lower_target_temp,
         ATTR_ENABLED: True,
     },
+    FEAT_OVEN_LOWER_CURRENT_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Oven Lower Current Temperature",
+        ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_OVEN_LOWER_CURRENT_TEMP,
+        ATTR_ENABLED: True,
+    },
     ATTR_OVEN_UPPER_TARGET_TEMP: {
         ATTR_MEASUREMENT_NAME: "Oven Upper Target Temperature",
         ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
@@ -390,7 +416,15 @@ RANGE_SENSORS = {
         ATTR_VALUE_FN: lambda x: x._oven_upper_target_temp,
         ATTR_ENABLED: True,
     },
+    FEAT_OVEN_UPPER_CURRENT_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Oven Upper Current Temperature",
+        ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_OVEN_UPPER_CURRENT_TEMP,
+        ATTR_ENABLED: True,
+    },
 }
+
 RANGE_BINARY_SENSORS = {
     ATTR_COOKTOP_STATE: {
         ATTR_MEASUREMENT_NAME: "Cooktop",
@@ -403,13 +437,9 @@ RANGE_BINARY_SENSORS = {
     },
 }
 
-WASH_DEVICE_TYPES = [
+WASH_DEVICE_TYPES = WM_DEVICE_TYPES + [
     DeviceType.DISHWASHER,
-    DeviceType.DRYER,
     DeviceType.STYLER,
-    DeviceType.TOWER_DRYER,
-    DeviceType.TOWER_WASHER,
-    DeviceType.WASHER,
 ]
 
 
@@ -496,6 +526,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the LGE sensors."""
     _LOGGER.info("Starting LGE ThinQ sensors...")
     setup_sensors(hass, config_entry, async_add_entities, False)
+
+    # register services
+    platform = entity_platform.current_platform.get()
+    platform.async_register_entity_service(
+        SERVICE_REMOTE_START,
+        None,
+        "async_remote_start",
+    )
+    platform.async_register_entity_service(
+        SERVICE_WAKE_UP,
+        None,
+        "async_wake_up",
+    )
 
 
 class LGESensor(CoordinatorEntity):
@@ -647,7 +690,7 @@ class LGESensor(CoordinatorEntity):
 
         return None
 
-    def _get_features_value(self):
+    def _get_features_attributes(self):
         ret_val = {}
         if self._api.state:
             states = self._api.state.device_features
@@ -657,6 +700,18 @@ class LGESensor(CoordinatorEntity):
         for feature in features.values():
             ret_val[feature] = states.get(feature)
         return ret_val
+
+    async def async_remote_start(self):
+        """Call the remote start command for WM devices."""
+        if self._api.type not in WM_DEVICE_TYPES:
+            raise NotImplementedError()
+        await self.hass.async_add_executor_job(self._api.device.remote_start)
+
+    async def async_wake_up(self):
+        """Call the wakeup command for WM devices."""
+        if self._api.type not in WM_DEVICE_TYPES:
+            raise NotImplementedError()
+        await self.hass.async_add_executor_job(self._api.device.wake_up)
 
 
 class LGEWashDeviceSensor(LGESensor):
@@ -681,7 +736,7 @@ class LGEWashDeviceSensor(LGESensor):
             ATTR_RESERVE_TIME: self._reserve_time,
             ATTR_CURRENT_COURSE: self._current_course,
         }
-        features = self._get_features_value()
+        features = self._get_features_attributes()
         data.update(features)
 
         return data
@@ -760,7 +815,7 @@ class LGERefrigeratorSensor(LGESensor):
         }
 
         if self._api.state:
-            features = self._get_features_value()
+            features = self._get_features_attributes()
             data.update(features)
 
         return data
@@ -825,7 +880,7 @@ class LGERangeSensor(LGESensor):
             ATTR_OVEN_UPPER_TARGET_TEMP: self._oven_upper_target_temp,
             ATTR_OVEN_TEMP_UNIT: self._oven_temp_unit,
         }
-        features = self._get_features_value()
+        features = self._get_features_attributes()
         data.update(features)
 
         return data

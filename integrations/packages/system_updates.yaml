@@ -1,97 +1,113 @@
 ---
-#######################################################################################################################
-## Package - System Updates
-#######################################################################################################################
 homeassistant:
   customize:
+    input_text.base_url:
+      hidden: true
     binary_sensor.updater:
-      icon: mdi:update
-    sensor.hassio_version:
-      friendly_name: Hassio Version
-      icon: mdi:home-assistant
+      friendly_name: Core
+    sensor.core_updates:
+      friendly_name: Core Update Available
+    sensor.supervisor_updates:
+      friendly_name: Supervisor Update Available
+    sensor.os_updates:
+      friendly_name: OS Update Available
+    sensor.addons_updates:
+      friendly_name: Supervisor Add-ons Update Available
     sensor.hacs:
-      friendly_name: HACS
-      icon: mdi:alpha-h-circle
+      friendly_name: HACS Integrations/Frontend Update Available
 
 binary_sensor:
   - platform: template
     sensors:
-      #######################################################################################################################
-      ## System Update
-      #######################################################################################################################
-      system_update:
-        friendly_name: System Update
-        unique_id: system_update
+      updater_available:
+        friendly_name: Update Status
+        unique_id: updater_available
         icon_template: "{{ 'mdi:cloud-upload' if is_state('binary_sensor.system_update','on') else 'mdi:cloud-check' }}"
         device_class: problem
         value_template: >
           {{ is_state('binary_sensor.updater','on')
-              or is_state('sensor.updater_core','on')
+              or is_state('binary_sensor.updater_core','on')
               or is_state('binary_sensor.updater_supervisor','on')
-              or is_state('sensor.updater_hassos','on')
+              or is_state('binary_sensor.updater_hassos','on')
               or is_state('binary_sensor.updater_addons','on')
               or is_state('binary_sensor.updater_hacs','on')
               or is_state('binary_sensor.updater_breaking_changes','on')
-              or is_state('sensor.updater_cli','on')
-              or is_state('sensor.updater_dns','on')
-              or is_state('sensor.updater_audio','on')
-              or is_state('sensor.updater_multicast','on') }}
-      system_update_alert:
-        unique_id: system_update_alert
-        value_template: "{{ is_state('binary_sensor.system_update','on') and is_state('binary_sensor.alerts_enabled','on') }}"
+              or is_state('binary_sensor.updater_cli','on')
+              or is_state('binary_sensor.updater_dns','on')
+              or is_state('binary_sensor.updater_audio','on')
+              or is_state('binary_sensor.updater_multicast','on') }}
+      updater_core:
+        friendly_name: Core
+        device_class: problem
+        value_template: "{{ states('sensor.core_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.core_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.core_updates', 'latest_version') }}"
 
-      #######################################################################################################################
-      ## Supervisor Updates  https://community.home-assistant.io/t/update-notifications-core-hacs-supervisor-and-addons/182295
-      #######################################################################################################################
       updater_supervisor:
-        friendly_name: Updater Supervisor
-        unique_id: updater_supervisor
+        friendly_name: Supervisor
         device_class: problem
-        value_template: >
-          {% if states('sensor.updater_supervisor')|lower in ['unknown','unavailable','none'] %} false
-          {% else %}{{ state_attr('sensor.updater_supervisor','current_version') != state_attr('sensor.updater_supervisor','newest_version') }}
-          {% endif %}
-        availability_template: "{{ states('sensor.updater_supervisor')|lower not in ['unknown','unavailable','none'] }}"
+        value_template: "{{ states('sensor.supervisor_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.supervisor_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.supervisor_updates', 'latest_version') }}"
 
-      updater_hacs:
-        friendly_name: Updater - HACS
-        unique_id: updater_hacs
+      updater_os:
+        friendly_name: Operating System
         device_class: problem
-        value_template: "{{ states('sensor.hacs')|int > 0 }}"
-        availability_template: "{{ states('sensor.hacs')|lower not in ['unknown','unavailable','none'] }}"
+        value_template: "{{ states('sensor.os_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.os_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.os_updates', 'latest_version') }}"
 
       updater_addons:
-        friendly_name: Updater - Addons
-        unique_id: updater_addons
+        friendly_name: Supervisor Add-ons
         device_class: problem
-        value_template: "{{ states('sensor.updater_supervisor')|int > 0 }}"
-        availability_template: "{{ states('sensor.updater_supervisor')|lower not in ['unknown','unavailable','none'] }}"
+        value_template: "{{ states('sensor.addons_updates')|int != 0 }}"
+        attribute_templates:
+          addons: "{{ state_attr('sensor.addons_updates', 'addons') }}"
 
-      updater_breaking_changes:
-        friendly_name: Updater - Breaking Changes
-        unique_id: updater_breaking_changes
+      updater_hacs:
+        friendly_name: HACS Integrations/Frontend
         device_class: problem
-        value_template: "{{ states('sensor.potential_breaking_changes')|int > 0 }}"
-        availability_template: "{{ states('sensor.potential_breaking_changes')|lower not in ['unknown','unavailable','none'] }}"
-
+        value_template: "{{ states('sensor.hacs')|int != 0 }}"
+        attribute_templates:
+          repositories: "{{ state_attr('sensor.hacs', 'repositories') }}"
+      updater_audio:
+        friendly_name: Audio
+        device_class: problem
+        value_template: "{{ states('sensor.audio_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.audio_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.audio_updates', 'latest_version') }}"
+      updater_dns:
+        friendly_name: DNS
+        device_class: problem
+        value_template: "{{ states('sensor.dns_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.dns_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.dns_updates', 'latest_version') }}"
+      updater_cli:
+        friendly_name: CLI
+        device_class: problem
+        value_template: "{{ states('sensor.cli_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.cli_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.cli_updates', 'latest_version') }}"
       updater_multicast:
-        friendly_name: Updater - Multicast
-        unique_id: updater_multicast
+        friendly_name: Multicast
         device_class: problem
-        value_template: "{{ state_attr('sensor.updater_multicast','current_version') != state_attr('sensor.updater_multicast','newest_version') }}"
-        availability_template: "{{ states('sensor.updater_multicast')|lower not in ['unknown','unavailable','none'] }}"
-
-      updater_hassos:
-        friendly_name: Updater - Hass OS
-        unique_id: updater_hassos
+        value_template: "{{ states('sensor.multicast_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.multicast_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.multicast_updates', 'latest_version') }}"
+      updater_observer:
+        friendly_name: Observer
         device_class: problem
-        value_template: >
-          {% if states('sensor.hassos_current_version')|lower in ['unknown','unavailable','none'] or states('sensor.hassos_newest_version')|lower in ['unknown','unavailable','none'] %} false
-          {% else %}{{ states('sensor.hassos_current_version') != states('sensor.hassos_newest_version') }}
-          {% endif %}
-        availability_template: >
-          {{ states('sensor.hassos_current_version')|lower not in ['unknown','unavailable','none']
-              and states('sensor.hassos_newest_version')|lower not in ['unknown','unavailable','none'] }}
+        value_template: "{{ states('sensor.observer_updates') }}"
+        attribute_templates:
+          installed_version: "{{ state_attr('sensor.observer_updates', 'installed_version') }}"
+          latest_version: "{{ state_attr('sensor.observer_updates', 'latest_version') }}"
 
 sensor:
   #######################################################################################################################
@@ -102,89 +118,97 @@ sensor:
     source: local
     name: HA Current Version
 
-  #######################################################################################################################
-  ## Supervisor Updates - track available updates for supervisor & addons
-  ## https://community.home-assistant.io/t/update-notifications-core-hacs-supervisor-and-addons/182295
-  #######################################################################################################################
   - platform: command_line
-    name: Updater Supervisor
-    command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version,"addons":[.data.addons[] | select(.version != .version_latest)]}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
+    name: core_updates
+    command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
+    scan_interval: 600
     json_attributes:
-      - newest_version
-      - current_version
+      - update_available
+      - latest_version
+      - installed_version
+
+  - platform: command_line
+    name: supervisor_updates
+    command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
+    scan_interval: 600
+    json_attributes:
+      - update_available
+      - latest_version
+      - installed_version
+
+  - platform: command_line
+    name: os_updates
+    command: 'curl http://supervisor/os/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
+    scan_interval: 600
+    json_attributes:
+      - update_available
+      - latest_version
+      - installed_version
+
+  - platform: command_line
+    name: addons_updates
+    command: 'curl http://supervisor/addons -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"addons":[.data.addons[] | select(.update_available)]}'''
+    value_template: "{{ value_json.addons | length }}"
+    scan_interval: 600
+    unit_of_measurement: pending update(s)
+    json_attributes:
       - addons
-    scan_interval: 300
-    command_timeout: 60
-
-  # Sensors to track updates to other core components (audio, dns and CLI)
-  - platform: command_line
-    name: Updater Audio
-    command: 'curl http://supervisor/audio/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
-    json_attributes:
-      - newest_version
-      - current_version
-    scan_interval: 300
-    command_timeout: 60
 
   - platform: command_line
-    name: Updater DNS
-    command: 'curl http://supervisor/dns/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
+    name: audio_updates
+    command: 'curl http://supervisor/audio/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
     json_attributes:
-      - newest_version
-      - current_version
-    scan_interval: 300
-    command_timeout: 60
-
+      - update_available
+      - latest_version
+      - installed_version
   - platform: command_line
-    name: Updater CLI
-    command: 'curl http://supervisor/cli/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
+    name: dns_updates
+    command: 'curl http://supervisor/dns/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
     json_attributes:
-      - newest_version
-      - current_version
-    scan_interval: 300
-    command_timeout: 60
-
-  # Alternate updater sensor for core since binary_sensor.updater is very slow to recognize updates
+      - update_available
+      - latest_version
+      - installed_version
   - platform: command_line
-    name: Updater Core
-    command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
+    name: cli_updates
+    command: 'curl http://supervisor/cli/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
     json_attributes:
-      - newest_version
-      - current_version
-    scan_interval: 300
-    command_timeout: 60
-
+      - update_available
+      - latest_version
+      - installed_version
   - platform: command_line
-    name: Updater Multicast
-    command: 'curl http://supervisor/multicast/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
+    name: multicast_updates
+    command: 'curl http://supervisor/multicast/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
     json_attributes:
-      - newest_version
-      - current_version
-
+      - update_available
+      - latest_version
+      - installed_version
   - platform: command_line
-    name: Updater Observer
-    command: 'curl http://supervisor/observer/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version}'''
-    value_template: "{% if value_json.newest_version != value_json.current_version %}yes{% else %}no{% endif %}"
+    name: observer_updates
+    command: 'curl http://supervisor/observer/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
+    value_template: "{{ value_json.update_available }}"
     json_attributes:
-      - newest_version
-      - current_version
+      - update_available
+      - latest_version
+      - installed_version
 
-  # Sensor to version of HassOS
-  - platform: command_line
-    name: HassOS Current Version
-    command: 'curl http://supervisor/host/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)"'
-    value_template: "{{ value_json.data.operating_system[18:] }}"
-    json_attributes:
-      - data
+input_text:
+  base_url:
+    name: Home Assistant URL
+    initial: !secret external_url
 
-  - platform: rest
-    resource: https://version.home-assistant.io/stable.json
-    name: HassOS Newest Version
-    value_template: "{{ value_json.hassos.ova }}"
-    scan_interval: 3600
+group:
+  updaters:
+    name: Updates
+    entities:
+      - binary_sensor.updater_core
+      - binary_sensor.updater_supervisor
+      - binary_sensor.updater_os
+      - binary_sensor.updater_addons
+      - binary_sensor.updater_hacs

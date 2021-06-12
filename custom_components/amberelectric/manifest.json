@@ -1,7 +1,11 @@
 {
   "domain": "amberelectric",
   "name": "Amber Electric",
-  "documentation": "https://www.home-assistant.io/integrations/bom",
-  "codeowners": ["@lewisbenge"],
-  "version": "0.1"
+  "version": "1.0.0",
+  "config_flow": false,
+  "documentation": "https://github.com/davewatson91/hass-amber-electric",
+  "dependencies": [],
+  "codeowners": ["@lewisbenge", "@davewatson91"],
+  "requirements": [],
+  "issue_tracker": "https://github.com/davewatson91/hass-amber-electric/issues"
 }

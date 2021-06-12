@@ -27,4 +27,28 @@ action:
   - service: pyscript.getdata_nrlladder
     data:
       icon: "mdi:football"
+  - service: pyscript.getdata_untappd
+    data:
+      entity_id: sensor.untappd_beers_date
+      user: bacco007
+      sort: date
+
+  - service: pyscript.getdata_untappd
+    data:
+      entity_id: sensor.untappd_beers_most
+      user: bacco007
+      sort: checkin
+
+  - service: pyscript.getdata_untappd
+    data:
+      entity_id: sensor.untappd_beers_ratehigh
+      user: bacco007
+      sort: highest_rated_you
+
+  - service: pyscript.getdata_untappd
+    data:
+      entity_id: sensor.untappd_beers_ratelow
+      user: bacco007
+      sort: lowest_rated_you
+
 mode: single

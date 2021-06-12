@@ -26,9 +26,6 @@ more_page:
     - name: Flight Tracker
       icon: "mdi:airplane"
       path: "dwains-dashboard/addons/more_page/flighttracker/page.yaml"
-    - name: Folding@Home
-      icon: "mdi:state-machine"
-      path: "dwains-dashboard/addons/more_page/foldingathome/page.yaml"
     - name: Github
       icon: mdi:github
       path: "dwains-dashboard/addons/more_page/github/page.yaml"

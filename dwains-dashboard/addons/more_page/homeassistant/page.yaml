@@ -1,6 +1,6 @@
 ---
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-md-4 col-sm-4 col-xl-4"
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
   padding: true
   cards:
     - type: vertical-stack
@@ -9,11 +9,6 @@
         - !include partial_unavailable_entities.yaml
         - !include partial_db.yaml
         - !include partial_automations.yaml
-    - type: vertical-stack
-      cards:
-        - !include partial_updates_supervisor.yaml
-        - !include partial_updates_custom.yaml
-        - !include partial_breaking_changes.yaml
     - type: vertical-stack
       cards:
         - !include partial_versions.yaml

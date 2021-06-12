@@ -109,10 +109,7 @@
             # font-weight: {400 !important;}
           sort_by: friendly_name
           clickable: true
-          css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
-            "tbody tr:nth-child(even)": "background-color: none !important;"
-            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          css: !include ../../1_Templates/style_flextable.yaml
           entities:
             include:
               - sensor.yahoofinance_*ax*
@@ -164,10 +161,7 @@
             # font-weight: {400 !important;}
           sort_by: friendly_name
           clickable: true
-          css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
-            "tbody tr:nth-child(even)": "background-color: none !important;"
-            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          css: !include ../../1_Templates/style_flextable.yaml
           entities:
             include:
               - sensor.yahoofinance_aapl
@@ -224,61 +218,10 @@
             # font-weight: {400 !important;}
           sort_by: friendly_name
           clickable: true
-          css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
-            "tbody tr:nth-child(even)": "background-color: none !important;"
-            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          css: !include ../../1_Templates/style_flextable.yaml
           entities:
             include:
               - sensor.yahoofinance_*_x
-          columns:
-            - name: Name
-              data: friendly_name
-              align: center
-            - name: 50dAvg
-              attr: fiftyDayAverage
-              align: right
-              modify: parseFloat(x).toFixed(3)
-            - name: 200dAvg
-              attr: twoHundredDayAverage
-              align: right
-              modify: parseFloat(x).toFixed(3)
-            - name: PrevCl
-              attr: regularMarketPreviousClose
-              align: right
-              modify: parseFloat(x).toFixed(3)
-            - name: Current
-              data: state
-              align: right
-              modify: parseFloat(x).toFixed(3)
-
-    - type: custom:stack-in-card
-      cards:
-        - type: custom:flex-table-card
-          title: Crypto Exchange Rates
-          style: |
-            ha-card {
-              background-color: var(--dwains-theme-primary);
-              padding-bottom: 10px;
-            }
-            .card-header {
-              padding: 5px 16px;
-              font-size: 18px;
-              font-weight: 700 !important;
-            }
-            # font-family: { var(--primary-font-family);}
-            # font-weight: {400 !important;}
-          sort_by: friendly_name
-          clickable: true
-          css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
-            "tbody tr:nth-child(even)": "background-color: none !important;"
-            "tbody tr:nth-child(odd)": "background-color: none !important;"
-          entities:
-            include:
-              - sensor.yahoofinance_btc_aud
-              - sensor.yahoofinance_doge_aud
-              - sensor.yahoofinance_eth_aud
           columns:
             - name: Name
               data: friendly_name
@@ -318,10 +261,7 @@
             # font-weight: {400 !important;}
           sort_by: friendly_name
           clickable: true
-          css:
-            table+: "border: 0;  padding-top: 5px; padding-bottom: 5px; padding-left: 10px; paddng-right: 10px;"
-            "tbody tr:nth-child(even)": "background-color: none !important;"
-            "tbody tr:nth-child(odd)": "background-color: none !important;"
+          css: !include ../../1_Templates/style_flextable.yaml
           entities:
             include:
               - sensor.yahoofinance_aord

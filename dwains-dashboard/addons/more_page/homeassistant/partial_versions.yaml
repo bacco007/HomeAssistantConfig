@@ -2,11 +2,12 @@
 type: custom:stack-in-card
 cards:
   - type: entities
-    title: Versions
+    title: Updates
+    state_color: true
     style: |
       ha-card {
         padding-bottom: 10px;
-        background-color: var(--dwains-theme-primary);
+        background-color: var(--dwains-theme-primary)
       }
       .card-header {
         padding: 5px 16px;
@@ -25,87 +26,101 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - entity: binary_sensor.system_update
-        name: System Updates Available?
+      - entity: binary_sensor.updater_available
       - type: section
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_core
-        name: Home Assistant Core
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_supervisor
-        name: Home Assistant Supervisor
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
-      - type: custom:multiple-entity-row
-        entity: sensor.hassos_current_version
-        name: Home Assistant OS
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - entity: sensor.hassos_newest_version
-            name: Available
-          - entity: sensor.hassos_current_version
-            name: Installed
+        label: System
+      - entity: binary_sensor.updater_core
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_supervisor
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_os
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_audio
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_cli
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_dns
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_multicast
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_observer
+        secondary_info: last-changed
+
       - type: section
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_audio
-        name: Audio
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_cli
-        name: CLI
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_dns
-        name: DNS
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_multicast
-        name: Multicast
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
-      - type: custom:multiple-entity-row
-        entity: sensor.updater_observer
-        name: Observer
-        icon: mdi:home-assistant
-        show_state: false
-        entities:
-          - attribute: newest_version
-            name: Available
-          - attribute: current_version
-            name: Installed
+        label: Addons
+      - entity: binary_sensor.updater_addons
+        secondary_info: last-changed
+      - entity: binary_sensor.updater_hacs
+        secondary_info: last-changed
+  - type: markdown
+    card_mod:
+      style:
+        ha-markdown:
+          $:
+            ha-markdown-element: |
+              table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
+              th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
+              th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
+              th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
+              td { padding: 4px; }
+              tr:nth-child(even) { background-color: var(--table-row-background-color); }
+
+    content: |
+      |||_Installed_|_Latest_|
+      |:---|:--:|---:|:---|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Core**|{{states('binary_sensor.updater_core')}}|{{ state_attr('binary_sensor.updater_core', 'installed_version')}}|{{ state_attr('binary_sensor.updater_core', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Supervisor**|{{states('binary_sensor.updater_supervisor')}}|{{ state_attr('binary_sensor.updater_supervisor', 'installed_version')}}|{{ state_attr('binary_sensor.updater_supervisor', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Operating System**|{{states('binary_sensor.updater_os')}}|{{ state_attr('binary_sensor.updater_os', 'installed_version')}}|{{ state_attr('binary_sensor.updater_os', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Audio**|{{states('binary_sensor.updater_audio')}}|{{ state_attr('binary_sensor.updater_audio', 'installed_version')}}|{{ state_attr('binary_sensor.updater_audio', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**DNS**|{{states('binary_sensor.updater_dns')}}|{{ state_attr('binary_sensor.updater_dns', 'installed_version')}}|{{ state_attr('binary_sensor.updater_dns', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**CLI**|{{states('binary_sensor.updater_cli')}}|{{ state_attr('binary_sensor.updater_cli', 'installed_version')}}|{{ state_attr('binary_sensor.updater_cli', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Multicast**|{{states('binary_sensor.updater_multicast')}}|{{ state_attr('binary_sensor.updater_multicast', 'installed_version')}}|{{ state_attr('binary_sensor.updater_multicast', 'latest_version')}}|
+      |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Observer**|{{states('binary_sensor.updater_observer')}}|{{ state_attr('binary_sensor.updater_observer', 'installed_version')}}|{{ state_attr('binary_sensor.updater_observer', 'latest_version')}}|
+  - type: markdown
+    card_mod:
+    style:
+      ha-markdown:
+        $:
+          ha-markdown-element: |
+            table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
+            th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
+            th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
+            th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
+            td { padding: 4px; }
+            tr:nth-child(even) { background-color: var(--table-row-background-color); }
+    content: |
+      ❗️ Updates available
+      {% if states('binary_sensor.updater_core') == 'on' or states('binary_sensor.updater_supervisor') == 'on' or states('binary_sensor.updater_os') == 'on' %}
+
+
+      System:
+      {% if states('binary_sensor.updater_core') == 'on' %}
+
+      - Core: [{{ state_attr('binary_sensor.updater_core', 'installed_version') }} → {{ state_attr('binary_sensor.updater_core', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/core/releases) / [release notes](https://www.home-assistant.io/latest-release-notes/)
+      {% endif %}
+      {% if states('binary_sensor.updater_supervisor') == 'on' %}
+
+      - Supervisor: [{{ state_attr('binary_sensor.updater_supervisor', 'installed_version') }} → {{ state_attr('binary_sensor.updater_supervisor', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/supervisor/releases)
+      {% endif %}
+      {% if states('binary_sensor.updater_os') == 'on' %}
+
+      - OS: [{{ state_attr('binary_sensor.updater_os', 'installed_version') }} → {{ state_attr('binary_sensor.updater_os', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/operating-system/releases)
+      {% endif %}
+      {% endif %}
+      {% if states('binary_sensor.updater_addons') == 'on' %}
+
+
+      Supervisor Add-ons:
+      {% for addon in state_attr('binary_sensor.updater_addons', 'addons') %}
+
+      - {{ addon.name }}: [{{ addon.version }} → {{ addon.version_latest }}]({{ states('input_text.base_url') }}hassio/addon/{{ addon.slug }}/info) / [homepage]({{ addon.url }})
+      {% endfor %}
+      {% endif %}
+      {% if states('binary_sensor.updater_hacs') == 'on' %}
+
+
+      |HACS Integrations/Frontend|Installed|Latest||
+      |:--|--:|:--|:--:|
+      {% for repository in state_attr('binary_sensor.updater_hacs', 'repositories') %}|{{ repository.display_name }}|{{ repository.installed_version }}|[{{ repository.available_version }}]({{ states('input_text.base_url') }}/hacs/entry)|[changelog](https://github.com/{{ repository.name }}/releases)|
+      {% endfor %}
+      {% endif %}

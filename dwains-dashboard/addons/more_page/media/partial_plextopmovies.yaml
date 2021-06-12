@@ -3,39 +3,9 @@ type: custom:stack-in-card
 cards:
   - type: custom:flex-table-card
     title: Plex Top Movies
-    style: |
-      ha-card {
-        padding-bottom: 10px;
-        background-color: var(--dwains-theme-primary);
-      }
-      ha-card table {
-        padding-top: 0px !important;
-      }
-      .card-header {
-        padding: 5px 16px;
-        font-size: 18px;
-        font-weight: 700 !important;
-      }
-      .card-content div {
-          margin: 0 !important;
-      }
-      #states {
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
-      }
-      .secondary {
-        color: darkgray !important;
-        margin-left: 2px !important;
-      }
+    style: !include ../../1_Templates/style_entities.yaml
     clickable: false
-    css:
-      table+: "width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);"
-      "tbody tr:nth-child(even)": "background-color: var(--table-row-background-color);"
-      "tbody tr:nth-child(odd)": "background-color: none !important;"
-      "th": "background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;"
-      "th:first-child": "border-top-left-radius: var(--ha-card-border-radius);"
-      "th:last-child": "border-top-right-radius: var(--ha-card-border-radius);"
-      "tbody td": "padding: 4px;"
+    css: !include ../../1_Templates/style_flextable.yaml
     entities:
       include: sensor.plex_tautulli_topmovies
     max_rows: 10

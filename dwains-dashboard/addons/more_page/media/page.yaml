@@ -11,11 +11,17 @@
       cards:
         - !include partial_radarr.yaml
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
   cards:
     - type: vertical-stack
       cards:
         - !include partial_plex.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextv.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plexmovies.yaml
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:

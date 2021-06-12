@@ -26,6 +26,7 @@
           }
         yaxis:
           - seriesName: "High"
+            decimalsInFloat: 1
             title:
               text: "Temperature (°C)"
           - seriesName: "High"
@@ -35,6 +36,7 @@
               text: "Rainfall (mm)"
             min: 0
             opposite: true
+            decimalsInFloat: 1
       series:
         - entity: sensor.archive_homeoutsidetemp_max_30day
           name: High
@@ -91,7 +93,7 @@
       all_series_config:
         type: line
         group_by:
-          func: sum
+          func: last
           duration: 1d
     - type: "custom:apexcharts-card"
       header:
@@ -132,6 +134,7 @@
           }
         yaxis:
           - seriesName: "High"
+            decimalsInFloat: 1
             title:
               text: "Temperature (°C)"
           - seriesName: "High"
@@ -141,6 +144,7 @@
               text: "Rainfall (mm)"
             min: 0
             opposite: true
+            decimalsInFloat: 1
       series:
         - entity: sensor.archive_homeoutsidetemp_max_365day
           name: High
@@ -197,7 +201,74 @@
       all_series_config:
         type: line
         group_by:
-          func: sum
+          func: last
+          duration: 1d
+    - type: "custom:apexcharts-card"
+      header:
+        title: Weather Temp Range - Last 365 Days
+        show: true
+        show_states: false
+      apex_config:
+        chart:
+          type: "area"
+          height: 300,
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+        stroke: { show: true, lineCap: "square", dashArray: [0] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        yaxis:
+          - seriesName: "High"
+            decimalsInFloat: 1
+            title:
+              text: "Temperature (°C)"
+      series:
+        - entity: sensor.archive_homeoutsidetemp_range_365day
+          name: Range
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "°C"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+      graph_span: 365days
+      span:
+        end: day
+      all_series_config:
+        type: line
+        group_by:
+          func: last
           duration: 1d
     - type: "custom:apexcharts-card"
       header:
@@ -238,6 +309,7 @@
           }
         yaxis:
           - seriesName: "High"
+            decimalsInFloat: 1
             title:
               text: "Temperature (°C)"
           - seriesName: "High"
@@ -247,6 +319,7 @@
               text: "Rainfall (mm)"
             min: 0
             opposite: true
+            decimalsInFloat: 1
       series:
         - entity: sensor.archive_bomtemp_max_365day
           name: High
@@ -303,5 +376,72 @@
       all_series_config:
         type: line
         group_by:
-          func: sum
+          func: last
+          duration: 1d
+    - type: "custom:apexcharts-card"
+      header:
+        title: BOM Weather Temp Range - Last 365 Days
+        show: true
+        show_states: false
+      apex_config:
+        chart:
+          type: "area"
+          height: 300,
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+        stroke: { show: true, lineCap: "square", dashArray: [0] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        yaxis:
+          - seriesName: "High"
+            decimalsInFloat: 1
+            title:
+              text: "Temperature (°C)"
+      series:
+        - entity: sensor.archive_bomtemp_range_365day
+          name: Range
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "°C"
+          show:
+            extremas: true
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+      graph_span: 365days
+      span:
+        end: day
+      all_series_config:
+        type: line
+        group_by:
+          func: last
           duration: 1d
