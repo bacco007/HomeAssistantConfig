@@ -53,17 +53,7 @@ cards:
       - entity: binary_sensor.updater_hacs
         secondary_info: last-changed
   - type: markdown
-    card_mod:
-      style:
-        ha-markdown:
-          $:
-            ha-markdown-element: |
-              table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
-              th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
-              th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
-              th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
-              td { padding: 4px; }
-              tr:nth-child(even) { background-color: var(--table-row-background-color); }
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
 
     content: |
       |||_Installed_|_Latest_|
@@ -76,6 +66,22 @@ cards:
       |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**CLI**|{{states('binary_sensor.updater_cli')}}|{{ state_attr('binary_sensor.updater_cli', 'installed_version')}}|{{ state_attr('binary_sensor.updater_cli', 'latest_version')}}|
       |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Multicast**|{{states('binary_sensor.updater_multicast')}}|{{ state_attr('binary_sensor.updater_multicast', 'installed_version')}}|{{ state_attr('binary_sensor.updater_multicast', 'latest_version')}}|
       |<ha-icon icon="mdi:home-assistant"></ha-icon>&nbsp;**Observer**|{{states('binary_sensor.updater_observer')}}|{{ state_attr('binary_sensor.updater_observer', 'installed_version')}}|{{ state_attr('binary_sensor.updater_observer', 'latest_version')}}|
+
+      {% if states('binary_sensor.updater_addons') == 'on' %}
+      |Add-On|_Installed_|_Latest_|
+      |:---|---:|:---|
+      {% for addon in state_attr('binary_sensor.updater_addons', 'addons') %}|**[{{ addon.name }}]({{ addon.url }})**|{{ addon.version }}|[{{ addon.version_latest }}]({{ states('input_text.base_url') }}hassio/addon/{{ addon.slug }}/info)|
+      {% endfor %}
+      {% endif %}
+
+      {% if states('binary_sensor.updater_hacs') == 'on' %}
+
+
+      |HACS Integrations/Frontend|Installed|Latest||
+      |:--|--:|:--|:--:|
+      {% for repository in state_attr('binary_sensor.updater_hacs', 'repositories') %}|**{{ repository.display_name }}**|{{ repository.installed_version }}|[{{ repository.available_version }}]({{ states('input_text.base_url') }}/hacs/entry)|[changelog](https://github.com/{{ repository.name }}/releases)|
+      {% endfor %}
+      {% endif %}
   - type: markdown
     card_mod:
     style:
@@ -106,21 +112,4 @@ cards:
 
       - OS: [{{ state_attr('binary_sensor.updater_os', 'installed_version') }} → {{ state_attr('binary_sensor.updater_os', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/operating-system/releases)
       {% endif %}
-      {% endif %}
-      {% if states('binary_sensor.updater_addons') == 'on' %}
-
-
-      Supervisor Add-ons:
-      {% for addon in state_attr('binary_sensor.updater_addons', 'addons') %}
-
-      - {{ addon.name }}: [{{ addon.version }} → {{ addon.version_latest }}]({{ states('input_text.base_url') }}hassio/addon/{{ addon.slug }}/info) / [homepage]({{ addon.url }})
-      {% endfor %}
-      {% endif %}
-      {% if states('binary_sensor.updater_hacs') == 'on' %}
-
-
-      |HACS Integrations/Frontend|Installed|Latest||
-      |:--|--:|:--|:--:|
-      {% for repository in state_attr('binary_sensor.updater_hacs', 'repositories') %}|{{ repository.display_name }}|{{ repository.installed_version }}|[{{ repository.available_version }}]({{ states('input_text.base_url') }}/hacs/entry)|[changelog](https://github.com/{{ repository.name }}/releases)|
-      {% endfor %}
       {% endif %}

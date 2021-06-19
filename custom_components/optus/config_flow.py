@@ -4,12 +4,9 @@ import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import callback
-
-from .const import (  # pylint:disable=unused-import
-    DOMAIN,
-    MOBILE
-)
 from optus import Account
+
+from .const import DOMAIN, MOBILE  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -71,12 +68,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 
-
-
 class CannotConnect(exceptions.HomeAssistantError):
     """Error to indicate we cannot connect."""
 
 
 class InvalidAuth(exceptions.HomeAssistantError):
     """Error to indicate there is invalid auth."""
+
     _LOGGER.error("Failed to authenticate with optus")

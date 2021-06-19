@@ -5,7 +5,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
 from . import OptusEntity
-from .const import  DOMAIN, SENSORS
+from .const import DOMAIN, SENSORS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -17,11 +17,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for key, value in SENSORS.items():
         async_add_entities([AccountSensor(entry, key, config_entry.options)], True)
 
+
 class AccountSensor(
     OptusEntity,
     Entity,
 ):
-
     def __init__(self, coordinator, sensor, options):
 
         self.sensor = sensor
@@ -29,9 +29,6 @@ class AccountSensor(
         self._attr = {}
         self.coordinator = coordinator
         self._device_id = "optus_" + sensor
-
-
-
 
     def get_value(self, ftype):
         if ftype == "state":
@@ -59,11 +56,15 @@ class AccountSensor(
             elif self.sensor == "sharedTierDataUsage":
                 return "kbs"
         elif ftype == "attribute":
-            if self.sensor in ["sharedTierDataUsage", "tierVoiceUsage","tierDataUsage"] :
+            if self.sensor in [
+                "sharedTierDataUsage",
+                "tierVoiceUsage",
+                "tierDataUsage",
+            ]:
                 data = dict()
-                for key,value in self.coordinator.data[self.sensor].items():
-                   if key != "tiers":
-                     data[key] = value
+                for key, value in self.coordinator.data[self.sensor].items():
+                    if key != "tiers":
+                        data[key] = value
                 return data
 
     @property

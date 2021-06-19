@@ -72,18 +72,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, June 12th 2021_
+_Stats as at 05:00, Saturday, June 19th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.6.3 | 335     | 2208         | 1650 | 80 |
+| 2021.6.5 | 335     | 3289         | 2731 | 80 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 80
-Binary Sensor | 189
+Binary Sensor | 187
 Camera | 4
 Device Tracker | 64
 Group | 10
@@ -91,11 +91,11 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 20
+Media Player | 23
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1650
+Sensor | 2731
 Sun | 1
 Switch | 113
 Weather | 7
@@ -529,7 +529,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Alexa Media Player](https://github.com/custom-components/alexa_media_player) | This is a custom component to allow control of Amazon Alexa devices in Home Assistant using the unofficial Alexa API. |
 | [Amazon Rekognition](https://github.com/robmarkcole/HASS-amazon-rekognition) | Home Assistant Object detection with Amazon Rekognition |
 | [Amber Electric](https://github.com/troykelly/hacs-amberelectric) | Unofficial Amber Electric integration for Home Assistant |
-| [Ambihue](https://github.com/jomwells/ambihue) | ON/OFF Abilight+Hue (Switch) component for Philips Ambilight TV's |
 | [Ambilight Yeelight](https://github.com/jomwells/ambilight-yeelight) | A switch component which mimics the functionality of Ambilight+Hue for all Yeelight lights/bulbs |
 | [Ambilights](https://github.com/jomwells/ambilights) | Custom Home Assistant (Light) Component for Ambilight LED's on Philips Android TV's |
 | [Amshan](https://github.com/toreamun/amshan-homeassistant) | Integrate HAN-port attached Aidon, Kaifa and Kamstrup meters used in Norway into Home Assistant |
@@ -597,16 +596,19 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Combined Camera](https://github.com/custom-components/combined) | A camera platform that give you a combined feed of your defined camera entities. |
 | [Compal Wifi](https://github.com/frimtec/hass-compal-wifi) | :house_with_garden::satellite: Home Assistant component to switch WiFi on/off of a Compal CH7465LG modem. |
 | [Config Check](https://github.com/custom-components/config_check) | Run the CLI config_check from a service call. |
+| [Consul](https://github.com/jadson179/consul) | home-assistant service for control the consul 🔴 |
 | [Controlid](https://github.com/jadson179/controlid) | home-assistant service  for  control the controlid 🚪🔑 |
 | [Couchpotato](https://github.com/youdroid/home-assistant-couchpotato) | 🎥 CouchPotato component to feed Upcoming Media Card. |
 | [Cover Time Based Rf (Trigger Script)](https://github.com/nagyrobi/home-assistant-custom-components-cover-rf-time-based) | Time-based cover with customisable scripts to trigger opening, stopping and closing. Position is calculated based on the fraction of time spent by the cover travelling up or down. State can be updated with information based on external sensors. |
 | [Cozytouch](https://github.com/Cyr-ius/hass-cozytouch) | Cozytouch support for Home Assistant |
+| [Crypto Tracker](https://github.com/PepegaBruh/CryptoTracker) | Integration for Homeassistant to implement a crypto trakcing system |
 | [Cryptoinfo](https://github.com/heyajohnny/cryptoinfo) | Provides Home Assistant sensors for all cryptocurrencies supported by CoinGecko |
 | [Cs:Go Game State](https://github.com/lociii/homeassistant-csgo) | CS:GO gamestate reporting to Home Assistant |
 | [Current Cost](https://github.com/lolouk44/CurrentCost_HA_CC) | CurrentCost Meter Reading Custom Component for Home Assistant  |
 | [Cz Public Transport](https://github.com/bruxy70/CZ-Public-Transport) | 🚍 Home Assistant custom sensor for finding Czech Public Transportation Connections |
 | [D Link Hnap](https://github.com/postlund/dlink_hnap) | Experimental integration to Home Assistant supporting D-Link devices |
 | [D Link Presence / Device Tracker](https://github.com/ayavilevich/homeassistant-dlink-presence) | A D-Link AP/router device tracker for Home Assistant |
+| [Dahua](https://github.com/rroller/dahua) | Dahua Camera Home Assistant Integration |
 | [Dahua Vto](https://github.com/myhomeiot/DahuaVTO) | Control Dahua VTO/VTH devices from Home Assistant |
 | [Dahua Vto Integration](https://github.com/elad-bar/ha-dahuavto) | Dahua VTO Integration |
 | [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) | Sensor for Home Assistant that gets reset at midnight |
@@ -707,7 +709,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hass Favicon](https://github.com/thomasloven/hass-favicon) | 🔹 Change the favicon of your Home Assistant instance |
 | [Hass Integrations](https://github.com/rsnodgrass/hass-integrations) | Home Assistant smart home platform integrations including sensors and custom tools |
 | [Hass Machinebox Classificationbox](https://github.com/robmarkcole/HASS-Machinebox-Classificationbox) | Home-Assistant image classification using Machinebox.io |
-| [Hass Variables](https://github.com/Wibias/hass-variables) | Home Assistant variables component |
 | [Hdhomerun](https://github.com/burnnat/ha-hdhomerun) | HDHomeRun integration for Home Assistant. |
 | [Hdhomerun Tuners](https://github.com/Berserkir-Wolf/ha-hdhomerun) | HDHomeRun integration for Home Assistant. |
 | [Healthchecks.Io](https://github.com/custom-components/healthchecksio) | Update and display the status of your healthchecks.io  checks. |
@@ -715,6 +716,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Hekr Component](https://github.com/alryaz/hass-hekr-component) | Hekr integration using python-hekr |
 | [Helios Easycontrols Modbus Tcp/Ip Integration](https://github.com/laszlojakab/homeassistant-easycontrols) | Helios EasyControls Modbus TCP/IP integration for Home Assistant |
 | [Helios Ventilation](https://github.com/asev/homeassistant-helios) | Custom component for Home Assistant to connect Helios ventilation system. |
+| [Helium Blockchain](https://github.com/rsnodgrass/hass-helium) | Helium blockchain sensors for Home Assistant |
 | [Hella Onyx.Center](https://github.com/muhlba91/onyx-homeassistant-integration) | Home Assistant integration (HACS) for Hella's ONYX.CENTER appliance |
 | [Hifiberry](https://github.com/willholdoway/hifiberry) | This is a custom component to allow control of HifiberryOS devices in Home Assistant using the audiocontrol2 REST API. |
 | [Hive Custom Component](https://github.com/Pyhass/Hive-Custom-Component) | A custom version of the home assistant hive component |
@@ -741,6 +743,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Homewizard Energy](https://github.com/DCSBL/ha-homewizard-energy) | Custom Home Assistant integration for HomeWizard Energy |
 | [Hp Printers Integration](https://github.com/elad-bar/ha-hpprinter) | HP Printer Integration |
 | [Hubitat](https://github.com/jason0x43/hacs-hubitat) | A Hubitat integration for Home Assistant |
+| [Hue Power Consumption](https://github.com/bramstroker/homeassistant-powercalc) | Custom component to calculate estimated power consumption of lights and other appliances |
 | [Hue Sensor Advanced](https://github.com/robmarkcole/Hue-sensors-HASS) | Support for Hue motion sensors and device tracker |
 | [Hue Service Advanced](https://github.com/Cyr-ius/hass-hue-service-advanced) | Service to set motion's sensors and change scan intervall for remotes and motions |
 | [Hunter Douglas And Luxaflex Powerview Cover](https://github.com/safepay/cover.hd_powerview) | Control Hunter Douglas / Luxaflex PowerView Window Shades in Home Assistant |
@@ -759,6 +762,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Jablotron 100](https://github.com/kukulich/home-assistant-jablotron100) | Home Assistant custom component for JABLOTRON 100+ alarm system |
 | [Jaguar Landrover Incontrol](https://github.com/msp1974/homeassistant-jlrincontrol) | An integration for JLR InControl to Home Assistant |
 | [Jellyfin](https://github.com/koying/jellyfin_ha) | Jellyfin integration for Home Assistant |
+| [Jewish Sabbaths Holidays / Sensor](https://github.com/rt400/Jewish-Sabbaths-Holidays) | Jewish Shabbat Yomtov and Holidays times and event |
 | [Jq 300/200/100 Indoor Air Quality Meter](https://github.com/Limych/ha-jq300) | JQ-300 Indoor Air Quality Meter Home Assistant Integration |
 | [Kaco](https://github.com/KoljaWindeler/kaco) | custom integration for kaco solar inverter |
 | [Kan Program](https://github.com/eyalcha/kan_program) | Home assistant custom component to fetch kan program guide |
@@ -799,10 +803,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Mercedesme 2020](https://github.com/ReneNulschDE/mbapi2020) | Custom Component to integrate MercedesME devices into Home-Assistant |
 | [Meross Homeassistant](https://github.com/albertogeniola/meross-homeassistant) | Custom component that leverages the Meross IoT library to integrate with Homeassistant |
 | [Meross Lan](https://github.com/krahabb/meross_lan) | Home Assistant integration for Meross devices |
+| [Met Alerts Hungary](https://github.com/amaximus/met_alerts_hu) | Meteo alerts for Hungary |
 | [Meteo Swiss](https://github.com/websylv/homeassistant-meteoswiss) | :sun_behind_rain_cloud: :switzerland: Meteo Swiss Integration for Home Assisant |
 | [Meteoalarm](https://github.com/kodi1/meteoalarm) | meteoalarm sensor |
 | [Meteoalarmeu](https://github.com/xlcnd/meteoalarmeu) | A 'custom component' for Home-Assistant for Weather Warnings from meteoalarm.eu |
 | [Meteobridge Datalogger Integration](https://github.com/briis/meteobridge) | The Meteobridge Integration adds support for retrieving current weather data from a Meteobridge datalogger connected to a local Weather Station. |
+| [Metlink Wellington Transport](https://github.com/make-all/metlink-nz) | Metlink Wellington Public Transport integration for Home Assistant |
 | [Midea Ac Py](https://github.com/andersonshatch/midea-ac-py) | This is a library to allow communicating to a Midea appliance via the Midea cloud. |
 | [Midea Smart Aircon](https://github.com/mac-zhou/midea-ac-py) | This is a custom component for Home Assistant to integrate the Midea Air Conditioners via the Local area network. |
 | [Miele Integration](https://github.com/HomeAssistant-Mods/home-assistant-miele) | Miele integration for Home assistant |
@@ -854,22 +860,24 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Orbit Bhyve](https://github.com/sebr/bhyve-home-assistant) | Orbit BHyve custom component for Home Assistant |
 | [Ovh Dynhost](https://github.com/GuilleGF/hassio-ovh) | OVH DynHost Updater Component for https://www.home-assistant.io/ |
 | [P2000 Sensor](https://github.com/cyberjunky/home-assistant-p2000) | :fire_engine: This component tracks P2000 emergency events in The Netherlands. |
+| [Padavan Tracker](https://github.com/PaulAnnekov/home-assistant-padavan-tracker) | Device tracker component that uses Padavan-based router |
 | [Panasonic Comfort Cloud](https://github.com/sockless-coding/panasonic_cc) | Panasonic Comfort Cloud - Home Assistant Component |
 | [Panasonic Comfort Cloud Ha Component](https://github.com/djbulsink/panasonic_ac) | Panasonic Comfort Cloud HA component |
 | [Panasonic Smart App](https://github.com/osk2/panasonic_smart_app) | 🔛 Panasonic Smart App integration for Home Assistant. |
 | [Pandora Car Alarm System](https://github.com/alryaz/hass-pandora-cas) | Home Assistant custom component for Pandora Car Alarm System |
 | [Pandora Car Alarm System](https://github.com/turbulator/pandora-cas) | Home Assistant custom component for Pandora Car Alarm System |
-| [Passive Ble Monitor Integration (Xiaomi Mijia Ble Mibeacon Monitor)](https://github.com/custom-components/ble_monitor) | Passively monitors BLE messages from Xiaomi Mijia BLE MiBeacon, Qingping, ATC, Xiaomi Scale and Kegtron sensors |
+| [Passive Ble Monitor Integration (Xiaomi Mijia Ble Mibeacon Monitor)](https://github.com/custom-components/ble_monitor) | Passively monitors BLE messages from Xiaomi Mijia BLE MiBeacon, Qingping, ATC, Xiaomi Scale, Kegtron and Thermoplus sensors |
 | [Pfsense Gateways Monitoring](https://github.com/nagyrobi/home-assistant-custom-components-pfsense-gateways) | Monitor and react on your pfSense gateway's status with Home Assistant. |
 | [Phicomm Dc1](https://github.com/5high/phicomm-dc1-homeassistant) | 斐讯DC1插排接入Home Assistant插件，本插件原作者NETYJ，此处仅为HACS安装方便之用。 |
 | [Philips Airpurifier](https://github.com/xMrVizzy/philips-airpurifier) | 💨 Philips AirPurifier custom component for Home Assistant. |
+| [Philips Ambilight+Hue Switch](https://github.com/Mr-Groch/ambihue) | ON/OFF Abilight+Hue (Switch) component for Philips Ambilight TV's |
 | [Philips Hue Play Hdmi Sync Box](https://github.com/mvdwetering/huesyncbox) | Home Assistant integration for the Philips Hue Play HDMI Sync Box |
+| [Pijuice Ups Hat](https://github.com/Racailloux/home-assistant-pijuice) | Home Assistant integration to support PiJuice UPS Hat and retrieve values to sensors. |
 | [Places](https://github.com/custom-components/places) | Component to integrate with OpenStreetMap Reverse Geocode (PLACE) |
 | [Plcbus Integration](https://github.com/tikismoke/home-assistant-plcbus) | a plcbus custom somponents for HomeAssistant |
 | [Plex Assistant](https://github.com/maykar/plex_assistant) | ❱ Plex Assistant is a Home Assistant integration for casting Plex media to Google devices, Sonos devices, and Plex clients with Google Assistant, HA's conversation integration, and more. |
 | [Plugwise](https://github.com/cyberjunky/home-assistant-plugwise) | :electric_plug: This component can read values from and control Plugwise circles and plugs. |
 | [Plugwise Usb Stick](https://github.com/brefra/home-assistant-plugwise-stick) | Plugwise USB-stick integration to support Circle+, Circle and Stealth devices |
-| [Polar](https://github.com/burnnat/ha-polar) | Polar fitness tracking integration for Home Assistant. |
 | [Pollen Information Hungary](https://github.com/amaximus/pollen_hu) | Home Assistant custom component for Pollen Information in Hungary |
 | [Pool Math (Trouble Free Pool)](https://github.com/rsnodgrass/hass-poolmath) | Pool Math for Home Assistant |
 | [Popular Times](https://github.com/freakshock88/hass-populartimes) | Custom component for Home Assistant which generates a sensor to show popularity for a google maps place. |
@@ -940,6 +948,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Skoda Connect](https://github.com/lendy007/homeassistant-skodaconnect) | Skoda Connect - An home assistant plugin to add integration with your car |
 | [Skydance](https://github.com/tomasbedrich/home-assistant-skydance) | A Home Assistant integration for communication with Skydance lighting WiFi relay. |
 | [Skyfield Panel With Sun, Moon, And Planets](https://github.com/partofthething/ha_skyfield) | See the apparent positions of the Sun, Moon, and planets in this home assistant custom component |
+| [Sl Integration (Haslv3)](https://github.com/hasl-sensor/integration) | HomeAssistant SL Sensor (HASLv3) |
 | [Slack User](https://github.com/GeorgeSG/ha-slack-user) | Slack User sensor for Home Assistant |
 | [Smart Irrigation](https://github.com/jeroenterheerdt/HAsmartirrigation) | Smart Irrigation custom component for Home Assistant |
 | [Smartmi Smart Heater](https://github.com/fineemb/Smartmi-smart-heater) | 智米智能电暖器 |
@@ -959,6 +968,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Srp Energy Sensor](https://github.com/custom-components/srp_energy) | The srp_energy integration shows information from Srp hourly energy usage report for their customers |
 | [Stadtreinigung Hamburg](https://github.com/custom-components/sensor.stadtreinigung_hamburg) | Stadtreinigung Hamburg - get garbage collection dates in Hamburg - custom component for Home Assistant |
 | [Steam Wishlist](https://github.com/boralyl/steam-wishlist) | A home assistant integration that monitors games on sale on your Steam wishlist. |
+| [Sunspec](https://github.com/CJNE/ha-sunspec) | Home Assistant customcomponent for SunSpec modbus devices |
 | [Svenska Trygghetslosningar](https://github.com/gjohansson-ST/stl) | Svenska Trygghetslösningar - Home Assistant |
 | [Svt Play](https://github.com/lindell/home-assistant-svt-play) | Play SVT Play videos and channels via home assistant |
 | [Switchbot Press](https://github.com/cagnulein/switchbot_press) | This is a simple project that manage the Switchbot ( https://amzn.to/3dnliBD ) that has only the "press" ability in Home Assistant. |
@@ -1001,8 +1011,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [USR R16 16路网络继电器](https://github.com/blindlight86/HA_USR-R16) | USR-R16 integration for Home Assistant |
 | [Vapix](https://github.com/jadson179/vapix) | home-assistant service  for  control the vapix 🚪🔑 |
 | [Variable](https://github.com/snarky-snark/home-assistant-variables) | A custom Home Assistant component for declaring and setting generic variable entities dynamically. |
+| [Variables+History](https://github.com/Wibias/hass-variables) | Home Assistant variables component |
 | [Veolia](https://github.com/tetienne/veolia-custom-component) | Home Assistant custom component to retrieve information from Veolia  |
 | [Victor Smart Kill](https://github.com/toreamun/victorsmartkill-homeassistant) | Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat traps from VictorPest.com. |
+| [Vimar By Me Hub](https://github.com/h4de5/home-assistant-vimar) | VIMAR by-me integration into home-assistant.io |
 | [Viomi Robot Vacuum Cleaner Se (V Rvclm21A)](https://github.com/marotoweb/home-assistant-vacuum-viomise) | Hacky Home assistant support for Viomi SE (V-RVCLM21A) |
 | [Virtual Components](https://github.com/twrecked/hass-virtual) | Virtual Components for Home Assistant |
 | [Visonic/Bentel/Tyco Alarm System](https://github.com/And3rsL/VisonicAlarm-for-Hassio) | Visonic/Bentel/Tyco Alarm System integrtation for Home Assistant |
@@ -1030,11 +1042,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Wiserhomeassistantplatform](https://github.com/asantaga/wiserHomeAssistantPlatform) | Platform and related climate/sensors to support the Drayton Wiser Home Heating System |
 | [Worldtidesinfocustom](https://github.com/jugla/worldtidesinfocustom) | world tides info custom component for home assistant |
 | [Xantech Multi Zone Audio Amplifier](https://github.com/rsnodgrass/hass-xantech) | Xantech Multi-Zone Matrix Audio for Home Assistant |
-| [Xiaomi Cloud Map Extractor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Xiaomi-Cloud-Map-Extractor) | This custom integration provides a way to present a live view of a map for Xiaomi (and Roborock) vacuums. |
+| [Xiaomi Cloud Map Extractor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Xiaomi-Cloud-Map-Extractor) | This custom integration provides a way to present a live view of a map for Xiaomi, Roborock and Viomi vacuums without a need for rooting. |
 | [Xiaomi Gateway 3](https://github.com/AlexxIT/XiaomiGateway3) | Control Zigbee, BLE and Mesh devices from Home Assistant with Xiaomi Gateway 3 (ZNDMWG03LM) on original firmware |
 | [Xiaomi Ir Climate](https://github.com/Anonym-tsk/homeassistant-climate-xiaomi-remote) | Xiaomi IR Climate Component |
 | [Xiaomi Mi Air Purifier, Air Humidifier, Air Fresh And Pedestal Fan Integration](https://github.com/syssi/xiaomi_airpurifier) | Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier integration for Home Assistant |
 | [Xiaomi Mi And Aqara Air Conditioning Companion Integration](https://github.com/syssi/xiaomi_airconditioningcompanion) | Xiaomi Mi and Aqara Air Conditioning Companion integration for Home Assistant |
+| [Xiaomi Mi Electric Rice Cooker Integration](https://github.com/syssi/xiaomi_cooker) | Xiaomi Mi Electric Rice Cooker integration for Home Assistant |
+| [Xiaomi Mi Smart Pedestal Fan Integration](https://github.com/syssi/xiaomi_fan) | Xiaomi Mi Smart Fan integration for Home Assistant |
 | [Xiaomi Mi Smart Wifi Socket Integration](https://github.com/syssi/xiaomiplug) | Xiaomi Mi Smart WiFi Socket integration for Home Assistant |
 | [Xiaomi Miio For Yeelink](https://github.com/al-one/hass-miio-yeelink) | Xiaomi Miio Yeelink/Yeelight devices for Home Assistant |
 | [Xiaomi Miio Raw](https://github.com/syssi/xiaomi_raw) | Custom component for Home Assistant to faciliate the reverse engeneering of Xiaomi MiIO devices |
@@ -1117,8 +1131,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Dark Sky Rich Weather Card](https://github.com/clayauld/lovelace-darksky-card) | Custom Dark Sky Weather plugin for HACS. This creates a rich weather card using the Dark Sky weather plugin. |
 | [Dark Thermostat](https://github.com/ciotlosm/lovelace-thermostat-dark-card) | 🌡 Thermostat card with a round and black feel to it |
 | [Decluttering Card](https://github.com/custom-cards/decluttering-card) | 🧹 Declutter your lovelace configuration with the help of this card |
+| [Digital Clock](https://github.com/wassy92x/lovelace-digital-clock) | A custom digital clock card for Home Assistant |
 | [Dual Gauge Card](https://github.com/custom-cards/dual-gauge-card) | Dual gauge custom card for Lovelace in Home Assistant |
 | [Dummy Entity Row](https://github.com/thomasloven/lovelace-dummy-entity-row) | 🔹 An entity row with only icon and name |
+| [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card) | A modified version of the layout-card with an easier way to configure cards |
+| [Entities Button Group](https://github.com/wassy92x/lovelace-entities-btn-group) | A custom card for Home Assistant to group multiple buttons |
 | [Entity Attributes Card](https://github.com/custom-cards/entity-attributes-card) | Entity Attributes |
 | [Entur Card](https://github.com/jonkristian/entur-card) | This card is made to work with the Entur public transport component. |
 | [Ext Weblink](https://github.com/custom-cards/ext-weblink) | Adds ext weblink with icon to picture-elements or entity cards |
@@ -1133,6 +1150,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card) | Highly Flexible Lovelace Card - arbitrary contents/columns/rows, regex matched, perfect to show appdaemon created content and anything breaking out of the entity_id + attributes concept |
 | [Flexible Horseshoe Card For Lovelace](https://github.com/AmoebeLabs/flex-horseshoe-card) | Flexible Horseshoe card for Home Assistant Lovelace UI. A card with a flexible layout,  a horseshoe-like donut graph, multiple entities or attributes, graphics and animations! |
 | [Flexible Horseshoe Card For Lovelace](https://github.com/Lau-ie/flex-horseshoe-card) | Flexible Horseshoe card for Home Assistant Lovelace UI. A card with a flexible layout,  a horseshoe-like donut graph, multiple entities or attributes, graphics and animations! |
+| [Floor 3D Visualization Card](https://github.com/adizanni/floor3d-card) | Floor 3D Card to visualize Home Assistant entities using objects in a 3D home model based on Three.js. |
 | [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row) | 🔹 A foldable row for entities card, containing other rows |
 | [Folder Card](https://github.com/GeorgeSG/lovelace-folder-card) | 📂 Folder Card for Home Assistant's Lovelace UI |
 | [Fullscreen Card](https://github.com/KTibow/fullscreen-card) | Make your Home Assistant browser fullscreen with one tap. |
@@ -1150,6 +1168,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Gui Sandbox](https://github.com/thomasloven/lovelace-gui-sandbox) | 🔹 Lets you play around with the GUI editors even if you're using YAML mode |
 | [Ha (Lovelace) Card Waze Travel Time](https://github.com/r-renato/ha-card-waze-travel-time) | Home Assistant Lovelace card for Waze Travel Time Sensor |
 | [Ha (Lovelace) Card Weather Conditions](https://github.com/r-renato/ha-card-weather-conditions) | Weather condition card (Lovelace) for Home Assistant. |
+| [Ha Dashboard](https://github.com/wassy92x/lovelace-ha-dashboard) | A custom dashboard for Home Assistant with sidebar |
 | [Ha Floorplan](https://github.com/ExperienceLovelace/ha-floorplan) | Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit. |
 | [Harmony Card](https://github.com/sbryfcz/harmony-card) | A Home Assistant Lovelace Care for Harmony Integration |
 | [Hasl Departure Card](https://github.com/hasl-sensor/lovelace-hasl-departure-card) | Lovelace Departure Card for the HASL Platform |
@@ -1196,7 +1215,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Lovelace Swipe Navigation](https://github.com/maykar/lovelace-swipe-navigation) | ↔️ Swipe through Lovelace views on mobile. |
 | [Lovelace Text Input Row](https://github.com/gadgetchnnel/lovelace-text-input-row) | A custom Lovelace text input row for use in entities cards |
 | [Lovelace Xiaomi Vacuum Map Card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card) | This card enables you to specify a target or start a zoned cleanup using live or static map, just like in Xiaomi Home app. Additionally you can define a list of zones and choose the ones to be cleaned. |
-| [Meteoalarm Card](https://github.com/MrBartusek/MeteoalarmCard) | Meteoalarm weather warnings card for Home Assistant Lovelace UI ⛈️ |
+| [Meteoalarm Card](https://github.com/MrBartusek/MeteoalarmCard) | Meteoalarm, Météo-France and DWD weather warnings card for Home Assistant Lovelace UI ⛈️ |
 | [Miflora Card](https://github.com/RodBr/miflora-card) | A Home Assistant Lovelace card to report MiFlora plant sensors based on the HA Plant Card. |
 | [Mini Climate Card](https://github.com/artem-sedykh/mini-climate-card) | Minimalistic climate card for Home Assistant Lovelace UI |
 | [Mini Graph Card](https://github.com/kalkih/mini-graph-card) | Minimalistic graph card for Home Assistant Lovelace UI |
@@ -1253,6 +1272,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat) | A different take on the thermostat card for Home Assistant ♨️ |
 | [Simple Vacuum Card](https://github.com/benct/lovelace-xiaomi-vacuum-card) | Simple card for various robot vacuums in Home Assistant's Lovelace UI |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) | Minimalistic weather card for Home Assistant |
+| [Slider Button Card](https://github.com/mattieha/slider-button-card) | Lovelace Slider button card |
 | [Slider Entity Row](https://github.com/thomasloven/lovelace-slider-entity-row) | 🔹 Add sliders to entity cards |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) | 🛠 group multiple cards into one card without the borders |
@@ -1295,6 +1315,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) | 📐 Home Assistant Card: Similar to vertical/horizontal-stack, but removes card borders |
 | [Water Heater Card](https://github.com/rsnodgrass/water-heater-card) | Water Heater card for Home Assistant's Lovelace UI |
 | [Weather Card](https://github.com/bramkragten/weather-card) | Weather Card with animated icons for Home Assistant Lovelace |
+| [Webos Keyboard Card](https://github.com/bernikr/lovelace-webos-keyboard-card) | Type on your WebOS TV using this lovelace card |
 | [Xiaomi Fan Lovelace Card](https://github.com/fineemb/lovelace-fan-xiaomi) | Xiaomi Smartmi Fan Lovelace card for HASS/Home Assistant. |
 | [Xiaomi Smartmi Fan Card](https://github.com/ikaruswill/lovelace-fan-xiaomi) | Xiaomi Smartmi Fan Lovelace card with CSS fan animation |
 | [Yandex Icons](https://github.com/iswitch/ha-yandex-icons) | Yandex devices icons for Home Assistant |

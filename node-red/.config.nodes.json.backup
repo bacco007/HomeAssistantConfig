@@ -494,7 +494,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.31.2",
+        "version": "0.33.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -550,7 +550,7 @@
     },
     "node-red-contrib-influxdb": {
         "name": "node-red-contrib-influxdb",
-        "version": "0.6.0",
+        "version": "0.6.1",
         "local": false,
         "user": false,
         "nodes": {

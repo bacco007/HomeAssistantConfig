@@ -17,6 +17,9 @@ more_page:
     - name: Cryptocurrency
       icon: mdi:bitcoin
       path: "dwains-dashboard/addons/more_page/cryptocurrency/page.yaml"
+    - name: Docker
+      icon: mdi:docker
+      path: "dwains-dashboard/addons/more_page/docker/page.yaml"
     - name: Downloads
       icon: mdi:download-network
       path: "dwains-dashboard/addons/more_page/downloads/page.yaml"

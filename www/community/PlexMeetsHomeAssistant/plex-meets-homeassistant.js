@@ -18669,7 +18669,7 @@ var axios = axios_1;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class Plex {
-    constructor(ip, port = 32400, token, protocol = 'http', sort = 'titleSort:asc') {
+    constructor(ip, port = false, token, protocol = 'http', sort = 'titleSort:asc') {
         this.serverInfo = {};
         this.clients = [];
         this.requestTimeout = 5000;
@@ -18791,7 +18791,7 @@ class Plex {
             return onDeckData;
         };
         this.getBasicURL = () => {
-            return `${this.protocol}://${this.ip}:${this.port}`;
+            return `${this.protocol}://${this.ip}${this.port === false ? '' : `:${this.port}`}`;
         };
         this.authorizeURL = (url) => {
             if (!lodash.includes(url, 'X-Plex-Token')) {
@@ -19157,6 +19157,18 @@ const getOffset = (el) => {
     }
     return { top: y, left: x };
 };
+const getDetailsBottom = (seasonContainers, episodeContainers, activeElem) => {
+    const lastSeasonContainer = seasonContainers[seasonContainers.length - 1];
+    const lastEpisodeContainer = episodeContainers[episodeContainers.length - 1];
+    let detailBottom = false;
+    if (seasonContainers.length > 0 && parseInt(activeElem.style.top, 10) > 0) {
+        detailBottom = getHeight(lastSeasonContainer) + parseInt(getOffset(lastSeasonContainer).top, 10) + 10;
+    }
+    else if (episodeContainers.length > 0) {
+        detailBottom = getHeight(lastEpisodeContainer) + parseInt(getOffset(lastEpisodeContainer).top, 10) + 10;
+    }
+    return detailBottom;
+};
 const hasEpisodes = (media) => {
     let result = false;
     // eslint-disable-next-line consistent-return
@@ -19191,11 +19203,11 @@ const findTrailerURL = (movieData) => {
     }
     return foundURL;
 };
-const createEpisodesView = (playController, plexProtocol, ip, port, token, data) => {
+const createEpisodesView = (playController, plex, data) => {
     const episodeContainer = document.createElement('div');
     episodeContainer.className = 'episodeContainer';
     episodeContainer.style.width = `${CSS_STYLE.episodeWidth}px`;
-    const episodeThumbURL = `${plexProtocol}://${ip}:${port}/photo/:/transcode?width=${CSS_STYLE.episodeWidth}&height=${CSS_STYLE.episodeHeight}&minSize=1&upscale=1&url=${data.thumb}&X-Plex-Token=${token}`;
+    const episodeThumbURL = plex.authorizeURL(`${plex.getBasicURL()}/photo/:/transcode?width=${CSS_STYLE.episodeWidth}&height=${CSS_STYLE.episodeHeight}&minSize=1&upscale=1&url=${data.thumb}`);
     const episodeElem = document.createElement('div');
     episodeElem.className = 'episodeElem';
     episodeElem.style.width = `${CSS_STYLE.episodeWidth}px`;
@@ -19681,6 +19693,25 @@ style.textContent = css `
 		transition: 0.5s;
 		left: 0;
 		top: 0;
+		background-size: cover;
+	}
+	.stop-scrolling {
+		height: 100%;
+		overflow: hidden;
+	}
+	.contentArt {
+		position: absolute;
+		background-color: rgba(0, 0, 0, 0);
+		z-index: 2;
+		left: 0;
+		top: 0;
+		background-size: cover;
+		display: none;
+		-webkit-animation: fadein 0.5s; /* Safari, Chrome and Opera > 12.1 */
+		-moz-animation: fadein 0.5s; /* Firefox < 16 */
+		-ms-animation: fadein 0.5s; /* Internet Explorer */
+		-o-animation: fadein 0.5s; /* Opera < 12.1 */
+		animation: fadein 0.5s;
 	}
 	.yearElem {
 		color: hsla(0, 0%, 100%, 0.45);
@@ -19708,6 +19739,54 @@ style.textContent = css `
 		right: -14px;
 		top: -14px;
 		transform: rotate(45deg);
+	}
+	@keyframes fadein {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Firefox < 16 */
+	@-moz-keyframes fadein {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Safari, Chrome and Opera > 12.1 */
+	@-webkit-keyframes fadein {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Internet Explorer */
+	@-ms-keyframes fadein {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Opera < 12.1 */
+	@-o-keyframes fadein {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 	.toViewSeason {
 		position: relative;
@@ -19915,9 +19994,11 @@ class PlexMeetsHomeAssistant extends HTMLElement {
     constructor() {
         super(...arguments);
         this.plexProtocol = 'http';
+        this.plexPort = false;
         this.detailsShown = false;
         this.runBefore = '';
         this.playTrailer = true;
+        this.showExtras = true;
         this.runAfter = '';
         this.columnsCount = 0;
         this.renderedItems = 0;
@@ -19951,6 +20032,44 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         };
         this.loadInitialData = async () => {
             window.addEventListener('scroll', () => {
+                // todo: improve performance by calculating this when needed only
+                if (this.detailsShown && this.activeMovieElem && !isVideoFullScreen(this)) {
+                    const seasonContainers = this.getElementsByClassName('seasonContainer');
+                    const episodeContainers = this.getElementsByClassName('episodeContainer');
+                    const seasonElems = this.getElementsByClassName('seasonElem');
+                    let activeElem = this.activeMovieElem;
+                    // eslint-disable-next-line consistent-return
+                    lodash.forEach(seasonElems, seasonElem => {
+                        if (lodash.isEqual(seasonElem.dataset.clicked, 'true')) {
+                            activeElem = seasonElem;
+                            return false;
+                        }
+                    });
+                    const detailTop = parseInt(getOffset(activeElem).top, 10) - 70;
+                    const detailBottom = getDetailsBottom(seasonContainers, episodeContainers, activeElem);
+                    if (this.getTop() < detailTop) {
+                        window.scroll({
+                            top: detailTop
+                        });
+                        this.children[0].classList.add('stop-scrolling');
+                    }
+                    else if (detailBottom) {
+                        if (window.innerHeight < detailBottom - detailTop) {
+                            if (detailBottom && this.getTop() + window.innerHeight > detailBottom) {
+                                window.scroll({
+                                    top: detailBottom - window.innerHeight
+                                });
+                                this.children[0].classList.add('stop-scrolling');
+                            }
+                        }
+                        else if (detailTop !== -70 && detailBottom !== -10) {
+                            window.scroll({
+                                top: detailTop
+                            });
+                            this.children[0].classList.add('stop-scrolling');
+                        }
+                    }
+                }
                 this.renderNewElementsIfNeeded();
             });
             window.addEventListener('resize', () => {
@@ -20042,6 +20161,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 this.error = `Plex server did not respond.<br/>Details of the error: ${escapeHtml(err.message)}`;
                 this.renderPage();
             }
+            this.resizeBackground();
         };
         this.render = () => {
             this.previousPositions = [];
@@ -20192,6 +20312,15 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             const contentbg = document.createElement('div');
             contentbg.className = 'contentbg';
             this.content.appendChild(contentbg);
+            const contentArt = document.createElement('div');
+            contentArt.className = 'contentArt';
+            const contentArtBG1 = document.createElement('div');
+            contentArtBG1.className = 'videobg1';
+            contentArt.appendChild(contentArtBG1);
+            const contentArtBG2 = document.createElement('div');
+            contentArtBG2.className = 'videobg2';
+            contentArt.appendChild(contentArtBG2);
+            this.content.appendChild(contentArt);
             this.detailElem = document.createElement('div');
             this.detailElem.className = 'detail';
             this.detailElem.innerHTML = `<h1 class='detailsTitle'></h1>
@@ -20256,10 +20385,16 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         video.msRequestFullscreen();
                     }
                     else {
-                        const videobg1 = this.getElementsByClassName('videobg1')[0];
-                        const videobg2 = this.getElementsByClassName('videobg2')[0];
-                        videobg1.classList.add('transparent');
-                        videobg2.classList.add('transparent');
+                        const videobgs1 = this.getElementsByClassName('videobg1');
+                        const videobgs2 = this.getElementsByClassName('videobg2');
+                        // eslint-disable-next-line no-restricted-syntax
+                        for (const videobg1 of videobgs1) {
+                            videobg1.classList.add('transparent');
+                        }
+                        // eslint-disable-next-line no-restricted-syntax
+                        for (const videobg2 of videobgs2) {
+                            videobg2.classList.add('transparent');
+                        }
                         this.videoElem.classList.add('maxZIndex');
                         this.videoElem.classList.add('simulatedFullScreen');
                         video.controls = true;
@@ -20291,10 +20426,16 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         this.videoElem.classList.remove('maxZIndex');
                         this.videoElem.classList.remove('simulatedFullScreen');
                     }
-                    const videobg1 = this.getElementsByClassName('videobg1')[0];
-                    const videobg2 = this.getElementsByClassName('videobg2')[0];
-                    videobg1.classList.remove('transparent');
-                    videobg2.classList.remove('transparent');
+                    const videobgs1 = this.getElementsByClassName('videobg1');
+                    const videobgs2 = this.getElementsByClassName('videobg2');
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const videobg1 of videobgs1) {
+                        videobg1.classList.remove('transparent');
+                    }
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const videobg2 of videobgs2) {
+                        videobg2.classList.remove('transparent');
+                    }
                     video.controls = false;
                 }
                 else {
@@ -20315,6 +20456,10 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             // todo: figure out why timeout is needed here and do it properly
             setTimeout(() => {
                 contentbg.addEventListener('click', () => {
+                    this.hideBackground();
+                    this.minimizeAll();
+                });
+                contentArt.addEventListener('click', () => {
                     this.hideBackground();
                     this.minimizeAll();
                 });
@@ -20389,10 +20534,16 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 videoPlayer.innerHTML = '';
                 this.videoElem.classList.remove('maxZIndex');
                 this.videoElem.classList.remove('simulatedFullScreen');
-                const videobg1 = this.getElementsByClassName('videobg1')[0];
-                const videobg2 = this.getElementsByClassName('videobg2')[0];
-                videobg1.classList.remove('transparent');
-                videobg2.classList.remove('transparent');
+                const videobgs1 = this.getElementsByClassName('videobg1');
+                const videobgs2 = this.getElementsByClassName('videobg2');
+                // eslint-disable-next-line no-restricted-syntax
+                for (const videobg1 of videobgs1) {
+                    videobg1.classList.remove('transparent');
+                }
+                // eslint-disable-next-line no-restricted-syntax
+                for (const videobg2 of videobgs2) {
+                    videobg2.classList.remove('transparent');
+                }
             }
         };
         this.minimizeAll = () => {
@@ -20580,6 +20731,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 }
                 const dataDetails = await this.plex.getDetails(data.key.split('/')[3]);
                 if (this.videoElem) {
+                    const art = this.plex.authorizeURL(this.plex.getBasicURL() + data.art);
                     const trailerURL = findTrailerURL(dataDetails);
                     if (trailerURL !== '' && !lodash.isEqual(this.playTrailer, false)) {
                         const videoPlayer = this.getElementsByClassName('videoPlayer')[0];
@@ -20598,8 +20750,8 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         video.load();
                         video.play();
                         let playingFired = false;
-                        const videobg1 = this.getElementsByClassName('videobg1')[0];
-                        const videobg2 = this.getElementsByClassName('videobg2')[0];
+                        const videobgs1 = this.getElementsByClassName('videobg1');
+                        const videobgs2 = this.getElementsByClassName('videobg2');
                         video.addEventListener('click', event => {
                             if (isVideoFullScreen(this)) {
                                 event.stopPropagation();
@@ -20608,15 +20760,27 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         const fullScreenChangeAction = () => {
                             if (this.videoElem) {
                                 if (isVideoFullScreen(this)) {
-                                    videobg1.classList.add('transparent');
-                                    videobg2.classList.add('transparent');
+                                    // eslint-disable-next-line no-restricted-syntax
+                                    for (const videobg1 of videobgs1) {
+                                        videobg1.classList.add('transparent');
+                                    }
+                                    // eslint-disable-next-line no-restricted-syntax
+                                    for (const videobg2 of videobgs2) {
+                                        videobg2.classList.add('transparent');
+                                    }
                                     this.videoElem.classList.add('maxZIndex');
                                     video.controls = true;
                                     video.muted = false;
                                 }
                                 else {
-                                    videobg1.classList.remove('transparent');
-                                    videobg2.classList.remove('transparent');
+                                    // eslint-disable-next-line no-restricted-syntax
+                                    for (const videobg1 of videobgs1) {
+                                        videobg1.classList.remove('transparent');
+                                    }
+                                    // eslint-disable-next-line no-restricted-syntax
+                                    for (const videobg2 of videobgs2) {
+                                        videobg2.classList.remove('transparent');
+                                    }
                                     this.videoElem.classList.remove('maxZIndex');
                                     video.controls = false;
                                     window.scroll({
@@ -20646,6 +20810,17 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                             }
                         });
                     }
+                    else if (!lodash.isEmpty(art)) {
+                        const contentArt = this.getElementsByClassName('contentArt')[0];
+                        const contentbg = this.getElementsByClassName('contentbg')[0];
+                        contentArt.style.width = `${window.innerWidth}px`;
+                        contentArt.style.height = `${window.innerHeight}px`;
+                        contentArt.style.backgroundImage = `url('${art}')`;
+                        contentArt.style.top = `${top - 8}px`;
+                        contentArt.style.transition = '0.5s';
+                        contentArt.style.display = 'block';
+                        contentbg.classList.add('no-transparency');
+                    }
                 }
                 if (!lodash.isEmpty(seasonsData)) {
                     this.seasonElemFreshlyLoaded = true;
@@ -20656,12 +20831,12 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         this.seasonsElem.style.top = `${top + 2000}px`;
                     }
                     lodash.forEach(seasonsData, seasonData => {
-                        if (this.seasonsElem) {
+                        if (this.seasonsElem && this.plex) {
                             this.seasonsElemHidden = false;
                             const seasonContainer = document.createElement('div');
                             seasonContainer.className = 'seasonContainer';
                             seasonContainer.style.width = `${CSS_STYLE.width}px`;
-                            const thumbURL = `${this.plexProtocol}://${this.config.ip}:${this.config.port}/photo/:/transcode?width=${CSS_STYLE.expandedWidth}&height=${CSS_STYLE.expandedHeight}&minSize=1&upscale=1&url=${seasonData.thumb}&X-Plex-Token=${this.config.token}`;
+                            const thumbURL = `${this.plex.getBasicURL()}/photo/:/transcode?width=${CSS_STYLE.expandedWidth}&height=${CSS_STYLE.expandedHeight}&minSize=1&upscale=1&url=${seasonData.thumb}&X-Plex-Token=${this.config.token}`;
                             const seasonElem = document.createElement('div');
                             seasonElem.className = 'seasonElem';
                             seasonElem.style.width = `${CSS_STYLE.width}px`;
@@ -20741,8 +20916,8 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                                                         this.episodesElem.style.transition = `0s`;
                                                         this.episodesElem.style.top = `${top + 2000}px`;
                                                         lodash.forEach(episodesData, episodeData => {
-                                                            if (this.episodesElem && this.playController) {
-                                                                this.episodesElem.append(createEpisodesView(this.playController, this.plexProtocol, this.config.ip, this.config.port, this.config.token, episodeData));
+                                                            if (this.episodesElem && this.playController && this.plex) {
+                                                                this.episodesElem.append(createEpisodesView(this.playController, this.plex, episodeData));
                                                             }
                                                         });
                                                         clearInterval(this.episodesLoadTimeout);
@@ -20811,7 +20986,6 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                     }, 200);
                 }
                 else {
-                    const extras = dataDetails.Extras.Metadata;
                     this.episodesElemFreshlyLoaded = true;
                     if (this.episodesElem) {
                         this.episodesElemHidden = false;
@@ -20819,11 +20993,14 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         this.episodesElem.innerHTML = '';
                         this.episodesElem.style.transition = `0s`;
                         this.episodesElem.style.top = `${top + 2000}px`;
-                        lodash.forEach(extras, extrasData => {
-                            if (this.episodesElem && this.playController) {
-                                this.episodesElem.append(createEpisodesView(this.playController, this.plexProtocol, this.config.ip, this.config.port, this.config.token, extrasData));
-                            }
-                        });
+                        if (this.showExtras) {
+                            const extras = dataDetails.Extras.Metadata;
+                            lodash.forEach(extras, extrasData => {
+                                if (this.episodesElem && this.playController && this.plex) {
+                                    this.episodesElem.append(createEpisodesView(this.playController, this.plex, extrasData));
+                                }
+                            });
+                        }
                         clearInterval(this.episodesLoadTimeout);
                         this.episodesLoadTimeout = setTimeout(() => {
                             if (this.episodesElem) {
@@ -20843,9 +21020,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.resizeBackground = () => {
             if (this.seasonsElem && this.episodesElem && this.card) {
                 const contentbg = this.getElementsByClassName('contentbg')[0];
-                if (this.contentBGHeight === 0) {
-                    this.contentBGHeight = getHeight(contentbg);
-                }
+                this.contentBGHeight = getHeight(contentbg);
                 const requiredSeasonBodyHeight = parseInt(this.seasonsElem.style.top.replace('px', ''), 10) + this.seasonsElem.scrollHeight;
                 const requiredEpisodeBodyHeight = parseInt(this.episodesElem.style.top.replace('px', ''), 10) + this.episodesElem.scrollHeight;
                 if (requiredSeasonBodyHeight > this.contentBGHeight && !this.seasonsElemHidden) {
@@ -20869,6 +21044,8 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             contentbg.classList.remove('no-transparency');
             contentbg.style.zIndex = '1';
             contentbg.style.backgroundColor = 'rgba(0,0,0,0)';
+            const contentArt = this.getElementsByClassName('contentArt')[0];
+            contentArt.style.display = 'none';
         };
         this.activateMovieElem = (movieElem) => {
             const movieElemLocal = movieElem;
@@ -20913,11 +21090,13 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         };
         this.getMovieElement = (data, hasAdditionalData = false) => {
             let thumbURL = '';
-            if (lodash.isEqual(data.type, 'episode')) {
-                thumbURL = `${this.plexProtocol}://${this.config.ip}:${this.config.port}/photo/:/transcode?width=${CSS_STYLE.expandedWidth}&height=${CSS_STYLE.expandedHeight}&minSize=1&upscale=1&url=${data.grandparentThumb}&X-Plex-Token=${this.config.token}`;
-            }
-            else {
-                thumbURL = `${this.plexProtocol}://${this.config.ip}:${this.config.port}/photo/:/transcode?width=${CSS_STYLE.expandedWidth}&height=${CSS_STYLE.expandedHeight}&minSize=1&upscale=1&url=${data.thumb}&X-Plex-Token=${this.config.token}`;
+            if (this.plex) {
+                if (lodash.isEqual(data.type, 'episode')) {
+                    thumbURL = `${this.plex.getBasicURL()}/photo/:/transcode?width=${CSS_STYLE.expandedWidth}&height=${CSS_STYLE.expandedHeight}&minSize=1&upscale=1&url=${data.grandparentThumb}&X-Plex-Token=${this.config.token}`;
+                }
+                else {
+                    thumbURL = `${this.plex.getBasicURL()}/photo/:/transcode?width=${CSS_STYLE.expandedWidth}&height=${CSS_STYLE.expandedHeight}&minSize=1&upscale=1&url=${data.thumb}&X-Plex-Token=${this.config.token}`;
+                }
             }
             const container = document.createElement('div');
             container.className = 'container';
@@ -21031,15 +21210,15 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             if (!config.ip) {
                 throw new Error('You need to define a ip');
             }
-            if (!config.port) {
-                throw new Error('You need to define a port');
-            }
             if (!config.libraryName) {
                 throw new Error('You need to define a libraryName');
             }
             this.config = config;
             if (config.protocol) {
                 this.plexProtocol = config.protocol;
+            }
+            if (config.port) {
+                this.plexPort = config.port;
             }
             if (config.maxCount) {
                 this.maxCount = config.maxCount;
@@ -21053,7 +21232,10 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             if (!lodash.isNil(config.playTrailer)) {
                 this.playTrailer = config.playTrailer;
             }
-            this.plex = new Plex(this.config.ip, this.config.port, this.config.token, this.plexProtocol, this.config.sort);
+            if (!lodash.isNil(config.showExtras)) {
+                this.showExtras = config.showExtras;
+            }
+            this.plex = new Plex(this.config.ip, this.plexPort, this.config.token, this.plexProtocol, this.config.sort);
         };
         this.getCardSize = () => {
             return 3;

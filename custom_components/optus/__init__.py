@@ -14,9 +14,9 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from optus import Account
 
 from .const import DOMAIN, MOBILE
-from optus import Account
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -26,10 +26,12 @@ _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL = timedelta(seconds=300)
 
+
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Optus component."""
     hass.data.setdefault(DOMAIN, {})
     return True
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up FordPass from a config entry."""
@@ -40,8 +42,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     coordinator = OptusDataUpdateCoordinator(hass, user, password, mobile)
 
     await coordinator.async_refresh()  # Get initial data
-
-
 
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
@@ -71,6 +71,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     return unload_ok
 
+
 class OptusDataUpdateCoordinator(DataUpdateCoordinator):
     """DataUpdateCoordinator to handle fetching new data about the account."""
 
@@ -93,7 +94,7 @@ class OptusDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             async with async_timeout.timeout(30):
                 data = await self._hass.async_add_executor_job(
-                    self.account.usage # Fetch new status
+                    self.account.usage  # Fetch new status
                 )
 
                 # If data has now been fetched but was previously unavailable, log and reset
@@ -108,7 +109,8 @@ class OptusDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.warning("Error communicating with Optus for %s", self.mobile)
             raise UpdateFailed(
                 f"Error communicating with Optus for {self.mobile}"
-            ) from ex    
+            ) from ex
+
 
 class OptusEntity(CoordinatorEntity):
     """Defines a base FordPass entity."""
@@ -141,4 +143,3 @@ class OptusEntity(CoordinatorEntity):
             "identifiers": {(DOMAIN, self.coordinator.mobile)},
             "name": f"{self.coordinator.mobile}",
         }
-    

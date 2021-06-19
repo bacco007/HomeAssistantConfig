@@ -5,18 +5,18 @@ trigger:
   - platform: homeassistant
     event: start
   - platform: state
-    entity_id: sensor.updater_supervisor
+    entity_id: binary_sensor.updater_addons
 condition:
   - condition: template
-    value_template: "{{ (states.sensor.updater_supervisor.attributes.addons | count) != 'unknown' }}"
+    value_template: "{{ (states.binary_sensor.updater_addons.attributes.addons | count) != 'unknown' }}"
   - condition: template
-    value_template: "{{ (states.sensor.updater_supervisor.attributes.addons | count) != 0 }}"
+    value_template: "{{ (states.binary_sensor.updater_addons.attributes.addons | count) != 0 }}"
 action:
   - service: persistent_notification.create
     data_template:
       title: HA Add-ons - Updates Available
       message: >-
-        {% for repo in states.sensor.updater_supervisor.attributes.addons %}
+        {% for repo in states.binary_sensor.updater_addons.attributes.addons %}
           **{{ repo.name }}** _{{ repo["version"] }}_ -> _{{ repo["version_latest"] }}_
         {% endfor %}
   - service: notify.slack
@@ -33,6 +33,6 @@ action:
             text:
               type: mrkdwn
               text: >-
-                {% for repo in states.sensor.updater_supervisor.attributes.addons %}
+                {% for repo in states.binary_sensor.updater_addons.attributes.addons %}
                   **{{ repo.name }}** _{{ repo["version"] }}_ -> _{{ repo["version_latest"] }}_
                 {% endfor %}

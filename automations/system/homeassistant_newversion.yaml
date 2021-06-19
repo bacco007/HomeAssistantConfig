@@ -33,7 +33,6 @@ action:
               text: |
                 **New Home Assistant Version**
 
-
                 [{{ state_attr('binary_sensor.updater_core', 'installed_version') }} → {{ state_attr('binary_sensor.updater_core', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/core/releases) / [release notes](https://www.home-assistant.io/latest-release-notes/)
   - service: persistent_notification.create
     data_template:

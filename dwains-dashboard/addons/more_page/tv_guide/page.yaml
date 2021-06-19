@@ -2,8 +2,8 @@
   items_classes: "col-xs-12"
   cards:
     - type: iframe
-      url: "http://www.xmlepg.net/?page=tvguide&b=111&g=all&sdsim=hide&span=4"
+      url: "https://www.xmlepg.net/?page=tvguide&b=111&g=all&sdsim=hide&span=4"
       aspect_ratio: 75%
     - type: iframe
-      url: "http://www.xmlepg.net/?page=tvguide&b=3300&g=all&sdsim=show&span=4"
+      url: "https://www.xmlepg.net/?page=tvguide&b=3300&g=all&sdsim=show&span=4"
       aspect_ratio: 75%
