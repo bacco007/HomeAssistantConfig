@@ -26,6 +26,7 @@ recorder:
       - sensor.launch_library
       - sensor.adsb_fa_feeder
       - weather.home
+      - sensor.internet_time
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

@@ -1,0 +1,56 @@
+---
+trigger:
+  - platform: time_pattern
+    minutes: "/5"
+sensor:
+  - name: weather_outside_temperature_5mint
+    unique_id: weather_outside_temperature_5mint
+    state: >
+      {{ states('sensor.weather_outside_temperature') | float }}
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_outside_humidity_5mint
+    unique_id: weather_outside_humidity_5mint
+    state: >
+      {{ states('sensor.weather_outside_humidity') | float }}
+    icon: mdi:thermometer
+    unit_of_measurement: "%"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_outside_pressure_5mint
+    unique_id: weather_outside_pressure_5mint
+    state: >
+      {{ states('sensor.weather_outside_pressure') | float }}
+    icon: mdi:thermometer
+    unit_of_measurement: "mBar"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_outside_temperature_5mint_stats_meanplusstdev
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') is number and state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation') is number %}
+          {{ (state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') + state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation')) }}
+      {% endif %}
+  - name: weather_outside_temperature_5mint_stats_meanminusstdev
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') is number and state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation') is number %}
+          {{ (state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') - state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation')) }}
+      {% endif %}
+  - name: weather_outside_temperature_5mint_stats_max
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'max_value') is number %}
+          {{ state_attr('sensor.weather_outside_temperature_5mint_stats', 'max_value') }}
+      {% endif %}
+  - name: weather_outside_temperature_5mint_stats_min
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'min_value') is number %}
+          {{ state_attr('sensor.weather_outside_temperature_5mint_stats', 'min_value') }}
+      {% endif %}

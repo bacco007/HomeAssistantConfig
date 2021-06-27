@@ -1,0 +1,11 @@
+---
+platform: trend
+sensors:
+  weather_outside_temperature_5mint_6hrtrend:
+    entity_id: sensor.weather_outside_temperature_5mint
+    max_samples: 72
+    sample_duration: 21600
+  weather_outside_temperature_5mint_12hrtrend:
+    entity_id: sensor.weather_outside_temperature_5mint
+    max_samples: 144
+    sample_duration: 43200

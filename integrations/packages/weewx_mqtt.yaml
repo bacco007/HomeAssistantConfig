@@ -359,13 +359,6 @@ sensor:
     start: "{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}"
     end: "{{ now() }}"
 
-  - platform: average
-    name: weather_outside_apptemperature_average
-    entities:
-      - sensor.weather_outside_apptemperature
-    start: "{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}"
-    end: "{{ now() }}"
-
   - platform: temperature_feels_like
     name: weather_outside_tempfeelslike
     source:
@@ -430,7 +423,7 @@ weather:
   - platform: template
     name: home
     condition_template: "{{ states('weather.east_tamworth') }}"
-    temperature_template: "{{ states('sensor.weather_outside_temperature_filtered') | float }}"
+    temperature_template: "{{ states('weather_outside_temperature_5mint') | float }}"
     humidity_template: "{{ states('sensor.weather_outside_humidity_filtered') | float }}"
     wind_speed_template: "{{ states('sensor.weather_outside_windspeed_filtered') | float }}"
     wind_bearing_template: "{{ states('sensor.weather_outside_winddirection_filtered') | float }}"

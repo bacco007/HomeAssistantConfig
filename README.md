@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, June 19th 2021_
+_Stats as at 05:00, Sunday, June 27th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.6.5 | 335     | 3289         | 2731 | 80 |
+| 2021.6.5 | 335     | 3303         | 2737 | 80 |
 
 Type | Qty
 -- | --
@@ -91,11 +91,11 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 23
+Media Player | 24
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2731
+Sensor | 2737
 Sun | 1
 Switch | 113
 Weather | 7
@@ -500,7 +500,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Solcast PV forecast](https://github.com/dannerph/homeassistant-solcast)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
-- [Start Spotify on chromecast](https://github.com/fondberg/spotcast)
+- [Spotcast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [Temperature Feels Like](https://github.com/Limych/ha-temperature-feeling)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
@@ -523,6 +523,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Adt Pulse](https://github.com/rsnodgrass/hass-adtpulse) | ADT Pulse sensor for Home Assistant |
 | [Afvalinfo](https://github.com/heyajohnny/afvalinfo) | Provides Home Assistant sensors for multiple Dutch waste collectors. The idea is to add more cities and features in the future. |
 | [Afvalwijzer](https://github.com/xirixiz/homeassistant-afvalwijzer) | Provides sensors for the Dutch waste collector mijnafvalwijzer.nl and/or afvalstoffendienstkalender.nl |
+| [Aimp Media Player](https://github.com/xilense/aimp_custom_component) | AIMP custom component for 🏠 Home Assistant using web remote |
 | [Airly](https://github.com/bieniu/ha-airly) | Airly air quality custom integration |
 | [Alarmdotcom](https://github.com/uvjustin/alarmdotcom) | Custom component to allow Home Assistant to interface with Alarm.com |
 | [Alarmo](https://github.com/nielsfaber/alarmo) | Easy to use alarm system integration for Home Assistant |
@@ -564,6 +565,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Bosch Indego Mower](https://github.com/jm-73/Indego) | Home Assistant Custom Component for Bosch Indego Lawn Mower |
 | [Bosch Smart Home Controller (Shc) Integration](https://github.com/tschamm/boschshc-hass) | Home Assistant component for accessing Bosch Smart Home Controller using boschshcpy python library. |
 | [Bosch Thermostat](https://github.com/bosch-thermostat/home-assistant-bosch-custom-component) | HA custom component for Bosch thermostats |
+| [Brandrisk Ute](https://github.com/Sha-Darim/brandriskute) | The custom compontnet  will get fire risks and fire prohibition from the Brandrisk Ute API for the supplied position. |
 | [Brandstofprijzen](https://github.com/metbril/home-assistant-brandstofprijzen) | Home Assistant component for fuel prices from United Consumers |
 | [Bravia Tv Psk](https://github.com/custom-components/media_player.braviatv_psk) | Sony Bravia TV (Pre-Shared Key) component for Home Assistant |
 | [Breaking Changes](https://github.com/custom-components/breaking_changes) | Component to show potential breaking_changes in the current published version based on your loaded components |
@@ -589,7 +591,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Clientraw Weather Parser](https://github.com/pilotak/homeassistant-clientraw) | Clientraw weather parser (clientraw.txt) for HomeAssistant |
 | [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather) | Climacell weather provider integration is a custom component for Home Assistant. The climacell platform uses the Climacell API as a source for meteorological data for your location. |
 | [Climate Group](https://github.com/daenny/climate_group) | Home Assistant Climate Groupe |
-| [Climate Ip](https://github.com/SebuZet/samsungrac) | Home Assistant Climate Device for controlling (not only) Samsung AC |
 | [Climate Ip](https://github.com/atxbyea/samsungrac) | Home Assistant Climate Device for controlling (not only) Samsung AC |
 | [Climate.Programmable Thermostat](https://github.com/custom-components/climate.programmable_thermostat) | Programmable thermostat that let you have a smart thermostat on budget. |
 | [Colorfulclouds Hass](https://github.com/jihao/colorfulclouds-hass) | A hass component to integrate with colorfulclouds (彩云天气) |
@@ -601,7 +602,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Couchpotato](https://github.com/youdroid/home-assistant-couchpotato) | 🎥 CouchPotato component to feed Upcoming Media Card. |
 | [Cover Time Based Rf (Trigger Script)](https://github.com/nagyrobi/home-assistant-custom-components-cover-rf-time-based) | Time-based cover with customisable scripts to trigger opening, stopping and closing. Position is calculated based on the fraction of time spent by the cover travelling up or down. State can be updated with information based on external sensors. |
 | [Cozytouch](https://github.com/Cyr-ius/hass-cozytouch) | Cozytouch support for Home Assistant |
-| [Crypto Tracker](https://github.com/PepegaBruh/CryptoTracker) | Integration for Homeassistant to implement a crypto trakcing system |
+| [Crunch O Meter](https://github.com/GuyLewin/home-assistant-crunch-o-meter) | Crunch-O-Meter API as sensors in Home Assistant. See how many people are currently at your local gym |
+| [Crypto Tracker](https://github.com/PepegaBruh/CryptoTracker) | Integration for Home Assistant to implement a crypto tracking system |
 | [Cryptoinfo](https://github.com/heyajohnny/cryptoinfo) | Provides Home Assistant sensors for all cryptocurrencies supported by CoinGecko |
 | [Cs:Go Game State](https://github.com/lociii/homeassistant-csgo) | CS:GO gamestate reporting to Home Assistant |
 | [Current Cost](https://github.com/lolouk44/CurrentCost_HA_CC) | CurrentCost Meter Reading Custom Component for Home Assistant  |
@@ -646,7 +648,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ethermineinfo](https://github.com/ThomasPrior/EthermineInfo) | Provides data from Ethermine.org on a specified miner. |
 | [Eva Ii Pro Wifi Midea Inventor Dehumidifier Custom Integration](https://github.com/barban-dev/homeassistant-midea-dehumidifier) | Home Assistant Custom Integration for EVA II PRO WiFi Smart Dehumidifier appliance by Midea/Inventor. |
 | [Event Sensor](https://github.com/azogue/eventsensor) | HomeAssistant custom sensor to track specific events |
-| [Fast Hue Polling](https://github.com/azogue/fasthue) | HomeAssistant integration to customize Hue polling for sensors and remotes |
 | [Fedex](https://github.com/custom-components/fedex) | The fedex platform allows one to track deliveries by FedEx |
 | [Feedparser](https://github.com/custom-components/feedparser) | 📰 RSS Feed Integration |
 | [Fitness Push](https://github.com/burnnat/ha-fitness-push) | Home Assistant integration to push fitness data to remote services. |
@@ -665,6 +666,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Garbage Nissewaard Homeassistant](https://github.com/Martinvdm/garbage-nissewaard-homeassistant) | Garbage collection Nissewaard for Home Assistant |
 | [Gardena Smart System](https://github.com/py-smart-gardena/hass-gardena-smart-system) | Home Assistant custom component integration for Gardena Smart System |
 | [Garo Wallbox](https://github.com/sockless-coding/garo_wallbox) | Garo wallbox - Home Assistant Component  |
+| [Gce Eco Devices](https://github.com/Aohzan/ecodevices) | Home Assistant custom component for GCE Eco-Devices |
 | [Gecko](https://github.com/gazoodle/gecko-home-assistant) | Home Assistant integration for spas equipped with Gecko Alliance in.touch2 modules |
 | [Generate Readme](https://github.com/custom-components/readme) | Use Jinja and data from Home Assistant to generate your README.md file |
 | [Generic Hygrostat](https://github.com/avdeevsv91/ha_generic_hygrostat) | Generic Thermostat climate platform for Home Assistant |
@@ -743,7 +745,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Homewizard Energy](https://github.com/DCSBL/ha-homewizard-energy) | Custom Home Assistant integration for HomeWizard Energy |
 | [Hp Printers Integration](https://github.com/elad-bar/ha-hpprinter) | HP Printer Integration |
 | [Hubitat](https://github.com/jason0x43/hacs-hubitat) | A Hubitat integration for Home Assistant |
-| [Hue Power Consumption](https://github.com/bramstroker/homeassistant-powercalc) | Custom component to calculate estimated power consumption of lights and other appliances |
 | [Hue Sensor Advanced](https://github.com/robmarkcole/Hue-sensors-HASS) | Support for Hue motion sensors and device tracker |
 | [Hue Service Advanced](https://github.com/Cyr-ius/hass-hue-service-advanced) | Service to set motion's sensors and change scan intervall for remotes and motions |
 | [Hunter Douglas And Luxaflex Powerview Cover](https://github.com/safepay/cover.hd_powerview) | Control Hunter Douglas / Luxaflex PowerView Window Shades in Home Assistant |
@@ -821,7 +822,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Momentary Switch Component](https://github.com/twrecked/hass-momentary) | Momentary Switch Component for Home Assistant |
 | [Moneydashboard](https://github.com/shutupflanders/sensor.moneydashboard) | MoneyDashboard Net Balance sensor for HomeAssistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
-| [Mosenergosbyt (Мосэнергосбыт)](https://github.com/alryaz/hass-mosenergosbyt) | Home Assistant Mosenergosbyt personal cabinet data and statistics sensor |
 | [Mqtt Template Switch](https://github.com/lukich48/hass_mqtt_template_switch) | mqtt template switch for homeassistant |
 | [Multiscrape   A Home Assistant Custom Scraping Component](https://github.com/danieldotnl/ha-multiscrape) | Home Assistant custom component for scraping multiple values (from a single HTTP request) with a separate sensor for each value.  |
 | [Multizone Controller](https://github.com/Petro31/ha-integration-multizone-controller) | Integration that creates a multi-zone volume controller for media_players in Home Assistant |
@@ -866,7 +866,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Panasonic Smart App](https://github.com/osk2/panasonic_smart_app) | 🔛 Panasonic Smart App integration for Home Assistant. |
 | [Pandora Car Alarm System](https://github.com/alryaz/hass-pandora-cas) | Home Assistant custom component for Pandora Car Alarm System |
 | [Pandora Car Alarm System](https://github.com/turbulator/pandora-cas) | Home Assistant custom component for Pandora Car Alarm System |
-| [Passive Ble Monitor Integration (Xiaomi Mijia Ble Mibeacon Monitor)](https://github.com/custom-components/ble_monitor) | Passively monitors BLE messages from Xiaomi Mijia BLE MiBeacon, Qingping, ATC, Xiaomi Scale, Kegtron and Thermoplus sensors |
+| [Passive Ble Monitor Integration (Xiaomi Mibeacon And Scale, Qingping, Atc, Kegtron And Thermoplus Sensors)](https://github.com/custom-components/ble_monitor) | Passively monitors BLE messages from Xiaomi Mijia BLE MiBeacon, Qingping, ATC, Xiaomi Scale, Kegtron and Thermoplus sensors |
 | [Pfsense Gateways Monitoring](https://github.com/nagyrobi/home-assistant-custom-components-pfsense-gateways) | Monitor and react on your pfSense gateway's status with Home Assistant. |
 | [Phicomm Dc1](https://github.com/5high/phicomm-dc1-homeassistant) | 斐讯DC1插排接入Home Assistant插件，本插件原作者NETYJ，此处仅为HACS安装方便之用。 |
 | [Philips Airpurifier](https://github.com/xMrVizzy/philips-airpurifier) | 💨 Philips AirPurifier custom component for Home Assistant. |
@@ -881,6 +881,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pollen Information Hungary](https://github.com/amaximus/pollen_hu) | Home Assistant custom component for Pollen Information in Hungary |
 | [Pool Math (Trouble Free Pool)](https://github.com/rsnodgrass/hass-poolmath) | Pool Math for Home Assistant |
 | [Popular Times](https://github.com/freakshock88/hass-populartimes) | Custom component for Home Assistant which generates a sensor to show popularity for a google maps place. |
+| [Power Calculation](https://github.com/bramstroker/homeassistant-powercalc) | Custom component to calculate estimated power consumption of lights and other appliances |
 | [Pre Distribuce Cz](https://github.com/slesinger/HomeAssistant-PREdistribuce) | Home Assistant integration to display info about energy plan |
 | [Presence Simulation](https://github.com/slashback100/presence_simulation) | Home Assistant Presence Simulation |
 | [Project Three Zero (7 11 Fuel Lock Monitor)](https://github.com/atymic/project_three_zero_ha) | Project Three Zero Home Assistant Integration |
@@ -962,7 +963,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Sonos Alarm](https://github.com/AaronDavidSchneider/SonosAlarm) | HomeAssistant custom component to control your SONOS Alarm |
 | [Sox](https://github.com/definitio/ha-sox) | A Home Assistant integration to turn your vacuum into an audio player. |
 | [Spacex Next Launch And Starman](https://github.com/djtimca/HASpaceX) | Home Assistant integration for SpaceX Next Launch and Starman data. |
-| [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device |
+| [Spotcast](https://github.com/fondberg/spotcast) | Home assistant custom component to start Spotify playback on an idle chromecast device as well as control spotify connect devices |
 | [Spzb0001 Thermostat](https://github.com/WolfRevo/climate.spzb0001_thermostat) | A clone created from the Home Assistant generic_thermostat to use EUROTRONIC Zigbee SPZB0001 Thermostats with external temperature sensors |
 | [Sql (With Json Detection)](https://github.com/crowbarz/ha-sql_json) | Updated SQL integration for Home Assistant that supports JSON attributes |
 | [Srp Energy Sensor](https://github.com/custom-components/srp_energy) | The srp_energy integration shows information from Srp hourly energy usage report for their customers |
@@ -1232,6 +1233,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Notify Card](https://github.com/bernikr/lovelace-notify-card) | Send notifications directly from the dashboard |
 | [Number Box](https://github.com/htmltiger/numberbox-card) | Replace input_number sliders with plus and minus buttons |
 | [Openmensa Lovelace Card](https://github.com/Mofeywalker/openmensa-lovelace-card) | A Home-Assistant Lovelace card which displays information from the openmensa-sensor. |
+| [Opensprinkler Card](https://github.com/rianadon/opensprinkler-card) | Home Assistant card for collecting OpenSprinkler status |
 | [Our Groceries Card](https://github.com/ljmerza/our-groceries-card) | our groceries lovelace card |
 | [Ozw Network Visualization Card](https://github.com/abmantis/ozw-network-visualization-card) | Lovelace custom card for visualizing the ZWave network with the OpenZWave (beta) integration. |
 | [Pandora Cas Card](https://github.com/turbulator/pandora-cas-card) | Pandora lovelace card for Home Assistant |
@@ -1272,7 +1274,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat) | A different take on the thermostat card for Home Assistant ♨️ |
 | [Simple Vacuum Card](https://github.com/benct/lovelace-xiaomi-vacuum-card) | Simple card for various robot vacuums in Home Assistant's Lovelace UI |
 | [Simple Weather Card](https://github.com/kalkih/simple-weather-card) | Minimalistic weather card for Home Assistant |
-| [Slider Button Card](https://github.com/mattieha/slider-button-card) | Lovelace Slider button card |
+| [Slider Button Card](https://github.com/mattieha/slider-button-card) | A button card with integrated slider |
 | [Slider Entity Row](https://github.com/thomasloven/lovelace-slider-entity-row) | 🔹 Add sliders to entity cards |
 | [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card) | Spotify playlist card for Home Assistant card |
 | [Stack In Card](https://github.com/custom-cards/stack-in-card) | 🛠 group multiple cards into one card without the borders |
@@ -1298,6 +1300,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Thermostat Popup Card](https://github.com/DBuit/thermostat-popup-card) | Lovelace card to use as custom pop-up for thermostat in homekit style |
 | [Time Elapsed Card](https://github.com/kirbo/ha-lovelace-elapsed-time-card) | Home Assistant Lovelace Custom Card to calculate time elapsed/left |
 | [Time Picker Card](https://github.com/GeorgeSG/lovelace-time-picker-card) | 🕰️ Time Picker Card for Home Assistant's Lovelace UI |
+| [Timer Bar Card](https://github.com/rianadon/timer-bar-card) | A progress bar display for Home Assistant timers |
 | [Todoist Card](https://github.com/grinstantin/todoist-card) | Todoist card for Home Assistant Lovelace UI. |
 | [Todoist Task List](https://github.com/tholgir/TodoIst-Task-List) | This is a custom lovelace card for displaying a todoist calendar in Home Assistant. |
 | [Toggle Control Button Row](https://github.com/finity69x2/toggle-control-button-row) | A one-button control row for any Home Assistant binary entity |

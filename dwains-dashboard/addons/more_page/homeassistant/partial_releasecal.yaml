@@ -16,14 +16,7 @@ cards:
       # font-family: { var(--primary-font-family);}
       # font-weight: {400 !important;}
     clickable: true
-    css:
-      table+: "width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);"
-      "tbody tr:nth-child(even)": "background-color: var(--table-row-background-color);"
-      "tbody tr:nth-child(odd)": "background-color: none !important;"
-      "th": "background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;"
-      "th:first-child": "border-top-left-radius: var(--ha-card-border-radius);"
-      "th:last-child": "border-top-right-radius: var(--ha-card-border-radius);"
-      "tbody td": "padding: 4px;"
+    css: !include ../../1_Templates/style_flextable.yaml
     entities:
       include:
         - sensor.ical_home_assistant_event_*

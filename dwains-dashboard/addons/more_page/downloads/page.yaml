@@ -145,3 +145,11 @@
           name: Docker Container Status
           icon: mdi:docker
         - type: divider
+        - binary_sensor.jdownloader_vmtbsh01_update_available
+        - sensor.jdownloader_vmtbsh01_download_speed
+        - sensor.jdownloader_vmtbsh01_links
+        - sensor.jdownloader_vmtbsh01_packages
+        - sensor.jdownloader_vmtbsh01_status
+        - sensor.jdownloaders_online
+        - switch.jdownloader_vmtbsh01_limit
+        - switch.jdownloader_vmtbsh01_pause

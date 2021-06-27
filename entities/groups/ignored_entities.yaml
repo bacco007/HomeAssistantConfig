@@ -5,6 +5,12 @@ ignored_entities:
     - sensor.unavailable_entities
     - sensor.blitzortung_lightning_azimuth
     - sensor.blitzortung_lightning_distance
+    - sensor.east_tamworth_uv_end_time_0
+    - sensor.east_tamworth_uv_end_time_1
+    - sensor.east_tamworth_uv_end_time_2
+    - sensor.east_tamworth_uv_start_time_0
+    - sensor.east_tamworth_uv_start_time_1
+    - sensor.east_tamworth_uv_start_time_2
     - sensor.east_tamworth_fire_danger_4
     - sensor.east_tamworth_fire_danger_5
     - sensor.east_tamworth_uv_category_4
@@ -34,3 +40,14 @@ ignored_entities:
     - sensor.skin_type_4_safe_exposure_time
     - sensor.skin_type_5_safe_exposure_time
     - sensor.skin_type_6_safe_exposure_time
+    - sensor.us_coronavirus_current
+    - sensor.us_coronavirus_recovered
+    - sensor.radarr_commands
+    - sensor.radarr_movies
+    - sensor.radarr_status
+    - sensor.radarr_upcoming
+    - sensor.international_space_station_iss_pass_0
+    - sensor.international_space_station_iss_pass_1
+    - sensor.international_space_station_iss_pass_2
+    - sensor.international_space_station_iss_pass_3
+    - sensor.international_space_station_iss_pass_4

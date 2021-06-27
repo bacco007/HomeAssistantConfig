@@ -82,34 +82,3 @@ cards:
       {% for repository in state_attr('binary_sensor.updater_hacs', 'repositories') %}|**{{ repository.display_name }}**|{{ repository.installed_version }}|[{{ repository.available_version }}]({{ states('input_text.base_url') }}/hacs/entry)|[changelog](https://github.com/{{ repository.name }}/releases)|
       {% endfor %}
       {% endif %}
-  - type: markdown
-    card_mod:
-    style:
-      ha-markdown:
-        $:
-          ha-markdown-element: |
-            table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
-            th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
-            th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
-            th:last-child { border-top-right-radius: var(--ha-card-border-radius); }
-            td { padding: 4px; }
-            tr:nth-child(even) { background-color: var(--table-row-background-color); }
-    content: |
-      ❗️ Updates available
-      {% if states('binary_sensor.updater_core') == 'on' or states('binary_sensor.updater_supervisor') == 'on' or states('binary_sensor.updater_os') == 'on' %}
-
-
-      System:
-      {% if states('binary_sensor.updater_core') == 'on' %}
-
-      - Core: [{{ state_attr('binary_sensor.updater_core', 'installed_version') }} → {{ state_attr('binary_sensor.updater_core', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/core/releases) / [release notes](https://www.home-assistant.io/latest-release-notes/)
-      {% endif %}
-      {% if states('binary_sensor.updater_supervisor') == 'on' %}
-
-      - Supervisor: [{{ state_attr('binary_sensor.updater_supervisor', 'installed_version') }} → {{ state_attr('binary_sensor.updater_supervisor', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/supervisor/releases)
-      {% endif %}
-      {% if states('binary_sensor.updater_os') == 'on' %}
-
-      - OS: [{{ state_attr('binary_sensor.updater_os', 'installed_version') }} → {{ state_attr('binary_sensor.updater_os', 'latest_version') }}]({{ states('input_text.base_url') }}/hassio/dashboard) / [changelog](https://github.com/home-assistant/operating-system/releases)
-      {% endif %}
-      {% endif %}

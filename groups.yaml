@@ -80,3 +80,4 @@ sport_upcoming:
     - sensor.sport_wrc
     - sensor.sport_formula_e
     - sensor.sport_dtm
+    - sensor.sport_extreme_e
