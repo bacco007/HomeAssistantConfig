@@ -72,30 +72,30 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, June 27th 2021_
+_Stats as at 05:00, Saturday, July 10th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.6.5 | 335     | 3303         | 2737 | 80 |
+| 2021.7.1 | 344     | 2235         | 1666 | 80 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 80
-Binary Sensor | 187
+Binary Sensor | 186
 Camera | 4
-Device Tracker | 64
+Device Tracker | 66
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
-Light | 3
-Media Player | 24
+Light | 4
+Media Player | 26
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 2737
+Sensor | 1666
 Sun | 1
 Switch | 113
 Weather | 7
@@ -117,7 +117,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [air_quality](https://www.home-assistant.io/components/air_quality) |
 | [air_quality.dyson_local](https://www.home-assistant.io/components/air_quality.dyson_local) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
+| [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alarm_control_panel.deconz](https://www.home-assistant.io/components/alarm_control_panel.deconz) |
+| [alexa_media](https://www.home-assistant.io/components/alexa_media) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
 | [amberelectric](https://www.home-assistant.io/components/amberelectric) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
@@ -149,6 +151,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
+| [binary_sensor.trend](https://www.home-assistant.io/components/binary_sensor.trend) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
@@ -236,6 +239,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ios](https://www.home-assistant.io/components/ios) |
 | [lifx](https://www.home-assistant.io/components/lifx) |
 | [light](https://www.home-assistant.io/components/light) |
+| [light.alexa_media](https://www.home-assistant.io/components/light.alexa_media) |
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.deconz](https://www.home-assistant.io/components/light.deconz) |
 | [light.lifx](https://www.home-assistant.io/components/light.lifx) |
@@ -246,6 +250,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
+| [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
@@ -267,10 +272,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [network](https://www.home-assistant.io/components/network) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
+| [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
 | [notify.group](https://www.home-assistant.io/components/notify.group) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
+| [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
@@ -302,6 +309,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [script](https://www.home-assistant.io/components/script) |
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
+| [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.amberelectric](https://www.home-assistant.io/components/sensor.amberelectric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
@@ -408,6 +416,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
+| [switch.alexa_media](https://www.home-assistant.io/components/switch.alexa_media) |
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
@@ -456,6 +465,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>Expand Custom Components List</summary>
 
+- [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
 - [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
@@ -610,7 +620,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Cz Public Transport](https://github.com/bruxy70/CZ-Public-Transport) | 🚍 Home Assistant custom sensor for finding Czech Public Transportation Connections |
 | [D Link Hnap](https://github.com/postlund/dlink_hnap) | Experimental integration to Home Assistant supporting D-Link devices |
 | [D Link Presence / Device Tracker](https://github.com/ayavilevich/homeassistant-dlink-presence) | A D-Link AP/router device tracker for Home Assistant |
-| [Dahua](https://github.com/rroller/dahua) | Dahua Camera Home Assistant Integration |
+| [Dahua](https://github.com/rroller/dahua) | Dahua Camera and Doorbell Home Assistant Integration |
 | [Dahua Vto](https://github.com/myhomeiot/DahuaVTO) | Control Dahua VTO/VTH devices from Home Assistant |
 | [Dahua Vto Integration](https://github.com/elad-bar/ha-dahuavto) | Dahua VTO Integration |
 | [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor) | Sensor for Home Assistant that gets reset at midnight |
@@ -1243,7 +1253,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Pie Chart Card](https://github.com/sdelliot/pie-chart-card) | Generalized Lovelace pie chart card |
 | [Plan Coordinates](https://github.com/custom-cards/plan-coordinates) | None |
 | [Plant Picture Card](https://github.com/badguy99/PlantPictureCard) | Like a picture glance card, but for plant data |
-| [Plex Meets Home Assistant](https://github.com/JurajNyiri/PlexMeetsHomeAssistant) | Custom integration which integrates plex into Home Assistant and makes it possible to launch movies or tv shows on TV with a simple click |
+| [Plex Meets Home Assistant](https://github.com/JurajNyiri/PlexMeetsHomeAssistant) | Custom card which integrates plex into Home Assistant and makes it possible to launch movies or tv shows on TV with a simple click |
 | [Podcast Card](https://github.com/iantrich/podcast-card) | 🎧 Podcast Player Card |
 | [Pollen Information Card For Hungary](https://github.com/amaximus/pollen-hu-card) | Home Assistant custom Lovelace card for pollen information in Hungary |
 | [Posten Card](https://github.com/ezand/lovelace-posten-card) | A Lovelace card to display Norwegian mail delivery days |

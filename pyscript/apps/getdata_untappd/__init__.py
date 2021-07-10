@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 
 BASEURL = "https://api.untappd.com/v4/user/beers/"
@@ -42,6 +44,12 @@ def getdata_untappd(
 
     x = 0
     for beer in beer_data:
+        date_firstcheckin = datetime.strptime(
+            [beer][0]["first_created_at"], "%a, %d %b %Y %H:%M:%S %z"
+        )
+        date_recentcheckin = datetime.strptime(
+            [beer][0]["recent_created_at"], "%a, %d %b %Y %H:%M:%S %z"
+        )
         DATA.append(
             {
                 "beer_name": [beer][0]["beer"]["beer_name"],
@@ -53,8 +61,8 @@ def getdata_untappd(
                 "brewery_country": [beer][0]["brewery"]["country_name"],
                 "rating": [beer][0]["rating_score"],
                 "count": [beer][0]["count"],
-                "first_checkin": [beer][0]["first_created_at"],
-                "recent_checkin": [beer][0]["recent_created_at"],
+                "first_checkin": datetime.strftime(date_firstcheckin, "%a %-d %b %Y"),
+                "recent_checkin": datetime.strftime(date_recentcheckin, "%a %-d %b %Y"),
             }
         )
         x = x + 1

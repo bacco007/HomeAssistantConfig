@@ -17196,12 +17196,12 @@ var lodash = createCommonjsModule(function (module, exports) {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const CSS_STYLE = {
-    width: 138,
-    height: 203,
+    ratio: 1.471,
+    minimumWidth: 138,
     expandedWidth: 220,
     expandedHeight: 324,
-    episodeWidth: 300,
-    episodeHeight: 169
+    episodeRatio: 0.563,
+    minimumEpisodeWidth: 300
 };
 const supported = {
     kodi: ['movie', 'episode'],
@@ -18672,7 +18672,7 @@ class Plex {
     constructor(ip, port = false, token, protocol = 'http', sort = 'titleSort:asc') {
         this.serverInfo = {};
         this.clients = [];
-        this.requestTimeout = 5000;
+        this.requestTimeout = 10000;
         this.sections = [];
         this.init = async () => {
             await this.getClients();
@@ -18830,7 +18830,7 @@ class Plex {
 }
 
 class PlayController {
-    constructor(hass, plex, entity, runBefore, runAfter) {
+    constructor(hass, plex, entity, runBefore, runAfter, libraryName) {
         this.plexPlayerEntity = '';
         this.runBefore = false;
         this.runAfter = false;
@@ -18908,7 +18908,34 @@ class PlayController {
                     await this.playViaPlexPlayer(entity.value, data.key.split('/')[3]);
                     break;
                 case 'cast':
-                    this.playViaCast(entity.value, data.Media[0].Part[0].key);
+                    if (this.hass.services.plex) {
+                        switch (data.type) {
+                            case 'movie':
+                                this.playViaCastPlex(entity.value, 'movie', `plex://${JSON.stringify({
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    library_name: this.libraryName,
+                                    title: data.title
+                                })}`);
+                                break;
+                            case 'episode':
+                                this.playViaCastPlex(entity.value, 'EPISODE', `plex://${JSON.stringify({
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    library_name: this.libraryName,
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    show_name: data.grandparentTitle,
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    season_number: data.parentIndex,
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    episode_number: data.index
+                                })}`);
+                                break;
+                            default:
+                                this.playViaCast(entity.value, data.Media[0].Part[0].key);
+                        }
+                    }
+                    else {
+                        this.playViaCast(entity.value, data.Media[0].Part[0].key);
+                    }
                     break;
                 default:
                     throw Error(`No service available to play ${data.title}!`);
@@ -18917,13 +18944,13 @@ class PlayController {
                 await this.hass.callService(this.runAfter[0], this.runAfter[1], {});
             }
         };
-        this.plexPlayerCreateQueue = async (movieID) => {
-            const url = `${this.plex.protocol}://${this.plex.ip}:${this.plex.port}/playQueues?type=video&shuffle=0&repeat=0&continuous=1&own=1&uri=server://${await this.plex.getServerID()}/com.plexapp.plugins.library/library/metadata/${movieID}`;
+        this.plexPlayerCreateQueue = async (movieID, plex) => {
+            const url = `${plex.getBasicURL()}/playQueues?type=video&shuffle=0&repeat=0&continuous=1&own=1&uri=server://${await plex.getServerID()}/com.plexapp.plugins.library/library/metadata/${movieID}`;
             const plexResponse = await axios({
                 method: 'post',
                 url,
                 headers: {
-                    'X-Plex-Token': this.plex.token,
+                    'X-Plex-Token': plex.token,
                     'X-Plex-Client-Identifier': 'PlexMeetsHomeAssistant'
                 }
             });
@@ -18935,13 +18962,30 @@ class PlayController {
                 playQueueSelectedMetadataItemID: plexResponse.data.MediaContainer.playQueueSelectedMetadataItemID
             };
         };
-        this.playViaPlexPlayer = async (entityName, movieID) => {
-            const machineID = this.getPlexPlayerMachineIdentifier(entityName);
-            const { playQueueID, playQueueSelectedMetadataItemID } = await this.plexPlayerCreateQueue(movieID);
-            const url = `${this.plex.protocol}://${this.plex.ip}:${this.plex.port}/player/playback/playMedia?address=${this.plex.ip}&commandID=1&containerKey=/playQueues/${playQueueID}?window=100%26own=1&key=/library/metadata/${playQueueSelectedMetadataItemID}&machineIdentifier=${await this.plex.getServerID()}&offset=0&port=${this.plex.port}&token=${this.plex.token}&type=video&protocol=${this.plex.protocol}`;
+        this.playViaPlexPlayer = async (entity, movieID) => {
+            const machineID = this.getPlexPlayerMachineIdentifier(entity);
+            let { plex } = this;
+            if (lodash.isObject(entity) && !lodash.isNil(entity.plex)) {
+                plex = entity.plex;
+            }
+            const { playQueueID, playQueueSelectedMetadataItemID } = await this.plexPlayerCreateQueue(movieID, this.plex);
+            let url = plex.getBasicURL();
+            url += `/player/playback/playMedia`;
+            url += `?type=video`;
+            url += `&commandID=1`;
+            url += `&providerIdentifier=com.plexapp.plugins.library`;
+            url += `&containerKey=/playQueues/${playQueueID}`;
+            url += `&key=/library/metadata/${playQueueSelectedMetadataItemID}`;
+            url += `&offset=0`;
+            url += `&machineIdentifier=${await this.plex.getServerID()}`;
+            url += `&protocol=${this.plex.protocol}`;
+            url += `&address=${this.plex.ip}`;
+            url += `&port=${this.plex.port}`;
+            url += `&token=${this.plex.token}`;
+            url = plex.authorizeURL(url);
             try {
                 const plexResponse = await axios({
-                    method: 'post',
+                    method: 'get',
                     url,
                     headers: {
                         'X-Plex-Target-Client-Identifier': machineID,
@@ -18956,6 +19000,19 @@ class PlayController {
                 }
             }
             catch (err) {
+                try {
+                    await this.hass.callService('rest_command', 'pmha_playmedia', {
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        url,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        target_client_identifier: machineID,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        client_identifier: 'PlexMeetsHomeAssistant'
+                    });
+                }
+                catch (homeAssistantErr) {
+                    // pass
+                }
                 if (lodash.includes(err.message, '404')) {
                     throw Error('Defined plexPlayer is currently not available for playback.');
                 }
@@ -19012,6 +19069,16 @@ class PlayController {
                 media_content_id: this.plex.authorizeURL(`${this.plex.getBasicURL()}${mediaLink}`)
             });
         };
+        this.playViaCastPlex = (entityName, contentType, mediaLink) => {
+            this.hass.callService('media_player', 'play_media', {
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                entity_id: entityName,
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                media_content_type: contentType,
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                media_content_id: mediaLink
+            });
+        };
         this.playViaAndroidTV = async (entityName, mediaID, instantPlay = false) => {
             const serverID = await this.plex.getServerID();
             let command = `am start`;
@@ -19061,9 +19128,58 @@ class PlayController {
             });
             return service;
         };
-        this.getPlexPlayerMachineIdentifier = (entityName) => {
+        this.init = async () => {
+            if (!lodash.isNil(this.entity.plexPlayer)) {
+                if (lodash.isArray(this.entity.plexPlayer)) {
+                    for (let i = 0; i < this.entity.plexPlayer.length; i += 1) {
+                        if (lodash.isObjectLike(this.entity.plexPlayer[i]) && !lodash.isNil(this.entity.plexPlayer[i].server)) {
+                            let port = false;
+                            if (!lodash.isNil(this.entity.plexPlayer[i].server.port)) {
+                                port = this.entity.plexPlayer[i].server.port;
+                            }
+                            let protocol = 'http';
+                            if (!lodash.isNil(this.entity.plexPlayer[i].server.protocol)) {
+                                protocol = this.entity.plexPlayer[i].server.protocol;
+                            }
+                            // eslint-disable-next-line no-param-reassign
+                            this.entity.plexPlayer[i].plex = new Plex(this.entity.plexPlayer[i].server.ip, port, this.entity.plexPlayer[i].server.token, protocol);
+                            // eslint-disable-next-line no-await-in-loop
+                            await this.entity.plexPlayer[i].plex.getClients();
+                        }
+                    }
+                }
+                else if (!lodash.isNil(this.entity.plexPlayer.server) &&
+                    !lodash.isNil(this.entity.plexPlayer.server.ip) &&
+                    !lodash.isNil(this.entity.plexPlayer.server.token)) {
+                    let port = false;
+                    if (!lodash.isNil(this.entity.plexPlayer.server.port)) {
+                        port = this.entity.plexPlayer.server.port;
+                    }
+                    let protocol = 'http';
+                    if (!lodash.isNil(this.entity.plexPlayer.server.protocol)) {
+                        protocol = this.entity.plexPlayer.server.protocol;
+                    }
+                    // eslint-disable-next-line no-param-reassign
+                    this.entity.plexPlayer.plex = new Plex(this.entity.plexPlayer.server.ip, port, this.entity.plexPlayer.server.token, protocol);
+                    // eslint-disable-next-line no-await-in-loop
+                    await this.entity.plexPlayer.plex.getClients();
+                }
+            }
+        };
+        this.getPlexPlayerMachineIdentifier = (entity) => {
             let machineIdentifier = '';
-            lodash.forEach(this.plex.clients, plexClient => {
+            let { plex } = this;
+            let entityName = '';
+            if (lodash.isString(entity)) {
+                entityName = entity;
+            }
+            else if (lodash.isObjectLike(entity) && !lodash.isNil(entity.identifier)) {
+                entityName = entity.identifier;
+                if (!lodash.isNil(entity.plex) && entity.plex) {
+                    plex = entity.plex;
+                }
+            }
+            lodash.forEach(plex.clients, plexClient => {
                 if (lodash.isEqual(plexClient.machineIdentifier, entityName) ||
                     lodash.isEqual(plexClient.product, entityName) ||
                     lodash.isEqual(plexClient.name, entityName) ||
@@ -19078,9 +19194,9 @@ class PlayController {
         this.isPlaySupported = (data) => {
             return !lodash.isEmpty(this.getPlayService(data));
         };
-        this.isPlexPlayerSupported = (entityName) => {
+        this.isPlexPlayerSupported = (entity) => {
             let found = false;
-            if (this.getPlexPlayerMachineIdentifier(entityName)) {
+            if (this.getPlexPlayerMachineIdentifier(entity)) {
                 found = true;
             }
             return found || !lodash.isEqual(this.runBefore, false);
@@ -19113,6 +19229,7 @@ class PlayController {
         this.hass = hass;
         this.plex = plex;
         this.entity = entity;
+        this.libraryName = libraryName;
         if (!lodash.isEmpty(runBefore) && this.hass.states[runBefore]) {
             this.runBefore = runBefore.split('.');
         }
@@ -19183,6 +19300,8 @@ const hasEpisodes = (media) => {
 const isVideoFullScreen = (_this) => {
     const videoPlayer = _this.getElementsByClassName('videoPlayer')[0];
     const video = videoPlayer.children[0];
+    if (!video)
+        return false;
     const body = document.getElementsByTagName('body')[0];
     return ((video.offsetWidth === body.offsetWidth && video.offsetHeight === body.offsetHeight) ||
         (_this.videoElem && _this.videoElem.classList.contains('simulatedFullScreen')));
@@ -19202,6 +19321,47 @@ const findTrailerURL = (movieData) => {
         });
     }
     return foundURL;
+};
+const clickHandler = (elem, clickFunction, holdFunction) => {
+    let longpress = false;
+    let presstimer = null;
+    const cancel = (e) => {
+        e.stopPropagation();
+        if (presstimer !== null) {
+            clearTimeout(presstimer);
+            presstimer = null;
+        }
+    };
+    const click = (e) => {
+        e.stopPropagation();
+        if (presstimer !== null) {
+            clearTimeout(presstimer);
+            presstimer = null;
+        }
+        if (longpress) {
+            return false;
+        }
+        clickFunction(e);
+        return true;
+    };
+    const start = (e) => {
+        e.stopPropagation();
+        if (e.type === 'click' && e.button !== 0) {
+            return;
+        }
+        longpress = false;
+        presstimer = setTimeout(() => {
+            holdFunction(e);
+            longpress = true;
+        }, 1000);
+    };
+    elem.addEventListener('mousedown', start);
+    elem.addEventListener('touchstart', start);
+    elem.addEventListener('click', click);
+    elem.addEventListener('mouseout', cancel);
+    elem.addEventListener('touchend', cancel);
+    elem.addEventListener('touchleave', cancel);
+    elem.addEventListener('touchcancel', cancel);
 };
 const createEpisodesView = (playController, plex, data) => {
     const episodeContainer = document.createElement('div');
@@ -19539,7 +19699,7 @@ style.textContent = css `
 		z-index: 5;
 		position: absolute;
 		top: ${CSS_STYLE.expandedHeight + 16}px;
-		width: calc(100% - 32px);
+		width: calc(100% - 22px);
 		left: 0;
 		padding: 16px;
 		display: none;
@@ -19548,7 +19708,7 @@ style.textContent = css `
 		z-index: 5;
 		position: absolute;
 		top: ${CSS_STYLE.expandedHeight + 16}px;
-		width: calc(100% - 32px);
+		width: calc(100% - 22px);
 		left: 0;
 		padding: 16px;
 		display: none;
@@ -19623,6 +19783,7 @@ style.textContent = css `
 	.searchContainer {
 		position: relative;
 		z-index: 2;
+		padding-right: 8px;
 	}
 
 	.searchContainer input {
@@ -19837,14 +19998,14 @@ style.textContent = css `
 	.seasonContainer {
 		position: relative;
 		float: left;
-		margin-right: 16px;
+		margin-right: 10px;
 		margin-bottom: 15px;
 		transition: 0.5s;
 	}
 	.episodeContainer {
 		position: relative;
 		float: left;
-		margin-right: 16px;
+		margin-right: 10px;
 		margin-bottom: 15px;
 		transition: 0.5s;
 	}
@@ -19999,6 +20160,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.runBefore = '';
         this.playTrailer = true;
         this.showExtras = true;
+        this.previousPageWidth = 0;
         this.runAfter = '';
         this.columnsCount = 0;
         this.renderedItems = 0;
@@ -20017,7 +20179,6 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.loading = false;
         this.maxCount = false;
         this.error = '';
-        this.previousPositions = [];
         this.contentBGHeight = 0;
         this.renderNewElementsIfNeeded = () => {
             const loadAdditionalRowsCount = 2; // todo: make this configurable
@@ -20073,12 +20234,37 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 this.renderNewElementsIfNeeded();
             });
             window.addEventListener('resize', () => {
+                if (!this.detailsShown) {
+                    const videoPlayer = this.getElementsByClassName('videoPlayer')[0];
+                    let isFullScreen = false;
+                    if (videoPlayer.children.length > 0) {
+                        isFullScreen = isVideoFullScreen(this);
+                    }
+                    if (this.card && this.movieElems.length > 0 && !isFullScreen) {
+                        if (this.previousPageWidth !== this.card.offsetWidth) {
+                            this.previousPageWidth = this.card.offsetWidth;
+                            this.renderPage();
+                            const contentbg = this.getElementsByClassName('contentbg');
+                            this.contentBGHeight = getHeight(contentbg[0]);
+                        }
+                    }
+                }
                 this.renderNewElementsIfNeeded();
             });
+            if (this.card) {
+                this.previousPageWidth = this.card.offsetWidth;
+            }
             this.loading = true;
             this.renderPage();
             try {
                 if (this.plex) {
+                    if (this.hassObj) {
+                        const entityConfig = JSON.parse(JSON.stringify(this.config.entity)); // todo: find a nicer solution
+                        this.playController = new PlayController(this.hassObj, this.plex, entityConfig, this.runBefore, this.runAfter, this.config.libraryName);
+                        if (this.playController) {
+                            await this.playController.init();
+                        }
+                    }
                     await this.plex.init();
                     try {
                         const onDeck = await this.plex.getOnDeck();
@@ -20164,41 +20350,6 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             this.resizeBackground();
         };
         this.render = () => {
-            this.previousPositions = [];
-            // todo: find a better way to detect resize...
-            setInterval(() => {
-                if (!this.detailsShown) {
-                    const videoPlayer = this.getElementsByClassName('videoPlayer')[0];
-                    let isFullScreen = false;
-                    if (videoPlayer.children.length > 0) {
-                        isFullScreen = isVideoFullScreen(this);
-                    }
-                    if (this.movieElems.length > 0 && !isFullScreen) {
-                        let renderNeeded = false;
-                        if (this.previousPositions.length === 0) {
-                            for (let i = 0; i < this.movieElems.length; i += 1) {
-                                this.previousPositions[i] = {};
-                                this.previousPositions[i].top = this.movieElems[i].parentElement.offsetTop;
-                                this.previousPositions[i].left = this.movieElems[i].parentElement.offsetLeft;
-                            }
-                        }
-                        for (let i = 0; i < this.movieElems.length; i += 1) {
-                            if (this.previousPositions[i] &&
-                                this.movieElems[i].dataset.clicked !== 'true' &&
-                                (this.previousPositions[i].top !== this.movieElems[i].parentElement.offsetTop ||
-                                    this.previousPositions[i].left !== this.movieElems[i].parentElement.offsetLeft)) {
-                                renderNeeded = true;
-                                this.previousPositions = [];
-                            }
-                        }
-                        if (renderNeeded) {
-                            this.renderPage();
-                            const contentbg = this.getElementsByClassName('contentbg');
-                            this.contentBGHeight = getHeight(contentbg[0]);
-                        }
-                    }
-                }
-            }, 250);
             this.renderPage();
         };
         this.searchInput = () => {
@@ -20278,6 +20429,16 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             this.contentBGHeight = getHeight(contentbg);
         };
         this.renderPage = () => {
+            if (this.card) {
+                const marginRight = 10; // needs to be equal to .container margin right
+                const areaSize = this.card.offsetWidth - parseInt(this.card.style.paddingRight, 10) - parseInt(this.card.style.paddingLeft, 10);
+                const postersInRow = Math.floor(areaSize / CSS_STYLE.minimumWidth);
+                CSS_STYLE.width = areaSize / postersInRow - marginRight;
+                CSS_STYLE.height = CSS_STYLE.width * CSS_STYLE.ratio;
+                const episodesInRow = Math.floor(areaSize / CSS_STYLE.minimumEpisodeWidth);
+                CSS_STYLE.episodeWidth = Math.floor(areaSize / episodesInRow - marginRight);
+                CSS_STYLE.episodeHeight = Math.round(CSS_STYLE.episodeWidth * CSS_STYLE.episodeRatio);
+            }
             this.renderedItems = 0;
             this.columnsCount = 0;
             const spinner = document.createElement('div');
@@ -20293,6 +20454,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 this.card.style.transition = '0.5s';
                 this.card.style.overflow = 'hidden';
                 this.card.style.padding = '16px';
+                this.card.style.paddingRight = '6px';
                 this.card.appendChild(this.searchInput());
                 this.appendChild(this.card);
             }
@@ -21143,11 +21305,14 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 interactiveArea.append(playButton);
             }
             movieElem.append(interactiveArea);
-            playButton.addEventListener('click', event => {
+            clickHandler(playButton, (event) => {
                 event.stopPropagation();
                 if (this.hassObj && this.playController) {
                     this.playController.play(data, true);
                 }
+            }, (event) => {
+                console.log('Play version... will be here!');
+                event.stopPropagation();
             });
             const titleElem = document.createElement('div');
             if (lodash.isEqual(data.type, 'episode')) {
@@ -21243,9 +21408,6 @@ class PlexMeetsHomeAssistant extends HTMLElement {
     }
     set hass(hass) {
         this.hassObj = hass;
-        if (this.plex) {
-            this.playController = new PlayController(this.hassObj, this.plex, this.config.entity, this.runBefore, this.runAfter);
-        }
         if (!this.content) {
             this.error = '';
             if (!this.loading) {

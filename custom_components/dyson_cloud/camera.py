@@ -25,7 +25,7 @@ async def async_setup_entry(
     devices = data[DATA_DEVICES]
     entities = []
     for device in devices:
-        if device.product_type not in [DEVICE_TYPE_360_EYE, DEVICE_TYPE_360_HEURIST]:
+        if device.product_type not in [DEVICE_TYPE_360_EYE]:
             continue
         entities.append(DysonCleaningMapEntity(
             DysonCloud360Eye(account, device.serial),

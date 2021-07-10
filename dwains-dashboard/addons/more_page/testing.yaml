@@ -605,7 +605,6 @@
                 stops: [20, 100, 100, 100],
               },
           }
-      stacked: true
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Doses
@@ -669,13 +668,6 @@
           name: WA
           type: area
           extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
-        - entity: sensor.covid_19_covidlive_aus_vaccines
-          name: UNK
-          type: area
           stroke_width: 3
           group_by:
             func: last

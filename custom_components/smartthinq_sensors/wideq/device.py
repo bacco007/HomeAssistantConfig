@@ -912,16 +912,16 @@ class Device(object):
         self._status = None
         return self._status
 
-    def _get_feature_title(self, item_key, def_value):
+    def _get_feature_title(self, feature_name, item_key):
         """Override this function to manage feature title per device type"""
-        return def_value or item_key
+        return feature_name
 
-    def feature_title(self, feature_name, def_value=None, status=None):
+    def feature_title(self, feature_name, item_key=None, status=None):
         title = self._available_features.get(feature_name)
         if title is None:
             if status is None:
                 return None
-            title = self._get_feature_title(feature_name, def_value)
+            title = self._get_feature_title(feature_name, item_key)
             if not title:
                 return None
             self._available_features[feature_name] = title
@@ -991,7 +991,9 @@ class Device(object):
         """
         if not self._should_poll:
             return
-        data = self._client.session.get_device_config(self._device_info.id, key,)
+        data = self._client.session.get_device_config(self._device_info.id, key)
+        if self._control_set == 0:
+            self._control_set = 1
         return json.loads(base64.b64decode(data).decode("utf8"))
 
     def _get_control(self, key):
@@ -1002,6 +1004,8 @@ class Device(object):
         data = self._client.session.get_device_config(
             self._device_info.id, key, "Control",
         )
+        if self._control_set == 0:
+            self._control_set = 1
 
         # The response comes in a funky key/value format: "(key:value)".
         _, value = data[1:-1].split(":")
@@ -1121,6 +1125,7 @@ class Device(object):
         either a `Status` object or `None` if the status is not yet
         available.
         """
+        res = None
 
         # load device info at first call if not loaded before
         if not self.init_device_info():
@@ -1131,28 +1136,28 @@ class Device(object):
             snapshot = self._get_device_snapshot(device_update)
             if not snapshot:
                 return None
-            res = self._model_info.decode_snapshot(snapshot, snapshot_key)
+            return self._model_info.decode_snapshot(snapshot, snapshot_key)
 
         # ThinQ V1 - Monitor data must be polled """
-        else:
+        if not self._mon:
             # Abort if monitoring has not started yet.
-            if not self._mon:
-                return None
+            return None
 
-            self._delete_permission()
-            data = self._mon.poll()
-            if not data:
-                return None
+        data = self._mon.poll()
+        if data:
             res = self._model_info.decode_monitor(data)
+            """
+                with open('/config/wideq/washer_polled_data.json','w', encoding="utf-8") as dumpfile:
+                    json.dump(res, dumpfile, ensure_ascii=False, indent="\t")
+            """
             try:
                 self._additional_poll(additional_poll_interval)
             except Exception as exc:
                 _LOGGER.warning("Error calling additional poll methods. Error %s", exc)
 
-        """
-            with open('/config/wideq/washer_polled_data.json','w', encoding="utf-8") as dumpfile:
-                json.dump(res, dumpfile, ensure_ascii=False, indent="\t")
-        """
+        # remove control permission if previously set
+        self._delete_permission()
+
         return res
 
     def get_enum_text(self, enum_name):
@@ -1302,9 +1307,9 @@ class DeviceStatus(object):
             return STATE_OPTIONITEM_ON
         return STATE_OPTIONITEM_OFF
 
-    def _update_feature(self, key, status, get_text=True, def_title=None):
+    def _update_feature(self, key, status, get_text=True, item_key=None):
         title = self._device.feature_title(
-            key, def_title, status
+            key, item_key, status
         )
         if not title:
             return None
@@ -1316,7 +1321,7 @@ class DeviceStatus(object):
         else:
             value = self._device.get_enum_text(status)
 
-        self._device_features[title] = value
+        self._device_features[key] = value
         return value
 
     def _update_features(self):

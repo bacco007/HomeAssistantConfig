@@ -13,6 +13,7 @@
       cards:
         - !include partial_versions.yaml
         - !include partial_releasecal.yaml
+        - !include partial_snapshots.yaml
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"

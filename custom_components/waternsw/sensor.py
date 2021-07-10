@@ -4,9 +4,8 @@ import json
 import logging
 from datetime import timedelta
 
-import requests
-
 import homeassistant.helpers.config_validation as cv
+import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_ICON, CONF_NAME
@@ -91,7 +90,7 @@ class WaterNSWSensor(Entity):
     def update(self):
 
         url = (
-            "https://realtimedata.waternsw.com.au/cgi/webservice.pl?{'function':'get_latest_ts_values','version':'2','params':{'site_list':'"
+            "https://realtimedata.waternsw.com.au/cgi/webservice.exe?{'function':'get_latest_ts_values','version':'2','params':{'site_list':'"
             + str(self._site)
             + "','datasource':'PROV','trace_list':[{'varfrom':'"
             + str(self._varfrom)

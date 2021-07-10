@@ -423,8 +423,8 @@ weather:
   - platform: template
     name: home
     condition_template: "{{ states('weather.east_tamworth') }}"
-    temperature_template: "{{ states('weather_outside_temperature_5mint') | float }}"
-    humidity_template: "{{ states('sensor.weather_outside_humidity_filtered') | float }}"
+    temperature_template: "{{ states('sensor.weather_outside_temperature_5mint') | float }}"
+    humidity_template: "{{ states('sensor.weather_outside_humidity_5mint') | float }}"
     wind_speed_template: "{{ states('sensor.weather_outside_windspeed_filtered') | float }}"
     wind_bearing_template: "{{ states('sensor.weather_outside_winddirection_filtered') | float }}"
-    pressure_template: "{{ states('sensor.weather_outside_pressure_filtered') | float }}"
+    pressure_template: "{{ states('sensor.weather_outside_pressure_5mint') | float }}"
