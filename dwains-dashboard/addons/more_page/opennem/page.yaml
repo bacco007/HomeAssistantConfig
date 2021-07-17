@@ -74,7 +74,7 @@
             type: area
             extend_to_end: false
             curve: stepline
-          y_axis_precision: 0
+
           apex_config:
             chart:
               height: 300
@@ -159,7 +159,7 @@
           color_list:
             - orange
             - grey
-          y_axis_precision: 0
+
           apex_config:
             chart:
               height: 300
@@ -235,7 +235,7 @@
           color_list:
             - orange
             - grey
-          y_axis_precision: 0
+
           apex_config:
             chart:
               height: 300
@@ -303,7 +303,7 @@
             stroke_width: 2
             type: area
             extend_to_end: false
-          y_axis_precision: 0
+
           apex_config:
             chart:
               height: 300

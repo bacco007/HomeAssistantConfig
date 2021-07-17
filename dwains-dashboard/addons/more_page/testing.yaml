@@ -4,8 +4,8 @@
     - type: history-graph
       entities:
         - sensor.weather_outside_temperature
-        - sensor.weather_outside_temperature_filtered
-        - sensor.weather_outside_temperature_filtered_avg
+        - sensor.weather_outside_temperature_1hint
+        - sensor.weather_outside_temperature_5mint
       hours_to_show: 24
       refresh_interval: 120
     - type: history-graph
@@ -15,6 +15,66 @@
         - sensor.solar_solar_generation_filtered_avg
       hours_to_show: 24
       refresh_interval: 120
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+  cards:
+    - type: custom:apexcharts-card
+      header:
+        show: true
+        title: "UniFi WAN Uptime"
+      graph_span: 24h
+      span:
+        start: day
+      apex_config:
+        tooltip:
+          x:
+            format: "ddd dd MMM - HH:mm"
+        xaxis:
+          tooltip:
+            enabled: false
+        grid:
+          borderColor: "#7B7B7B"
+        chart:
+          height: 300
+          foreColor: "#7B7B7B"
+          zoom:
+            type: x
+            enabled: true
+            autoScaleYaxis: true
+          toolbar:
+            show: true
+            autoSelected: zoom
+            tools:
+              zoom: true
+              zoomin: false
+              zoomout: false
+              pan: false
+              reset: true
+      all_series_config:
+        stroke_width: 2
+        type: line
+        extend_to_end: false
+        float_precision: 3
+      series:
+        - entity: sensor.unifi_gateway_wan_uptimeavail
+          unit: "%"
+          name: Uptime
+
+        - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+          attribute: mean
+          unit: "%"
+          name: Mean
+
+        - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+          attribute: max_value
+          unit: "%"
+          name: Max
+
+        - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+          attribute: min_value
+          unit: "%"
+          name: Min
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
@@ -54,7 +114,6 @@
             group_by:
               func: avg
               duration: 10min
-        y_axis_precision: 0
         apex_config:
           annotations:
             xaxis:
@@ -1090,7 +1149,6 @@
                 stops: [20, 100, 100, 100],
               },
           }
-      stacked: true
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Tests

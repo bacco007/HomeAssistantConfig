@@ -23,6 +23,9 @@ more_page:
     - name: Downloads
       icon: mdi:download-network
       path: "dwains-dashboard/addons/more_page/downloads/page.yaml"
+    - name: Dyson Fan
+      icon: mdi:fan
+      path: "dwains-dashboard/addons/more_page/dysonfan/page.yaml"
     - name: Find My
       icon: mdi:radar
       path: "dwains-dashboard/addons/more_page/find_my/page.yaml"
@@ -136,7 +139,7 @@ more_page:
       icon: mdi:television-guide
       path: "dwains-dashboard/addons/more_page/tv_guide/page.yaml"
     - name: Ubiquiti UniFi
-      icon: mdi:router-wireless
+      icon: si:ubiquiti
       path: "dwains-dashboard/addons/more_page/ubiquiti/unifi.yaml"
       data:
         usw_name: "{{ states.sensor.unifipoller_usw.state }}"

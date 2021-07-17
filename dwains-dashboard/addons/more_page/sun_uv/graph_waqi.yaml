@@ -8,7 +8,7 @@ header:
   title: "wAQI (72 Hours)"
   show_states: true
   colorize_states: true
-y_axis_precision: 0
+
 apex_config:
   chart:
     {

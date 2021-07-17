@@ -59,7 +59,10 @@ for fav in favorites["favorites"]:
     f.write("        - filter: >" + "\n")
     f.write("            [[[" + "\n")
     f.write(
-        "              if (states['sensor.office_sonos_source'].state == '" + title + "')" + "\n"
+        "              if (states['sensor.office_sonos_source'].state == '"
+        + title.replace("'", "\\'")
+        + "')"
+        + "\n"
     )
     f.write("                return 'null';" + "\n")
     f.write("              return 'grayscale(100%)';" + "\n")
@@ -68,7 +71,10 @@ for fav in favorites["favorites"]:
     f.write("        - filter: >" + "\n")
     f.write("            [[[" + "\n")
     f.write(
-        "              if (states['sensor.office_sonos_source'].state == '" + title + "')" + "\n"
+        "              if (states['sensor.office_sonos_source'].state == '"
+        + title.replace("'", "\\'")
+        + "')"
+        + "\n"
     )
     f.write("                return 'null';" + "\n")
     f.write("              return 'opacity(50%)';" + "\n")

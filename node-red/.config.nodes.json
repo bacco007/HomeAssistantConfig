@@ -905,7 +905,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "2.29.1",
+        "version": "2.29.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -1163,7 +1163,7 @@
     },
     "node-red-node-email": {
         "name": "node-red-node-email",
-        "version": "1.12.1",
+        "version": "1.12.2",
         "local": false,
         "user": false,
         "nodes": {

@@ -3,10 +3,26 @@ trigger:
   - platform: time_pattern
     minutes: "/5"
 sensor:
+  - name: unifi_gateway_wan_uptimeavail
+    unique_id: unifi_gateway_wan_uptimeavail
+    state: >
+      {{ state_attr('sensor.unifi_gateway_wan', 'uptime_stats')["WAN"]["availability"] | float | round(3) }}
+    unit_of_measurement: "%"
+    icon: mdi:progress-wrench
+
   - name: weather_outside_temperature_5mint
     unique_id: weather_outside_temperature_5mint
     state: >
       {{ states('sensor.weather_outside_temperature') | float }}
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_inside_temperature_5mint
+    unique_id: weather_inside_temperature_5mint
+    state: >
+      {{ states('sensor.weather_inside_temperature') | float }}
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     attributes:

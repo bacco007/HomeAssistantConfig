@@ -1,6 +1,6 @@
 ---
 type: custom:dwains-flexbox-card
-items_classes: "col-xs-4 col-sm-2"
+items_classes: 'col-xs-4 col-sm-2'
 cards:
   - type: custom:button-card
     entity: media_player.office_sonos
@@ -60,6 +60,35 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_102_7_KIIS_FM_Los_Angeles
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: 1170 SEN
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/1170_SEN.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == '1170 SEN')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == '1170 SEN')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_1170_SEN
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -933,6 +962,35 @@ cards:
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
+    name: Tamworth's 88.9FM
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Tamworth_s_88_9FM.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Tamworth\'s 88.9FM')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Tamworth\'s 88.9FM')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Tamworth_s_88_9FM
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
     name: triple j (New South Wales)
     show_name: false
     show_entity_picture: true
@@ -1046,6 +1104,64 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_Triple_M_90s__Sydney
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Triple M Classic Rock Digital (Sydney)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Triple_M_Classic_Rock_Digital__Sydney.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M Classic Rock Digital (Sydney)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M Classic Rock Digital (Sydney)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Triple_M_Classic_Rock_Digital__Sydney
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Triple M Hard n Heavy (Sydney)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Triple_M_Hard_n_Heavy__Sydney.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M Hard n Heavy (Sydney)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M Hard n Heavy (Sydney)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Triple_M_Hard_n_Heavy__Sydney
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false

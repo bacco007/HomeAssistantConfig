@@ -9,7 +9,6 @@ header:
   colorize_states: true
 experimental:
   color_threshold: true
-y_axis_precision: 0
 apex_config:
   chart:
     {

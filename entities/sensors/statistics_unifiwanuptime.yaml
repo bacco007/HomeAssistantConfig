@@ -1,0 +1,7 @@
+---
+platform: statistics
+name: unifi_gateway_wan_uptimeavail_stats
+entity_id: sensor.unifi_gateway_wan_uptimeavail
+sampling_size: 300
+max_age:
+  days: 1

@@ -7,7 +7,6 @@ header:
 span:
   start: hour
   offset: -23h
-y_axis_precision: 0
 apex_config:
   chart: { type: "area", height: 250 }
   stroke: { show: true, width: 3, curve: smooth }

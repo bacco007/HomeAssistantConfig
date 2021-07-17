@@ -1,0 +1,18 @@
+---
+alias: Sonos - Playlist - Triple M Classic Rock Digital (Sydney)
+id: Triple_M_Classic_Rock_Digital__Sydney
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Triple M Classic Rock Digital (Sydney)"
+  - platform: webhook
+    webhook_id: sonos_Triple_M_Classic_Rock_Digital__Sydney
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Triple M Classic Rock Digital (Sydney)"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

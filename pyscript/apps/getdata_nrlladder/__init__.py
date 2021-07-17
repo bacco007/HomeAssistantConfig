@@ -17,7 +17,6 @@ def getdata_nrlladder(
         return
 
     URL = "https://www.nrl.com/ladder/data?competition=111&season=2021"
-    TEAM = "Sydney Swans"
 
     try:
         r = task.executor(requests.get, URL)
@@ -32,6 +31,10 @@ def getdata_nrlladder(
     LADDER = []
     c = 1
     for key in data["positions"]:
+        if key["next"]["isBye"] == True:
+            nextgame = "Bye"
+        else:
+            nextgame = key["next"]["nickname"]
         LADDER.append(
             {
                 "position": c,
@@ -39,7 +42,7 @@ def getdata_nrlladder(
                 "points": key["stats"]["points"],
                 "difference": key["stats"]["points difference"],
                 "form": key["stats"]["streak"],
-                "nextgame": key["next"]["nickname"],
+                "nextgame": nextgame,
             }
         )
         c = c + 1

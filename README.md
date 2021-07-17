@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, July 10th 2021_
+_Stats as at 05:00, Saturday, July 17th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.7.1 | 344     | 2235         | 1666 | 80 |
+| 2021.7.2 | 341     | 2264         | 1681 | 84 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 80
-Binary Sensor | 186
+Automation | 84
+Binary Sensor | 191
 Camera | 4
-Device Tracker | 66
+Device Tracker | 68
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 4
-Media Player | 26
+Media Player | 29
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1666
+Sensor | 1681
 Sun | 1
-Switch | 113
+Switch | 114
 Weather | 7
 Zone | 10
 
@@ -137,7 +137,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
-| [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
@@ -350,7 +349,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
-| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -423,7 +421,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
-| [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
 | [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.smartthinq_sensors](https://www.home-assistant.io/components/switch.smartthinq_sensors) |
 | [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
@@ -466,8 +463,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Custom Components List</summary>
 
 - [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
-- [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
+- [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
@@ -633,7 +630,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Discord Game](https://github.com/LordBoos/discord_game) | Home Assistant custom component to get online and game status of Discord users |
 | [Disk Space](https://github.com/kuchel77/diskspace) | Disk space for a path. For use with Home Assistant |
 | [Dobiss](https://github.com/kesteraernoudt/dobiss) | Custom Home Assistant Integration for the Dobiss NXT platform |
-| [Dpc Binary Sensor](https://github.com/caiosweet/Home-Assistant-custom-components-DPC-Alert) | Italy METEO-HYDRO ALERT (Protezione Civile) |
+| [Dpc Sensor](https://github.com/caiosweet/Home-Assistant-custom-components-DPC-Alert) | Italy METEO-HYDRO ALERT (Protezione Civile) |
 | [Drk Blutspende](https://github.com/Bouni/drkblutspende) | DRK Blutspende component for Home Assistant  |
 | [Dwains Dashboard](https://github.com/dwainscheeren/dwains-lovelace-dashboard) | An auto generating Home Assistant Lovelace UI dashboard for desktop, tablet and mobile by Dwains for desktop, tablet, mobile |
 | [Easee Ev Charger](https://github.com/fondberg/easee_hass) | Custom component for Easee EV charger |
@@ -669,7 +666,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Fordpass](https://github.com/itchannel/fordpass-ha) | Fordpass integration for Home Assistant |
 | [Fortnite Stats](https://github.com/michaellunzer/Home-Assistant-Custom-Component-Fortnite) | This is a Home-Assistant custom component that pulls Fortnite stats using the python API library from the site fortnitetracker.com |
 | [Freebox Player](https://github.com/Pouzor/freebox_player) | Custom Component for Home Assistant, enable to remote Freebox Player |
-| [Fritz!Box Tools](https://github.com/mammuth/ha-fritzbox-tools) | Control guest wifi, port forwardings, device profiles, ... all from within Home Assistant! 🤖✨ |
+| [Fritz!Box Tools](https://github.com/mammuth/ha-fritzbox-tools) | [merged into HA core] Control guest wifi, port forwardings, device profiles, ... all from within Home Assistant! 🤖✨ |
 | [Fully Kiosk Browser](https://github.com/cgarwood/homeassistant-fullykiosk) | Fully Kiosk Browser integration for Home Assistant |
 | [Fxmarketapi Integration](https://github.com/rob196/home-assistant-fxmarketapi) | This is a custom component to integrate into FXMarketAPI (https://fxmarketapi.com) to get the live mid-rates in Home Assistant. |
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
@@ -833,7 +830,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Moneydashboard](https://github.com/shutupflanders/sensor.moneydashboard) | MoneyDashboard Net Balance sensor for HomeAssistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
 | [Mqtt Template Switch](https://github.com/lukich48/hass_mqtt_template_switch) | mqtt template switch for homeassistant |
-| [Multiscrape   A Home Assistant Custom Scraping Component](https://github.com/danieldotnl/ha-multiscrape) | Home Assistant custom component for scraping multiple values (from a single HTTP request) with a separate sensor for each value.  |
+| [Multiscrape   A Home Assistant Custom Scraping Component](https://github.com/danieldotnl/ha-multiscrape) | Home Assistant custom component for scraping multiple values (from a single HTTP request) with a separate sensor for each value. Support for (login) form-submit functionality. |
 | [Multizone Controller](https://github.com/Petro31/ha-integration-multizone-controller) | Integration that creates a multi-zone volume controller for media_players in Home Assistant |
 | [Musiccast Yamaha](https://github.com/ppanagiotis/pymusiccast) | Group MusicCast Speakers with Home Assistant |
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
@@ -1053,7 +1050,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Wiserhomeassistantplatform](https://github.com/asantaga/wiserHomeAssistantPlatform) | Platform and related climate/sensors to support the Drayton Wiser Home Heating System |
 | [Worldtidesinfocustom](https://github.com/jugla/worldtidesinfocustom) | world tides info custom component for home assistant |
 | [Xantech Multi Zone Audio Amplifier](https://github.com/rsnodgrass/hass-xantech) | Xantech Multi-Zone Matrix Audio for Home Assistant |
-| [Xiaomi Cloud Map Extractor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Xiaomi-Cloud-Map-Extractor) | This custom integration provides a way to present a live view of a map for Xiaomi, Roborock and Viomi vacuums without a need for rooting. |
+| [Xiaomi Cloud Map Extractor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Xiaomi-Cloud-Map-Extractor) | This custom integration provides a way to present a live view of a map for Xiaomi, Roborock, Viomi and Roidmi vacuums without a need for rooting. |
 | [Xiaomi Gateway 3](https://github.com/AlexxIT/XiaomiGateway3) | Control Zigbee, BLE and Mesh devices from Home Assistant with Xiaomi Gateway 3 (ZNDMWG03LM) on original firmware |
 | [Xiaomi Ir Climate](https://github.com/Anonym-tsk/homeassistant-climate-xiaomi-remote) | Xiaomi IR Climate Component |
 | [Xiaomi Mi Air Purifier, Air Humidifier, Air Fresh And Pedestal Fan Integration](https://github.com/syssi/xiaomi_airpurifier) | Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier integration for Home Assistant |
@@ -1065,7 +1062,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Xiaomi Miio Raw](https://github.com/syssi/xiaomi_raw) | Custom component for Home Assistant to faciliate the reverse engeneering of Xiaomi MiIO devices |
 | [Xiaomi Mijia Multifunctional Mjysh01Ym](https://github.com/fineemb/Xiaomi-Smart-Multipurpose-Kettle) | 小米养生壶 |
 | [Xiaomi Miot](https://github.com/ha0y/xiaomi_miot_raw) | Universal Xiaomi MIoT integration for Home Assistant |
-| [Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot) | Auto integrate xiaomi devices by miot-spec for HomeAssistant |
+| [Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot) | Automatic integrate all Xiaomi devices to HomeAssistant via miot-spec, support Wi-Fi, BLE, ZigBee devices. |
 | [Xiaomi Philips Lights Integration](https://github.com/syssi/philipslight) | Xiaomi Philips Lights integration for Home Assistant |
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
 | [Yandex Smart Home](https://github.com/dmitry-k/yandex_smart_home) | Adds support for Yandex Smart Home (Alice voice assistant) into Home Assistant |

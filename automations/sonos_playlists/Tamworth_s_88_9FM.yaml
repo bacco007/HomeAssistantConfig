@@ -1,0 +1,18 @@
+---
+alias: Sonos - Playlist - Tamworth's 88.9FM
+id: Tamworth_s_88_9FM
+trigger:
+  - platform: state
+    entity_id: input_select.sonosplaylist
+    to: "Tamworth's 88.9FM"
+  - platform: webhook
+    webhook_id: sonos_Tamworth_s_88_9FM
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Tamworth's 88.9FM"
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.sonosplaylist
+      option: "-- Select --"

@@ -2,7 +2,12 @@
 # https://www.home-assistant.io/integrations/recorder/
 recorder:
   db_url: !secret mariadb_connection
-  purge_keep_days: 8
+  purge_keep_days: 7
+  include:
+    entities:
+      - sensor.unifi_gateway_www_uptime
+      - sensor.unifi_gateway_wan_uptimeavail
+      - sensor.unifi_gateway_wan_uptimeavail_stats
   exclude:
     entities:
       - sun.sun

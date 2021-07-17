@@ -121,9 +121,10 @@
                       token: !secret plex_token
                       ip: !secret plex_host
                       port: !secret plex_port
-                      libraryName: Recently Added
+                      libraryName: Watch Next
+                      maxCount: 10
                       entity:
-                        androidtv: media_player.nvidia_shield
+                        - media_player.nvidia_shield
                     - type: custom:plex-meets-homeassistant
                       token: !secret plex_token
                       ip: !secret plex_host
@@ -132,7 +133,7 @@
                       maxCount: 20
                       sort: episode.addedAt:desc
                       entity:
-                        androidtv: media_player.nvidia_shield
+                        - media_player.nvidia_shield
 
             plexmovies:
               type: vertical-stack
@@ -173,4 +174,4 @@
                       maxCount: 20
                       sort: addedAt:desc
                       entity:
-                        androidtv: media_player.nvidia_shield
+                        - media_player.nvidia_shield
