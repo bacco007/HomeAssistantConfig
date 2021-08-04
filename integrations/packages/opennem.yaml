@@ -55,8 +55,8 @@ sensor:
       - battery_charging
       - battery_discharging
       - biomass
-      - black_coal
-      - brown_coal
+      - coal_black
+      - coal_brown
       - exports
       - demand
       - distillate
@@ -71,8 +71,8 @@ sensor:
       - imports
       - price
       - pumps
-      - rooftop_solar
-      - solar
+      - solar_rooftop
+      - solar_utility
       - temperature
       - wind
   - platform: template

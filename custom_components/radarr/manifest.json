@@ -1,0 +1,9 @@
+{
+    "domain": "radarr",
+    "name": "Radarr",
+    "version": "0.1",
+    "documentation": "",
+    "dependencies": [],
+    "codeowners": [],
+    "requirements": []
+}

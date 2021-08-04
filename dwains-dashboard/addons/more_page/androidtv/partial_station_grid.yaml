@@ -261,7 +261,7 @@ cards:
           name: Prime 7 HD
           show_name: false
           show_entity_picture: true
-          entity_picture: ../local/images/channels/prime7hdtamworth.png
+          entity_picture: ../local/images/channels/prime7hdtamwo.png
           aspect_ratio: 2/1
           styles:
             entity_picture:

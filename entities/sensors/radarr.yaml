@@ -7,5 +7,5 @@ monitored_conditions:
   - movies
   - upcoming
   - status
-  - commands
+  # - commands
 days: 720

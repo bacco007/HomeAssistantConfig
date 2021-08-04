@@ -1,12 +1,10 @@
 """OpenNEM Sensor"""
 import datetime
-import json
 import logging
-
-import requests
 
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
+import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import (
@@ -18,9 +16,9 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
-__version__: "0.3"
+__version__: "0.7"
 
-_RESOURCE = "http://data.opennem.org.au/power/{}.json"
+_RESOURCE = "https://data.opennem.org.au/v3/stats/au/NEM/{}/power/7d.json"
 _LOGGER = logging.getLogger(__name__)
 
 ATTR_LAST_UPDATE = "last_update"
@@ -32,8 +30,8 @@ CONF_REGION = "region"
 
 DATA = {
     "biomass": ["Biomass", "", "", "", 0],
-    "black_coal": ["Black Coal", "", "", "", 0],
-    "brown_coal": ["Brown Coal", "", "", "", 0],
+    "coal_black": ["Black Coal", "", "", "", 0],
+    "coal_brown": ["Brown Coal", "", "", "", 0],
     "distillate": ["Distillate", "", "", "", 0],
     "gas_ccgt": ["Gas (CCGT)", "", "", "", 0],
     "gas_ocgt": ["Gas (OCGT)", "", "", "", 0],
@@ -41,13 +39,13 @@ DATA = {
     "gas_steam": ["Gas (Steam)", "", "", "", 0],
     "hydro": ["Hydro", "", "", "", 0],
     "pumps": ["Pumps", "", "", "", 0],
-    "solar": ["Solar (Utility)", "", "", "", 0],
+    "solar_utility": ["Solar (Utility)", "", "", "", 0],
     "wind": ["Wind", "", "", "", 0],
     "battery_discharging": ["Battery (Discharging)", "", "", "", 0],
     "battery_charging": ["Battery (Charging)", "", "", "", 0],
     "exports": ["Exports", "", "", "", 0],
     "imports": ["Imports", "", "", "", 0],
-    "rooftop_solar": ["Solar (Rooftop)", "", "", "", 0],
+    "solar_rooftop": ["Solar (Rooftop)", "", "", "", 0],
     "price": ["Price", "", "", "", 0],
     "demand": ["Demand", "", "", "", 0],
     "generation": ["Generation", "", "", "", 0],
@@ -62,8 +60,8 @@ SENSOR_TYPES = {
     "battery_charging": ["Battery (Charging)", "MW", "mdi:battery-positive"],
     "battery_discharging": ["Battery (Discharging)", "MW", "mdi:battery-negative"],
     "biomass": ["Biomass", "MW", "mdi:transmission-tower"],
-    "black_coal": ["Black Coal", "MW", "mdi:transmission-tower"],
-    "brown_coal": ["Brown Coal", "MW", "mdi:transmission-tower"],
+    "coal_black": ["Black Coal", "MW", "mdi:transmission-tower"],
+    "coal_brown": ["Brown Coal", "MW", "mdi:transmission-tower"],
     "exports": ["Exported Power", "MW", "mdi:swap-vertical"],
     "demand": ["Electricity Demand", "MW", "mdi:power-socket-au"],
     "distillate": ["Distillate", "MW", "mdi:transmission-tower"],
@@ -78,8 +76,8 @@ SENSOR_TYPES = {
     "imports": ["Imported Power", "MW", "mdi:swap-vertical"],
     "price": ["Current Price", "$/MWh", "mdi:currency-usd"],
     "pumps": ["Pumps", "MW", "mdi:transmission-tower"],
-    "rooftop_solar": ["Solar (Rooftop)", "MW", "mdi:solar-power"],
-    "solar": ["Solar (Utility)", "MW", "mdi:solar-power"],
+    "solar_rooftop": ["Solar (Rooftop)", "MW", "mdi:solar-power"],
+    "solar_utility": ["Solar (Utility)", "MW", "mdi:solar-power"],
     "temperature": ["Temperature", TEMP_CELSIUS, "mdi:home-thermometer"],
     "wind": ["Wind", "MW", "mdi:wind-turbine"],
 }
@@ -98,8 +96,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Setup Sensor"""
-    region = config.get(CONF_REGION)
-    name = config.get(CONF_NAME)
+    region = config.get(CONF_REGION).upper()
+    # name = config.get(CONF_NAME)
     _LOGGER.debug("OpenNEM: Region %s", region)
     opennem_data = OpenNEMCurrentData(region)
     try:
@@ -206,7 +204,7 @@ class OpenNEMCurrentData:
         try:
             result = requests.get(self._build_url(), timeout=10).json()
             ###OpenNEM Data
-            for row in result:
+            for row in result["data"]:
                 if row["type"] == "power":
                     ftype = row["fuel_tech"]
                 else:
@@ -217,7 +215,6 @@ class OpenNEMCurrentData:
                     value = row["history"]["data"][-2]
                 else:
                     value = row["history"]["data"][-1]
-                # DATA[ftype][1]=config.get(CONF_REGION)
                 DATA[ftype][2] = units
                 DATA[ftype][3] = last_update
                 if value:
@@ -226,9 +223,9 @@ class OpenNEMCurrentData:
                     DATA[ftype][4] = 0
 
             ffvalue = (
-                DATA["black_coal"][4]
+                DATA["coal_black"][4]
                 + DATA["distillate"][4]
-                + DATA["brown_coal"][4]
+                + DATA["coal_brown"][4]
                 + DATA["gas_ccgt"][4]
                 + DATA["gas_ocgt"][4]
                 + DATA["gas_recip"][4]
@@ -242,9 +239,9 @@ class OpenNEMCurrentData:
             renvalue = (
                 DATA["biomass"][4]
                 + DATA["hydro"][4]
-                + DATA["solar"][4]
+                + DATA["solar_utility"][4]
                 + DATA["wind"][4]
-                + DATA["rooftop_solar"][4]
+                + DATA["solar_rooftop"][4]
             )
             if renvalue:
                 DATA["renewables"][4] = round(renvalue, 2)
@@ -259,7 +256,7 @@ class OpenNEMCurrentData:
 
             self._data = DATA
             self.last_updated = dt_util.as_utc(
-                datetime.datetime.strptime(str(self._data["demand"][3]), "%Y-%m-%dT%H:%M+1000")
+                datetime.datetime.strptime(str(self._data["demand"][3]), "%Y-%m-%dT%H:%M:%S+10:00")
             )
             _LOGGER.debug("OpenNEM: Last Updated %s", self.last_updated)
             return
