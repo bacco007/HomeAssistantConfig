@@ -1,4 +1,7 @@
 ---
+trigger:
+  - platform: time_pattern
+    minutes: "/5"
 sensor:
   - name: "Covid NSW Last 24 Hours State"
     unique_id: "covid_nsw_last_24_hours_state"

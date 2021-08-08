@@ -1,4 +1,11 @@
 ---
+homeassistant:
+  customize_glob:
+    sensor.solar_*:
+      #last_reset: "1970-01-01T00:00:00+00:00"
+      device_class: energy
+      state_class: measurement
+
 sensor:
   - platform: mqtt
     name: solar_output_power
@@ -70,6 +77,7 @@ sensor:
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/solar_to_house"
     unit_of_measurement: "kW"
+    device_class: energy
   - platform: mqtt
     name: solar_solar_to_grid_raw
     icon: mdi:solar-power
@@ -85,16 +93,19 @@ sensor:
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/feedin_total"
     unit_of_measurement: "kW"
+    device_class: energy
   - platform: mqtt
     name: solar_grid_total
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/grid_total"
     unit_of_measurement: "kW"
+    device_class: energy
   - platform: mqtt
     name: solar_grid_daily
     icon: mdi:solar-power
     state_topic: "modbus4mqtt/grid_daily"
     unit_of_measurement: "kW"
+    device_class: energy
   - platform: mqtt
     name: solar_pv1_voltage
     icon: mdi:solar-power
@@ -142,6 +153,7 @@ sensor:
         friendly_name: Solar to Grid
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
+        #state_class: measurement
         value_template: >
           {% set gen = states.sensor.solar_solar_generation.state | float %}
           {% set hse = states.sensor.solar_solar_to_house.state | float %}
@@ -154,6 +166,7 @@ sensor:
         friendly_name: Grid Usage
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
+        #state_class: measurement
         value_template: >
           {% set gen = states.sensor.solar_solar_generation.state | float %}
           {% set hse = states.sensor.solar_solar_to_house.state | float %}
@@ -162,6 +175,7 @@ sensor:
         friendly_name: Solar Power from Grid
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
+        #state_class: measurement
         value_template: >
           {% set gen = states.sensor.solar_solar_generation.state | float %}
           {% set hse = states.sensor.solar_solar_to_house.state | float %}
@@ -275,25 +289,30 @@ sensor:
       - filter: time_throttle
         window_size: "00:05"
 
-  - platform: filter
-    name: solar_solar_generation_filtered_avg
-    entity_id: sensor.solar_solar_generation
-    filters:
-      - filter: time_simple_moving_average
-        window_size: "00:01"
-        precision: 2
+  - platform: integration
+    name: solar_int_generation_kwh
+    #unit_prefix: k
+    round: 2
+    unit: "kWh"
+    source: sensor.solar_solar_generation_filtered
 
-  - platform: filter
-    name: solar_daily_yield_clean_filtered
-    entity_id: sensor.solar_daily_yield_clean
-    filters:
-      - filter: time_throttle
-        window_size: "00:05"
-
-utility_meter:
-  meter_solar_house_daily:
+  - platform: integration
+    name: solar_int_tohouse_kwh
+    #unit_prefix: k
+    round: 2
+    unit: "kWh"
     source: sensor.solar_solar_to_house_filtered
-    cycle: daily
-  meter_solar_grid_daily:
-    source: sensor.solar_to_grid_clean_filtered
-    cycle: daily
+
+  - platform: integration
+    name: solar_int_fromgrid_kwh
+    #unit_prefix: k
+    round: 2
+    unit: "kWh"
+    source: sensor.solar_house_from_grid_clean_filtered
+
+  - platform: integration
+    name: solar_int_togrid_kwh
+    #unit_prefix: k
+    round: 2
+    unit: "kWh"
+    source: sensor.solar_to_grid_clean

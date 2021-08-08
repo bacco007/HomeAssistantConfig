@@ -18861,7 +18861,7 @@ class Plex {
 }
 
 class PlayController {
-    constructor(hass, plex, entity, runBefore, runAfter) {
+    constructor(hass, plex, entity, runBefore, runAfter, libraryName) {
         this.plexPlayerEntity = '';
         this.runBefore = false;
         this.runAfter = false;
@@ -18940,19 +18940,20 @@ class PlayController {
                     break;
                 case 'cast':
                     if (this.hass.services.plex) {
+                        const libraryName = lodash.isNil(data.librarySectionTitle) ? this.libraryName : data.librarySectionTitle;
                         try {
                             switch (data.type) {
                                 case 'movie':
                                     await this.playViaCastPlex(entity.value, 'movie', `plex://${JSON.stringify({
                                         // eslint-disable-next-line @typescript-eslint/camelcase
-                                        library_name: data.librarySectionTitle,
+                                        library_name: libraryName,
                                         title: data.title
                                     })}`);
                                     break;
                                 case 'episode':
                                     await this.playViaCastPlex(entity.value, 'EPISODE', `plex://${JSON.stringify({
                                         // eslint-disable-next-line @typescript-eslint/camelcase
-                                        library_name: data.librarySectionTitle,
+                                        library_name: libraryName,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         show_name: data.grandparentTitle,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
@@ -19266,6 +19267,7 @@ class PlayController {
         this.hass = hass;
         this.plex = plex;
         this.entity = entity;
+        this.libraryName = libraryName;
         if (!lodash.isEmpty(runBefore) && this.hass.states[runBefore]) {
             this.runBefore = runBefore.split('.');
         }
@@ -20947,7 +20949,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             this.renderPage();
             try {
                 if (this.plex && this.hassObj) {
-                    this.playController = new PlayController(this.hassObj, this.plex, entity, this.runBefore, this.runAfter);
+                    this.playController = new PlayController(this.hassObj, this.plex, entity, this.runBefore, this.runAfter, this.config.libraryName);
                     if (this.playController) {
                         await this.playController.init();
                     }

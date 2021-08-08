@@ -71,3 +71,65 @@ cards:
         attr: Doses2nd
         align: right
         modify: x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  - type: custom:flex-table-card
+    title: Race to 80% (Covid Live)
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      # font-family: { var(--primary-font-family);}
+      # font-weight: {400 !important;}
+    sort_by: NAME+
+    clickable: true
+    css: !include ../../1_Templates/style_flextable.yaml
+    entities:
+      include: sensor.covid_19_covidlive*
+      exclude:
+        - sensor.covid_19_covidlive_aus_vaccines
+        - sensor.covid_19_covidlive_vac_pct
+    columns:
+      - name: Name
+        attr: Name
+        align: center
+      - name: D1 - 60%
+        attr: dose1_60
+        align: center
+      - name: " "
+        attr: dose1_60_date
+        align: center
+      - name: D1 - 70%
+        attr: dose1_70
+        align: center
+      - name: " "
+        attr: dose1_70_date
+        align: center
+      - name: D1 - 80%
+        attr: dose1_80
+        align: center
+      - name: " "
+        attr: dose1_80_date
+        align: center
+      - name: D2 - 60%
+        attr: dose2_60
+        align: center
+      - name: " "
+        attr: dose2_60_date
+        align: center
+      - name: D2 - 70%
+        attr: dose2_70
+        align: center
+      - name: " "
+        attr: dose2_70_date
+        align: center
+      - name: D2 - 80%
+        attr: dose2_80
+        align: center
+      - name: " "
+        attr: dose2_80_date
+        align: center

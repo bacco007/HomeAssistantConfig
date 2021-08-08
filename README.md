@@ -72,11 +72,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, August 4th 2021_
+_Stats as at 05:00, Sunday, August 8th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.7.4 | 344     | 2264         | 1679 | 84 |
+| 2021.8.3 | 347     | 2310         | 1723 | 84 |
 
 Type | Qty
 -- | --
@@ -85,17 +85,17 @@ Alert | 0
 Automation | 84
 Binary Sensor | 191
 Camera | 4
-Device Tracker | 68
+Device Tracker | 75
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 26
+Media Player | 27
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1679
+Sensor | 1723
 Sun | 1
 Switch | 115
 Weather | 7
@@ -143,7 +143,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
-| [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
 | [binary_sensor.spacex](https://www.home-assistant.io/components/binary_sensor.spacex) |
@@ -167,7 +166,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [calendar.ical](https://www.home-assistant.io/components/calendar.ical) |
 | [camera](https://www.home-assistant.io/components/camera) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
-| [camera.dyson_cloud](https://www.home-assistant.io/components/camera.dyson_cloud) |
 | [camera.mqtt](https://www.home-assistant.io/components/camera.mqtt) |
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
@@ -179,6 +177,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [climate.sensibo](https://www.home-assistant.io/components/climate.sensibo) |
 | [climate.smartthinq_sensors](https://www.home-assistant.io/components/climate.smartthinq_sensors) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
+| [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [config](https://www.home-assistant.io/components/config) |
 | [configurator](https://www.home-assistant.io/components/configurator) |
 | [coronavirus](https://www.home-assistant.io/components/coronavirus) |
@@ -192,12 +191,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
 | [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
-| [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
 | [dyson_cloud](https://www.home-assistant.io/components/dyson_cloud) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
+| [energy](https://www.home-assistant.io/components/energy) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.deconz](https://www.home-assistant.io/components/fan.deconz) |
@@ -279,6 +278,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
+| [nswcovid](https://www.home-assistant.io/components/nswcovid) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
 | [optus](https://www.home-assistant.io/components/optus) |
@@ -321,6 +321,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.climacell](https://www.home-assistant.io/components/sensor.climacell) |
+| [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |
 | [sensor.covid19_covidlive](https://www.home-assistant.io/components/sensor.covid19_covidlive) |
@@ -330,6 +331,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
+| [sensor.energy](https://www.home-assistant.io/components/sensor.energy) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
@@ -344,6 +346,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk) |
 | [sensor.ical](https://www.home-assistant.io/components/sensor.ical) |
 | [sensor.icloud](https://www.home-assistant.io/components/sensor.icloud) |
+| [sensor.integration](https://www.home-assistant.io/components/sensor.integration) |
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
 | [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
 | [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app) |
@@ -355,6 +358,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
+| [sensor.nswcovid](https://www.home-assistant.io/components/sensor.nswcovid) |
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.optus](https://www.home-assistant.io/components/sensor.optus) |
@@ -367,7 +371,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
 | [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
-| [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
@@ -466,8 +469,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Custom Components List</summary>
 
 - [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
-- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
+- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
@@ -496,6 +499,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
 - [Node-RED Companion](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
 - [NSW Air Quality]()
+- [NSW Covid](https://github.com/troykelly/homeassistant-au-nsw-covid/wiki)
 - [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Optus](https://github.com/itchannel/optus-ha)
@@ -848,6 +852,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |
 | [Noonlight   Alarm Monitoring](https://github.com/konnected-io/noonlight-hass) | HomeAssistant integration for Noonlight |
 | [Nordpool](https://github.com/custom-components/nordpool) | nordpool sensor for ha. |
+| [Nsw Covid Data](https://github.com/troykelly/homeassistant-au-nsw-covid) | A group of sensors for Home Assistant that tracks New South Wales COVID-19 Data |
 | [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger) | Home Assistant Custom Component: NSW Rural Fire Service Fire Danger |
 | [Nuvo Multi Zone Amplifier (Serial)](https://github.com/sprocket-9/hacs-nuvo-serial) | Custom component to control a Nuvo Grand Concerto/Essentia G multi-zone amplifier via serial connection |
 | [Nws Alerts](https://github.com/finity69x2/nws_alerts) | An updated version of the nws_alerts custom integration for Home Assistant |
@@ -1010,7 +1015,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Ultimaker](https://github.com/jellespijker/home-assistant-ultimaker) | Home-Assistant component for Ultimaker printers (UM3, S3, S5) |
 | [Ultrasync Beta](https://github.com/caronc/ha-ultrasync) | Interlogix ZeroWire and Hills ComNav (NX-595E) UltraSync Security Panel for Integration for Home Assistant Comunity Store (HACS) |
 | [Unifi Protect Integration](https://github.com/briis/unifiprotect) | Control and monitor your Unifi Protect Cameras from Home Assistant |
-| [Universal Devices Isy994](https://github.com/shbatm/hacs-isy994) | Custom Integration for ISY994 with Home Assistant (for use with HACS)  |
 | [Unsplash](https://github.com/custom-components/unsplash) | A camera platform that give you random images from Unsplash presented as a camera feed. |
 | [Uonet+ Vulcan](https://github.com/Antoni-Czaplicki/vulcan-for-hassio) | Vulcan inegration for home assistamt |
 | [Uponor Smatrix Pulse](https://github.com/asev/homeassistant-uponor) | Uponor Smatrix Pulse heating/cooling system integration for Home Assistant. |
@@ -1172,7 +1176,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Github Flexi Card / Entity Row](https://github.com/maxwroc/github-flexi-card) | Github stats card for Home Assistant |
 | [Group Card](https://github.com/custom-cards/group-card) | None |
 | [Group Element](https://github.com/custom-cards/group-element) | A group element for picture-elements with dynamic toggle capability |
-| [Gui Sandbox](https://github.com/thomasloven/lovelace-gui-sandbox) | 🔹 Lets you play around with the GUI editors even if you're using YAML mode |
 | [Ha (Lovelace) Card Waze Travel Time](https://github.com/r-renato/ha-card-waze-travel-time) | Home Assistant Lovelace card for Waze Travel Time Sensor |
 | [Ha (Lovelace) Card Weather Conditions](https://github.com/r-renato/ha-card-weather-conditions) | Weather condition card (Lovelace) for Home Assistant. |
 | [Ha Dashboard](https://github.com/wassy92x/lovelace-ha-dashboard) | A custom dashboard for Home Assistant with sidebar |

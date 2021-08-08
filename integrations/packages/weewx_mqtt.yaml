@@ -23,6 +23,7 @@ sensor:
         {{ states('sensor.weather_outside_pressure') }}
       {% endif %}
     unit_of_measurement: "mBar"
+    state_class: measurement
 
   - platform: mqtt
     expire_after: 120
@@ -37,6 +38,7 @@ sensor:
         {{ states('sensor.weather_outside_relativehumidity') }}
       {% endif %}
     unit_of_measurement: "%"
+    state_class: measurement
 
   - platform: mqtt
     expire_after: 120
@@ -65,6 +67,7 @@ sensor:
         {{ states('sensor.weather_outside_temperature') }}
       {% endif %}
     unit_of_measurement: "°C"
+    state_class: measurement
 
   - platform: mqtt
     name: weather_inside_temperature
@@ -78,6 +81,7 @@ sensor:
         {{ states('sensor.weather_inside_temperature') }}
       {% endif %}
     unit_of_measurement: "°C"
+    state_class: measurement
 
   - platform: mqtt
     expire_after: 120
@@ -91,6 +95,7 @@ sensor:
         {{ states('sensor.weather_outside_windspeed') }}
       {% endif %}
     unit_of_measurement: "km/h"
+    state_class: measurement
 
   - platform: mqtt
     expire_after: 120
@@ -104,6 +109,7 @@ sensor:
         {{ states('sensor.weather_outside_windgust') }}
       {% endif %}
     unit_of_measurement: "km/h"
+    state_class: measurement
 
   - platform: mqtt
     name: weather_outside_radiation
@@ -116,6 +122,7 @@ sensor:
         {{ states('sensor.weather_outside_radiation') }}
       {% endif %}
     unit_of_measurement: "watts/m²"
+    state_class: measurement
 
   - platform: mqtt
     expire_after: 120
@@ -130,6 +137,7 @@ sensor:
         {{ states('sensor.weather_outside_rain') }}
       {% endif %}
     unit_of_measurement: "mm"
+    state_class: measurement
 
   - platform: mqtt
     expire_after: 120

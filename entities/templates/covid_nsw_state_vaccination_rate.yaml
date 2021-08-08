@@ -1,4 +1,7 @@
 ---
+trigger:
+  - platform: time_pattern
+    minutes: "/5"
 sensor:
   - name: "Covid NSW Fully Vaccinated"
     unique_id: "covid_nsw_state_vaccination_rate"
@@ -29,3 +32,18 @@ sensor:
         {% set second_dose_last24 = states('sensor.covid_nsw_last_24_hours_second_dose_vaccine') | int %}
         {% set state_second_dose_vaccinated_last24 = second_dose_last24 / total_population %}
         {{ (state_second_dose_vaccinated_last24 * 100)|round(6, 'floor') }}
+  - name: "Covid NSW Last 24 Hours State"
+    unique_id: "covid_nsw_last_24_hours_state"
+    icon: "mdi:virus"
+    unit_of_measurement: "cases"
+    state: >
+      {% set total = states('sensor.covid_nsw_last_24_hours_total') | int %}
+      {% set overseas = states('sensor.covid_nsw_last_24_hours_overseas_source') | int %}
+      {% set interstate = states('sensor.covid_nsw_last_24_hours_interstate_source') | int %}
+      {% set out_of_state = (overseas + interstate) %}
+      {{ (total - out_of_state) }}
+    attributes:
+      attribution: >
+        {{ state_attr('sensor.covid_nsw_last_24_hours_total', 'attribution') }}
+      published: >
+        {{ state_attr('sensor.covid_nsw_last_24_hours_total', 'published') }}

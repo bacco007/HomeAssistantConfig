@@ -6,11 +6,13 @@ from unicodedata import normalize
 import homeassistant.helpers.config_validation as cv
 import numpy as np
 import pandas as pd
+import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
+from lxml import html
 
 __version__ = "0.1"
 _LOGGER = logging.getLogger(__name__)
@@ -108,6 +110,23 @@ class CovidLiveSensor(Entity):
             "Recoveries": 0,
             "Deaths": 0,
             "Hospitalised": 0,
+            "CasesSourceOverseas": 0,
+            "CasesSourceInterstate": 0,
+            "CasesSourceKnownContact": 0,
+            "CasesSourceUnknown": 0,
+            "CasesSourceInvestigation": 0,
+            "dose1_60": 0,
+            "dose1_60_date": "",
+            "dose1_70": 0,
+            "dose1_70_date": "",
+            "dose1_80": 0,
+            "dose1_80_date": "",
+            "dose2_60": 0,
+            "dose2_60_date": "",
+            "dose2_70": 0,
+            "dose2_70_date": "",
+            "dose2_80": 0,
+            "dose2_80_date": "",
             "Name": "Default",
             "Region": self._region,
         }
@@ -163,6 +182,50 @@ class CovidLiveSensor(Entity):
                 self._attributes["CasesSourceKnownContact"] = row["CONT"]
                 self._attributes["CasesSourceUnknown"] = row["UNKN"]
                 self._attributes["CasesSourceInvestigation"] = row["INVES"]
+
+        if self._region == "aus":
+            url4 = "https://covidlive.com.au/"
+        else:
+            url4 = "https://covidlive.com.au/{}".format(self._region)
+        response = requests.get(url4)
+        tree = html.fromstring(response.content)
+
+        self._attributes["dose1_60"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
+        )[0]
+        self._attributes["dose1_60_date"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
+        )[0]
+        self._attributes["dose1_70"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
+        )[0]
+        self._attributes["dose1_70_date"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
+        )[0]
+        self._attributes["dose1_80"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
+        )[0]
+        self._attributes["dose1_80_date"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+        )[0]
+        self._attributes["dose2_60"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
+        )[0]
+        self._attributes["dose2_60_date"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
+        )[0]
+        self._attributes["dose2_70"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
+        )[0]
+        self._attributes["dose2_70_date"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
+        )[0]
+        self._attributes["dose2_80"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
+        )[0]
+        self._attributes["dose2_80_date"] = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+        )[0]
 
         self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         self._state = self._attributes["Cases"]
