@@ -153,3 +153,132 @@ cards:
             attribute: tamw_percent_tests
             name: Tests/Pop
             unit: " "
+      - entity: sensor.covid_19_nswh_local
+        name: Western NSW Health Cases
+        type: custom:multiple-entity-row
+        icon: mdi:biohazard
+        show_state: false
+        secondary_info:
+          attribute: wnsw_dates
+        style: |
+          div.entity { text-align: right; }
+        entities:
+          - attribute: wnsw
+            name: Cases
+            unit: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: wnsw_percent
+            name: Cases/Pop
+            units: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: wnsw_percent_cases
+            name: Cases/NSW
+            units: " "
+      - entity: sensor.covid_19_nswh_local_tests
+        name: Western NSW Health Tests
+        type: custom:multiple-entity-row
+        icon: mdi:biohazard
+        show_state: false
+        secondary_info:
+          attribute: wnsw_dates
+        style: |
+          div.entity { text-align: right; }
+        entities:
+          - entity: sensor.covid_19_nswh_local_tests
+            attribute: wnsw
+            name: Tests
+            units: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: wnsw_percent_casestotests
+            name: Cases/Tests
+            unit: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: wnsw_percent_tests
+            name: Tests/Pop
+            unit: " "
+      - entity: sensor.covid_19_nswh_local
+        name: Dubbo Regional Council Cases
+        type: custom:multiple-entity-row
+        icon: mdi:biohazard
+        show_state: false
+        secondary_info:
+          attribute: drc_dates
+        style: |
+          div.entity { text-align: right; }
+        entities:
+          - attribute: drc
+            name: Cases
+            unit: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: drc_percent
+            name: Cases/Pop
+            units: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: drc_percent_cases
+            name: Cases/NSW
+            units: " "
+      - entity: sensor.covid_19_nswh_local_tests
+        name: Dubbo Regional Council Tests
+        type: custom:multiple-entity-row
+        icon: mdi:biohazard
+        show_state: false
+        secondary_info:
+          attribute: drc_dates
+        style: |
+          div.entity { text-align: right; }
+        entities:
+          - entity: sensor.covid_19_nswh_local_tests
+            attribute: drc
+            name: Tests
+            units: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: drc_percent_casestotests
+            name: Cases/Tests
+            unit: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: drc_percent_tests
+            name: Tests/Pop
+            unit: " "
+      - entity: sensor.covid_19_nswh_local
+        name: Dubbo (2830) Cases
+        type: custom:multiple-entity-row
+        icon: mdi:biohazard
+        show_state: false
+        secondary_info:
+          attribute: dubo_dates
+        style: |
+          div.entity { text-align: right; }
+        entities:
+          - attribute: dubo
+            name: Cases
+            unit: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: dubo_percent
+            name: Cases/Pop
+            units: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: dubo_percent_cases
+            name: Cases/NSW
+            units: " "
+      - entity: sensor.covid_19_nswh_local_tests
+        name: Dubbo (2830) Tests
+        type: custom:multiple-entity-row
+        icon: mdi:biohazard
+        show_state: false
+        secondary_info:
+          attribute: dubo_dates
+        style: |
+          div.entity { text-align: right; }
+        entities:
+          - entity: sensor.covid_19_nswh_local_tests
+            attribute: dubo
+            name: Tests
+            units: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: dubo_percent_casestotests
+            name: Cases/Tests
+            unit: " "
+          - entity: sensor.covid_19_nswh_local_pct
+            attribute: dubo_percent_tests
+            name: Tests/Pop
+            unit: " "

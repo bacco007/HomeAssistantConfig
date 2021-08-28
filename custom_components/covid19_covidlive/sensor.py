@@ -27,7 +27,7 @@ DEFAULT_UOM = "Cases"
 ICON = "mdi:biohazard"
 ATTRIBUTION = "Data provided by Covid Live"
 
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=60)
+MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=10)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -96,7 +96,12 @@ class CovidLiveSensor(Entity):
         col_type = {"CATEGORY": "string", "TOTAL": "int", "VAR": "string", "NET": "string"}
 
         clean_dict = {"%": "", "−": "NaN", "\(est\)": "0"}
-        df = df.replace(clean_dict, regex=True).replace({"-": 0}).astype(col_type)
+        df = (
+            df.replace(clean_dict, regex=True)
+            .replace({"-": 0})
+            .replace(np.nan, 0)
+            .astype(col_type)
+        )
 
         self._attributes = {
             "New Cases": 0,
@@ -190,42 +195,89 @@ class CovidLiveSensor(Entity):
         response = requests.get(url4)
         tree = html.fromstring(response.content)
 
-        self._attributes["dose1_60"] = tree.xpath(
+        dose1_60 = tree.xpath(
             './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
-        )[0]
-        self._attributes["dose1_60_date"] = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
-        )[0]
-        self._attributes["dose1_70"] = tree.xpath(
+        )[0].strip()
+        if dose1_60 is "":
+            self._attributes["dose1_60"] = "0"
+        else:
+            self._attributes["dose1_60"] = dose1_60
+        try:
+            self._attributes["dose1_60_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose1_60_date"] = "Passed"
+
+        dose1_70 = tree.xpath(
             './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
-        )[0]
-        self._attributes["dose1_70_date"] = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
-        )[0]
-        self._attributes["dose1_80"] = tree.xpath(
+        )[0].strip()
+        if dose1_70 is "":
+            self._attributes["dose1_70"] = "0"
+        else:
+            self._attributes["dose1_70"] = dose1_70
+        try:
+            self._attributes["dose1_70_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose1_70_date"] = "Passed"
+
+        dose1_80 = tree.xpath(
             './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
-        )[0]
-        self._attributes["dose1_80_date"] = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
-        )[0]
-        self._attributes["dose2_60"] = tree.xpath(
+        )[0].strip()
+        if dose1_80 is "":
+            self._attributes["dose1_80"] = "0"
+        else:
+            self._attributes["dose1_80"] = dose1_80
+        try:
+            self._attributes["dose1_80_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose1_80_date"] = "Passed"
+
+        dose2_60 = tree.xpath(
             './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
-        )[0]
-        self._attributes["dose2_60_date"] = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
-        )[0]
-        self._attributes["dose2_70"] = tree.xpath(
+        )[0].strip()
+        if dose2_60 is "":
+            self._attributes["dose2_60"] = "0"
+        else:
+            self._attributes["dose2_60"] = dose2_60
+        try:
+            self._attributes["dose2_60_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose2_60_date"] = "Passed"
+
+        dose2_70 = tree.xpath(
             './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
-        )[0]
-        self._attributes["dose2_70_date"] = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
-        )[0]
-        self._attributes["dose2_80"] = tree.xpath(
+        )[0].strip()
+        if dose2_70 is "":
+            self._attributes["dose2_70"] = "0"
+        else:
+            self._attributes["dose2_70"] = dose2_70
+        try:
+            self._attributes["dose2_70_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose2_70_date"] = "Passed"
+
+        dose2_80 = tree.xpath(
             './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
-        )[0]
-        self._attributes["dose2_80_date"] = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
-        )[0]
+        )[0].strip()
+        if dose2_80 is "":
+            self._attributes["dose2_80"] = "0"
+        else:
+            self._attributes["dose2_80"] = dose2_80
+        try:
+            self._attributes["dose2_80_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose2_80_date"] = "Passed"
 
         self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         self._state = self._attributes["Cases"]

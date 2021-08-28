@@ -20,7 +20,7 @@ apex_config:
         zoomout: false
         pan: false
         reset: true
-  stroke: { show: true, lineCap: "square", dashArray: [0, 10] }
+  stroke: { show: true, lineCap: "square", dashArray: [0] }
   dataLabels: { enabled: true }
   legend: { show: false }
   fill:
@@ -57,24 +57,19 @@ series:
           res.push([new Date(key).getTime(), value]);
       }
       return res.sort((a, b) => { return a[0] - b[0] });
-  # - entity: sensor.archive_solar_yield_365day
-  #   name: Yield
-  #   type: area
-  #   extend_to_end: false
-  #   stroke_width: 2
-  #   unit: "kWh"
-  #   show:
-  #     extremas: true
-  #   data_generator: |
-  #     let res = [];
-  #     for (const [key, value] of
-  #         Object.entries(entity.attributes)) {
-  #         res.push([new Date(key).getTime(), value]);
-  #     }
-  #     return res.sort((a, b) => { return a[0] - b[0] });
-  #   group_by:
-  #     func: avg
-  #     duration: 7d
+  - entity: sensor.archive_solar_yield_365day_avg
+    name: 7d Avg
+    type: area
+    extend_to_end: false
+    stroke_width: 2
+    unit: "kWh"
+    data_generator: |
+      let res = [];
+      for (const [key, value] of
+          Object.entries(entity.attributes)) {
+          res.push([new Date(key).getTime(), value]);
+      }
+      return res.sort((a, b) => { return a[0] - b[0] });
 graph_span: 365days
 all_series_config:
   type: line

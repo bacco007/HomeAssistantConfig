@@ -72,32 +72,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, August 8th 2021_
+_Stats as at 05:00, Saturday, August 28th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.8.3 | 347     | 2310         | 1723 | 84 |
+| 2021.8.8 | 346     | 2289         | 1690 | 86 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 84
-Binary Sensor | 191
+Automation | 86
+Binary Sensor | 218
 Camera | 4
-Device Tracker | 75
+Device Tracker | 77
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 27
+Media Player | 29
 Person | 1
 Scene | 1
 Script | 4
-Sensor | 1723
+Sensor | 1690
 Sun | 1
-Switch | 115
+Switch | 88
 Weather | 7
 Zone | 10
 
@@ -134,7 +134,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.deconz](https://www.home-assistant.io/components/binary_sensor.deconz) |
 | [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
 | [binary_sensor.hassio](https://www.home-assistant.io/components/binary_sensor.hassio) |
-| [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
@@ -143,6 +142,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
+| [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
 | [binary_sensor.spacex](https://www.home-assistant.io/components/binary_sensor.spacex) |
@@ -191,6 +191,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
 | [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
+| [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
@@ -358,7 +359,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
-| [sensor.nswcovid](https://www.home-assistant.io/components/sensor.nswcovid) |
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.optus](https://www.home-assistant.io/components/sensor.optus) |
@@ -371,6 +371,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
 | [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
+| [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
@@ -396,7 +397,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
-| [sensor.utility_meter](https://www.home-assistant.io/components/sensor.utility_meter) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
@@ -447,7 +447,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [updater](https://www.home-assistant.io/components/updater) |
-| [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [waze_travel_time](https://www.home-assistant.io/components/waze_travel_time) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
@@ -544,11 +543,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Alexa Media Player](https://github.com/custom-components/alexa_media_player) | This is a custom component to allow control of Amazon Alexa devices in Home Assistant using the unofficial Alexa API. |
 | [Amazon Rekognition](https://github.com/robmarkcole/HASS-amazon-rekognition) | Home Assistant Object detection with Amazon Rekognition |
 | [Amber Electric](https://github.com/troykelly/hacs-amberelectric) | Unofficial Amber Electric integration for Home Assistant |
+| [Amber Electric](https://github.com/madpilot/hass-amber-electric) | Home Assistant Component to pull the latest energy prices from Amber Electric |
 | [Ambilight Yeelight](https://github.com/jomwells/ambilight-yeelight) | A switch component which mimics the functionality of Ambilight+Hue for all Yeelight lights/bulbs |
 | [Ambilights](https://github.com/jomwells/ambilights) | Custom Home Assistant (Light) Component for Ambilight LED's on Philips Android TV's |
 | [Amshan](https://github.com/toreamun/amshan-homeassistant) | Integrate HAN-port attached Aidon, Kaifa and Kamstrup meters used in Norway into Home Assistant |
 | [Anniversaries](https://github.com/pinkywafer/Anniversaries) | Anniversary Countdown Sensor for Home Assistant |
 | [Antistorm Sensor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Antistorm) | This sensor uses official API to get storm warnings from https://antistorm.eu. |
+| [Argoclima](https://github.com/nyffchanium/argoclima-integration) | Home Assistant integration for Argoclima (Argo) climate control devices |
 | [Arlo Camera Support](https://github.com/twrecked/hass-aarlo) | Asynchronous Arlo Component for Home Assistant |
 | [Arpscan Device Tracker](https://github.com/cyberjunky/home-assistant-arpscan_tracker) | This component tracks devices using the arp-scan liinux command, it's very fast, and reasonably accurate. |
 | [Astroweather](https://github.com/mawinkler/astroweather) | Asynchronous Astro Weather Forecast for Home Assistant |
@@ -574,7 +575,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Blueiris Nvr](https://github.com/elad-bar/ha-blueiris) | Integration with Blue Iris Video Security Software |
 | [BMR](https://github.com/slesinger/HomeAssistant-BMR) | Control BMR heating regulation system from Home Assistant |
 | [Bom Core Replacement](https://github.com/DavidFW1960/bom_core_replacement) | None |
-| [Bom Forecast](https://github.com/DavidFW1960/bom_forecast) | BOM Australian Weather Forecast via FTP |
 | [Bonaire Myclimate](https://github.com/bremor/bonaire_myclimate) | Reverse engineered implementation of the Bonaire MyClimate app. |
 | [Bosch Indego Mower](https://github.com/jm-73/Indego) | Home Assistant Custom Component for Bosch Indego Lawn Mower |
 | [Bosch Smart Home Controller (Shc) Integration](https://github.com/tschamm/boschshc-hass) | Home Assistant component for accessing Bosch Smart Home Controller using boschshcpy python library. |
@@ -616,6 +616,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Couchpotato](https://github.com/youdroid/home-assistant-couchpotato) | 🎥 CouchPotato component to feed Upcoming Media Card. |
 | [Cover Time Based Rf (Trigger Script)](https://github.com/nagyrobi/home-assistant-custom-components-cover-rf-time-based) | Time-based cover with customisable scripts to trigger opening, stopping and closing. Position is calculated based on the fraction of time spent by the cover travelling up or down. State can be updated with information based on external sensors. |
 | [Cozytouch](https://github.com/Cyr-ius/hass-cozytouch) | Cozytouch support for Home Assistant |
+| [Creasol Dombus](https://github.com/CreasolTech/home-assistant-creasol-dombus) | Home Assistant integration for Creasol DomBus RS485 modules (inputs, outputs, sensors). |
 | [Crunch O Meter](https://github.com/GuyLewin/home-assistant-crunch-o-meter) | Crunch-O-Meter API as sensors in Home Assistant. See how many people are currently at your local gym |
 | [Crypto Tracker](https://github.com/PepegaBruh/CryptoTracker) | Integration for Home Assistant to implement a crypto tracking system |
 | [Cryptoinfo](https://github.com/heyajohnny/cryptoinfo) | Provides Home Assistant sensors for all cryptocurrencies supported by CoinGecko |
@@ -673,6 +674,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Fordpass](https://github.com/itchannel/fordpass-ha) | Fordpass integration for Home Assistant |
 | [Fortnite Stats](https://github.com/michaellunzer/Home-Assistant-Custom-Component-Fortnite) | This is a Home-Assistant custom component that pulls Fortnite stats using the python API library from the site fortnitetracker.com |
 | [Freebox Player](https://github.com/Pouzor/freebox_player) | Custom Component for Home Assistant, enable to remote Freebox Player |
+| [Frigate](https://github.com/blakeblackshear/frigate-hass-integration) | Frigate integration for Home Assistant |
 | [Fully Kiosk Browser](https://github.com/cgarwood/homeassistant-fullykiosk) | Fully Kiosk Browser integration for Home Assistant |
 | [Fxmarketapi Integration](https://github.com/rob196/home-assistant-fxmarketapi) | This is a custom component to integrate into FXMarketAPI (https://fxmarketapi.com) to get the live mid-rates in Home Assistant. |
 | [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) | 🗑 Custom Home Assistant sensor for scheduling garbage collection (or other regularly re-occurring events - weekly on given days, semi-weekly or monthly) |
@@ -680,12 +682,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Gardena Smart System](https://github.com/py-smart-gardena/hass-gardena-smart-system) | Home Assistant custom component integration for Gardena Smart System |
 | [Garo Wallbox](https://github.com/sockless-coding/garo_wallbox) | Garo wallbox - Home Assistant Component  |
 | [Gce Eco Devices](https://github.com/Aohzan/ecodevices) | Home Assistant custom component for GCE Eco-Devices |
+| [GCE IPX800 V4](https://github.com/Aohzan/ipx800) | Integration for Home Assistant to control light, switch and others via GCE IPX800 |
 | [Gecko](https://github.com/gazoodle/gecko-home-assistant) | Home Assistant integration for spas equipped with Gecko Alliance in.touch2 modules |
 | [Generate Readme](https://github.com/custom-components/readme) | Use Jinja and data from Home Assistant to generate your README.md file |
-| [Generic Hygrostat](https://github.com/avdeevsv91/ha_generic_hygrostat) | Generic Thermostat climate platform for Home Assistant |
 | [Georide Integration](https://github.com/ptimatth/GeorideHA) | GeoRide integration for Home Assistant |
 | [Gigaset Elements](https://github.com/dynasticorpheus/gigasetelements-ha) | Gigaset Smart Home integration for Home Assistant |
-| [GIOŚ](https://github.com/bieniu/ha-gios) | GIOŚ (Polish Główny Inspektorat Ochrony Środowiska) air quality data integration for Home Assistant |
 | [Gismeteo](https://github.com/Limych/ha-gismeteo) | Gismeteo Weather Provider for Home Assistant |
 | [Gitea](https://github.com/youdroid/home-assistant-gitea) | 🍵 Gitea component to follow your repositories |
 | [Go Echarger](https://github.com/cathiele/homeassistant-goecharger) | Home Assistant custom_component for controlling the go-eCharger EV-Charger |
@@ -698,6 +699,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Govee](https://github.com/LaggAt/hacs-govee) | A HACS repository for Govee light integration |
 | [Govee Ble Hci Monitor Sensor Integration](https://github.com/Home-Is-Where-You-Hang-Your-Hack/sensor.goveetemp_bt_hci) | Govee Temperature/Humidity BLE Home Assistant Component |
 | [Gpodder](https://github.com/custom-components/gpodder) | 🎧 gPodder Integration for Podcast Feed Monitoring |
+| [Gree Extension For Home Assistant Built In Integration](https://github.com/mullerdavid/hass_GreeExt) | Gree Extension for built in integration |
 | [Greenchoice](https://github.com/jessevl/homeassistant-greenchoice) | This is a Home Assistant custom component that connects to the Greenchoice API |
 | [Grocy Custom Component](https://github.com/custom-components/grocy) | Custom Grocy integration for Home Assistant |
 | [Growatt Solar Panels](https://github.com/timvancann/homeassistant-growatt) | None |
@@ -756,6 +758,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Homeassistant Teslacustomcomponent](https://github.com/mlowijs/HomeAssistant-TeslaCustomComponent) | None |
 | [Homeassistant Virgintivo](https://github.com/bertbert72/HomeAssistant_VirginTivo) | HomeAssistant component for control of Virgin Media Tivo boxes |
 | [Homewizard Energy](https://github.com/DCSBL/ha-homewizard-energy) | Custom Home Assistant integration for HomeWizard Energy |
+| [Honor Router 3/X3 Tracker](https://github.com/juacas/honor_x3) | Honor X3 router Device tracker for Home Assistant |
 | [Hp Printers Integration](https://github.com/elad-bar/ha-hpprinter) | HP Printer Integration |
 | [Hubitat](https://github.com/jason0x43/hacs-hubitat) | A Hubitat integration for Home Assistant |
 | [Hue Service Advanced](https://github.com/Cyr-ius/hass-hue-service-advanced) | Service to set motion's sensors and change scan intervall for remotes and motions |
@@ -780,6 +783,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Kaco](https://github.com/KoljaWindeler/kaco) | custom integration for kaco solar inverter |
 | [Kan Program](https://github.com/eyalcha/kan_program) | Home assistant custom component to fetch kan program guide |
 | [Keymaster](https://github.com/FutureTense/keymaster) | Home Assistant integration for managing Z-Wave enabled locks |
+| [Knmi](https://github.com/golles/ha-knmi) | KNMI weather for Home Assistant |
 | [Kodi Media Sensors](https://github.com/jtbgroup/kodi-media-sensors) | Custom component to feed multiple sensors in Home Assistan and so custom cards can be to display those sensors. This repository is a fork of https://github.com/boralyl/kodi-recently-added |
 | [Kodi Recently Added Media](https://github.com/boralyl/kodi-recently-added) | Custom component to feed recently added tv shows and movies to the custom card "Upcoming Media Card" for Home Assistant.  |
 | [Konke](https://github.com/5high/konke) | 控客小K 接入Home Assistant，支持最新版本HA 目前最新版本（0.103），相信未来的版本也可以支持。 |
@@ -790,6 +794,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Leaf Spy](https://github.com/jesserockz/ha-leafspy) | A Home Assistant integration to receive live data sent from the LeafSpy app |
 | [Lennox Icomfort Wifi Thermostat Integration](https://github.com/thevoltagesource/LennoxiComfort) | Home Assistant custom component for controlling Lennox iComfort WiFi and AirEase Comfort Sync thermostats. |
 | [Lg Hombot Vacuum Cleaner](https://github.com/ericpignet/home-assistant-lg_hombot) | LG Hombot/Roboking Component for Home Assistant. |
+| [Libratone Zipp](https://github.com/Chouffy/home_assistant_libratone_zipp) | Control a Libratone Zipp speaker within Home Assistant |
 | [Lightwave Rf](https://github.com/bigbadblunt/homeassistant-lightwave2) | Lightwave RF custom component for Home Assistant. Requires generation 2 ("Link Plus") hub, but will control both generation 1 ("Connect Series") and generation 2 ("Smart Series") devices. |
 | [Lightwaverf Ha Energysensor](https://github.com/asantaga/lightwaverf_HA_EnergySensor) | Home Assistant Sensor for the LightwaveRF energy monitor |
 | [Linkplay Based Speakers And Devices](https://github.com/nagyrobi/home-assistant-custom-components-linkplay) | LinkPlay based media devices integration for Home Assistant. Fully compatible with Mini Media Player card including speaker group management. Supports snapshot and restore functionality for TTS. |
@@ -821,8 +826,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Meteoalarm](https://github.com/kodi1/meteoalarm) | meteoalarm sensor |
 | [Meteobridge Datalogger Integration](https://github.com/briis/meteobridge) | The Meteobridge Integration adds support for retrieving current weather data from a Meteobridge datalogger connected to a local Weather Station. |
 | [Metlink Wellington Transport](https://github.com/make-all/metlink-nz) | Metlink Wellington Public Transport integration for Home Assistant |
+| [Midea A/C Via Ewelink](https://github.com/georgezhao2010/climate_ewelink) | Control your Midea air conditioner devices via the eWeLink cloud |
 | [Midea Ac Py](https://github.com/andersonshatch/midea-ac-py) | This is a library to allow communicating to a Midea appliance via the Midea cloud. |
-| [Midea Smart Aircon](https://github.com/mac-zhou/midea-ac-py) | This is a custom component for Home Assistant to integrate the Midea Air Conditioners via the Local area network. |
+| [Midea Smart Aircon](https://github.com/mac-zhou/midea-ac-py) | Home Assistant Custom Integration for Midea Group(Hualing, Senville, Klimaire, AirCon, Century, Pridiom, Thermocore, Comfee, Toshiba, Carrier, Goodman, Friedrich, Samsung, Kenmore, Trane, Lennox, LG and much more) Air Conditioners via LAN. |
 | [Miele Integration](https://github.com/HomeAssistant-Mods/home-assistant-miele) | Miele integration for Home assistant |
 | [Mikrotik Router](https://github.com/tomaae/homeassistant-mikrotik_router) | Mikrotik router integration for Home Assistant |
 | [Mind Mobility](https://github.com/bramkragten/mind) | Add support for Mind Mobility vehicles in Home Assistant |
@@ -833,6 +839,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Momentary Switch Component](https://github.com/twrecked/hass-momentary) | Momentary Switch Component for Home Assistant |
 | [Moneydashboard](https://github.com/shutupflanders/sensor.moneydashboard) | MoneyDashboard Net Balance sensor for HomeAssistant |
 | [Monitor Docker](https://github.com/ualex73/monitor_docker) | Monitor Docker containers from Home Assistant |
+| [Moox Track](https://github.com/moox-it/hass-moox-track) | MOOX-Track Custom Component for HASS (hass-moox-track) is a custom component that connects your MOOX Track devices to Home Assistant as "Device Trackers" |
+| [Moscow Pgu (Госуслуги Москвы)](https://github.com/alryaz/hass-moscow-pgu) | Moscow PGU services for HomeAssistant |
 | [Mqtt Template Switch](https://github.com/lukich48/hass_mqtt_template_switch) | mqtt template switch for homeassistant |
 | [Multiscrape   A Home Assistant Custom Scraping Component](https://github.com/danieldotnl/ha-multiscrape) | Home Assistant custom component for scraping multiple values (from a single HTTP request) with a separate sensor for each value. Support for (login) form-submit functionality. |
 | [Multizone Controller](https://github.com/Petro31/ha-integration-multizone-controller) | Integration that creates a multi-zone volume controller for media_players in Home Assistant |
@@ -840,13 +848,16 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader) | myjdownloader integration for home assistant |
 | [Mylar Sensor Card](https://github.com/DarkSir23/sensor.mylar) | HomeAssistant Sensor for Mylar (Compatible with Upcoming Meda Card) |
 | [Narodmon.Ru Cloud Integration](https://github.com/Limych/ha-narodmon) | Component to integrate Narodmon.ru cloud into Home Assistant |
+| [Neerslag App](https://github.com/aex351/home-assistant-neerslag-app) | Neerslag app for Home Assistant. All-in-one package (Sensors + Card). |
 | [Nespresso Ble Coffee Machine](https://github.com/tikismoke/home-assistant-nespressoble) | NESPRESSO ble Home Assistant custom componenets and also a 2MQTT script |
+| [Netgear Wax](https://github.com/rroller/netgear) | Netgear Home Assistant Integration |
 | [Nexia Climate Integration](https://github.com/ryannazaretian/hacs-nexia-climate-integration) | Nexia climate integration for Trane and American Standard thermostats |
 | [Next Rocket Launch](https://github.com/Verbalinsurection/next_rocket_launch) | The Next Rocket Launch sensor platform allows you to monitor the next rocket launch from Teamup. |
 | [Nextbike Integration](https://github.com/syssi/nextbike) | Nextbike integration for Home Assistant |
 | [NHL API](https://github.com/JayBlackedOut/hass-nhlapi) | NHL Stats API Integration Into Home Assistant |
 | [Niko Home Control Ii](https://github.com/filipvh/hass-nhc2) | Niko Home Control II Home Assistant Integration |
 | [Nintendo Wishlist](https://github.com/custom-components/sensor.nintendo_wishlist) | A sensor that monitors a Nintendo Switch wish list for when games are on sale. |
+| [Niu Scooter Integration](https://github.com/marcelwestrahome/home-assistant-niu-component) | niu scooter integration for Home assistant. |
 | [Niwa Tides](https://github.com/muxa/home-assistant-niwa-tides) | Custom integration for Home Assistant to get New Zealand tide information from NIWA Tides API |
 | [Nobø Hub / Nobø Energy Control](https://github.com/echoromeo/hanobo) | Home Assistant implementation of pynobo - to control Nobø / Glen Dimplex heaters |
 | [Node Red Companion](https://github.com/zachowj/hass-node-red) | Companion Component for node-red-contrib-home-assistant-websocket to help integrate Node-RED with Home Assistant Core |
@@ -859,7 +870,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Octopus Agile](https://github.com/markgdev/home-assistant_OctopusAgile) | Octopus Agile custom component for Home Assistant |
 | [Office 365 Integration](https://github.com/PTST/O365-HomeAssistant) | Office 365 integration for Home Assistant |
 | [Omnik Inverter Solar Sensor (No Cloud)](https://github.com/robbinjanssen/home-assistant-omnik-inverter) | Read the current, daily and total power from your Omnik Inverter via local network (no cloud!) |
+| [Open Charge Point Protocol (Ocpp)](https://github.com/lbbrhzn/ocpp) | Home Assistant integration for electric vehicle chargers that support the Open Charge Point Protocol (OCPP). |
 | [Open Route Service](https://github.com/eifinger/open_route_service) | Custom Component for Homeassistant Providing Travel Time Information using openrouteservice.org |
+| [Open Source Routing Machine](https://github.com/edekeijzer/osrm_travel_time) | OSRM travel time sensor for Home Assistant |
 | [Openhasp](https://github.com/HASwitchPlate/openHASP-custom-component) | Home Assistant custom component for openHASP |
 | [Openmediavault](https://github.com/tomaae/homeassistant-openmediavault) | OpenMediaVault integration for Home Assistant |
 | [Openmensa Sensor](https://github.com/Mofeywalker/openmensa-hass-component) | A platform sensor which tells you which meals are served in your canteen. |
@@ -885,11 +898,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Philips Ambilight+Hue Switch](https://github.com/Mr-Groch/ambihue) | ON/OFF Abilight+Hue (Switch) component for Philips Ambilight TV's |
 | [Philips Hue Play Hdmi Sync Box](https://github.com/mvdwetering/huesyncbox) | Home Assistant integration for the Philips Hue Play HDMI Sync Box |
 | [Pijuice Ups Hat](https://github.com/Racailloux/home-assistant-pijuice) | Home Assistant integration to support PiJuice UPS Hat and retrieve values to sensors. |
+| [Pirate Weather](https://github.com/alexander0042/pirate-weather-ha) | Replacement for the default Dark Sky Home Assistant integration using Pirate Weather  |
 | [Places](https://github.com/custom-components/places) | Component to integrate with OpenStreetMap Reverse Geocode (PLACE) |
 | [Plcbus Integration](https://github.com/tikismoke/home-assistant-plcbus) | a plcbus custom somponents for HomeAssistant |
 | [Plex Assistant](https://github.com/maykar/plex_assistant) | ❱ Plex Assistant is a Home Assistant integration for casting Plex media to Google devices, Sonos devices, and Plex clients with Google Assistant, HA's conversation integration, and more. |
 | [Plugwise](https://github.com/cyberjunky/home-assistant-plugwise) | :electric_plug: This component can read values from and control Plugwise circles and plugs. |
-| [Plugwise Usb Stick](https://github.com/brefra/home-assistant-plugwise-stick) | Plugwise USB-stick integration to support Circle+, Circle and Stealth devices |
 | [Pollen Information Hungary](https://github.com/amaximus/pollen_hu) | Home Assistant custom component for Pollen Information in Hungary |
 | [Pool Math (Trouble Free Pool)](https://github.com/rsnodgrass/hass-poolmath) | Pool Math for Home Assistant |
 | [Popular Times](https://github.com/freakshock88/hass-populartimes) | Custom component for Home Assistant which generates a sensor to show popularity for a google maps place. |
@@ -918,6 +931,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Rki Covid Numbers](https://github.com/thebino/rki_covid) |  🦠 Custom integration for Home Assistant to monitor covid numbers provided by Robert-Koch Institut |
 | [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive) | Home Assistant custom HACS integration to integrate the next 5 global rocket launches from https://rocketlaunch.live |
 | [Rokid Webhook Hass](https://github.com/jihao/rokid-webhook-hass) | rokid webhook component for Home Assistant (若琪HA组件) |
+| [Rollease Acmeda Automate Pulse Hub V2](https://github.com/sillyfrog/Automate-Pulse-v2) | Rollease Acmeda Automate Pulse Hub v2 integration for Home Assistant |
 | [Rozkładzik Sensor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Rozkladzik) | This sensor uses unofficial API to get data from https://www.rozkladzik.pl and provide information about departures for chosen stop. |
 | [Ruuvitag Sensor](https://github.com/ruuvi-friends/ruuvi-hass.io) | Ruuvi tag BLE sensor for Home Assistant. |
 | [Saj Inverter Modbus](https://github.com/wimb0/home-assistant-saj-modbus) | Home Assistant Component for reading data locally from SAJ (and Zonneplan) Inverters through modbus TCP. |
@@ -963,6 +977,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Skyfield Panel With Sun, Moon, And Planets](https://github.com/partofthething/ha_skyfield) | See the apparent positions of the Sun, Moon, and planets in this home assistant custom component |
 | [Sl Integration (Haslv3)](https://github.com/hasl-sensor/integration) | HomeAssistant SL Sensor (HASLv3) |
 | [Slack User](https://github.com/GeorgeSG/ha-slack-user) | Slack User sensor for Home Assistant |
+| [Sleep As Android](https://github.com/IATkachenko/HA-SleepAsAndroid) | Sleep As Android integration for Home Assistant |
 | [Smart Irrigation](https://github.com/jeroenterheerdt/HAsmartirrigation) | Smart Irrigation custom component for Home Assistant |
 | [Smartmi Smart Heater](https://github.com/fineemb/Smartmi-smart-heater) | 智米智能电暖器 |
 | [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors) | Home Assistant custom integration for SmartThinQ LG devices configurable with Lovelace User Interface. |
@@ -982,6 +997,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Stadtreinigung Hamburg](https://github.com/custom-components/sensor.stadtreinigung_hamburg) | Stadtreinigung Hamburg - get garbage collection dates in Hamburg - custom component for Home Assistant |
 | [Steam Wishlist](https://github.com/boralyl/steam-wishlist) | A home assistant integration that monitors games on sale on your Steam wishlist. |
 | [Sunspec](https://github.com/CJNE/ha-sunspec) | Home Assistant customcomponent for SunSpec modbus devices |
+| [Sureha](https://github.com/benleb/sureha) | SureHA 🐾 monitor & control your Sure Petcare devices via Home Assistant |
 | [Svenska Trygghetslosningar](https://github.com/gjohansson-ST/stl) | Svenska Trygghetslösningar - Home Assistant |
 | [Svt Play](https://github.com/lindell/home-assistant-svt-play) | Play SVT Play videos and channels via home assistant |
 | [Switchbot Press](https://github.com/cagnulein/switchbot_press) | This is a simple project that manage the Switchbot ( https://amzn.to/3dnliBD ) that has only the "press" ability in Home Assistant. |
@@ -991,10 +1007,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Tauron Amiplus](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Tauron-AMIplus) | This sensor uses unofficial API to get energy usage and generation data from https://elicznik.tauron-dystrybucja.pl. |
 | [Tdameritrade](https://github.com/prairiesnpr/hass-tdameritrade) | TDAmeritrade component for Home Assistant |
 | [Technicolor](https://github.com/shaiu/technicolor) | This is an integration for HomeAssistant. It's a Device Tracker component for the Technicolor Gateway. |
+| [Teletask](https://github.com/Tiemooowh/homeassistant-teletask) | Teletask (DoIP) Integration for Home Assistant Comunity Store (HACS) |
 | [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like) | Sensor of Temperature Feels Like for Home Assistant. |
 | [Templatebinarysensor](https://github.com/dlashua/templatebinarysensor) | Add template binary_sensors from the UI. |
 | [Teufel Raumfeld](https://github.com/B5r1oJ0A9G/teufel_raumfeld) | Integration for Teufel smart speaker (aka Raumfeld Multiroom) into https://www.home-assistant.io/. |
 | [Thermal](https://github.com/eyalcha/thermal) | Thermal camera for Home Assistant |
+| [Thermal Vision](https://github.com/TheRealWaldo/thermal) | Thermal Vision Sensor and Camera for Home Assistant |
 | [Thermiq Mqtt](https://github.com/ThermIQ/thermiq_mqtt-ha) | Home Assistant integration of ThermIQ-MQTT, providing control and logging of Thermia heatpumps   |
 | [Tide](https://github.com/Hellowlol/ha-tide) | Tide a sensor for HASS. |
 | [Toon Boiler Status](https://github.com/cyberjunky/home-assistant-toon_boilerstatus) | This component reads and displays the boiler status values from a rooted Toon thermostat. |
@@ -1005,6 +1023,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Trackimo Device Tracker](https://github.com/troykelly/hacs-trackimo) | Trackimo Integration for HACS Home Assistant |
 | [Tractive](https://github.com/Danielhiversen/home_assistant_tractive) | Custom component for Tractive |
 | [Trakt](https://github.com/custom-components/sensor.trakt) | 📺 Trakt Integration for Upcoming Media Card |
+| [Trakt](https://github.com/dylandoamaral/trakt-integration) | A Trakt integration for Home Assistant compatible with upcoming media card |
 | [Tryfi Dog Monitor](https://github.com/sbabcock23/hass-tryfi) | Home Assistant integration for TryFi Dog Collar GPS monitoring. |
 | [Ttn Gateway Sensor](https://github.com/cyberjunky/home-assistant-ttn_gateway) | This components reads statistics from a The Things Network Gateway. |
 | [Tv4 Play](https://github.com/lindell/home-assistant-tv4-play) | Play videos from the Swedish channel 4 |
@@ -1030,7 +1049,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Viomi Robot Vacuum Cleaner Se (V Rvclm21A)](https://github.com/marotoweb/home-assistant-vacuum-viomise) | Hacky Home assistant support for Viomi SE (V-RVCLM21A) |
 | [Virtual Components](https://github.com/twrecked/hass-virtual) | Virtual Components for Home Assistant |
 | [Visonic/Bentel/Tyco Alarm System](https://github.com/And3rsL/VisonicAlarm-for-Hassio) | Visonic/Bentel/Tyco Alarm System integrtation for Home Assistant |
-| [Vista Pool](https://github.com/tellerbop/havistapool) | Custom Vista Pool Integration for Home Assistant |
 | [Volkswagen We Connect](https://github.com/robinostlund/homeassistant-volkswagencarnet) | Volkswagen Carnet Component for home assistant |
 | [Warsaw Ztm Information](https://github.com/peetereczek/ztm) | Home Assistant (hass.io) custom component for Warsaw public transport |
 | [Waste Collection Schedule](https://github.com/mampfes/hacs_waste_collection_schedule) | Home Assistant integration framework for (garbage collection) schedules |
@@ -1045,6 +1063,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Weback Cloud Integration](https://github.com/opravdin/weback-hass) | Weback integration with Home Assistant |
 | [Webrtc Camera](https://github.com/AlexxIT/WebRTC) | Home Assistant custom component for viewing IP cameras RTSP stream in real time using WebRTC and MSE technology |
 | [Weenect](https://github.com/eifinger/hass-weenect) | Homeassistant integration for weenect |
+| [Weight Gurus](https://github.com/jcgoette/weight_gurus_homeassistant) | This custom integration provides sensors for Weight Gurus API endpoints. |
 | [Weishaupt Wem Portal](https://github.com/erikkastelec/hass-WEM-Portal) | Custom component for retrieving sensor information from Weishaupt WEM Portal |
 | [Whatpulse Sensor](https://github.com/SLG/home-assistant-whatpulse) | This component retrieves the statistics from Whatpulse |
 | [Wibeee   Abacao](https://github.com/abacao/hass_wibeee) | Home Assistant Component: Mirubee or Wibeee  |
@@ -1053,6 +1072,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Winix Purifier](https://github.com/iprak/winix) | Home Assistant component for C545 Winix Air Purifier |
 | [Wiserhomeassistantplatform](https://github.com/asantaga/wiserHomeAssistantPlatform) | Platform and related climate/sensors to support the Drayton Wiser Home Heating System |
 | [Worldtidesinfocustom](https://github.com/jugla/worldtidesinfocustom) | world tides info custom component for home assistant |
+| [Wyze](https://github.com/JoshuaMulliken/ha-wyzeapi) | Home Assistant Integration for Wyze devices. |
 | [Xantech Multi Zone Audio Amps](https://github.com/rsnodgrass/hass-xantech) | Xantech Multi-Zone Matrix Audio for Home Assistant |
 | [Xiaomi Cloud Map Extractor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Xiaomi-Cloud-Map-Extractor) | This custom integration provides a way to present a live view of a map for Xiaomi, Roborock, Viomi and Roidmi vacuums without a need for rooting. |
 | [Xiaomi Gateway 3](https://github.com/AlexxIT/XiaomiGateway3) | Control Zigbee, BLE and Mesh devices from Home Assistant with Xiaomi Gateway 3 (ZNDMWG03LM) on original firmware |
@@ -1068,6 +1088,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Xiaomi Miot](https://github.com/ha0y/xiaomi_miot_raw) | Universal Xiaomi MIoT integration for Home Assistant |
 | [Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot) | Automatic integrate all Xiaomi devices to HomeAssistant via miot-spec, support Wi-Fi, BLE, ZigBee devices. |
 | [Xiaomi Philips Lights Integration](https://github.com/syssi/philipslight) | Xiaomi Philips Lights integration for Home Assistant |
+| [Xmr Pool Statistics](https://github.com/hwmland/homeassistant-xmrpool_stat) | XMR Pool Statistics integration for Home Assistant |
 | [Yahoo Finance](https://github.com/iprak/yahoofinance) | Home Assistant component which allows you to get stock updates from Yahoo finance. |
 | [Yandex Smart Home](https://github.com/dmitry-k/yandex_smart_home) | Adds support for Yandex Smart Home (Alice voice assistant) into Home Assistant |
 | [Yandex.Station](https://github.com/AlexxIT/YandexStation) | Управление Яндекс.Станцией и другими колонками с Алисой из Home Assistant |
@@ -1084,6 +1105,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [Zoom](https://github.com/raman325/ha-zoom-automation) | Custom Home Assistant component for Zoom. Tracks when you are connected to a Zoom call by default but may allow you to track more. |
 | [Zwift Sensors](https://github.com/snicker/zwift_hass) | Zwift Sensor Integration for HomeAssistant |
 | [Żadnego Ale](https://github.com/bieniu/ha-zadnego-ale) | Żadnego Ale allergen concentration custom integration |
+| [Личный Кабинет Интер Рао (Энергосбыт)](https://github.com/alryaz/hass-lkcomu-interrao) | Интеграция Home Assistant с ЛК "Интер РАО" |
+| [Личный Кабинет Тнс Энерго](https://github.com/alryaz/hass-tns-energo) | TNS Energo Integration |
 | [⛏️ Minecraft Version](https://github.com/xMrVizzy/minecraft-version) | 🌿 Minecraft Version Checker for Home Assistant. |
 | [小米云服务](https://github.com/fineemb/xiaomi-cloud) | HASS的小米云服务集成 |
 | [彩云天气](https://github.com/fineemb/Colorfulclouds-weather) | 用于HASS的彩云天气组件 |

@@ -18674,6 +18674,8 @@ class Plex {
         this.clients = [];
         this.requestTimeout = 10000;
         this.sections = [];
+        this.collections = false;
+        this.playlists = [];
         this.init = async () => {
             await Promise.all([this.getSections(), this.getClients(), this.getServerID()]);
         };
@@ -18713,8 +18715,87 @@ class Plex {
             }
             return this.sections;
         };
+        this.getCollections = async () => {
+            if (!lodash.isArray(this.collections)) {
+                const sections = await this.getSections();
+                const collectionRequests = [];
+                lodash.forEach(sections, section => {
+                    collectionRequests.push(this.getCollection(section.key));
+                });
+                const allResults = await Promise.all(collectionRequests);
+                const collections = [];
+                lodash.forEach(allResults, result => {
+                    lodash.forEach(result, collection => {
+                        collections.push(collection);
+                    });
+                });
+                this.collections = collections;
+            }
+            return this.collections;
+        };
+        this.getPlaylists = async () => {
+            if (lodash.isEmpty(this.playlists)) {
+                this.playlists = [];
+                const url = this.authorizeURL(`${this.getBasicURL()}/playlists`);
+                const playlistsData = await axios.get(url, {
+                    timeout: this.requestTimeout
+                });
+                this.playlists = playlistsData.data.MediaContainer.Metadata;
+            }
+            return this.playlists;
+        };
+        this.getCollection = async (sectionID) => {
+            const url = this.authorizeURL(`${this.getBasicURL()}/library/sections/${sectionID}/collections`);
+            const collectionsData = await axios.get(url, {
+                timeout: this.requestTimeout
+            });
+            return lodash.isNil(collectionsData.data.MediaContainer.Metadata) ? [] : collectionsData.data.MediaContainer.Metadata;
+        };
         this.getSectionData = async (sectionID) => {
             return this.exportSectionsData([await this.getSectionDataWithoutProcessing(sectionID)]);
+        };
+        this.getChildren = async (childrenURL) => {
+            const bulkItems = 50;
+            let url = this.authorizeURL(`${this.getBasicURL()}${childrenURL}`);
+            url += `&sort=${this.sort}`;
+            let result = {};
+            try {
+                result = await axios.get(url, {
+                    timeout: this.requestTimeout
+                });
+            }
+            catch (err) {
+                // probably hitting limit of items to return, we need to request in parts
+                if (lodash.includes(err.message, 'Request failed with status code 500')) {
+                    url += `&X-Plex-Container-Start=0&X-Plex-Container-Size=${bulkItems}`;
+                    result = await axios.get(url, {
+                        timeout: this.requestTimeout
+                    });
+                    const { totalSize } = result.data.MediaContainer;
+                    let startOfItems = bulkItems;
+                    const sectionsRequests = [];
+                    while (startOfItems < totalSize) {
+                        sectionsRequests.push(axios.get(this.authorizeURL(`${this.getBasicURL()}${childrenURL}?sort=${this.sort}&X-Plex-Container-Start=${startOfItems}&X-Plex-Container-Size=${bulkItems}`), {
+                            timeout: this.requestTimeout
+                        }));
+                        startOfItems += bulkItems;
+                    }
+                    const allResults = await Promise.all(sectionsRequests);
+                    lodash.forEach(allResults, multiResult => {
+                        result.data.MediaContainer.Metadata = lodash.concat(result.data.MediaContainer.Metadata, multiResult.data.MediaContainer.Metadata);
+                    });
+                }
+                else {
+                    throw err;
+                }
+            }
+            return result.data.MediaContainer.Metadata;
+        };
+        this.getCollectionData = async (collectionKey) => {
+            return this.getChildren(collectionKey);
+        };
+        this.getPlaylistData = async (playlistKey) => {
+            return this.getChildren(playlistKey);
         };
         this.getSectionDataWithoutProcessing = async (sectionID) => {
             const bulkItems = 50;
@@ -19505,6 +19586,8 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
         this.entities = [];
         this.scriptEntities = [];
         this.sections = [];
+        this.collections = [];
+        this.playlists = [];
         this.clients = {};
         this.entitiesRegistry = false;
         this.plexValidSection = document.createElement('div');
@@ -19590,9 +19673,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             }
         };
         this.render = async () => {
-            const addDropdownItem = (text) => {
+            const addDropdownItem = (text, disabled = false) => {
                 const libraryItem = document.createElement('paper-item');
                 libraryItem.innerHTML = text;
+                if (disabled) {
+                    libraryItem.disabled = true;
+                }
                 return libraryItem;
             };
             const createEntitiesDropdown = (selected, changeHandler) => {
@@ -19692,6 +19778,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.content.appendChild(this.token);
             this.libraryName.innerHTML = '';
             const libraryItems = document.createElement('paper-listbox');
+            libraryItems.appendChild(addDropdownItem('Smart Libraries', true));
             libraryItems.appendChild(addDropdownItem('Continue Watching'));
             libraryItems.appendChild(addDropdownItem('Deck'));
             libraryItems.appendChild(addDropdownItem('Recently Added'));
@@ -19706,6 +19793,8 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.appendChild(this.content);
             this.plex = new Plex(this.config.ip, this.plexPort, this.config.token, this.plexProtocol, this.config.sort);
             this.sections = await this.plex.getSections();
+            this.collections = await this.plex.getCollections();
+            this.playlists = await this.plex.getPlaylists();
             this.clients = await this.plex.getClients();
             this.plexValidSection.style.display = 'none';
             this.plexValidSection.innerHTML = '';
@@ -19905,9 +19994,22 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.runAfter.value = this.config.runAfter;
             this.plexValidSection.appendChild(this.runAfter);
             if (!lodash.isEmpty(this.sections)) {
+                libraryItems.appendChild(addDropdownItem('Libraries', true));
                 lodash.forEach(this.sections, (section) => {
                     libraryItems.appendChild(addDropdownItem(section.title));
                 });
+                if (!lodash.isEmpty(this.collections)) {
+                    libraryItems.appendChild(addDropdownItem('Collections', true));
+                    lodash.forEach(this.collections, (collection) => {
+                        libraryItems.appendChild(addDropdownItem(collection.title));
+                    });
+                }
+                if (!lodash.isEmpty(this.playlists)) {
+                    libraryItems.appendChild(addDropdownItem('Playlists', true));
+                    lodash.forEach(this.playlists, (playlist) => {
+                        libraryItems.appendChild(addDropdownItem(playlist.title));
+                    });
+                }
                 this.libraryName.disabled = false;
                 this.libraryName.value = this.config.libraryName;
                 let libraryType = '';
@@ -21061,6 +21163,26 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                         lodash.forEach(plexSections, section => {
                             this.data[section.title1] = section.Metadata;
                         });
+                    }
+                    const collections = await this.plex.getCollections();
+                    let collectionToGet = {};
+                    lodash.forEach(collections, collection => {
+                        if (this.plex && lodash.isEqual(collection.title, this.config.libraryName)) {
+                            collectionToGet = collection;
+                        }
+                    });
+                    if (!lodash.isNil(collectionToGet.key)) {
+                        this.data[collectionToGet.title] = await this.plex.getCollectionData(collectionToGet.key);
+                    }
+                    const playlists = await this.plex.getPlaylists();
+                    let playlistToGet = {};
+                    lodash.forEach(playlists, playlist => {
+                        if (this.plex && lodash.isEqual(playlist.title, this.config.libraryName)) {
+                            playlistToGet = playlist;
+                        }
+                    });
+                    if (!lodash.isNil(playlistToGet.key)) {
+                        this.data[playlistToGet.title] = await this.plex.getPlaylistData(playlistToGet.key);
                     }
                     if (this.data[this.config.libraryName] === undefined) {
                         this.error = `Library name ${this.config.libraryName} does not exist.`;

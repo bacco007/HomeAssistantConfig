@@ -1,2 +1,21 @@
----
-# See Automations folder for my Automations
+- id: '1628718623049'
+  alias: Docker - Restart Solar Modbus Container every morning
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: +00:20
+  condition: []
+  action:
+  - service: switch.toggle
+    target:
+      entity_id: switch.tbsh03_monitordocker_modbus4mqtt
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - service: switch.toggle
+    target:
+      entity_id: switch.tbsh03_monitordocker_modbus4mqtt
+  mode: single

@@ -8,6 +8,7 @@ recorder:
       - sensor.unifi_gateway_www_uptime
       - sensor.unifi_gateway_wan_uptimeavail
       - sensor.unifi_gateway_wan_uptimeavail_stats
+      - sensor.solcast_history
   exclude:
     entities:
       - sun.sun

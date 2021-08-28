@@ -22,4 +22,17 @@ action:
       unit_of_measurement: kWh
       friendly_name: Solar - 365 Day - Yield
       icon: "mdi:solar-power"
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT moving_average(last("value"),7)*0.1 AS "yield" FROM "homeassistant"."autogen"."kWh"
+        WHERE time >= now() - 365d AND "entity_id"='solar_daily_yield'
+        GROUP BY time(1d) FILL(null) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: yield
+      entity_id: sensor.archive_solar_yield_365day_avg
+      unit_of_measurement: kWh
+      friendly_name: Solar - 365 Day - Yield - Avg
+      icon: "mdi:solar-power" 
 mode: single

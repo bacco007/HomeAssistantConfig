@@ -1,8 +1,8 @@
 """The NSWCovid integration."""
 import asyncio
 
-import voluptuous as vol
 import logging
+import voluptuous as vol
 
 from homeassistant import exceptions
 from homeassistant.config_entries import ConfigEntry
@@ -20,6 +20,11 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 PLATFORMS = [SENSOR]
 
 
+def logging_handler(payload: object):
+    """For debugging mostly"""
+    _LOGGER.debug(payload)
+
+
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the NSWCovid component."""
     return True
@@ -32,6 +37,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN] = {}
 
     hass.data[DOMAIN][entry.entry_id] = NSWCovid(loop=hass.loop)
+
+    hass.data[DOMAIN][entry.entry_id].addListener(logging_handler)
 
     if not await hass.data[DOMAIN][entry.entry_id].refresh():
         raise CannotConnect

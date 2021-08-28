@@ -14,6 +14,9 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import slugify
+from homeassistant.helpers.typing import StateType
+from homeassistant.components import sensor
+from homeassistant.components.sensor import SensorEntity
 
 from . import DOMAIN
 from .const import (
@@ -147,7 +150,7 @@ ACTIVE_SENSORS = [
 
 _LOGGER = logging.getLogger(__name__)
 
-DEFAULT_SCAN_INTERVAL = timedelta(minutes=30)
+DEFAULT_SCAN_INTERVAL = timedelta(minutes=5)
 SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL
 
 TIMESTAMP_TYPES = ["nswcoviddate", "date", "time", "datetime", "dateymd"]
@@ -214,7 +217,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry, async_add_entities):
     hass.data[DOMAIN]["tasks"]["statistic_tracker"] = api.track(interval=SCAN_INTERVAL)
 
 
-class NSWCovidEntry(RestoreEntity):
+class NSWCovidEntry(RestoreEntity, SensorEntity):
     """Represent a NSW Covid Statistic."""
 
     def __init__(
@@ -286,7 +289,7 @@ class NSWCovidEntry(RestoreEntity):
         return self.__statistic.unit
 
     @property
-    def state(self):
+    def state(self) -> StateType:
         """Return the sensor state"""
         _LOGGER.debug(
             "%s returning state: %s", self.__statistic.id, self.__statistic.status
@@ -313,11 +316,11 @@ class NSWCovidEntry(RestoreEntity):
         return None
 
     @property
-    def state_class(self):
+    def state_class(self) -> str:
         """Return the state class if relevent"""
         measurement = getattr(self.__statistic, "measurement", False)
         if measurement:
-            return "measurement"
+            return sensor.STATE_CLASS_MEASUREMENT
         else:
             return None
 
@@ -436,7 +439,7 @@ class NSWCovidDeaths(RestoreEntity):
         return "deaths"
 
     @property
-    def state(self):
+    def state(self) -> StateType:
         """Return the sensor state"""
         deaths = 0
         for statistic_id in self.__tracked:
@@ -456,7 +459,7 @@ class NSWCovidDeaths(RestoreEntity):
     @property
     def state_class(self):
         """Return the state class if relevent"""
-        return "measurement"
+        return sensor.STATE_CLASS_MEASUREMENT
 
     @property
     def device_state_attributes(self):
@@ -578,7 +581,7 @@ class NSWCovidCases(RestoreEntity):
         return "cases"
 
     @property
-    def state(self):
+    def state(self) -> StateType:
         """Return the sensor state"""
         cases = 0
         for statistic_id in self.__tracked:
@@ -598,7 +601,7 @@ class NSWCovidCases(RestoreEntity):
     @property
     def state_class(self):
         """Return the state class if relevent"""
-        return "measurement"
+        return sensor.STATE_CLASS_MEASUREMENT
 
     @property
     def device_state_attributes(self):
@@ -713,7 +716,7 @@ class NSWCovidDoses(RestoreEntity):
         return True
 
     @property
-    def state(self):
+    def state(self) -> StateType:
         """Return the sensor state"""
         if not ATTR_ALL_PROVIDERS_DOSES_CUMULATIVE in self.__statistics:
             return None

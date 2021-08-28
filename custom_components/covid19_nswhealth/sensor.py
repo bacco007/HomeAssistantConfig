@@ -81,6 +81,21 @@ class NSWHSensor(Entity):
         df_tamw_earliest = df_tamw["notification_date"].min().strftime("%a %d %b %Y")
         df_tamw_latest = df_tamw["notification_date"].max().strftime("%a %d %b %Y")
 
+        df_wnsw = df[df.lhd_2010_code == "X850"]
+        df_wnsw_count = len(df_wnsw)
+        df_wnsw_earliest = df_wnsw["notification_date"].min().strftime("%a %d %b %Y")
+        df_wnsw_latest = df_wnsw["notification_date"].max().strftime("%a %d %b %Y")
+
+        df_drc = df[df.lga_code19 == 12390.0]
+        df_drc_count = len(df_drc)
+        df_drc_earliest = df_drc["notification_date"].min().strftime("%a %d %b %Y")
+        df_drc_latest = df_drc["notification_date"].max().strftime("%a %d %b %Y")
+
+        df_dubo = df[df.postcode == "2830"]
+        df_dubo_count = len(df_dubo)
+        df_dubo_earliest = df_dubo["notification_date"].min().strftime("%a %d %b %Y")
+        df_dubo_latest = df_dubo["notification_date"].max().strftime("%a %d %b %Y")
+
         self._attributes = {}
         self._state = 0
 
@@ -95,6 +110,18 @@ class NSWHSensor(Entity):
         self._attributes["tamw"] = df_tamw_count
         self._attributes["tamw_dates"] = (
             "1st: " + str(df_tamw_earliest) + " - Last: " + str(df_tamw_latest)
+        )
+        self._attributes["wnsw"] = df_wnsw_count
+        self._attributes["wnsw_dates"] = (
+            "1st: " + str(df_wnsw_earliest) + " - Last: " + str(df_wnsw_latest)
+        )
+        self._attributes["drc"] = df_drc_count
+        self._attributes["drc_dates"] = (
+            "1st: " + str(df_drc_earliest) + " - Last: " + str(df_drc_latest)
+        )
+        self._attributes["dubo"] = df_dubo_count
+        self._attributes["dubo_dates"] = (
+            "1st: " + str(df_dubo_earliest) + " - Last: " + str(df_dubo_latest)
         )
         self._attributes[ATTR_ATTRIBUTION] = "Data provided by NSW Health"
         self._state = df_tamw_count

@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "1.3.5",
+        "version": "2.0.5",
         "local": false,
         "user": false,
         "nodes": {
@@ -181,6 +181,17 @@
                 "user": false,
                 "module": "node-red",
                 "file": "/opt/node_modules/@node-red/nodes/core/function/90-exec.js"
+            },
+            "rbe": {
+                "name": "rbe",
+                "types": [
+                    "rbe"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red",
+                "file": "/opt/node_modules/@node-red/nodes/core/function/rbe.js"
             },
             "tls": {
                 "name": "tls",
@@ -610,7 +621,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.14.0",
+        "version": "5.14.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -756,6 +767,17 @@
                 "user": false,
                 "module": "node-red-contrib-modbus",
                 "file": "/opt/node_modules/node-red-contrib-modbus/modbus/modbus-response-filter.js"
+            },
+            "Modbus-Flex-Sequencer": {
+                "name": "Modbus-Flex-Sequencer",
+                "types": [
+                    "modbus-flex-sequencer"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-modbus",
+                "file": "/opt/node_modules/node-red-contrib-modbus/modbus/modbus-flex-sequencer.js"
             }
         }
     },
@@ -1394,25 +1416,6 @@
                 "user": false,
                 "module": "node-red-node-suncalc",
                 "file": "/opt/node_modules/node-red-node-suncalc/79-suncalc.js"
-            }
-        }
-    },
-    "node-red-node-tail": {
-        "name": "node-red-node-tail",
-        "version": "0.3.1",
-        "local": false,
-        "user": false,
-        "nodes": {
-            "tail": {
-                "name": "tail",
-                "types": [
-                    "tail"
-                ],
-                "enabled": true,
-                "local": false,
-                "user": false,
-                "module": "node-red-node-tail",
-                "file": "/opt/node_modules/node-red-node-tail/28-tail.js"
             }
         }
     },

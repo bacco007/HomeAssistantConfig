@@ -319,6 +319,96 @@ sensor:
             {% else %}
               {{ (((val|int)/49072)*100)|round(3) }}
             {% endif %}
+          wnsw_percent: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'wnsw') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/279422)*100)|round(3) }}
+            {% endif %}
+          drc_percent: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'drc') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/52445)*100)|round(3) }}
+            {% endif %}
+          dubo_percent: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'dubo') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/38943)*100)|round(3) }}
+            {% endif %}
+          wnsw_percent_cases: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'wnsw') %}
+            {% set val2 = state_attr('sensor.covid_19_covidlive_nsw', 'Cases') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int))*100)|round(3) }}
+            {% endif %}
+          drc_percent_cases: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'drc') %}
+            {% set val2 = state_attr('sensor.covid_19_covidlive_nsw', 'Cases') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int))*100)|round(3) }}
+            {% endif %}
+          dubo_percent_cases: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'dubo') %}
+            {% set val2 = state_attr('sensor.covid_19_covidlive_nsw', 'Cases') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
+          wnsw_percent_casestotests: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'wnsw') %}
+            {% set val2 = state_attr('sensor.covid_19_nswh_local_tests', 'wnsw') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
+          drc_percent_casestotests: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'drc') %}
+            {% set val2 = state_attr('sensor.covid_19_nswh_local_tests', 'drc') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
+          dubo_percent_casestotests: >
+            {% set val = state_attr('sensor.covid_19_nswh_local', 'dubo') %}
+            {% set val2 = state_attr('sensor.covid_19_nswh_local_tests', 'dubo') %}
+            {% if val == 0 or val2 == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/(val2|int))*100)|round(3) }}
+            {% endif %}
+          wnsw_percent_tests: >
+            {% set val = state_attr('sensor.covid_19_nswh_local_tests', 'wnsw') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/279422)*100)|round(3) }}
+            {% endif %}
+          drc_percent_tests: >
+            {% set val = state_attr('sensor.covid_19_nswh_local_tests', 'drc') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/52445)*100)|round(3) }}
+            {% endif %}
+          dubo_percent_tests: >
+            {% set val = state_attr('sensor.covid_19_nswh_local_tests', 'dubo') %}
+            {% if val == 0 %}
+              {{ 0 }}
+            {% else %}
+              {{ (((val|int)/38943)*100)|round(3) }}
+            {% endif %}            
       # covid_19_esria_aus_pct:
       #   friendly_name: "COVID-19 ESRIA AUS Percents"
       #   unit_of_measurement: "%"

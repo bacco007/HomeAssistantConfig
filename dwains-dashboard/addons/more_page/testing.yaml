@@ -401,6 +401,93 @@
               return [new Date(entry.datetime), entry.precipitation_probability];
             });
 
+    - type: custom:apexcharts-card
+      graph_span: 48h
+      header:
+        show: true
+        title: "BOM 3Hr Forecast - Tamworth Airport"
+      span:
+        start: hour
+        offset: -1h
+      apex_config:
+        chart: { type: "area", height: 300 }
+        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
+        dataLabels: { enabled: true }
+        legend: { show: false }
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "Rainfall"
+            decimalsInFloat: 0
+            title:
+              text: "Rainfall (mm)"
+            min: 0
+            opposite: true
+          - seriesName: "High"
+            decimalsInFloat: 0
+            title:
+              text: "Temperature (°C)"
+          - seriesName: "Prob"
+            title:
+              text: "Rain Probability (%)"
+            show: true
+            min: 0
+            max: 100
+            decimalsInFloat: 0
+            opposite: true
+
+      series:
+        - entity: sensor.bomforecast_tamworth_3hr
+          name: Rainfall
+          type: area
+          color: "#1192e8"
+          extend_to_end: false
+          stroke_width: 2
+          unit: "mm"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation];
+            });
+        - entity: sensor.bomforecast_tamworth_3hr
+          name: High
+          type: area
+          color: "da1e28"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "°C"
+          show:
+            datalabels: true
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.temperature];
+            });
+        - entity: sensor.bomforecast_tamworth_3hr
+          name: Low
+          type: area
+          color: "#0043ce"
+          extend_to_end: false
+          stroke_width: 3
+          unit: "%"
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.precipitation_probability];
+            });
+
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
@@ -1115,12 +1202,12 @@
             duration: 1d
 
     - type: custom:apexcharts-card
-      graph_span: 7d1s
+      graph_span: 7d
       header:
         show: true
         title: "COVID-19 - Tests"
       span:
-        end: hour
+        end: day
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -1149,94 +1236,46 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "Tests"
+        group_by:
+          func: last
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Tests
-          unit: "Tests"
           name: ACT
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Tests
-          unit: "Tests"
           name: NSW
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nt
           attribute: Tests
-          unit: "Tests"
           name: NT
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Tests
-          unit: "Tests"
           name: QLD
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Tests
-          unit: "Tests"
           name: SA
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Tests
-          unit: "Tests"
           name: TAS
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Tests
-          unit: "Tests"
           name: VIC
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Tests
-          unit: "Tests"
           name: WA
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
     - type: custom:apexcharts-card
       header:
         show: true
         title: "COVID-19 - Tests (as % of Population)"
-      graph_span: 7d
+      graph_span: 7d1s
       span:
-        end: hour
+        end: day
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -1265,123 +1304,61 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "%"
+        float_precision: 3
+        group_by:
+          func: last
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Tests
           transform: "return (x / 431100) * 100;"
-          float_precision: 3
-          unit: "%"
           name: ACT
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Tests
           transform: "return (x / 8164100) * 100;"
-          float_precision: 3
-          unit: "%"
           name: NSW
           type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nt
           attribute: Tests
           transform: "return (x / 246000) * 100;"
-          float_precision: 3
-          unit: "%"
           name: NT
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Tests
           transform: "return (x / 5174400) * 100;"
-          float_precision: 3
-          unit: "%"
           name: QLD
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Tests
           transform: "return (x / 1769300) * 100;"
-          float_precision: 3
-          unit: "%"
           name: SA
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Tests
           transform: "return (x / 540600) * 100;"
-          float_precision: 3
-          unit: "%"
           name: TAS
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Tests
           transform: "return (x / 6694900) * 100;"
-          float_precision: 3
-          unit: "%"
           name: VIC
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Tests
           transform: "return (x / 2661900) * 100;"
-          float_precision: 3
-          unit: "%"
           name: WA
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_aus
           attribute: Tests
           transform: "return (x / 25687000) * 100;"
-          float_precision: 3
-          unit: "%"
           name: AUS
-          type: area
-          color: black
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
+
     - type: custom:apexcharts-card
       header:
         show: true
         title: "COVID-19 - Tests"
-      graph_span: 7d
+      graph_span: 7d1s
       span:
-        end: hour
+        end: day
       apex_config:
         chart: { type: "area", height: 400 }
         stroke: { show: true, curve: smooth, dashArray: 0 }
@@ -1410,79 +1387,39 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "Tests"
+        group_by:
+          func: delta
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Tests
-          unit: "Tests"
           name: ACT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Tests
-          unit: "Tests"
           name: NSW
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nt
           attribute: Tests
-          unit: "Tests"
           name: NT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Tests
-          unit: "Tests"
           name: QLD
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Tests
-          unit: "Tests"
           name: SA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Tests
-          unit: "Tests"
           name: TAS
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Tests
-          unit: "Tests"
           name: VIC
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Tests
-          unit: "Tests"
           name: WA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
@@ -1658,22 +1595,11 @@
             title:
               text: "Days to Target"
             logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
+            min: 0
       all_series_config:
         stroke_width: 3
         extend_to_end: true
-        type: area
+        type: line
         unit: "Days"
         group_by:
           func: last
@@ -1729,22 +1655,11 @@
             title:
               text: "Days to Target"
             logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
+            min: 0
       all_series_config:
         stroke_width: 3
         extend_to_end: true
-        type: area
+        type: line
         unit: "Days"
         group_by:
           func: last
@@ -1800,22 +1715,11 @@
             title:
               text: "Days to Target"
             logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
+            min: 0
       all_series_config:
         stroke_width: 3
         extend_to_end: true
-        type: area
+        type: line
         unit: "Days"
         group_by:
           func: last
@@ -1871,22 +1775,11 @@
             title:
               text: "Days to Target"
             logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
+            min: 0
       all_series_config:
         stroke_width: 3
         extend_to_end: true
-        type: area
+        type: line
         unit: "Days"
         group_by:
           func: last
@@ -1942,22 +1835,11 @@
             title:
               text: "Days to Target"
             logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
+            min: 0
       all_series_config:
         stroke_width: 3
         extend_to_end: true
-        type: area
+        type: line
         unit: "Days"
         group_by:
           func: last
@@ -2013,22 +1895,11 @@
             title:
               text: "Days to Target"
             logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
+            min: 0
       all_series_config:
         stroke_width: 3
         extend_to_end: true
-        type: area
+        type: line
         unit: "Days"
         group_by:
           func: last

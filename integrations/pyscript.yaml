@@ -8,6 +8,8 @@ pyscript:
       friendly_name: "AFL Draw (Sydney Swans)"
     getdata_aflladder:
       friendly_name: "AFL Ladder"
+    getdata_bomforecast:
+      friendly_name: "BOM Forecast"      
     getdata_f1constructorstandings:
       friendly_name: "F1 Constructor Standings"
     getdata_f1driverstandings:

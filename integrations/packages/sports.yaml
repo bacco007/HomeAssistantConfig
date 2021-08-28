@@ -770,10 +770,16 @@ sensor:
         friendly_name: Sydney Swans (VFL)
         entity_picture_template: /local/sportlogos/sydswans.png
         value_template: >-
-          {% if state_attr('calendar.ical_sydney_swans_vfl', 'message')  %}
-            {{ state_attr('calendar.ical_sydney_swans_vfl', 'message').split(' - ')[0] }}
+          {% if state_attr('calendar.ical_sydney_swans_vfl', 'message')  == None %}
+            No Game Scheduled
           {% else %}
-            Nothing Scheduled
+            {% set op = state_attr('calendar.ical_sydney_swans_vfl', 'message').split(' - ')[0] %} 
+            {% set st = state_attr('calendar.ical_sydney_swans_vfl', 'start_time') %} 
+            {% if st != None %}
+              {{ op }}
+            {% else %}
+              No Game Scheduled
+            {% endif %}
           {% endif %}
         attribute_templates:
           nexttime: >-
@@ -793,19 +799,27 @@ sensor:
               {% endif %}
             {% endif %}
           nextevent: >-
-            {% set op = state_attr('calendar.ical_sydney_swans_vfl', 'message').split(' - ')[0] %}
-            {% set st = state_attr('calendar.ical_sydney_swans_vfl', 'start_time') %}
-            {% if st != None %}
-              {{ op }}
-            {% else %}
+            {% if state_attr('calendar.ical_sydney_swans_vfl', 'message')  == None %}
               No Game Scheduled
+            {% else %}
+              {% set op = state_attr('calendar.ical_sydney_swans_vfl', 'message').split(' - ')[0] %}
+              {% set st = state_attr('calendar.ical_sydney_swans_vfl', 'start_time') %}
+              {% if st != None %}
+                {{ op }}
+              {% else %}
+                No Game Scheduled
+              {% endif %}
             {% endif %}
           nextlocation: >-
-            {% set op = state_attr('calendar.ical_sydney_swans_vfls', 'location') %}
-            {% if op != None %}
-              {{ op }}
-            {% else %}
+            {% if state_attr('calendar.ical_sydney_swans_vfl', 'message')  == None %}
               No Location Noted
+            {% else %}
+              {% set op = state_attr('calendar.ical_sydney_swans_vfl', 'location') %}
+              {% if op != None %}
+                {{ op }}
+              {% else %}
+                No Location Noted
+              {% endif %}
             {% endif %}
           sortorder: >-
             {% if is_state('calendar.ical_sydney_swans_vfl', 'on') %}

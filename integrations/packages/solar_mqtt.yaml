@@ -5,6 +5,7 @@ homeassistant:
       #last_reset: "1970-01-01T00:00:00+00:00"
       device_class: energy
       state_class: measurement
+      last_reset: "1970-01-01T00:00:00+00:00"
 
 sensor:
   - platform: mqtt
@@ -149,18 +150,42 @@ sensor:
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
         value_template: "{{ ( states.sensor.solar_dc_output.state | float ) / (1000) }}"
+      solar_generation_clean:
+        friendly_name: Solar Generation
+        unit_of_measurement: "kW"
+        icon_template: mdi:solar-power
+        value_template: >
+          {% if state_attr('sun.sun', 'elevation') < 0 %}
+            0.00
+          {% else %}
+            {{ states.sensor.solar_solar_generation.state | float }}
+          {% endif %}
+      solar_to_house_clean:
+        friendly_name: Solar to House
+        unit_of_measurement: "kW"
+        icon_template: mdi:solar-power
+        value_template: >
+          {% if state_attr('sun.sun', 'elevation') < 0 %}
+            0.00
+          {% else %}
+            {{ states.sensor.solar_solar_to_house.state | float }}
+          {% endif %}
       solar_to_grid_clean:
         friendly_name: Solar to Grid
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
         #state_class: measurement
         value_template: >
-          {% set gen = states.sensor.solar_solar_generation.state | float %}
-          {% set hse = states.sensor.solar_solar_to_house.state | float %}
-          {% if hse >= gen %}
+          {% if state_attr('sun.sun', 'elevation') < 0 %}
             0.00
           {% else %}
-            {{ (gen - hse) | round(2) }}
+            {% set gen = states.sensor.solar_solar_generation.state | float %}
+            {% set hse = states.sensor.solar_solar_to_house.state | float %}
+            {% if hse >= gen %}
+              0.00
+            {% else %}
+              {{ (gen - hse) | round(2) }}
+            {% endif %}
           {% endif %}
       solar_grid_usage:
         friendly_name: Grid Usage
@@ -168,21 +193,29 @@ sensor:
         icon_template: mdi:solar-power
         #state_class: measurement
         value_template: >
-          {% set gen = states.sensor.solar_solar_generation.state | float %}
-          {% set hse = states.sensor.solar_solar_to_house.state | float %}
-          {{ (gen - hse) | round(2) }}
+          {% if state_attr('sun.sun', 'elevation') < 0 %}
+            0.00
+          {% else %}
+            {% set gen = states.sensor.solar_solar_generation.state | float %}
+            {% set hse = states.sensor.solar_solar_to_house.state | float %}
+            {{ (gen - hse) | round(2) }}
+          {% endif %}
       solar_house_from_grid_clean:
         friendly_name: Solar Power from Grid
         unit_of_measurement: "kW"
         icon_template: mdi:solar-power
         #state_class: measurement
         value_template: >
-          {% set gen = states.sensor.solar_solar_generation.state | float %}
-          {% set hse = states.sensor.solar_solar_to_house.state | float %}
-          {% if hse >= gen %}
-            {{ (hse - gen) | round(2) }}
-          {% else %}
+          {% if state_attr('sun.sun', 'elevation') < 0 %}
             0.00
+          {% else %}
+            {% set gen = states.sensor.solar_solar_generation.state | float %}
+            {% set hse = states.sensor.solar_solar_to_house.state | float %}
+            {% if hse >= gen %}
+              {{ (hse - gen) | round(2) }}
+            {% else %}
+              0.00
+            {% endif %}
           {% endif %}
       solar_daily_running_time_clean:
         friendly_name: Daily Running Time
@@ -270,7 +303,7 @@ sensor:
 
   - platform: filter
     name: solar_solar_to_house_filtered
-    entity_id: sensor.solar_solar_to_house
+    entity_id: sensor.solar_to_house_clean
     filters:
       - filter: time_throttle
         window_size: "00:05"
@@ -283,8 +316,15 @@ sensor:
         window_size: "00:05"
 
   - platform: filter
+    name: solar_house_to_grid_clean_filtered
+    entity_id: sensor.solar_house_to_grid_clean
+    filters:
+      - filter: time_throttle
+        window_size: "00:05"
+
+  - platform: filter
     name: solar_solar_generation_filtered
-    entity_id: sensor.solar_solar_generation
+    entity_id: sensor.solar_generation_clean
     filters:
       - filter: time_throttle
         window_size: "00:05"
@@ -294,21 +334,21 @@ sensor:
     #unit_prefix: k
     round: 2
     unit: "kWh"
-    source: sensor.solar_solar_generation_filtered
+    source: sensor.solar_generation_clean
 
   - platform: integration
     name: solar_int_tohouse_kwh
     #unit_prefix: k
     round: 2
     unit: "kWh"
-    source: sensor.solar_solar_to_house_filtered
+    source: sensor.solar_to_house_clean
 
   - platform: integration
     name: solar_int_fromgrid_kwh
     #unit_prefix: k
     round: 2
     unit: "kWh"
-    source: sensor.solar_house_from_grid_clean_filtered
+    source: sensor.solar_house_from_grid_clean
 
   - platform: integration
     name: solar_int_togrid_kwh
