@@ -5,7 +5,6 @@ entities:
   - sensor.sunset
   - sensor.solar_solar_generation
   - sensor.solar_solar_to_house
-  - sensor.solcast_history
 card:
   type: custom:apexcharts-card
   graph_span: 24h
@@ -102,12 +101,19 @@ card:
       group_by:
         func: max
         duration: 5min
-    - entity: sensor.solcast_history
-      name: Solcast Prediction (History)
+    - entity: sensor.solcast_forecast_average_30min
       type: line
-      stroke_width: 1.8
+      name: Forecast
+      unit: kW
+      fill_raw: last
       extend_to_end: false
-      curve: smooth
-      group_by:
-        func: max
-        duration: 30min
+    - entity: sensor.solcast_forecast
+      type: line
+      extend_to_end: false
+      unit: kW
+      show:
+        in_header: false
+      data_generator: |
+        return entity.attributes.forecasts.map((entry) => {
+          return [new Date(entry.period_end), entry.pv_estimate];
+        });

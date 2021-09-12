@@ -40,6 +40,7 @@ home-assistant_v2.db
 home-assistant_v2.db-wal
 home-assistant_v2.db-shm
 home-assistant.log
+home-assistant.log.1
 google_calendars.yaml
 www/images/radar_moree_256km.gif
 www/images/radar_namoi_128km.gif

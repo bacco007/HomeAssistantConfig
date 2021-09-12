@@ -126,12 +126,16 @@ class CovidLiveSensor(Entity):
             "dose1_70_date": "",
             "dose1_80": 0,
             "dose1_80_date": "",
+            "dose1_90": 0,
+            "dose1_90_date": "",
             "dose2_60": 0,
             "dose2_60_date": "",
             "dose2_70": 0,
             "dose2_70_date": "",
             "dose2_80": 0,
             "dose2_80_date": "",
+            "dose2_90": 0,
+            "dose2_90_date": "",
             "Name": "Default",
             "Region": self._region,
         }
@@ -174,8 +178,7 @@ class CovidLiveSensor(Entity):
         col_type3 = {
             "STATE": "string",
             "OSEAS": "int",
-            "I/STATE": "int",
-            "CONT": "int",
+            "CONTACT": "int",
             "UNKN": "int",
             "INVES": "int",
         }
@@ -183,8 +186,7 @@ class CovidLiveSensor(Entity):
         for index, row in df3.iterrows():
             if row["STATE"] == statevax:
                 self._attributes["CasesSourceOverseas"] = row["OSEAS"]
-                self._attributes["CasesSourceInterstate"] = row["I/STATE"]
-                self._attributes["CasesSourceKnownContact"] = row["CONT"]
+                self._attributes["CasesSourceKnownContact"] = row["CONTACT"]
                 self._attributes["CasesSourceUnknown"] = row["UNKN"]
                 self._attributes["CasesSourceInvestigation"] = row["INVES"]
 
@@ -196,7 +198,7 @@ class CovidLiveSensor(Entity):
         tree = html.fromstring(response.content)
 
         dose1_60 = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-1 DAYS"]/p/text()'
         )[0].strip()
         if dose1_60 is "":
             self._attributes["dose1_60"] = "0"
@@ -204,13 +206,13 @@ class CovidLiveSensor(Entity):
             self._attributes["dose1_60"] = dose1_60
         try:
             self._attributes["dose1_60_date"] = tree.xpath(
-                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-1 DAYS"]/p/span/text()'
             )[0]
         except:
             self._attributes["dose1_60_date"] = "Passed"
 
         dose1_70 = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
         )[0].strip()
         if dose1_70 is "":
             self._attributes["dose1_70"] = "0"
@@ -218,13 +220,13 @@ class CovidLiveSensor(Entity):
             self._attributes["dose1_70"] = dose1_70
         try:
             self._attributes["dose1_70_date"] = tree.xpath(
-                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
             )[0]
         except:
             self._attributes["dose1_70_date"] = "Passed"
 
         dose1_80 = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
         )[0].strip()
         if dose1_80 is "":
             self._attributes["dose1_80"] = "0"
@@ -232,13 +234,27 @@ class CovidLiveSensor(Entity):
             self._attributes["dose1_80"] = dose1_80
         try:
             self._attributes["dose1_80_date"] = tree.xpath(
-                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
             )[0]
         except:
             self._attributes["dose1_80_date"] = "Passed"
 
+        dose1_90 = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
+        )[0].strip()
+        if dose1_90 is "":
+            self._attributes["dose1_90"] = "0"
+        else:
+            self._attributes["dose1_90"] = dose1_90
+        try:
+            self._attributes["dose1_90_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-FIRST"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose1_90_date"] = "Passed"
+
         dose2_60 = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-1 DAYS"]/p/text()'
         )[0].strip()
         if dose2_60 is "":
             self._attributes["dose2_60"] = "0"
@@ -246,13 +262,13 @@ class CovidLiveSensor(Entity):
             self._attributes["dose2_60"] = dose2_60
         try:
             self._attributes["dose2_60_date"] = tree.xpath(
-                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-1 DAYS"]/p/span/text()'
             )[0]
         except:
             self._attributes["dose2_60_date"] = "Passed"
 
         dose2_70 = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/text()'
         )[0].strip()
         if dose2_70 is "":
             self._attributes["dose2_70"] = "0"
@@ -260,13 +276,13 @@ class CovidLiveSensor(Entity):
             self._attributes["dose2_70"] = dose2_70
         try:
             self._attributes["dose2_70_date"] = tree.xpath(
-                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-2 DAYS"]/p/span/text()'
             )[0]
         except:
             self._attributes["dose2_70_date"] = "Passed"
 
         dose2_80 = tree.xpath(
-            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/text()'
         )[0].strip()
         if dose2_80 is "":
             self._attributes["dose2_80"] = "0"
@@ -274,10 +290,24 @@ class CovidLiveSensor(Entity):
             self._attributes["dose2_80"] = dose2_80
         try:
             self._attributes["dose2_80_date"] = tree.xpath(
-                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-3 DAYS"]/p/span/text()'
             )[0]
         except:
             self._attributes["dose2_80_date"] = "Passed"
+
+        dose2_90 = tree.xpath(
+            './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/text()'
+        )[0].strip()
+        if dose2_90 is "":
+            self._attributes["dose2_90"] = "0"
+        else:
+            self._attributes["dose2_90"] = dose2_90
+        try:
+            self._attributes["dose2_90_date"] = tree.xpath(
+                './/div[@class="info DAYS-UNTIL-VACCINATION-SECOND"]/div[@class="info-item info-item-4 DAYS"]/p/span/text()'
+            )[0]
+        except:
+            self._attributes["dose2_90_date"] = "Passed"
 
         self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         self._state = self._attributes["Cases"]

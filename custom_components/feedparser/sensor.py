@@ -1,17 +1,20 @@
 """Feedparser sensor"""
+from __future__ import annotations
 
 import asyncio
 import re
-import feedparser
-import voluptuous as vol
 from datetime import timedelta
-from dateutil import parser
-from homeassistant.components.sensor import SensorEntity
-import homeassistant.helpers.config_validation as cv
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME
 
-__version__ = "0.1.2"
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
+from dateutil import parser
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.const import CONF_NAME
+import homeassistant.util.dt as dt
+
+import feedparser
+
+__version__ = "0.1.7"
 
 REQUIREMENTS = ["feedparser"]
 
@@ -20,12 +23,12 @@ CONF_DATE_FORMAT = "date_format"
 CONF_INCLUSIONS = "inclusions"
 CONF_EXCLUSIONS = "exclusions"
 CONF_SHOW_TOPN = "show_topn"
+CONF_LOCAL_TIME  = 'local_time'
 
 DEFAULT_SCAN_INTERVAL = timedelta(hours=1)
 
 COMPONENT_REPO = "https://github.com/custom-components/sensor.feedparser/"
 SCAN_INTERVAL = timedelta(hours=1)
-ICON = "mdi:rss"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -35,6 +38,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_SHOW_TOPN, default=9999): cv.positive_int,
         vol.Optional(CONF_INCLUSIONS, default=[]): vol.All(cv.ensure_list, [cv.string]),
         vol.Optional(CONF_EXCLUSIONS, default=[]): vol.All(cv.ensure_list, [cv.string]),
+        vol.Optional(CONF_LOCAL_TIME, default=False): cv.boolean,
     }
 )
 
@@ -47,6 +51,7 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
                 feed=config[CONF_FEED_URL],
                 name=config[CONF_NAME],
                 date_format=config[CONF_DATE_FORMAT],
+                local_time=config[CONF_LOCAL_TIME],
                 show_topn=config[CONF_SHOW_TOPN],
                 inclusions=config[CONF_INCLUSIONS],
                 exclusions=config[CONF_EXCLUSIONS],
@@ -63,33 +68,36 @@ class FeedParserSensor(SensorEntity):
         name: str,
         date_format: str,
         show_topn: str,
+        local_time: bool,
         exclusions: str,
         inclusions: str,
-    ):
+    ) -> None:
         self._feed = feed
-        self._name = name
+        self._attr_name = name
+        self._attr_icon = "mdi:rss"
         self._date_format = date_format
+        self._local_time = local_time
         self._show_topn = show_topn
         self._inclusions = inclusions
         self._exclusions = exclusions
-        self._state = None
+        self._attr_state = None
         self._entries = []
 
     def update(self):
-        parsedFeed = feedparser.parse(self._feed)
+        parsed_feed = feedparser.parse(self._feed)
 
-        if not parsedFeed:
+        if not parsed_feed:
             return False
         else:
-            self._state = (
+            self._attr_state = (
                 self._show_topn
-                if len(parsedFeed.entries) > self._show_topn
-                else len(parsedFeed.entries)
+                if len(parsed_feed.entries) > self._show_topn
+                else len(parsed_feed.entries)
             )
             self._entries = []
 
-            for entry in parsedFeed.entries[: self._state]:
-                entryValue = {}
+            for entry in parsed_feed.entries[: self._attr_state]:
+                entry_value = {}
 
                 for key, value in entry.items():
                     if (
@@ -99,36 +107,28 @@ class FeedParserSensor(SensorEntity):
                     ):
                         continue
                     if key in ["published", "updated", "created", "expired"]:
-                        value = parser.parse(value).strftime(self._date_format)
+                        value = parser.parse(value)
+                        if self._local_time:
+                            value = dt.as_local(value)
+                        value = value.strftime(self._date_format)
 
-                    entryValue[key] = value
 
-                if "image" in self._inclusions and "image" not in entryValue.keys():
+                    entry_value[key] = value
+
+                if "image" in self._inclusions and "image" not in entry_value.keys():
                     images = []
                     if "summary" in entry.keys():
                         images = re.findall(
                             r"<img.+?src=\"(.+?)\".+?>", entry["summary"]
                         )
                     if images:
-                        entryValue["image"] = images[0]
+                        entry_value["image"] = images[0]
                     else:
-                        entryValue[
+                        entry_value[
                             "image"
                         ] = "https://www.home-assistant.io/images/favicon-192x192-full.png"
 
-                self._entries.append(entryValue)
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def state(self):
-        return self._state
-
-    @property
-    def icon(self):
-        return ICON
+                self._entries.append(entry_value)
 
     @property
     def device_state_attributes(self):

@@ -4,7 +4,7 @@
 
 // UPDATE FOR EACH RELEASE!!! From aftership-card. Version # is hard-coded for now.
 console.info(
-  `%c  AIR-VISUAL-CARD  \n%c  Version 0.0.16   `,
+  `%c  AIR-VISUAL-CARD  \n%c  Version 1.1.0   `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -26,6 +26,25 @@ const fireEvent = (node, type, detail, options) => {
 let oldStates = {}
 
 class AirVisualCard extends HTMLElement {
+//  Placeholder for lovelace card editor
+//  static getConfigElement() {
+//    return document.createElement("air-visual-card-editor");
+//  }
+
+  static async getConfigElement() {
+    await import("./air-visual-card-editor.js");
+    return document.createElement("air-visual-card-editor");
+  }
+
+  static getStubConfig() {
+    return { air_pollution_level: "sensor.u_s_air_pollution_level",
+             air_quality_index: "sensor.u_s_air_quality_index",
+             main_pollutant: "sensor.u_s_main_pollutant",
+             hide_title: 1,
+             hide_face: 0              
+    }
+  }
+
     constructor() {
       super();
       this.attachShadow({ mode: 'open' });
@@ -196,8 +215,8 @@ class AirVisualCard extends HTMLElement {
 
       const AQIbgColor = {
         '1': `#A8E05F`,
-        '2': '#FDD74B',
-        '3': '#FE9B57',
+        '2': '#FDD64B',
+        '3': '#FF9B57',
         '4': '#FE6A69',
         '5': '#A97ABC',
         '6': '#A87383',
@@ -255,6 +274,7 @@ class AirVisualCard extends HTMLElement {
         'so2': 'ppb',
       }
       const mainPollutantValue = {
+        'p2': 'PM2.5',
         'pm25': 'PM2.5',
         'pm10': 'PM10',
         'o3': 'Ozone',
@@ -295,7 +315,8 @@ class AirVisualCard extends HTMLElement {
         if (typeof hass.states[mainPollutantSensor.config] != "undefined") {
           if (typeof hass.states[mainPollutantSensor.config].attributes['pollutant_unit'] != "undefined") {
             pollutantUnit = hass.states[mainPollutantSensor.config].attributes['pollutant_unit'];
-            mainPollutant = hass.states[mainPollutantSensor.config].state;
+            let mainPollutantState = hass.states[mainPollutantSensor.config].state;
+            mainPollutant = hass.localize("component.sensor.state.airvisual__pollutant_label." + mainPollutantState);
           } else if (typeof hass.states[mainPollutantSensor.config].attributes['dominentpol'] != "undefined") {
             pollutantUnit = pollutantUnitValue[hass.states[mainPollutantSensor.config].attributes['dominentpol']];
             mainPollutant = mainPollutantValue[hass.states[mainPollutantSensor.config].attributes['dominentpol']];
@@ -313,7 +334,8 @@ class AirVisualCard extends HTMLElement {
           if (!isNaN(aplParse)) {
             apl = APLdescription[getAQI()];      
           } else {
-            apl = hass.states[aplSensor.config].state;
+            let aplState = hass.states[aplSensor.config].state;
+            apl = hass.localize("component.sensor.state.airvisual__pollutant_level." + aplState)
           }
         }
       };
@@ -406,3 +428,13 @@ class AirVisualCard extends HTMLElement {
 }
 
 customElements.define('air-visual-card', AirVisualCard);
+
+// Configure the preview in the Lovelace card picker
+// https://developers.home-assistant.io/docs/frontend/custom-ui/lovelace-custom-card/
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: 'air-visual-card',
+  name: 'Air Visual Card',
+  preview: false,
+  description: 'This is a Home Assistant Lovelace card that uses the AirVisual Sensor to provide air quality index (AQI) data and creates a card like the ones found on AirVisual website. Requires the AirVisual Sensor to be setup. Tested with Yahoo and Darksky Weather component.'
+});

@@ -16,703 +16,703 @@
 #       hours_to_show: 24
 #       refresh_interval: 120
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
-  cards:
-    - type: custom:apexcharts-card
-      header:
-        show: true
-        title: "UniFi WAN Uptime"
-      graph_span: 24h
-      span:
-        start: day
-      apex_config:
-        tooltip:
-          x:
-            format: "ddd dd MMM - HH:mm"
-        xaxis:
-          tooltip:
-            enabled: false
-        grid:
-          borderColor: "#7B7B7B"
-        chart:
-          height: 300
-          foreColor: "#7B7B7B"
-          zoom:
-            type: x
-            enabled: true
-            autoScaleYaxis: true
-          toolbar:
-            show: true
-            autoSelected: zoom
-            tools:
-              zoom: true
-              zoomin: false
-              zoomout: false
-              pan: false
-              reset: true
-      all_series_config:
-        stroke_width: 2
-        type: line
-        extend_to_end: false
-        float_precision: 3
-      series:
-        - entity: sensor.unifi_gateway_wan_uptimeavail
-          unit: "%"
-          name: Uptime
+# - type: custom:dwains-flexbox-card
+#   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+#   cards:
+#     - type: custom:apexcharts-card
+#       header:
+#         show: true
+#         title: "UniFi WAN Uptime"
+#       graph_span: 24h
+#       span:
+#         start: day
+#       apex_config:
+#         tooltip:
+#           x:
+#             format: "ddd dd MMM - HH:mm"
+#         xaxis:
+#           tooltip:
+#             enabled: false
+#         grid:
+#           borderColor: "#7B7B7B"
+#         chart:
+#           height: 300
+#           foreColor: "#7B7B7B"
+#           zoom:
+#             type: x
+#             enabled: true
+#             autoScaleYaxis: true
+#           toolbar:
+#             show: true
+#             autoSelected: zoom
+#             tools:
+#               zoom: true
+#               zoomin: false
+#               zoomout: false
+#               pan: false
+#               reset: true
+#       all_series_config:
+#         stroke_width: 2
+#         type: line
+#         extend_to_end: false
+#         float_precision: 3
+#       series:
+#         - entity: sensor.unifi_gateway_wan_uptimeavail
+#           unit: "%"
+#           name: Uptime
 
-        - entity: sensor.unifi_gateway_wan_uptimeavail_stats
-          attribute: mean
-          unit: "%"
-          name: Mean
+#         - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+#           attribute: mean
+#           unit: "%"
+#           name: Mean
 
-        - entity: sensor.unifi_gateway_wan_uptimeavail_stats
-          attribute: max_value
-          unit: "%"
-          name: Max
+#         - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+#           attribute: max_value
+#           unit: "%"
+#           name: Max
 
-        - entity: sensor.unifi_gateway_wan_uptimeavail_stats
-          attribute: min_value
-          unit: "%"
-          name: Min
+#         - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+#           attribute: min_value
+#           unit: "%"
+#           name: Min
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
-  cards:
-    - type: "custom:config-template-card"
-      entities:
-        - sensor.sunrise
-        - sensor.sunset
-        - sensor.weather_outside_uvindex
-        - sensor.weather_outside_radiation
-      card:
-        type: "custom:apexcharts-card"
-        header:
-          show: true
-          show_states: true
-          colorize_states: true
-          title: UV Index and Radiation
-        span:
-          start: day
-        graph_span: 24h
-        all_series_config:
-          stroke_width: 2
-          type: line
-          extend_to_end: false
-          float_precision: 0
-        color_list:
-          - orange
-          - green
-        series:
-          - entity: sensor.weather_outside_uvindex
-            name: UV Index
-            group_by:
-              func: avg
-              duration: 10min
-          - entity: sensor.weather_outside_radiation
-            name: Radiation
-            group_by:
-              func: avg
-              duration: 10min
-        apex_config:
-          annotations:
-            xaxis:
-              - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
-                label:
-                  text: ☼
-                  borderWidth: 0
-                  style:
-                    background: "#0000"
-              - x: "${new Date(states['sensor.sunset'].state).getTime()}"
-                label:
-                  text: ☾
-                  borderWidth: 0
-                  style:
-                    background: "#0000"
-          yaxis:
-            - seriesName: UV Index
-              decimalsInFloat: 0
-            - seriesName: Radiation
-              decimalsInFloat: 0
-              opposite: true
-          tooltip:
-            x:
-              format: "ddd dd MMM - HH:mm"
-          xaxis:
-            tooltip:
-              enabled: false
-          legend:
-            show: false
-          grid:
-            borderColor: "#7B7B7B"
-          chart:
-            height: 300
-            foreColor: "#7B7B7B"
-            zoom:
-              type: x
-              enabled: true
-              autoScaleYaxis: true
-            toolbar:
-              show: true
-              autoSelected: zoom
-              tools:
-                zoom: true
-                zoomin: false
-                zoomout: false
-                pan: false
-                reset: true
-    # - type: custom:apexcharts-card
-    #   graph_span: 48h1s
-    #   header:
-    #     show: true
-    #     title: "Dark Sky Forecast - Tamworth Airport"
-    #   span:
-    #     start: hour
-    #     offset: -1s
-    #   apex_config:
-    #     chart: { type: "area", height: 300 }
-    #     stroke: { show: true, lineCap: "square", dashArray: [0, 10] }
-    #     legend: { show: false }
-    #     fill:
-    #       {
-    #         type: "gradient",
-    #         gradient:
-    #           {
-    #             shadeIntensity: 1,
-    #             inverseColors: false,
-    #             opacityFrom: 0.45,
-    #             opacityTo: 0.05,
-    #             stops: [20, 100, 100, 100],
-    #           },
-    #       }
-    #     xaxis:
-    #       {
-    #         type: "datetime",
-    #         labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-    #       }
-    #     yaxis:
-    #       - seriesName: "Temp"
-    #         title:
-    #           text: "Temperature (°C)"
-    #       - seriesName: "Rainfall"
-    #         title:
-    #           text: "Rainfall (mm)"
-    #         min: 0
-    #         opposite: true
+# - type: custom:dwains-flexbox-card
+#   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
+#   cards:
+#     - type: "custom:config-template-card"
+#       entities:
+#         - sensor.sunrise
+#         - sensor.sunset
+#         - sensor.weather_outside_uvindex
+#         - sensor.weather_outside_radiation
+#       card:
+#         type: "custom:apexcharts-card"
+#         header:
+#           show: true
+#           show_states: true
+#           colorize_states: true
+#           title: UV Index and Radiation
+#         span:
+#           start: day
+#         graph_span: 24h
+#         all_series_config:
+#           stroke_width: 2
+#           type: line
+#           extend_to_end: false
+#           float_precision: 0
+#         color_list:
+#           - orange
+#           - green
+#         series:
+#           - entity: sensor.weather_outside_uvindex
+#             name: UV Index
+#             group_by:
+#               func: avg
+#               duration: 10min
+#           - entity: sensor.weather_outside_radiation
+#             name: Radiation
+#             group_by:
+#               func: avg
+#               duration: 10min
+#         apex_config:
+#           annotations:
+#             xaxis:
+#               - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+#                 label:
+#                   text: ☼
+#                   borderWidth: 0
+#                   style:
+#                     background: "#0000"
+#               - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+#                 label:
+#                   text: ☾
+#                   borderWidth: 0
+#                   style:
+#                     background: "#0000"
+#           yaxis:
+#             - seriesName: UV Index
+#               decimalsInFloat: 0
+#             - seriesName: Radiation
+#               decimalsInFloat: 0
+#               opposite: true
+#           tooltip:
+#             x:
+#               format: "ddd dd MMM - HH:mm"
+#           xaxis:
+#             tooltip:
+#               enabled: false
+#           legend:
+#             show: false
+#           grid:
+#             borderColor: "#7B7B7B"
+#           chart:
+#             height: 300
+#             foreColor: "#7B7B7B"
+#             zoom:
+#               type: x
+#               enabled: true
+#               autoScaleYaxis: true
+#             toolbar:
+#               show: true
+#               autoSelected: zoom
+#               tools:
+#                 zoom: true
+#                 zoomin: false
+#                 zoomout: false
+#                 pan: false
+#                 reset: true
+# - type: custom:apexcharts-card
+#   graph_span: 48h1s
+#   header:
+#     show: true
+#     title: "Dark Sky Forecast - Tamworth Airport"
+#   span:
+#     start: hour
+#     offset: -1s
+#   apex_config:
+#     chart: { type: "area", height: 300 }
+#     stroke: { show: true, lineCap: "square", dashArray: [0, 10] }
+#     legend: { show: false }
+#     fill:
+#       {
+#         type: "gradient",
+#         gradient:
+#           {
+#             shadeIntensity: 1,
+#             inverseColors: false,
+#             opacityFrom: 0.45,
+#             opacityTo: 0.05,
+#             stops: [20, 100, 100, 100],
+#           },
+#       }
+#     xaxis:
+#       {
+#         type: "datetime",
+#         labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#       }
+#     yaxis:
+#       - seriesName: "Temp"
+#         title:
+#           text: "Temperature (°C)"
+#       - seriesName: "Rainfall"
+#         title:
+#           text: "Rainfall (mm)"
+#         min: 0
+#         opposite: true
 
-    #   series:
-    #     - entity: weather.dark_sky
-    #       name: Temperature
-    #       type: area
-    #       color: "#121619"
-    #       extend_to_end: false
-    #       stroke_width: 3
-    #       unit: "°C"
-    #       data_generator: |
-    #         return entity.attributes.forecast.map((entry) => {
-    #           return [new Date(entry.datetime), entry.temperature];
-    #         });
-    #       group_by:
-    #         func: last
-    #         duration: 1h
-    #     - entity: weather.dark_sky
-    #       name: Rainfall
-    #       type: area
-    #       color: "#1192e8"
-    #       extend_to_end: false
-    #       stroke_width: 2
-    #       unit: "mm"
-    #       curve: stepline
-    #       data_generator: |
-    #         return entity.attributes.forecast.map((entry) => {
-    #           return [new Date(entry.datetime), entry.precipitation || 0];
-    #         });
-    #       group_by:
-    #         func: last
-    #         duration: 1h
+#   series:
+#     - entity: weather.dark_sky
+#       name: Temperature
+#       type: area
+#       color: "#121619"
+#       extend_to_end: false
+#       stroke_width: 3
+#       unit: "°C"
+#       data_generator: |
+#         return entity.attributes.forecast.map((entry) => {
+#           return [new Date(entry.datetime), entry.temperature];
+#         });
+#       group_by:
+#         func: last
+#         duration: 1h
+#     - entity: weather.dark_sky
+#       name: Rainfall
+#       type: area
+#       color: "#1192e8"
+#       extend_to_end: false
+#       stroke_width: 2
+#       unit: "mm"
+#       curve: stepline
+#       data_generator: |
+#         return entity.attributes.forecast.map((entry) => {
+#           return [new Date(entry.datetime), entry.precipitation || 0];
+#         });
+#       group_by:
+#         func: last
+#         duration: 1h
 
-    - type: custom:apexcharts-card
-      graph_span: 14d12h
-      header:
-        show: true
-        title: "Climacell Daily Forecast - Tamworth Airport"
-      span:
-        start: day
-        offset: -6h
-      apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
-        dataLabels: { enabled: true }
-        legend: { show: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Rainfall"
-            decimalsInFloat: 0
-            title:
-              text: "Rainfall (mm)"
-            min: 0
-            opposite: true
-          - seriesName: "High"
-            decimalsInFloat: 0
-            title:
-              text: "Temperature (°C)"
-          - seriesName: "High"
-            show: false
+#     - type: custom:apexcharts-card
+#       graph_span: 14d12h
+#       header:
+#         show: true
+#         title: "Climacell Daily Forecast - Tamworth Airport"
+#       span:
+#         start: day
+#         offset: -6h
+#       apex_config:
+#         chart: { type: "area", height: 300 }
+#         stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
+#         dataLabels: { enabled: true }
+#         legend: { show: false }
+#         fill:
+#           {
+#             type: "gradient",
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: false,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         yaxis:
+#           - seriesName: "Rainfall"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Rainfall (mm)"
+#             min: 0
+#             opposite: true
+#           - seriesName: "High"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Temperature (°C)"
+#           - seriesName: "High"
+#             show: false
 
-      series:
-        - entity: weather.climacell_daily
-          name: Rainfall
-          type: area
-          color: "#1192e8"
-          extend_to_end: false
-          stroke_width: 2
-          unit: "mm"
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.precipitation];
-            });
-        - entity: weather.climacell_daily
-          name: High
-          type: area
-          color: "da1e28"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "°C"
-          show:
-            datalabels: true
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.temperature];
-            });
-        - entity: weather.climacell_daily
-          name: Low
-          type: area
-          color: "#0043ce"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "°C"
-          show:
-            datalabels: true
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.templow];
-            });
+#       series:
+#         - entity: weather.climacell_daily
+#           name: Rainfall
+#           type: area
+#           color: "#1192e8"
+#           extend_to_end: false
+#           stroke_width: 2
+#           unit: "mm"
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.precipitation];
+#             });
+#         - entity: weather.climacell_daily
+#           name: High
+#           type: area
+#           color: "da1e28"
+#           extend_to_end: false
+#           stroke_width: 3
+#           unit: "°C"
+#           show:
+#             datalabels: true
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.temperature];
+#             });
+#         - entity: weather.climacell_daily
+#           name: Low
+#           type: area
+#           color: "#0043ce"
+#           extend_to_end: false
+#           stroke_width: 3
+#           unit: "°C"
+#           show:
+#             datalabels: true
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.templow];
+#             });
 
-    - type: custom:apexcharts-card
-      graph_span: 24h30min
-      header:
-        show: true
-        title: "Climacell Hourly Forecast - Tamworth Airport"
-      span:
-        start: hour
-        offset: -30min
-      apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
-        dataLabels: { enabled: true }
-        legend: { show: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Rainfall"
-            decimalsInFloat: 0
-            title:
-              text: "Rainfall (mm)"
-            min: 0
-            opposite: true
-          - seriesName: "High"
-            decimalsInFloat: 0
-            title:
-              text: "Temperature (°C)"
-          - seriesName: "Prob"
-            title:
-              text: "Rain Probability (%)"
-            show: true
-            min: 0
-            max: 100
-            decimalsInFloat: 0
-            opposite: true
+#     - type: custom:apexcharts-card
+#       graph_span: 24h30min
+#       header:
+#         show: true
+#         title: "Climacell Hourly Forecast - Tamworth Airport"
+#       span:
+#         start: hour
+#         offset: -30min
+#       apex_config:
+#         chart: { type: "area", height: 300 }
+#         stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
+#         dataLabels: { enabled: true }
+#         legend: { show: false }
+#         fill:
+#           {
+#             type: "gradient",
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: false,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         yaxis:
+#           - seriesName: "Rainfall"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Rainfall (mm)"
+#             min: 0
+#             opposite: true
+#           - seriesName: "High"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Temperature (°C)"
+#           - seriesName: "Prob"
+#             title:
+#               text: "Rain Probability (%)"
+#             show: true
+#             min: 0
+#             max: 100
+#             decimalsInFloat: 0
+#             opposite: true
 
-      series:
-        - entity: weather.climacell_hourly
-          name: Rainfall
-          type: area
-          color: "#1192e8"
-          extend_to_end: false
-          stroke_width: 2
-          unit: "mm"
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.precipitation];
-            });
-        - entity: weather.climacell_hourly
-          name: High
-          type: area
-          color: "da1e28"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "°C"
-          show:
-            datalabels: true
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.temperature];
-            });
-        - entity: weather.climacell_hourly
-          name: Low
-          type: area
-          color: "#0043ce"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "%"
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.precipitation_probability];
-            });
+#       series:
+#         - entity: weather.climacell_hourly
+#           name: Rainfall
+#           type: area
+#           color: "#1192e8"
+#           extend_to_end: false
+#           stroke_width: 2
+#           unit: "mm"
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.precipitation];
+#             });
+#         - entity: weather.climacell_hourly
+#           name: High
+#           type: area
+#           color: "da1e28"
+#           extend_to_end: false
+#           stroke_width: 3
+#           unit: "°C"
+#           show:
+#             datalabels: true
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.temperature];
+#             });
+#         - entity: weather.climacell_hourly
+#           name: Low
+#           type: area
+#           color: "#0043ce"
+#           extend_to_end: false
+#           stroke_width: 3
+#           unit: "%"
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.precipitation_probability];
+#             });
 
-    - type: custom:apexcharts-card
-      graph_span: 48h
-      header:
-        show: true
-        title: "BOM 3Hr Forecast - Tamworth Airport"
-      span:
-        start: hour
-        offset: -1h
-      apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
-        dataLabels: { enabled: true }
-        legend: { show: false }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Rainfall"
-            decimalsInFloat: 0
-            title:
-              text: "Rainfall (mm)"
-            min: 0
-            opposite: true
-          - seriesName: "High"
-            decimalsInFloat: 0
-            title:
-              text: "Temperature (°C)"
-          - seriesName: "Prob"
-            title:
-              text: "Rain Probability (%)"
-            show: true
-            min: 0
-            max: 100
-            decimalsInFloat: 0
-            opposite: true
+#     - type: custom:apexcharts-card
+#       graph_span: 48h
+#       header:
+#         show: true
+#         title: "BOM 3Hr Forecast - Tamworth Airport"
+#       span:
+#         start: hour
+#         offset: -1h
+#       apex_config:
+#         chart: { type: "area", height: 300 }
+#         stroke: { show: true, lineCap: "square", dashArray: [10, 0, 0] }
+#         dataLabels: { enabled: true }
+#         legend: { show: false }
+#         fill:
+#           {
+#             type: "gradient",
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: false,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         yaxis:
+#           - seriesName: "Rainfall"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Rainfall (mm)"
+#             min: 0
+#             opposite: true
+#           - seriesName: "High"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Temperature (°C)"
+#           - seriesName: "Prob"
+#             title:
+#               text: "Rain Probability (%)"
+#             show: true
+#             min: 0
+#             max: 100
+#             decimalsInFloat: 0
+#             opposite: true
 
-      series:
-        - entity: sensor.bomforecast_tamworth_3hr
-          name: Rainfall
-          type: area
-          color: "#1192e8"
-          extend_to_end: false
-          stroke_width: 2
-          unit: "mm"
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.precipitation];
-            });
-        - entity: sensor.bomforecast_tamworth_3hr
-          name: High
-          type: area
-          color: "da1e28"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "°C"
-          show:
-            datalabels: true
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.temperature];
-            });
-        - entity: sensor.bomforecast_tamworth_3hr
-          name: Low
-          type: area
-          color: "#0043ce"
-          extend_to_end: false
-          stroke_width: 3
-          unit: "%"
-          data_generator: |
-            return entity.attributes.forecast.map((entry) => {
-              return [new Date(entry.datetime), entry.precipitation_probability];
-            });
+#       series:
+#         - entity: sensor.bomforecast_tamworth_3hr
+#           name: Rainfall
+#           type: area
+#           color: "#1192e8"
+#           extend_to_end: false
+#           stroke_width: 2
+#           unit: "mm"
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.precipitation];
+#             });
+#         - entity: sensor.bomforecast_tamworth_3hr
+#           name: High
+#           type: area
+#           color: "da1e28"
+#           extend_to_end: false
+#           stroke_width: 3
+#           unit: "°C"
+#           show:
+#             datalabels: true
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.temperature];
+#             });
+#         - entity: sensor.bomforecast_tamworth_3hr
+#           name: Low
+#           type: area
+#           color: "#0043ce"
+#           extend_to_end: false
+#           stroke_width: 3
+#           unit: "%"
+#           data_generator: |
+#             return entity.attributes.forecast.map((entry) => {
+#               return [new Date(entry.datetime), entry.precipitation_probability];
+#             });
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
-  cards:
-    - type: custom:apexcharts-card
-      graph_span: 7d
-      span:
-        end: day
-      header:
-        show: true
-        title: "Outdoor Temperature (Week)"
-        show_states: false
-        colorize_states: true
-      apex_config:
-        chart:
-          {
-            type: "area",
-            height: 350,
-            toolbar: { show: true, tools: { reset: true } },
-            zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-          }
-        stroke: { show: true, lineCap: "square", dashArray: [0, 5, 2] }
-        legend: { show: false }
-        fill:
-          {
-            type: ["solid", "solid"],
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "Temp"
-            decimalsInFloat: 0
-            title:
-              text: "Temperature (°C)"
-          - seriesName: "Temp"
-            show: false
-          - seriesName: "Humidity"
-            opposite: true
-            decimalsInFloat: 0
-            title:
-              text: "Humidity (%)"
-          - seriesName: "Temp"
-            show: false
-      series:
-        - entity: sensor.weather_outside_temperature
-          type: line
-          name: Temp
-          extend_to_end: false
-          stroke_width: 4
-          curve: smooth
-          unit: "°C"
-          group_by:
-            func: last
-            duration: 1h
-        - entity: sensor.weather_outside_temperature
-          type: line
-          extend_to_end: false
-          stroke_width: 2
-          color: "#424242"
-          name: Change
-          curve: smooth
-          unit: "°C"
-          group_by:
-            func: delta
-            duration: 6h
-        - entity: sensor.weather_outside_humidity
-          type: line
-          extend_to_end: false
-          stroke_width: 1.5
-          curve: smooth
-          unit: "%"
-          group_by:
-            func: last
-            duration: 1h
+# - type: custom:dwains-flexbox-card
+#   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+#   cards:
+#     - type: custom:apexcharts-card
+#       graph_span: 7d
+#       span:
+#         end: day
+#       header:
+#         show: true
+#         title: "Outdoor Temperature (Week)"
+#         show_states: false
+#         colorize_states: true
+#       apex_config:
+#         chart:
+#           {
+#             type: "area",
+#             height: 350,
+#             toolbar: { show: true, tools: { reset: true } },
+#             zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+#           }
+#         stroke: { show: true, lineCap: "square", dashArray: [0, 5, 2] }
+#         legend: { show: false }
+#         fill:
+#           {
+#             type: ["solid", "solid"],
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: false,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         yaxis:
+#           - seriesName: "Temp"
+#             decimalsInFloat: 0
+#             title:
+#               text: "Temperature (°C)"
+#           - seriesName: "Temp"
+#             show: false
+#           - seriesName: "Humidity"
+#             opposite: true
+#             decimalsInFloat: 0
+#             title:
+#               text: "Humidity (%)"
+#           - seriesName: "Temp"
+#             show: false
+#       series:
+#         - entity: sensor.weather_outside_temperature
+#           type: line
+#           name: Temp
+#           extend_to_end: false
+#           stroke_width: 4
+#           curve: smooth
+#           unit: "°C"
+#           group_by:
+#             func: last
+#             duration: 1h
+#         - entity: sensor.weather_outside_temperature
+#           type: line
+#           extend_to_end: false
+#           stroke_width: 2
+#           color: "#424242"
+#           name: Change
+#           curve: smooth
+#           unit: "°C"
+#           group_by:
+#             func: delta
+#             duration: 6h
+#         - entity: sensor.weather_outside_humidity
+#           type: line
+#           extend_to_end: false
+#           stroke_width: 1.5
+#           curve: smooth
+#           unit: "%"
+#           group_by:
+#             func: last
+#             duration: 1h
 
-    - type: custom:apexcharts-card
-      graph_span: 59h
-      header:
-        show: true
-        title: "Amber Price Prediction (Solar Feed-In)"
-      span:
-        start: hour
-        offset: -1d
-      apex_config:
-        chart: { type: "area", height: 300 }
-        stroke: { show: true, width: 3, curve: smooth }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: true,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-      series:
-        - entity: sensor.amber_solar_feed_in_tariff
-          name: Predicted Price
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
-          data_generator: |
-            return entity.attributes.price_forcecast.map((entry) => {
-              return [new Date(entry.pricing_period), entry.price];
-            });
-        - entity: sensor.amber_solar_feed_in_tariff
-          name: Historic Price
-          type: area
-          extend_to_end: false
+#     - type: custom:apexcharts-card
+#       graph_span: 59h
+#       header:
+#         show: true
+#         title: "Amber Price Prediction (Solar Feed-In)"
+#       span:
+#         start: hour
+#         offset: -1d
+#       apex_config:
+#         chart: { type: "area", height: 300 }
+#         stroke: { show: true, width: 3, curve: smooth }
+#         legend: { show: false }
+#         dataLabels: { enabled: false }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         fill:
+#           {
+#             type: "gradient",
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: true,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#       series:
+#         - entity: sensor.amber_solar_feed_in_tariff
+#           name: Predicted Price
+#           type: area
+#           # color: "#008FFB"
+#           extend_to_end: false
+#           data_generator: |
+#             return entity.attributes.price_forcecast.map((entry) => {
+#               return [new Date(entry.pricing_period), entry.price];
+#             });
+#         - entity: sensor.amber_solar_feed_in_tariff
+#           name: Historic Price
+#           type: area
+#           extend_to_end: false
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
-  cards:
-    - type: custom:apexcharts-card
-      graph_span: 7d1s
-      header:
-        show: true
-        title: "COVID-19 - UK - 1st Vaccinations"
-      span:
-        end: day
-      apex_config:
-        chart: { type: "area", height: 200 }
-        stroke: { show: true, curve: smooth, dashArray: 0 }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "vax"
-            decimalsInFloat: 0
-            title:
-              text: "No. Vaccinations"
-            logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-      series:
-        - entity: sensor.covid_19_uk_vaccinations
-          attribute: PeopleVaccinatedFirstDoseByPublishDate
-          name: First Dose
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
-          stroke_width: 3
-          group_by:
-            func: max
-            duration: 1d
-    - type: custom:apexcharts-card
-      graph_span: 7d1s
-      header:
-        show: true
-        title: "COVID-19 - UK - 2nd Vaccinations"
-      span:
-        end: hour
-      apex_config:
-        chart: { type: "area", height: 200 }
-        stroke: { show: true, curve: smooth, dashArray: 0 }
-        legend: { show: false }
-        dataLabels: { enabled: false }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "vax"
-            decimalsInFloat: 0
-            title:
-              text: "No. Vaccinations"
-            logarithmic: false
-        fill:
-          {
-            type: "gradient",
-            gradient:
-              {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100],
-              },
-          }
-      series:
-        - entity: sensor.covid_19_uk_vaccinations
-          attribute: PeopleVaccinatedSecondDoseByPublishDate
-          name: Second Dose
-          type: area
-          # color: "#008FFB"
-          extend_to_end: false
-          stroke_width: 3
-          group_by:
-            func: max
-            duration: 1d
+# - type: custom:dwains-flexbox-card
+#   items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+#   cards:
+#     - type: custom:apexcharts-card
+#       graph_span: 7d1s
+#       header:
+#         show: true
+#         title: "COVID-19 - UK - 1st Vaccinations"
+#       span:
+#         end: day
+#       apex_config:
+#         chart: { type: "area", height: 200 }
+#         stroke: { show: true, curve: smooth, dashArray: 0 }
+#         legend: { show: false }
+#         dataLabels: { enabled: false }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         yaxis:
+#           - seriesName: "vax"
+#             decimalsInFloat: 0
+#             title:
+#               text: "No. Vaccinations"
+#             logarithmic: false
+#         fill:
+#           {
+#             type: "gradient",
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: false,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#       series:
+#         - entity: sensor.covid_19_uk_vaccinations
+#           attribute: PeopleVaccinatedFirstDoseByPublishDate
+#           name: First Dose
+#           type: area
+#           # color: "#008FFB"
+#           extend_to_end: false
+#           stroke_width: 3
+#           group_by:
+#             func: max
+#             duration: 1d
+#     - type: custom:apexcharts-card
+#       graph_span: 7d1s
+#       header:
+#         show: true
+#         title: "COVID-19 - UK - 2nd Vaccinations"
+#       span:
+#         end: hour
+#       apex_config:
+#         chart: { type: "area", height: 200 }
+#         stroke: { show: true, curve: smooth, dashArray: 0 }
+#         legend: { show: false }
+#         dataLabels: { enabled: false }
+#         xaxis:
+#           {
+#             type: "datetime",
+#             labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+#           }
+#         yaxis:
+#           - seriesName: "vax"
+#             decimalsInFloat: 0
+#             title:
+#               text: "No. Vaccinations"
+#             logarithmic: false
+#         fill:
+#           {
+#             type: "gradient",
+#             gradient:
+#               {
+#                 shadeIntensity: 1,
+#                 inverseColors: false,
+#                 opacityFrom: 0.45,
+#                 opacityTo: 0.05,
+#                 stops: [20, 100, 100, 100],
+#               },
+#           }
+#       series:
+#         - entity: sensor.covid_19_uk_vaccinations
+#           attribute: PeopleVaccinatedSecondDoseByPublishDate
+#           name: Second Dose
+#           type: area
+#           # color: "#008FFB"
+#           extend_to_end: false
+#           stroke_width: 3
+#           group_by:
+#             func: max
+#             duration: 1d
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
   cards:
@@ -751,73 +751,41 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "Doses"
+        group_by:
+          func: last
+          fill: last
+          start_with_last: true
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Doses
           name: ACT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Doses
           name: NSW
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nt
           attribute: Doses
           name: NT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Doses
           name: QLD
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Doses
           name: SA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Doses
           name: TAS
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Doses
           name: VIC
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Doses
           name: WA
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
 
     - type: custom:apexcharts-card
       graph_span: 7d1s
@@ -854,108 +822,65 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "%"
+        group_by:
+          func: last
+          fill: last
+          start_with_last: true
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Doses1st
           transform: "return (x / 344037) * 100;"
           float_precision: 3
-          unit: "%"
           name: ACT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Doses1st
           transform: "return (x / 6565651) * 100;"
           float_precision: 3
-          unit: "%"
           name: NSW
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nt
           attribute: Doses1st
           transform: "return (x / 190571) * 100;"
           float_precision: 3
-          unit: "%"
           name: NT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Doses1st
           transform: "return (x / 4112707) * 100;"
           float_precision: 3
-          unit: "%"
           name: QLD
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Doses1st
           transform: "return (x / 1440400) * 100;"
           float_precision: 3
-          unit: "%"
           name: SA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Doses1st
           transform: "return (x / 440172) * 100;"
           float_precision: 3
-          unit: "%"
           name: TAS
-          type: area
           stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Doses1st
           transform: "return (x / 5407574) * 100;"
           float_precision: 3
-          unit: "%"
           name: VIC
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Doses1st
           transform: "return (x / 2114978) * 100;"
           float_precision: 3
-          unit: "%"
           name: WA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_aus
           attribute: Doses1st
           transform: "return (x / 20619959) * 100;"
           float_precision: 3
-          unit: "%"
           name: AUS
           type: area
           color: black
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
 
     - type: custom:apexcharts-card
       graph_span: 7d1s
@@ -992,96 +917,57 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "%"
+        group_by:
+          func: last
+          fill: last
+          start_with_last: true
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Doses2nd
           transform: "return (x / 344037) * 100;"
           float_precision: 3
-          unit: "%"
           name: ACT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Doses2nd
           transform: "return (x / 6565651) * 100;"
           float_precision: 3
-          unit: "%"
           name: NSW
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_nt
           attribute: Doses2nd
           transform: "return (x / 190571) * 100;"
           float_precision: 3
-          unit: "%"
           name: NT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Doses2nd
           transform: "return (x / 4112707) * 100;"
           float_precision: 3
-          unit: "%"
           name: QLD
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Doses2nd
           transform: "return (x / 1440400) * 100;"
           float_precision: 3
-          unit: "%"
           name: SA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Doses2nd
           transform: "return (x / 440172) * 100;"
           float_precision: 3
-          unit: "%"
           name: TAS
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Doses2nd
           transform: "return (x / 5407574) * 100;"
           float_precision: 3
-          unit: "%"
           name: VIC
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Doses2nd
           transform: "return (x / 2114978) * 100;"
           float_precision: 3
-          unit: "%"
           name: WA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: last
-            duration: 1d
         - entity: sensor.covid_19_covidlive_aus
           attribute: Doses2nd
           transform: "return (x / 20619959) * 100;"
@@ -1133,73 +1019,41 @@
                 stops: [20, 100, 100, 100],
               },
           }
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: area
+        unit: "Doses"
+        group_by:
+          func: diff
+          fill: last
+          start_with_last: true
+          duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
           attribute: Doses
           name: ACT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 24h
         - entity: sensor.covid_19_covidlive_nsw
           attribute: Doses
           name: NSW
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 24h
         - entity: sensor.covid_19_covidlive_nt
           attribute: Doses
           name: NT
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_qld
           attribute: Doses
           name: QLD
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_sa
           attribute: Doses
           name: SA
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_tas
           attribute: Doses
           name: TAS
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_vic
           attribute: Doses
           name: VIC
-          type: area
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
         - entity: sensor.covid_19_covidlive_wa
           attribute: Doses
           name: WA
-          type: area
-          extend_to_end: true
-          stroke_width: 3
-          group_by:
-            func: delta
-            duration: 1d
 
     - type: custom:apexcharts-card
       graph_span: 7d
@@ -1243,6 +1097,8 @@
         unit: "Tests"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1308,10 +1164,11 @@
         stroke_width: 3
         extend_to_end: true
         type: area
-        unit: "%"
-        float_precision: 3
+        unit: "Tests"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1393,7 +1250,9 @@
         type: area
         unit: "Tests"
         group_by:
-          func: delta
+          func: diff
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1570,7 +1429,7 @@
           name: AUS
 
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+  items_classes: "col-xs-12 col-sm-3 col-sm-3 col-xl-3"
   cards:
     - type: custom:apexcharts-card
       graph_span: 7d1s
@@ -1603,6 +1462,8 @@
         unit: "Days"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1663,6 +1524,8 @@
         unit: "Days"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1692,6 +1555,7 @@
         - entity: sensor.covid_19_covidlive_aus
           attribute: dose1_70
           name: Australia
+
     - type: custom:apexcharts-card
       graph_span: 7d1s
       header:
@@ -1723,6 +1587,8 @@
         unit: "Days"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1752,6 +1618,70 @@
         - entity: sensor.covid_19_covidlive_aus
           attribute: dose1_80
           name: Australia
+
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "Dose 1 - 90%"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "Days to Target"
+            logarithmic: false
+            min: 0
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: line
+        unit: "Days"
+        group_by:
+          func: last
+          fill: last
+          start_with_last: true
+          duration: 1d
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: dose1_90
+          name: ACT
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: dose1_90
+          name: NSW
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: dose1_90
+          name: NT
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: dose1_90
+          name: QLD
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: dose1_90
+          name: SA
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: dose1_90
+          name: TAS
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: dose1_90
+          name: VIC
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: dose1_90
+          name: WA
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: dose1_90
+          name: Australia
+
     - type: custom:apexcharts-card
       graph_span: 7d1s
       header:
@@ -1783,6 +1713,8 @@
         unit: "Days"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1843,6 +1775,8 @@
         unit: "Days"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1903,6 +1837,8 @@
         unit: "Days"
         group_by:
           func: last
+          fill: last
+          start_with_last: true
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
@@ -1931,4 +1867,66 @@
           name: WA
         - entity: sensor.covid_19_covidlive_aus
           attribute: dose2_80
+          name: Australia
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "Dose 2 - 90%"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "Days to Target"
+            logarithmic: false
+            min: 0
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: line
+        unit: "Days"
+        group_by:
+          func: last
+          fill: last
+          start_with_last: true
+          duration: 1d
+      series:
+        - entity: sensor.covid_19_covidlive_act
+          attribute: dose2_90
+          name: ACT
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: dose2_90
+          name: NSW
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: dose2_90
+          name: NT
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: dose2_90
+          name: QLD
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: dose2_90
+          name: SA
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: dose2_90
+          name: TAS
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: dose2_90
+          name: VIC
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: dose2_90
+          name: WA
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: dose2_90
           name: Australia

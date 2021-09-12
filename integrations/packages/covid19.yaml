@@ -33,6 +33,10 @@ sensor:
     name: Western Australia
     region: wa
 
+  - platform: covid19_vaccinelga
+    name: LGA
+    region: lga
+
   - platform: rest
     resource: https://api.coronavirus.data.gov.uk/v1/data?filters=areaType=overview&structure={%22date%22:%22date%22,%22PeopleVaccinatedFirstDoseByPublishDate%22:%22cumPeopleVaccinatedFirstDoseByPublishDate%22,%22PeopleVaccinatedSecondDoseByPublishDate%22:%22cumPeopleVaccinatedSecondDoseByPublishDate%22}
     name: "COVID-19 UK Vaccinations"
@@ -408,7 +412,7 @@ sensor:
               {{ 0 }}
             {% else %}
               {{ (((val|int)/38943)*100)|round(3) }}
-            {% endif %}            
+            {% endif %}
       # covid_19_esria_aus_pct:
       #   friendly_name: "COVID-19 ESRIA AUS Percents"
       #   unit_of_measurement: "%"

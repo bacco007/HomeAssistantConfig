@@ -4,9 +4,9 @@
   "config_flow": true,
   "documentation": "https://github.com/doudz/homeassistant-myjdownloader",
   "issue_tracker": "https://github.com/doudz/homeassistant-myjdownloader/issues",
-  "requirements": ["myjdapi==1.1.0"],
+  "requirements": ["myjdapi==1.1.1"],
   "dependencies": [],
   "codeowners": ["@doudz", "@oribafi"],
-  "version": "2.0.0",
+  "version": "2.0.1",
   "iot_class": "cloud_polling"
 }

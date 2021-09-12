@@ -148,7 +148,7 @@ class Iaquk:
         self, hass, entity_id: str, name: str, sources: Dict[str, Union[str, List[str]]]
     ):
         """Initialize controller."""
-        self._hass = hass
+        self.hass = hass
         self._entity_id = entity_id
         self._name = name
         self._sources = sources
@@ -183,12 +183,12 @@ class Iaquk:
                 ", ".join(entity_ids),
             )
 
-            async_track_state_change(self._hass, entity_ids, sensor_state_listener)
+            async_track_state_change(self.hass, entity_ids, sensor_state_listener)
             sensor_state_listener(None, None, None)  # Force first update
 
         if not self._added:
             self._added = True
-            self._hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, sensor_startup)
+            self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, sensor_startup)
 
     @property
     def unique_id(self) -> str:
@@ -278,7 +278,7 @@ class Iaquk:
         if entity_unit is not None and not isinstance(entity_unit, dict):
             entity_unit = {entity_unit: 1}
 
-        entity = self._hass.states.get(entity_id)
+        entity = self.hass.states.get(entity_id)
         if entity is None:
             _LOGGER.warning("Entity %s not found", entity_id)
             return None
@@ -344,7 +344,7 @@ class Iaquk:
         if value is None:
             return None
 
-        entity = self._hass.states.get(entity_id)
+        entity = self.hass.states.get(entity_id)
         entity_unit = entity.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
         if entity_unit not in (TEMP_CELSIUS, TEMP_FAHRENHEIT):
             raise ValueError(

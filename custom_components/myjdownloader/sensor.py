@@ -1,8 +1,13 @@
 """MyJDownloader sensors."""
+from __future__ import annotations
 
 import datetime
 
-from homeassistant.components.sensor import DOMAIN, SensorEntity
+from homeassistant.components.sensor import (
+    DOMAIN,
+    STATE_CLASS_MEASUREMENT,
+    SensorEntity,
+)
 from homeassistant.const import DATA_RATE_MEGABYTES_PER_SECOND
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
@@ -94,11 +99,13 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         icon: str,
         measurement: str,
         unit_of_measurement: str,
+        state_class: str | None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader sensor."""
         self._state = None
         self._unit_of_measurement = unit_of_measurement
+        self._state_class = state_class
         self.measurement = measurement
         super().__init__(hub, device_id, name_template, icon, enabled_default)
 
@@ -124,6 +131,11 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         """Return the unit this state is expressed in."""
         return self._unit_of_measurement
 
+    @property
+    def state_class(self) -> str | None:
+        """State class of sensor."""
+        return self._state_class
+
 
 class MyJDownloaderSensor(MyJDownloaderEntity):
     """Defines a MyJDownloader sensor entity."""
@@ -135,11 +147,13 @@ class MyJDownloaderSensor(MyJDownloaderEntity):
         icon: str,
         measurement: str,
         unit_of_measurement: str,
+        state_class: str | None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader sensor."""
         self._state = None
         self._unit_of_measurement = unit_of_measurement
+        self._state_class = state_class
         self.measurement = measurement
         super().__init__(hub, name, icon, enabled_default)
 
@@ -165,6 +179,11 @@ class MyJDownloaderSensor(MyJDownloaderEntity):
         """Return the unit this state is expressed in."""
         return self._unit_of_measurement
 
+    @property
+    def state_class(self) -> str | None:
+        """State class of sensor."""
+        return self._state_class
+
 
 class MyJDownloaderJDownloadersOnlineSensor(MyJDownloaderSensor):
     """Defines a MyJDownloader JDownloaders Online sensor."""
@@ -175,11 +194,7 @@ class MyJDownloaderJDownloadersOnlineSensor(MyJDownloaderSensor):
     ) -> None:
         """Initialize MyJDownloader sensor."""
         super().__init__(
-            hub,
-            "JDownloaders Online",
-            "mdi:download-multiple",
-            "number",
-            None,
+            hub, "JDownloaders Online", "mdi:download-multiple", "number", None, None
         )
         self.devices = []
 
@@ -192,9 +207,7 @@ class MyJDownloaderJDownloadersOnlineSensor(MyJDownloaderSensor):
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
-        return {
-            "jdownloaders": sorted([device.name for device in self.devices.values()])
-        }
+        return {"jdownloaders": sorted(device.name for device in self.devices.values())}
 
 
 class MyJDownloaderDownloadSpeedSensor(MyJDownloaderDeviceSensor):
@@ -213,6 +226,7 @@ class MyJDownloaderDownloadSpeedSensor(MyJDownloaderDeviceSensor):
             "mdi:download",
             "download_speed",
             DATA_RATE_MEGABYTES_PER_SECOND,
+            STATE_CLASS_MEASUREMENT,
         )
 
     async def _myjdownloader_update(self) -> None:
@@ -241,6 +255,7 @@ class MyJDownloaderPackagesSensor(MyJDownloaderDeviceSensor):
             "JDownloader $device_name Packages",
             "mdi:download",
             "packages",
+            None,
             None,
             False,
         )
@@ -275,6 +290,7 @@ class MyJDownloaderLinksSensor(MyJDownloaderDeviceSensor):
             "JDownloader $device_name Links",
             "mdi:download",
             "links",
+            None,
             None,
             False,
         )
@@ -313,6 +329,7 @@ class MyJDownloaderStatusSensor(MyJDownloaderDeviceSensor):
             "JDownloader $device_name Status",
             "mdi:play-pause",
             "status",
+            None,
             None,
         )
 

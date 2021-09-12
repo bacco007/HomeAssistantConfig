@@ -289,8 +289,8 @@ class NSWCovidEntry(RestoreEntity, SensorEntity):
         return self.__statistic.unit
 
     @property
-    def state(self) -> StateType:
-        """Return the sensor state"""
+    def state(self):
+        """Return the sensor native value"""
         _LOGGER.debug(
             "%s returning state: %s", self.__statistic.id, self.__statistic.status
         )
@@ -319,18 +319,25 @@ class NSWCovidEntry(RestoreEntity, SensorEntity):
     def state_class(self) -> str:
         """Return the state class if relevent"""
         measurement = getattr(self.__statistic, "measurement", False)
-        if measurement:
+        resetting = getattr(self.__statistic, "resetting", False)
+        if measurement and resetting:
+            if hasattr(sensor, "STATE_CLASS_TOTAL_INCREASING"):
+                return sensor.STATE_CLASS_TOTAL_INCREASING
+            return sensor.STATE_CLASS_MEASUREMENT
+        elif measurement:
             return sensor.STATE_CLASS_MEASUREMENT
         else:
             return None
 
-    @property
-    def last_reset(self):
-        """Return the state class if relevent"""
-        resetting = getattr(self.__statistic, "resetting", False)
-        if not resetting:
-            return None
-        return self.__statistic.published
+    # @property
+    # def last_reset(self):
+    #     # Per https://developers.home-assistant.io/docs/core/entity/sensor/#long-term-statistics
+    #     # Do not send last reset
+    #     """Return the state class if relevent"""
+    #     resetting = getattr(self.__statistic, "resetting", False)
+    #     if not resetting:
+    #         return None
+    #     return self.__statistic.published
 
     @property
     def device_state_attributes(self):
@@ -439,7 +446,7 @@ class NSWCovidDeaths(RestoreEntity):
         return "deaths"
 
     @property
-    def state(self) -> StateType:
+    def state(self):
         """Return the sensor state"""
         deaths = 0
         for statistic_id in self.__tracked:
@@ -581,7 +588,7 @@ class NSWCovidCases(RestoreEntity):
         return "cases"
 
     @property
-    def state(self) -> StateType:
+    def state(self):
         """Return the sensor state"""
         cases = 0
         for statistic_id in self.__tracked:
@@ -716,7 +723,7 @@ class NSWCovidDoses(RestoreEntity):
         return True
 
     @property
-    def state(self) -> StateType:
+    def state(self):
         """Return the sensor state"""
         if not ATTR_ALL_PROVIDERS_DOSES_CUMULATIVE in self.__statistics:
             return None

@@ -71,7 +71,7 @@ class NSWHSensor(Entity):
         df_hneh_earliest = df_hneh["notification_date"].min().strftime("%a %d %b %Y")
         df_hneh_latest = df_hneh["notification_date"].max().strftime("%a %d %b %Y")
 
-        df_trc = df[df.lga_code19 == 17310.0]
+        df_trc = df[df.lga_code19 == "17310"]
         df_trc_count = len(df_trc)
         df_trc_earliest = df_trc["notification_date"].min().strftime("%a %d %b %Y")
         df_trc_latest = df_trc["notification_date"].max().strftime("%a %d %b %Y")
@@ -86,7 +86,7 @@ class NSWHSensor(Entity):
         df_wnsw_earliest = df_wnsw["notification_date"].min().strftime("%a %d %b %Y")
         df_wnsw_latest = df_wnsw["notification_date"].max().strftime("%a %d %b %Y")
 
-        df_drc = df[df.lga_code19 == 12390.0]
+        df_drc = df[df.lga_code19 == "12390"]
         df_drc_count = len(df_drc)
         df_drc_earliest = df_drc["notification_date"].min().strftime("%a %d %b %Y")
         df_drc_latest = df_drc["notification_date"].max().strftime("%a %d %b %Y")
