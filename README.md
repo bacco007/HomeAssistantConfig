@@ -72,20 +72,20 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, September 12th 2021_
+_Stats as at 05:00, Monday, September 13th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.9.5 | 341     | 2392         | 1737 | 86 |
+| 2021.9.6 | 344     | 2283         | 1654 | 84 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 86
-Binary Sensor | 222
+Automation | 84
+Binary Sensor | 218
 Camera | 4
-Device Tracker | 82
+Device Tracker | 84
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
@@ -93,11 +93,11 @@ Input Text | 3
 Light | 3
 Media Player | 31
 Person | 1
-Scene | 1
+Scene | 0
 Script | 4
-Sensor | 1737
+Sensor | 1654
 Sun | 1
-Switch | 140
+Switch | 117
 Weather | 7
 Zone | 10
 
@@ -117,6 +117,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [air_quality](https://www.home-assistant.io/components/air_quality) |
 | [air_quality.dyson_local](https://www.home-assistant.io/components/air_quality.dyson_local) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
+| [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alarm_control_panel.deconz](https://www.home-assistant.io/components/alarm_control_panel.deconz) |
 | [alexa_media](https://www.home-assistant.io/components/alexa_media) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
@@ -239,6 +240,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ios](https://www.home-assistant.io/components/ios) |
 | [lifx](https://www.home-assistant.io/components/lifx) |
 | [light](https://www.home-assistant.io/components/light) |
+| [light.alexa_media](https://www.home-assistant.io/components/light.alexa_media) |
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.deconz](https://www.home-assistant.io/components/light.deconz) |
 | [light.lifx](https://www.home-assistant.io/components/light.lifx) |
@@ -249,6 +251,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
+| [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
@@ -270,13 +273,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [network](https://www.home-assistant.io/components/network) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
+| [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
 | [notify.group](https://www.home-assistant.io/components/notify.group) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
-| [nswcovid](https://www.home-assistant.io/components/nswcovid) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [openuv](https://www.home-assistant.io/components/openuv) |
 | [optus](https://www.home-assistant.io/components/optus) |
@@ -307,6 +310,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [script](https://www.home-assistant.io/components/script) |
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
+| [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.amberelectric](https://www.home-assistant.io/components/sensor.amberelectric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
@@ -316,7 +320,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
-| [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |
@@ -355,7 +358,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
-| [sensor.nswcovid](https://www.home-assistant.io/components/sensor.nswcovid) |
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.optus](https://www.home-assistant.io/components/sensor.optus) |
@@ -414,6 +416,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
+| [switch.alexa_media](https://www.home-assistant.io/components/switch.alexa_media) |
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.deconz](https://www.home-assistant.io/components/switch.deconz) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
@@ -494,7 +497,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
 - [Node-RED Companion](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
 - [NSW Air Quality]()
-- [NSW Covid](https://github.com/troykelly/homeassistant-au-nsw-covid/wiki)
 - [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Optus](https://github.com/itchannel/optus-ha)

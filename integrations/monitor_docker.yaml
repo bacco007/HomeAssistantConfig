@@ -46,8 +46,8 @@ monitor_docker:
     rename:
       ha-dockermon: "HA Dockermon"
 
-  - name: swarm_monitordocker
-    url: tcp://192.168.1.180:2375
-    scan_interval: 60
-    monitored_conditions:
-      - allinone
+  # - name: swarm_monitordocker
+  #   url: tcp://192.168.1.180:2375
+  #   scan_interval: 60
+  #   monitored_conditions:
+  #     - allinone
