@@ -1,31 +1,31 @@
 ---
-- id: '1628718623049'
+- id: "1628718623049"
   alias: Docker - Restart Solar Modbus Container every morning
-  description: ''
+  description: ""
   trigger:
-  - platform: sun
-    event: sunrise
-    offset: +00:20
+    - platform: sun
+      event: sunrise
+      offset: +00:20
   condition: []
   action:
-  - service: hassio.addon_restart
-    data:
-      addon: 4ee6ccd4_modbus_inverter
+    - service: hassio.addon_restart
+      data:
+        addon: 4ee6ccd4_modbus_inverter
   mode: single
-- id: '1631941268954'
+- id: "1631941268954"
   alias: Smart Switch - Power On Pressed
-  description: ''
+  description: ""
   trigger:
-  - device_id: 5154a668967a2c9c24427a4b70762ede
-    domain: zha
-    platform: device
-    type: remote_button_short_press
-    subtype: turn_on
+    - device_id: 5154a668967a2c9c24427a4b70762ede
+      domain: zha
+      platform: device
+      type: remote_button_short_press
+      subtype: turn_on
   condition: []
   action:
-  - service: light.toggle
-    target:
-      entity_id: light.zha_office_light
-    data:
-      transition: 20
+    - service: light.toggle
+      target:
+        entity_id: light.zha_office_light
+      data:
+        transition: 20
   mode: single

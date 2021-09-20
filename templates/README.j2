@@ -31,9 +31,6 @@ _Please :star: this repo if you find it useful_
   - [Stats](#stats)
   - [Integrations Used](#integrations-used)
     - [Custom Components Used](#custom-components-used)
-      - [HACS - Integrations](#hacs---integrations)
-      - [HACS - Lovelace Cards](#hacs---lovelace-cards)
-      - [HACS - Themes](#hacs---themes)
   - [Screenshots](#screenshots)
   - [HA Supervisor](#ha-supervisor)
     - [Addon Repositories](#addon-repositories)
@@ -127,27 +124,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 </details>
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
-
-#### HACS - Integrations
-
-| Name | Description |
-| --- | ---|
-{%- for component in hacs_components | selectattr('category', 'equalto', 'integration') | sort(attribute='name') %}
-| [{{component.name}}]({{component.documentation}}) | {{component.description}} | {%- endfor %}
-
-#### HACS - Lovelace Cards
-
-| Name | Description |
-| --- | ---|
-{%- for component in hacs_components | selectattr('category', 'equalto', 'plugin') | sort(attribute='name') %}
-| [{{component.name}}]({{component.documentation}}) | {{component.description}} | {%- endfor %}
-
-#### HACS - Themes
-
-| Name | Description |
-| --- | ---|
-{%- for component in hacs_components | selectattr('category', 'equalto', 'theme') | sort(attribute='name') %}
-| [{{component.name}}]({{component.documentation}}) | {{component.description}} | {%- endfor %}
 
 ---
 

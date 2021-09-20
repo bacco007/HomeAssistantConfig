@@ -1,3 +1,4 @@
+---
 rest:
   - resource: http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard
     scan_interval: 86400
@@ -169,14 +170,14 @@ sensor:
     sensors:
       patriots_sb_score:
         value_template: >
-          {{ states('sensor.patriots_score') }} 
+          {{ states('sensor.patriots_score') }}
         friendly_name_template: >
           {{ states('sensor.patriots_display_name') }}
         entity_picture_template: >-
           {{ states('sensor.patriots_display_logo') }}
       patriots_sb_opponent_score:
         value_template: >
-          {{ states('sensor.patriots_opponent_score') }} 
+          {{ states('sensor.patriots_opponent_score') }}
         friendly_name_template: >
           {{ states('sensor.patriots_opponent_name') }}
         entity_picture_template: >-
@@ -191,7 +192,7 @@ sensor:
           {{ as_timestamp(strptime(as_datetime(states.sensor.patriots_game_time.state), '%Y-%m-%d %H:%M:%S%z')) | timestamp_custom("%A @ %-I:%M %p") }}
         friendly_name_template: >
           {{ states('sensor.patriots_game_venue') }}
-      sb_city_broadcast: 
+      sb_city_broadcast:
         value_template: >
           {{ states('sensor.patriots_game_broadcast') }}
         friendly_name_template: >

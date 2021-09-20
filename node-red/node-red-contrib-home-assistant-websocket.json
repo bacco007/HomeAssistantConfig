@@ -8,19 +8,19 @@
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 136,
+        "state": 135,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 3,
+        "state": 0,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 69,
+        "state": 68,
         "attributes": {}
       }
     },
@@ -230,7 +230,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 9.819,
+        "state": 8.925,
         "attributes": {}
       }
     },
@@ -336,7 +336,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "934.8",
+        "state": "935.4",
         "attributes": {
           "units": "GB"
         }
@@ -344,7 +344,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "1184.7",
+        "state": "1185.9",
         "attributes": {
           "units": "TB"
         }
@@ -362,14 +362,14 @@
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "18d 21hr 55min",
+          "uptime": "18d 22hr 1min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "1457.3",
+        "state": "1458.0",
         "attributes": {
           "units": "TB"
         }
@@ -377,7 +377,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "282.1",
+        "state": "282.5",
         "attributes": {
           "units": "GB"
         }
@@ -458,8 +458,8 @@
           "sitename": "Default (default)",
           "type": "usw",
           "controller": "https://192.168.1.1",
-          "uptime": "28d 23hr 11min",
-          "rx_data": "934.8 GB",
+          "uptime": "28d 23hr 17min",
+          "rx_data": "935.4 GB",
           "tx_data": "1.2 TB",
           "lastseen": "a few seconds ago"
         }
@@ -480,10 +480,10 @@
           "users": 38,
           "controller": "https://192.168.1.1",
           "guests": 0,
-          "uptime": "18d 21hr 55min",
+          "uptime": "18d 22hr 1min",
           "lastseen": "a few seconds ago",
           "tx_data": "1.5 TB",
-          "rx_data": "282.1 GB"
+          "rx_data": "282.5 GB"
         }
       }
     },
@@ -502,10 +502,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 237,
+        "state": 238,
         "attributes": {
-          "uptime": "0d 0hr 7min",
-          "drops": 237
+          "uptime": "0d 0hr 1min",
+          "drops": 238
         }
       }
     },
@@ -517,13 +517,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "23.00",
+        "state": "23.22",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "38.60",
+        "state": "38.38",
         "attributes": {}
       }
     },
@@ -823,7 +823,7 @@
     },
     "4f06ab2a_82eeb4": {
       "lastPayload": {
-        "state": "1000.3",
+        "state": "1001.2",
         "attributes": {
           "units": "TB"
         }
@@ -847,7 +847,7 @@
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
-          "uptime": "18d 21hr 55min",
+          "uptime": "18d 22hr 1min",
           "rx_data": "194.8 GB",
           "tx_data": "1.0 TB",
           "lastseen": "a few seconds ago"
