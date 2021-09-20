@@ -34,5 +34,5 @@ action:
       entity_id: sensor.archive_solar_yield_365day_avg
       unit_of_measurement: kWh
       friendly_name: Solar - 365 Day - Yield - Avg
-      icon: "mdi:solar-power" 
+      icon: "mdi:solar-power"
 mode: single

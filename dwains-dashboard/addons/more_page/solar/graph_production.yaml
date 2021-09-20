@@ -3,8 +3,9 @@ type: custom:config-template-card
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.solar_solar_generation
-  - sensor.solar_solar_to_house
+  - sensor.sungrowsolar_total_pv_power_kw
+  - sensor.sungrowsolar_power_meter_kw
+  - sensor.sungrowsolar_export_power_kw
 card:
   type: custom:apexcharts-card
   graph_span: 24h
@@ -18,12 +19,16 @@ card:
 
   all_series_config:
     stroke_width: 2
-    type: area
+    type: line
+    curve: smooth
     extend_to_end: false
+    unit: kW
   color_list:
-    - blue
-    - orange
-    - pink
+    - rgb(35, 155, 86)
+    - rgb(229, 152, 102)
+    - rgb(241, 148, 138)
+    - rgb(208, 236, 231)
+    - rgb(232, 246, 243)
   apex_config:
     annotations:
       xaxis:
@@ -70,47 +75,46 @@ card:
     yaxis:
       - seriesName: "kW"
         decimalsInFloat: 0
+        max: 5
         title:
           text: "kW"
       # - seriesName: Night time
       #   opposite: true
       #   show: false
-    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5] }
-    fill:
-      {
-        type: ["gradient", "gradient", "solid"],
-        gradient:
-          {
-            shadeIntensity: 1,
-            inverseColors: false,
-            opacityFrom: 0.45,
-            opacityTo: 0.05,
-            stops: [20, 100, 100, 100],
-          },
-      }
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0, 5, 5] }
+    # fill:
+    #   {
+    #     type: ["gradient", "gradient", "solid"],
+    #     gradient:
+    #       {
+    #         shadeIntensity: 1,
+    #         inverseColors: false,
+    #         opacityFrom: 0.45,
+    #         opacityTo: 0.05,
+    #         stops: [20, 100, 100, 100],
+    #       },
+    #   }
   series:
-    - entity: sensor.solar_solar_generation
+    - entity: sensor.sungrowsolar_total_pv_power_kw
       name: Solar Generation
-      curve: smooth
+      stroke_width: 4
       group_by:
         func: max
         duration: 5min
-    - entity: sensor.solar_solar_to_house
+    - entity: sensor.sungrowsolar_power_meter_kw
       name: House Consumption
-      curve: smooth
+      group_by:
+        func: max
+        duration: 5min
+    - entity: sensor.sungrowsolar_export_power_kw
+      name: Grid
       group_by:
         func: max
         duration: 5min
     - entity: sensor.solcast_forecast_average_30min
-      type: line
       name: Forecast
-      unit: kW
       fill_raw: last
-      extend_to_end: false
     - entity: sensor.solcast_forecast
-      type: line
-      extend_to_end: false
-      unit: kW
       show:
         in_header: false
       data_generator: |

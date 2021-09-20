@@ -3,7 +3,7 @@ type: custom:config-template-card
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.solar_daily_yield_clean
+  - sensor.sensor.sungrowsolar_daily_power_yield
   - sensor.solcast_forecast_today
 card:
   type: custom:apexcharts-card
@@ -50,7 +50,7 @@ card:
     grid:
       borderColor: "#7B7B7B"
     chart:
-      height: 450
+      height: 300
       foreColor: "#7B7B7B"
       zoom:
         type: x
@@ -73,35 +73,38 @@ card:
     yaxis:
       - seriesName: "kW"
         decimalsInFloat: 0
+        min: 0
         title:
           text: "kW"
       # - seriesName: Night time
       #   opposite: true
       #   show: false
     stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5] }
-    fill:
-      {
-        type: ["gradient", "gradient", "solid"],
-        gradient:
-          {
-            shadeIntensity: 1,
-            inverseColors: false,
-            opacityFrom: 0.45,
-            opacityTo: 0.05,
-            stops: [20, 100, 100, 100],
-          },
-      }
+    # fill:
+    #   {
+    #     type: ["gradient", "gradient", "solid"],
+    #     gradient:
+    #       {
+    #         shadeIntensity: 1,
+    #         inverseColors: false,
+    #         opacityFrom: 0.45,
+    #         opacityTo: 0.05,
+    #         stops: [20, 100, 100, 100],
+    #       },
+    #   }
+  all_series_config:
+    stroke_width: 2
+    type: line
+    curve: smooth
+    extend_to_end: false
+    group_by:
+      func: last
+      duration: 15min    
   series:
-    - entity: sensor.solar_daily_yield_clean
+    - entity: sensor.sungrowsolar_daily_power_yield
       name: Yield
       curve: smooth
-      group_by:
-        func: last
-        duration: 15min
-    - entity: sensor.solar_daily_yield_clean
+    - entity: sensor.sungrowsolar_daily_power_yield
       name: Yield
       curve: smooth
       offset: -1d
-      group_by:
-        func: last
-        duration: 15min

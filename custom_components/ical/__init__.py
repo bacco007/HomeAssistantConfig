@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import logging
 
 from dateutil.rrule import rruleset, rrulestr
-from dateutil.tz import gettz
+from dateutil.tz import gettz, tzutc
 import icalendar
 import voluptuous as vol
 
@@ -393,6 +393,8 @@ class ICalEvents:
         if not str(indate.tzinfo).startswith("tzfile"):
             # _LOGGER.debug("Pytz indate: %s. replacing with tz %s", str(indate), str(gettz(str(indate.tzinfo))))
             indate = indate.replace(tzinfo=gettz(str(indate.tzinfo)))
+        if str(indate.tzinfo).endswith('/UTC'):
+            indate = indate.replace(tzinfo=tzutc)
         # _LOGGER.debug("Tzinfo 2: %s", str(indate.tzinfo))
 
         _LOGGER.debug("Out date: %s", str(indate))

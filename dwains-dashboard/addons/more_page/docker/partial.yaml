@@ -35,7 +35,7 @@ card:
                   align: center
               - icon: mdi:memory
               - entity: ${getEntityId('this.entity_id')}
-                attribute: cpu
+                attribute: cpu_percentage
                 name: CPU
                 styles:
                   width: 90px

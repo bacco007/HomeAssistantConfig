@@ -8,13 +8,11 @@ homeassistant:
       <<: *customize
 
 monitor_docker:
-  - name: TBSH01_monitordocker
-    url: tcp://192.168.1.20:2375
+  - name: TBSH1_monitordocker
+    url: tcp://192.168.1.91:2375
     scan_interval: 60
     monitored_conditions:
       - allinone
-    rename:
-      thirsty_wiles: "glances"
 
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
@@ -22,32 +20,8 @@ monitor_docker:
     monitored_conditions:
       - allinone
 
-  - name: vmTBSH01_monitordocker
-    url: tcp://192.168.1.61:2375
+  - name: PI4SRV_monitordocker
+    url: tcp://192.168.1.64:2375
     scan_interval: 60
     monitored_conditions:
       - allinone
-    rename:
-      nice_johnson: "glances"
-
-  - name: vmTBSH02_monitordocker
-    url: tcp://192.168.1.62:2375
-    scan_interval: 60
-    monitored_conditions:
-      - allinone
-    rename:
-      suspicious_golick: "glances"
-
-  - name: vmTBSH03_monitordocker
-    url: tcp://192.168.1.63:2375
-    scan_interval: 60
-    monitored_conditions:
-      - allinone
-    rename:
-      ha-dockermon: "HA Dockermon"
-
-  # - name: swarm_monitordocker
-  #   url: tcp://192.168.1.180:2375
-  #   scan_interval: 60
-  #   monitored_conditions:
-  #     - allinone

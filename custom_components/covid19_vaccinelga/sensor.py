@@ -93,15 +93,22 @@ class CovidLiveSensor(Entity):
         df = df.applymap(clean_normalize_whitespace)
         df.columns = df.columns.to_series().apply(clean_normalize_whitespace)
 
-        # col_type = {"LGA": "string", "ACTIVE": "int", "1st": "int", "2nd": "int"}
+        col_type = {
+            "LGA": "string",
+            "15+": "string",
+            "VAR": "string",
+            "NET": "string",
+            "SECOND": "String",
+            "NET2": "String",
+        }
 
-        # clean_dict = {"%": "", "−": "0", "\(est\)": "0", "NaN": 0, "": 0, "N/A": 0}
-        # df = df.replace(clean_dict, regex=True).replace({"-": 0}).replace({"NaN": 0}).astype(col_type)
+        clean_dict = {"%": "", "−": "0", "\(est\)": "0", "NaN": 0, "": 0, "N/A": 0}
+        df = df.replace(clean_dict, regex=True).replace({"-": 0}).replace({"NaN": 0})
 
         vaxdata = []
         for index, row in df.iterrows():
             if row["LGA"] in ["Tamworth Regional"]:
-                self._state = float(row[2].strip("%"))
+                self._state = float(row[2])
 
             if row["LGA"] in [
                 "Tamworth Regional",
@@ -118,9 +125,11 @@ class CovidLiveSensor(Entity):
             ]:
                 vaxdata.append(
                     {
-                        "lga": row[0],
-                        "dose1st": float(row[2].strip("%")),
-                        "dose2nd": float(row[3].strip("%")),
+                        "LGA": row[0],
+                        "Dose1st": float(row[1]),
+                        "Dose1stChange": float(row[3]),
+                        "Dose2nd": float(row[4]),
+                        "Dose2ndChange": float(row[6]),
                     }
                 )
         self._attributes["vax_data"] = vaxdata

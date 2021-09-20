@@ -773,8 +773,8 @@ sensor:
           {% if state_attr('calendar.ical_sydney_swans_vfl', 'message')  == None %}
             No Game Scheduled
           {% else %}
-            {% set op = state_attr('calendar.ical_sydney_swans_vfl', 'message').split(' - ')[0] %} 
-            {% set st = state_attr('calendar.ical_sydney_swans_vfl', 'start_time') %} 
+            {% set op = state_attr('calendar.ical_sydney_swans_vfl', 'message').split(' - ')[0] %}
+            {% set st = state_attr('calendar.ical_sydney_swans_vfl', 'start_time') %}
             {% if st != None %}
               {{ op }}
             {% else %}

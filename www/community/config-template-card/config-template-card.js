@@ -169,7 +169,7 @@ function __spreadArray(to, from, pack) {
             ar[i] = from[i];
         }
     }
-    return to.concat(ar || from);
+    return to.concat(ar || Array.prototype.slice.call(from));
 }
 
 function __await(v) {
@@ -3317,7 +3317,10 @@ let ConfigTemplateCard = class ConfigTemplateCard extends LitElement {
         if (config.card && !config.card.type) {
             throw new Error('No card type defined');
         }
-        if (config.element && !config.element.style) {
+        if (config.card && config.card.type === 'picture-elements') {
+            console.warn('WARNING: config-template-card should not be used with the picture-elements card itself. Instead use it as one of the elements. Check the README for details');
+        }
+        if (config.element && !config.style) {
             throw new Error('No style defined for element');
         }
         if (!config.entities) {

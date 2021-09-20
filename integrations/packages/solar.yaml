@@ -1,0 +1,204 @@
+---
+ sensor: 
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: sungrowsolar_daily_power_yield
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.daily_power_yield /1000 }}"
+    unit_of_measurement: 'kWh'
+    unique_id: sungrowsolar_dailyproduction
+    state_class: total_increasing
+    device_class: energy
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: sungrowsolar_totalpoweryield
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.total_power_yield }}"
+    unit_of_measurement: 'MWh'
+    state_class: total_increasing
+    device_class: energy
+    unique_id: sungrowsolar_totalpoweryield
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: sungrowsolar_internaltemperature
+    state_topic: inverter/tele/SENSOR
+    unit_of_measurement: '°C'
+    value_template: "{{ value_json.internal_temp }}"
+    unique_id: sungrowsolar_internaltemperature
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_pv1_voltage"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.pv1_voltage }}"
+    unit_of_measurement: 'V'
+    unique_id: sungrowsolar_pv1_voltage
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_pv1_current"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.pv1_current }}"
+    unit_of_measurement: 'A'
+    unique_id: sungrowsolar_pv1_current
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_pv2_voltage"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.pv2_voltage }}"
+    unit_of_measurement: 'V'
+    unique_id: sungrowsolar_pv2_voltage
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_pv2_current"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.pv2_current }}" 
+    unit_of_measurement: 'A'
+    unique_id: sungrowsolar_pv2_current
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_total_pv_power"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.total_pv_power }}"
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement
+    unique_id: sungrowsolar_total_pv_power
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_total_pv_power_kw"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.total_pv_power / 1000 }}"
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    unique_id: sungrowsolar_total_pv_power_kw
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_grid_voltage"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.grid_voltage }}"
+    unit_of_measurement: 'V'
+    unique_id: sungrowsolar_grid_voltage
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_inverter_current"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.inverter_current }}" 
+    unit_of_measurement: 'A'
+    unique_id: sungrowsolar_inverter_current
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_export_power"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.export_power }}"
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement    
+    unique_id: sungrowsolar_export_power
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_export_power_kW"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.export_power / 1000 }}"
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement    
+    unique_id: sungrowsolar_export_power_kW  
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_export_power_indicator"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.export_power_indicator }}"
+    unique_id: sungrowsolar_export_power_indicator
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_power_meter"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.power_meter }}" 
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement
+    unique_id: sungrowsolar_power_meter
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_power_meter_kw"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.power_meter / 1000}}" 
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    unique_id: sungrowsolar_power_meter_kw    
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_daily_purchased_energy"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.daily_purchased_energy }}"
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+   # last_reset: "2021-08-05T08:05:00+00:00"
+    unique_id: sungrowsolar_daily_purchased_energy
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_daily_energy_consumption"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.daily_energy_consumption /1000 }}"
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    unique_id: sungrowsolar_daily_energy_consumption
+
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_total_energy_consumption_from_pv"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ value_json.total_energy_consumption }}" 
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy    
+    unique_id: sungrowsolar_total_energy_consumption_from_pv
+    
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_calculated_solar_feed_in" 
+    state_topic: inverter/tele/SENSOR    
+    unit_of_measurement: 'kWh'
+    value_template: "{{ states('sensor.sungrowsolar_daily_power_yield') |float - states('sensor.sungrowsolar_daily_energy_consumption') | round(1) | float }}"
+    unique_id: sungrowsolar_calculated_solar_feed_in"
+    state_class: total_increasing
+    device_class: energy     
+ 
+  - platform: mqtt
+    icon: mdi:solar-power
+    name: "sungrowsolar_export_power_negative"
+    state_topic: inverter/tele/SENSOR
+    value_template: "{{ states('sensor.sungrowsolar_export_power') |float*(-1) }}"   
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement    
+    unique_id: sungrowsolar_export_power_negative
+    
+  - platform: template
+    sensors:
+     sungrowsolar_calculated_solar_feed_in_rounded:
+       unit_of_measurement: 'kWh'
+       icon_template: mdi:solar-power
+       value_template: "{{ states('sensor.sungrowsolar_calculated_solar_feed_in') | round(1) | float }}"
+       unique_id: sungrowsolar_calculated_solar_feed_in_rounded

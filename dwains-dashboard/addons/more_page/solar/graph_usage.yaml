@@ -15,10 +15,6 @@ card:
   span:
     start: day
 
-  all_series_config:
-    stroke_width: 2
-    type: area
-    extend_to_end: false
   apex_config:
     annotations:
       xaxis:

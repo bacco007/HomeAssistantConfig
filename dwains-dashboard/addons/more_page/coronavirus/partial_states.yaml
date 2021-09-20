@@ -156,6 +156,18 @@ cards:
       include: sensor.covid_19_covidlive_vaccinelga
     #max_rows: 10
     columns:
-      - { data: vax_data, modify: x.lga, name: "LGA" }
-      - { data: vax_data, modify: x.dose1st, name: "1st Dose", align: "right" }
-      - { data: vax_data, modify: x.dose2nd, name: "2nd Dose", align: "right" }
+      - { data: vax_data, modify: x.LGA, name: "LGA" }
+      - { data: vax_data, modify: x.Dose1st, name: "1st Dose", align: "right" }
+      - {
+          data: vax_data,
+          modify: x.Dose1stChange,
+          name: "1st Dose Chg",
+          align: "right",
+        }
+      - { data: vax_data, modify: x.Dose2nd, name: "2nd Dose", align: "right" }
+      - {
+          data: vax_data,
+          modify: x.Dose2ndChange,
+          name: "2nd Dose Chg",
+          align: "right",
+        }
