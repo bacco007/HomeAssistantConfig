@@ -42,9 +42,16 @@ jobs:
       - name: ➕  Create dummy files
         run: |
           touch home-assistant.log
+<<<<<<< HEAD
           mkdir .androidkeys
           touch .androidkeys/adbkey
           touch .androidkeys/adbkey.pub
+=======
+          mkdir ./.androidkeys
+          touch ./.androidkeys/adbkey
+          touch ./.androidkeys/adbkey.pub
+          rm ./entities/media_players/androidtv.yaml
+>>>>>>> d4a174721a45e7895d668f4d22a7e1545ae3f8e6
       - name: 🚀  Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.1.1
         with:
