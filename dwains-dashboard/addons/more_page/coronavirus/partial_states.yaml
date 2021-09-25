@@ -160,14 +160,14 @@ cards:
       - { data: vax_data, modify: x.Dose1st, name: "1st Dose", align: "right" }
       - {
           data: vax_data,
-          modify: x.Dose1stChange,
+          modify: x.Dose1stChg,
           name: "1st Dose Chg",
           align: "right",
         }
       - { data: vax_data, modify: x.Dose2nd, name: "2nd Dose", align: "right" }
       - {
           data: vax_data,
-          modify: x.Dose2ndChange,
+          modify: x.Dose2ndChg,
           name: "2nd Dose Chg",
           align: "right",
         }

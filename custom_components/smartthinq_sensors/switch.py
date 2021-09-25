@@ -26,7 +26,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import LGEDevice
 from .const import DOMAIN, LGE_DEVICES
-from .device_helpers import STATE_LOOKUP, get_entity_name
+from .device_helpers import STATE_LOOKUP, LGEBaseDevice, get_entity_name
 
 # general sensor attributes
 ATTR_POWER_OFF = "power_off"
@@ -50,42 +50,41 @@ WASH_DEV_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
     ThinQSwitchEntityDescription(
         key=ATTR_POWER_OFF,
         name="Power off",
-        value_fn=lambda x: x._is_power_on,
-        turn_off_fn=lambda x: x._api.device.power_off()
+        value_fn=lambda x: x.is_power_on,
+        turn_off_fn=lambda x: x.device.power_off()
     ),
 )
-
 REFRIGERATOR_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
     ThinQSwitchEntityDescription(
         key=FEAT_ECOFRIENDLY,
         name="Eco friendly",
         icon="mdi:gauge-empty",
-        turn_off_fn=lambda x: x._api.device.set_eco_friendly(False),
-        turn_on_fn=lambda x: x._api.device.set_eco_friendly(True),
+        turn_off_fn=lambda x: x.device.set_eco_friendly(False),
+        turn_on_fn=lambda x: x.device.set_eco_friendly(True),
     ),
     ThinQSwitchEntityDescription(
         key=FEAT_EXPRESSFRIDGE,
         name="Express fridge",
         icon="mdi:coolant-temperature",
-        turn_off_fn=lambda x: x._api.device.set_express_fridge(False),
-        turn_on_fn=lambda x: x._api.device.set_express_fridge(True),
-        available_fn=lambda x: x._api.device.set_values_allowed,
+        turn_off_fn=lambda x: x.device.set_express_fridge(False),
+        turn_on_fn=lambda x: x.device.set_express_fridge(True),
+        available_fn=lambda x: x.device.set_values_allowed,
     ),
     ThinQSwitchEntityDescription(
         key=FEAT_EXPRESSMODE,
         name="Express mode",
         icon="mdi:snowflake",
-        turn_off_fn=lambda x: x._api.device.set_express_mode(False),
-        turn_on_fn=lambda x: x._api.device.set_express_mode(True),
-        available_fn=lambda x: x._api.device.set_values_allowed,
+        turn_off_fn=lambda x: x.device.set_express_mode(False),
+        turn_on_fn=lambda x: x.device.set_express_mode(True),
+        available_fn=lambda x: x.device.set_values_allowed,
     ),
     ThinQSwitchEntityDescription(
         key=FEAT_ICEPLUS,
         name="Ice plus",
         icon="mdi:snowflake",
-        turn_off_fn=lambda x: x._api.device.set_ice_plus(False),
-        turn_on_fn=lambda x: x._api.device.set_ice_plus(True),
-        available_fn=lambda x: x._api.device.set_values_allowed,
+        turn_off_fn=lambda x: x.device.set_ice_plus(False),
+        turn_on_fn=lambda x: x.device.set_ice_plus(True),
+        available_fn=lambda x: x.device.set_values_allowed,
     ),
 )
 
@@ -144,19 +143,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class LGESwitch(CoordinatorEntity, SwitchEntity):
     """Class to control switches for LGE device"""
 
+    entity_description = ThinQSwitchEntityDescription
+
     def __init__(
             self,
-            device: LGEDevice,
+            api: LGEDevice,
             description: ThinQSwitchEntityDescription,
     ):
         """Initialize the switch."""
-        super().__init__(device.coordinator)
-        self._api = device
-        self.entity_description: ThinQSwitchEntityDescription = description
-        self._attr_name = get_entity_name(device, description.key, description.name)
-        self._attr_unique_id = f"{device.unique_id}-{description.key}-switch"
+        super().__init__(api.coordinator)
+        self._api = api
+        self._wrap_device = LGEBaseDevice(api)
+        self.entity_description = description
+        self._attr_name = get_entity_name(api, description.key, description.name)
+        self._attr_unique_id = f"{api.unique_id}-{description.key}-switch"
         self._attr_device_class = DEVICE_CLASS_SWITCH
-        self._attr_device_info = device.device_info
+        self._attr_device_info = api.device_info
 
     @property
     def should_poll(self) -> bool:
@@ -194,34 +196,27 @@ class LGESwitch(CoordinatorEntity, SwitchEntity):
         """Return True if entity is available."""
         is_avail = True
         if self.entity_description.available_fn is not None:
-            is_avail = self.entity_description.available_fn(self)
-        return self._api.available and self._is_power_on and is_avail
+            is_avail = self.entity_description.available_fn(self._wrap_device)
+        return self._api.available and self._wrap_device.is_power_on and is_avail
 
     def turn_off(self, **kwargs):
         """Turn the entity off."""
         if self.entity_description.turn_off_fn is None:
             raise NotImplementedError()
         if self.is_on:
-            self.entity_description.turn_off_fn(self)
+            self.entity_description.turn_off_fn(self._wrap_device)
 
     def turn_on(self, **kwargs):
         """Turn the entity on."""
         if self.entity_description.turn_on_fn is None:
             raise NotImplementedError()
         if not self.is_on:
-            self.entity_description.turn_on_fn(self)
-
-    @property
-    def _is_power_on(self) -> bool:
-        """Current power state"""
-        if self._api.state:
-            return self._api.state.is_on
-        return False
+            self.entity_description.turn_on_fn(self._wrap_device)
 
     def _get_switch_state(self):
         """Get current switch state"""
         if self.entity_description.value_fn is not None:
-            return self.entity_description.value_fn(self)
+            return self.entity_description.value_fn(self._wrap_device)
 
         if self._api.state:
             feature = self.entity_description.key

@@ -95,20 +95,22 @@ class CovidLiveSensor(Entity):
 
         col_type = {
             "LGA": "string",
-            "15+": "string",
-            "VAR": "string",
+            "FIRST": "string",
+            "VAR": "STRING",
             "NET": "string",
-            "SECOND": "String",
-            "NET2": "String",
+            "SECOND": "string",
+            "VAR2": "string",
+            "NET2": "string",
         }
 
         clean_dict = {"%": "", "−": "0", "\(est\)": "0", "NaN": 0, "": 0, "N/A": 0}
         df = df.replace(clean_dict, regex=True).replace({"-": 0}).replace({"NaN": 0})
+        df = df.sort_values(by=["FIRST"], ascending=False)
 
         vaxdata = []
         for index, row in df.iterrows():
             if row["LGA"] in ["Tamworth Regional"]:
-                self._state = float(row[2])
+                self._state = float(row[1])
 
             if row["LGA"] in [
                 "Tamworth Regional",
@@ -122,14 +124,16 @@ class CovidLiveSensor(Entity):
                 "Gwydir",
                 "Narrabri",
                 "Walcha",
+                "Newcastle",
+                "Port Macquarie-Hastings",
             ]:
                 vaxdata.append(
                     {
                         "LGA": row[0],
-                        "Dose1st": float(row[1]),
-                        "Dose1stChange": float(row[3]),
-                        "Dose2nd": float(row[4]),
-                        "Dose2ndChange": float(row[6]),
+                        "Dose1st": row[1],
+                        "Dose1stChg": row[3],
+                        "Dose2nd": row[4],
+                        "Dose2ndChg": row[6],
                     }
                 )
         self._attributes["vax_data"] = vaxdata

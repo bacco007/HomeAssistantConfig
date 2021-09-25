@@ -3,8 +3,8 @@ platform: icloud3
 username: !secret icloud_username
 password: !secret icloud_password
 devices:
-  - device_name: TBiPhone11
-    name: "tbiPhone11"
+  - device_name: TBiPhone13Pro
+    name: "TBiPhone13Pro"
     iosapp_installed: true
     picture: /local/apple_entity_picture/i11.png
   - device_name: tbiPadPro

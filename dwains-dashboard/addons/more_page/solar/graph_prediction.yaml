@@ -3,9 +3,6 @@ type: custom:config-template-card
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.sungrowsolar_total_pv_power_kw
-  - sensor.sungrowsolar_power_meter_kw
-  - sensor.sungrowsolar_export_power_kw
 card:
   type: custom:apexcharts-card
   graph_span: 24h
@@ -13,7 +10,7 @@ card:
     show: true
     show_states: true
     colorize_states: true
-    title: "Solar Production"
+    title: "Solar Production Prediction"
   span:
     start: day
   now:
@@ -21,16 +18,10 @@ card:
     label: now
   all_series_config:
     stroke_width: 2
-    type: line
     curve: smooth
+    fill_raw: last
     extend_to_end: false
     unit: kW
-  color_list:
-    - rgb(35, 155, 86)
-    - rgb(229, 152, 102)
-    - rgb(241, 148, 138)
-    - rgb(208, 236, 231)
-    - rgb(232, 246, 243)
   apex_config:
     annotations:
       xaxis:
@@ -54,7 +45,7 @@ card:
     grid:
       borderColor: "#7B7B7B"
     chart:
-      height: 450
+      height: 300
       foreColor: "#7B7B7B"
       zoom:
         type: x
@@ -80,31 +71,56 @@ card:
         # max: 5
         title:
           text: "kW"
-    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
   series:
-    - entity: sensor.sungrowsolar_total_pv_power_kw
-      name: Solar Generation
-      stroke_width: 3
-      group_by:
-        func: max
-        duration: 5min
-    - entity: sensor.sungrowsolar_power_meter_kw
-      name: House Consumption
-      group_by:
-        func: max
-        duration: 5min
-    - entity: sensor.sungrowsolar_export_power_kw
-      name: Grid
-      group_by:
-        func: max
-        duration: 5min
-    - entity: sensor.solcast_forecast_average_30min
-      name: Forecast
-      fill_raw: last
     - entity: sensor.solcast_forecast
+      name: Forecast
+      color: "#3498DB"
+    - entity: sensor.solcast_forecast_10
       show:
+        extremas: false
         in_header: false
+      color: "#797D7F"
+      name: Forecast 10
+      opacity: 0.4
+    - entity: sensor.solcast_forecast_90
+      show:
+        extremas: false
+        in_header: false
+      color: "#797D7F"
+      name: Forecast 90
+      opacity: 0.4
+    - entity: sensor.solcast_forecast
+      stroke_width: 2
+      show:
+        extremas: false
+        in_header: false
+      color: "#E74C3C"
+      type: line
+      extend_to_end: false
+      unit: W
       data_generator: |
         return entity.attributes.forecasts.map((entry) => {
           return [new Date(entry.period_end), entry.pv_estimate];
+        });
+    - entity: sensor.solcast_forecast
+      show:
+        extremas: false
+        in_header: false
+      color: "#797D7F"
+      type: line
+      opacity: 0.4
+      data_generator: |
+        return entity.attributes.forecasts.map((entry) => {
+          return [new Date(entry.period_end), entry.pv_estimate10];
+        });
+    - entity: sensor.solcast_forecast
+      show:
+        extremas: false
+        in_header: false
+      color: "#797D7F"
+      type: line
+      opacity: 0.4
+      data_generator: |
+        return entity.attributes.forecasts.map((entry) => {
+          return [new Date(entry.period_end), entry.pv_estimate90];
         });

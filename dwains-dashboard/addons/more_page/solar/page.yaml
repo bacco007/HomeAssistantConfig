@@ -2,6 +2,7 @@
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
     - !include graph_production.yaml
+    - !include graph_prediction.yaml
     - !include graph_yield.yaml
     - !include graph_usageprod.yaml
     # - !include graph_usage.yaml

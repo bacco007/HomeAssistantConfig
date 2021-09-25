@@ -15,6 +15,9 @@ card:
   span:
     start: day
 
+  now:
+    show: true
+    label: now
   apex_config:
     annotations:
       xaxis:

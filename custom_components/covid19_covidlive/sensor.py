@@ -146,12 +146,12 @@ class CovidLiveSensor(Entity):
             _LOGGER.debug("CovidLive: Value - %s", row["TOTAL"])
             self._attributes[row["CATEGORY"]] = row["TOTAL"]
 
-        url2 = "https://covidlive.com.au/report/vaccinations-people"
-        tables2 = pd.read_html(url2, attrs={"class": "VACCINATIONS-PEOPLE"})
+        url2 = "https://covidlive.com.au/report/vaccinations-first-doses"
+        tables2 = pd.read_html(url2, attrs={"class": "VACCINATIONS-FIRST-DOSES"})
         df2 = tables2[0]
         df2 = df2.applymap(clean_normalize_whitespace)
         df2.columns = df2.columns.to_series().apply(clean_normalize_whitespace)
-        col_type2 = {"STATE": "string", "FIRST": "int", "SECOND": "int"}
+        col_type2 = {"STATE": "string", "FIRST": "int", "VAR": "string", "NET": "string"}
         df2 = df2.fillna(0).astype(col_type2)
         state_match = {
             "vic": "Victoria",
@@ -168,6 +168,16 @@ class CovidLiveSensor(Entity):
         for index, row in df2.iterrows():
             if row["STATE"] == statevax:
                 self._attributes["Doses1st"] = row["FIRST"]
+
+        url22 = "https://covidlive.com.au/report/vaccinations-people"
+        tables22 = pd.read_html(url22, attrs={"class": "VACCINATIONS-PEOPLE"})
+        df22 = tables22[0]
+        df22 = df22.applymap(clean_normalize_whitespace)
+        df22.columns = df22.columns.to_series().apply(clean_normalize_whitespace)
+        col_type22 = {"STATE": "string", "SECOND": "int", "VAR": "string", "NET": "string"}
+        df22 = df22.fillna(0).astype(col_type22)
+        for index, row in df22.iterrows():
+            if row["STATE"] == statevax:
                 self._attributes["Doses2nd"] = row["SECOND"]
 
         url3 = "https://covidlive.com.au/report/source-of-infection"

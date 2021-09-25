@@ -37,7 +37,10 @@ def getdata_aflladder(
         points = key["thisSeasonRecord"]["aggregatePoints"]
         percent = key["thisSeasonRecord"]["percentage"]
         form = key["form"]
-        nextop = key["nextOpponent"]["nickname"]
+        if "nextOpponent" in key:
+            nextop = key["nextOpponent"]["nickname"]
+        else:
+            nextop = "None Noted"
         LADDER.append(
             {
                 "position": position,

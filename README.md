@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 15:51, Monday, September 20th 2021_
+_Stats as at 05:00, Saturday, September 25th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.9.6 | 344     | 2130         | 1556 | 85 |
+| 2021.9.7 | 344     | 2106         | 1528 | 85 |
 
 Type | Qty
 -- | --
@@ -82,7 +82,7 @@ Alert | 0
 Automation | 85
 Binary Sensor | 169
 Camera | 4
-Device Tracker | 101
+Device Tracker | 109
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
@@ -92,7 +92,7 @@ Media Player | 31
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1556
+Sensor | 1528
 Sun | 1
 Switch | 86
 Weather | 7
@@ -115,7 +115,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [air_quality](https://www.home-assistant.io/components/air_quality) |
 | [air_quality.dyson_local](https://www.home-assistant.io/components/air_quality.dyson_local) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
-| [alarm_control_panel.alexa_media](https://www.home-assistant.io/components/alarm_control_panel.alexa_media) |
 | [alarm_control_panel.zha](https://www.home-assistant.io/components/alarm_control_panel.zha) |
 | [alexa_media](https://www.home-assistant.io/components/alexa_media) |
 | [amber_electric](https://www.home-assistant.io/components/amber_electric) |
@@ -139,6 +138,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
+| [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
 | [binary_sensor.spacex](https://www.home-assistant.io/components/binary_sensor.spacex) |
@@ -187,6 +187,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
 | [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
+| [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
@@ -236,7 +237,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ios](https://www.home-assistant.io/components/ios) |
 | [lifx](https://www.home-assistant.io/components/lifx) |
 | [light](https://www.home-assistant.io/components/light) |
-| [light.alexa_media](https://www.home-assistant.io/components/light.alexa_media) |
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.lifx](https://www.home-assistant.io/components/light.lifx) |
 | [light.zha](https://www.home-assistant.io/components/light.zha) |
@@ -247,7 +247,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [lovelace](https://www.home-assistant.io/components/lovelace) |
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
-| [media_player.alexa_media](https://www.home-assistant.io/components/media_player.alexa_media) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
@@ -268,7 +267,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [network](https://www.home-assistant.io/components/network) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
-| [notify.alexa_media](https://www.home-assistant.io/components/notify.alexa_media) |
 | [notify.group](https://www.home-assistant.io/components/notify.group) |
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
@@ -307,7 +305,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [search](https://www.home-assistant.io/components/search) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.adguard](https://www.home-assistant.io/components/sensor.adguard) |
-| [sensor.alexa_media](https://www.home-assistant.io/components/sensor.alexa_media) |
 | [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.amberelectric](https://www.home-assistant.io/components/sensor.amberelectric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
@@ -365,10 +362,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
+| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
+| [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
+| [sensor.solcast_rooftop_solar](https://www.home-assistant.io/components/sensor.solcast_rooftop_solar) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
@@ -400,6 +400,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
+| [solcast_rooftop_solar](https://www.home-assistant.io/components/solcast_rooftop_solar) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [spacex](https://www.home-assistant.io/components/spacex) |
@@ -412,7 +413,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
-| [switch.alexa_media](https://www.home-assistant.io/components/switch.alexa_media) |
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
@@ -463,8 +463,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <summary>Expand Custom Components List</summary>
 
 - [Alexa Media Player](https://github.com/custom-components/alexa_media_player/wiki)
-- [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
+- [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
@@ -506,6 +506,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Satellite Tracker (N2YO)](https://github.com/djtimca/hasatellitetracker)
 - [Simple Icons]()
 - [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
+- [Solcast Rooftop PV Forecast](https://github.com/oziee/ha-solcast-rooftop)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
 - [Spotcast](https://github.com/fondberg/spotcast)

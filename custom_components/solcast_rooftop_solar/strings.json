@@ -1,0 +1,26 @@
+{
+    "config": {
+        "step": {
+        "user": {
+            "description": "Fill in the data of your solar panels.",
+            "data": {
+            "apikey": "Solcast API Key",
+            "rooftop": "Solcast rooftop id",
+            "name": "[%key:common::config_flow::data::name%]"
+            }
+        }
+        }
+    },
+    "options": {
+        "step": {
+        "init": {
+            "description": "These values allow tweaking the Solcast Integration.",
+            "data": {
+            "apikey": "Solcast API Key",
+            "rooftop": "Solcast rooftop id",
+            "name": "[%key:common::config_flow::data::name%]"
+            }
+        }
+        }
+    }
+}

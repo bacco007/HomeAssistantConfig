@@ -41,10 +41,10 @@ jobs:
         uses: actions/checkout@v2.3.4
       - name: ➕  Create dummy files
         run: |
-          touch ./home-assistant.log
+          touch home-assistant.log
           mkdir .androidkeys
-          touch ./.androidkeys/adbkey
-          touch ./.androidkeys/adbkey.pub
+          touch .androidkeys/adbkey
+          touch .androidkeys/adbkey.pub
       - name: 🚀  Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.1.1
         with:

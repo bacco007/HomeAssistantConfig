@@ -1,0 +1,15 @@
+{
+  "domain": "solcast_rooftop_solar",
+  "name": "Solcast Rooftop PV Forecast",
+  "version": "1.0.2",
+  "config_flow": true,
+  "documentation": "https://github.com/oziee/ha-solcast-rooftop",
+  "issue_tracker": "https://github.com/oziee/ha-solcast-rooftop/issues",
+  "requirements": ["aiohttp>=3.6.2", "datetime>=4.3", "isodate>=0.6.0"],
+  "dependencies": [],
+  "after_dependencies": ["http"],
+  "iot_class": "cloud_polling",
+  "codeowners": [
+    "@oziee"
+  ]
+}

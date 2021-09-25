@@ -31,10 +31,13 @@ def getdata_nrlladder(
     LADDER = []
     c = 1
     for key in data["positions"]:
-        if key["next"]["isBye"] == True:
-            nextgame = "Bye"
+        if "next" in key:
+            if key["next"]["isBye"] == "true":
+                nextgame = "Bye"
+            else:
+                nextgame = key["next"]["nickname"]
         else:
-            nextgame = key["next"]["nickname"]
+            nextgame = "None Noted"
         LADDER.append(
             {
                 "position": c,

@@ -39,28 +39,34 @@ sensor:
     entity_namespace: fuelcheck
     fuel_types: P98
     station_id: 1145
+    # BP Viaduct
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
     fuel_types: P98
     station_id: 16921
+    # Caltex White Stret
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
     fuel_types: P98
     station_id: 573
+    # Caltex Bridge St
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
     fuel_types: P98
     station_id: 2449
+    # BP Nemingha
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
     fuel_types: P98
-    station_id: 916
+    station_id: 18350
+    # Caltex Gunnedah Rd
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
     fuel_types: P98
-    station_id: 1141
+    station_id: 1543
+    # Caltex Goonoo Goonoo Road
