@@ -1,6 +1,0 @@
----
-geo_location:
-  - platform: geo_json_events
-    url: https://northerntablelands.myroadinfo.com.au/livetraffic/incident.json
-    radius: 50
-    entity_namespace: "tfnsw_incident"

@@ -4,7 +4,7 @@
 
 // UPDATE FOR EACH RELEASE!!! From aftership-card. Version # is hard-coded for now.
 console.info(
-  `%c  AIR-VISUAL-CARD  \n%c  Version 1.1.0   `,
+  `%c  AIR-VISUAL-CARD  \n%c  Version 2.0.0   `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -40,6 +40,8 @@ class AirVisualCard extends HTMLElement {
     return { air_pollution_level: "sensor.u_s_air_pollution_level",
              air_quality_index: "sensor.u_s_air_quality_index",
              main_pollutant: "sensor.u_s_main_pollutant",
+             weather: "weather.home",
+             hide_weather: 1,
              hide_title: 1,
              hide_face: 0              
     }
@@ -54,8 +56,8 @@ class AirVisualCard extends HTMLElement {
       const root = this.shadowRoot;
       if (root.lastChild) root.removeChild(root.lastChild);
 
-      const re = new RegExp("(sensor|weather)");
-      if (!re.test(config.air_quality_index.split('.')[0])) throw new Error('Please define a sensor or weather entity.');
+      const re = new RegExp("(sensor)");
+      if (!re.test(config.air_quality_index.split('.')[0])) throw new Error('Please define a sensor entity.');
 
 
       const cardConfig = Object.assign({}, config);
@@ -66,6 +68,8 @@ class AirVisualCard extends HTMLElement {
       style.textContent = `
         ha-card {
           /* sample css */
+          background-color: rgba(0,0,0,0);
+          box-shadow: none;
         }
 
         body {
@@ -73,89 +77,129 @@ class AirVisualCard extends HTMLElement {
           font-family: Arial, Helvetica, sans-serif;
         }
 
-        .grid-container {
-          border-radius: var(--ha-card-border-radius);
+        .grid-container {          
           display: grid;
-          grid-template-columns: auto auto auto;
+          grid-template-areas: "city city city" "face aqiSensor aplSensor" "face country mainPollutantSensor" "temp humidity wind";
+          grid-template-columns: 85px 30% auto;
+          grid-template-rows: auto auto auto auto;
           grid-gap: 0;
+          text-align: center;  
         }
 
         .city {
-          grid-column-start: 1;
-          grid-column-end: 3;
-          text-align: left;
-          text-indent: 0.3em;
-          font-size: 1.8em;
-          font-weight: 300;
-          padding: .2em .2em;
-          background-color: var(--background-color);
-          color: var(--text-color);
-        }
-
-        .temp {
-          grid-column-start: 3;
-          grid-column-end: 4;
-          text-align: right;
-          font-size: 1.7em;
-          font-weight: 300;
-          background-color: var(--background-color);
-          color: var(--text-color);
-          padding: .2em .2em;
+          grid-area: city;
+          font-size: 1.6em;     
+          font-weight: bold;   
+          color: var(--primary-text-color);
+          filter: opacity(80%);
+          padding-bottom: 5px;      
         }
 
         .face {
-          border-radius: ${cardConfig.hide_title ? 'var(--ha-card-border-radius)' : '0px'} 0px 0px var(--ha-card-border-radius);
-          grid-row-start: 2;
-          grid-row-end: 3;
-          grid-column-start: 1;
-          grid-column-end: 2;
+          border-radius: var(--ha-card-border-radius) 0px 0px ${cardConfig.hide_weather ? 'var(--ha-card-border-radius)' : '0px'};
+          grid-area: face;
           justify-items: center;
           align-items: center;
           display: grid;
-          width: 4.5em;
         }
 
         .face img {
           display: block;
-          margin-left: auto;
-          margin-right: auto;
-          height: 4.5em;
-          width: auto;
+          height: 60px;         
         }
 
         .aqiSensor {
-          grid-row-start: 2;
-          grid-row-end: 3;
-          grid-column-start: 2;
-          grid-column-end: 3;
-          padding: 0.3em 0.3em;
-          height: 5em;
-          line-height: 1.1;
-          text-align: center;
-          justify-items: center;
-          margin: auto;
+          grid-area: aqiSensor;        
+          font-size: 3em; 
+          height: 60px;
+          padding-top: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;    
+          border-radius: ${cardConfig.hide_face ? 'var(--ha-card-border-radius)' : '0px'} 0px 0px 0px;
         }
 
         .aplSensor {
-          grid-row-start: 2;
-          grid-row-end: 3;
-          grid-column-start: 3;
-          grid-column-end: 4;
-          text-align: center;
-          line-height: 1;
-          padding: .1em .1em;
-          font-size: 1.8em;
-          margin: auto;
+          grid-area: aplSensor;
+          font-size: 1.4em;         
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0px var(--ha-card-border-radius) 0px 0px;
         }
 
         .mainPollutantSensor {
-          float: center;
-          border: 0;
-          padding: .1em .1em;
+          grid-area: mainPollutantSensor;
+          border-radius: 0px 0px ${cardConfig.hide_weather ? 'var(--ha-card-border-radius)' : '0px'} 0px ;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0px 0px 5px 0px;
+        }
+
+        .mainPollutantSensorText {
           background-color: white;
           border-radius: 4px;
-          font-size: 0.4em;
+          font-size: 0.9em;
           font-weight: bold;
+          width: 70%;
+        
+        }
+
+        .country {
+          grid-area: country; 
+          border-radius: 0px 0px 0px ${cardConfig.hide_face ? 'var(--ha-card-border-radius)' : '0px'};    
+        }
+
+        .temp {
+          grid-area: temp;
+          text-align: left;
+          font-size: 1.2em;     
+          background-color: rgba(255,255,255,0.2); 
+          color: var(--text-color);
+          border-radius: 0px 0px 0px var(--ha-card-border-radius);
+          border-bottom: 1px solid rgba(230, 230, 230, 1);
+          border-left: 1px solid rgba(230, 230, 230, 1);
+          border-right: 1px solid rgba(230, 230, 230, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .temp img {
+          width: 34px;
+          padding-right: 2px;
+          
+        }
+
+        .humidity {
+          grid-area: humidity;
+          color: var(--text-color);
+          border-bottom: 1px solid rgba(230, 230, 230, 1);
+          background-color: rgba(255,255,255,0.2); 
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 5px 0px 5px 0px;
+        }
+        .humidity img {
+          height: 25px;     
+          padding-right: 2px;           
+        }
+
+        .wind {
+          grid-area: wind;
+          background-color: rgba(255,255,255,0.2); 
+          color: var(--text-color);
+          border-radius: 0px 0px var(--ha-card-border-radius) 0px;
+          border-bottom: 1px solid rgba(230, 230, 230, 1);
+          border-right: 1px solid rgba(230, 230, 230, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .wind img {
+          height: 14px;   
+          padding-right: 2px;             
         }
       `
       content.innerHTML = `
@@ -177,6 +221,9 @@ class AirVisualCard extends HTMLElement {
       delete clone["icons"]
       delete clone["hide_title"]
       delete clone["hide_face"]
+      delete clone["hide_weather"]
+      delete clone["weather"]
+      delete clone["speed_unit"]
       let states = {}
       for (let entity of Object.values(clone)) {
         states[entity] = hass.states[entity]
@@ -200,34 +247,37 @@ class AirVisualCard extends HTMLElement {
       const hideFace = config.hide_face ? 1 : 0;
       const hideAQI = config.hide_aqi ? 1 : 0;
       const hideAPL = config.hide_apl ? 1 : 0;
+      const hideWeather = config.hide_weather ? 1 : 0;
+      const speedUnit = config.speed_unit || 'mp/h';
       // points to local directory created by HACS installation
       const iconDirectory = config.icons || "/hacsfiles/air-visual-card";
       const country = config.country || 'US';
       const city = config.city || '';
-      const tempSensor = config.temp || '';
-      const weatherStatus = config.weather || '';
+      const weatherEntity = config.weather || '';
       // value is used as a string instead of integer in order for 
       const aqiSensor = { name: 'aqiSensor', config: config.air_quality_index || null, value: 0 };
       const aplSensor = { name: 'aplSensor', config: config.air_pollution_level || null, value: 0 };
       const mainPollutantSensor = { name: 'mainPollutantSensor', config: config.main_pollutant || null, value: 0 };
       const sensorList = [aqiSensor, aplSensor, mainPollutantSensor];
+      
       const unitOfMeasurement = hass.states[aqiSensor.config] ? hass.states[aqiSensor.config].attributes['unit_of_measurement'] : 'AQI';
 
       const AQIbgColor = {
-        '1': `#A8E05F`,
-        '2': '#FDD64B',
-        '3': '#FF9B57',
-        '4': '#FE6A69',
-        '5': '#A97ABC',
-        '6': '#A87383',
-      };
-      const AQIfaceColor = {
+
         '1': `#B0E867`,
         '2': '#E3C143',
         '3': '#E48B4E',
         '4': '#E45F5E',
         '5': '#986EA9',
         '6': '#A5516B',
+      };
+      const AQIfaceColor = {
+        '1': `#A8E05F`,
+        '2': '#FDD64B',
+        '3': '#FF9B57',
+        '4': '#FE6A69',
+        '5': '#A97ABC',
+        '6': '#A87383',
       };
       const AQIfontColor = {
         '1': `#718B3A`,
@@ -254,6 +304,23 @@ class AirVisualCard extends HTMLElement {
         'windy': 'mdi:weather-windy',
         'windy-variant': `mdi:weather-windy-variant`,
         'exceptional': '!!',
+      }
+      const weatherSVG = {
+        'clear-night': 'night-clear-sky',
+        'cloudy': 'scattered-clouds',
+        'fog': 'scattered-clouds',
+        'hail': 'rain',
+        'lightning': 'rain',
+        'lightning-rainy': 'rain',
+        'partlycloudy': 'new-clouds',
+        'pouring': 'rain',
+        'rainy': 'rain',
+        'snowy': 'snow',
+        'snowy-rainy': 'snow',
+        'sunny': 'clear-sky',
+        'windy': 'scattered-clouds',
+        'windy-variant': `scattered-clouds`,
+        'exceptional': 'snow',
       }
 
       // WAQI sensor-specific stuff
@@ -283,6 +350,8 @@ class AirVisualCard extends HTMLElement {
       }
 
       let currentCondition = '';
+      let humidity = '';
+      let windSpeed = '';
       let tempValue = '';
       let pollutantUnit = '';
       let apl = '';
@@ -341,53 +410,55 @@ class AirVisualCard extends HTMLElement {
       };
 
 
-      if (tempSensor.split('.')[0] == 'sensor') {
-        tempValue = hass.states[tempSensor].state + 'º';
-        if (weatherStatus !== '') { currentCondition = hass.states[weatherStatus].state };
-      } else if (tempSensor.split('.')[0] == 'weather') {
-        tempValue = hass.states[tempSensor].attributes['temperature'] + 'º';
-        currentCondition = hass.states[tempSensor].state;
-      }
+  
 
 
 
 
       let faceHTML = ``;
 
-      let card_content = `
-        <div class="grid-container" style="background-color: ${AQIbgColor[getAQI()]};">
-        `;
+      let card_content = `<div class="grid-container">`;
       if (!hideTitle) {
-        card_content += `
-        <div class="city">${city}</div>
-        <div class="temp"><ha-icon icon="${weatherIcons[currentCondition]}"></ha-icon>   ${tempValue}</div>
-        `;
+        card_content += `<div class="city">${city} Air Quality Index</div>`;
       }
 
+      if (weatherEntity.split('.')[0] == 'weather') {
+        tempValue = hass.states[weatherEntity].attributes['temperature'] + 'º';
+        currentCondition = hass.states[weatherEntity].state;
+        humidity = hass.states[weatherEntity].attributes['humidity'] + '%';
+        windSpeed = hass.states[weatherEntity].attributes['wind_speed'] + ' ' + speedUnit;
+      }
+      if (!hideWeather) {
+        card_content += `
+        <div class="temp" id="temp"><img src="${iconDirectory}/ic-w-${weatherSVG[currentCondition]}.svg"></img>${tempValue}</div>
+        <div class="humidity" id="humidity"><img src="${iconDirectory}/ic-humidity.svg"></img>${humidity}</div>
+        <div class="wind" id="wind"><img src="${iconDirectory}/ic-wind.svg"></img> ${windSpeed}</div>
+        `;
+      }
+      
+  
       if (!hideFace){
         card_content += `
-        <div class="face" id="face" style="background-color: ${AQIfaceColor[getAQI()]};">
+          <div class="face" id="face" style="background-color: ${AQIfaceColor[getAQI()]};">
             <img src="${iconDirectory}/ic-face-${getAQI()}.svg"></img>
           </div>
-        `;
+          `;
       }
 
       if (!hideAQI){
         card_content += `
           <div class="aqiSensor" id="aqiSensor" style="background-color: ${AQIbgColor[getAQI()]}; color: ${AQIfontColor[getAQI()]}">
-            <div style="font-size:3em;">${aqiSensor.value}</div>
-            ${country} ${unitOfMeasurement}
-          </div>
+            ${aqiSensor.value}</div>
+          <div class="country" style="background-color: ${AQIbgColor[getAQI()]}; color: ${AQIfontColor[getAQI()]}">${country} ${unitOfMeasurement}</div>
         `;
       }
       if (!hideAPL){        
         card_content += `
           <div class="aplSensor" id="aplSensor" style="background-color: ${AQIbgColor[getAQI()]}; color: ${AQIfontColor[getAQI()]}">
             ${apl}
-            <br>
-            <div class="mainPollutantSensor" id="mainPollutantSensor">
-              ${mainPollutant} | ${pollutantUnit}
-            </div>
+          </div>
+          <div class="mainPollutantSensor" id="mainPollutantSensor" style="background-color: ${AQIbgColor[getAQI()]}; color: ${AQIfontColor[getAQI()]}">
+                <div class="mainPollutantSensorText">${mainPollutant} | ${pollutantUnit}</div>    
           </div>     
         `;
       }

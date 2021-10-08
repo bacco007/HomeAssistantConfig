@@ -1,5 +1,6 @@
 
 from .ac import AirConditionerDevice
+from .airpurifier import AirPurifierDevice
 from .dishwasher import DishWasherDevice
 from .range import RangeDevice
 from .refrigerator import RefrigeratorDevice
@@ -30,6 +31,8 @@ def get_lge_device(client, device: DeviceInfo, temp_unit=UNIT_TEMP_CELSIUS):
 
     if device_type == DeviceType.AC:
         return AirConditionerDevice(client, device, temp_unit)
+    if device_type == DeviceType.AIR_PURIFIER:
+        return AirPurifierDevice(client, device)
     if device_type == DeviceType.DISHWASHER:
         return DishWasherDevice(client, device)
     if device_type == DeviceType.RANGE:

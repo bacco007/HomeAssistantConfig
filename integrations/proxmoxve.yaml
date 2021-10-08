@@ -1,23 +1,22 @@
 ---
 proxmoxve:
-  - host: !secret proxmox_host
-    port: !secret proxmox_port
+  - host: 192.168.1.60
+    port: 8006
     username: !secret proxmox_user
     password: !secret proxmox_password
     verify_ssl: false
     nodes:
-      - node: !secret proxmox_node1
+      - node: pveTBSH
         vms:
-          - !secret proxmox_node1_vms1
-          - !secret proxmox_node1_vms2
-          - !secret proxmox_node1_vms3
+          - 100
+          - 101
 
-  - host: !secret proxmox_host2
-    port: !secret proxmox_port
+  - host: 192.168.1.75
+    port: 8006
     username: !secret proxmox_user
     password: !secret proxmox_password
     verify_ssl: false
     nodes:
-      - node: !secret proxmox_node2
+      - node: pve-ha
         vms:
-          - !secret proxmox_node1_vms1
+          - 100

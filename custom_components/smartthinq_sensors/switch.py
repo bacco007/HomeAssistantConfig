@@ -51,7 +51,8 @@ WASH_DEV_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
         key=ATTR_POWER_OFF,
         name="Power off",
         value_fn=lambda x: x.is_power_on,
-        turn_off_fn=lambda x: x.device.power_off()
+        turn_off_fn=lambda x: x.device.power_off(),
+        available_fn=lambda x: x.is_power_on,
     ),
 )
 REFRIGERATOR_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
@@ -61,6 +62,7 @@ REFRIGERATOR_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
         icon="mdi:gauge-empty",
         turn_off_fn=lambda x: x.device.set_eco_friendly(False),
         turn_on_fn=lambda x: x.device.set_eco_friendly(True),
+        available_fn=lambda x: x.is_power_on,
     ),
     ThinQSwitchEntityDescription(
         key=FEAT_EXPRESSFRIDGE,
@@ -85,6 +87,15 @@ REFRIGERATOR_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
         turn_off_fn=lambda x: x.device.set_ice_plus(False),
         turn_on_fn=lambda x: x.device.set_ice_plus(True),
         available_fn=lambda x: x.device.set_values_allowed,
+    ),
+)
+AIR_PURIFIER_SWITCH: Tuple[ThinQSwitchEntityDescription, ...] = (
+    ThinQSwitchEntityDescription(
+        key="power",
+        name="Power",
+        value_fn=lambda x: x.is_power_on,
+        turn_on_fn=lambda x: x.device.power(True),
+        turn_off_fn=lambda x: x.device.power(False),
     ),
 )
 
@@ -133,6 +144,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             LGESwitch(lge_device, switch_desc)
             for switch_desc in REFRIGERATOR_SWITCH
             for lge_device in lge_devices.get(DeviceType.REFRIGERATOR, [])
+            if _switch_exist(lge_device, switch_desc)
+        ]
+    )
+
+    # add air purifiers
+    lge_switch.extend(
+        [
+            LGESwitch(lge_device, switch_desc)
+            for switch_desc in AIR_PURIFIER_SWITCH
+            for lge_device in lge_devices.get(DeviceType.AIR_PURIFIER, [])
             if _switch_exist(lge_device, switch_desc)
         ]
     )
@@ -197,7 +218,7 @@ class LGESwitch(CoordinatorEntity, SwitchEntity):
         is_avail = True
         if self.entity_description.available_fn is not None:
             is_avail = self.entity_description.available_fn(self._wrap_device)
-        return self._api.available and self._wrap_device.is_power_on and is_avail
+        return self._api.available and is_avail
 
     def turn_off(self, **kwargs):
         """Turn the entity off."""

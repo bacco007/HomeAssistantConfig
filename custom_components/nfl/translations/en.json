@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "name": "Friendly Name",
+          "team_id": "Team Acronym",
+          "interval": "Update Interval (in minutes)",
+          "timeout": "Update Timeout (in seconds)"
+        },
+        "description": "You can find your 2 or 3-letter acronym on the ESPN NFL page's banner, at the top score strip.",
+        "title": "NFL"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "name": "Friendly Name",
+          "team_id": "Team Acronym",
+          "interval": "Update Interval (in minutes)",
+          "timeout": "Update Timeout (in seconds)"
+        },
+        "description": "You can find your 2 or 3-letter acronym on the ESPN NFL page's banner, at the top score strip.",
+        "title": "NFL"
+      }
+    }
+  }
+}

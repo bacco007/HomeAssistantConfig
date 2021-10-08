@@ -48,10 +48,6 @@ export class AirVisualCardEditor extends LitElement {
     return this._config.main_pollutant || "sensor.u_s_main_pollutant";
   }
 
-  get _temp() {
-    return this._config.temp || "";
-  }
-
   get _country() {
     return this._config.country || "";
   }
@@ -65,9 +61,12 @@ export class AirVisualCardEditor extends LitElement {
   }
 
   get _weather() {
-    return this._config.weather || "";
+    return this._config.weather || "weather.home";
   }
 
+  get _speed_unit() {
+    return this._config.speed_unit || "mp/h";
+  }
   get _hide_title() {
     return this._config.hide_title !== false;
   }
@@ -75,7 +74,9 @@ export class AirVisualCardEditor extends LitElement {
   get _hide_face() {
     return this._config.hide_face !== true;
   }
-
+  get _hide_weather() {
+    return this._config.hide_weather !== false;
+  }
 
   // WHAT DOES THIS DO?
   firstUpdated() {
@@ -134,15 +135,6 @@ export class AirVisualCardEditor extends LitElement {
                 ></ha-entity-picker>
 
                 <ha-entity-picker
-                  label="Temperature Sensor (Optional)"
-                  .hass="${this.hass}"
-                  .value="${this._temp}"
-                  .configValue=${"temp"}
-                  @change="${this._valueChanged}"
-                  allow-custom-entity
-                ></ha-entity-picker>
-
-                <ha-entity-picker
                   label="Weather Entity (Optional)"
                   .hass="${this.hass}"
                   .value="${this._weather}"
@@ -166,6 +158,12 @@ export class AirVisualCardEditor extends LitElement {
           ></paper-input>
 
           <paper-input
+            label="Speed Unit (Optional)"
+            .value="${this._speed_unit}"
+            .configValue="${"speed_unit"}"
+            @value-changed="${this._valueChanged}"
+          ></paper-input>
+          <paper-input
             label="Icons location (Optional)"
             .value="${this._icons}"
             .configValue="${"icons"}"
@@ -181,6 +179,14 @@ export class AirVisualCardEditor extends LitElement {
               ></ha-switch
               ><span>Hide Title</span>
             </div>
+            <div class="switch">
+            <ha-switch
+              .checked=${this._hide_weather}
+              .configValue="${"hide_weather"}"
+              @change="${this._valueChanged}"
+            ></ha-switch
+            ><span>Hide Weather</span>
+          </div>
             <div class="switch">
               <ha-switch
                 .checked=${this._hide_face}

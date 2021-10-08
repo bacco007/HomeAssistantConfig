@@ -1419,25 +1419,6 @@
             }
         }
     },
-    "node-red-node-tail": {
-        "name": "node-red-node-tail",
-        "version": "0.3.1",
-        "local": false,
-        "user": false,
-        "nodes": {
-            "tail": {
-                "name": "tail",
-                "types": [
-                    "tail"
-                ],
-                "enabled": true,
-                "local": false,
-                "user": false,
-                "module": "node-red-node-tail",
-                "file": "/opt/node_modules/node-red-node-tail/28-tail.js"
-            }
-        }
-    },
     "node-red-node-twitter": {
         "name": "node-red-node-twitter",
         "version": "1.2.0",

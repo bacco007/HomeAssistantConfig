@@ -11,9 +11,9 @@
     "issue_tracker": "https://github.com/troykelly/homeassistant-au-nsw-covid/issues",
     "name": "NSW Covid",
     "requirements": [
-        "nswcovid==0.2.1"
+        "nswcovid==0.2.2"
     ],
     "ssdp": [],
-    "version": "v0.0.25",
+    "version": "v0.0.26",
     "zeroconf": []
 }

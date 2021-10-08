@@ -4,34 +4,30 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: "fuel"
+        icon: mdi:fuel
+
     sensor.fuelcheck_caltex_tamworth_orana_p98:
-      friendly_name: Caltex Vortex98 (WhiteSt)
-      icon: mdi:fuel
+      friendly_name: Ampol Amplify 98 (WhiteSt)
       <<: *customize
 
     sensor.fuelcheck_bp_tamworth_p98:
       friendly_name: BP Ultimate98 (Viaduct)
-      icon: mdi:fuel
       <<: *customize
 
     sensor.fuelcheck_bp_nemingha_p98:
       friendly_name: BP Ultimate98 (Nemingha)
-      icon: mdi:fuel
       <<: *customize
 
-    sensor.fuelcheck_bp_tamworth_p98_2:
-      friendly_name: BP Ultimate98 (GoonooGoonooRd)
-      icon: mdi:fuel
+    sensor.fuelcheck_caltex_tamworth_p98_2:
+      friendly_name: Ampol Amplify 98 (GoonooGoonooRd)
       <<: *customize
 
     sensor.fuelcheck_caltex_tamworth_p98:
-      friendly_name: Caltex Vortex98 (GunnedahRd)
-      icon: mdi:fuel
+      friendly_name: Ampol Amplify 98 (GunnedahRd)
       <<: *customize
 
     sensor.fuelcheck_caltex_woolworths_tamworth_p98:
-      friendly_name: Caltex Vortex98 (BridgeSt)
-      icon: mdi:fuel
+      friendly_name: Ampol Amplify 98 (BridgeSt)
       <<: *customize
 
 sensor:

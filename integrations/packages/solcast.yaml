@@ -19,13 +19,13 @@ template:
         unit_of_measurement: "kW"
         device_class: energy
         state: >
-          {{ value_json.forecasts[0].pv_estimate10|round(2) }}
+          {{ state_attr('sensor.solcast_forecast', 'forecasts')[0].pv_estimate10|round(2) }}
       - name: "Solcast Forecast 90"
         unique_id: solcast_forecast_90
         unit_of_measurement: "kW"
         device_class: energy
         state: >
-          {{ value_json.forecasts[0].pv_estimate90|round(2) }}
+          {{ state_attr('sensor.solcast_forecast', 'forecasts')[0].pv_estimate90|round(2) }}
       - name: "Solcast Forecast Energy Today"
         unique_id: solcast_forecast_energy_today
         unit_of_measurement: "kWh"

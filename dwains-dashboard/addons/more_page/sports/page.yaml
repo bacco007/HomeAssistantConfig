@@ -18,6 +18,8 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
   cards:
+    - type: 'custom:nfl-card'
+      entity: sensor.nfl
     - type: entities
       title: Scoreboard
       entities:
