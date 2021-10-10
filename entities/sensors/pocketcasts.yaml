@@ -1,5 +1,0 @@
----
-# https://www.home-assistant.io/integrations/pocketcasts/
-platform: pocketcasts
-username: !secret pocketcasts_username
-password: !secret pocketcasts_password

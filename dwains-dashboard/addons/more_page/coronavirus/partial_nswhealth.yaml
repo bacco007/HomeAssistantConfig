@@ -45,28 +45,6 @@ cards:
             attribute: hneh_percent_cases
             name: Cases/NSW
             units: " "
-      - entity: sensor.covid_19_nswh_local_tests
-        name: Hunter New England Health Tests
-        type: custom:multiple-entity-row
-        icon: mdi:biohazard
-        show_state: false
-        secondary_info:
-          attribute: hneh_dates
-        style: |
-          div.entity { text-align: right; }
-        entities:
-          - entity: sensor.covid_19_nswh_local_tests
-            attribute: hneh
-            name: Tests
-            units: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: hneh_percent_casestotests
-            name: Cases/Tests
-            unit: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: hneh_percent_tests
-            name: Tests/Pop
-            unit: " "
       - entity: sensor.covid_19_nswh_local
         name: Tamworth Regional Council Cases
         type: custom:multiple-entity-row
@@ -88,28 +66,6 @@ cards:
             attribute: trc_percent_cases
             name: Cases/NSW
             units: " "
-      - entity: sensor.covid_19_nswh_local_tests
-        name: Tamworth Regional Council Tests
-        type: custom:multiple-entity-row
-        icon: mdi:biohazard
-        show_state: false
-        secondary_info:
-          attribute: trc_dates
-        style: |
-          div.entity { text-align: right; }
-        entities:
-          - entity: sensor.covid_19_nswh_local_tests
-            attribute: trc
-            name: Tests
-            units: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: trc_percent_casestotests
-            name: Cases/Tests
-            unit: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: trc_percent_tests
-            name: Tests/Pop
-            unit: " "
       - entity: sensor.covid_19_nswh_local
         name: Tamworth (2340) Cases
         type: custom:multiple-entity-row
@@ -131,28 +87,6 @@ cards:
             attribute: tamw_percent_cases
             name: Cases/NSW
             units: " "
-      - entity: sensor.covid_19_nswh_local_tests
-        name: Tamworth (2340) Tests
-        type: custom:multiple-entity-row
-        icon: mdi:biohazard
-        show_state: false
-        secondary_info:
-          attribute: tamw_dates
-        style: |
-          div.entity { text-align: right; }
-        entities:
-          - entity: sensor.covid_19_nswh_local_tests
-            attribute: tamw
-            name: Tests
-            units: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: tamw_percent_casestotests
-            name: Cases/Tests
-            unit: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: tamw_percent_tests
-            name: Tests/Pop
-            unit: " "
       - entity: sensor.covid_19_nswh_local
         name: Western NSW Health Cases
         type: custom:multiple-entity-row
@@ -174,28 +108,6 @@ cards:
             attribute: wnsw_percent_cases
             name: Cases/NSW
             units: " "
-      - entity: sensor.covid_19_nswh_local_tests
-        name: Western NSW Health Tests
-        type: custom:multiple-entity-row
-        icon: mdi:biohazard
-        show_state: false
-        secondary_info:
-          attribute: wnsw_dates
-        style: |
-          div.entity { text-align: right; }
-        entities:
-          - entity: sensor.covid_19_nswh_local_tests
-            attribute: wnsw
-            name: Tests
-            units: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: wnsw_percent_casestotests
-            name: Cases/Tests
-            unit: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: wnsw_percent_tests
-            name: Tests/Pop
-            unit: " "
       - entity: sensor.covid_19_nswh_local
         name: Dubbo Regional Council Cases
         type: custom:multiple-entity-row
@@ -217,28 +129,6 @@ cards:
             attribute: drc_percent_cases
             name: Cases/NSW
             units: " "
-      - entity: sensor.covid_19_nswh_local_tests
-        name: Dubbo Regional Council Tests
-        type: custom:multiple-entity-row
-        icon: mdi:biohazard
-        show_state: false
-        secondary_info:
-          attribute: drc_dates
-        style: |
-          div.entity { text-align: right; }
-        entities:
-          - entity: sensor.covid_19_nswh_local_tests
-            attribute: drc
-            name: Tests
-            units: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: drc_percent_casestotests
-            name: Cases/Tests
-            unit: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: drc_percent_tests
-            name: Tests/Pop
-            unit: " "
       - entity: sensor.covid_19_nswh_local
         name: Dubbo (2830) Cases
         type: custom:multiple-entity-row
@@ -260,25 +150,3 @@ cards:
             attribute: dubo_percent_cases
             name: Cases/NSW
             units: " "
-      - entity: sensor.covid_19_nswh_local_tests
-        name: Dubbo (2830) Tests
-        type: custom:multiple-entity-row
-        icon: mdi:biohazard
-        show_state: false
-        secondary_info:
-          attribute: dubo_dates
-        style: |
-          div.entity { text-align: right; }
-        entities:
-          - entity: sensor.covid_19_nswh_local_tests
-            attribute: dubo
-            name: Tests
-            units: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: dubo_percent_casestotests
-            name: Cases/Tests
-            unit: " "
-          - entity: sensor.covid_19_nswh_local_pct
-            attribute: dubo_percent_tests
-            name: Tests/Pop
-            unit: " "

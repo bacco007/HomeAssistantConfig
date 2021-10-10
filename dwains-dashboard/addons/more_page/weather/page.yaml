@@ -21,3 +21,4 @@
         - !include graph_temp.yaml
         - !include graph_rain.yaml
         - !include graph_forecast.yaml
+        - !include graph_forecast3hr.yaml

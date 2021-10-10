@@ -49,6 +49,6 @@ sensors:
       {%- set factors.sun = 1 if factors.sun > 1 else factors.sun %}
 
       {# Take an educated guess #}
-      {%- set illuminance = (factors.sun|float * factors.condition|float) | round %}
+      {%- set illuminance = (factors.sun|float(default=0) * factors.condition|float(default=0)) | round %}
       {%- set illuminance = 10 if illuminance < 10 else illuminance %}
       {{ illuminance }}

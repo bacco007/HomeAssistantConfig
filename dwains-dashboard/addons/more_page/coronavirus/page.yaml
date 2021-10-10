@@ -170,27 +170,6 @@
             icon:
               - width: 20%
               - margin-top: 1%
-        - type: "custom:button-card"
-          style: |
-            ha-card {
-              border-radius: 4px;
-              box-shadow: 10px;
-              background-position: center;
-          entity: sensor.covid_19_nswh_local_tests
-          icon: custom:corona-virus
-          name: Tamworth Tests
-          show_state: true
-          show_name: true
-          show_label: true
-          show_icon: true
-          styles:
-            card:
-              - background-size: contain
-              - background-repeat: no-repeat
-              - background-position: center
-            icon:
-              - width: 20%
-              - margin-top: 1%
 
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"

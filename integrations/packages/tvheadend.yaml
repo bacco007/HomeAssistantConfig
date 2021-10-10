@@ -3,14 +3,6 @@
 # http://192.168.1.20:9981/api/channel/list
 
 sensor:
-  # - platform: tvh_rec
-  #   name: TVHeadend Recordings
-  #   username: !secret tvheadend_username
-  #   password: !secret tvheadend_password
-  #   url: !secret tvheadend_local_url
-  #   scan_interval: 600
-  #   count: 15
-
   - platform: rest
     name: TVHeadend Version
     json_attributes:

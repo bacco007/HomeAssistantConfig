@@ -27,29 +27,29 @@ sensor:
           {{ state_attr('sensor.today_temp_bom', 'min_value') }}
       beaufort:
         value_template: >
-          {%- if states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 118 -%}
+          {%- if states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 118 -%}
           12
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 103 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 103 -%}
           11
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 89 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 89 -%}
           10
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 75 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 75 -%}
           9
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 62 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 62 -%}
           8
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 50 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 50 -%}
           7
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 39 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 39 -%}
           6
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 29 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 29 -%}
           5
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 20 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 20 -%}
           4
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 12 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 12 -%}
           3
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 6 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 6 -%}
           2
-          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float  >= 2 -%}
+          {%- elif states('sensor.tamworth_airport_wind_speed_kilometre') | float(default=0)  >= 2 -%}
           1
           {%- else -%}
           0
@@ -58,9 +58,9 @@ sensor:
         unit_of_measurement: °C
         device_class: temperature
         value_template: >
-          {%- if states('sensor.tamworth_airport_temp') | float > 27 and states('sensor.tamworth_airport_humidity') | float > 40 -%}
-          {% set T = states('sensor.tamworth_airport_temp') | float %}
-          {% set R = states('sensor.tamworth_airport_humidity') | float %}
+          {%- if states('sensor.tamworth_airport_temp') | float(default=0) > 27 and states('sensor.tamworth_airport_humidity') | float(default=0) > 40 -%}
+          {% set T = states('sensor.tamworth_airport_temp') | float(default=0) %}
+          {% set R = states('sensor.tamworth_airport_humidity') | float(default=0) %}
           {% set c1 = -8.78469475556 %}
           {% set c2 = 1.61139411 %}
           {% set c3 = 2.33854883889 %}
@@ -79,66 +79,14 @@ sensor:
         value_template: >
           {%- if states('sensor.heatindex') == 'n/a' -%}
           Out of range
-          {%- elif states('sensor.heatindex') | float  >= 54 -%}
+          {%- elif states('sensor.heatindex') | float(default=0)  >= 54 -%}
           Extreme danger: heat stroke imminent
-          {%- elif states('sensor.heatindex') | float  >= 41 -%}
+          {%- elif states('sensor.heatindex') | float(default=0)  >= 41 -%}
           Danger: cramps, exhaustion heat stroke probable
-          {%- elif states('sensor.heatindex') | float  >= 32 -%}
+          {%- elif states('sensor.heatindex') | float(default=0)  >= 32 -%}
           Extreme caution: cramps and exhaustion possible
-          {%- elif states('sensor.heatindex') | float  >= 26 -%}
+          {%- elif states('sensor.heatindex') | float(default=0)  >= 26 -%}
           Caution: fatigue possible
           {%- else -%}
           Normal
           {%- endif -%}
-      # bom_forecast_0:
-      #   friendly_name: "Today"
-      #   value_template: >
-      #     {% if states('sensor.east_tamworth_min_0') == 'unknown' %} {% set min = states('sensor.bom_today_min') %} {% else %} {% set min = states('sensor.east_tamworth_min_0') %} {% endif %}
-      #     {% if states('sensor.east_tamworth_max_0') == 'unknown' %} {% set max = states('sensor.bom_today_max') %} {% else %} {% set max = states('sensor.east_tamworth_max_0') %} {% endif %}
-      #     {{ max|round(0)}}°/{{ min|round(0)}}°/{{states('sensor.east_tamworth_rain_chance_0')|round(0)}}%
-      #   entity_picture_template: >-
-      #     {%- if states('sun.sun') == 'below_horizon' and (states('sensor.east_tamworth_icon_0') == 'fog' or states('sensor.east_tamworth_icon_0') == 'haze' or states('sensor.east_tamworth_icon_0') == 'light-showers' or states('sensor.east_tamworth_icon_0') == 'partly-cloudy' or states('sensor.east_tamworth_icon_0') == 'showers' or states('sensor.east_tamworth_icon_0') == 'shower' or states('sensor.east_tamworth_icon_0') == 'light_showers' or states('sensor.east_tamworth_icon_0') == 'partly_cloudy') -%}
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_0') ~ '-night.png' }}
-      #     {%- else -%}
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_0') ~ '.png' }}
-      #     {%- endif -%}
-      # bom_forecast_1:
-      #   friendly_name_template: >
-      #     {%- set date = as_timestamp(now()) + (1 * 86400 ) -%}
-      #     {{ date | timestamp_custom('Tomorrow (%-d/%-m)') }}
-      #   value_template: >
-      #     {{states('sensor.east_tamworth_max_1')|round(0)}}°/{{states('sensor.east_tamworth_min_1')|round(0)}}°/{{states('sensor.east_tamworth_rain_chance_1')|round(0)}}%
-      #   entity_picture_template: >-
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_1') ~ '.png' }}
-      # bom_forecast_2:
-      #   friendly_name_template: >
-      #     {%- set date = as_timestamp(now()) + (2 * 86400 ) -%}
-      #     {{ date | timestamp_custom('%A (%-d/%-m)') }}
-      #   value_template: >
-      #     {{states('sensor.east_tamworth_max_2')|round(0)}}°/{{states('sensor.east_tamworth_min_2')|round(0)}}°/{{states('sensor.east_tamworth_rain_chance_2')|round(0)}}%
-      #   entity_picture_template: >-
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_2') ~ '.png' }}
-      # bom_forecast_3:
-      #   friendly_name_template: >
-      #     {%- set date = as_timestamp(now()) + (3 * 86400 ) -%}
-      #     {{ date | timestamp_custom('%A (%-d/%-m)') }}
-      #   value_template: >
-      #     {{states('sensor.east_tamworth_max_3')|round(0)}}°/{{states('sensor.east_tamworth_min_3')|round(0)}}°/{{states('sensor.east_tamworth_rain_chance_3')|round(0)}}%
-      #   entity_picture_template: >-
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_3') ~ '.png' }}
-      # bom_forecast_4:
-      #   friendly_name_template: >
-      #     {%- set date = as_timestamp(now()) + (4 * 86400 ) -%}
-      #     {{ date | timestamp_custom('%A (%-d/%-m)') }}
-      #   value_template: >
-      #     {{states('sensor.east_tamworth_max_4')|round(0)}}°/{{states('sensor.east_tamworth_min_4')|round(0)}}°/{{states('sensor.east_tamworth_rain_chance_4')|round(0)}}%
-      #   entity_picture_template: >-
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_4') ~ '.png' }}
-      # bom_forecast_5:
-      #   friendly_name_template: >
-      #     {%- set date = as_timestamp(now()) + (5 * 86400 ) -%}
-      #     {{ date | timestamp_custom('%A (%-d/%-m)') }}
-      #   value_template: >
-      #     {{states('sensor.east_tamworth_max_5')|round(0)}}°/{{states('sensor.east_tamworth_min_5')|round(0)}}°/{{states('sensor.east_tamworth_rain_chance_5')|round(0)}}%
-      #   entity_picture_template: >-
-      #     {{ '/local/icons/bom_icons/' ~ states('sensor.east_tamworth_icon_5') ~ '.png' }}

@@ -7,7 +7,7 @@ sensor:
     resource: !secret solcast_url
     method: GET
     value_template: "{{ value_json.forecasts[0].pv_estimate|round(2) }}"
-    unit_of_measurement: "kW"
+    unit_of_measurement: "kWh"
     device_class: power
     scan_interval: 3600
     force_update: true
@@ -17,13 +17,13 @@ template:
       - name: "Solcast Forecast 10"
         unique_id: solcast_forecast_10
         unit_of_measurement: "kW"
-        device_class: energy
+        device_class: power
         state: >
           {{ state_attr('sensor.solcast_forecast', 'forecasts')[0].pv_estimate10|round(2) }}
       - name: "Solcast Forecast 90"
         unique_id: solcast_forecast_90
         unit_of_measurement: "kW"
-        device_class: energy
+        device_class: power
         state: >
           {{ state_attr('sensor.solcast_forecast', 'forecasts')[0].pv_estimate90|round(2) }}
       - name: "Solcast Forecast Energy Today"

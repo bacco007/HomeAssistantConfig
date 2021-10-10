@@ -6,14 +6,14 @@ sensor:
   - name: unifi_gateway_wan_uptimeavail
     unique_id: unifi_gateway_wan_uptimeavail
     state: >
-      {{ state_attr('sensor.unifi_gateway_wan', 'uptime_stats')["WAN"]["availability"] | float | round(3) }}
+      {{ state_attr('sensor.unifi_gateway_wan', 'uptime_stats')["WAN"]["availability"] | float(default=0) | round(3) }}
     unit_of_measurement: "%"
     icon: mdi:progress-wrench
 
   - name: weather_outside_temperature_5mint
     unique_id: weather_outside_temperature_5mint
     state: >
-      {{ states('sensor.weather_outside_temperature') | float }}
+      {{ states('sensor.weather_outside_temperature') | float(default=0) }}
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     attributes:
@@ -22,7 +22,7 @@ sensor:
   - name: weather_inside_temperature_5mint
     unique_id: weather_inside_temperature_5mint
     state: >
-      {{ states('sensor.weather_inside_temperature') | float }}
+      {{ states('sensor.weather_inside_temperature') | float(default=0) }}
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     attributes:
@@ -31,7 +31,7 @@ sensor:
   - name: weather_outside_humidity_5mint
     unique_id: weather_outside_humidity_5mint
     state: >
-      {{ states('sensor.weather_outside_humidity') | float }}
+      {{ states('sensor.weather_outside_humidity') | float(default=0) }}
     icon: mdi:thermometer
     unit_of_measurement: "%"
     attributes:
@@ -40,7 +40,7 @@ sensor:
   - name: weather_outside_pressure_5mint
     unique_id: weather_outside_pressure_5mint
     state: >
-      {{ states('sensor.weather_outside_pressure') | float }}
+      {{ states('sensor.weather_outside_pressure') | float(default=0) }}
     icon: mdi:thermometer
     unit_of_measurement: "mBar"
     attributes:

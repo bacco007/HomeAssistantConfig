@@ -25,12 +25,12 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - entity: sensor.snapshot_backup
-      - entity: binary_sensor.snapshots_stale
+      - entity: sensor.backup_state
+      - entity: binary_sensor.backups_stale
   - type: markdown
     card_mod: !include ../../1_Templates/style_markdowntable.yaml
     content: |
       |Snapshot Name|Date|State|Size|
       |---|---|---|---|
-      {% for addon in state_attr('sensor.snapshot_backup', 'snapshots') %}|{{ addon.name }}|{{ as_timestamp(addon.date) | timestamp_custom('%a %b %d') }}|{{ addon.state }}|{{addon.size}}|
+      {% for addon in state_attr('sensor.backup_state', 'backups') %}|{{ addon.name }}|{{ as_timestamp(addon.date) | timestamp_custom('%a %b %d') }}|{{ addon.state }}|{{addon.size}}|
       {% endfor %}

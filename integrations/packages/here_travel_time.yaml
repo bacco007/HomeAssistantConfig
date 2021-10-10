@@ -32,7 +32,7 @@ sensor:
     api_key: !secret here_apikey
     origin_entity_id: device_tracker.tbiphone11_haapp
     destination_entity_id: zone.home
-    scan_interval: 30
+    scan_interval: 120
     mode: car
 
   - platform: here_travel_time
@@ -41,7 +41,7 @@ sensor:
     api_key: !secret here_apikey
     origin_entity_id: device_tracker.tbiphone11_haapp
     destination_entity_id: zone.trc
-    scan_interval: 30
+    scan_interval: 120
     mode: car
 
   - platform: template

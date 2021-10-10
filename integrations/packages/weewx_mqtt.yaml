@@ -22,7 +22,7 @@ sensor:
       {% else %}
         {{ states('sensor.weather_outside_pressure') }}
       {% endif %}
-    unit_of_measurement: "mBar"
+    unit_of_measurement: "mbar"
     state_class: measurement
 
   - platform: mqtt
@@ -68,6 +68,7 @@ sensor:
         {{ states('sensor.weather_outside_temperature') }}
       {% endif %}
     unit_of_measurement: "°C"
+    state_class: measurement
 
   - platform: mqtt
     name: weather_inside_temperature
@@ -180,7 +181,7 @@ sensor:
       {% else %}
         {{ states('sensor.weather_outside_altimeter') }}
       {% endif %}
-    unit_of_measurement: "mBar"
+    unit_of_measurement: "mbar"
     state_class: measurement
 
   - platform: mqtt
@@ -210,7 +211,7 @@ sensor:
       {% else %}
         {{ states('sensor.weather_outside_barometer') }}
       {% endif %}
-    unit_of_measurement: "mBar"
+    unit_of_measurement: "mbar"
     state_class: measurement
 
   - platform: mqtt

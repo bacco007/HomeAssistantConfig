@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, October 8th 2021_
+_Stats as at 05:00, Sunday, October 10th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.10.0 | 352     | 2136         | 1600 | 85 |
+| 2021.10.2 | 351     | 2140         | 1603 | 85 |
 
 Type | Qty
 -- | --
@@ -82,19 +82,19 @@ Alert | 0
 Automation | 85
 Binary Sensor | 173
 Camera | 4
-Device Tracker | 61
+Device Tracker | 64
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 29
+Media Player | 30
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1600
+Sensor | 1603
 Sun | 1
-Switch | 89
+Switch | 90
 Weather | 7
 Zone | 10
 
@@ -324,7 +324,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.coronavirus](https://www.home-assistant.io/components/sensor.coronavirus) |
 | [sensor.covid19_covidlive](https://www.home-assistant.io/components/sensor.covid19_covidlive) |
 | [sensor.covid19_nswhealth](https://www.home-assistant.io/components/sensor.covid19_nswhealth) |
-| [sensor.covid19_nswhealth_tests](https://www.home-assistant.io/components/sensor.covid19_nswhealth_tests) |
 | [sensor.covid19_vaccinelga](https://www.home-assistant.io/components/sensor.covid19_vaccinelga) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
@@ -470,8 +469,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>Expand Custom Components List</summary>
 
-- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
+- [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
@@ -480,7 +479,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Browser mod](https://github.com/thomasloven/hass-browser_mod/blob/master/README.md)
 - [Bureau of Meteorology](https://github.com/bremor/bureau_of_meteorology)
 - [COVID-19 NSW Health]()
-- [COVID-19 NSW Health Tests]()
 - [covid19_covidlive]()
 - [covid19_vaccinelga]()
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
