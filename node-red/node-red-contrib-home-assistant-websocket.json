@@ -8,13 +8,13 @@
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 107,
+        "state": 106,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 3,
+        "state": 2,
         "attributes": {}
       }
     },
@@ -230,7 +230,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 107.764,
+        "state": 120.869,
         "attributes": {}
       }
     },
@@ -362,14 +362,14 @@
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "38d 16hr 59min",
+          "uptime": "38d 17hr 0min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "1070.7",
+        "state": "1070.8",
         "attributes": {
           "units": "TB"
         }
@@ -459,7 +459,7 @@
           "type": "usw",
           "controller": "https://192.168.1.1",
           "uptime": "48d 18hr 15min",
-          "rx_data": "595.3 MB",
+          "rx_data": "595.4 MB",
           "tx_data": "1.9 GB",
           "lastseen": "a few seconds ago"
         }
@@ -480,7 +480,7 @@
           "users": 39,
           "controller": "https://192.168.1.1",
           "guests": 0,
-          "uptime": "38d 16hr 59min",
+          "uptime": "38d 17hr 0min",
           "lastseen": "a few seconds ago",
           "tx_data": "1.1 TB",
           "rx_data": "132.0 GB"
@@ -504,7 +504,7 @@
       "lastPayload": {
         "state": 455,
         "attributes": {
-          "uptime": "0d 6hr 24min",
+          "uptime": "0d 6hr 25min",
           "drops": 455
         }
       }
@@ -517,13 +517,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "30.77",
+        "state": "30.70",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "45.05",
+        "state": "45.53",
         "attributes": {}
       }
     },
@@ -847,7 +847,7 @@
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
-          "uptime": "38d 16hr 59min",
+          "uptime": "38d 17hr 0min",
           "rx_data": "422.3 GB",
           "tx_data": "2.1 TB",
           "lastseen": "a few seconds ago"
