@@ -1,6 +1,6 @@
 {
     "domain": "nfl",
-    "name": "NFL Scores",
+    "name": "NFL",
     "version": "0.1",
     "documentation": "https://github.com/zacs/ha_nfl",
     "issue_tracker": "https://github.com/zacs/ha_nfl/issues",

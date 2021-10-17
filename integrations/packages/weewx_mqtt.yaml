@@ -18,7 +18,7 @@ sensor:
     device_class: pressure
     value_template: >-
       {% if value_json.pressure_mbar is defined %}
-        {{ value_json.pressure_mbar | round(2) | float }}
+        {{ value_json.pressure_mbar | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_pressure') }}
       {% endif %}
@@ -33,7 +33,7 @@ sensor:
     device_class: humidity
     value_template: >-
       {% if value_json.outHumidity is defined %}
-        {{ value_json.outHumidity | round(1) | float }}
+        {{ value_json.outHumidity | round(1) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_relativehumidity') }}
       {% endif %}
@@ -48,7 +48,7 @@ sensor:
     device_class: humidity
     value_template: >-
       {% if value_json.inHumidity is defined %}
-        {{ value_json.inHumidity | round(1) | float }}
+        {{ value_json.inHumidity | round(1) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_inside_relativehumidity') }}
       {% endif %}
@@ -63,7 +63,7 @@ sensor:
     device_class: temperature
     value_template: >-
       {% if value_json.outTemp_C is defined %}
-        {{ value_json.outTemp_C | round(2) | float }}
+        {{ value_json.outTemp_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_temperature') }}
       {% endif %}
@@ -77,7 +77,7 @@ sensor:
     device_class: temperature
     value_template: >-
       {% if value_json.inTemp_C is defined %}
-        {{ value_json.inTemp_C | round(2) | float }}
+        {{ value_json.inTemp_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_inside_temperature') }}
       {% endif %}
@@ -91,7 +91,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.windSpeed_kph is defined %}
-        {{ value_json.windSpeed_kph | round(2) | float }}
+        {{ value_json.windSpeed_kph | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_windspeed') }}
       {% endif %}
@@ -105,7 +105,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.windGust_kph is defined %}
-        {{ value_json.windGust_kph | round(2) | float }}
+        {{ value_json.windGust_kph | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_windgust') }}
       {% endif %}
@@ -118,7 +118,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.radiation_Wpm2 is defined %}
-        {{ value_json.radiation_Wpm2 | round(2) | float }}
+        {{ value_json.radiation_Wpm2 | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_radiation') }}
       {% endif %}
@@ -132,7 +132,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.rain_cm is defined %}
-        {% set temp = value_json.rain_cm | float * 10 %}
+        {% set temp = value_json.rain_cm | float(default=0)  * 10 %}
         {{ temp | round(2) }}
       {% else %}
         {{ states('sensor.weather_outside_rain') }}
@@ -147,7 +147,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.rainRate_cm_per_hour is defined %}
-        {% set temp = value_json.rainRate_cm_per_hour | float * 10 %}
+        {% set temp = value_json.rainRate_cm_per_hour | float(default=0)  * 10 %}
         {{ temp | round(2) }}
       {% else %}
         {{ states('sensor.weather_outside_rainrate') }}
@@ -162,7 +162,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.UV is defined %}
-        {{ value_json.UV | round(2) | float }}
+        {{ value_json.UV | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_uvindex') }}
       {% endif %}
@@ -177,7 +177,7 @@ sensor:
     device_class: pressure
     value_template: >-
       {% if value_json.altimeter_mbar is defined %}
-        {{ value_json.altimeter_mbar | round(2) | float }}
+        {{ value_json.altimeter_mbar | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_altimeter') }}
       {% endif %}
@@ -192,7 +192,7 @@ sensor:
     device_class: temperature
     value_template: >-
       {% if value_json.appTemp_C is defined %}
-        {{ value_json.appTemp_C | round(2) | float }}
+        {{ value_json.appTemp_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_apptemperature') }}
       {% endif %}
@@ -207,7 +207,7 @@ sensor:
     device_class: pressure
     value_template: >-
       {% if value_json.barometer_mbar is defined %}
-        {{ value_json.barometer_mbar | round(2) | float }}
+        {{ value_json.barometer_mbar | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_barometer') }}
       {% endif %}
@@ -221,7 +221,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.beaufort_count is defined %}
-        {{ value_json.beaufort_count | float }}
+        {{ value_json.beaufort_count | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_beaufort') }}
       {% endif %}
@@ -235,7 +235,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.barometer_cloudbase_meter is defined %}
-        {{ value_json.barometer_cloudbase_meter | round(2) | float }}
+        {{ value_json.barometer_cloudbase_meter | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_cloudbase') }}
       {% endif %}
@@ -249,7 +249,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.dewpoint_C is defined %}
-        {{ value_json.dewpoint_C | round(2) | float }}
+        {{ value_json.dewpoint_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_dewpoint') }}
       {% endif %}
@@ -263,7 +263,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.heatindex_C is defined %}
-        {{ value_json.heatindex_C | round(2) | float }}
+        {{ value_json.heatindex_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_heatindex') }}
       {% endif %}
@@ -277,7 +277,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.humidex_C is defined %}
-        {{ value_json.humidex_C | round(2) | float }}
+        {{ value_json.humidex_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_humidex') }}
       {% endif %}
@@ -291,7 +291,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.inDewpoint_C is defined %}
-        {{ value_json.inDewpoint_C | round(2) | float }}
+        {{ value_json.inDewpoint_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_inside_dewpoint') }}
       {% endif %}
@@ -304,7 +304,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.windchill_C is defined %}
-        {{ value_json.windchill_C | round(2) | float }}
+        {{ value_json.windchill_C | round(2) | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_windchill') }}
       {% endif %}
@@ -318,7 +318,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.hourRain_cm is defined %}
-        {% set temp = value_json.hourRain_cm | float * 10 %}
+        {% set temp = value_json.hourRain_cm | float(default=0)  * 10 %}
         {{ temp | round(2) }}
       {% else %}
         {{ states('sensor.weather_outside_rain_hour') }}
@@ -333,7 +333,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.rain24_cm is defined %}
-        {% set temp = value_json.rain24_cm | float * 10 %}
+        {% set temp = value_json.rain24_cm | float(default=0)  * 10 %}
         {{ temp | round(2) }}
       {% else %}
         {{ states('sensor.weather_outside_rain_24hr') }}
@@ -348,7 +348,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.dayRain_cm is defined %}
-        {% set temp = value_json.dayRain_cm | float * 10 %}
+        {% set temp = value_json.dayRain_cm | float(default=0)  * 10 %}
         {{ temp | round(2) }}
       {% else %}
         {{ states('sensor.weather_outside_rain_day') }}
@@ -363,7 +363,7 @@ sensor:
     state_topic: "weather/loop"
     value_template: >-
       {% if value_json.windDir is defined %}
-        {{ value_json.windDir | float }}
+        {{ value_json.windDir | float(default=0)  }}
       {% else %}
         {{ states('sensor.weather_outside_winddirection') }}
       {% endif %}
@@ -419,8 +419,8 @@ weather:
   - platform: template
     name: home
     condition_template: "{{ states('weather.east_tamworth') }}"
-    temperature_template: "{{ states('sensor.weather_outside_temperature_5mint') | float }}"
-    humidity_template: "{{ states('sensor.weather_outside_humidity_5mint') | float }}"
-    wind_speed_template: "{{ states('sensor.weather_outside_windspeed_filtered') | float }}"
-    wind_bearing_template: "{{ states('sensor.weather_outside_winddirection_filtered') | float }}"
-    pressure_template: "{{ states('sensor.weather_outside_pressure_5mint') | float }}"
+    temperature_template: "{{ states('sensor.weather_outside_temperature_5mint') | float(default=0)  }}"
+    humidity_template: "{{ states('sensor.weather_outside_humidity_5mint') | float(default=0)  }}"
+    wind_speed_template: "{{ states('sensor.weather_outside_windspeed_filtered') | float(default=0)  }}"
+    wind_bearing_template: "{{ states('sensor.weather_outside_winddirection_filtered') | float(default=0)  }}"
+    pressure_template: "{{ states('sensor.weather_outside_pressure_5mint') | float(default=0)  }}"

@@ -13,12 +13,10 @@ from . import AlertsDataUpdateCoordinator
 
 from .const import (
     ATTRIBUTION,
-    CONF_INTERVAL,
     CONF_TIMEOUT,
     CONF_TEAM_ID,
     COORDINATOR,
     DEFAULT_ICON,
-    DEFAULT_INTERVAL,
     DEFAULT_NAME,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -30,7 +28,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_TEAM_ID): cv.string,
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_INTERVAL, default=DEFAULT_INTERVAL): int,
         vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): int,
     }
 )
@@ -40,10 +37,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     """Configuration from yaml"""
     if DOMAIN not in hass.data.keys():
         hass.data.setdefault(DOMAIN, {})
-        config.entry_id = uuid.uuid4().hex
+        config.entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
         config.data = config
     else:
-        config.entry_id = uuid.uuid4().hex
+        config.entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
         config.data = config
 
     # Setup the data coordinator
@@ -51,7 +48,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         hass,
         config,
         config[CONF_TIMEOUT],
-        config[CONF_INTERVAL],
     )
 
     # Fetch initial data so we have data when entities subscribe

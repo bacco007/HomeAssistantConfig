@@ -6,7 +6,7 @@
                 "data": {
                     "apikey": "Solcast API Key",
                     "rooftop": "Solcast rooftop resource id",
-                    "pollapi": "Hours (intervals between polling the solcast api)",
+                    "pollapi_interval": "Hours (intervals between polling the solcast api)",
                     "name": "Name"
                 },
                 "description": "Fill in the data of your solar panels."
@@ -19,7 +19,7 @@
                 "data": {
                     "apikey": "Solcast API Key",
                     "rooftop": "Solcast rooftop resource id",
-                    "pollapi": "Hours (intervals between polling the solcast api)",
+                    "pollapi_interval": "Hours (intervals between polling the solcast api)",
                     "name": "Name"
                 },
                 "description": "These values allow tweaking the Solcast Integration."

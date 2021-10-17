@@ -19399,7 +19399,7 @@ const isScrolledIntoView = (elem) => {
 };
 
 class PlayController {
-    constructor(card, hass, plex, entity, runBefore, runAfter, libraryName) {
+    constructor(card, hass, plex, entity, runBefore, runAfter, libraryName, entityRegistry) {
         this.playButtons = [];
         this.readyPlayersForType = {};
         this.entityStates = {};
@@ -19409,6 +19409,7 @@ class PlayController {
         this.supported = supported;
         this.playActionButton = document.createElement('button');
         this.playActionClickFunction = false;
+        this.entityRegistry = [];
         this.getKodiSearchResults = async () => {
             return JSON.parse((await getState(this.hass, 'sensor.kodi_media_sensor_search')).attributes.data);
         };
@@ -19879,6 +19880,55 @@ class PlayController {
                 await sleep(1000);
             }
         };
+        this.exportEntity = (entityID, key) => {
+            const entities = [];
+            if (lodash.isEqual(key, 'inputSelect') || lodash.isEqual(key, 'inputText')) {
+                // special processing for templates
+                if (lodash.isArray(entityID)) {
+                    for (let i = 0; i < entityID.length; i += 1) {
+                        const realEntityID = lodash.get(this.entityStates[entityID[i]], 'state');
+                        let realEntityKey = 'plexPlayer';
+                        lodash.forEach(this.entityRegistry, entityInRegister => {
+                            if (lodash.isEqual(entityInRegister.entity_id, realEntityID)) {
+                                realEntityKey = entityInRegister.platform;
+                            }
+                        });
+                        entities.push({
+                            value: realEntityID,
+                            key: realEntityKey
+                        });
+                    }
+                }
+                else {
+                    const realEntityID = lodash.get(this.entityStates[entityID], 'state');
+                    let realEntityKey = 'plexPlayer';
+                    lodash.forEach(this.entityRegistry, entityInRegister => {
+                        if (lodash.isEqual(entityInRegister.entity_id, realEntityID)) {
+                            realEntityKey = entityInRegister.platform;
+                        }
+                    });
+                    entities.push({
+                        value: realEntityID,
+                        key: realEntityKey
+                    });
+                }
+            }
+            else if (lodash.isArray(entityID)) {
+                lodash.forEach(entityID, entity => {
+                    entities.push({
+                        value: entity,
+                        key
+                    });
+                });
+            }
+            else {
+                entities.push({
+                    value: entityID,
+                    key
+                });
+            }
+            return entities;
+        };
         this.getPlayService = (data, forceRefresh = false) => {
             if (!lodash.isNil(this.readyPlayersForType[data.type]) && forceRefresh === false) {
                 return this.readyPlayersForType[data.type];
@@ -19886,29 +19936,19 @@ class PlayController {
             let service = {};
             lodash.forEach(this.entity, (value, key) => {
                 if (lodash.isEmpty(service)) {
-                    const entityVal = value;
-                    if (lodash.isArray(entityVal)) {
-                        lodash.forEach(entityVal, entity => {
-                            if (lodash.includes(this.supported[key], data.type)) {
-                                if ((key === 'kodi' && this.isKodiSupported(entity)) ||
-                                    (key === 'androidtv' && this.isAndroidTVSupported(entity)) ||
-                                    (key === 'plexPlayer' && this.isPlexPlayerSupported(entity)) ||
-                                    (key === 'cast' && this.isCastSupported(entity))) {
-                                    service = { key, value: entity };
-                                    return false;
-                                }
+                    const entities = this.exportEntity(value, key);
+                    lodash.forEach(entities, entity => {
+                        if (lodash.includes(this.supported[entity.key], data.type)) {
+                            // todo: load info in this.entityStates otherwise this will never work for input selects and templates
+                            if ((entity.key === 'kodi' && this.isKodiSupported(entity.value)) ||
+                                (entity.key === 'androidtv' && this.isAndroidTVSupported(entity.value)) ||
+                                (entity.key === 'plexPlayer' && this.isPlexPlayerSupported(entity.value)) ||
+                                (entity.key === 'cast' && this.isCastSupported(entity.value))) {
+                                service = { key: entity.key, value: entity.value };
+                                return false;
                             }
-                        });
-                    }
-                    else if (lodash.includes(this.supported[key], data.type)) {
-                        if ((key === 'kodi' && this.isKodiSupported(entityVal)) ||
-                            (key === 'androidtv' && this.isAndroidTVSupported(entityVal)) ||
-                            (key === 'plexPlayer' && this.isPlexPlayerSupported(entityVal)) ||
-                            (key === 'cast' && this.isCastSupported(entityVal))) {
-                            service = { key, value: entityVal };
-                            return false;
                         }
-                    }
+                    });
                 }
             });
             this.readyPlayersForType[data.type] = service;
@@ -19982,22 +20022,45 @@ class PlayController {
                 }
             }
             try {
-                this.entityStates['sensor.kodi_media_sensor_search'] = await getState(this.hass, 'sensor.kodi_media_sensor_search');
+                if (this.hass.states['sensor.kodi_media_sensor_search']) {
+                    this.entityStates['sensor.kodi_media_sensor_search'] = await getState(this.hass, 'sensor.kodi_media_sensor_search');
+                }
             }
             catch (err) {
                 // pass
             }
+            // get values for template entities
+            for (const [key, value] of Object.entries(this.entity)) {
+                if (lodash.isEqual(key, 'inputSelect') || lodash.isEqual(key, 'inputText')) {
+                    const entities = this.exportEntity(value, key);
+                    for (const entity of entities) {
+                        if (!lodash.isNil(this.hass.states[entity.value])) {
+                            try {
+                                // eslint-disable-next-line no-await-in-loop
+                                this.entityStates[entity.value] = await getState(this.hass, entity.value);
+                            }
+                            catch (err) {
+                                // pass
+                            }
+                        }
+                    }
+                }
+            }
             return this.entityStates;
         };
         this.getPlexPlayerMachineIdentifier = (entity) => {
+            if (lodash.isString(entity) && lodash.isEqual(entity.split(' | ').length, 4)) {
+                // eslint-disable-next-line no-param-reassign
+                [, , , entity] = entity.split(' | ');
+            }
             let machineIdentifier = '';
             let { plex } = this;
             let entityName = '';
             if (lodash.isString(entity)) {
-                entityName = entity;
+                entityName = entity.trim();
             }
             else if (lodash.isObjectLike(entity) && !lodash.isNil(entity.identifier)) {
-                entityName = entity.identifier;
+                entityName = entity.identifier.trim();
                 if (!lodash.isNil(entity.plex) && entity.plex) {
                     plex = entity.plex;
                 }
@@ -20049,6 +20112,7 @@ class PlayController {
                 this.entityStates[entityName].attributes.adb_response !== undefined) ||
                 !lodash.isEqual(this.runBefore, false));
         };
+        this.entityRegistry = entityRegistry;
         this.card = card;
         this.hass = hass;
         this.plex = plex;
@@ -20289,7 +20353,9 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     lodash.forEach(this.entitiesRegistry, entityRegistry => {
                         if (lodash.isEqual(entityRegistry.platform, 'cast') ||
                             lodash.isEqual(entityRegistry.platform, 'kodi') ||
-                            lodash.isEqual(entityRegistry.platform, 'androidtv')) {
+                            lodash.isEqual(entityRegistry.platform, 'androidtv') ||
+                            lodash.isEqual(entityRegistry.platform, 'input_select') ||
+                            lodash.isEqual(entityRegistry.platform, 'input_text')) {
                             const entityName = `${entityRegistry.platform} | ${entityRegistry.entity_id}`;
                             entities.appendChild(addDropdownItem(entityName));
                             addedEntityStrings.push(entityName);
@@ -21857,7 +21923,9 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 }
                 else if (lodash.startsWith(entityString, 'androidtv | ') ||
                     lodash.startsWith(entityString, 'kodi | ') ||
-                    lodash.startsWith(entityString, 'cast | ')) {
+                    lodash.startsWith(entityString, 'cast | ') ||
+                    lodash.startsWith(entityString, 'input_select | ') ||
+                    lodash.startsWith(entityString, 'input_text | ')) {
                     // eslint-disable-next-line prefer-destructuring
                     realEntityString = entityString.split(' | ')[1];
                     isPlexPlayer = false;
@@ -21894,6 +21962,20 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                                     }
                                     entityObj.kodi.push(entityInRegister.entity_id);
                                     break;
+                                case 'input_select':
+                                    if (lodash.isNil(entityObj.inputSelect)) {
+                                        // eslint-disable-next-line no-param-reassign
+                                        entityObj.inputSelect = [];
+                                    }
+                                    entityObj.inputSelect.push(entityInRegister.entity_id);
+                                    break;
+                                case 'input_text':
+                                    if (lodash.isNil(entityObj.inputText)) {
+                                        // eslint-disable-next-line no-param-reassign
+                                        entityObj.inputText = [];
+                                    }
+                                    entityObj.inputText.push(entityInRegister.entity_id);
+                                    break;
                                 // pass
                             }
                         }
@@ -21915,7 +21997,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             this.renderPage();
             try {
                 if (this.plex && this.hassObj) {
-                    this.playController = new PlayController(this, this.hassObj, this.plex, entity, this.runBefore, this.runAfter, this.config.libraryName);
+                    this.playController = new PlayController(this, this.hassObj, this.plex, entity, this.runBefore, this.runAfter, this.config.libraryName, this.entityRegistry);
                     if (this.playController) {
                         await this.playController.init();
                     }

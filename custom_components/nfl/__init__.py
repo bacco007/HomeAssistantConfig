@@ -17,11 +17,9 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     API_ENDPOINT,
-    CONF_INTERVAL,
     CONF_TIMEOUT,
     CONF_TEAM_ID,
     COORDINATOR,
-    DEFAULT_INTERVAL,
     DEFAULT_TIMEOUT,
     DOMAIN,
     ISSUE_URL,
@@ -54,8 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = AlertsDataUpdateCoordinator(
         hass,
         entry.data,
-        entry.data.get(CONF_TIMEOUT),
-        entry.data.get(CONF_INTERVAL),
+        entry.data.get(CONF_TIMEOUT)
     )
 
     # Fetch initial data so we have data when entities subscribe
@@ -85,36 +82,32 @@ async def update_listener(hass, entry):
     await hass.config_entries.async_forward_entry_unload(entry, "sensor")
     hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
 
-
 async def async_migrate_entry(hass, config_entry):
-    """Migrate an old config entry."""
-    version = config_entry.version
+     """Migrate an old config entry."""
+     version = config_entry.version
 
-    # 1-> 2: Migration format
-    if version == 1:
-        _LOGGER.debug("Migrating from version %s", version)
-        updated_config = config_entry.data.copy()
+     # 1-> 2: Migration format
+     if version == 1:
+         _LOGGER.debug("Migrating from version %s", version)
+         updated_config = config_entry.data.copy()
 
-        if CONF_INTERVAL not in updated_config.keys():
-            updated_config[CONF_INTERVAL] = DEFAULT_INTERVAL
-        if CONF_TIMEOUT not in updated_config.keys():
-            updated_config[CONF_TIMEOUT] = DEFAULT_TIMEOUT
+         if CONF_TIMEOUT not in updated_config.keys():
+             updated_config[CONF_TIMEOUT] = DEFAULT_TIMEOUT
 
-        if updated_config != config_entry.data:
-            hass.config_entries.async_update_entry(config_entry, data=updated_config)
+         if updated_config != config_entry.data:
+             hass.config_entries.async_update_entry(config_entry, data=updated_config)
 
-        config_entry.version = 2
-        _LOGGER.debug("Migration to version %s complete", config_entry.version)
+         config_entry.version = 2
+         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
-    return True
-
+     return True
 
 class AlertsDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching NFL data."""
 
-    def __init__(self, hass, config, the_timeout: int, interval: int):
+    def __init__(self, hass, config, the_timeout: int):
         """Initialize."""
-        self.interval = timedelta(minutes=interval)
+        self.interval = timedelta(minutes=10)
         self.name = config[CONF_NAME]
         self.timeout = the_timeout
         self.config = config
@@ -128,7 +121,7 @@ class AlertsDataUpdateCoordinator(DataUpdateCoordinator):
         """Fetch data"""
         async with timeout(self.timeout):
             try:
-                data = await update_alerts(self.config)
+                data = await update_game(self.config)
                 # update the interval based on flag
                 if data["private_fast_refresh"] == True:
                     self.update_interval = timedelta(seconds=5)
@@ -140,7 +133,7 @@ class AlertsDataUpdateCoordinator(DataUpdateCoordinator):
         
 
 
-async def update_alerts(config) -> dict:
+async def update_game(config) -> dict:
     """Fetch new state data for the sensor.
     This is the only method that should fetch new data for Home Assistant.
     """
@@ -162,11 +155,13 @@ async def async_get_state(config) -> dict:
             if r.status == 200:
                 data = await r.json()
 
+    found_team = False
     if data is not None:
         for event in data["events"]:
             #_LOGGER.debug("Looking at this event: %s" % event)
-            _LOGGER.debug("Found event; parsing data.")
             if team_id in event["shortName"]:
+                _LOGGER.debug("Found event; parsing data.")
+                found_team = True
                 team_index = 0 if event["competitions"][0]["competitors"][0]["team"]["abbreviation"] == team_id else 1
                 oppo_index = abs((team_index-1))
                 values["state"] = event["status"]["type"]["state"].upper()
@@ -241,6 +236,28 @@ async def async_get_state(config) -> dict:
                 values["opponent_score"] = event["competitions"][0]["competitors"][oppo_index]["score"]
                 values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
                 values["private_fast_refresh"] = False
+        
+        # Never found the team. Either a bye or a post-season condition
+        if not found_team:
+            _LOGGER.debug("Did not find a game with for the configured team. Checking if it's a bye week.")
+            found_bye = False
+            values = await async_clear_states(config)
+            for bye_team in data["week"]["teamsOnBye"]:
+                if team_id.lower() == bye_team["abbreviation"].lower():
+                    _LOGGER.debug("Bye week confirmed.")
+                    found_bye = True
+                    values["team_abbr"] = bye_team["abbreviation"]
+                    values["team_name"] = bye_team["shortDisplayName"]
+                    values["team_logo"] = bye_team["logo"]
+                    values["state"] = 'BYE'
+                    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+            if found_bye == False:
+                    _LOGGER.debug("Team not found in active games or bye week list. Have you missed the playoffs?")
+                    values["team_abbr"] = None
+                    values["team_name"] = None
+                    values["team_logo"] = None
+                    values["state"] = 'NOT_FOUND'
+                    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
 
         if values["state"] == 'PRE' and ((arrow.get(values["date"])-arrow.now()).total_seconds() < 1200):
             _LOGGER.debug("Event is within 20 minutes, setting refresh rate to 5 seconds.")
@@ -248,7 +265,7 @@ async def async_get_state(config) -> dict:
         elif values["state"] == 'IN':
             _LOGGER.debug("Event in progress, setting refresh rate to 5 seconds.")
             values["private_fast_refresh"] = True
-        elif values["state"] == 'POST': # and if the refresh is set to fast
+        elif values["state"] in ['POST', 'BYE']: 
             _LOGGER.debug("Event is over, setting refresh back to 10 minutes.")
             values["private_fast_refresh"] = False
 
@@ -260,8 +277,8 @@ async def async_clear_states(config) -> dict:
     values = {}
     # Reset values
     values = {
-        "state": "PRE",
         "date": None,
+        "kickoff_in": None,
         "quarter": None,
         "clock": None,
         "venue": None,
@@ -272,12 +289,9 @@ async def async_clear_states(config) -> dict:
         "last_play": None,
         "down_distance_text": None,
         "possession": None,
-        "team_abbr": None,
         "team_id": None,
-        "team_name": None,
         "team_record": None,
         "team_homeaway": None,
-        "team_logo": None,
         "team_colors": None,
         "team_score": None,
         "team_win_probability": None,

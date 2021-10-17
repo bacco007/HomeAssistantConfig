@@ -38,7 +38,7 @@
                         - !include
                           - ../../1_Templates/button_switch.yaml
                           - name: "Live TV"
-                            icon: "mdi:television-clean"
+                            icon: "mdi:television"
                             navpath: "#livechannels"
                         - !include
                           - ../../1_Templates/button_switch.yaml
@@ -70,7 +70,7 @@
                         - !include
                           - ../../1_Templates/button_switch_active.yaml
                           - name: "Live TV"
-                            icon: "mdi:television-clean"
+                            icon: "mdi:television"
                             navpath: "#livechannels"
                         - !include
                           - ../../1_Templates/button_switch.yaml
@@ -103,7 +103,7 @@
                         - !include
                           - ../../1_Templates/button_switch.yaml
                           - name: "Live TV"
-                            icon: "mdi:television-clean"
+                            icon: "mdi:television"
                             navpath: "#livechannels"
                         - !include
                           - ../../1_Templates/button_switch_active.yaml
@@ -152,7 +152,7 @@
                         - !include
                           - ../../1_Templates/button_switch.yaml
                           - name: "Live TV"
-                            icon: "mdi:television-clean"
+                            icon: "mdi:television"
                             navpath: "#livechannels"
                         - !include
                           - ../../1_Templates/button_switch.yaml

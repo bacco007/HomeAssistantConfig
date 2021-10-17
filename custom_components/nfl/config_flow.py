@@ -13,10 +13,8 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
     API_ENDPOINT,
-    CONF_INTERVAL,
     CONF_TIMEOUT,
     CONF_TEAM_ID,
-    DEFAULT_INTERVAL,
     DEFAULT_NAME,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -43,7 +41,6 @@ def _get_schema(hass: Any, user_input: list, default_dict: list) -> Any:
         {
             vol.Required(CONF_TEAM_ID, default=_get_default(CONF_TEAM_ID)): str,
             vol.Optional(CONF_NAME, default=_get_default(CONF_NAME)): str,
-            vol.Optional(CONF_INTERVAL, default=_get_default(CONF_INTERVAL)): int,
             vol.Optional(CONF_TIMEOUT, default=_get_default(CONF_TIMEOUT)): int,
         }
     )
@@ -128,7 +125,6 @@ class NFLScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         # Defaults
         defaults = {
             CONF_NAME: DEFAULT_NAME,
-            CONF_INTERVAL: DEFAULT_INTERVAL,
             CONF_TIMEOUT: DEFAULT_TIMEOUT,
             CONF_TEAM_ID: self._team_list,
         }

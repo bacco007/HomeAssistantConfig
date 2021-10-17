@@ -13,6 +13,10 @@ class NFLCard extends LitElement {
     this._config = config;
   }
 
+  getCardSize() {
+    return 5;
+  }
+
   render() {
     if (!this.hass || !this._config) {
       return html``;
@@ -28,6 +32,15 @@ class NFLCard extends LitElement {
     }
     if (stateObj.attributes.possession == stateObj.attributes.opponent_id) {
       var oppoPoss = 1;
+    }
+
+    if (stateObj.attributes.team_homeaway == 'home') {
+      var teamColor = stateObj.attributes.team_colors[0];
+      var oppoColor = stateObj.attributes.opponent_colors[1];
+    }
+    if (stateObj.attributes.team_homeaway == 'away') {
+      var teamColor = stateObj.attributes.team_colors[1];
+      var oppoColor = stateObj.attributes.opponent_colors[0];
     }
 
     if (!stateObj) {
@@ -53,8 +66,8 @@ class NFLCard extends LitElement {
           .timeouts { margin: 0 auto; width: 70%; }
           .timeouts div.opponent-to:nth-child(-n + 0)  { opacity: 1; }
           .timeouts div.team-to:nth-child(-n + 0)  { opacity: 1; }
-          .team-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${stateObj.attributes.team_colors[0]}; display: inline-block; position: relative; opacity: 0.2; }
-          .opponent-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${stateObj.attributes.opponent_colors[0]}; display: inline-block; position: relative; opacity: 0.2; }
+          .team-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${teamColor}; display: inline-block; position: relative; opacity: 0.2; }
+          .opponent-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${oppoColor}; display: inline-block; position: relative; opacity: 0.2; }
           .play-clock { font-size: 1.4em; text-align: center; margin-top: -24px; }
         </style>
         <ha-card>
@@ -114,8 +127,8 @@ class NFLCard extends LitElement {
             .timeouts { margin: 0 auto; width: 70%; }
             .timeouts div.opponent-to:nth-child(-n + ${stateObj.attributes.opponent_timeouts})  { opacity: 1; }
             .timeouts div.team-to:nth-child(-n + ${stateObj.attributes.team_timeouts})  { opacity: 1; }
-            .team-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${stateObj.attributes.team_colors[0]}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
-            .opponent-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${stateObj.attributes.opponent_colors[0]}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
+            .team-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${teamColor}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
+            .opponent-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${oppoColor}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
             .status { text-align:center; font-size:1.6em; font-weight: 700; }
             .sub1 { font-weight: 700; font-size: 1.2em; margin: 6px 0 2px; }
             .sub1, .sub2, .sub3 { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
@@ -127,8 +140,8 @@ class NFLCard extends LitElement {
             .play-clock { font-size: 1.4em; text-align: center; margin-top: -24px; }
             .probability-text { text-align: center; }
             .prob-flex { flex: 1; }
-            .opponent-probability { width: ${oppoProb}%; background-color: ${stateObj.attributes.opponent_colors[0]}; height: 14px; border-radius: 0 7px 7px 0; transition: all 1s ease-out; }
-            .team-probability { width: ${teamProb}%; background-color: ${stateObj.attributes.team_colors[0]}; height: 14px; border-radius: 7px 0 0 7px; float: right; position: relative; transition: all 1s ease-out; }
+            .opponent-probability { width: ${oppoProb}%; background-color: ${teamColor}; height: 14px; border-radius: 0 7px 7px 0; transition: all 1s ease-out; }
+            .team-probability { width: ${teamProb}%; background-color: ${oppoColor}; height: 14px; border-radius: 7px 0 0 7px; float: right; position: relative; transition: all 1s ease-out; }
             .probability-wrapper { display: flex; }
             .percent { padding: 0 6px; }
             .post-game { margin: 0 auto; }
@@ -209,8 +222,8 @@ class NFLCard extends LitElement {
             .timeouts { margin: 0 auto; width: 70%; }
             .timeouts div.opponent-to:nth-child(-n + ${stateObj.attributes.opponent_timeouts})  { opacity: 1; }
             .timeouts div.team-to:nth-child(-n + ${stateObj.attributes.team_timeouts})  { opacity: 1; }
-            .team-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${stateObj.attributes.team_colors[0]}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
-            .opponent-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${stateObj.attributes.opponent_colors[0]}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
+            .team-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${teamColor}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
+            .opponent-to { height: 6px; border-radius: 3px; width: 20%; background-color: ${oppoColor}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
             .status { text-align:center; font-size:1.6em; font-weight: 700; }
             .sub1 { font-weight: 500; font-size: 1.2em; margin: 6px 0 2px; }
             .sub1, .sub2, .sub3 { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
@@ -220,13 +233,6 @@ class NFLCard extends LitElement {
             .clock { text-align: center; font-size: 1.4em; }
             .down-distance { text-align: right; font-weight: 700; }
             .play-clock { text-align: center; margin-top: -24px; }
-            .probability-text { text-align: center; }
-            .prob-flex { flex: 1; }
-            .opponent-probability { width: ${oppoProb}%; background-color: ${stateObj.attributes.opponent_colors[0]}; height: 14px; border-radius: 0 7px 7px 0; }
-            .team-probability { width: ${teamProb}%; background-color: ${stateObj.attributes.team_colors[0]}; height: 14px; border-radius: 7px 0 0 7px; float: right; position: relative; }
-            .probability-wrapper { display: flex; }
-            .percent { padding: 0 6px; }
-            .post-game { margin: 0 auto; }
           </style>
           <ha-card>
               <div class="card">
@@ -276,6 +282,34 @@ class NFLCard extends LitElement {
             </div>
             </ha-card>
         `;
+    }
+
+    if (stateObj.state == 'BYE') {
+      return html`
+        <style>
+          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+          .team-bg { opacity: 0.08; position: absolute; top: -20%; left: -30%; width: 75%; z-index: 0; }
+          .card-content { display: flex; justify-content: space-evenly; align-items: center; text-align: center; position: relative; z-index: 99; }
+          .team { text-align: center; }
+          .team img { max-width: 90px; }
+          .name { font-size: 1.6em; margin-bottom: 4px; }
+          .line { height: 1px; background-color: var(--primary-text-color); margin:10px 0; }
+          .bye { font-size: 1.2em; text-align: center; }
+        </style>
+        <ha-card>
+          <div class="card">
+            <img class="team-bg" src="${stateObj.attributes.team_logo}" />
+            <div class="card-content">
+              <div class="team">
+                <img src="${stateObj.attributes.team_logo}" />
+                <div class="name">${stateObj.attributes.team_name}</div>
+              </div>
+            </div>
+            <div class="line"></div>
+            <div class="bye">Bye Week</div>
+          </div>
+        </ha-card>
+      `;
     }
   }
 }

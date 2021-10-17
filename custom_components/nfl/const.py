@@ -4,13 +4,11 @@ USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/605.1.15 
 
 # Config
 CONF_TIMEOUT = "timeout"
-CONF_INTERVAL = "interval"
 CONF_TEAM_ID = "team_id"
 
 # Defaults
 DEFAULT_ICON = "mdi:football"
 DEFAULT_NAME = "NFL"
-DEFAULT_INTERVAL = 1
 DEFAULT_TIMEOUT = 120
 
 # Misc

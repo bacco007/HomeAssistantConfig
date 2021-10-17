@@ -205,21 +205,21 @@ sensor:
       daylightyesterday:
         friendly_name: "Day Length Yesterday"
         value_template: >
-          {{ state_attr('sensor.daylight_2', 'yesterday_hms') }}
+          {{ state_attr('sensor.daylight', 'yesterday_hms') }}
         icon_template: mdi:weather-sunny
       daylighttoday:
         friendly_name: "Day Length Today"
         value_template: >
-          {{ state_attr('sensor.daylight_2', 'today_hms') }}
+          {{ state_attr('sensor.daylight', 'today_hms') }}
         icon_template: mdi:weather-sunny
       daylighttomorrow:
         friendly_name: "Day Length Tomorrow"
         value_template: >
-          {{ state_attr('sensor.daylight_2', 'tomorrow_hms') }}
+          {{ state_attr('sensor.daylight', 'tomorrow_hms') }}
         icon_template: mdi:weather-sunny
       daylengthchange:
         friendly_name: "Change in Day Length"
         unit_of_measurement: "seconds"
         value_template: >
-          {{ ((state_attr('sensor.daylight_2', 'today') - state_attr('sensor.daylight_2', 'yesterday')) * 3600) | round(0) }}
+          {{ ((state_attr('sensor.daylight', 'today') - state_attr('sensor.daylight', 'yesterday')) * 3600) | round(0) }}
         icon_template: mdi:weather-sunny

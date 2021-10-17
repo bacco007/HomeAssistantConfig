@@ -1,6 +1,8 @@
 """Config flow for Solcast Solar integration."""
 from __future__ import annotations
 
+import datetime
+import json
 from typing import Any
 
 import voluptuous as vol
@@ -9,10 +11,7 @@ from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_APIKEY, CONF_POLLAPI, CONF_ROOFTOP, DOMAIN
-
-#import homeassistant.helpers.config_validation as cv
-
+from .const import CONF_APIKEY, CONF_POLL_INTERVAL, CONF_ROOFTOP, DOMAIN
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -35,11 +34,13 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             return self.async_create_entry(
                 title=user_input[CONF_NAME],
-                data = {},
+                data = {"apiremaining": 50, 
+                        "data": json.dumps(dict({"forecasts": []})), 
+                        "last_update": int(datetime.date(1980, 4, 13).strftime("%Y%m%d%H%M%S"))},
                 options={
                     CONF_APIKEY: user_input[CONF_APIKEY],
                     CONF_ROOFTOP: user_input[CONF_ROOFTOP],
-                    CONF_POLLAPI: user_input[CONF_POLLAPI],
+                    CONF_POLL_INTERVAL: user_input[CONF_POLL_INTERVAL],
                 },
             )
 
@@ -56,7 +57,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     vol.Required(
                         CONF_ROOFTOP, default=''
                     ): str,
-                    vol.Required(CONF_POLLAPI, default=1): vol.All(
+                    vol.Required(CONF_POLL_INTERVAL, default=1): vol.All(
                         vol.Coerce(int), vol.Range(min=1, max=6)
                     ),
                 }
@@ -68,6 +69,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         self.config_entry = config_entry
+        
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -89,8 +91,8 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         default=self.config_entry.options.get(CONF_ROOFTOP),
                     ): str,
                     vol.Required(
-                        CONF_POLLAPI,
-                        default=self.config_entry.options[CONF_POLLAPI],
+                        CONF_POLL_INTERVAL,
+                        default=self.config_entry.options[CONF_POLL_INTERVAL],
                     ): vol.All(vol.Coerce(int), vol.Range(min=1, max=6)),
                 }
             ),

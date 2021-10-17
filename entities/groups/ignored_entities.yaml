@@ -51,3 +51,41 @@ ignored_entities:
     - sensor.international_space_station_iss_pass_2
     - sensor.international_space_station_iss_pass_3
     - sensor.international_space_station_iss_pass_4
+    - sensor.rssfeed_cnn
+    - sensor.rssfeed_fox_sports
+    - sensor.rssfeed_news_com_au
+    - sensor.rssfeed_northern_daily_leader
+    - sensor.rssfeed_sky_news_uk
+    - sensor.rssfeed_sky_sports_uk
+    - sensor.rssfeed_sydney_morning_herald
+    - sensor.rssfeed_the_guardian_au
+    - sensor.rssfeed_the_guardian_uk
+    - sensor.ical_extreme_e_event_2
+    - sensor.ical_extreme_e_event_3
+    - sensor.ical_extreme_e_event_4
+    - sensor.ical_indycar_event_0
+    - sensor.ical_indycar_event_1
+    - sensor.ical_indycar_event_2
+    - sensor.ical_indycar_event_3
+    - sensor.ical_indycar_event_4
+    - sensor.ical_sydney_swans_vfl_event_0
+    - sensor.ical_sydney_swans_vfl_event_1
+    - sensor.ical_sydney_swans_vfl_event_2
+    - sensor.ical_sydney_swans_vfl_event_3
+    - sensor.ical_sydney_swans_vfl_event_4
+    - sensor.climacell_carbon_monoxide
+    - sensor.climacell_china_mep_air_quality_index
+    - sensor.climacell_china_mep_health_concern
+    - sensor.climacell_china_mep_primary_pollutant
+    - sensor.climacell_cloud_base
+    - sensor.climacell_cloud_ceiling
+    - sensor.climacell_global_horizontal_irradiance
+    - sensor.climacell_nitrogen_dioxide
+    - sensor.climacell_ozone
+    - sensor.climacell_particulate_matter_10_mm
+    - sensor.climacell_particulate_matter_2_5_mm
+    - sensor.climacell_precipitation_type
+    - sensor.climacell_sulfur_dioxide
+    - sensor.climacell_us_epa_air_quality_index
+    - sensor.climacell_us_epa_health_concern
+    - sensor.climacell_us_epa_primary_pollutant

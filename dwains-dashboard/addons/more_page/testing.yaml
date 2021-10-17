@@ -1435,68 +1435,6 @@
       graph_span: 7d1s
       header:
         show: true
-        title: "Dose 1 - 60%"
-      span:
-        end: day
-      apex_config:
-        chart: { type: "area", height: 400 }
-        stroke: { show: true, curve: smooth, dashArray: 0 }
-        legend: { show: true }
-        dataLabels: { enabled: false }
-        xaxis:
-          {
-            type: "datetime",
-            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-          }
-        yaxis:
-          - seriesName: "vax"
-            decimalsInFloat: 0
-            title:
-              text: "Days to Target"
-            logarithmic: false
-            min: 0
-      all_series_config:
-        stroke_width: 3
-        extend_to_end: true
-        type: line
-        unit: "Days"
-        group_by:
-          func: last
-          fill: last
-          start_with_last: true
-          duration: 1d
-      series:
-        - entity: sensor.covid_19_covidlive_act
-          attribute: dose1_60
-          name: ACT
-        - entity: sensor.covid_19_covidlive_nsw
-          attribute: dose1_60
-          name: NSW
-        - entity: sensor.covid_19_covidlive_nt
-          attribute: dose1_60
-          name: NT
-        - entity: sensor.covid_19_covidlive_qld
-          attribute: dose1_60
-          name: QLD
-        - entity: sensor.covid_19_covidlive_sa
-          attribute: dose1_60
-          name: SA
-        - entity: sensor.covid_19_covidlive_tas
-          attribute: dose1_60
-          name: TAS
-        - entity: sensor.covid_19_covidlive_vic
-          attribute: dose1_60
-          name: VIC
-        - entity: sensor.covid_19_covidlive_wa
-          attribute: dose1_60
-          name: WA
-        - entity: sensor.covid_19_covidlive_aus
-          attribute: dose1_60
-          name: Australia
-    - type: custom:apexcharts-card
-      graph_span: 7d1s
-      header:
-        show: true
         title: "Dose 1 - 70%"
       span:
         end: day
@@ -1529,33 +1467,32 @@
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
-          attribute: dose1_70
+          attribute: dose1_60
           name: ACT
         - entity: sensor.covid_19_covidlive_nsw
-          attribute: dose1_70
+          attribute: dose1_60
           name: NSW
         - entity: sensor.covid_19_covidlive_nt
-          attribute: dose1_70
+          attribute: dose1_60
           name: NT
         - entity: sensor.covid_19_covidlive_qld
-          attribute: dose1_70
+          attribute: dose1_60
           name: QLD
         - entity: sensor.covid_19_covidlive_sa
-          attribute: dose1_70
+          attribute: dose1_60
           name: SA
         - entity: sensor.covid_19_covidlive_tas
-          attribute: dose1_70
+          attribute: dose1_60
           name: TAS
         - entity: sensor.covid_19_covidlive_vic
-          attribute: dose1_70
+          attribute: dose1_60
           name: VIC
         - entity: sensor.covid_19_covidlive_wa
-          attribute: dose1_70
+          attribute: dose1_60
           name: WA
         - entity: sensor.covid_19_covidlive_aus
-          attribute: dose1_70
+          attribute: dose1_60
           name: Australia
-
     - type: custom:apexcharts-card
       graph_span: 7d1s
       header:
@@ -1592,6 +1529,69 @@
           duration: 1d
       series:
         - entity: sensor.covid_19_covidlive_act
+          attribute: dose1_70
+          name: ACT
+        - entity: sensor.covid_19_covidlive_nsw
+          attribute: dose1_70
+          name: NSW
+        - entity: sensor.covid_19_covidlive_nt
+          attribute: dose1_70
+          name: NT
+        - entity: sensor.covid_19_covidlive_qld
+          attribute: dose1_70
+          name: QLD
+        - entity: sensor.covid_19_covidlive_sa
+          attribute: dose1_70
+          name: SA
+        - entity: sensor.covid_19_covidlive_tas
+          attribute: dose1_70
+          name: TAS
+        - entity: sensor.covid_19_covidlive_vic
+          attribute: dose1_70
+          name: VIC
+        - entity: sensor.covid_19_covidlive_wa
+          attribute: dose1_70
+          name: WA
+        - entity: sensor.covid_19_covidlive_aus
+          attribute: dose1_70
+          name: Australia
+
+    - type: custom:apexcharts-card
+      graph_span: 7d1s
+      header:
+        show: true
+        title: "Dose 1 - 90%"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 400 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: true }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            title:
+              text: "Days to Target"
+            logarithmic: false
+            min: 0
+      all_series_config:
+        stroke_width: 3
+        extend_to_end: true
+        type: line
+        unit: "Days"
+        group_by:
+          func: last
+          fill: last
+          start_with_last: true
+          duration: 1d
+      series:
+        - entity: sensor.covid_19_covidlive_act
           attribute: dose1_80
           name: ACT
         - entity: sensor.covid_19_covidlive_nsw
@@ -1623,7 +1623,7 @@
       graph_span: 7d1s
       header:
         show: true
-        title: "Dose 1 - 90%"
+        title: "Dose 1 - 95%"
       span:
         end: day
       apex_config:

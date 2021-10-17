@@ -6,7 +6,7 @@
             "data": {
             "apikey": "Solcast API key",
             "rooftop": "Solcast rooftop id",
-            "pollapi": "Interval hours (between polling the Solcast API)",
+            "pollapi_interval": "Interval hours (between polling the Solcast API)",
             "name": "[%key:common::config_flow::data::name%]"
             }
         }
@@ -19,7 +19,7 @@
             "data": {
             "apikey": "Solcast API key",
             "rooftop": "Solcast rooftop id",
-            "pollapi": "Interval hours (between polling the Solcast API)",
+            "pollapi_interval": "Interval hours (between polling the Solcast API)",
             "name": "[%key:common::config_flow::data::name%]"
             }
         }
