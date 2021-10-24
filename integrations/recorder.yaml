@@ -42,7 +42,6 @@ recorder:
       - sensor.rssfeed_*
       - sensor.time*
       - sensor.*monitordocker*
-      - sensor.switchmonusb*
       - sensor.sport_*
       - sensor.*_uptime
       - sensor.pvetbsh*

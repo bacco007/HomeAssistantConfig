@@ -6,16 +6,16 @@ from pytz import timezone
 
 @service
 def getdata_bomforecast(
-    entity_id="sensor.bomforecast_tamworth_3hr",
+    entity_id="sensor.bomforecast_tamworth_hr",
     unit_of_measurement=None,
-    friendly_name="BOM Forecast - Tamworth 3hrly",
+    friendly_name="BOM Forecast - Tamworth Hourly",
     icon="mdi:weather",
 ):
     if entity_id is None:
         log.error("getdata_bomforecast: No Entity ID provided")
         return
 
-    URL = "https://api.weather.bom.gov.au/v1/locations/r67r4k/forecasts/3-hourly"
+    URL = "https://api.weather.bom.gov.au/v1/locations/r67r4k/forecasts/hourly"
     CONDITION_MAP = {
         'clear': 'clear-night',
         'cloudy': 'cloudy',
@@ -65,9 +65,13 @@ def getdata_bomforecast(
         FORECAST.append({
             "datetime": str(d["time"]),
             "temperature": d["temp"],
+            "temperature_feelslike": d["temp_feels_like"],
             "condition": CONDITION_MAP[d["icon_descriptor"]],
             "precipitation": rain,
             "precipitation_probability": d["rain"]["chance"],
+            "precipitation_probability_10": d["rain"]["precipitation_amount_10_percent_chance"],
+            "precipitation_probability_25": d["rain"]["precipitation_amount_25_percent_chance"],
+            "precipitation_probability_50": d["rain"]["precipitation_amount_50_percent_chance"],
             "wind_bearing": d["wind"]["direction"],
             "wind_speed": d["wind"]["speed_kilometre"]
         })

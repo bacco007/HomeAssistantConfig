@@ -78,3 +78,7 @@ influxdb:
       - sensor.unifi_*
       - sensor.space_*
       - weather.climacell*
+      - sensor.untappd*
+      - sensor.climacell*
+      - sensor.international_space_station*
+      - sensor.zha*

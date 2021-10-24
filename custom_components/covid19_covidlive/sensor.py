@@ -117,9 +117,8 @@ class CovidLiveSensor(Entity):
             "Hospitalised": 0,
             "CasesSourceOverseas": 0,
             "CasesSourceInterstate": 0,
-            "CasesSourceKnownContact": 0,
+            "CasesSourceLinked": 0,
             "CasesSourceUnknown": 0,
-            "CasesSourceInvestigation": 0,
             "dose1_60": 0,
             "dose1_60_date": "",
             "dose1_70": 0,
@@ -188,17 +187,15 @@ class CovidLiveSensor(Entity):
         col_type3 = {
             "STATE": "string",
             "OSEAS": "int",
-            "CONTACT": "int",
+            "LINKED": "int",
             "UNKN": "int",
-            "INVES": "int",
         }
         df3 = df3.fillna(0).astype(col_type3)
         for index, row in df3.iterrows():
             if row["STATE"] == statevax:
                 self._attributes["CasesSourceOverseas"] = row["OSEAS"]
-                self._attributes["CasesSourceKnownContact"] = row["CONTACT"]
+                self._attributes["CasesSourceLinked"] = row["LINKED"]
                 self._attributes["CasesSourceUnknown"] = row["UNKN"]
-                self._attributes["CasesSourceInvestigation"] = row["INVES"]
 
         if self._region == "aus":
             url4 = "https://covidlive.com.au/"

@@ -105,12 +105,12 @@ class CovidLiveSensor(Entity):
 
         clean_dict = {"%": "", "−": "0", "\(est\)": "0", "NaN": 0, "": 0, "N/A": 0}
         df = df.replace(clean_dict, regex=True).replace({"-": 0}).replace({"NaN": 0})
-        df = df.sort_values(by=["FIRST"], ascending=False)
+        df = df.sort_values(by=["SECOND"], ascending=False)
 
         vaxdata = []
         for index, row in df.iterrows():
             if row["LGA"] in ["Tamworth Regional"]:
-                self._state = float(row[1])
+                self._state = str(row[1]) + "/" + str(row[3])
 
             if row["LGA"] in [
                 "Tamworth Regional",
