@@ -1,0 +1,133 @@
+---
+trigger:
+  - platform: time_pattern
+    minutes: "/5"
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: template
+      service: reload
+sensor:
+  - name: unifi_gateway_wan_uptimeavail
+    unique_id: unifi_gateway_wan_uptimeavail
+    state: >
+      {{ state_attr('sensor.unifi_gateway_wan', 'uptime_stats')["WAN"]["availability"] | float(default=0) | round(3) }}
+    unit_of_measurement: "%"
+    icon: mdi:progress-wrench
+
+  - name: weather_outside_temperature_5mint
+    unique_id: weather_outside_temperature_5mint
+    state: >
+      {{ states('sensor.weather_outside_temperature') | float(default=0) }}
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_inside_temperature_5mint
+    unique_id: weather_inside_temperature_5mint
+    state: >
+      {{ states('sensor.weather_inside_temperature') | float(default=0) }}
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_outside_humidity_5mint
+    unique_id: weather_outside_humidity_5mint
+    state: >
+      {{ states('sensor.weather_outside_humidity') | float(default=0) }}
+    icon: mdi:thermometer
+    unit_of_measurement: "%"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_outside_pressure_5mint
+    unique_id: weather_outside_pressure_5mint
+    state: >
+      {{ states('sensor.weather_outside_pressure') | float(default=0) }}
+    icon: mdi:thermometer
+    unit_of_measurement: "mBar"
+    attributes:
+      timestamp: >
+        {{ as_timestamp(now()) }}
+  - name: weather_outside_temperature_5mint_stats_meanplusstdev
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') is number and state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation') is number %}
+          {{ (state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') + state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation')) }}
+      {% endif %}
+  - name: weather_outside_temperature_5mint_stats_meanminusstdev
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') is number and state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation') is number %}
+          {{ (state_attr('sensor.weather_outside_temperature_5mint_stats', 'mean') - state_attr('sensor.weather_outside_temperature_5mint_stats', 'standard_deviation')) }}
+      {% endif %}
+  - name: weather_outside_temperature_5mint_stats_max
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'max_value') is number %}
+          {{ state_attr('sensor.weather_outside_temperature_5mint_stats', 'max_value') }}
+      {% endif %}
+  - name: weather_outside_temperature_5mint_stats_min
+    unit_of_measurement: "C"
+    state: >
+      {% if state_attr('sensor.weather_outside_temperature_5mint_stats', 'min_value') is number %}
+          {{ state_attr('sensor.weather_outside_temperature_5mint_stats', 'min_value') }}
+      {% endif %}
+  - name: "Covid NSW Fully Vaccinated"
+    unique_id: "covid_nsw_state_vaccination_rate"
+    icon: "mdi:needle"
+    unit_of_measurement: "%"
+    state: >
+      {% set total_population = 6565651 %}
+      {% set half_dose_total = (states('sensor.covid_nsw_doses') | int) / 2 %}
+      {% set state_second_dose_vaccinated_total = half_dose_total / total_population %}
+      {{ (state_second_dose_vaccinated_total * 100)|round(2, 'floor') }}
+    attributes:
+      attribution: >
+        {{ state_attr('sensor.covid_nsw_doses', 'attribution') }}
+      published: >
+        {{ state_attr('sensor.covid_nsw_doses', 'gp_network_doses_updated') }}
+      first_dose: >
+        {% set total_population = 6565651 %}
+        {% set first_dose_total = states('sensor.covid_nsw_total_first_dose_vaccine') | int %}
+        {% set state_first_dose_vaccinated_total = first_dose_total / total_population %}
+        {{ (state_first_dose_vaccinated_total * 100)|round(2, 'floor') }}
+      first_dose_last_24_hours: >
+        {% set total_population = 6565651 %}
+        {% set first_dose_last24 = states('sensor.covid_nsw_last_24_hours_first_dose_vaccine') | int %}
+        {% set state_first_dose_vaccinated_last24 = first_dose_last24 / total_population %}
+        {{ (state_first_dose_vaccinated_last24 * 100)|round(6, 'floor') }}
+      second_dose: >
+        {% set total_population = 6565651 %}
+        {% set second_dose_total = states('sensor.covid_nsw_total_second_dose_vaccine') | int %}
+        {% set state_second_dose_vaccinated_total = second_dose_total / total_population %}
+        {{ (state_second_dose_vaccinated_total * 100)|round(2, 'floor') }}
+      second_dose_last_24_hours: >
+        {% set total_population = 6565651 %}
+        {% set second_dose_last24 = states('sensor.covid_nsw_last_24_hours_second_dose_vaccine') | int %}
+        {% set state_second_dose_vaccinated_last24 = second_dose_last24 / total_population %}
+        {{ (state_second_dose_vaccinated_last24 * 100)|round(6, 'floor') }}
+      last_24_hours: >
+        {% set total_population = 6565651 %}
+        {% set second_dose_last24 = states('sensor.covid_nsw_last_24_hours_second_dose_vaccine') | int %}
+        {% set state_second_dose_vaccinated_last24 = second_dose_last24 / total_population %}
+        {{ (state_second_dose_vaccinated_last24 * 100)|round(6, 'floor') }}
+  - name: "Covid NSW Last 24 Hours State"
+    unique_id: "covid_nsw_last_24_hours_state"
+    icon: "mdi:virus"
+    unit_of_measurement: "cases"
+    state: >
+      {% set total = states('sensor.covid_nsw_last_24_hours_total') | int %}
+      {% set overseas = states('sensor.covid_nsw_last_24_hours_overseas_source') | int %}
+      {% set interstate = states('sensor.covid_nsw_last_24_hours_interstate_source') | int %}
+      {% set out_of_state = (overseas + interstate) %}
+      {{ (total - out_of_state) }}
+    attributes:
+      attribution: >
+        {{ state_attr('sensor.covid_nsw_last_24_hours_total', 'attribution') }}
+      published: >
+        {{ state_attr('sensor.covid_nsw_last_24_hours_total', 'published') }}

@@ -4,10 +4,11 @@
         "user": {
             "description": "Fill in the data for your solar panels.",
             "data": {
-            "apikey": "Solcast API key",
-            "rooftop": "Solcast rooftop id",
-            "pollapi_interval": "Interval hours (between polling the Solcast API)",
-            "name": "[%key:common::config_flow::data::name%]"
+                "api_key": "Solcast API key",
+                "resource_id": "Solcast rooftop id",
+                "api_limit": "Total API counter (Solcast API Limit)",
+                "disable_ssl_check": "Disable SSL check",
+                "name": "[%key:common::config_flow::data::name%]"
             }
         }
         }
@@ -17,10 +18,11 @@
         "init": {
             "description": "These values allow tweaking the Solcast integration.",
             "data": {
-            "apikey": "Solcast API key",
-            "rooftop": "Solcast rooftop id",
-            "pollapi_interval": "Interval hours (between polling the Solcast API)",
-            "name": "[%key:common::config_flow::data::name%]"
+                "api_key": "Solcast API key",
+                "resource_id": "Solcast rooftop id",
+                "api_limit": "Total API counter (Solcast API Limit)",
+                "disable_ssl_check": "Disable SSL check",
+                "name": "[%key:common::config_flow::data::name%]"
             }
         }
         }

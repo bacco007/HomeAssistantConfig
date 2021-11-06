@@ -1,0 +1,30 @@
+---
+rest:
+- resource_template: "http://worldtimeapi.org/api/timezone/{{ now().tzinfo }}"
+  sensor:
+  - name: "Daylight Savings: Next"
+    value_template: >
+      {{ ((value_json.dst_from, value_json.dst_until) | map('as_datetime') | map('as_local') | select('>', now()) | first).isoformat() }}
+    device_class: timestamp
+
+  - name: "Daylight Savings: Days Until"
+    value_template: >
+      {%- set next =  (value_json.dst_from, value_json.dst_until) | map('as_datetime') | map('as_local') | select('>', now()) | first  %}
+      {{ (next-today_at()).days }}
+    unit_of_measurement: days
+
+  - name: "Daylight Savings: Phrase"
+    value_template: >
+      {%- macro phrase(seconds, name, divisor, mod=None) %}
+        {%- set value = ((seconds | abs // divisor) % (mod if mod else divisor)) | int %}
+        {%- set end = 's' if value > 1 else '' %}
+        {{- '{} {}{}'.format(value, name, end) if value > 0 else '' }}
+      {%- endmacro %}
+      {% set next = (value_json.dst_from, value_json.dst_until) | select('>', utcnow().isoformat()) | first %}
+      {% set name, value = value_json.items() | list | selectattr('1', '==', next) | first %}
+      {% set seconds = value_json.dst_offset %}
+      {%- set values = [ 
+        phrase(seconds, 'hour', 60*60, 60*60*24),
+        phrase(seconds, 'minute', 60, 60),
+        ] | select('!=','') | list %}
+      {{ 'gain' if name == 'dst_until' else 'lose' }} {{ values[:-1] | join(', ') ~ ' and ' ~ values[-1] if values | length > 1 else values | first }}

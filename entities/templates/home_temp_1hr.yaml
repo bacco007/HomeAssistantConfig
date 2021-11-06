@@ -2,11 +2,18 @@
 trigger:
   - platform: time_pattern
     hours: "/1"
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: template
+      service: reload
 sensor:
   - name: weather_outside_temperature_1hint
     unique_id: weather_outside_temperature_1hint
     state: >
-      {{ states('sensor.weather_outside_temperature') | float }}
+      {{ states('sensor.weather_outside_temperature') | float(default=0) }}
     icon: mdi:thermometer
     unit_of_measurement: "°C"
     attributes:

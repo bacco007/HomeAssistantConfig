@@ -1,11 +1,11 @@
 {
   "domain": "solcast_solar",
   "name": "Solcast PV Forecast",
-  "version": "1.0.8",
+  "version": "2.0.3",
   "config_flow": true,
   "documentation": "https://github.com/oziee/ha-solcast-solar",
   "issue_tracker": "https://github.com/oziee/ha-solcast-solar/issues",
-  "requirements": ["aiohttp>=3.6.2", "datetime>=4.3", "isodate>=0.6.0", "pysolcast"],
+  "requirements": ["aiohttp>=3.6.2", "datetime>=4.3", "isodate>=0.6.0"],
   "dependencies": [],
   "after_dependencies": ["http"],
   "iot_class": "cloud_polling",

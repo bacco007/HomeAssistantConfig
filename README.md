@@ -69,32 +69,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, October 24th 2021_
+_Stats as at 05:00, Saturday, November 6th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.10.5 | 344     | 2102         | 1568 | 85 |
+| 2021.11.1 | 346     | 2110         | 1569 | 85 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 85
-Binary Sensor | 178
+Binary Sensor | 182
 Camera | 4
-Device Tracker | 66
+Device Tracker | 70
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 19
+Media Player | 17
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1568
+Sensor | 1569
 Sun | 1
-Switch | 92
+Switch | 89
 Weather | 7
 Zone | 10
 
@@ -132,6 +132,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
+| [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
@@ -346,6 +347,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
 | [sensor.mqtt](https://www.home-assistant.io/components/sensor.mqtt) |
+| [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.nfl](https://www.home-assistant.io/components/sensor.nfl) |
 | [sensor.nhl_api](https://www.home-assistant.io/components/sensor.nhl_api) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
@@ -405,7 +407,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [spacex](https://www.home-assistant.io/components/spacex) |
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |
-| [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
 | [stream](https://www.home-assistant.io/components/stream) |
@@ -418,6 +419,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
+| [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
 | [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.smartthinq_sensors](https://www.home-assistant.io/components/switch.smartthinq_sensors) |
 | [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
@@ -465,6 +467,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Amber Electric](https://github.com/davewatson91/hass-amber-electric)
 - [Amber Electric](https://www.home-assistant.io/integrations/amber_electric)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
+- [Apple TV](https://www.home-assistant.io/integrations/apple_tv)
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
 - [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
@@ -503,12 +506,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Rocket Launch Live - Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
 - [SamsungTV Smart](https://github.com/ollo69/ha-samsungtv-smart)
 - [Satellite Tracker (N2YO)](https://github.com/djtimca/hasatellitetracker)
-- [Simple Icons]()
+- [Simple Icons](https://github.com/vigonotion/hass-simpleicons)
 - [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
 - [Solcast PV Forecast](https://github.com/oziee/ha-solcast-solar)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
-- [Spotcast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [Temperature Feels Like](https://github.com/Limych/ha-temperature-feeling)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)

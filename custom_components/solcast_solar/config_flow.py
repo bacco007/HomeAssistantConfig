@@ -1,17 +1,17 @@
 """Config flow for Solcast Solar integration."""
 from __future__ import annotations
 
-import datetime
-import json
 from typing import Any
+from homeassistant.helpers.config_validation import boolean
 
 import voluptuous as vol
+
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
-from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_NAME, CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_APIKEY, CONF_POLL_INTERVAL, CONF_ROOFTOP, DOMAIN
+from .const import CONF_RESOURCE_ID, CONF_API_LIMIT, CONF_SSL_DISABLE, CONF_AUTO_FORCAST, CONF_AUTO_HISTORY, DOMAIN
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -34,13 +34,14 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             return self.async_create_entry(
                 title=user_input[CONF_NAME],
-                data = {"apiremaining": 50, 
-                        "data": json.dumps(dict({"forecasts": []})), 
-                        "last_update": int(datetime.date(1980, 4, 13).strftime("%Y%m%d%H%M%S"))},
+                data = {},
                 options={
-                    CONF_APIKEY: user_input[CONF_APIKEY],
-                    CONF_ROOFTOP: user_input[CONF_ROOFTOP],
-                    CONF_POLL_INTERVAL: user_input[CONF_POLL_INTERVAL],
+                    CONF_API_KEY: user_input[CONF_API_KEY],
+                    CONF_RESOURCE_ID: user_input[CONF_RESOURCE_ID],
+                    #CONF_AUTO_FORCAST: user_input[CONF_AUTO_FORCAST],
+                    #CONF_AUTO_HISTORY: user_input[CONF_AUTO_HISTORY],
+                    CONF_API_LIMIT: user_input[CONF_API_LIMIT],
+                    CONF_SSL_DISABLE: user_input[CONF_SSL_DISABLE],
                 },
             )
 
@@ -51,25 +52,25 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     vol.Required(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(
-                        CONF_APIKEY, default=''
-                    ): str,
-                    vol.Required(
-                        CONF_ROOFTOP, default=''
-                    ): str,
-                    vol.Required(CONF_POLL_INTERVAL, default=1): vol.All(
-                        vol.Coerce(int), vol.Range(min=1, max=6)
+                    vol.Required(CONF_API_KEY, default=""): str,
+                    vol.Required(CONF_RESOURCE_ID, default=""): str,
+                    #vol.Optional(CONF_AUTO_FORCAST, default=False): bool,
+                    #vol.Optional(CONF_AUTO_HISTORY, default=False): bool,
+                    vol.Optional(CONF_API_LIMIT, default=50): vol.All(
+                        vol.Coerce(int), vol.Range(min=1, max=50)
                     ),
+                    vol.Optional(CONF_SSL_DISABLE, default=False): boolean,
                 }
             ),
         )
+
+
 class SolcastSolarOptionFlowHandler(OptionsFlow):
     """Handle options."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         self.config_entry = config_entry
-        
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -81,19 +82,31 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
-                { 
+                {
                     vol.Required(
-                        CONF_APIKEY,
-                        default=self.config_entry.options.get(CONF_APIKEY),
+                        CONF_API_KEY,
+                        default=self.config_entry.options.get(CONF_API_KEY),
                     ): str,
                     vol.Required(
-                        CONF_ROOFTOP,
-                        default=self.config_entry.options.get(CONF_ROOFTOP),
+                        CONF_RESOURCE_ID,
+                        default=self.config_entry.options.get(CONF_RESOURCE_ID),
                     ): str,
+                    #vol.Required(
+                    #    CONF_AUTO_FORCAST,
+                    #    default=self.config_entry.options.get(CONF_AUTO_FORCAST),
+                    #): boolean,
+                    #vol.Required(
+                    #    CONF_AUTO_HISTORY,
+                    #    default=self.config_entry.options.get(CONF_AUTO_HISTORY),
+                    #): boolean,
                     vol.Required(
-                        CONF_POLL_INTERVAL,
-                        default=self.config_entry.options[CONF_POLL_INTERVAL],
-                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=6)),
+                        CONF_API_LIMIT,
+                        default=self.config_entry.options[CONF_API_LIMIT],
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=50)),
+                    vol.Required(
+                        CONF_SSL_DISABLE,
+                        default=self.config_entry.options.get(CONF_SSL_DISABLE),
+                    ): boolean,
                 }
             ),
         )

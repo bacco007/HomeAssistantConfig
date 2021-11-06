@@ -4,9 +4,9 @@
     "dependencies": [
         "frontend"
     ],
-    "documentation": "",
+    "documentation": "https://github.com/vigonotion/hass-simpleicons",
     "domain": "simpleicons",
     "name": "Simple Icons",
     "requirements": [],
-    "version": "v1.19.0"
+    "version": "v1.20.0"
 }

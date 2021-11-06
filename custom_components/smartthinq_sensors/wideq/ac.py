@@ -520,9 +520,11 @@ class AirConditionerDevice(Device):
             self._current_power_supported = False
             return 0
 
-    def set(self, ctrl_key, command, *, key=None, value=None, data=None):
+    def set(self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None):
         """Set a device's control for `key` to `value`."""
-        super().set(ctrl_key, command, key=key, value=value, data=data)
+        super().set(
+            ctrl_key, command, key=key, value=value, data=data, ctrl_path=ctrl_path
+        )
         if self._status:
             self._status.update_status(key, value)
 
@@ -539,20 +541,19 @@ class AirConditionerDevice(Device):
         if not self.is_air_to_water:
             self._current_power = self.get_power()
 
-    def _get_device_info_v2(self):
-        """Call additional method to get device information for API v2.
-
-        Called by 'device_poll' method using a lower poll rate
-        """
+    def _pre_update_v2(self):
+        """Call additional methods before data update for v2 API."""
         # this command is to get power and temp info on V2 device
         keys = self._get_cmd_keys(CMD_ENABLE_EVENT_V2)
-        mon_timeout = str(ADD_FEAT_POLL_INTERVAL - 10)
-        self.set(keys[0], keys[1], key=keys[2], value=mon_timeout)
+        self.set(keys[0], keys[1], key=keys[2], value="70", ctrl_path="control")
 
     def poll(self) -> Optional["AirConditionerStatus"]:
         """Poll the device's current state."""
 
-        res = self.device_poll(additional_poll_interval=ADD_FEAT_POLL_INTERVAL)
+        res = self.device_poll(
+            query_device_v2=True,
+            additional_poll_interval=ADD_FEAT_POLL_INTERVAL
+        )
         if not res:
             return None
         if self._should_poll and not self.is_air_to_water:

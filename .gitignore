@@ -6,6 +6,7 @@
 __pycache__
 deps
 www/custom-lovelace/upcoming-media-card
+www/fonts
 icloud
 notebooks
 tts

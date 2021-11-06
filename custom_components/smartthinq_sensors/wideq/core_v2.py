@@ -31,7 +31,6 @@ CORE_VERSION = CoreVersion.CoreV2
 # v2
 V2_API_KEY = "VGhpblEyLjAgU0VSVklDRQ=="
 V2_CLIENT_ID = "65260af7e8e6547b51fdccf930097c51eb9885a508d3fddfa9ee6cdec22ae1bd"
-V2_MESSAGE_ID = "wideq"
 V2_SVC_PHASE = "OP"
 V2_APP_LEVEL = "PRD"
 V2_APP_OS = "LINUX"
@@ -108,7 +107,7 @@ def thinq2_headers(
         "x-client-id": V2_CLIENT_ID,
         "x-country-code": country,
         "x-language-code": language,
-        "x-message-id": V2_MESSAGE_ID,
+        "x-message-id": gen_uuid(),
         "x-service-code": SVC_CODE,
         "x-service-phase": V2_SVC_PHASE,
         "x-thinq-app-level": V2_APP_LEVEL,
@@ -557,7 +556,14 @@ class Session(object):
             {"cmd": "Mon", "cmdOpt": "Stop", "deviceId": device_id, "workId": work_id},
         )
 
-    def set_device_controls(self, device_id, ctrl_key, command=None, value=None, data=None):
+    def set_device_controls(
+            self,
+            device_id,
+            ctrl_key,
+            command=None,
+            value=None,
+            data=None,
+    ):
         """Control a device's settings.
 
         `values` is a key/value map containing the settings to update.
@@ -584,12 +590,22 @@ class Session(object):
 
         return res
 
-    def set_device_v2_controls(self, device_id, ctrl_key, command=None, key=None, value=None):
+    def set_device_v2_controls(
+            self,
+            device_id,
+            ctrl_key,
+            command=None,
+            key=None,
+            value=None,
+            *,
+            ctrl_path=None,
+    ):
         """Control a device's settings based on api V2."""
 
         res = {}
         payload = None
-        path = f"service/devices/{device_id}/control-sync"
+        path = ctrl_path or "control-sync"
+        cmd_path = f"service/devices/{device_id}/{path}"
         if isinstance(ctrl_key, dict):
             payload = ctrl_key
         elif command is not None:
@@ -601,7 +617,7 @@ class Session(object):
             }
 
         if payload:
-            res = self.post2(path, payload)
+            res = self.post2(cmd_path, payload)
             _LOGGER.debug("Set V2 result: %s", str(res))
 
         return res

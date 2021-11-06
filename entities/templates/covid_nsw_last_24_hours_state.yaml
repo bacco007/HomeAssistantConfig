@@ -2,15 +2,22 @@
 trigger:
   - platform: time_pattern
     minutes: "/5"
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: template
+      service: reload
 sensor:
   - name: "Covid NSW Last 24 Hours State"
     unique_id: "covid_nsw_last_24_hours_state"
     icon: "mdi:virus"
     unit_of_measurement: "cases"
     state: >
-      {% set total = states('sensor.covid_nsw_last_24_hours_total') | int %}
-      {% set overseas = states('sensor.covid_nsw_last_24_hours_overseas_source') | int %}
-      {% set interstate = states('sensor.covid_nsw_last_24_hours_interstate_source') | int %}
+      {% set total = states('sensor.covid_nsw_last_24_hours_total') | int(default=0) %}
+      {% set overseas = states('sensor.covid_nsw_last_24_hours_overseas_source') | int(default=0) %}
+      {% set interstate = states('sensor.covid_nsw_last_24_hours_interstate_source') | int(default=0) %}
       {% set out_of_state = (overseas + interstate) %}
       {{ (total - out_of_state) }}
     attributes:

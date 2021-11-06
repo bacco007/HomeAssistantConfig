@@ -32,10 +32,10 @@ sensor:
       waze_travel_tom_to_work_arrivetime:
         friendly_name: Tom arrival time (Work)
         value_template: >
-          {% set minutes = states('sensor.waze_travel_tom_to_work') | int %}
+          {% set minutes = states('sensor.waze_travel_tom_to_work') | int(default=0) %}
           {{ (as_timestamp(now()) + (minutes * 60)) | timestamp_custom('%H:%M') }}
       waze_travel_tom_to_home_arrivetime:
         friendly_name: Tom arrival time (Home)
         value_template: >
-          {% set minutes = states('sensor.waze_travel_tom_to_home') | int %}
+          {% set minutes = states('sensor.waze_travel_tom_to_home') | int(default=0) %}
           {{ (as_timestamp(now()) + (minutes * 60)) | timestamp_custom('%H:%M') }}

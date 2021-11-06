@@ -26,6 +26,8 @@ class NFLCard extends LitElement {
     const outlineColor = this._config.outline_color;
     const teamProb = (stateObj.attributes.team_win_probability * 100).toFixed(0);
     const oppoProb = (stateObj.attributes.opponent_win_probability * 100).toFixed(0);
+    const tScr = stateObj.attributes.team_score;
+    const oScr = stateObj.attributes.opponent_score;
 
     var dateForm = new Date (stateObj.attributes.date);
     var gameDay = dateForm.toLocaleDateString('en-US', { weekday: 'long' });
@@ -51,13 +53,17 @@ class NFLCard extends LitElement {
     if (stateObj.attributes.possession == stateObj.attributes.opponent_id) {
       var oppoPoss = 1;
     }
-    if (stateObj.state == 'POST' && stateObj.attributes.team_score > stateObj.attributes.opponent_score ) {
+    if (stateObj.state == 'POST' && tScr > oScr) {
       var oppoScore = 0.6;
       var teamScore = 1;
     }
-    if (stateObj.state == 'POST' && stateObj.attributes.opponent_score > stateObj.attributes.team_score ) {
+    if (stateObj.state == 'POST' && tScr < oScr) {
       var oppoScore = 1;
       var teamScore = 0.6;
+    }
+    if (stateObj.state == 'POST' && tScr == oScr) {
+      var oppoScore = 1;
+      var teamScore = 1;
     }
     if (stateObj.attributes.team_homeaway == 'home') {
       var teamColor = stateObj.attributes.team_colors[0];
@@ -160,7 +166,7 @@ class NFLCard extends LitElement {
             .opponent-probability { width: ${oppoProb}%; background-color: ${oppoColor}; height: 12px; border-radius: 0 ${probRadius}px ${probRadius}px 0; border: ${clrOut}px solid ${outColor}; border-left: 0; transition: all 1s ease-out; }
             .team-probability { width: ${teamProb}%; background-color: ${teamColor}; height: 12px; border-radius: ${probRadius}px 0 0 ${probRadius}px; border: ${clrOut}px solid ${outColor}; border-right: 0; transition: all 1s ease-out; }
             .probability-wrapper { display: flex; }
-            .team-percent { flex: 0 0 10px; padding: 0 0 0 10px; }
+            .team-percent { flex: 0 0 10px; padding: 0 10px 0 0; }
             .oppo-percent { flex: 0 0 10px; padding: 0 0 0 10px; text-align: right; }
             .percent { padding: 0 6px; }
             .post-game { margin: 0 auto; }

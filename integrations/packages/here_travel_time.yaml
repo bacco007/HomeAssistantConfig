@@ -30,7 +30,7 @@ sensor:
     entity_namespace: here_travel
     name: Tom to Home
     api_key: !secret here_apikey
-    origin_entity_id: device_tracker.tbiphone11_haapp
+    origin_entity_id: device_tracker.tbiphone13pro_2
     destination_entity_id: zone.home
     scan_interval: 120
     mode: car
@@ -39,7 +39,7 @@ sensor:
     entity_namespace: here_travel
     name: Tom to Work
     api_key: !secret here_apikey
-    origin_entity_id: device_tracker.tbiphone11_haapp
+    origin_entity_id: device_tracker.tbiphone13pro_2
     destination_entity_id: zone.trc
     scan_interval: 120
     mode: car

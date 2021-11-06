@@ -1,0 +1,14 @@
+# Describes the format for available services for the Solcast integration
+
+update_forecast:
+  description: >
+    Fetches the forecasts from Solcast.
+
+delete_all_forecast_data:
+  description: >
+    Delete all saved Solcast Forecast data
+
+#update_history:
+#  description: >
+#    Fetches historical data from Solcast.
+

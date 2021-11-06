@@ -4,9 +4,10 @@
         "step": {
             "user": {
                 "data": {
-                    "apikey": "Solcast API Key",
-                    "rooftop": "Solcast rooftop resource id",
-                    "pollapi_interval": "Hours (intervals between polling the solcast api)",
+                    "api_key": "Solcast API key",
+                    "resource_id": "Solcast rooftop id",
+                    "api_limit": "Total API counter (Solcast API Limit)",
+                    "disable_ssl_check": "Disable SSL check",
                     "name": "Name"
                 },
                 "description": "Fill in the data of your solar panels."
@@ -17,9 +18,10 @@
         "step": {
             "init": {
                 "data": {
-                    "apikey": "Solcast API Key",
-                    "rooftop": "Solcast rooftop resource id",
-                    "pollapi_interval": "Hours (intervals between polling the solcast api)",
+                    "api_key": "Solcast API key",
+                    "resource_id": "Solcast rooftop id",
+                    "api_limit": "Total API counter (Solcast API Limit)",
+                    "disable_ssl_check": "Disable SSL check",
                     "name": "Name"
                 },
                 "description": "These values allow tweaking the Solcast Integration."

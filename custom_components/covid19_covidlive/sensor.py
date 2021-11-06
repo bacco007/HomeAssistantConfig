@@ -95,7 +95,7 @@ class CovidLiveSensor(Entity):
 
         col_type = {"CATEGORY": "string", "TOTAL": "int", "VAR": "string", "NET": "string"}
 
-        clean_dict = {"%": "", "−": "NaN", "\(est\)": "0"}
+        clean_dict = {"%": "", "−": "0", "\(est\)": "0", "NaN": 0, "": 0, " AM": "", " PM": "", ":": ""}
         df = (
             df.replace(clean_dict, regex=True)
             .replace({"-": 0})
