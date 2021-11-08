@@ -132,7 +132,7 @@ sensor:
             {% if val == 0 %}
               {{ 0 }}
             {% else %}
-              {{ (((val|int)/38943)*100)|round(3) }}
+              {{ (((val|int(default=0))/38943)*100)|round(3) }}
             {% endif %}
           wnsw_percent_cases: >
             {% set val = state_attr('sensor.covid_19_nswh_local', 'wnsw') %}
@@ -140,7 +140,7 @@ sensor:
             {% if val == 0 or val2 == 0 %}
               {{ 0 }}
             {% else %}
-              {{ (((val|int)/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int))*100)|round(3) }}
+              {{ (((val|int(default=0))/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int(default=0)))*100)|round(3) }}
             {% endif %}
           drc_percent_cases: >
             {% set val = state_attr('sensor.covid_19_nswh_local', 'drc') %}
@@ -148,7 +148,7 @@ sensor:
             {% if val == 0 or val2 == 0 %}
               {{ 0 }}
             {% else %}
-              {{ (((val|int)/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int))*100)|round(3) }}
+              {{ (((val|int(default=0))/(state_attr('sensor.covid_19_covidlive_nsw', 'Cases')|int(default=0)))*100)|round(3) }}
             {% endif %}
           dubo_percent_cases: >
             {% set val = state_attr('sensor.covid_19_nswh_local', 'dubo') %}
@@ -156,21 +156,21 @@ sensor:
             {% if val == 0 or val2 == 0 %}
               {{ 0 }}
             {% else %}
-              {{ (((val|int)/(val2|int))*100)|round(3) }}
+              {{ (((val|int(default=0))/(val2|int))*100)|round(3) }}
             {% endif %}
 
       covid_19_covidlive_aus_vaccines:
         friendly_name: "COVID-19 Covidlive AUS Vaccines"
         value_template: >
-          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses')|int)
-          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses')|int)
-          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses')|int))
+          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses')|int(default=0))
+          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses')|int(default=0)))
           }}
         unit_of_measurement: Doses
         icon_template: mdi:biohazard
@@ -192,15 +192,15 @@ sensor:
       covid_19_covidlive_aus_vaccines_2nddose:
         friendly_name: "COVID-19 Covidlive AUS Vaccines 2nd Dose"
         value_template: >
-          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses2nd')|int)
-          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses2nd')|int)
-          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses2nd')|int))
+          {{ (state_attr('sensor.covid_19_covidlive_aus', 'Doses2nd')|int(default=0))
+          - ((state_attr('sensor.covid_19_covidlive_act', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_nsw', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_vic', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_qld', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_tas', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_sa', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_nt', 'Doses2nd')|int(default=0))
+          + (state_attr('sensor.covid_19_covidlive_wa', 'Doses2nd')|int(default=0)))
           }}
         unit_of_measurement: Doses
         icon_template: mdi:biohazard
@@ -209,21 +209,21 @@ sensor:
         unit_of_measurement: "%"
         icon_template: mdi:biohazard
         value_template: >
-          {{ (((state_attr('sensor.covid_19_covidlive_aus', 'Doses')|int)/25687000)*100)|round(3) }}
+          {{ (((state_attr('sensor.covid_19_covidlive_aus', 'Doses')|int(default=0))/25687000)*100)|round(3) }}
         attribute_templates:
           act_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_act', 'Doses')|int)/431100)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_act', 'Doses')|int(default=0))/431100)*100)|round(3) }}
           nsw_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_nsw', 'Doses')|int)/8164100)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_nsw', 'Doses')|int(default=0))/8164100)*100)|round(3) }}
           nt_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_nt', 'Doses')|int)/246000)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_nt', 'Doses')|int(default=0))/246000)*100)|round(3) }}
           qld_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_qld', 'Doses')|int)/5174400)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_qld', 'Doses')|int(default=0))/5174400)*100)|round(3) }}
           sa_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_sa', 'Doses')|int)/1769300)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_sa', 'Doses')|int(default=0))/1769300)*100)|round(3) }}
           tas_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_tas', 'Doses')|int)/540600)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_tas', 'Doses')|int(default=0))/540600)*100)|round(3) }}
           vic_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_vic', 'Doses')|int)/6694900)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_vic', 'Doses')|int(default=0))/6694900)*100)|round(3) }}
           wa_poppct: >
-            {{ (((state_attr('sensor.covid_19_covidlive_wa', 'Doses')|int)/2661900)*100)|round(3) }}
+            {{ (((state_attr('sensor.covid_19_covidlive_wa', 'Doses')|int(default=0))/2661900)*100)|round(3) }}

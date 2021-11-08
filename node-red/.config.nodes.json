@@ -1461,7 +1461,7 @@
     },
     "node-red-contrib-deconz": {
         "name": "node-red-contrib-deconz",
-        "version": "2.0.6",
+        "version": "2.0.8",
         "local": false,
         "user": false,
         "nodes": {
@@ -1582,7 +1582,7 @@
     },
     "node-red-node-mysql": {
         "name": "node-red-node-mysql",
-        "version": "0.2.1",
+        "version": "0.3.0",
         "local": false,
         "user": false,
         "nodes": {

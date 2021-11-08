@@ -170,7 +170,7 @@ more_page:
         uap_rxdata: "{{ states.sensor.unifipoller_uap.attributes.rx_data }}"
         uap_txdata: "{{ states.sensor.unifipoller_uap.attributes.tx_data }}"
     - name: Untappd
-      icon: mdi:untappd
+      icon: si:untappd
       path: "dwains-dashboard/addons/more_page/untappd/page.yaml"
     - name: Upcoming Sport
       icon: mdi:football-australian

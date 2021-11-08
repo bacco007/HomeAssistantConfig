@@ -6,7 +6,7 @@
             "data": {
                 "api_key": "Solcast API key",
                 "resource_id": "Solcast rooftop id",
-                "api_limit": "Total API counter (Solcast API Limit)",
+                "disable_auto_fetching": "Auto fetch forecast API",
                 "disable_ssl_check": "Disable SSL check",
                 "name": "[%key:common::config_flow::data::name%]"
             }
@@ -20,7 +20,7 @@
             "data": {
                 "api_key": "Solcast API key",
                 "resource_id": "Solcast rooftop id",
-                "api_limit": "Total API counter (Solcast API Limit)",
+                "disable_auto_fetching": "Auto fetch forecast API",
                 "disable_ssl_check": "Disable SSL check",
                 "name": "[%key:common::config_flow::data::name%]"
             }

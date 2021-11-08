@@ -6,7 +6,7 @@ from homeassistant.helpers.restore_state import RestoreEntity
 
 from . import DOMAIN, SensorType
 
-from .const import CONF_RESOURCE_ID, ATTR_ENTRY_TYPE, ENTRY_TYPE_SERVICE
+from .const import ATTR_ENTRY_TYPE, ENTRY_TYPE_SERVICE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -15,12 +15,12 @@ async def async_setup_entry(hass, entry, async_add_entities) -> None:
     """Defer sensor setup to the shared sensor module."""
 
     sensors = []
-    rooftopsite = hass.data[entry.entry_id]
-    sensors.append(SolcastSensor("forecast_today", rooftopsite, SensorType.forecast_today, entry.title, entry.entry_id))
-    sensors.append(SolcastSensor("forecast_today_remaining", rooftopsite, SensorType.forecast_today_remaining, entry.title, entry.entry_id))
-    sensors.append(SolcastSensor("forecast_tomorrow", rooftopsite, SensorType.forecast_tomorrow, entry.title, entry.entry_id))
-    sensors.append(SolcastSensor("remaining API count", rooftopsite, SensorType.api_count, entry.title, entry.entry_id))
-    sensors.append(SolcastSensor("last updated", rooftopsite, SensorType.last_updated, entry.title, entry.entry_id))
+    rooftopsite = hass.data[DOMAIN][entry.entry_id]
+    sensors.append(SolcastSensor("Forecast Today", rooftopsite, SensorType.forecast_today, entry.title, entry.entry_id))
+    sensors.append(SolcastSensor("Forecast Today Remaining", rooftopsite, SensorType.forecast_today_remaining, entry.title, entry.entry_id))
+    sensors.append(SolcastSensor("Forecast Tomorrow", rooftopsite, SensorType.forecast_tomorrow, entry.title, entry.entry_id))
+    sensors.append(SolcastSensor("API Count", rooftopsite, SensorType.api_count, entry.title, entry.entry_id))
+    sensors.append(SolcastSensor("Last Updated", rooftopsite, SensorType.last_updated, entry.title, entry.entry_id))
 
     async_add_entities(sensors)
 
@@ -139,7 +139,6 @@ class SolcastSensor(RestoreEntity):
             self._rooftopsite.set_state(self._type, state.state)
             
             #_LOGGER.debug('Restored state: ' + str(state.state))
-            
             #_LOGGER.debug('check attributes: ' + str(state.attributes))
 
         self._rooftopsite.add_update_listener(self)
