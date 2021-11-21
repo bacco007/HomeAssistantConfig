@@ -12,20 +12,20 @@ SUPPORT_AIR_PURIFIER_MFILTER = ["MFILTER", "support.mFilter"]
 AIR_PURIFIER_CTRL_BASIC = ["Control", "basicCtrl"]
 
 AIR_PURIFIER_STATE_OPERATION = ["Operation", "airState.operation"]
-AIR_PURIFIER_STATE_PM1 = ["PM1", "airState.quality.PM1"]
-AIR_PURIFIER_STATE_PM25 = ["PM25", "airState.quality.PM2"]
-AIR_PURIFIER_STATE_PM10 = ["PM10", "airState.quality.PM10"]
+AIR_PURIFIER_STATE_PM1 = ["SensorPM1", "airState.quality.PM1"]
+AIR_PURIFIER_STATE_PM2 = ["SensorPM2", "airState.quality.PM2"]
+AIR_PURIFIER_STATE_PM10 = ["SensorPM10", "airState.quality.PM10"]
 AIR_PURIFIER_STATE_FILTERMNG_USE_TIME = [
-    "FilterMngUseTime", "airState.filterMngStates.useTime"
+    "FilterUse", "airState.filterMngStates.useTime"
 ]
 AIR_PURIFIER_STATE_FILTERMNG_MAX_TIME = [
-    "FilterMngMaxTime", "airState.filterMngStates.maxTime"
+    "FilterMax", "airState.filterMngStates.maxTime"
 ]
 AIR_PURIFIER_STATE_FILTERMNG_USE_TIME_TOP = [
-    "FilterMngUseTimeTop", "airState.filterMngStates.useTimeTop"
+    "FilterUseTop", "airState.filterMngStates.useTimeTop"
 ]
 AIR_PURIFIER_STATE_FILTERMNG_MAX_TIME_TOP = [
-    "FilterMngMaxTimeTop", "airState.filterMngStates.maxTimeTop"
+    "FilterMaxTop", "airState.filterMngStates.maxTimeTop"
 ]
 
 CMD_STATE_OPERATION = [
@@ -105,17 +105,17 @@ class AirPurifierStatus(DeviceStatus):
 
     @property
     def pm25(self):
-        return self.lookup_range(AIR_PURIFIER_STATE_PM25)
+        return self.lookup_range(AIR_PURIFIER_STATE_PM2)
 
     @property
     def pm10(self):
         return self.lookup_range(AIR_PURIFIER_STATE_PM10)
 
     def _get_lower_filter_life(self):
-        max_time = self.int_or_none(
+        max_time = self.to_int_or_none(
             self.lookup_enum(AIR_PURIFIER_STATE_FILTERMNG_MAX_TIME, True)
         )
-        use_time = self.int_or_none(
+        use_time = self.to_int_or_none(
             self.lookup_range(AIR_PURIFIER_STATE_FILTERMNG_USE_TIME)
         )
         if max_time is None or use_time is None:
@@ -126,10 +126,10 @@ class AirPurifierStatus(DeviceStatus):
             return None
 
     def _get_upper_filter_life(self):
-        max_time = self.int_or_none(
+        max_time = self.to_int_or_none(
             self.lookup_enum(AIR_PURIFIER_STATE_FILTERMNG_MAX_TIME_TOP, True)
         )
-        use_time = self.int_or_none(
+        use_time = self.to_int_or_none(
             self.lookup_range(AIR_PURIFIER_STATE_FILTERMNG_USE_TIME_TOP)
         )
         if max_time is None or use_time is None:

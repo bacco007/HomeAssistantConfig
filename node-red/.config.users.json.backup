@@ -7,9 +7,16 @@
                 "view-grid-size": "20",
                 "view-node-status": true,
                 "view-node-show-label": true,
-                "view-show-tips": true
+                "view-show-tips": true,
+                "view-show-welcome-tours": true
             },
-            "keymap": {}
+            "keymap": {
+                "core:disable-selected-nodes": {
+                    "scope": "*",
+                    "key": "ctrl-q",
+                    "user": true
+                }
+            }
         }
     }
 }

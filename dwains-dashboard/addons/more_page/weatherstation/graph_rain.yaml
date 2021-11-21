@@ -57,11 +57,7 @@ card:
       - seriesName: "Temp"
         decimalsInFloat: 0
         title:
-          text: "Temperature (°C)"
-      - seriesName: "Temp"
-        show: false
-      - seriesName: "Temp"
-        show: false
+          text: "Rainfall (mm)"
   series:
     - entity: sensor.weather_outside_rain_day
       name: Rainfall
@@ -69,7 +65,7 @@ card:
       # color: "da1e28"
       extend_to_end: false
       stroke_width: 4
-      unit: "°C"
+      unit: "mm"
       group_by:
         func: last
         duration: 5min
@@ -87,7 +83,7 @@ card:
       name: Yesterday
       stroke_width: 1.8
       extend_to_end: false
-      unit: "°C"
+      unit: "mm"
       curve: smooth
       offset: -1d
       group_by:

@@ -100,6 +100,7 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         measurement: str,
         unit_of_measurement: str,
         state_class: str | None,
+        entity_category: str | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader sensor."""
@@ -107,7 +108,9 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         self._unit_of_measurement = unit_of_measurement
         self._state_class = state_class
         self.measurement = measurement
-        super().__init__(hub, device_id, name_template, icon, enabled_default)
+        super().__init__(
+            hub, device_id, name_template, icon, entity_category, enabled_default
+        )
 
     @property
     def unique_id(self) -> str:
@@ -148,6 +151,7 @@ class MyJDownloaderSensor(MyJDownloaderEntity):
         measurement: str,
         unit_of_measurement: str,
         state_class: str | None,
+        entity_category: str | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader sensor."""
@@ -155,7 +159,7 @@ class MyJDownloaderSensor(MyJDownloaderEntity):
         self._unit_of_measurement = unit_of_measurement
         self._state_class = state_class
         self.measurement = measurement
-        super().__init__(hub, name, icon, enabled_default)
+        super().__init__(hub, name, icon, entity_category, enabled_default)
 
     @property
     def unique_id(self) -> str:
@@ -248,13 +252,14 @@ class MyJDownloaderPackagesSensor(MyJDownloaderDeviceSensor):
         device_id: str,
     ) -> None:
         """Initialize MyJDownloader sensor."""
-        self._download_list = []
+        self._packages_list = []
         super().__init__(
             hub,
             device_id,
             "JDownloader $device_name Packages",
             "mdi:download",
             "packages",
+            None,
             None,
             None,
             False,
@@ -283,13 +288,14 @@ class MyJDownloaderLinksSensor(MyJDownloaderDeviceSensor):
         device_id: str,
     ) -> None:
         """Initialize MyJDownloader sensor."""
-        self._download_list = []
+        self._links_list = []
         super().__init__(
             hub,
             device_id,
             "JDownloader $device_name Links",
             "mdi:download",
             "links",
+            None,
             None,
             None,
             False,

@@ -1,4 +1,5 @@
 """MyJDownloader switches."""
+from __future__ import annotations
 
 import datetime
 import logging
@@ -60,12 +61,13 @@ class MyJDownloaderSwitch(MyJDownloaderDeviceEntity, SwitchEntity):
         name: str,
         icon: str,
         key: str,
+        entity_category: str | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader switch."""
         self._state = False
         self._key = key
-        super().__init__(hub, device_id, name, icon, enabled_default)
+        super().__init__(hub, device_id, name, icon, entity_category, enabled_default)
 
     @property
     def unique_id(self) -> str:

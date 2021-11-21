@@ -1,0 +1,64 @@
+---
+# https://community.home-assistant.io/t/cookie-login-to-get-value-for-sensor/350417/9?u=bacco007
+binary_sensor:
+  - unique_id: udm_internet
+    icon: mdi:wan
+    device_class: connectivity
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[4] | default }}
+    attributes:
+      friendly_name: Internet
+
+  - unique_id: udm_upgradable
+    icon: mdi:update
+    device_class: update
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[7] | default }}
+    attributes:
+      friendly_name: Update
+
+sensor:
+  - unique_id: udm_cpu
+    icon: mdi:chip
+    unit_of_measurement: "%"
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[0] | default }}
+    attributes:
+      friendly_name: Processor
+
+  - unique_id: udm_cpu_temp
+    icon: mdi:thermometer
+    unit_of_measurement: "°C"
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[1] | default }}
+    attributes:
+      friendly_name: Processor Temperature
+
+  - unique_id: udm_mem
+    icon: mdi:memory
+    unit_of_measurement: "%"
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[2] | default }}
+    attributes:
+      friendly_name: Memory
+
+  - unique_id: udm_disk
+    icon: mdi:harddisk
+    unit_of_measurement: "%"
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[3] | default }}
+    attributes:
+      friendly_name: Hard Disk
+
+  - unique_id: udm_uptime
+    device_class: timestamp
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[5] | default }}
+    attributes:
+      friendly_name: Uptime
+  - unique_id: udm_version
+    icon: mdi:router-wireless
+    state: >
+      {{ states('sensor.udm_unifios').split('|\n')[6] | default }}
+    attributes:
+      friendly_name: Version

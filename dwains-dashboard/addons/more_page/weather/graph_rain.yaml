@@ -57,10 +57,6 @@ card:
         decimalsInFloat: 0
         title:
           text: "Rainfall (mm)"
-      - seriesName: "Temp"
-        show: false
-      - seriesName: "Temp"
-        show: false
   series:
     - entity: sensor.tamworth_airport_rain_since_9am
       name: Rainfall

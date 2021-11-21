@@ -10,6 +10,7 @@ import logging
 from numbers import Number
 from typing import Any, Dict, Optional
 
+from . import EMULATION, wideq_log_level
 from .core_exceptions import MonitorError
 
 BIT_OFF = "OFF"
@@ -969,6 +970,9 @@ class Device(object):
     ):
         """Set a device's control for `key` to `value`.
         """
+        if EMULATION:
+            return
+
         if self._should_poll:
             self._client.session.set_device_controls(
                 self._device_info.id,
@@ -997,15 +1001,18 @@ class Device(object):
 
     def set(self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None):
         """Set a device's control for `key` to `value`."""
+        log_level = wideq_log_level()
         full_key = self._prepare_command(ctrl_key, command, key, value)
         if full_key:
-            _LOGGER.debug(
+            _LOGGER.log(
+                log_level,
                 "Setting new state for device %s: %s",
                 self._device_info.id, str(full_key),
             )
             self._set_control(full_key, ctrl_path=ctrl_path)
         else:
-            _LOGGER.debug(
+            _LOGGER.log(
+                log_level,
                 "Setting new state for device %s:  %s - %s - %s - %s",
                 self._device_info.id, ctrl_key, command, key, value,
             )
@@ -1108,6 +1115,9 @@ class Device(object):
         Perform dedicated device query if query_device is set to true,
         otherwise use the dashboard result
         """
+        if EMULATION:
+            query_device = False
+
         if query_device:
             try:
                 self._pre_update_v2()
@@ -1139,16 +1149,10 @@ class Device(object):
         """
         return
 
-    def _get_device_info_v2(self):
-        """Call additional method to get device information for v2 API.
-
-        Override in specific device to call requested methods
-        """
-        return
-
     def _additional_poll(self, poll_interval: int):
         """Perform dedicated additional device poll with a slower rate."""
-
+        if not self._should_poll:
+            return
         if poll_interval <= 0:
             return
         call_time = datetime.now()
@@ -1159,17 +1163,25 @@ class Device(object):
         difference = (call_time - self._last_additional_poll).total_seconds()
         if difference >= poll_interval:
             self._last_additional_poll = datetime.now()
-            if self._should_poll:
-                self._get_device_info()
-            else:
-                self._get_device_info_v2()
+            self._get_device_info()
 
-    def device_poll(self, snapshot_key="", *, query_device_v2=False, additional_poll_interval=0):
+    def device_poll(
+            self,
+            snapshot_key="",
+            *,
+            thinq1_additional_poll=0,
+            thinq2_query_device=False,
+    ):
         """Poll the device's current state.
-        
-        Monitoring must be started first with `monitor_start`. Return
-        either a `Status` object or `None` if the status is not yet
-        available.
+        Monitoring for thinq1 devices must be started first with `monitor_start`.
+
+        Return either a `Status` object or `None` if the status is not yet available.
+
+        :param snapshot_key: the key used to extract the thinq2 snapshot from payload.
+        :param thinq1_additional_poll: run an additional poll command for thinq1 devices
+            at specified rate (0 means disabled).
+        :param thinq2_query_device: if True query thinq2 devices with dedicated command
+            instead using dashboard.
         """
         res = None
 
@@ -1179,7 +1191,7 @@ class Device(object):
 
         # ThinQ V2 - Monitor data is with device info
         if not self._should_poll:
-            snapshot = self._get_device_snapshot(query_device_v2)
+            snapshot = self._get_device_snapshot(thinq2_query_device)
             if not snapshot:
                 return None
             return self._model_info.decode_snapshot(snapshot, snapshot_key)
@@ -1193,9 +1205,9 @@ class Device(object):
             res = self._model_info.decode_monitor(data)
 
         # do additional poll
-        if res and additional_poll_interval > 0:
+        if res and thinq1_additional_poll > 0:
             try:
-                self._additional_poll(additional_poll_interval)
+                self._additional_poll(thinq1_additional_poll)
             except Exception as exc:
                 _LOGGER.warning("Error calling additional poll methods. Error %s", exc)
 
@@ -1242,6 +1254,15 @@ class DeviceStatus(object):
         if value is not None and isinstance(value, Number):
             return str(int(value))
         return None
+
+    @staticmethod
+    def to_int_or_none(value):
+        if value is None:
+            return None
+        try:
+            return int(value)
+        except ValueError:
+            return None
 
     @property
     def has_data(self):

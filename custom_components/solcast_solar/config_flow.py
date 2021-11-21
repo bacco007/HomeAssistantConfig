@@ -11,7 +11,7 @@ from homeassistant.const import CONF_NAME, CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_RESOURCE_ID, CONF_API_LIMIT, CONF_SSL_DISABLE, CONF_AUTO_FORCAST, CONF_AUTO_HISTORY, DOMAIN
+from .const import CONF_RESOURCE_ID, CONF_SSL_DISABLE, DOMAIN, CONF_AUTO_FETCH
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -38,9 +38,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                 options={
                     CONF_API_KEY: user_input[CONF_API_KEY],
                     CONF_RESOURCE_ID: user_input[CONF_RESOURCE_ID],
-                    #CONF_AUTO_FORCAST: user_input[CONF_AUTO_FORCAST],
-                    #CONF_AUTO_HISTORY: user_input[CONF_AUTO_HISTORY],
-                    CONF_API_LIMIT: user_input[CONF_API_LIMIT],
+                    CONF_AUTO_FETCH: user_input[CONF_AUTO_FETCH],
                     CONF_SSL_DISABLE: user_input[CONF_SSL_DISABLE],
                 },
             )
@@ -54,11 +52,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     ): str,
                     vol.Required(CONF_API_KEY, default=""): str,
                     vol.Required(CONF_RESOURCE_ID, default=""): str,
-                    #vol.Optional(CONF_AUTO_FORCAST, default=False): bool,
-                    #vol.Optional(CONF_AUTO_HISTORY, default=False): bool,
-                    vol.Optional(CONF_API_LIMIT, default=50): vol.All(
-                        vol.Coerce(int), vol.Range(min=1, max=50)
-                    ),
+                    vol.Optional(CONF_AUTO_FETCH, default=True): boolean,
                     vol.Optional(CONF_SSL_DISABLE, default=False): boolean,
                 }
             ),
@@ -91,18 +85,10 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         CONF_RESOURCE_ID,
                         default=self.config_entry.options.get(CONF_RESOURCE_ID),
                     ): str,
-                    #vol.Required(
-                    #    CONF_AUTO_FORCAST,
-                    #    default=self.config_entry.options.get(CONF_AUTO_FORCAST),
-                    #): boolean,
-                    #vol.Required(
-                    #    CONF_AUTO_HISTORY,
-                    #    default=self.config_entry.options.get(CONF_AUTO_HISTORY),
-                    #): boolean,
                     vol.Required(
-                        CONF_API_LIMIT,
-                        default=self.config_entry.options[CONF_API_LIMIT],
-                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=50)),
+                        CONF_AUTO_FETCH,
+                        default=self.config_entry.options.get(CONF_AUTO_FETCH),
+                    ): boolean,
                     vol.Required(
                         CONF_SSL_DISABLE,
                         default=self.config_entry.options.get(CONF_SSL_DISABLE),

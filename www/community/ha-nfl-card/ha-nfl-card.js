@@ -26,12 +26,14 @@ class NFLCard extends LitElement {
     const outlineColor = this._config.outline_color;
     const teamProb = (stateObj.attributes.team_win_probability * 100).toFixed(0);
     const oppoProb = (stateObj.attributes.opponent_win_probability * 100).toFixed(0);
-    const tScr = stateObj.attributes.team_score;
-    const oScr = stateObj.attributes.opponent_score;
+    var tScr = stateObj.attributes.team_score;
+    var oScr = stateObj.attributes.opponent_score;
 
     var dateForm = new Date (stateObj.attributes.date);
     var gameDay = dateForm.toLocaleDateString('en-US', { weekday: 'long' });
     var gameTime = dateForm.toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit' });
+    var gameMonth = dateForm.toLocaleDateString('en-US', { month: 'short' });
+    var gameDate = dateForm.toLocaleDateString('en-US', { day: '2-digit' });
     var outColor = outlineColor;
     
     if (outline == true) {
@@ -53,18 +55,20 @@ class NFLCard extends LitElement {
     if (stateObj.attributes.possession == stateObj.attributes.opponent_id) {
       var oppoPoss = 1;
     }
-    if (stateObj.state == 'POST' && tScr > oScr) {
-      var oppoScore = 0.6;
-      var teamScore = 1;
+    if (Boolean(stateObj.state == 'POST') && Boolean(tScr > oScr)) {
+        var oppoScore = 0.6;
+        var teamScore = 1;
     }
-    if (stateObj.state == 'POST' && tScr < oScr) {
-      var oppoScore = 1;
-      var teamScore = 0.6;
+    if (Boolean(stateObj.state == 'POST') && Boolean(tScr < oScr)) {
+        var oppoScore = 1;
+        var teamScore = 0.6;
     }
-    if (stateObj.state == 'POST' && tScr == oScr) {
-      var oppoScore = 1;
-      var teamScore = 1;
+    if (Boolean(stateObj.state == 'POST') && Boolean(tScr == oScr)) {
+        var oppoScore = 1;
+        var teamScore = 1;
     }
+
+
     if (stateObj.attributes.team_homeaway == 'home') {
       var teamColor = stateObj.attributes.team_colors[0];
       var oppoColor = stateObj.attributes.opponent_colors[1];
@@ -103,7 +107,7 @@ class NFLCard extends LitElement {
           .divider { font-size: 2.5em; text-align: center; opacity: 0; }
           .name { font-size: 1.4em; margin-bottom: 4px; }
           .line { height: 1px; background-color: var(--primary-text-color); margin:10px 0; }
-          .status { font-size: 1.4em; text-align: center; margin-top: -22px; }
+          .status { font-size: 1.2em; text-align: center; margin-top: -21px; }
         </style>
         <ha-card>
           <div class="card">
@@ -115,16 +119,16 @@ class NFLCard extends LitElement {
                 <div class="name">${stateObj.attributes.team_name}</div>
                 <div class="record">${stateObj.attributes.team_record}</div>
               </div>
-              <div class="score teamscr">${stateObj.attributes.team_score}</div>
+              <div class="score teamscr">${tScr}</div>
               <div class="divider">-</div>
-              <div class="score opposcr">${stateObj.attributes.opponent_score}</div>
+              <div class="score opposcr">${oScr}</div>
               <div class="team">
                 <img src="${stateObj.attributes.opponent_logo}" />
                 <div class="name">${stateObj.attributes.opponent_name}</div>
                 <div class="record">${stateObj.attributes.opponent_record}</div>
               </div>
             </div>
-            <div class="status">FINAL</div>
+            <div class="status">${gameMonth} ${gameDate} - FINAL</div>
           </div>
         </ha-card>
       `;

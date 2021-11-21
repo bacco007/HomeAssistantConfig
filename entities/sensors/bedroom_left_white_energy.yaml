@@ -1,0 +1,6 @@
+---
+platform: integration
+source: sensor.bedroom_left_white_power
+name: bedroom_left_white_energy
+unit_prefix: k
+round: 3

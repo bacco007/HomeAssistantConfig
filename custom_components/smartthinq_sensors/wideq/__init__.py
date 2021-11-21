@@ -1,6 +1,7 @@
 """
 Support for LG Smartthinq device.
 """
+from logging import DEBUG, INFO
 import ssl
 import uuid
 
@@ -15,6 +16,7 @@ DEFAULT_LANGUAGE = "en-US"
 
 # ac devices features
 FEAT_ENERGY_CURRENT = "energy_current"
+FEAT_HUMIDITY = "humidity"
 FEAT_HOT_WATER_TEMP = "hot_water_temperature"
 FEAT_IN_WATER_TEMP = "in_water_temperature"
 FEAT_OUT_WATER_TEMP = "out_water_temperature"
@@ -51,6 +53,14 @@ FEAT_STEAM = "steam"
 FEAT_STEAMSOFTENER = "steam_softener"
 FEAT_TURBOWASH = "turbo_wash"
 
+# SPECIALS GTI
+FEAT_ANTICREASE = "anti_crease"
+FEAT_DAMPDRYBEEP = "damp_dry_beep"
+FEAT_ECOHYBRID = "eco_hybrid"
+FEAT_HANDIRON = "hand_iron"
+FEAT_RESERVATION = "reservation"
+FEAT_SELFCLEAN = "self_clean"
+
 # refrigerator device features
 FEAT_ECOFRIENDLY = "eco_friendly"
 FEAT_EXPRESSMODE = "express_mode"
@@ -79,6 +89,9 @@ FEAT_UPPER_FILTER_LIFE = "upper_filter_life"
 # request ciphers settings
 CIPHERS = ":HIGH:!DH:!aNULL"
 
+# enable emulation mode for debug / test
+EMULATION = False
+
 
 def as_list(obj):
     """Wrap non-lists in lists.
@@ -95,6 +108,10 @@ def as_list(obj):
 
 def gen_uuid():
     return str(uuid.uuid4())
+
+
+def wideq_log_level():
+    return INFO if EMULATION else DEBUG
 
 
 class CoreVersion(Enum):

@@ -11,9 +11,9 @@ more_page:
     - name: Apple TV
       icon: si:appletv
       path: "dwains-dashboard/addons/more_page/appletv/page.yaml"
-    - name: Coronavirus
-      icon: custom:corona-virus
-      path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
+    # - name: Coronavirus
+    #   icon: custom:corona-virus
+    #   path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
     - name: Cryptocurrency
       icon: mdi:bitcoin
       path: "dwains-dashboard/addons/more_page/cryptocurrency/page.yaml"
@@ -170,7 +170,7 @@ more_page:
         uap_rxdata: "{{ states.sensor.unifipoller_uap.attributes.rx_data }}"
         uap_txdata: "{{ states.sensor.unifipoller_uap.attributes.tx_data }}"
     - name: Untappd
-      icon: mdi:untappd
+      icon: si:untappd
       path: "dwains-dashboard/addons/more_page/untappd/page.yaml"
     - name: Upcoming Sport
       icon: mdi:football-australian

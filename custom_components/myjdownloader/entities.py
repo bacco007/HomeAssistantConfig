@@ -1,11 +1,12 @@
 """Base entity classes for MyJDownloader integration."""
+from __future__ import annotations
 
 import logging
 from string import Template
 
 from myjdapi.exception import MYJDConnectionException
 
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import DeviceInfo, Entity
 
 from . import MyJDownloaderHub
 from .const import DOMAIN
@@ -21,10 +22,12 @@ class MyJDownloaderEntity(Entity):
         hub: MyJDownloaderHub,
         name: str,
         icon: str,
+        entity_category: str | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize the MyJDownloader entity."""
         self._available = True
+        self._entity_category = entity_category
         self._enabled_default = enabled_default
         self._icon = icon
         self._name = name
@@ -39,6 +42,11 @@ class MyJDownloaderEntity(Entity):
     def icon(self) -> str:
         """Return the mdi icon of the entity."""
         return self._icon
+
+    @property
+    def entity_category(self) -> str | None:
+        """Return the category of the entity."""
+        return self._entity_category
 
     @property
     def entity_registry_enabled_default(self) -> bool:
@@ -82,6 +90,7 @@ class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
         device_id: str,
         name_template: str,
         icon: str,
+        entity_category: str | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize the MyJDownloader device entity."""
@@ -90,19 +99,19 @@ class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
         self._device_name = device.name
         self._device_type = device.device_type
         name = Template(name_template).substitute(device_name=self._device_name)
-        super().__init__(hub, name, icon, enabled_default)
+        super().__init__(hub, name, icon, entity_category, enabled_default)
 
     @property
-    def device_info(self):
+    def device_info(self) -> DeviceInfo:
         """Return device information about this MyJDownloader instance."""
-        return {
-            "identifiers": {(DOMAIN, self._device_id)},
-            "name": f"JDownloader {self._device_name}",
-            "manufacturer": "AppWork GmbH",
-            "model": self._device_type,
-            "sw_version": None,  # TODO add version method to upstream Jddevice
-            "entry_type": "service",
-        }
+        return DeviceInfo(
+            configuration_url=f"https://my.jdownloader.org/?deviceId={self._device_id}#webinterface:downloads",
+            identifiers={(DOMAIN, self._device_id)},
+            name=f"JDownloader {self._device_name}",
+            manufacturer="AppWork GmbH",
+            model=self._device_type,
+            entry_type="service",
+        )
 
     async def async_update(self) -> None:
         """Update MyJDownloader entity."""

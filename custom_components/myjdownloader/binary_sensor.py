@@ -1,4 +1,5 @@
 """MyJDownloader binary sensors."""
+from __future__ import annotations
 
 import datetime
 
@@ -7,6 +8,7 @@ from homeassistant.components.binary_sensor import (
     DOMAIN,
     BinarySensorEntity,
 )
+from homeassistant.const import ENTITY_CATEGORY_DIAGNOSTIC
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
@@ -59,13 +61,16 @@ class MyJDownloaderBinarySensor(MyJDownloaderDeviceEntity, BinarySensorEntity):
         icon: str,
         measurement: str,
         device_class: str = None,
+        entity_category: str | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader binary sensor."""
         self._state = None
         self._device_class = device_class
         self.measurement = measurement
-        super().__init__(hub, device_id, name_template, icon, enabled_default)
+        super().__init__(
+            hub, device_id, name_template, icon, entity_category, enabled_default
+        )
 
     @property
     def unique_id(self) -> str:
@@ -106,6 +111,7 @@ class MyJDownloaderUpdateAvailableSensor(MyJDownloaderBinarySensor):
             None,
             "update_available",
             DEVICE_CLASS_PROBLEM,
+            ENTITY_CATEGORY_DIAGNOSTIC,
         )
 
     async def _myjdownloader_update(self) -> None:

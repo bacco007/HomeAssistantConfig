@@ -1,0 +1,6 @@
+---
+platform: integration
+source: sensor.bedroom_right_black_power
+name: bedroom_right_black_energy
+unit_prefix: k
+round: 3

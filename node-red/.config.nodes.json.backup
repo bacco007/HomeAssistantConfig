@@ -1461,10 +1461,19 @@
     },
     "node-red-contrib-deconz": {
         "name": "node-red-contrib-deconz",
-        "version": "1.3.4",
+        "version": "2.0.8",
         "local": false,
         "user": false,
         "nodes": {
+            "api": {
+                "name": "api",
+                "types": [],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-deconz",
+                "file": "/opt/node_modules/node-red-contrib-deconz/deconz.js"
+            },
             "in": {
                 "name": "in",
                 "types": [
@@ -1530,15 +1539,6 @@
                 "user": false,
                 "module": "node-red-contrib-deconz",
                 "file": "/opt/node_modules/node-red-contrib-deconz/nodes/server.js"
-            },
-            "api": {
-                "name": "api",
-                "types": [],
-                "enabled": true,
-                "local": false,
-                "user": false,
-                "module": "node-red-contrib-deconz",
-                "file": "/opt/node_modules/node-red-contrib-deconz/deconz.js"
             }
         }
     },
@@ -1582,7 +1582,7 @@
     },
     "node-red-node-mysql": {
         "name": "node-red-node-mysql",
-        "version": "0.2.1",
+        "version": "0.3.0",
         "local": false,
         "user": false,
         "nodes": {

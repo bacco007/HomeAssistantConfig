@@ -16,8 +16,8 @@ sensor:
     state_topic: inverter/tele/SENSOR
     value_template: "{{ value_json.total_power_yield }}"
     unit_of_measurement: "MWh"
-    #state_class: total_increasing
-    #device_class: energy
+    # state_class: total_increasing
+    # device_class: energy
     unique_id: sungrowsolar_totalpoweryield
 
   - platform: mqtt
