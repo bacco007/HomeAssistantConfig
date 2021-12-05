@@ -4,6 +4,9 @@
   "name": "Untappd",
   "documentation": "https://github.com/custom-components/sensor.untappd/blob/master/README.md",
   "dependencies": [],
-  "codeowners": ["@iantrich", "@swetoast"],
+  "codeowners": [
+  "@iantrich",
+  "@swetoast"
+  ],
   "requirements": ["pyuntappd==0.0.5"]
 }

@@ -19418,7 +19418,7 @@ const isScrolledIntoView = (elem) => {
 };
 
 class PlayController {
-    constructor(card, hass, plex, entity, runBefore, runAfter, libraryName, entityRegistry) {
+    constructor(card, hass, plex, entity, runBefore, runAfter, libraryName, entityRegistry, shuffle) {
         this.playButtons = [];
         this.readyPlayersForType = {};
         this.entityStates = {};
@@ -19429,6 +19429,7 @@ class PlayController {
         this.playActionButton = document.createElement('button');
         this.playActionClickFunction = false;
         this.entityRegistry = [];
+        this.shuffle = false;
         this.getKodiSearchResults = async () => {
             return JSON.parse((await getState(this.hass, 'sensor.kodi_media_sensor_search')).attributes.data);
         };
@@ -19538,7 +19539,7 @@ class PlayController {
                                         library_name: libraryName,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         artist_name: processData.title,
-                                        shuffle: 1
+                                        shuffle: this.shuffle ? 1 : 0
                                     })}`);
                                     break;
                                 case 'album':
@@ -19549,7 +19550,7 @@ class PlayController {
                                         artist_name: processData.parentTitle,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         album_name: processData.title,
-                                        shuffle: 1
+                                        shuffle: this.shuffle ? 1 : 0
                                     })}`);
                                     break;
                                 case 'track':
@@ -19562,7 +19563,7 @@ class PlayController {
                                         album_name: processData.parentTitle,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         track_name: processData.title,
-                                        shuffle: 1
+                                        shuffle: this.shuffle ? 1 : 0
                                     })}`);
                                     break;
                                 case 'movie':
@@ -19598,8 +19599,11 @@ class PlayController {
                             this.playViaCast(entity.value, processData.Media[0].Part[0].key);
                         }
                     }
+                    else if (!lodash.isNil(lodash.get(processData, 'Media[0].Part[0].key'))) {
+                        this.playViaCast(entity.value, lodash.get(processData, 'Media[0].Part[0].key'));
+                    }
                     else {
-                        this.playViaCast(entity.value, processData.Media[0].Part[0].key);
+                        throw Error(`No service available to play ${processData.title}!`);
                     }
                     break;
                 default:
@@ -20140,6 +20144,7 @@ class PlayController {
         this.hass = hass;
         this.plex = plex;
         this.entity = entity;
+        this.shuffle = shuffle;
         this.libraryName = libraryName;
         if (!lodash.isEmpty(runBefore) && this.hass.states[runBefore]) {
             this.runBefore = runBefore.split('.');
@@ -20168,6 +20173,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
         this.displayTitleMain = document.createElement('paper-dropdown-menu');
         this.displaySubtitleMain = document.createElement('paper-dropdown-menu');
         this.useHorizontalScroll = document.createElement('paper-dropdown-menu');
+        this.useShuffle = document.createElement('paper-dropdown-menu');
         this.minWidth = document.createElement('paper-input');
         this.minEpisodeWidth = document.createElement('paper-input');
         this.minExpandedWidth = document.createElement('paper-input');
@@ -20255,6 +20261,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     }
                     else {
                         this.config.useHorizontalScroll = this.useHorizontalScroll.value;
+                    }
+                    if (lodash.isEmpty(this.useShuffle.value)) {
+                        this.config.useShuffle = 'No';
+                    }
+                    else {
+                        this.config.useShuffle = this.useShuffle.value;
                     }
                     if (lodash.isEmpty(this.displayTitleMain.value)) {
                         this.config.displayTitleMain = 'Yes';
@@ -20495,6 +20507,27 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.appendChild(this.content);
             this.plex = new Plex(this.config.ip.replace(/^https?\:\/\//i, '').replace(/\/$/, ''), this.plexPort, this.config.token, this.plexProtocol, this.config.sort);
             this.sections = await this.plex.getSections();
+            lodash.forEach(this.sections, section => {
+                if (lodash.isEqual(section.title, this.config.libraryName) && lodash.isEqual(section.type, 'artist')) {
+                    this.useShuffle.innerHTML = '';
+                    const useShuffleItems = document.createElement('paper-listbox');
+                    useShuffleItems.appendChild(addDropdownItem('Yes'));
+                    useShuffleItems.appendChild(addDropdownItem('No'));
+                    useShuffleItems.slot = 'dropdown-content';
+                    this.useShuffle.label = 'Use shuffle when playing';
+                    this.useShuffle.appendChild(useShuffleItems);
+                    this.useShuffle.style.width = '100%';
+                    this.useShuffle.addEventListener('value-changed', this.valueUpdated);
+                    if (lodash.isEmpty(this.config.useShuffle)) {
+                        this.useShuffle.value = 'No';
+                    }
+                    else {
+                        this.useShuffle.value = this.config.useShuffle;
+                    }
+                    this.content.appendChild(this.useShuffle);
+                    return false;
+                }
+            });
             this.livetv = await this.plex.getLiveTV();
             this.collections = await this.plex.getCollections();
             this.playlists = await this.plex.getPlaylists();
@@ -21001,6 +21034,9 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             }
             if (!lodash.isNil(this.config.useHorizontalScroll)) {
                 this.config.useHorizontalScroll = `${this.config.useHorizontalScroll}`;
+            }
+            if (!lodash.isNil(this.config.useShuffle)) {
+                this.config.useShuffle = `${this.config.useShuffle}`;
             }
             if (!lodash.isNil(this.config.displayTitleMain)) {
                 this.config.displayTitleMain = `${this.config.displayTitleMain}`;
@@ -21855,6 +21891,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.plexProtocol = 'http';
         this.displayType = false;
         this.useHorizontalScroll = false;
+        this.useShuffle = false;
         this.displayTitleMain = true;
         this.displaySubtitleMain = true;
         this.plexPort = false;
@@ -22077,7 +22114,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             this.renderPage();
             try {
                 if (this.plex && this.hassObj) {
-                    this.playController = new PlayController(this, this.hassObj, this.plex, entity, this.runBefore, this.runAfter, this.config.libraryName, this.entityRegistry);
+                    this.playController = new PlayController(this, this.hassObj, this.plex, entity, this.runBefore, this.runAfter, this.config.libraryName, this.entityRegistry, this.useShuffle);
                     if (this.playController) {
                         await this.playController.init();
                     }
@@ -23690,6 +23727,9 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             }
             if (config.useHorizontalScroll && lodash.isEqual(config.useHorizontalScroll, 'Yes')) {
                 this.useHorizontalScroll = true;
+            }
+            if (config.useShuffle && lodash.isEqual(config.useShuffle, 'Yes')) {
+                this.useShuffle = true;
             }
             if (config.displayTitleMain && lodash.isEqual(config.displayTitleMain, 'No')) {
                 this.displayTitleMain = false;

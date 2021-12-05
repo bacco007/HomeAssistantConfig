@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.0.6",
+        "version": "2.1.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -64,7 +64,8 @@
                 "name": "link",
                 "types": [
                     "link in",
-                    "link out"
+                    "link out",
+                    "link call"
                 ],
                 "enabled": true,
                 "local": false,
@@ -505,7 +506,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.33.1",
+        "version": "0.38.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -621,7 +622,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.14.1",
+        "version": "5.15.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -927,7 +928,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.0.4",
+        "version": "3.1.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1185,7 +1186,7 @@
     },
     "node-red-node-email": {
         "name": "node-red-node-email",
-        "version": "1.12.3",
+        "version": "1.13.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -1225,7 +1226,7 @@
     },
     "node-red-node-geofence": {
         "name": "node-red-node-geofence",
-        "version": "0.3.0",
+        "version": "0.3.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1263,7 +1264,7 @@
     },
     "node-red-node-pi-gpio": {
         "name": "node-red-node-pi-gpio",
-        "version": "1.2.3",
+        "version": "2.0.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1361,7 +1362,7 @@
     },
     "node-red-node-serialport": {
         "name": "node-red-node-serialport",
-        "version": "0.14.1",
+        "version": "0.15.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -1461,7 +1462,7 @@
     },
     "node-red-contrib-deconz": {
         "name": "node-red-contrib-deconz",
-        "version": "2.0.8",
+        "version": "2.1.2",
         "local": false,
         "user": false,
         "nodes": {

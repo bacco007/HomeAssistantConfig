@@ -49,7 +49,7 @@ ATTR_DESCRIPTION = "description"
 
 SCAN_INTERVAL = timedelta(seconds=300)
 
-ICON = "mdi:untappd"
+ICON = "mdi:mdi-glass-mug-variant"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {

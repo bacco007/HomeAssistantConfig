@@ -247,7 +247,7 @@ class AirVisualCard extends HTMLElement {
       const hideFace = config.hide_face ? 1 : 0;
       const hideAQI = config.hide_aqi ? 1 : 0;
       const hideAPL = config.hide_apl ? 1 : 0;
-      const hideWeather = config.hide_weather ? 1 : 0;
+      const hideWeather = config.hide_weather || !config.weather ? 1 : 0;
       const speedUnit = config.speed_unit || 'mp/h';
       // points to local directory created by HACS installation
       const iconDirectory = config.icons || "/hacsfiles/air-visual-card";
@@ -422,7 +422,7 @@ class AirVisualCard extends HTMLElement {
         card_content += `<div class="city">${city} Air Quality Index</div>`;
       }
 
-      if (weatherEntity.split('.')[0] == 'weather') {
+      if (weatherEntity.split('.')[0] == 'weather' && hass.states[weatherEntity]) {
         tempValue = hass.states[weatherEntity].attributes['temperature'] + 'º';
         currentCondition = hass.states[weatherEntity].state;
         humidity = hass.states[weatherEntity].attributes['humidity'] + '%';
