@@ -67,7 +67,7 @@ class SonarrUpcomingMediaSensor(Entity):
         return self._state
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         import re
         """Return JSON for the sensor."""
         attributes = {}

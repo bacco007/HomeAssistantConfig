@@ -73,7 +73,7 @@ class RadarrUpcomingMediaSensor(Entity):
         return self._state
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         attributes = {}
         if self.change_detected:
             """Return JSON for the sensor."""

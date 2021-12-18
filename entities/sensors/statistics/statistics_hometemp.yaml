@@ -3,5 +3,6 @@ platform: statistics
 name: weather_outside_temperature_5mint_stats
 entity_id: sensor.weather_outside_temperature_5mint
 sampling_size: 300
+state_characteristic: mean
 max_age:
   days: 1

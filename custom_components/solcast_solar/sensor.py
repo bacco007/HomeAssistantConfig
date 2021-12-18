@@ -1,12 +1,14 @@
 """Support for Solcast PV forecast."""
 import logging
 
-from homeassistant.const import DEVICE_CLASS_ENERGY, DEVICE_CLASS_TIMESTAMP, ENERGY_KILO_WATT_HOUR, ATTR_IDENTIFIERS, ATTR_MANUFACTURER, ATTR_MODEL, ATTR_NAME
+from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.const import ENERGY_KILO_WATT_HOUR, ATTR_IDENTIFIERS, ATTR_MANUFACTURER, ATTR_MODEL, ATTR_NAME
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.device_registry import DeviceEntryType
 
 from . import DOMAIN, SensorType
 
-from .const import ATTR_ENTRY_TYPE, ENTRY_TYPE_SERVICE
+from .const import ATTR_ENTRY_TYPE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,7 +44,7 @@ class SolcastSensor(RestoreEntity):
             ATTR_NAME: myIntegrationName,
             ATTR_MANUFACTURER: "Solcast Solar",
             ATTR_MODEL: "Solcast API",
-            ATTR_ENTRY_TYPE: ENTRY_TYPE_SERVICE,
+            ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
         }
 
     @property
@@ -87,16 +89,16 @@ class SolcastSensor(RestoreEntity):
             return None
 
     @property
-    def device_class(self):
+    def device_class(self) -> SensorDeviceClass:
         """Get the device_class."""
         if self._type is SensorType.forecast_today:
-            return DEVICE_CLASS_ENERGY
+            return SensorDeviceClass.ENERGY
         elif self._type is SensorType.forecast_today_remaining:
-            return DEVICE_CLASS_ENERGY
+            return SensorDeviceClass.ENERGY
         elif self._type is SensorType.forecast_tomorrow:
-            return DEVICE_CLASS_ENERGY
+            return SensorDeviceClass.ENERGY
         elif self._type is SensorType.last_updated:
-            return DEVICE_CLASS_TIMESTAMP
+            return SensorDeviceClass.TIMESTAMP
         else:
             return "api_count"
 
@@ -108,10 +110,10 @@ class SolcastSensor(RestoreEntity):
         """
         return False
 
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes of the binary sensor."""
-        return self._attributes
+    #@property
+    #def device_state_attributes(self):
+    #    """Return the state attributes of the binary sensor."""
+    #    return self._attributes
 
     @property
     def extra_state_attributes(self):

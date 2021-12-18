@@ -1,11 +1,12 @@
 """Support for Radarr."""
-from datetime import datetime, timedelta
 import logging
 import time
+from datetime import datetime, timedelta
+from http import HTTPStatus
 
+import homeassistant.helpers.config_validation as cv
 import requests
 import voluptuous as vol
-
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.const import (
     CONF_API_KEY,
@@ -22,9 +23,7 @@ from homeassistant.const import (
     DATA_TERABYTES,
     DATA_YOTTABYTES,
     DATA_ZETTABYTES,
-    HTTP_OK,
 )
-import homeassistant.helpers.config_validation as cv
 from homeassistant.util import dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
@@ -47,7 +46,7 @@ SENSOR_TYPES = {
     "upcoming": ["Upcoming", "Movies", "mdi:television"],
     "wanted": ["Wanted", "Movies", "mdi:television"],
     "movies": ["Movies", "Movies", "mdi:television"],
- #   "commands": ["Commands", "Commands", "mdi:code-braces"],
+    #   "commands": ["Commands", "Commands", "mdi:code-braces"],
     "status": ["Status", "Status", "mdi:information"],
 }
 
@@ -55,7 +54,7 @@ ENDPOINTS = {
     "diskspace": "{0}://{1}:{2}/{3}api/v3/diskspace",
     "upcoming": "{0}://{1}:{2}/{3}api/v3/calendar?unmonitored=false&start={4}&end={5}",
     "movies": "{0}://{1}:{2}/{3}api/v3/movie",
- #   "commands": "{0}://{1}:{2}/{3}api/v3/command",
+    #   "commands": "{0}://{1}:{2}/{3}api/v3/command",
     "status": "{0}://{1}:{2}/{3}api/v3/system/status",
 }
 
@@ -148,16 +147,14 @@ class RadarrSensor(SensorEntity):
         if self.type == "upcoming":
             for movie in self.data:
                 attributes[to_key(movie)] = get_release_date(movie)
- #       elif self.type == "commands":
- #           for command in self.data:
- #               attributes[command["name"]] = command["state"]
+        #       elif self.type == "commands":
+        #           for command in self.data:
+        #               attributes[command["name"]] = command["state"]
         elif self.type == "diskspace":
             for data in self.data:
                 free_space = to_unit(data["freeSpace"], self._unit)
                 total_space = to_unit(data["totalSpace"], self._unit)
-                percentage_used = (
-                    0 if total_space == 0 else free_space / total_space * 100
-                )
+                percentage_used = 0 if total_space == 0 else free_space / total_space * 100
                 attributes[data["path"]] = "{:.2f}/{:.2f}{} ({:.2f}%)".format(
                     free_space, total_space, self._unit, percentage_used
                 )
@@ -193,8 +190,8 @@ class RadarrSensor(SensorEntity):
             self._state = None
             return
 
-        if res.status_code == HTTP_OK:
-            if self.type in ["upcoming", "movies"]:        #, "commands"]:
+        if res.status_code == HTTPStatus.OK:
+            if self.type in ["upcoming", "movies"]:  # , "commands"]:
                 self.data = res.json()
                 self._state = len(self.data)
             elif self.type == "diskspace":
@@ -203,9 +200,7 @@ class RadarrSensor(SensorEntity):
                     self.data = res.json()
                 else:
                     # Filter to only show lists that are included
-                    self.data = list(
-                        filter(lambda x: x["path"] in self.included, res.json())
-                    )
+                    self.data = list(filter(lambda x: x["path"] in self.included, res.json()))
                 self._state = "{:.2f}".format(
                     to_unit(sum([data["freeSpace"] for data in self.data]), self._unit)
                 )

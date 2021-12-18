@@ -54,7 +54,8 @@ sensor:
     monitored_conditions:
       - battery_charging
       - battery_discharging
-      - biomass
+      - bioenergy_biomass
+      - bioenergy_biogas
       - coal_black
       - coal_brown
       - exports
@@ -66,6 +67,7 @@ sensor:
       - gas_ocgt
       - gas_recip
       - gas_steam
+      - gas_wcmg
       - generation
       - hydro
       - imports

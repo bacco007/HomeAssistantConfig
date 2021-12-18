@@ -6,11 +6,13 @@ https://github.com/iprak/yahoofinance
 
 from datetime import timedelta
 import logging
-from typing import Union
+from typing import Final, Union
 
 from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.typing import ConfigType
 import voluptuous as vol
 
 from custom_components.yahoofinance.coordinator import YahooSymbolUpdateCoordinator
@@ -35,11 +37,10 @@ from .const import (
     HASS_DATA_COORDINATOR,
     SERVICE_REFRESH,
 )
-from .coordinator import YahooSymbolUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-DEFAULT_SCAN_INTERVAL = timedelta(hours=6)
-MINIMUM_SCAN_INTERVAL = timedelta(seconds=30)
+DEFAULT_SCAN_INTERVAL: Final = timedelta(hours=6)
+MINIMUM_SCAN_INTERVAL: Final = timedelta(seconds=30)
 
 
 BASIC_SYMBOL_SCHEMA = vol.All(cv.string, vol.Upper)
@@ -94,6 +95,34 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
+class SymbolDefinition:
+    """Symbol definition."""
+
+    symbol: str
+    target_currency: str
+
+    def __init__(self, symbol: str, target_currency: Union[str, None] = None) -> None:
+        """Create a new symbol definition."""
+        self.symbol = symbol
+        self.target_currency = target_currency
+
+    def __repr__(self) -> str:
+        """Return the representation."""
+        return f"{self.symbol},{self.target_currency}"
+
+    def __eq__(self, other: any) -> bool:
+        """Return the comparison."""
+        return (
+            isinstance(other, SymbolDefinition)
+            and self.symbol == other.symbol
+            and self.target_currency == other.target_currency
+        )
+
+    def __hash__(self) -> int:
+        """Make hashable."""
+        return hash((self.symbol, self.target_currency))
+
+
 def parse_scan_interval(scan_interval: Union[timedelta, str]) -> timedelta:
     """Parse and validate scan_interval."""
     if isinstance(scan_interval, str):
@@ -110,31 +139,34 @@ def parse_scan_interval(scan_interval: Union[timedelta, str]) -> timedelta:
     return scan_interval
 
 
-def normalize_input(defined_symbols):
+def normalize_input(defined_symbols: list) -> tuple[list[str], list[SymbolDefinition]]:
     """Normalize input and remove duplicates."""
     symbols = set()
-    normalized_symbols = []
+    symbol_definitions: list[SymbolDefinition] = []
 
     for value in defined_symbols:
         if isinstance(value, str):
             if value not in symbols:
                 symbols.add(value)
-                normalized_symbols.append({"symbol": value})
+                symbol_definitions.append(SymbolDefinition(value))
         else:
-            if value["symbol"] not in symbols:
-                symbols.add(value["symbol"])
-                normalized_symbols.append(value)
+            symbol = value["symbol"]
+            if symbol not in symbols:
+                symbols.add(symbol)
+                symbol_definitions.append(
+                    SymbolDefinition(symbol, value.get(CONF_TARGET_CURRENCY))
+                )
 
-    return (list(symbols), normalized_symbols)
+    return (list(symbols), symbol_definitions)
 
 
-async def async_setup(hass, config) -> bool:
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the component."""
     domain_config = config.get(DOMAIN, {})
     defined_symbols = domain_config.get(CONF_SYMBOLS, [])
 
-    symbols, normalized_symbols = normalize_input(defined_symbols)
-    domain_config[CONF_SYMBOLS] = normalized_symbols
+    symbols, symbol_definitions = normalize_input(defined_symbols)
+    domain_config[CONF_SYMBOLS] = symbol_definitions
 
     scan_interval = parse_scan_interval(domain_config.get(CONF_SCAN_INTERVAL))
 
@@ -155,7 +187,7 @@ async def async_setup(hass, config) -> bool:
         HASS_DATA_CONFIG: domain_config,
     }
 
-    async def handle_refresh_symbols(_call):
+    async def handle_refresh_symbols(_call) -> None:
         """Refresh symbol data."""
         _LOGGER.info("Processing refresh_symbols")
         await coordinator.async_request_refresh()

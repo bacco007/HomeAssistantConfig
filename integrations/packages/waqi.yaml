@@ -1,4 +1,20 @@
 ---
+homeassistant:
+  customize:
+    sensor.waqi_tamworth_min_aqi:
+      friendly_name: "Min AQI (Last 24hrs)"
+      icon: mdi:chart-bubble
+      unit_of_measurement: "AQI"
+    sensor.waqi_tamworth_max_aqi:
+      friendly_name: "Max AQI (Last 24hrs)"
+      icon: mdi:chart-bubble
+      unit_of_measurement: "AQI"
+
+    sensor.waqi_tamworth_change_aqi:
+      friendly_name: "AQI Change (Last 24hrs)"
+      icon: mdi:chart-bubble
+      unit_of_measurement: "AQI"
+
 sensor:
   - platform: waqi
     token: !secret waqi_apikey
@@ -6,7 +22,24 @@ sensor:
       - tamworth
 
   - platform: statistics
-    name: waqi_tamworth_stats
+    name: waqi_tamworth_min_aqi
+    state_characteristic: value_min
+    sampling_size: 150
+    entity_id: sensor.waqi_tamworth_north_west_slopes
+    max_age:
+      hours: 24
+
+  - platform: statistics
+    name: waqi_tamworth_max_aqi
+    state_characteristic: value_max
+    sampling_size: 150
+    entity_id: sensor.waqi_tamworth_north_west_slopes
+    max_age:
+      hours: 24
+
+  - platform: statistics
+    name: waqi_tamworth_change_aqi
+    state_characteristic: change
     sampling_size: 150
     entity_id: sensor.waqi_tamworth_north_west_slopes
     max_age:
@@ -34,21 +67,7 @@ sensor:
           {% else %}
             Unavailable
           {% endif %}
-      waqi_tamworth_min_aqi:
-        friendly_name: "Min AQI (Last 24hrs)"
-        icon_template: mdi:chart-bubble
-        value_template: "{{ states.sensor.waqi_tamworth_stats.attributes['min_value']}}"
-        unit_of_measurement: "AQI"
-      waqi_tamworth_max_aqi:
-        friendly_name: "Max AQI (Last 24hrs)"
-        icon_template: mdi:chart-bubble
-        value_template: "{{ states.sensor.waqi_tamworth_stats.attributes['max_value']}}"
-        unit_of_measurement: "AQI"
-      waqi_tamworth_change_aqi:
-        friendly_name: "AQI Change (Last 24hrs)"
-        icon_template: mdi:chart-bubble
-        value_template: "{{ states.sensor.waqi_tamworth_stats.attributes['change']}}"
-        unit_of_measurement: "AQI"
+
       waqi_tamworth_pm10:
         friendly_name: "AQI - PM10"
         value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_10') }}"

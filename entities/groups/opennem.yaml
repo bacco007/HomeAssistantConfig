@@ -4,7 +4,8 @@ opennem:
   entities:
     - sensor.opennem_nsw1_battery_charging
     - sensor.opennem_nsw1_battery_discharging
-    - sensor.opennem_nsw1_biomass
+    - sensor.opennem_nsw1_bioenergy_biogas
+    - sensor.opennem_nsw1_bioenergy_biomass
     - sensor.opennem_nsw1_black_coal
     - sensor.opennem_nsw1_brown_coal
     - sensor.opennem_nsw1_distillate
@@ -12,6 +13,7 @@ opennem:
     - sensor.opennem_nsw1_gas_ocgt
     - sensor.opennem_nsw1_gas_recip
     - sensor.opennem_nsw1_gas_steam
+    - sensor.opennem_nsw1_gas_waste
     - sensor.opennem_nsw1_hydro
     - sensor.opennem_nsw1_pumps
     - sensor.opennem_nsw1_solar_rooftop

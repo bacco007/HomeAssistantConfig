@@ -1,32 +1,5 @@
 ---
 sensor:
-  # - platform: waze_travel_time
-  #   entity_namespace: waze_travel
-  #   origin: zone.home
-  #   destination: zone.trc
-  #   region: "AU"
-  #   name: Home to Work
-  #   realtime: true
-  #   units: metric
-  #   vehicle_type: car
-  # - platform: waze_travel_time
-  #   entity_namespace: waze_travel
-  #   origin: device_tracker.tbiphone11_haapp
-  #   destination: zone.trc
-  #   region: "AU"
-  #   name: Tom to Work
-  #   realtime: true
-  #   units: metric
-  #   vehicle_type: car
-  # - platform: waze_travel_time
-  #   entity_namespace: waze_travel
-  #   origin: device_tracker.tbiphone11_haapp
-  #   destination: zone.home
-  #   region: "AU"
-  #   name: Tom to Home
-  #   realtime: true
-  #   units: metric
-  #   vehicle_type: car
   - platform: template
     sensors:
       waze_travel_tom_to_work_arrivetime:

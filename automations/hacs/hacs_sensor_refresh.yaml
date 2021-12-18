@@ -1,5 +1,5 @@
 ---
-alias: hacs_sensor_refresh
+alias: HACS - Refresh Sensor
 id: hacs_sensor_refresh
 initial_state: true
 trigger:

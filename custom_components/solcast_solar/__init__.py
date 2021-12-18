@@ -196,6 +196,7 @@ class SolcastRooftopSite(SolcastAPI):
         self._finishhour= 19
         self._auto_fetch = auto_fetch
         self._auto_fetch_tracker = None
+        self._do_past_fetch = False
         self._debugData = {"api_key": api_key, 
                             "rooftop_id": resource_id,
                             "disable_ssl": disable_ssl,
@@ -433,6 +434,7 @@ class SolcastRooftopSite(SolcastAPI):
         """Update forecast state service call."""
         try:
             _LOGGER.debug("Update forecast service called for rooftop id %s", self._resource_id)
+            self._do_past_fetch = True
             await self.update_forecast(checktime=False)
             
         except Exception:
@@ -610,8 +612,9 @@ class SolcastRooftopSite(SolcastAPI):
             #if hour to do past then get that too
             n = dt_util.as_local(dt_util.now())
 
-            if n.hour == 10 or n.hour == 14 or n.hour == 18 or self._forecasts is None:
+            if n.hour == 10 or n.hour == 14 or n.hour == 18 or self._forecasts is None or self._do_past_fetch == True:
                 _LOGGER.debug("Updating Solcast estimated_actuals data")
+                self._do_past_fetch = False #reset it
                 resp = None
                 if self._forecasts is None:
                     resp = await self.request_data(
@@ -645,7 +648,7 @@ class SolcastRooftopSite(SolcastAPI):
             lastforecast = None
             f = []
             for forecast in fc["forecasts"]:
-                watts = round(float(forecast["pv_estimate"])*0.5,6)
+                watts = float(forecast["pv_estimate"])
                 if not (watts == 0 and wattsbefore == 0):
                     if wattsbefore == 0:
                         lastforecast["period_end"] = parse_datetime(lastforecast["period_end"]).astimezone()
@@ -677,19 +680,23 @@ class SolcastRooftopSite(SolcastAPI):
                 event_s: list[int] = [event.event_data for event in events]
                 
                 if event_s:
+                    beforewatts = 0
                     wh_hours = {}
                     for item in event_s:
                         item = json.loads(item)
-
-                        timestamp = parse_datetime(item['period_end']) - timedelta(minutes=30)
                         energy = float(item["pv_estimate"]*1000) #* 0.5
-                        #wh_hours
-                        d = datetime(timestamp.year, timestamp.month, timestamp.day, timestamp.hour , 0, 0)
+                        if energy > 0 or beforewatts > 0:
+                            timestamp = parse_datetime(item['period_end']) - timedelta(minutes=30)
+                            
+                            #wh_hours
+                            d = datetime(timestamp.year, timestamp.month, timestamp.day, timestamp.hour , 0, 0)
 
-                        if d in wh_hours:
-                            wh_hours[d] += energy
-                        else:
-                            wh_hours[d] = energy
+                            if d in wh_hours:
+                                wh_hours[d] += energy
+                            else:
+                                wh_hours[d] = energy
+
+                            beforewatts = energy
 
                     return {
                         "wh_hours": {

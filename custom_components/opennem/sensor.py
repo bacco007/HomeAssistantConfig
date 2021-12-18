@@ -29,7 +29,8 @@ ATTRIBUTION = "Data provided by OpenNEM"
 CONF_REGION = "region"
 
 DATA = {
-    "biomass": ["Biomass", "", "", "", 0],
+    "bioenergy_biomass": ["Bioenergy (Biomass)", "", "", "", 0],
+    "bioenergy_biogas": ["Bioenergy (Biogas)", "", "", "", 0],
     "coal_black": ["Black Coal", "", "", "", 0],
     "coal_brown": ["Brown Coal", "", "", "", 0],
     "distillate": ["Distillate", "", "", "", 0],
@@ -37,6 +38,7 @@ DATA = {
     "gas_ocgt": ["Gas (OCGT)", "", "", "", 0],
     "gas_recip": ["Gas (Recip)", "", "", "", 0],
     "gas_steam": ["Gas (Steam)", "", "", "", 0],
+    "gas_wcmg": ["Gas (Waste)", "", "", "", 0],
     "hydro": ["Hydro", "", "", "", 0],
     "pumps": ["Pumps", "", "", "", 0],
     "solar_utility": ["Solar (Utility)", "", "", "", 0],
@@ -59,7 +61,8 @@ MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
 SENSOR_TYPES = {
     "battery_charging": ["Battery (Charging)", "MW", "mdi:battery-positive"],
     "battery_discharging": ["Battery (Discharging)", "MW", "mdi:battery-negative"],
-    "biomass": ["Biomass", "MW", "mdi:transmission-tower"],
+    "bioenergy_biomass": ["Bioenergy (Biomass)", "MW", "mdi:transmission-tower"],
+    "bioenergy_biogas": ["Bioenergy (Biogas)", "MW", "mdi:transmission-tower"],
     "coal_black": ["Black Coal", "MW", "mdi:transmission-tower"],
     "coal_brown": ["Brown Coal", "MW", "mdi:transmission-tower"],
     "exports": ["Exported Power", "MW", "mdi:swap-vertical"],
@@ -71,6 +74,7 @@ SENSOR_TYPES = {
     "gas_ocgt": ["Gas (OCGT)", "MW", "mdi:transmission-tower"],
     "gas_recip": ["Gas (Recip)", "MW", "mdi:transmission-tower"],
     "gas_steam": ["Gas (Steam)", "MW", "mdi:transmission-tower"],
+    "gas_wcmg": ["Gas (Waste)", "MW", "mdi:transmission-tower"],
     "generation": ["Electricity Generation", "MW", "mdi:power-plug"],
     "hydro": ["Hydro", "MW", "mdi:transmission-tower"],
     "imports": ["Imported Power", "MW", "mdi:swap-vertical"],
@@ -137,7 +141,7 @@ class OpenNEMSensor(Entity):
         return self.opennem_data.latest_data[self._condition][4]
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         attr = {
             ATTR_ATTRIBUTION: ATTRIBUTION,
             ATTR_LAST_UPDATE: self.opennem_data.last_updated,
@@ -230,6 +234,7 @@ class OpenNEMCurrentData:
                 + DATA["gas_ocgt"][4]
                 + DATA["gas_recip"][4]
                 + DATA["gas_steam"][4]
+                + DATA["gas_wcmg"][4]
             )
             if ffvalue:
                 DATA["fossilfuel"][4] = round(ffvalue, 2)
@@ -237,7 +242,8 @@ class OpenNEMCurrentData:
                 DATA["fossilfuel"][4] = 0
 
             renvalue = (
-                DATA["biomass"][4]
+                DATA["bioenergy_biomass"][4]
+                + DATA["bioenergy_biogas"][4]
                 + DATA["hydro"][4]
                 + DATA["solar_utility"][4]
                 + DATA["wind"][4]
