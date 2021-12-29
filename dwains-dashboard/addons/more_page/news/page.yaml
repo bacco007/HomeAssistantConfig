@@ -1,4 +1,13 @@
 - type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - !include partial_dst.yaml
+        - !include partial_news_cnn.yaml
+
+- type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-12 col-lg-12 col-xl-12"
   cards:
     - type: custom:stack-in-card

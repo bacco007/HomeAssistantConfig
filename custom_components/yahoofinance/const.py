@@ -1,5 +1,7 @@
 """Constants for Yahoo Finance sensor."""
 
+from __future__ import annotations
+
 from typing import Final
 
 # Additional attributes exposed by the sensor
@@ -9,6 +11,7 @@ ATTR_QUOTE_SOURCE_NAME: Final = "quoteSourceName"
 ATTR_SYMBOL: Final = "symbol"
 ATTR_TRENDING: Final = "trending"
 ATTR_MARKET_STATE: Final = "marketState"
+ATTR_DIVIDEND_DATE: Final = "dividendDate"
 
 # Hass data
 HASS_DATA_CONFIG: Final = "config"
@@ -21,6 +24,7 @@ DATA_QUOTE_TYPE: Final = "quoteType"
 DATA_QUOTE_SOURCE_NAME: Final = "quoteSourceName"
 DATA_SHORT_NAME: Final = "shortName"
 DATA_MARKET_STATE: Final = "marketState"
+DATA_DIVIDEND_DATE: Final = "dividendDate"
 
 DATA_REGULAR_MARKET_PREVIOUS_CLOSE: Final = "regularMarketPreviousClose"
 DATA_REGULAR_MARKET_PRICE: Final = "regularMarketPrice"
@@ -57,6 +61,7 @@ NUMERIC_DATA_GROUPS: Final = {
         (DATA_REGULAR_MARKET_PRICE, True),
         ("regularMarketVolume", False),
         ("regularMarketTime", False),
+        (DATA_DIVIDEND_DATE, False),
     ],
     CONF_INCLUDE_FIFTY_DAY_VALUES: [
         ("fiftyDayAverage", True),
@@ -81,6 +86,9 @@ NUMERIC_DATA_GROUPS: Final = {
         ("twoHundredDayAverageChangePercent", False),
     ],
 }
+
+# Defaults for missing numeric keys
+NUMERIC_DATA_DEFAULTS: Final = {DATA_DIVIDEND_DATE: None}
 
 STRING_DATA_KEYS: Final = [
     DATA_CURRENCY_SYMBOL,

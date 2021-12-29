@@ -449,7 +449,7 @@
     },
     "node-red-contrib-bigtimer": {
         "name": "node-red-contrib-bigtimer",
-        "version": "2.7.5",
+        "version": "2.7.6",
         "local": false,
         "user": false,
         "nodes": {
@@ -506,7 +506,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.38.0",
+        "version": "0.40.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -622,7 +622,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.15.0",
+        "version": "5.16.0",
         "local": false,
         "user": false,
         "nodes": {

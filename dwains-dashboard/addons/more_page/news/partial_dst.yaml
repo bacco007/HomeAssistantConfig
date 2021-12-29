@@ -1,0 +1,36 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    title: Daylight Saving
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.daylight_savings_days_until
+        name: Days until Daylight Saving Change
+        icon: mdi:sun-wireless
+      - entity: sensor.daylight_savings_next
+        name: Date of Next Change
+        icon: mdi:sun-wireless
+      - entity: sensor.daylight_savings_phrase
+        name: Clock Movement
+        icon: mdi:sun-wireless

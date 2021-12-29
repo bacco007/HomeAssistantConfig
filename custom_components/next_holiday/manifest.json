@@ -6,5 +6,5 @@
   "codeowners": ["@partofthething"],
   "requirements": ["holidays"],
   "iot_class": "local_polling",
-  "version": "0.2.0"
+  "version": "0.3.2"
 }

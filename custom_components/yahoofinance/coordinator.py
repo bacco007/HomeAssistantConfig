@@ -3,6 +3,7 @@ The Yahoo finance component.
 
 https://github.com/iprak/yahoofinance
 """
+from __future__ import annotations
 
 from datetime import timedelta
 import logging
@@ -19,6 +20,7 @@ from homeassistant.util.dt import utcnow
 from .const import (
     BASE,
     DATA_REGULAR_MARKET_PRICE,
+    NUMERIC_DATA_DEFAULTS,
     NUMERIC_DATA_GROUPS,
     STRING_DATA_KEYS,
 )
@@ -41,7 +43,11 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         for data_group in NUMERIC_DATA_GROUPS.values():
             for value in data_group:
                 key = value[0]
-                data[key] = symbol_data.get(key, 0)
+
+                # Default value for most missing numeric keys is 0
+                default_value = NUMERIC_DATA_DEFAULTS.get(key, 0)
+
+                data[key] = symbol_data.get(key, default_value)
 
         for key in STRING_DATA_KEYS:
             data[key] = symbol_data.get(key)

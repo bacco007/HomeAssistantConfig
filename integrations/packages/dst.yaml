@@ -27,4 +27,4 @@ rest:
             phrase(seconds, 'hour', 60*60, 60*60*24),
             phrase(seconds, 'minute', 60, 60),
             ] | select('!=','') | list %}
-          {{ 'gain' if name == 'dst_until' else 'lose' }} {{ values[:-1] | join(', ') ~ ' and ' ~ values[-1] if values | length > 1 else values | first }}
+          {{ 'lose' if name == 'dst_until' else 'gain' }} {{ values[:-1] | join(', ') ~ ' and ' ~ values[-1] if values | length > 1 else values | first }}

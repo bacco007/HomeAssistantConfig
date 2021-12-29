@@ -69,30 +69,30 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, December 18th 2021_
+_Stats as at 05:00, Wednesday, December 29th 2021_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.12.2 | 362     | 2117         | 1569 | 86 |
+| 2021.12.5 | 358     | 2145         | 1578 | 86 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 86
-Binary Sensor | 174
+Binary Sensor | 183
 Camera | 4
-Device Tracker | 83
+Device Tracker | 90
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 18
+Media Player | 19
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1569
+Sensor | 1578
 Sun | 1
 Switch | 82
 Weather | 7
@@ -135,7 +135,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.pi_hole](https://www.home-assistant.io/components/binary_sensor.pi_hole) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
-| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
@@ -292,7 +291,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [pi_hole](https://www.home-assistant.io/components/pi_hole) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
-| [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [readme](https://www.home-assistant.io/components/readme) |
@@ -329,7 +327,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.climacell](https://www.home-assistant.io/components/sensor.climacell) |
-| [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
@@ -399,7 +396,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
-| [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
@@ -530,7 +526,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [Temperature Feels Like](https://github.com/Limych/ha-temperature-feeling)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
-- [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 - [Yahoo Finance](https://github.com/iprak/yahoofinance)</details>
 

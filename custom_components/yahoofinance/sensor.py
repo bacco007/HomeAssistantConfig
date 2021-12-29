@@ -4,6 +4,9 @@ A component which presents Yahoo Finance stock quotes.
 https://github.com/iprak/yahoofinance
 """
 
+from __future__ import annotations
+
+import datetime
 import logging
 from timeit import default_timer as timer
 from typing import Union
@@ -13,12 +16,14 @@ from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import slugify
 
-from custom_components.yahoofinance import SymbolDefinition
+from custom_components.yahoofinance import SymbolDefinition, convert_to_float
 from custom_components.yahoofinance.coordinator import YahooSymbolUpdateCoordinator
 
 from .const import (
     ATTR_CURRENCY_SYMBOL,
+    ATTR_DIVIDEND_DATE,
     ATTR_MARKET_STATE,
     ATTR_QUOTE_SOURCE_NAME,
     ATTR_QUOTE_TYPE,
@@ -30,6 +35,7 @@ from .const import (
     CONF_SYMBOLS,
     CURRENCY_CODES,
     DATA_CURRENCY_SYMBOL,
+    DATA_DIVIDEND_DATE,
     DATA_FINANCIAL_CURRENCY,
     DATA_MARKET_STATE,
     DATA_QUOTE_SOURCE_NAME,
@@ -94,6 +100,7 @@ class YahooFinanceSensor(CoordinatorEntity):
         self._previous_close = None
         self._target_currency = symbol_definition.target_currency
 
+        self._unique_id = symbol
         self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, symbol, hass=hass)
 
         # _attr_extra_state_attributes is returned by extra_state_attributes
@@ -122,8 +129,14 @@ class YahooFinanceSensor(CoordinatorEntity):
 
         # Delay initial data population to `available` which is called from `_async_write_ha_state`
         _LOGGER.debug(
-            "Created %s target_currency=%s", self.entity_id, self._target_currency
+            "Created entity for target_currency=%s",
+            self._target_currency,
         )
+
+    @property
+    def unique_id(self) -> str:
+        """Return a unique ID."""
+        return self._unique_id
 
     @property
     def name(self) -> str:
@@ -200,6 +213,18 @@ class YahooFinanceSensor(CoordinatorEntity):
             return value
         return value * conversion
 
+    @staticmethod
+    def parse_dividend_date(dividend_date_timestamp) -> str | None:
+        """Parse dividendDate JSON element."""
+
+        dividend_date_timestamp = convert_to_float(dividend_date_timestamp)
+        if dividend_date_timestamp is None:
+            return None
+
+        dividend_date = datetime.datetime.utcfromtimestamp(dividend_date_timestamp)
+        dividend_date_date = dividend_date.date()
+        return dividend_date_date.isoformat()
+
     def _update_original_currency(self, symbol_data) -> bool:
         """Update the original currency."""
 
@@ -229,7 +254,7 @@ class YahooFinanceSensor(CoordinatorEntity):
             _LOGGER.debug("%s Coordinator data is None", self._symbol)
             return
 
-        symbol_data = data.get(self._symbol)
+        symbol_data: dict = data.get(self._symbol)
         if symbol_data is None:
             _LOGGER.debug("%s Symbol data is None", self._symbol)
             return
@@ -276,6 +301,10 @@ class YahooFinanceSensor(CoordinatorEntity):
         self._attr_extra_state_attributes[ATTR_MARKET_STATE] = symbol_data[
             DATA_MARKET_STATE
         ]
+
+        self._attr_extra_state_attributes[
+            ATTR_DIVIDEND_DATE
+        ] = self.parse_dividend_date(symbol_data.get(DATA_DIVIDEND_DATE))
 
         # Use target_currency if we have conversion data. Otherwise keep using the
         # currency from data.

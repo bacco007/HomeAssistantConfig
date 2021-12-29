@@ -30,6 +30,7 @@ CONF_MULTIDAY = "multiday"
 CONF_FILTER = "filter"
 CONF_KWARGS = "kwargs"
 CONF_EXCLUDE = "exclude"
+CONF_MIN_HOLIDAYS = "min_future_holidays"
 
 ATTR_HOLIDAYS = "holidays"
 ATTR_IS_HOLIDAY = "today_is_holiday"
@@ -56,7 +57,10 @@ ENTRY_SCHEMA = vol.Schema(
 
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_SOURCES): vol.All(cv.ensure_list, [ENTRY_SCHEMA])}
+    {
+        vol.Required(CONF_SOURCES): vol.All(cv.ensure_list, [ENTRY_SCHEMA]),
+        vol.Optional(CONF_MIN_HOLIDAYS, default=0): vol.All(int, vol.Range(min=0)),
+    }
 )
 
 
@@ -95,11 +99,13 @@ class NextHolidaySensor(SensorEntity):
         """Update the next holiday based on current date."""
         today = datetime.date.today()
         holiday_data = _load_holidays(today.year, self._config)
-        next_holiday_date = _find_next_holiday(today, holiday_data)
-        if next_holiday_date is None:
+        upcoming_holiday_dates = _find_holidays_on_or_after(today, holiday_data)
+        if len(upcoming_holiday_dates) <= self._config.get(CONF_MIN_HOLIDAYS):
             # lookahead into the next year
             holiday_data.update(_load_holidays(today.year + 1, self._config))
-            next_holiday_date = _find_next_holiday(today, holiday_data)
+            upcoming_holiday_dates = _find_holidays_on_or_after(today, holiday_data)
+
+        next_holiday_date = _find_next_holiday(upcoming_holiday_dates)
 
         self._state = holiday_data.get(next_holiday_date)
 
@@ -123,16 +129,23 @@ class NextHolidaySensor(SensorEntity):
         return ICON
 
 
-def _find_next_holiday(today, holiday_data) -> datetime.date:
+def _find_next_holiday(holiday_dates) -> datetime.date:
     """Find the next (or current) holiday"""
-    for holiday_date in sorted(holiday_data):
-        if holiday_date >= today:
-            next_holiday = holiday_date
-            break
-    else:
+    try:
+        next_holiday = holiday_dates[0]
+    except IndexError:
         next_holiday = None
 
     return next_holiday
+
+
+def _find_holidays_on_or_after(date, holiday_data):
+    """Find all holidays on or after date."""
+    holiday_dates = []
+    for holiday_date in sorted(holiday_data):
+        if holiday_date >= date:
+            holiday_dates.append(holiday_date)
+    return holiday_dates
 
 
 def _load_holidays(year: int, config: dict) -> holidays.HolidayBase:
