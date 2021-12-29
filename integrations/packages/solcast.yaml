@@ -44,7 +44,7 @@ template:
           {%- else %}
             {% set ns = namespace (fc_today = 0) %}
             {% for forecast in state_attr('sensor.solcast_forecast', 'forecasts')|default('variable is not defined') %}
-              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %} 
+              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %}
               {% if daydiff.days == 0 %}
                 {% set ns.fc_today = ns.fc_today + (forecast.pv_estimate/2)|float %}
               {%- endif %}
@@ -62,7 +62,7 @@ template:
           {%- else %}
             {% set ns = namespace (fc_tommorrow = 0) %}
             {% for forecast in state_attr('sensor.solcast_forecast', 'forecasts')|default('variable is not defined') %}
-              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %} 
+              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %}
               {% if daydiff.days == 1 %}
                 {% set ns.fc_tommorrow = ns.fc_tommorrow + (forecast.pv_estimate/2)|float %}
               {%- endif %}
@@ -80,7 +80,7 @@ template:
           {%- else %}
             {% set ns = namespace (fc_today_max = 0) %}
             {% for forecast in state_attr('sensor.solcast_forecast', 'forecasts')|default('variable is not defined') %}
-              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %} 
+              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %}
               {% if daydiff.days == 0 %}
                 {% if ns.fc_today_max < forecast.pv_estimate|float %}
                   {% set ns.fc_today_max = forecast.pv_estimate|float %}
@@ -100,7 +100,7 @@ template:
           {%- else %}
             {% set ns = namespace (fc_tomorrow_max = 0) %}
             {% for forecast in state_attr('sensor.solcast_forecast', 'forecasts')|default('variable is not defined') %}
-              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %} 
+              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %}
               {% if daydiff.days == 1 %}
                 {% if ns.fc_tomorrow_max < forecast.pv_estimate|float %}
                   {% set ns.fc_tomorrow_max = forecast.pv_estimate|float %}
@@ -117,7 +117,7 @@ template:
           {%- else %}
             {% set ns = namespace (fc_today_max = 0, fc_today_max_time = 0) %}
             {% for forecast in state_attr('sensor.solcast_forecast', 'forecasts')|default('variable is not defined') %}
-              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %} 
+              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %}
               {% if daydiff.days == 0 %}
                 {% if ns.fc_today_max < forecast.pv_estimate|float %}
                   {% set ns.fc_today_max = forecast.pv_estimate|float %}
@@ -135,7 +135,7 @@ template:
           {%- else %}
             {% set ns = namespace (fc_tomorrow_max = 0, fc_tomorrow_max_time = 0) %}
             {% for forecast in state_attr('sensor.solcast_forecast', 'forecasts')|default('variable is not defined') %}
-              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %} 
+              {% set daydiff = as_local(strptime(forecast.period_end, '%Y-%m-%dT%H:%M:%S.%f0Z').replace(tzinfo=utcnow().tzinfo)).date() - as_local(utcnow()).date() %}
               {% if daydiff.days == 1 %}
                 {% if ns.fc_tomorrow_max < forecast.pv_estimate|float %}
                   {% set ns.fc_tomorrow_max = forecast.pv_estimate|float %}

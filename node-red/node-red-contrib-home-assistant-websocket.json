@@ -2,31 +2,31 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 203,
+        "state": 217,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 447,
+        "state": 446,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 7,
+        "state": 5,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 190,
+        "state": 187,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 52,
+        "state": 43,
         "attributes": {}
       }
     },
@@ -230,7 +230,7 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 84.754,
+        "state": 131.74,
         "attributes": {}
       }
     },
@@ -311,11 +311,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 24.959,
+        "state": 24.961,
         "attributes": {
           "max": 38.11,
           "min": 5.5,
-          "avg": 24.959,
+          "avg": 24.961,
           "mindate": "16 Jun 2021",
           "maxdate": "24 Jan 2021",
           "datestring": "Min: 16 Jun 2021 - Max: 24 Jan 2021"
@@ -344,7 +344,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "23.8",
+        "state": "24.0",
         "attributes": {
           "units": "GB"
         }
@@ -356,20 +356,20 @@
         "attributes": {
           "model": "UDM",
           "version": "1.11.0.3921",
-          "data": "158.9 GB",
+          "data": "160.8 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "3d 13hr 17min",
+          "uptime": "3d 13hr 50min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "177.9",
+        "state": "180.6",
         "attributes": {
           "units": "GB"
         }
@@ -377,7 +377,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "15.8",
+        "state": "16.1",
         "attributes": {
           "units": "GB"
         }
@@ -458,9 +458,9 @@
           "sitename": "Default (default)",
           "type": "usw",
           "controller": "https://192.168.1.1",
-          "uptime": "128d 19hr 59min",
+          "uptime": "128d 20hr 32min",
           "rx_data": "8.3 GB",
-          "tx_data": "23.8 GB",
+          "tx_data": "24.0 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -477,13 +477,13 @@
           "sitename": "Default (default)",
           "type": "udm",
           "cpu": null,
-          "users": 44,
+          "users": 43,
           "controller": "https://192.168.1.1",
           "guests": 0,
-          "uptime": "3d 13hr 17min",
+          "uptime": "3d 13hr 50min",
           "lastseen": "a few seconds ago",
-          "tx_data": "177.9 GB",
-          "rx_data": "15.8 GB"
+          "tx_data": "180.6 GB",
+          "rx_data": "16.1 GB"
         }
       }
     },
@@ -504,7 +504,7 @@
       "lastPayload": {
         "state": 6,
         "attributes": {
-          "uptime": "0d 9hr 1min",
+          "uptime": "0d 9hr 33min",
           "drops": 6
         }
       }
@@ -517,13 +517,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "28.17",
+        "state": "27.10",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "39.28",
+        "state": "39.05",
         "attributes": {}
       }
     },
@@ -823,7 +823,7 @@
     },
     "4f06ab2a_82eeb4": {
       "lastPayload": {
-        "state": "130.3",
+        "state": "132.2",
         "attributes": {
           "units": "GB"
         }
@@ -847,16 +847,16 @@
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
-          "uptime": "3d 13hr 17min",
+          "uptime": "3d 13hr 50min",
           "rx_data": "28.6 GB",
-          "tx_data": "130.3 GB",
+          "tx_data": "132.2 GB",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "944c53df_2090b": {
       "lastPayload": {
-        "state": 13,
+        "state": 12,
         "attributes": {
           "ssid": "Baxter Wi-Fi"
         }
