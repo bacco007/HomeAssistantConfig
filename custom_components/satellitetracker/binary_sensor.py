@@ -91,7 +91,7 @@ class SatellitePassSensor(CoordinatorEntity, BinarySensorEntity):
         return "mdi:satellite-variant"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the attributes."""
         return self.attrs
 

@@ -1,0 +1,634 @@
+---
+# dwains_theme
+type: custom:dwains-flexbox-card
+items_classes: "col-xs-4 col-sm-2"
+cards:
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: 10 play
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/10play.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == '10 play')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == '10 play')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+      tap_action:
+        action: call-service
+        service: media_player.select_source
+        service_data:
+          source: 10 play
+          entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: 7plus
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/7plus.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == '7plus')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == '7plus')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: 7plus
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: 9Now
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/9now.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == '9Now')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == '9Now')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: 9Now
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: ABC iview
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/abciview.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'ABC iview')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'ABC iview')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: ABC iview
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: beIN Sports Connect
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/beinsportsconnect.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'beIN Sports Connect')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'beIN Sports Connect')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: beIN Sports Connect
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Binge
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/binge.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Binge')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Binge')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Binge
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Channels
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/channels.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Channels')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Channels')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Channels
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Flash
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/flash.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Flash')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Flash')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Flash
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Kayo
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/kayo.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Kayo')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Kayo')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Kayo
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: LiSTNR
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/listnr.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'LiSTNR')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'LiSTNR')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: LiSTNR
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Music
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/music.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Music')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Music')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Music
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Netflix
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/netflix.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Netflix')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Netflix')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Netflix
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Optus Sport
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/optussport.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Optus Sport')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Optus Sport')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Optus Sport
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Plex
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/plex.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Plex')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Plex')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Plex
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Prime Video
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/primevideo.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Prime Video')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Prime Video')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Prime Video
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Red Bull TV
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/redbulltv.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Red Bull TV')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Red Bull TV')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Red Bull TV
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: SBS On Demand
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/sbsondemand.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'SBS On Demand')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'SBS On Demand')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: SBS On Demand
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Spotify
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/spotify.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Spotify')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Spotify')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Spotify
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: Stan
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/stan.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Stan')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'Stan')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: Stan
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: TV
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/tv.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'TV')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'TV')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: TV
+        entity_id: media_player.apple_tv_bedroom
+
+  - type: custom:button-card
+    entity: media_player.apple_tv_bedroom
+    show_state: false
+    name: YouTube
+    show_entity_picture: true
+    entity_picture: ../local/images/apps/youtube.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'YouTube')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.apple_tv_source'].state == 'YouTube')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: media_player.select_source
+      service_data:
+        source: YouTube
+        entity_id: media_player.apple_tv_bedroom

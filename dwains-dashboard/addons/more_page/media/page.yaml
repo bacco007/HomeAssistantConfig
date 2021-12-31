@@ -23,20 +23,31 @@
       cards:
         - !include partial_plexmovies.yaml
 - type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
-  cards:
-    - type: vertical-stack
-      cards:
-        - !include partial_plexhistory.yaml
-- type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
   cards:
     - type: vertical-stack
       cards:
+        - !include partial_plexhistory.yaml         
+    - type: horizontal-stack
+      cards:
+        - !include partial_plexwatchstats_tv.yaml
+        - !include partial_plexwatchstats_movies.yaml
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-4 col-sm-4 col-xl-4"
+  cards:
+    - type: vertical-stack
+      cards:
         - !include partial_plextoptv_30days.yaml
+        - !include partial_plexpopulartv.yaml      
     - type: vertical-stack
       cards:
         - !include partial_plextoptv.yaml
+    - type: vertical-stack
+      cards:
+        - !include partial_plextoptv_plays.yaml
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  cards:         
     - type: vertical-stack
       cards:
         - !include partial_plextopmovies.yaml

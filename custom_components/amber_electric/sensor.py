@@ -189,7 +189,7 @@ class AmberElectricMarketConsumption(RestoreEntity):
         return "mdi:flash"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return device specific attributes."""
         data = dict()
         data[ATTR_ATTRIBUTION] = "© Amber Electric Pty Ltd ABN 98 623 603 805"

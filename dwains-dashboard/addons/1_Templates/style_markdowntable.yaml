@@ -3,7 +3,7 @@ style:
   ha-markdown:
     $:
       ha-markdown-element: |
-        table { width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);}
+        table { width: 100%; border-spacing: 0; padding: 0px !important; border-radius: var(--ha-card-border-radius);}
         th { background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text); padding: 4px;}
         th:first-child { border-top-left-radius: var(--ha-card-border-radius); }
         th:last-child { border-top-right-radius: var(--ha-card-border-radius); }

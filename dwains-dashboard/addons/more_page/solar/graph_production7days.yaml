@@ -1,0 +1,79 @@
+---
+type: custom:config-template-card
+entities:
+  - sensor.sungrowsolar_total_pv_power_kw
+  - sensor.sungrowsolar_power_meter_kw
+  - sensor.sungrowsolar_export_power_kw
+card:
+  type: custom:apexcharts-card
+  graph_span: 7d
+  header:
+    show: true
+    show_states: true
+    colorize_states: true
+    title: "Solar Production"
+  all_series_config:
+    stroke_width: 1
+    type: line
+    curve: smooth
+    extend_to_end: false
+    unit: kW
+  color_list:
+    - rgb(35, 155, 86)
+    - rgb(229, 152, 102)
+    - rgb(241, 148, 138)
+    - rgb(208, 236, 231)
+    - rgb(232, 246, 243)
+  apex_config:
+    tooltip:
+      x:
+        format: "ddd dd MMM - HH:mm"
+    legend:
+      show: false
+    grid:
+      borderColor: "#7B7B7B"
+    chart:
+      height: 450
+      foreColor: "#7B7B7B"
+      zoom:
+        type: x
+        enabled: true
+        autoScaleYaxis: true
+      toolbar:
+        show: true
+        autoSelected: zoom
+        tools:
+          zoom: true
+          zoomin: false
+          zoomout: false
+          pan: false
+          reset: true
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
+    yaxis:
+      - seriesName: "kW"
+        decimalsInFloat: 0
+        # max: 5
+        title:
+          text: "kW"
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
+  series:
+    - entity: sensor.sungrowsolar_total_pv_power_kw
+      name: Solar Generation
+      stroke_width: 2
+      group_by:
+        func: max
+        duration: 15min
+    - entity: sensor.sungrowsolar_power_meter_kw
+      name: House Consumption
+      group_by:
+        func: max
+        duration: 15min
+    - entity: sensor.sungrowsolar_export_power_kw
+      name: Grid
+      group_by:
+        func: max
+        duration: 15min

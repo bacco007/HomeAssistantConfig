@@ -3,6 +3,7 @@
   cards:
     - !include graph_production.yaml
     - !include graph_prediction.yaml
+    - !include graph_production7days.yaml    
     - !include graph_yield.yaml
     - !include graph_usageprod.yaml
     # - !include graph_usage.yaml

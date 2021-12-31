@@ -238,7 +238,7 @@ class AuthenticatedSensor(Entity):
         return "mdi:lock-alert"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return attributes for the sensor."""
         if self.last_ip is None:
             return None

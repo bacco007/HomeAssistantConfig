@@ -45,6 +45,22 @@ sensor:
     resource: !secret plex_tautulli_toptv_url
 
   - platform: rest
+    name: plex_tautulli_populartv
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - rows
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_populartv_url    
+
+  - platform: rest
+    name: plex_tautulli_toptv_plays
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - rows
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_toptv_plays_url    
+
+  - platform: rest
     name: plex_tautulli_toptv_30days
     json_attributes_path: "$.response.data"
     json_attributes:
@@ -67,6 +83,22 @@ sensor:
       - rows
     value_template: "{{ value_json['response']['result'] }}"
     resource: !secret plex_tautulli_topusers_url
+
+  - platform: rest
+    name: plex_tautulli_watch_stats_tv
+    json_attributes_path: "$.response"
+    json_attributes:
+      - data
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_tv_watch_stats_url
+
+  - platform: rest
+    name: plex_tautulli_watch_stats_movies
+    json_attributes_path: "$.response"
+    json_attributes:
+      - data
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_movies_watch_stats_url
 
   - platform: template
     sensors:

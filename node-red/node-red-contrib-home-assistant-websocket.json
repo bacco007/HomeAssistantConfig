@@ -2,107 +2,107 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 217,
+        "state": 272,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 446,
+        "state": 441,
         "attributes": {}
       }
     },
     "e22cc942_3a94f": {
       "lastPayload": {
-        "state": 5,
+        "state": 2,
         "attributes": {}
       }
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 187,
+        "state": 176,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 43,
+        "state": 31,
         "attributes": {}
       }
     },
     "ae64dbe3_1e2d2": {
       "lastPayload": {
-        "state": 14.9,
+        "state": 3.7,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "16:40 23 Dec 2021",
+          "time": "15:24 27 Dec 2021",
           "sort": 3
         }
       }
     },
     "4b8ffd88_01a24c": {
       "lastPayload": {
-        "state": 2.5,
+        "state": 0.7,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "16:40 23 Dec 2021",
+          "time": "15:24 27 Dec 2021",
           "sort": 6
         }
       }
     },
     "9c32ef9e_198c5": {
       "lastPayload": {
-        "state": 0.9,
+        "state": 0.2,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "16:40 23 Dec 2021",
+          "time": "15:24 27 Dec 2021",
           "sort": 7
         }
       }
     },
     "3e7de169_4cf3ce": {
       "lastPayload": {
-        "state": 5,
+        "state": 1.3,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "16:40 23 Dec 2021",
+          "time": "15:24 27 Dec 2021",
           "sort": 5
         }
       }
     },
     "5b2a34dc_cc5e94": {
       "lastPayload": {
-        "state": 29.7,
+        "state": 7.3,
         "attributes": {
           "aep": 0,
-          "ey": 6,
-          "time": "16:40 23 Dec 2021",
+          "ey": 0,
+          "time": "15:24 27 Dec 2021",
           "sort": 2
         }
       }
     },
     "fedcc9b8_2176b8": {
       "lastPayload": {
-        "state": 59.3,
+        "state": 10.7,
         "attributes": {
           "aep": 0,
-          "ey": 3,
-          "time": "16:40 23 Dec 2021",
+          "ey": 0,
+          "time": "15:24 27 Dec 2021",
           "sort": 1
         }
       }
     },
     "842f01fc_12319": {
       "lastPayload": {
-        "state": 111.7,
+        "state": 107.4,
         "attributes": {
-          "aep": 10,
+          "aep": 20,
           "ey": 0.2,
-          "time": "15:29 29 Dec 2020",
+          "time": "15:31 08 Mar 2021",
           "sort": 2
         }
       }
@@ -153,11 +153,11 @@
     },
     "1c6730fe_5720d7": {
       "lastPayload": {
-        "state": 85.6,
+        "state": 71.7,
         "attributes": {
-          "aep": 10,
+          "aep": 0,
           "ey": 0.2,
-          "time": "15:31 29 Dec 2020",
+          "time": "15:35 08 Mar 2021",
           "sort": "3"
         }
       }
@@ -194,11 +194,11 @@
     },
     "8035f609_c576a8": {
       "lastPayload": {
-        "state": 11.8,
+        "state": 12,
         "attributes": {
-          "count": 1,
-          "countstring": "1 Days",
-          "average": 11.8,
+          "count": 2,
+          "countstring": "2 Days",
+          "average": 6,
           "highest": 11.8,
           "sort": 2
         }
@@ -206,11 +206,11 @@
     },
     "b6601402_363ac8": {
       "lastPayload": {
-        "state": 8.2,
+        "state": 13.58,
         "attributes": {
-          "count": 2,
-          "countstring": "2 Days",
-          "average": 4.1,
+          "count": 3,
+          "countstring": "3 Days",
+          "average": 4.53,
           "highest": 5.41,
           "sort": 2
         }
@@ -218,42 +218,42 @@
     },
     "d4f5da6c_a1fc4": {
       "lastPayload": {
-        "state": 0.2,
+        "state": 0,
         "attributes": {
-          "count": 1,
-          "countstring": "1 Days",
-          "average": 0.2,
-          "highest": 0.2,
+          "count": 0,
+          "countstring": "No Rain",
+          "average": 0,
+          "highest": 0,
           "sort": "1"
         }
       }
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 131.74,
+        "state": 13.467,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 167.58,
+        "state": 168.04,
         "attributes": {
           "max": 189.9,
           "min": 138.9,
-          "avg": 167.58,
-          "mindate": "30 Dec 2020",
+          "avg": 168.04,
+          "mindate": "01 Jan 2021",
           "maxdate": "29 Oct 2021",
-          "datestring": "Min: 30 Dec 2020 - Max: 29 Oct 2021"
+          "datestring": "Min: 01 Jan 2021 - Max: 29 Oct 2021"
         }
       }
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 10.09,
+        "state": 10.103,
         "attributes": {
           "max": 21.72,
           "min": -2,
-          "avg": 10.09,
+          "avg": 10.103,
           "mindate": "07 Jul 2021",
           "maxdate": "30 Jan 2021",
           "datestring": "Min: 07 Jul 2021 - Max: 30 Jan 2021"
@@ -262,11 +262,11 @@
     },
     "9175a68d_c94b78": {
       "lastPayload": {
-        "state": 70.6,
+        "state": 69.8,
         "attributes": {
-          "count": 7,
-          "countstring": "7 Days",
-          "average": 10.09,
+          "count": 6,
+          "countstring": "6 Days",
+          "average": 11.63,
           "highest": 34.2,
           "sort": 3
         }
@@ -274,11 +274,11 @@
     },
     "6a5bcb5d_8aa50c": {
       "lastPayload": {
-        "state": 78.14,
+        "state": 77.13,
         "attributes": {
-          "count": 11,
-          "countstring": "11 Days",
-          "average": 7.1,
+          "count": 9,
+          "countstring": "9 Days",
+          "average": 8.57,
           "highest": 47.35,
           "sort": 3
         }
@@ -286,23 +286,23 @@
     },
     "1b767a8_196e406": {
       "lastPayload": {
-        "state": 6.8,
+        "state": 1.42,
         "attributes": {
-          "count": 2,
-          "countstring": "2 Days",
-          "average": 3.4,
-          "highest": 5.38,
+          "count": 1,
+          "countstring": "1 Days",
+          "average": 1.42,
+          "highest": 1.42,
           "sort": 1
         }
       }
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 23.61,
+        "state": 23.618,
         "attributes": {
           "max": 35.9,
           "min": 4.8,
-          "avg": 23.61,
+          "avg": 23.618,
           "mindate": "16 Jun 2021",
           "maxdate": "27 Jan 2021",
           "datestring": "Min: 16 Jun 2021 - Max: 27 Jan 2021"
@@ -311,11 +311,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 24.961,
+        "state": 24.967,
         "attributes": {
           "max": 38.11,
           "min": 5.5,
-          "avg": 24.961,
+          "avg": 24.967,
           "mindate": "16 Jun 2021",
           "maxdate": "24 Jan 2021",
           "datestring": "Min: 16 Jun 2021 - Max: 24 Jan 2021"
@@ -336,7 +336,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "8.3",
+        "state": "11.5",
         "attributes": {
           "units": "GB"
         }
@@ -344,7 +344,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "24.0",
+        "state": "54.2",
         "attributes": {
           "units": "GB"
         }
@@ -356,20 +356,20 @@
         "attributes": {
           "model": "UDM",
           "version": "1.11.0.3921",
-          "data": "160.8 GB",
+          "data": "282.1 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "3d 13hr 50min",
+          "uptime": "5d 17hr 0min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "180.6",
+        "state": "314.7",
         "attributes": {
           "units": "GB"
         }
@@ -377,7 +377,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "16.1",
+        "state": "27.9",
         "attributes": {
           "units": "GB"
         }
@@ -385,14 +385,14 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 167.69,
+        "state": 168.12,
         "attributes": {
           "max": 190.9,
           "min": 137.9,
-          "avg": 167.69,
-          "mindate": "30 Dec 2020",
+          "avg": 168.12,
+          "mindate": "01 Jan 2021",
           "maxdate": "04 Nov 2021",
-          "datestring": "Min: 30 Dec 2020 - Max: 04 Nov 2021"
+          "datestring": "Min: 01 Jan 2021 - Max: 04 Nov 2021"
         }
       }
     },
@@ -420,11 +420,11 @@
     },
     "13d27691_292561": {
       "lastPayload": {
-        "state": 921.6,
+        "state": 902.8,
         "attributes": {
-          "count": 97,
-          "countstring": "97 Days",
-          "average": 9.5,
+          "count": 96,
+          "countstring": "96 Days",
+          "average": 9.4,
           "highest": 68.8,
           "sort": "4"
         }
@@ -438,11 +438,11 @@
     },
     "ee3ed6bb_25091": {
       "lastPayload": {
-        "state": 1164.66,
+        "state": 1110.43,
         "attributes": {
-          "count": 108,
-          "countstring": "108 Days",
-          "average": 10.78,
+          "count": 106,
+          "countstring": "106 Days",
+          "average": 10.48,
           "highest": 63.78,
           "sort": 4
         }
@@ -458,9 +458,9 @@
           "sitename": "Default (default)",
           "type": "usw",
           "controller": "https://192.168.1.1",
-          "uptime": "128d 20hr 32min",
-          "rx_data": "8.3 GB",
-          "tx_data": "24.0 GB",
+          "uptime": "130d 23hr 42min",
+          "rx_data": "11.5 GB",
+          "tx_data": "54.2 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -477,23 +477,23 @@
           "sitename": "Default (default)",
           "type": "udm",
           "cpu": null,
-          "users": 43,
+          "users": 42,
           "controller": "https://192.168.1.1",
           "guests": 0,
-          "uptime": "3d 13hr 50min",
+          "uptime": "5d 17hr 0min",
           "lastseen": "a few seconds ago",
-          "tx_data": "180.6 GB",
-          "rx_data": "16.1 GB"
+          "tx_data": "314.7 GB",
+          "rx_data": "27.9 GB"
         }
       }
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.075,
+        "state": 9.07,
         "attributes": {
           "max": 21.7,
           "min": -4.7,
-          "avg": 9.075,
+          "avg": 9.07,
           "mindate": "05 Jul 2021",
           "maxdate": "30 Jan 2021",
           "datestring": "Min: 05 Jul 2021 - Max: 30 Jan 2021"
@@ -502,10 +502,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 6,
+        "state": 13,
         "attributes": {
-          "uptime": "0d 9hr 33min",
-          "drops": 6
+          "uptime": "0d 8hr 5min",
+          "drops": 13
         }
       }
     },
@@ -517,34 +517,34 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "27.10",
+        "state": "29.20",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "39.05",
+        "state": "37.05",
         "attributes": {}
       }
     },
     "3016229d_895e2e": {
       "lastPayload": {
-        "state": 0.2,
+        "state": 0.1,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:07 24 Dec 2021",
+          "time": "15:24 27 Dec 2021",
           "sort": 9
         }
       }
     },
     "ac2847d2_af37a8": {
       "lastPayload": {
-        "state": 0.4,
+        "state": 0.1,
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "19:06 23 Dec 2021",
+          "time": "15:24 27 Dec 2021",
           "sort": 8
         }
       }
@@ -588,7 +588,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:05 29 Dec 2021",
+          "time": "17:08 31 Dec 2021",
           "sort": 8
         }
       }
@@ -599,7 +599,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:05 29 Dec 2021",
+          "time": "17:08 31 Dec 2021",
           "sort": 3
         }
       }
@@ -610,7 +610,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:05 29 Dec 2021",
+          "time": "17:08 31 Dec 2021",
           "sort": 6
         }
       }
@@ -621,7 +621,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:05 29 Dec 2021",
+          "time": "17:08 31 Dec 2021",
           "sort": 7
         }
       }
@@ -632,7 +632,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "05:05 29 Dec 2021",
+          "time": "17:08 31 Dec 2021",
           "sort": 5
         }
       }
@@ -664,11 +664,11 @@
     },
     "9e7e821c_502f1": {
       "lastPayload": {
-        "state": 9.9,
+        "state": 2.5,
         "attributes": {
           "aep": 0,
-          "ey": 12,
-          "time": "16:40 23 Dec 2021",
+          "ey": 0,
+          "time": "15:24 27 Dec 2021",
           "sort": 4
         }
       }
@@ -686,11 +686,11 @@
     },
     "5e0712bf_b1fdec": {
       "lastPayload": {
-        "state": 62.2,
+        "state": 54.2,
         "attributes": {
           "aep": 0,
           "ey": 0.5,
-          "time": "15:41 29 Dec 2020",
+          "time": "21:43 11 Mar 2021",
           "sort": "4"
         }
       }
@@ -823,7 +823,7 @@
     },
     "4f06ab2a_82eeb4": {
       "lastPayload": {
-        "state": "132.2",
+        "state": "244.3",
         "attributes": {
           "units": "GB"
         }
@@ -831,7 +831,7 @@
     },
     "8fe1ef33_7ab9f": {
       "lastPayload": {
-        "state": "28.6",
+        "state": "37.8",
         "attributes": {
           "units": "GB"
         }
@@ -847,16 +847,16 @@
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
-          "uptime": "3d 13hr 50min",
-          "rx_data": "28.6 GB",
-          "tx_data": "132.2 GB",
+          "uptime": "5d 17hr 0min",
+          "rx_data": "37.8 GB",
+          "tx_data": "244.3 GB",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "944c53df_2090b": {
       "lastPayload": {
-        "state": 12,
+        "state": 11,
         "attributes": {
           "ssid": "Baxter Wi-Fi"
         }

@@ -4,10 +4,10 @@ cards:
   - type: markdown
     card_mod: !include ../../1_Templates/style_markdowntable.yaml
     content: |
-      ### Plex Top TV (by Duration)
+      ### Plex Top TV (by Episodes Watched)
 
       |TV Show|Plays|Duration|Last Play|
       |---|:---:|:---:|:---:|
-      {% for row in state_attr("sensor.plex_tautulli_toptv", "rows") -%}{% set uptime = row.total_duration | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}{% set hours = ((uptime) / 3600) | int -%}{% set days = (uptime / 86400) | int -%}
+      {% for row in state_attr("sensor.plex_tautulli_toptv_plays", "rows") -%}{% set uptime = row.total_duration | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}{% set hours = ((uptime) / 3600) | int -%}{% set days = (uptime / 86400) | int -%}
       |{{row.title}}|{{row.total_plays}}|{{'%02d' % hours}}:{{'%02d' % minutes}}|{{ row.last_play|timestamp_custom ('%d/%m/%Y') }}|
       {% endfor -%}

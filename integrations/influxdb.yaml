@@ -29,9 +29,6 @@ influxdb:
       - binary_sensor.iss
       - sensor.iss_location
       - sensor.date_time
-      - sensor.plex_tautulli_history
-      - sensor.plex_tautulli_toptv
-      - sensor.plex_tautulli_topusers
       - sensor.radarr_movies
       - sensor.solar_power_factor
       - sensor.solar_phase_a_voltage
@@ -82,3 +79,4 @@ influxdb:
       - sensor.climacell*
       - sensor.international_space_station*
       - sensor.zha*
+      - sensor.plex_tautulli*

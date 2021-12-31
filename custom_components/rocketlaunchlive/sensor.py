@@ -78,7 +78,7 @@ class RocketLaunchSensor(CoordinatorEntity):
         return self._icon
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the device attributes."""
         attrs = self.get_attrs(self.coordinator.data[self._launch_id])
         return attrs

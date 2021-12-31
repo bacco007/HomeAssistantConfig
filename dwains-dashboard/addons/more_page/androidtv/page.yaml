@@ -1,6 +1,5 @@
 ---
 # dwains_theme
-
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12"
   cards:
