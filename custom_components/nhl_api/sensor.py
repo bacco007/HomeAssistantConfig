@@ -5,16 +5,17 @@ https://github.com/JayBlackedOut/hass-nhlapi/blob/master/README.md
 """
 
 import logging
-from datetime import timedelta, datetime as dt
-from pynhl import Schedule, Scoring, Linescore, Broadcasts
-import voluptuous as vol
+from datetime import datetime as dt
+from datetime import timedelta
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (CONF_NAME, CONF_ID, CONF_SCAN_INTERVAL)
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
+import voluptuous as vol
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_ID, CONF_NAME, CONF_SCAN_INTERVAL
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import track_point_in_time
+from pynhl import Broadcasts, Linescore, Schedule, Scoring
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -88,7 +89,7 @@ class NHLSensor(Entity):
         return self._state
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the sensor."""
         return self._state_attributes
 

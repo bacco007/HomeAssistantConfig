@@ -86,6 +86,6 @@ class NswFireServiceFireDangerEntity(Entity):
         return DEFAULT_FORCE_UPDATE
 
     @property
-    def device_state_attributes(self) -> Optional[Dict[str, Any]]:
+    def extra_state_attributes(self) -> Optional[Dict[str, Any]]:
         """Return the state attributes."""
         return self._attributes

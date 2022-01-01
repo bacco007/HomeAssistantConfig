@@ -9,12 +9,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
-from . import AlertsDataUpdateCoordinator
 
+from . import AlertsDataUpdateCoordinator
 from .const import (
     ATTRIBUTION,
-    CONF_TIMEOUT,
     CONF_TEAM_ID,
+    CONF_TIMEOUT,
     COORDINATOR,
     DEFAULT_ICON,
     DEFAULT_NAME,
@@ -138,7 +138,7 @@ class NFLScoresSensor(CoordinatorEntity):
             return None
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state message."""
         attrs = {}
 

@@ -10,8 +10,7 @@ import numpy as np
 import pandas as pd
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (ATTR_ATTRIBUTION, CONF_MONITORED_CONDITIONS,
-                                 CONF_NAME)
+from homeassistant.const import ATTR_ATTRIBUTION, CONF_MONITORED_CONDITIONS, CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
@@ -106,7 +105,7 @@ class CovidVaccineSensor(Entity):
         return self.covidvaccine_data.latest_data[self._condition][1]
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         attr = {
             ATTR_ATTRIBUTION: ATTRIBUTION,
             ATTR_LAST_UPDATE: self.covidvaccine_data.last_updated,

@@ -172,6 +172,9 @@ more_page:
     - name: Untappd
       icon: si:untappd
       path: "dwains-dashboard/addons/more_page/untappd/page.yaml"
+    - name: Untappd - Project 52
+      icon: si:untappd
+      path: "dwains-dashboard/addons/more_page/untappd_project52/page.yaml"
     - name: Upcoming Sport
       icon: mdi:football-australian
       path: "dwains-dashboard/addons/more_page/sports/page.yaml"

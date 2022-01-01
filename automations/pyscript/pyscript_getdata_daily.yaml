@@ -6,7 +6,7 @@ trigger:
   - platform: homeassistant
     event: start
   - platform: time_pattern
-    hours: "/12"
+    hours: "/6"
 condition: []
 action:
   - service: pyscript.getdata_f1driverstandings
@@ -50,5 +50,9 @@ action:
       entity_id: sensor.untappd_beers_ratelow
       user: bacco007
       sort: lowest_rated_you
+  - service: pyscript.getdata_untappd_project52
+    data:
+      entity_id: sensor.untappd_project52
+      user: bacco007
 
 mode: single

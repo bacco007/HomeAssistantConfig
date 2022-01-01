@@ -1,114 +1,67 @@
 """NSW Covid 19 Data"""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-)
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components import sensor
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import callback
 from homeassistant.helpers import device_registry, entity
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.helpers.typing import HomeAssistantType, StateType
 from homeassistant.util import slugify
-from homeassistant.helpers.typing import StateType
-from homeassistant.components import sensor
-from homeassistant.components.sensor import SensorEntity
 
 from . import DOMAIN
-from .const import (
-    ATTR_PUBLISHED,
-    ATTR_LOCALLY_ACTIVE,
-    ATTR_INTERSTATE_ACTIVE,
-    ATTR_OVERSEAS_ACTIVE,
-    ATTR_TOTAL_ACTIVE,
-    ATTR_LAST_24_HOURS_KNOWN,
-    ATTR_LAST_24_HOURS_UNKNOWN,
-    ATTR_LAST_24_HOURS_INTERSTATE,
-    ATTR_LAST_24_HOURS_OVERSEAS,
-    ATTR_LAST_24_HOURS_TOTAL,
-    ATTR_LAST_24_HOURS_TESTS,
-    ATTR_THIS_WEEK_KNOWN,
-    ATTR_THIS_WEEK_UNKNOWN,
-    ATTR_THIS_WEEK_INTERSTATE,
-    ATTR_THIS_WEEK_OVERSEAS,
-    ATTR_THIS_WEEK_TOTAL,
-    ATTR_THIS_WEEK_TESTS,
-    ATTR_LAST_WEEK_KNOWN,
-    ATTR_LAST_WEEK_UNKNOWN,
-    ATTR_LAST_WEEK_INTERSTATE,
-    ATTR_LAST_WEEK_OVERSEAS,
-    ATTR_LAST_WEEK_TOTAL,
-    ATTR_LAST_WEEK_TESTS,
-    ATTR_THIS_YEAR_KNOWN,
-    ATTR_THIS_YEAR_UNKNOWN,
-    ATTR_THIS_YEAR_INTERSTATE,
-    ATTR_THIS_YEAR_OVERSEAS,
-    ATTR_THIS_YEAR_TOTAL,
-    ATTR_THIS_YEAR_TESTS,
-    ATTR_LAST_24_HOURS_FIRST_DOSE,
-    ATTR_LAST_24_HOURS_SECOND_DOSE,
-    ATTR_LAST_24_HOURS_TOTAL_DOSE,
-    ATTR_TOTAL_FIRST_DOSE,
-    ATTR_TOTAL_SECOND_DOSE,
-    ATTR_TOTAL_TOTAL_DOSE,
-    ATTR_LIVES_LOST,
-    ATTR_LIVES_LOST_FEMALE_0_9,
-    ATTR_LIVES_LOST_FEMALE_10_19,
-    ATTR_LIVES_LOST_FEMALE_20_29,
-    ATTR_LIVES_LOST_FEMALE_30_39,
-    ATTR_LIVES_LOST_FEMALE_40_49,
-    ATTR_LIVES_LOST_FEMALE_50_59,
-    ATTR_LIVES_LOST_FEMALE_60_69,
-    ATTR_LIVES_LOST_FEMALE_70_79,
-    ATTR_LIVES_LOST_FEMALE_80_89,
-    ATTR_LIVES_LOST_FEMALE_90_PLUS,
-    ATTR_LIVES_LOST_MALE_0_9,
-    ATTR_LIVES_LOST_MALE_10_19,
-    ATTR_LIVES_LOST_MALE_20_29,
-    ATTR_LIVES_LOST_MALE_30_39,
-    ATTR_LIVES_LOST_MALE_40_49,
-    ATTR_LIVES_LOST_MALE_50_59,
-    ATTR_LIVES_LOST_MALE_60_69,
-    ATTR_LIVES_LOST_MALE_70_79,
-    ATTR_LIVES_LOST_MALE_80_89,
-    ATTR_LIVES_LOST_MALE_90_PLUS,
-    ATTR_CASES,
-    ATTR_CASES_FEMALE_0_9,
-    ATTR_CASES_FEMALE_10_19,
-    ATTR_CASES_FEMALE_20_29,
-    ATTR_CASES_FEMALE_30_39,
-    ATTR_CASES_FEMALE_40_49,
-    ATTR_CASES_FEMALE_50_59,
-    ATTR_CASES_FEMALE_60_69,
-    ATTR_CASES_FEMALE_70_79,
-    ATTR_CASES_FEMALE_80_89,
-    ATTR_CASES_FEMALE_90_PLUS,
-    ATTR_CASES_MALE_0_9,
-    ATTR_CASES_MALE_10_19,
-    ATTR_CASES_MALE_20_29,
-    ATTR_CASES_MALE_30_39,
-    ATTR_CASES_MALE_40_49,
-    ATTR_CASES_MALE_50_59,
-    ATTR_CASES_MALE_60_69,
-    ATTR_CASES_MALE_70_79,
-    ATTR_CASES_MALE_80_89,
-    ATTR_CASES_MALE_90_PLUS,
-    ATTR_DOSES,
-    ATTR_NSW_HEALTH_DOSES_DAILY,
-    ATTR_NSW_HEALTH_DOSES_CUMULATIVE,
-    ATTR_GP_NETWORK_DOSES_CUMULATIVE,
-    ATTR_NSW_HEALTH_DOSES_UPDATED,
-    ATTR_GP_NETWORK_DOSES_UPDATED,
-    ATTR_ALL_PROVIDERS_DOSES_CUMULATIVE,
-    DEVICE_CLASS_COVID_CASES,
-    DEVICE_CLASS_COVID_VACCINATIONS,
-    NSWHEALTH_NAME,
-    MANUFACTURER,
-)
+from .const import (ATTR_ALL_PROVIDERS_DOSES_CUMULATIVE, ATTR_CASES,
+                    ATTR_CASES_FEMALE_0_9, ATTR_CASES_FEMALE_10_19,
+                    ATTR_CASES_FEMALE_20_29, ATTR_CASES_FEMALE_30_39,
+                    ATTR_CASES_FEMALE_40_49, ATTR_CASES_FEMALE_50_59,
+                    ATTR_CASES_FEMALE_60_69, ATTR_CASES_FEMALE_70_79,
+                    ATTR_CASES_FEMALE_80_89, ATTR_CASES_FEMALE_90_PLUS,
+                    ATTR_CASES_MALE_0_9, ATTR_CASES_MALE_10_19,
+                    ATTR_CASES_MALE_20_29, ATTR_CASES_MALE_30_39,
+                    ATTR_CASES_MALE_40_49, ATTR_CASES_MALE_50_59,
+                    ATTR_CASES_MALE_60_69, ATTR_CASES_MALE_70_79,
+                    ATTR_CASES_MALE_80_89, ATTR_CASES_MALE_90_PLUS, ATTR_DOSES,
+                    ATTR_GP_NETWORK_DOSES_CUMULATIVE,
+                    ATTR_GP_NETWORK_DOSES_UPDATED, ATTR_INTERSTATE_ACTIVE,
+                    ATTR_LAST_24_HOURS_FIRST_DOSE,
+                    ATTR_LAST_24_HOURS_INTERSTATE, ATTR_LAST_24_HOURS_KNOWN,
+                    ATTR_LAST_24_HOURS_OVERSEAS,
+                    ATTR_LAST_24_HOURS_SECOND_DOSE, ATTR_LAST_24_HOURS_TESTS,
+                    ATTR_LAST_24_HOURS_TOTAL, ATTR_LAST_24_HOURS_TOTAL_DOSE,
+                    ATTR_LAST_24_HOURS_UNKNOWN, ATTR_LAST_WEEK_INTERSTATE,
+                    ATTR_LAST_WEEK_KNOWN, ATTR_LAST_WEEK_OVERSEAS,
+                    ATTR_LAST_WEEK_TESTS, ATTR_LAST_WEEK_TOTAL,
+                    ATTR_LAST_WEEK_UNKNOWN, ATTR_LIVES_LOST,
+                    ATTR_LIVES_LOST_FEMALE_0_9, ATTR_LIVES_LOST_FEMALE_10_19,
+                    ATTR_LIVES_LOST_FEMALE_20_29, ATTR_LIVES_LOST_FEMALE_30_39,
+                    ATTR_LIVES_LOST_FEMALE_40_49, ATTR_LIVES_LOST_FEMALE_50_59,
+                    ATTR_LIVES_LOST_FEMALE_60_69, ATTR_LIVES_LOST_FEMALE_70_79,
+                    ATTR_LIVES_LOST_FEMALE_80_89,
+                    ATTR_LIVES_LOST_FEMALE_90_PLUS, ATTR_LIVES_LOST_MALE_0_9,
+                    ATTR_LIVES_LOST_MALE_10_19, ATTR_LIVES_LOST_MALE_20_29,
+                    ATTR_LIVES_LOST_MALE_30_39, ATTR_LIVES_LOST_MALE_40_49,
+                    ATTR_LIVES_LOST_MALE_50_59, ATTR_LIVES_LOST_MALE_60_69,
+                    ATTR_LIVES_LOST_MALE_70_79, ATTR_LIVES_LOST_MALE_80_89,
+                    ATTR_LIVES_LOST_MALE_90_PLUS, ATTR_LOCALLY_ACTIVE,
+                    ATTR_NSW_HEALTH_DOSES_CUMULATIVE,
+                    ATTR_NSW_HEALTH_DOSES_DAILY, ATTR_NSW_HEALTH_DOSES_UPDATED,
+                    ATTR_OVERSEAS_ACTIVE, ATTR_PUBLISHED,
+                    ATTR_THIS_WEEK_INTERSTATE, ATTR_THIS_WEEK_KNOWN,
+                    ATTR_THIS_WEEK_OVERSEAS, ATTR_THIS_WEEK_TESTS,
+                    ATTR_THIS_WEEK_TOTAL, ATTR_THIS_WEEK_UNKNOWN,
+                    ATTR_THIS_YEAR_INTERSTATE, ATTR_THIS_YEAR_KNOWN,
+                    ATTR_THIS_YEAR_OVERSEAS, ATTR_THIS_YEAR_TESTS,
+                    ATTR_THIS_YEAR_TOTAL, ATTR_THIS_YEAR_UNKNOWN,
+                    ATTR_TOTAL_ACTIVE, ATTR_TOTAL_FIRST_DOSE,
+                    ATTR_TOTAL_SECOND_DOSE, ATTR_TOTAL_TOTAL_DOSE,
+                    DEVICE_CLASS_COVID_CASES, DEVICE_CLASS_COVID_VACCINATIONS,
+                    MANUFACTURER, NSWHEALTH_NAME)
 
 ACTIVE_SENSORS = [
     ATTR_PUBLISHED,
@@ -340,7 +293,7 @@ class NSWCovidEntry(RestoreEntity, SensorEntity):
     #     return self.__statistic.published
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the device."""
         attr = {}
         attr[ATTR_ATTRIBUTION] = self.__statistic.attribution
@@ -469,7 +422,7 @@ class NSWCovidDeaths(RestoreEntity):
         return sensor.STATE_CLASS_MEASUREMENT
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the device."""
         attr = {}
         attr[ATTR_ATTRIBUTION] = None
@@ -611,7 +564,7 @@ class NSWCovidCases(RestoreEntity):
         return sensor.STATE_CLASS_MEASUREMENT
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the device."""
         attr = {}
         attr[ATTR_ATTRIBUTION] = None
@@ -735,7 +688,7 @@ class NSWCovidDoses(RestoreEntity):
         return None
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the device."""
         attr = {}
         attr[ATTR_ATTRIBUTION] = None

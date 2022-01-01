@@ -46,7 +46,7 @@ class ICalCalendarEventDevice(CalendarEventDevice):
         self.ical_events = ical_events
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the device state attributes."""
         return {"offset_reached": self._offset_reached}
 

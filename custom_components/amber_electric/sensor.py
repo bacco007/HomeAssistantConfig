@@ -1,15 +1,14 @@
 """Amber Electric Sensor"""
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
 
 import voluptuous as vol
-
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
     ATTR_UNIT_OF_MEASUREMENT,
+    CONF_NAME,
     DEVICE_CLASS_ENERGY,
     ENERGY_KILO_WATT_HOUR,
-    CONF_NAME,
     EVENT_HOMEASSISTANT_START,
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
@@ -17,29 +16,25 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.event import (
-    async_track_state_change_event,
-    async_track_time_change,
-)
+from homeassistant.helpers.event import async_track_state_change_event, async_track_time_change
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import HomeAssistantType
 
-
 from .const import (
-    DOMAIN,
+    AMBER_DAILY_PRICE,
     ATTR_NEM_TIME,
     ATTR_PERCENTILE_RANK,
     ATTR_PERIOD_DELTA,
-    ATTR_PERIOD_TYPE,
-    ATTR_PERIOD_START,
     ATTR_PERIOD_END,
-    ATTR_WHOLESALE_KWH_PRICE,
+    ATTR_PERIOD_START,
+    ATTR_PERIOD_TYPE,
     ATTR_RENEWABLES_PERCENTAGE,
+    ATTR_WHOLESALE_KWH_PRICE,
     CURRENCY_AUD,
-    LOSS_FACTOR,
-    AMBER_DAILY_PRICE,
+    DOMAIN,
     GREEN_KWH_PRICE,
     LOSS_FACTOR,
+    MANUFACTURER,
     MARKET_KWH_PRICE,
     NETWORK_DAILY_PRICE,
     NETWORK_KWH_PRICE,
@@ -47,9 +42,7 @@ from .const import (
     OFFSET_KWH_PRICE,
     TOTAL_DAILY_PRICE,
     TOTAL_FIXED_KWH_PRICE,
-    MANUFACTURER,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,18 +61,18 @@ async def async_setup_entry(hass: HomeAssistantType, entry, async_add_entities):
     if not "tasks" in hass.data[DOMAIN]:
         hass.data[DOMAIN]["tasks"] = {}
 
-    hass.data[DOMAIN]["entity_ref"][
-        f"{api.postcode}_usage"
-    ] = AmberElectricUsagePriceSensor(price_type="USAGE", api=api)
-    hass.data[DOMAIN]["entity_ref"][
-        f"{api.postcode}_export"
-    ] = AmberElectricUsagePriceSensor(price_type="EXPORT", api=api)
+    hass.data[DOMAIN]["entity_ref"][f"{api.postcode}_usage"] = AmberElectricUsagePriceSensor(
+        price_type="USAGE", api=api
+    )
+    hass.data[DOMAIN]["entity_ref"][f"{api.postcode}_export"] = AmberElectricUsagePriceSensor(
+        price_type="EXPORT", api=api
+    )
     hass.data[DOMAIN]["entity_ref"][
         f"{api.postcode}_market_consumption"
     ] = AmberElectricMarketConsumption(api=api)
-    hass.data[DOMAIN]["entity_ref"][
-        f"{api.postcode}_market_solar"
-    ] = AmberElectricMarketSolar(api=api)
+    hass.data[DOMAIN]["entity_ref"][f"{api.postcode}_market_solar"] = AmberElectricMarketSolar(
+        api=api
+    )
 
     def device_event_handler(event_data):
         if not (event_data):
@@ -196,27 +189,17 @@ class AmberElectricMarketConsumption(RestoreEntity):
         if self.__api.market.nem_time:
             data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
         data[NETWORK_PROVIDER] = self.__api.market.network_provider
-        data[ATTR_PERCENTILE_RANK] = getattr(
-            self.__api.market.latest, ATTR_PERCENTILE_RANK, None
-        )
-        data[ATTR_PERIOD_DELTA] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_DELTA, None
-        )
+        data[ATTR_PERCENTILE_RANK] = getattr(self.__api.market.latest, ATTR_PERCENTILE_RANK, None)
+        data[ATTR_PERIOD_DELTA] = getattr(self.__api.market.latest, ATTR_PERIOD_DELTA, None)
         if data[ATTR_PERIOD_DELTA]:
             data[ATTR_PERIOD_DELTA] = data[ATTR_PERIOD_DELTA].total_seconds()
-        data[ATTR_PERIOD_START] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_START, None
-        )
+        data[ATTR_PERIOD_START] = getattr(self.__api.market.latest, ATTR_PERIOD_START, None)
         if data[ATTR_PERIOD_START]:
             data[ATTR_PERIOD_START] = data[ATTR_PERIOD_START].isoformat()
-        data[ATTR_PERIOD_END] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_END, None
-        )
+        data[ATTR_PERIOD_END] = getattr(self.__api.market.latest, ATTR_PERIOD_END, None)
         if data[ATTR_PERIOD_END]:
             data[ATTR_PERIOD_END] = data[ATTR_PERIOD_END].isoformat()
-        data[ATTR_PERIOD_TYPE] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_TYPE, None
-        )
+        data[ATTR_PERIOD_TYPE] = getattr(self.__api.market.latest, ATTR_PERIOD_TYPE, None)
         data[ATTR_WHOLESALE_KWH_PRICE] = getattr(
             self.__api.market.latest, ATTR_WHOLESALE_KWH_PRICE, None
         )
@@ -303,7 +286,7 @@ class AmberElectricMarketSolar(RestoreEntity):
         return "mdi:solar-power"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return device specific attributes."""
         data = dict()
         data[ATTR_ATTRIBUTION] = "© Amber Electric Pty Ltd ABN 98 623 603 805"
@@ -313,24 +296,16 @@ class AmberElectricMarketSolar(RestoreEntity):
         data[ATTR_RENEWABLES_PERCENTAGE] = getattr(
             self.__api.market.latest, ATTR_RENEWABLES_PERCENTAGE, None
         )
-        data[ATTR_PERIOD_DELTA] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_DELTA, None
-        )
+        data[ATTR_PERIOD_DELTA] = getattr(self.__api.market.latest, ATTR_PERIOD_DELTA, None)
         if data[ATTR_PERIOD_DELTA]:
             data[ATTR_PERIOD_DELTA] = data[ATTR_PERIOD_DELTA].total_seconds()
-        data[ATTR_PERIOD_START] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_START, None
-        )
+        data[ATTR_PERIOD_START] = getattr(self.__api.market.latest, ATTR_PERIOD_START, None)
         if data[ATTR_PERIOD_START]:
             data[ATTR_PERIOD_START] = data[ATTR_PERIOD_START].isoformat()
-        data[ATTR_PERIOD_END] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_END, None
-        )
+        data[ATTR_PERIOD_END] = getattr(self.__api.market.latest, ATTR_PERIOD_END, None)
         if data[ATTR_PERIOD_END]:
             data[ATTR_PERIOD_END] = data[ATTR_PERIOD_END].isoformat()
-        data[ATTR_PERIOD_TYPE] = getattr(
-            self.__api.market.latest, ATTR_PERIOD_TYPE, None
-        )
+        data[ATTR_PERIOD_TYPE] = getattr(self.__api.market.latest, ATTR_PERIOD_TYPE, None)
         return data
 
     @property
@@ -381,9 +356,7 @@ class AmberElectricPriceSensor(RestoreEntity):
 
     def async_device_changed(self):
         """Send changed data to HA"""
-        _LOGGER.debug(
-            "%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state
-        )
+        _LOGGER.debug("%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state)
         self.async_schedule_update_ha_state()
 
     @property
@@ -420,7 +393,7 @@ class AmberElectricPriceSensor(RestoreEntity):
         return "mdi:currency-usd"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return device specific attributes."""
         ancillary_data = getattr(self.__api.market, self.__ancillary_data, None)
         data = dict()

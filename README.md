@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, December 31st 2021_
+_Stats as at 05:00, Saturday, January 1st 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.12.7 | 360     | 2143         | 1579 | 86 |
+| 2021.12.7 | 360     | 2157         | 1588 | 86 |
 
 Type | Qty
 -- | --
@@ -88,11 +88,11 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 19
+Media Player | 21
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1579
+Sensor | 1588
 Sun | 1
 Switch | 83
 Weather | 7
@@ -318,6 +318,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [select.tuya](https://www.home-assistant.io/components/select.tuya) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.adguard](https://www.home-assistant.io/components/sensor.adguard) |
+| [sensor.amber_electric](https://www.home-assistant.io/components/sensor.amber_electric) |
 | [sensor.amberelectric](https://www.home-assistant.io/components/sensor.amberelectric) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.authenticated](https://www.home-assistant.io/components/sensor.authenticated) |
@@ -388,7 +389,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sun2](https://www.home-assistant.io/components/sensor.sun2) |
 | [sensor.synology_dsm](https://www.home-assistant.io/components/sensor.synology_dsm) |
 | [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor) |
-| [sensor.tautulli](https://www.home-assistant.io/components/sensor.tautulli) |
 | [sensor.temperature_feels_like](https://www.home-assistant.io/components/sensor.temperature_feels_like) |
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
@@ -562,6 +562,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - https://github.com/MaxWinterstein/homeassistant-addons/
 - https://github.com/OpenXbox/xboxone-home-assistant
 - https://github.com/sabeechen/hassio-google-drive-backup
+- https://github.com/TenySmart/HassioAddon
 - https://github.com/Ulrar/hassio-addons
 
 

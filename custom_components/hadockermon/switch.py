@@ -9,16 +9,11 @@ import logging
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant.components.switch import DOMAIN, PLATFORM_SCHEMA, SwitchEntity
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
+from homeassistant.components.switch import (DOMAIN, PLATFORM_SCHEMA,
+                                             SwitchEntity)
+from homeassistant.const import (CONF_HOST, CONF_NAME, CONF_PASSWORD,
+                                 CONF_PORT, CONF_SSL, CONF_USERNAME,
+                                 CONF_VERIFY_SSL)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 __version__ = "3.1.2"
@@ -139,7 +134,7 @@ class HADockermonSwitch(SwitchEntity):
         return "mdi:docker"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Set device attributes."""
         return {
             ATTR_STATUS: self._status,

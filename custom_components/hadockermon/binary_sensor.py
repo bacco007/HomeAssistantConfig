@@ -172,7 +172,7 @@ class HADockermonSwitch(BinarySensorEntity):
         return ICON
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         ret = {
             ATTR_STATUS: self._status,
             ATTR_IMAGE: self._image,
@@ -182,7 +182,10 @@ class HADockermonSwitch(BinarySensorEntity):
 
         if self._network_stats:
             ret.update(
-                {ATTR_RX_TOTAL: self._network_rx_total, ATTR_TX_TOTAL: self._network_tx_total,}
+                {
+                    ATTR_RX_TOTAL: self._network_rx_total,
+                    ATTR_TX_TOTAL: self._network_tx_total,
+                }
             )
 
         return ret

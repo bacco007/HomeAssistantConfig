@@ -1,22 +1,23 @@
 import logging
+
 from homeassistant.components.media_player import (
+    SUPPORT_PAUSE,
     SUPPORT_PLAY,
     SUPPORT_PLAY_MEDIA,
-    SUPPORT_PAUSE,
     SUPPORT_STOP,
-    SUPPORT_VOLUME_SET,
     SUPPORT_VOLUME_MUTE,
+    SUPPORT_VOLUME_SET,
     MediaPlayerEntity,
 )
 from homeassistant.const import (
-    STATE_UNAVAILABLE,
+    STATE_IDLE,
     STATE_PAUSED,
     STATE_PLAYING,
-    STATE_IDLE,
+    STATE_UNAVAILABLE,
     STATE_UNKNOWN,
 )
 
-from .helpers import setup_platform, BrowserModEntity
+from .helpers import BrowserModEntity, setup_platform
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
         self.schedule_update_ha_state()
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "deviceID": self.deviceID,

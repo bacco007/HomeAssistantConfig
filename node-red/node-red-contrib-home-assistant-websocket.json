@@ -2,13 +2,13 @@
   "nodes": {
     "b8ba9bae_43ed7": {
       "lastPayload": {
-        "state": 272,
+        "state": 119,
         "attributes": {}
       }
     },
     "35216d50_21fec2": {
       "lastPayload": {
-        "state": 441,
+        "state": 324,
         "attributes": {}
       }
     },
@@ -20,13 +20,13 @@
     },
     "b0cd82d_0e1088": {
       "lastPayload": {
-        "state": 176,
+        "state": 119,
         "attributes": {}
       }
     },
     "ac727c28_44b77": {
       "lastPayload": {
-        "state": 31,
+        "state": 28,
         "attributes": {}
       }
     },
@@ -230,30 +230,30 @@
     },
     "f24014c9_ac0258": {
       "lastPayload": {
-        "state": 13.467,
+        "state": 72.198,
         "attributes": {}
       }
     },
     "cdb027c7_820ed8": {
       "lastPayload": {
-        "state": 168.04,
+        "state": 168.27,
         "attributes": {
           "max": 189.9,
           "min": 138.9,
-          "avg": 168.04,
-          "mindate": "01 Jan 2021",
+          "avg": 168.27,
+          "mindate": "02 Jan 2021",
           "maxdate": "29 Oct 2021",
-          "datestring": "Min: 01 Jan 2021 - Max: 29 Oct 2021"
+          "datestring": "Min: 02 Jan 2021 - Max: 29 Oct 2021"
         }
       }
     },
     "311fef1b_5191e8": {
       "lastPayload": {
-        "state": 10.103,
+        "state": 10.106,
         "attributes": {
           "max": 21.72,
           "min": -2,
-          "avg": 10.103,
+          "avg": 10.106,
           "mindate": "07 Jul 2021",
           "maxdate": "30 Jan 2021",
           "datestring": "Min: 07 Jul 2021 - Max: 30 Jan 2021"
@@ -298,11 +298,11 @@
     },
     "4886e2d4_46b2d4": {
       "lastPayload": {
-        "state": 23.618,
+        "state": 23.608,
         "attributes": {
           "max": 35.9,
           "min": 4.8,
-          "avg": 23.618,
+          "avg": 23.608,
           "mindate": "16 Jun 2021",
           "maxdate": "27 Jan 2021",
           "datestring": "Min: 16 Jun 2021 - Max: 27 Jan 2021"
@@ -311,11 +311,11 @@
     },
     "1f2952a_7e1c72d": {
       "lastPayload": {
-        "state": 24.967,
+        "state": 24.963,
         "attributes": {
           "max": 38.11,
           "min": 5.5,
-          "avg": 24.967,
+          "avg": 24.963,
           "mindate": "16 Jun 2021",
           "maxdate": "24 Jan 2021",
           "datestring": "Min: 16 Jun 2021 - Max: 24 Jan 2021"
@@ -336,7 +336,7 @@
     },
     "7e607f36_2c7aa8": {
       "lastPayload": {
-        "state": "11.5",
+        "state": "13.1",
         "attributes": {
           "units": "GB"
         }
@@ -344,7 +344,7 @@
     },
     "e96c7bb3_6563b8": {
       "lastPayload": {
-        "state": "54.2",
+        "state": "64.7",
         "attributes": {
           "units": "GB"
         }
@@ -356,20 +356,20 @@
         "attributes": {
           "model": "UDM",
           "version": "1.11.0.3921",
-          "data": "282.1 GB",
+          "data": "334.6 GB",
           "serial": "74ACB9D220ED",
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
           "external_ip_address": "110.143.197.190",
-          "uptime": "5d 17hr 0min",
+          "uptime": "6d 12hr 28min",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "957cbb4_eef05c8": {
       "lastPayload": {
-        "state": "314.7",
+        "state": "371.8",
         "attributes": {
           "units": "GB"
         }
@@ -377,7 +377,7 @@
     },
     "4ab87d18_2096bc": {
       "lastPayload": {
-        "state": "27.9",
+        "state": "38.0",
         "attributes": {
           "units": "GB"
         }
@@ -385,14 +385,14 @@
     },
     "c64bc5f1_cdb0c": {
       "lastPayload": {
-        "state": 168.12,
+        "state": 168.33,
         "attributes": {
           "max": 190.9,
           "min": 137.9,
-          "avg": 168.12,
-          "mindate": "01 Jan 2021",
+          "avg": 168.33,
+          "mindate": "02 Jan 2021",
           "maxdate": "04 Nov 2021",
-          "datestring": "Min: 01 Jan 2021 - Max: 04 Nov 2021"
+          "datestring": "Min: 02 Jan 2021 - Max: 04 Nov 2021"
         }
       }
     },
@@ -438,11 +438,11 @@
     },
     "ee3ed6bb_25091": {
       "lastPayload": {
-        "state": 1110.43,
+        "state": 1109.72,
         "attributes": {
-          "count": 106,
-          "countstring": "106 Days",
-          "average": 10.48,
+          "count": 105,
+          "countstring": "105 Days",
+          "average": 10.57,
           "highest": 63.78,
           "sort": 4
         }
@@ -458,9 +458,9 @@
           "sitename": "Default (default)",
           "type": "usw",
           "controller": "https://192.168.1.1",
-          "uptime": "130d 23hr 42min",
-          "rx_data": "11.5 GB",
-          "tx_data": "54.2 GB",
+          "uptime": "131d 19hr 10min",
+          "rx_data": "13.1 GB",
+          "tx_data": "64.7 GB",
           "lastseen": "a few seconds ago"
         }
       }
@@ -480,20 +480,20 @@
           "users": 42,
           "controller": "https://192.168.1.1",
           "guests": 0,
-          "uptime": "5d 17hr 0min",
+          "uptime": "6d 12hr 28min",
           "lastseen": "a few seconds ago",
-          "tx_data": "314.7 GB",
-          "rx_data": "27.9 GB"
+          "tx_data": "371.8 GB",
+          "rx_data": "38.0 GB"
         }
       }
     },
     "ebd67e08_e4ebb8": {
       "lastPayload": {
-        "state": 9.07,
+        "state": 9.064,
         "attributes": {
           "max": 21.7,
           "min": -4.7,
-          "avg": 9.07,
+          "avg": 9.064,
           "mindate": "05 Jul 2021",
           "maxdate": "30 Jan 2021",
           "datestring": "Min: 05 Jul 2021 - Max: 30 Jan 2021"
@@ -502,10 +502,10 @@
     },
     "ab2ad1b0_e2144": {
       "lastPayload": {
-        "state": 13,
+        "state": 19,
         "attributes": {
-          "uptime": "0d 8hr 5min",
-          "drops": 13
+          "uptime": "0d 0hr 45min",
+          "drops": 19
         }
       }
     },
@@ -517,13 +517,13 @@
     },
     "f8592c3c_34c84": {
       "lastPayload": {
-        "state": "29.20",
+        "state": "28.87",
         "attributes": {}
       }
     },
     "ad3923ed_69a52": {
       "lastPayload": {
-        "state": "37.05",
+        "state": "47.25",
         "attributes": {}
       }
     },
@@ -588,7 +588,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:08 31 Dec 2021",
+          "time": "05:06 01 Jan 2022",
           "sort": 8
         }
       }
@@ -599,7 +599,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:08 31 Dec 2021",
+          "time": "05:06 01 Jan 2022",
           "sort": 3
         }
       }
@@ -610,7 +610,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:08 31 Dec 2021",
+          "time": "05:06 01 Jan 2022",
           "sort": 6
         }
       }
@@ -621,7 +621,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:08 31 Dec 2021",
+          "time": "05:06 01 Jan 2022",
           "sort": 7
         }
       }
@@ -632,7 +632,7 @@
         "attributes": {
           "aep": 0,
           "ey": 0,
-          "time": "17:08 31 Dec 2021",
+          "time": "05:06 01 Jan 2022",
           "sort": 5
         }
       }
@@ -823,7 +823,7 @@
     },
     "4f06ab2a_82eeb4": {
       "lastPayload": {
-        "state": "244.3",
+        "state": "292.1",
         "attributes": {
           "units": "GB"
         }
@@ -831,7 +831,7 @@
     },
     "8fe1ef33_7ab9f": {
       "lastPayload": {
-        "state": "37.8",
+        "state": "42.4",
         "attributes": {
           "units": "GB"
         }
@@ -847,16 +847,16 @@
           "sitename": "Default (default)",
           "type": "udm",
           "controller": "https://192.168.1.1",
-          "uptime": "5d 17hr 0min",
-          "rx_data": "37.8 GB",
-          "tx_data": "244.3 GB",
+          "uptime": "6d 12hr 28min",
+          "rx_data": "42.4 GB",
+          "tx_data": "292.1 GB",
           "lastseen": "a few seconds ago"
         }
       }
     },
     "944c53df_2090b": {
       "lastPayload": {
-        "state": 11,
+        "state": 10,
         "attributes": {
           "ssid": "Baxter Wi-Fi"
         }

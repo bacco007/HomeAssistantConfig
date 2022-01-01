@@ -2,12 +2,12 @@
 import logging
 
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import ENERGY_KILO_WATT_HOUR, ATTR_IDENTIFIERS, ATTR_MANUFACTURER, ATTR_MODEL, ATTR_NAME
-from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.const import (ATTR_IDENTIFIERS, ATTR_MANUFACTURER,
+                                 ATTR_MODEL, ATTR_NAME, ENERGY_KILO_WATT_HOUR)
 from homeassistant.helpers.device_registry import DeviceEntryType
+from homeassistant.helpers.restore_state import RestoreEntity
 
 from . import DOMAIN, SensorType
-
 from .const import ATTR_ENTRY_TYPE
 
 _LOGGER = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ class SolcastSensor(RestoreEntity):
         return False
 
     #@property
-    #def device_state_attributes(self):
+    #def extra_state_attributes(self):
     #    """Return the state attributes of the binary sensor."""
     #    return self._attributes
 

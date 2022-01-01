@@ -277,7 +277,7 @@ class GenericLocationEvent(GeolocationEvent):
         return LENGTH_KILOMETERS
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         attributes = {}
         for key, value in (
             (ATTR_EXTERNAL_ID, self._external_id),

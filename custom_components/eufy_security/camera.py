@@ -3,13 +3,14 @@ import asyncio
 import logging
 from enum import Enum
 
-from eufy_security.errors import EufySecurityError
 from haffmpeg.camera import CameraMjpeg
 from haffmpeg.tools import IMAGE_JPEG, ImageFrame
 from homeassistant.components.camera import SUPPORT_ON_OFF, SUPPORT_STREAM, Camera
 from homeassistant.components.ffmpeg import DATA_FFMPEG
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_stream
+
+from eufy_security.errors import EufySecurityError
 
 from .const import DATA_API, DOMAIN
 
@@ -52,7 +53,7 @@ class EufySecurityCam(Camera):
         return "Eufy Security"
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes."""
         attributes = {
             ATTR_ATTRIBUTION: DEFAULT_ATTRIBUTION,
@@ -142,7 +143,10 @@ class EufySecurityCam(Camera):
         try:
             stream_reader = await self._ffmpeg_stream.get_reader()
             return await async_aiohttp_proxy_stream(
-                self.hass, request, stream_reader, self._ffmpeg.ffmpeg_stream_content_type,
+                self.hass,
+                request,
+                stream_reader,
+                self._ffmpeg.ffmpeg_stream_content_type,
             )
         finally:
             await self._ffmpeg_stream.close()

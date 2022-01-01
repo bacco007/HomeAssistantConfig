@@ -1,15 +1,10 @@
 from datetime import datetime
 
-from homeassistant.const import (
-    STATE_UNAVAILABLE,
-    ATTR_BATTERY_CHARGING,
-    ATTR_BATTERY_LEVEL,
-    STATE_ON,
-    STATE_OFF,
-)
 from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
+from homeassistant.const import (ATTR_BATTERY_CHARGING, ATTR_BATTERY_LEVEL,
+                                 STATE_OFF, STATE_ON, STATE_UNAVAILABLE)
 
-from .helpers import setup_platform, BrowserModEntity
+from .helpers import BrowserModEntity, setup_platform
 
 PLATFORM = "binary_sensor"
 
@@ -50,7 +45,7 @@ class BrowserModSensor(BrowserModEntity):
         return DEVICE_CLASS_MOTION
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "last_seen": self.last_seen,

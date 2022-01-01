@@ -1,0 +1,138 @@
+---
+# dwains_theme
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12"
+  cards:
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-2"
+      cards:
+        - type: "custom:button-card"
+          style: |
+            ha-card {
+              border-radius: 4px;
+              box-shadow: 10px;
+              background-position: center;
+          entity: sensor.untappd_project52
+          icon: si:untappd
+          show_state: false
+          show_name: true
+          show_label: true
+          name: >
+            [[[
+              var val = states['sensor.untappd_project52'].attributes.count;
+              return val + ' Beers';
+            ]]]
+          styles:
+            icon:
+              - width: 20%
+              - margin-top: 1%
+            card:
+              - background-size: contain
+              - background-repeat: no-repeat
+              - background-position: center
+        - type: "custom:button-card"
+          style: |
+            ha-card {
+              border-radius: 4px;
+              box-shadow: 10px;
+              background-position: center;
+          entity: sensor.untappd_project52
+          icon: si:untappd
+          show_state: false
+          show_name: true
+          show_label: true
+          name: >
+            [[[
+              var val = states['sensor.untappd_project52'].attributes.target;
+              return val + ' from Target';
+            ]]]
+          styles:
+            icon:
+              - width: 20%
+              - margin-top: 1%
+            card:
+              - background-size: contain
+              - background-repeat: no-repeat
+              - background-position: center
+        - type: "custom:button-card"
+          style: |
+            ha-card {
+              border-radius: 4px;
+              box-shadow: 10px;
+              background-position: center;
+          entity: sensor.untappd_project52
+          icon: si:untappd
+          show_state: false
+          show_name: true
+          show_label: true
+          name: >
+            [[[
+              var val = states['sensor.untappd_project52'].attributes.rating_average;
+              return 'Avg Rating: ' + val;
+            ]]]
+          styles:
+            icon:
+              - width: 20%
+              - margin-top: 1%
+            card:
+              - background-size: contain
+              - background-repeat: no-repeat
+              - background-position: center
+        - type: "custom:button-card"
+          style: |
+            ha-card {
+              border-radius: 4px;
+              box-shadow: 10px;
+              background-position: center;
+          entity: sensor.untappd_project52
+          icon: si:untappd
+          show_state: false
+          show_name: true
+          show_label: true
+          name: >
+            [[[
+              var val = states['sensor.untappd_project52'].attributes.rating_maximum;
+              return 'Max Rating: ' + val;
+            ]]]
+          styles:
+            icon:
+              - width: 20%
+              - margin-top: 1%
+            card:
+              - background-size: contain
+              - background-repeat: no-repeat
+              - background-position: center
+        - type: "custom:button-card"
+          style: |
+            ha-card {
+              border-radius: 4px;
+              box-shadow: 10px;
+              background-position: center;
+          entity: sensor.untappd_project52
+          icon: si:untappd
+          show_state: false
+          show_name: true
+          show_label: true
+          name: >
+            [[[
+              var val = states['sensor.untappd_project52'].attributes.rating_minimum;
+              return 'Avg Rating: ' + val;
+            ]]]
+          styles:
+            icon:
+              - width: 20%
+              - margin-top: 1%
+            card:
+              - background-size: contain
+              - background-repeat: no-repeat
+              - background-position: center
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-10"
+      cards:
+        - type: custom:dwains-flexbox-card
+          items_classes: "col-xs-12 col-md-12 col-sm-12 col-xl-12"
+          cards:
+            - type: vertical-stack
+              cards:
+                - !include partial_project52.yaml

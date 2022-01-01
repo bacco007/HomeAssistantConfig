@@ -16,4 +16,4 @@ cards:
       - { data: data, modify: x.rating, name: "Rating" }
       - { data: data, modify: x.count, name: "Count" }
       - { data: data, modify: x.first_checkin, name: "1st" }
-      - { data: data, modify: x.first_checkin, name: "Latest" }
+      - { data: data, modify: x.recent_checkin, name: "Latest" }

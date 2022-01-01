@@ -12,7 +12,7 @@ from homeassistant.const import (
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from . import NodeRedEntity
-from .const import CONF_ATTRIBUTES, CONF_BINARY_SENSOR, NODERED_DISCOVERY_NEW
+from .const import CONF_BINARY_SENSOR, NODERED_DISCOVERY_NEW
 
 
 async def async_setup_entry(hass, config_entry, async_add_devices):
@@ -51,14 +51,12 @@ class NodeRedBinarySensor(NodeRedEntity, BinarySensorEntity):
     def __init__(self, hass, config):
         """Initialize the binary sensor."""
         super().__init__(hass, config)
-
-        self._state = config.get(CONF_STATE)
-        self.attr = config.get(CONF_ATTRIBUTES, {})
+        self._attr_state = config.get(CONF_STATE)
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
-        value = self._state
+        value = self._attr_state
 
         if isinstance(value, bool):
             return value
@@ -70,3 +68,8 @@ class NodeRedBinarySensor(NodeRedEntity, BinarySensorEntity):
             return value != 0
 
         return False
+
+    def update_entity_state_attributes(self, msg):
+        """Update entity state attributes."""
+        super().update_entity_state_attributes(msg)
+        self._attr_state = msg.get(CONF_STATE)

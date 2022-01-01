@@ -14,16 +14,9 @@ from typing import Dict, Pattern, Union
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_REGION,
-    CONF_URL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-    PRECISION_WHOLE,
-    STATE_UNKNOWN,
-)
+from homeassistant.const import (CONF_NAME, CONF_PASSWORD, CONF_REGION,
+                                 CONF_URL, CONF_USERNAME, CONF_VERIFY_SSL,
+                                 PRECISION_WHOLE, STATE_UNKNOWN)
 from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import template
 from homeassistant.helpers.entity import Entity
@@ -102,7 +95,7 @@ class UnifiSensor(Entity):
         return self._state
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes."""
         return self._attributes
 

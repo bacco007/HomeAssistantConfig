@@ -2,7 +2,7 @@ from datetime import datetime
 
 from homeassistant.const import STATE_UNAVAILABLE
 
-from .helpers import setup_platform, BrowserModEntity
+from .helpers import BrowserModEntity, setup_platform
 
 PLATFORM = "sensor"
 
@@ -33,7 +33,7 @@ class BrowserModSensor(BrowserModEntity):
         return len(self.connection.connection)
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "last_seen": self.last_seen,
