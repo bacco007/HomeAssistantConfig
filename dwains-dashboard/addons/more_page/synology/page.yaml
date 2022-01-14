@@ -72,7 +72,33 @@
                           from: 85
                           to: 150
                     - entity: sensor.thecube2_volume_1_volume_used
-                      name: HDD
+                      name: Volume 1
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_volume_2_volume_used
+                      name: Volume 2
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_volume_used
+                      name: Volume 3
                       icon: mdi:harddisk
                       severity:
                         - color: rgb(26,204,147,0.33)
@@ -172,6 +198,19 @@
                           to: 150
                     - entity: sensor.thecube2_drive_2_temperature
                       name: Disk 2
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_temperature_2
+                      name: Disk 3
                       icon: mdi:thermometer
                       severity:
                         - color: rgb(26,204,147,0.33)

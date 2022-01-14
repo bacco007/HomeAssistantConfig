@@ -1,0 +1,12 @@
+{
+    "domain": "nhl",
+    "name": "NHL",
+    "version": "0.1",
+    "documentation": "https://github.com/simplysynced/ha_nhl",
+    "issue_tracker": "https://github.com/simplysynced/ha_nhl/issues",
+    "dependencies": [],
+    "codeowners": ["@zacs","@simplysynced"],
+    "config_flow": true,
+    "requirements": ["arrow"],
+    "iot_class": "cloud_polling"
+  }

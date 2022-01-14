@@ -55,15 +55,15 @@ class NFLCard extends LitElement {
     if (stateObj.attributes.possession == stateObj.attributes.opponent_id) {
       var oppoPoss = 1;
     }
-    if (Boolean(stateObj.state == 'POST') && Boolean(tScr > oScr)) {
+    if (Boolean(stateObj.state == 'POST') && Number(tScr) > Number(oScr)) {
         var oppoScore = 0.6;
         var teamScore = 1;
     }
-    if (Boolean(stateObj.state == 'POST') && Boolean(tScr < oScr)) {
+    if (Boolean(stateObj.state == 'POST') && Number(tScr) < Number(oScr)) {
         var oppoScore = 1;
         var teamScore = 0.6;
     }
-    if (Boolean(stateObj.state == 'POST') && Boolean(tScr == oScr)) {
+    if (Boolean(stateObj.state == 'POST') && Number(tScr) == Number(oScr)) {
         var oppoScore = 1;
         var teamScore = 1;
     }
@@ -315,6 +315,32 @@ class NFLCard extends LitElement {
                 <div class="name">${stateObj.attributes.team_name}</div>
               </div>
               <div class="bye">BYE</div>
+            </div>
+          </div>
+        </ha-card>
+      `;
+    }
+
+    if (stateObj.state == 'NOT_FOUND') {
+      return html`
+        <style>
+          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+          .team-bg { opacity: 0.08; position: absolute; top: -50%; left: -30%; width: 75%; z-index: 0; }
+          .card-content { display: flex; justify-content: space-evenly; align-items: center; text-align: center; position: relative; z-index: 99; }
+          .team { text-align: center; width: 50%; }
+          .team img { max-width: 90px; }
+          .name { font-size: 1.6em; margin-bottom: 4px; }
+          .line { height: 1px; background-color: var(--primary-text-color); margin:10px 0; }
+          .eos { font-size: 1.8em; line-height: 1.2em; text-align: center; width: 50%; }
+        </style>
+        <ha-card>
+          <div class="card">
+            <img class="team-bg" src="https://a.espncdn.com/i/espn/misc_logos/500/nfl.png" />
+            <div class="card-content">
+              <div class="team">
+                <img src="https://a.espncdn.com/i/espn/misc_logos/500/nfl.png" />
+              </div>
+              <div class="eos">Better Luck<br />Next Year</div>
             </div>
           </div>
         </ha-card>

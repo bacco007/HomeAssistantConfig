@@ -1,33 +1,30 @@
 """NSW Rural Fire Service - Fire Danger - Sensor."""
 import logging
-from typing import Callable, List, Optional
 
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, SENSOR_TYPES
 from .entity import NswFireServiceFireDangerEntity
 
 _LOGGER = logging.getLogger(__name__)
 
-# An update of this entity is not making a web request, but uses internal data only.
-PARALLEL_UPDATES = 0
-
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: Callable[[List[Entity], bool], None],
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the NSW Rural Fire Service Fire Danger Feed platform."""
-    manager = hass.data[DOMAIN][entry.entry_id]
-    config_entry_unique_id = entry.unique_id
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    config_entry_unique_id = config_entry.unique_id
 
     async_add_entities(
         [
             NswFireServiceFireDangerSensor(
-                hass, manager, sensor_type, config_entry_unique_id
+                coordinator, sensor_type, config_entry_unique_id
             )
             for sensor_type in SENSOR_TYPES
         ],
@@ -36,15 +33,7 @@ async def async_setup_entry(
     _LOGGER.debug("Sensor setup done")
 
 
-class NswFireServiceFireDangerSensor(NswFireServiceFireDangerEntity):
+class NswFireServiceFireDangerSensor(NswFireServiceFireDangerEntity, SensorEntity):
     """Implementation of the sensor."""
 
-    @property
-    def state(self):
-        """Return the state of the device."""
-        return self._state
-
-    @property
-    def icon(self) -> Optional[str]:
-        """Return the icon to use in the frontend, if any."""
-        return "mdi:speedometer-medium"
+    _attr_icon = "mdi:speedometer-medium"

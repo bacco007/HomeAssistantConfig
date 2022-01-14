@@ -310,12 +310,18 @@ class TemperatureFeelingSensor(Entity):
 
         _LOGGER.debug("Temp: %s °C  Hum: %s %%  Wind: %s m/s", temp, humd, wind)
 
-        if temp is None or humd is None or wind is None:
+        if temp is None or humd is None:
             _LOGGER.warning(
                 "Can't calculate sensor value: some sources are unavailable."
             )
             self._state = None
             return
+
+        if wind is None:
+            _LOGGER.warning(
+                "Can't get wind speed value. Wind speed will be ignored in calculation."
+            )
+            wind = 0
 
         e_value = humd * 0.06105 * math.exp((17.27 * temp) / (237.7 + temp))
         feeling = temp + 0.348 * e_value - 0.7 * wind - 4.25

@@ -1,0 +1,71 @@
+---
+- type: custom:dwains-flexbox-card
+  item_classes: "col-xs-12"
+  cards:
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-4"
+      cards:
+        - type: horizontal-stack
+          cards:
+            # Blocked Domains
+            - type: "custom:button-card"
+              style: |
+                ha-card {
+                  border-radius: 4px;
+                  box-shadow: 10px;
+                  background-position: center;
+              entity: sensor.adguard_dns_queries_blocked
+              name: Blocked
+              show_state: true
+              show_name: true
+              show_label: true
+              show_icon: true
+              styles:
+                card:
+                  - background-size: contain
+                  - background-repeat: no-repeat
+                  - background-position: center
+                icon:
+                  - width: 20%
+                  - margin-top: 1%
+
+            # % Blocked Today
+            - type: "custom:button-card"
+              style: |
+                ha-card {
+                  border-radius: 4px;
+                  box-shadow: 10px;
+                  background-position: center;
+              entity: sensor.adguard_dns_queries_blocked_ratio
+              name: Block Ratio
+              show_state: true
+              show_name: true
+              show_label: true
+              show_icon: true
+              styles:
+                card:
+                  - background-size: contain
+                  - background-repeat: no-repeat
+                  - background-position: center
+                icon:
+                  - width: 20%
+                  - margin-top: 1%
+
+        - type: vertical-stack
+          cards:
+            - !include partial_switches.yaml
+        - type: vertical-stack
+          cards:
+            - !include partial_sensors.yaml
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-8"
+      cards:
+        - !include graph_adsblocked.yaml
+        - !include graph_adsblockedpct.yaml
+        - !include graph_procspeed.yaml
+    #     - type: custom:dwains-flexbox-card
+    #       items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
+    #       cards:
+    #         - !include graph_queriescached.yaml
+    #         - !include graph_queriesforwarded.yaml

@@ -1,0 +1,49 @@
+---
+type: custom:apexcharts-card
+graph_span: 24h
+header:
+  show: true
+  title: "Queries Blocked"
+span:
+  start: hour
+  offset: -23h
+apex_config:
+  chart: { type: "area", height: 250 }
+  stroke: { show: true, width: 3, curve: smooth }
+  legend: { show: false }
+  dataLabels: { enabled: false }
+  xaxis:
+    {
+      type: "datetime",
+      labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+    }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+series:
+  - entity: sensor.adguard_dns_queries_blocked
+    name: Today
+    type: area
+    # color: "#008FFB"
+    extend_to_end: false
+    group_by:
+      func: last
+      duration: 1h
+  - entity: sensor.adguard_dns_queries_blocked
+    name: Yesterday
+    type: area
+    # color: "#008FFB"
+    extend_to_end: false
+    offset: -1d
+    group_by:
+      func: last
+      duration: 1h

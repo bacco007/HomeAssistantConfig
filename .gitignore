@@ -15,6 +15,7 @@ custom_components_dev
 temp
 neighbours
 .ssh
+zigbee2mqtt
 
 # Ignore File Extensions
 *.conf

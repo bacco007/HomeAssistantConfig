@@ -17207,7 +17207,8 @@ const supported = {
     kodi: ['movie', 'episode', 'epg'],
     androidtv: ['movie', 'show', 'season', 'episode', 'clip', 'track', 'artist', 'album'],
     plexPlayer: ['movie', 'show', 'season', 'episode', 'clip', 'track', 'artist', 'album'],
-    cast: ['movie', 'episode', 'artist', 'album', 'track']
+    cast: ['movie', 'episode', 'artist', 'album', 'track'],
+    vlcTelnet: ['track']
 };
 
 var bind = function bind(fn, thisArg) {
@@ -19508,6 +19509,9 @@ class PlayController {
                 case 'kodi':
                     await this.playViaKodi(entity.value, data, data.type);
                     break;
+                case 'vlcTelnet':
+                    await this.playViaVLCTelnet(entity.value, data, data.type);
+                    break;
                 case 'androidtv':
                     if (lodash.isEqual(data.type, 'epg')) {
                         const session = `${Math.floor(Date.now() / 1000)}`;
@@ -19534,16 +19538,16 @@ class PlayController {
                         try {
                             switch (processData.type) {
                                 case 'artist':
-                                    await this.playViaCastPlex(entity.value, 'MUSIC', `plex://${JSON.stringify({
+                                    await this.playViaCastPlex(entity.value, 'MUSIC', {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         library_name: libraryName,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         artist_name: processData.title,
                                         shuffle: this.shuffle ? 1 : 0
-                                    })}`);
+                                    });
                                     break;
                                 case 'album':
-                                    await this.playViaCastPlex(entity.value, 'MUSIC', `plex://${JSON.stringify({
+                                    await this.playViaCastPlex(entity.value, 'MUSIC', {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         library_name: libraryName,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
@@ -19551,10 +19555,10 @@ class PlayController {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         album_name: processData.title,
                                         shuffle: this.shuffle ? 1 : 0
-                                    })}`);
+                                    });
                                     break;
                                 case 'track':
-                                    await this.playViaCastPlex(entity.value, 'MUSIC', `plex://${JSON.stringify({
+                                    await this.playViaCastPlex(entity.value, 'MUSIC', {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         library_name: libraryName,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
@@ -19564,17 +19568,17 @@ class PlayController {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         track_name: processData.title,
                                         shuffle: this.shuffle ? 1 : 0
-                                    })}`);
+                                    });
                                     break;
                                 case 'movie':
-                                    await this.playViaCastPlex(entity.value, 'movie', `plex://${JSON.stringify({
+                                    await this.playViaCastPlex(entity.value, 'movie', {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         library_name: libraryName,
                                         title: processData.title
-                                    })}`);
+                                    });
                                     break;
                                 case 'episode':
-                                    await this.playViaCastPlex(entity.value, 'EPISODE', `plex://${JSON.stringify({
+                                    await this.playViaCastPlex(entity.value, 'EPISODE', {
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         library_name: libraryName,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
@@ -19583,7 +19587,7 @@ class PlayController {
                                         season_number: processData.parentIndex,
                                         // eslint-disable-next-line @typescript-eslint/camelcase
                                         episode_number: processData.index
-                                    })}`);
+                                    });
                                     break;
                                 default:
                                     if (!lodash.isNil(processData.Media)) {
@@ -19613,8 +19617,8 @@ class PlayController {
                 await this.hass.callService(this.runAfter[0], this.runAfter[1], {});
             }
         };
-        this.plexPlayerCreateQueue = async (movieID, plex) => {
-            const url = `${plex.getBasicURL()}/playQueues?type=video&shuffle=0&repeat=0&continuous=1&own=1&uri=server://${await plex.getServerID()}/com.plexapp.plugins.library/library/metadata/${movieID}`;
+        this.plexPlayerCreateQueue = async (key, plex, type, shuffle = false, repeat = false, continuous = false) => {
+            const url = `${plex.getBasicURL()}/playQueues?type=${type}&shuffle=${shuffle ? '1' : '0'}&repeat=${repeat ? '1' : '0'}&continuous=${continuous ? '1' : '0'}&own=1&uri=server://${await plex.getServerID()}/com.plexapp.plugins.library${key}`;
             const plexResponse = await axios({
                 method: 'post',
                 url,
@@ -19637,7 +19641,7 @@ class PlayController {
             if (lodash.isObject(entity) && !lodash.isNil(entity.plex)) {
                 plex = entity.plex;
             }
-            const { playQueueID, playQueueSelectedMetadataItemID } = await this.plexPlayerCreateQueue(movieID, this.plex);
+            const { playQueueID, playQueueSelectedMetadataItemID } = await this.plexPlayerCreateQueue(`/library/metadata/${movieID}`, this.plex, 'video');
             let url = plex.getBasicURL();
             url += `/player/playback/playMedia`;
             url += `?type=video`;
@@ -19752,6 +19756,22 @@ class PlayController {
                 throw Error(`Plex type ${type} is not supported in Kodi.`);
             }
         };
+        this.playViaVLCTelnet = async (entityName, data, type) => {
+            switch (type) {
+                case 'track':
+                    this.hass.callService('media_player', 'play_media', {
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        entity_id: entityName,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        media_content_type: 'music',
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        media_content_id: this.plex.authorizeURL(`${this.plex.getBasicURL()}${data.Media[0].Part[0].key}`)
+                    });
+                    break;
+                default:
+                    console.error(`Type ${type} is not supported on entity ${entityName}.`);
+            }
+        };
         this.playViaCast = (entityName, mediaLink, contentType = 'video') => {
             if (lodash.isEqual(contentType, 'video')) {
                 this.hass.callService('media_player', 'play_media', {
@@ -19791,14 +19811,20 @@ class PlayController {
                 this.hass.callService('media_player', 'play_media', payload);
             }
         };
-        this.playViaCastPlex = (entityName, contentType, mediaLink) => {
+        this.playViaCastPlex = (entityName, contentType, payload) => {
+            const friendlyServerName = lodash.get(this.plex, 'serverInfo.friendlyName');
+            const plexPayload = lodash.clone(payload);
+            if (friendlyServerName) {
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                plexPayload.plex_server = friendlyServerName;
+            }
             return this.hass.callService('media_player', 'play_media', {
                 // eslint-disable-next-line @typescript-eslint/camelcase
                 entity_id: entityName,
                 // eslint-disable-next-line @typescript-eslint/camelcase
                 media_content_type: contentType,
                 // eslint-disable-next-line @typescript-eslint/camelcase
-                media_content_id: mediaLink
+                media_content_id: `plex://${JSON.stringify(plexPayload)}`
             });
         };
         this.playViaAndroidTV = async (entityName, mediaID, instantPlay = false, provider = 'com.plexapp.plugins.library') => {
@@ -19966,11 +19992,11 @@ class PlayController {
                     const entities = this.exportEntity(value, key);
                     lodash.forEach(entities, entity => {
                         if (lodash.includes(this.supported[entity.key], data.type)) {
-                            // todo: load info in this.entityStates otherwise this will never work for input selects and templates
                             if ((entity.key === 'kodi' && this.isKodiSupported(entity.value)) ||
                                 (entity.key === 'androidtv' && this.isAndroidTVSupported(entity.value)) ||
                                 (entity.key === 'plexPlayer' && this.isPlexPlayerSupported(entity.value)) ||
-                                (entity.key === 'cast' && this.isCastSupported(entity.value))) {
+                                (entity.key === 'cast' && this.isCastSupported(entity.value)) ||
+                                (entity.key === 'vlcTelnet' && this.isVLCTelnetSupported(entity.value))) {
                                 service = { key: entity.key, value: entity.value };
                                 return false;
                             }
@@ -20125,6 +20151,12 @@ class PlayController {
                     (!lodash.isEqual(this.runBefore, false) && hasKodiMediaSearchInstalled));
             }
             return false;
+        };
+        this.isVLCTelnetSupported = (entityName) => {
+            return ((this.entityStates[entityName] &&
+                !lodash.isNil(this.entityStates[entityName].attributes) &&
+                this.entityStates[entityName].state !== 'unavailable') ||
+                !lodash.isEqual(this.runBefore, false));
         };
         this.isCastSupported = (entityName) => {
             return ((this.entityStates[entityName] &&
@@ -20396,7 +20428,8 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                             lodash.isEqual(entityRegistry.platform, 'kodi') ||
                             lodash.isEqual(entityRegistry.platform, 'androidtv') ||
                             lodash.isEqual(entityRegistry.platform, 'input_select') ||
-                            lodash.isEqual(entityRegistry.platform, 'input_text')) {
+                            lodash.isEqual(entityRegistry.platform, 'input_text') ||
+                            lodash.isEqual(entityRegistry.platform, 'vlc_telnet')) {
                             const entityName = `${entityRegistry.platform} | ${entityRegistry.entity_id}`;
                             entities.appendChild(addDropdownItem(entityName));
                             addedEntityStrings.push(entityName);
@@ -22038,11 +22071,15 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                     realEntityString = entityString.split(' | ')[3];
                     isPlexPlayer = true;
                 }
+                else if (lodash.isPlainObject(entityString)) {
+                    realEntityString = entityString[Object.keys(entityString)[0]];
+                }
                 else if (lodash.startsWith(entityString, 'androidtv | ') ||
                     lodash.startsWith(entityString, 'kodi | ') ||
                     lodash.startsWith(entityString, 'cast | ') ||
                     lodash.startsWith(entityString, 'input_select | ') ||
-                    lodash.startsWith(entityString, 'input_text | ')) {
+                    lodash.startsWith(entityString, 'input_text | ') ||
+                    lodash.startsWith(entityString, 'vlc_telnet | ')) {
                     // eslint-disable-next-line prefer-destructuring
                     realEntityString = entityString.split(' | ')[1];
                     isPlexPlayer = false;
@@ -22093,7 +22130,15 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                                     }
                                     entityObj.inputText.push(entityInRegister.entity_id);
                                     break;
-                                // pass
+                                case 'vlc_telnet':
+                                    if (lodash.isNil(entityObj.vlcTelnet)) {
+                                        // eslint-disable-next-line no-param-reassign
+                                        entityObj.vlcTelnet = [];
+                                    }
+                                    entityObj.vlcTelnet.push(entityInRegister.entity_id);
+                                    break;
+                                default:
+                                    console.error(`Entity ${entityInRegister.entity_id} is not supported.`);
                             }
                         }
                     });

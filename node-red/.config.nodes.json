@@ -449,7 +449,7 @@
     },
     "node-red-contrib-bigtimer": {
         "name": "node-red-contrib-bigtimer",
-        "version": "2.7.6",
+        "version": "2.7.8",
         "local": false,
         "user": false,
         "nodes": {
@@ -506,7 +506,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.40.0",
+        "version": "0.41.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -514,10 +514,12 @@
                 "name": "all",
                 "types": [
                     "ha-api",
+                    "ha-button",
                     "api-call-service",
                     "server",
                     "api-current-state",
                     "ha-device",
+                    "ha-entity-config",
                     "ha-entity",
                     "server-events",
                     "server-state-changed",
@@ -928,7 +930,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.1.2",
+        "version": "3.1.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -1186,7 +1188,7 @@
     },
     "node-red-node-email": {
         "name": "node-red-node-email",
-        "version": "1.13.0",
+        "version": "1.14.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -1207,7 +1209,7 @@
     },
     "node-red-node-feedparser": {
         "name": "node-red-node-feedparser",
-        "version": "0.2.1",
+        "version": "0.2.2",
         "local": false,
         "user": false,
         "nodes": {
@@ -1462,18 +1464,29 @@
     },
     "node-red-contrib-deconz": {
         "name": "node-red-contrib-deconz",
-        "version": "2.2.1",
+        "version": "2.3.0",
         "local": false,
         "user": false,
         "nodes": {
-            "api": {
-                "name": "api",
+            "backend": {
+                "name": "backend",
                 "types": [],
                 "enabled": true,
                 "local": false,
                 "user": false,
                 "module": "node-red-contrib-deconz",
                 "file": "/opt/node_modules/node-red-contrib-deconz/deconz.js"
+            },
+            "api": {
+                "name": "api",
+                "types": [
+                    "deconz-api"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-deconz",
+                "file": "/opt/node_modules/node-red-contrib-deconz/nodes/api.js"
             },
             "in": {
                 "name": "in",
@@ -1583,7 +1596,7 @@
     },
     "node-red-node-mysql": {
         "name": "node-red-node-mysql",
-        "version": "0.3.0",
+        "version": "1.0.0",
         "local": false,
         "user": false,
         "nodes": {

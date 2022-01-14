@@ -2,6 +2,9 @@
 
 more_page:
   addons:
+    - name: Adguard Home
+      icon: si:adguard
+      path: "dwains-dashboard/addons/more_page/adguardhome/page.yaml"
     - name: Alerts
       icon: mdi:alert
       path: "dwains-dashboard/addons/more_page/alerts/page.yaml"

@@ -242,22 +242,30 @@ async def async_get_state(config) -> dict:
             _LOGGER.debug("Did not find a game with for the configured team. Checking if it's a bye week.")
             found_bye = False
             values = await async_clear_states(config)
-            for bye_team in data["week"]["teamsOnBye"]:
-                if team_id.lower() == bye_team["abbreviation"].lower():
-                    _LOGGER.debug("Bye week confirmed.")
-                    found_bye = True
-                    values["team_abbr"] = bye_team["abbreviation"]
-                    values["team_name"] = bye_team["shortDisplayName"]
-                    values["team_logo"] = bye_team["logo"]
-                    values["state"] = 'BYE'
-                    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-            if found_bye == False:
-                    _LOGGER.debug("Team not found in active games or bye week list. Have you missed the playoffs?")
-                    values["team_abbr"] = None
-                    values["team_name"] = None
-                    values["team_logo"] = None
-                    values["state"] = 'NOT_FOUND'
-                    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+            try: # look for byes in regular season
+                for bye_team in data["week"]["teamsOnBye"]:
+                    if team_id.lower() == bye_team["abbreviation"].lower():
+                        _LOGGER.debug("Bye week confirmed.")
+                        found_bye = True
+                        values["team_abbr"] = bye_team["abbreviation"]
+                        values["team_name"] = bye_team["shortDisplayName"]
+                        values["team_logo"] = bye_team["logo"]
+                        values["state"] = 'BYE'
+                        values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+                if found_bye == False:
+                        _LOGGER.debug("Team not found in active games or bye week list. Have you missed the playoffs?")
+                        values["team_abbr"] = None
+                        values["team_name"] = None
+                        values["team_logo"] = None
+                        values["state"] = 'NOT_FOUND'
+                        values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+            except:
+                _LOGGER.debug("Team not found in active games or bye week list. Have you missed the playoffs?")
+                values["team_abbr"] = None
+                values["team_name"] = None
+                values["team_logo"] = None
+                values["state"] = 'NOT_FOUND'
+                values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
 
         if values["state"] == 'PRE' and ((arrow.get(values["date"])-arrow.now()).total_seconds() < 1200):
             _LOGGER.debug("Event is within 20 minutes, setting refresh rate to 5 seconds.")

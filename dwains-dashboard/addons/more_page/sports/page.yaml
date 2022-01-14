@@ -18,60 +18,10 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
   cards:
-    - type: 'custom:nfl-card'
+    - type: "custom:nfl-card"
       entity: sensor.nfl
-    - type: entities
-      title: Scoreboard
-      entities:
-        - entity: sensor.patriots_sb_score
-          style: |
-            hui-generic-entity-row {
-              font-size: 1.8em;
-              font-weight: 500;
-              text-transform: uppercase;
-            }
-        - entity: sensor.patriots_sb_opponent_score
-          style: |
-            hui-generic-entity-row {
-              font-size: 1.8em;
-              font-weight: 500;
-              text-transform: uppercase;
-            }
-        - entity: sensor.sb_state_clock
-          style:
-            hui-generic-entity-row:
-              .: |
-                .text-content {
-                  font-size: 1.2em;
-                }
-              $: |
-                state-badge {display:none;}
-                .text-content {
-                  margin-left: 0px !important;
-                  font-size: 1.2em;
-                }
-        - type: divider
-        - entity: sensor.sb_venue_date
-          style:
-            hui-generic-entity-row:
-              $: |
-                state-badge {display:none;}
-                .text-content {
-                  margin-left: 0px !important;
-                }
-        - entity: sensor.sb_city_broadcast
-          style:
-            hui-generic-entity-row:
-              .: |
-                .text-content {
-                  font-weight: 100;
-                }
-              $: |
-                state-badge {display:none;}
-                .text-content {
-                  margin-left: 0px !important;
-                  font-weight: 100;
-                }
+    - type: "custom:nhl-card"
+      entity: sensor.nhl
     - type: vertical-stack
       cards:
         - type: custom:stack-in-card

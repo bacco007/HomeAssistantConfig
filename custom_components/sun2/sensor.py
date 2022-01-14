@@ -1,22 +1,35 @@
 """Sun2 Sensor."""
-import logging
 from datetime import datetime, time, timedelta
+import logging
 
 import voluptuous as vol
+
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (CONF_ELEVATION, CONF_LATITUDE, CONF_LONGITUDE,
-                                 CONF_MONITORED_CONDITIONS, CONF_TIME_ZONE,
-                                 DEVICE_CLASS_TIMESTAMP)
+from homeassistant.const import (
+    CONF_ELEVATION,
+    CONF_LATITUDE,
+    CONF_LONGITUDE,
+    CONF_MONITORED_CONDITIONS,
+    CONF_TIME_ZONE,
+    DEVICE_CLASS_TIMESTAMP,
+    MAJOR_VERSION,
+    MINOR_VERSION,
+)
 from homeassistant.core import callback
+from homeassistant.util import dt as dt_util
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_point_in_utc_time
-from homeassistant.util import dt as dt_util
 from homeassistant.util import slugify
 
-from .helpers import (SIG_LOC_UPDATED, astral_event, async_init_astral_loc,
-                      get_local_info, nearest_second)
+from .helpers import (
+    async_init_astral_loc,
+    astral_event,
+    get_local_info,
+    nearest_second,
+    SIG_LOC_UPDATED,
+)
 
 _LOGGER = logging.getLogger(__name__)
 _SOLAR_DEPRESSIONS = ("astronomical", "civil", "nautical")
@@ -84,17 +97,23 @@ class Sun2Sensor(Entity):
         """Return the state of the entity."""
         return self._state
 
-    def _extra_state_attributes(self):
+    def _device_state_attributes(self):
         return {
             "yesterday": self._yesterday,
             "today": self._today,
             "tomorrow": self._tomorrow,
         }
 
-    @property
-    def extra_state_attributes(self):
-        """Return device specific state attributes."""
-        return self._extra_state_attributes()
+    if MAJOR_VERSION < 2021 or MAJOR_VERSION == 2021 and MINOR_VERSION < 4:
+        @property
+        def device_state_attributes(self):
+            """Return device specific state attributes."""
+            return self._device_state_attributes()
+    else:
+        @property
+        def extra_state_attributes(self):
+            """Return device specific state attributes."""
+            return self._device_state_attributes()
 
     @property
     def icon(self):
@@ -208,8 +227,8 @@ class Sun2PeriodOfTimeSensor(Sun2Sensor):
         """Return the unit of measurement."""
         return "hr"
 
-    def _extra_state_attributes(self):
-        data = super()._extra_state_attributes()
+    def _device_state_attributes(self):
+        data = super()._device_state_attributes()
         data.update(
             {
                 "yesterday_hms": _hours_to_hms(data["yesterday"]),
@@ -301,9 +320,7 @@ class Sun2ElevationSensor(Sun2Sensor):
         self._prv_elev = None
         self._next_change = None
 
-    @property
-    def extra_state_attributes(self):
-        """Return device specific state attributes."""
+    def _device_state_attributes(self):
         return {ATTR_NEXT_CHANGE: self._next_change}
 
     @property

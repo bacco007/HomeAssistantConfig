@@ -69,34 +69,34 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, January 1st 2022_
+_Stats as at 05:00, Friday, January 14th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.12.7 | 360     | 2157         | 1588 | 86 |
+| 2021.12.9 | 362     | 2157         | 1578 | 87 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
-Automation | 86
-Binary Sensor | 184
+Automation | 87
+Binary Sensor | 188
 Camera | 4
-Device Tracker | 90
+Device Tracker | 94
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 21
+Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1588
+Sensor | 1578
 Sun | 1
-Switch | 83
+Switch | 85
 Weather | 7
-Zone | 10
+Zone | 9
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -271,6 +271,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [myjdownloader](https://www.home-assistant.io/components/myjdownloader) |
 | [network](https://www.home-assistant.io/components/network) |
 | [nfl](https://www.home-assistant.io/components/nfl) |
+| [nhl](https://www.home-assistant.io/components/nhl) |
 | [nodered](https://www.home-assistant.io/components/nodered) |
 | [notify](https://www.home-assistant.io/components/notify) |
 | [notify.group](https://www.home-assistant.io/components/notify.group) |
@@ -329,6 +330,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.climacell](https://www.home-assistant.io/components/sensor.climacell) |
+| [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
@@ -357,7 +359,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
 | [sensor.next_holiday](https://www.home-assistant.io/components/sensor.next_holiday) |
 | [sensor.nfl](https://www.home-assistant.io/components/sensor.nfl) |
-| [sensor.nhl_api](https://www.home-assistant.io/components/sensor.nhl_api) |
+| [sensor.nhl](https://www.home-assistant.io/components/sensor.nhl) |
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
@@ -372,7 +374,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
-| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
@@ -389,6 +390,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sun2](https://www.home-assistant.io/components/sensor.sun2) |
 | [sensor.synology_dsm](https://www.home-assistant.io/components/sensor.synology_dsm) |
 | [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor) |
+| [sensor.tautulli](https://www.home-assistant.io/components/sensor.tautulli) |
 | [sensor.temperature_feels_like](https://www.home-assistant.io/components/sensor.temperature_feels_like) |
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
@@ -506,7 +508,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
 - [Next Holiday Sensor](https://github.com/partofthething/next-holiday-sensor)
 - [NFL](https://github.com/zacs/ha_nfl)
-- [NHL API](https://github.com/JayBlackedOut/hass-nhlapi)
+- [NHL](https://github.com/simplysynced/ha_nhl)
 - [Node-RED Companion](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
 - [NSW Air Quality]()
 - [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
@@ -579,6 +581,7 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [Portainer]()
 - [Samba share](https://github.com/home-assistant/hassio-addons/tree/master/samba)
 - [SSH & Web Terminal]()
+- [Zigbee2mqtt]()
 
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
