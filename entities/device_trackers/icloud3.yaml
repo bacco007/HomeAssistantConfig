@@ -15,8 +15,8 @@ devices:
     name: "tbMacBookPro"
     iosapp_installed: false
     picture: /local/apple_entity_picture/macbook.png
-  - device_name: tbAppleWatch
-    name: "tbAppleWatch"
+  - device_name: tbAppleWatch7
+    name: "tbAppleWatch7"
     iosapp_installed: false
     picture: /local/apple_entity_picture/watch.png
   - device_name: "iPod touch"
@@ -31,3 +31,7 @@ devices:
     name: "tbAirpods"
     iosapp_installed: false
     picture: /local/apple_entity_picture/airpods.png
+  - device_name: tbMacBookAir
+    name: "tbMacBookAir"
+    iosapp_installed: true
+    picture: /local/apple_entity_picture/macbook.png

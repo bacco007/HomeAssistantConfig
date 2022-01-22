@@ -216,7 +216,6 @@
       item_classes: "col-xs-12"
       cards:
         - type: custom:apexcharts-card
-          graph_span: 365d1s
           header:
             show: true
             title: "Flights Tracked - Last Year"

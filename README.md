@@ -69,34 +69,34 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, January 14th 2022_
+_Stats as at 05:00, Saturday, January 22nd 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2021.12.9 | 362     | 2157         | 1578 | 87 |
+| 2021.12.9 | 366     | 2214         | 1629 | 87 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 0
 Alert | 0
 Automation | 87
-Binary Sensor | 188
+Binary Sensor | 189
 Camera | 4
-Device Tracker | 94
+Device Tracker | 91
 Group | 10
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 3
-Media Player | 22
+Media Player | 23
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1578
+Sensor | 1629
 Sun | 1
-Switch | 85
+Switch | 86
 Weather | 7
-Zone | 9
+Zone | 11
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -154,6 +154,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
+| [broadlink](https://www.home-assistant.io/components/broadlink) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
@@ -300,6 +301,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [recorder](https://www.home-assistant.io/components/recorder) |
 | [remote](https://www.home-assistant.io/components/remote) |
 | [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv) |
+| [remote.broadlink](https://www.home-assistant.io/components/remote.broadlink) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [rest](https://www.home-assistant.io/components/rest) |
@@ -326,6 +328,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
+| [sensor.broadlink](https://www.home-assistant.io/components/sensor.broadlink) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
@@ -428,6 +431,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
+| [switch.broadlink](https://www.home-assistant.io/components/switch.broadlink) |
 | [switch.command_line](https://www.home-assistant.io/components/switch.command_line) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
@@ -578,6 +582,7 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [ModbusTCP2MQTT]()
 - [Mosquitto broker]()
 - [Node-RED]()
+- [phpMyAdmin]()
 - [Portainer]()
 - [Samba share](https://github.com/home-assistant/hassio-addons/tree/master/samba)
 - [SSH & Web Terminal]()

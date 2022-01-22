@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.1.4",
+        "version": "2.1.5",
         "local": false,
         "user": false,
         "nodes": {
@@ -449,7 +449,7 @@
     },
     "node-red-contrib-bigtimer": {
         "name": "node-red-contrib-bigtimer",
-        "version": "2.7.8",
+        "version": "2.8.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1464,18 +1464,29 @@
     },
     "node-red-contrib-deconz": {
         "name": "node-red-contrib-deconz",
-        "version": "2.2.1",
+        "version": "2.3.1",
         "local": false,
         "user": false,
         "nodes": {
-            "api": {
-                "name": "api",
+            "backend": {
+                "name": "backend",
                 "types": [],
                 "enabled": true,
                 "local": false,
                 "user": false,
                 "module": "node-red-contrib-deconz",
                 "file": "/opt/node_modules/node-red-contrib-deconz/deconz.js"
+            },
+            "api": {
+                "name": "api",
+                "types": [
+                    "deconz-api"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-deconz",
+                "file": "/opt/node_modules/node-red-contrib-deconz/nodes/api.js"
             },
             "in": {
                 "name": "in",
@@ -1724,6 +1735,108 @@
                 "user": false,
                 "module": "node-red-contrib-spotify",
                 "file": "/opt/node_modules/node-red-contrib-spotify/src/authorize.js"
+            }
+        }
+    },
+    "node-red-contrib-broadlink-control": {
+        "name": "node-red-contrib-broadlink-control",
+        "version": "2.1.4",
+        "local": false,
+        "user": false,
+        "nodes": {
+            "rm": {
+                "name": "rm",
+                "types": [
+                    "rmdevice",
+                    "RM"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/RMNode.js"
+            },
+            "rmreceiver": {
+                "name": "rmreceiver",
+                "types": [
+                    "rmdevice2",
+                    "RMReceiver"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/RMReceiverNode.js"
+            },
+            "eAir": {
+                "name": "eAir",
+                "types": [
+                    "a1device",
+                    "A1"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/A1Node.js"
+            },
+            "smartplug": {
+                "name": "smartplug",
+                "types": [
+                    "sp2device",
+                    "SP2"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/SP2Node.js"
+            },
+            "mp": {
+                "name": "mp",
+                "types": [
+                    "mp1device",
+                    "MP1"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/MP1Node.js"
+            },
+            "s1c": {
+                "name": "s1c",
+                "types": [
+                    "s1cdevice",
+                    "S1C"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/S1CNode.js"
+            },
+            "discover": {
+                "name": "discover",
+                "types": [
+                    "Discover"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/DiscoverNode.js"
+            },
+            "setup": {
+                "name": "setup",
+                "types": [
+                    "Setup"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-broadlink-control",
+                "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/SetupNode.js"
             }
         }
     }

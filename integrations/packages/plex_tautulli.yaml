@@ -50,7 +50,7 @@ sensor:
     json_attributes:
       - rows
     value_template: "{{ value_json['response']['result'] }}"
-    resource: !secret plex_tautulli_populartv_url    
+    resource: !secret plex_tautulli_populartv_url
 
   - platform: rest
     name: plex_tautulli_toptv_plays
@@ -58,7 +58,7 @@ sensor:
     json_attributes:
       - rows
     value_template: "{{ value_json['response']['result'] }}"
-    resource: !secret plex_tautulli_toptv_plays_url    
+    resource: !secret plex_tautulli_toptv_plays_url
 
   - platform: rest
     name: plex_tautulli_toptv_30days

@@ -1,0 +1,1 @@
+"""The NHL API integration."""

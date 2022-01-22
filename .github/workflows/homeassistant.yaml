@@ -15,7 +15,7 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v2
       - name: 🚀 Run yamllint
-        uses: frenck/action-yamllint@v1.1
+        uses: frenck/action-yamllint@v1.1.2
   remarklint:
     name: 🧹 Remark Lint
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
           touch home-assistant.log
           rm ./entities/media_players/androidtv.yaml
       - name: 🚀  Run Home Assistant Configuration Check
-        uses: frenck/action-home-assistant@v1.2
+        uses: frenck/action-home-assistant@v1.3
         with:
           secrets: ./fake_secrets.yaml
           version: "${{ matrix.version }}"

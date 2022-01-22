@@ -44,6 +44,7 @@ CONF_DUMP_APPS = "dump_apps"
 CONF_EXT_POWER_ENTITY = "ext_power_entity"
 CONF_LOAD_ALL_APPS = "load_all_apps"
 CONF_LOGO_OPTION = "logo_option"
+CONF_PING_PORT = "ping_port"
 CONF_POWER_ON_DELAY = "power_on_delay"
 CONF_POWER_ON_METHOD = "power_on_method"
 CONF_SHOW_CHANNEL_NR = "show_channel_number"
@@ -87,6 +88,7 @@ STD_APP_LIST = {
     # app_id: smartthings app id (if different and available)
     "org.tizen.browser": "",  # Internet
     "11101200001": "RN1MCdNq8t.Netflix",  # Netflix
+    "3201907018807": "org.tizen.netflix-app",  # Netflix (New)
     "111299001912": "9Ur5IzDKqV.TizenYouTube",  # YouTube
     "3201512006785": "org.tizen.ignition",  # Prime Video
     # "3201512006785": "evKhCgZelL.AmazonIgnitionLauncher2",  # Prime Video

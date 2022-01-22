@@ -55,8 +55,8 @@
                     "use_st_status_info": "Usa informazioni Stato TV da SmartThings",
                     "use_st_channel_info": "Usa informazioni Canale TV da SmartThings",
                     "show_channel_number": "Usa informazioni Numero Canale TV da SmartThings",
-                    "power_on_method_opt": "Metodo usato per accendere la TV",
-                    "logo_option_opt": "Visualizza il logo per sorgenti, apps e canali conosciuti",
+                    "power_on_method": "Metodo usato per accendere la TV",
+                    "logo_option": "Visualizza il logo per sorgenti, apps e canali conosciuti",
                     "sync_turn_off": "Elenco entit\u00e0 da Spegnere con la TV",
                     "sync_turn_on": "Elenco entit\u00e0 da Accendere con la TV",
                     "show_adv_opt": "Mostra opzioni avanzate"
@@ -65,13 +65,14 @@
             "adv_opt": {
                 "title": "Opzioni avanzate",
                 "data": {
-                    "app_load_method_opt": "Modalità caricamento lista applicazioni all'avvio",
-                    "app_launch_method_opt": "Metodo usato per lanciare le applicazioni",
+                    "app_load_method": "Modalità caricamento lista applicazioni all'avvio",
+                    "app_launch_method": "Metodo usato per lanciare le applicazioni",
                     "dump_apps": "Mostra lista apps nel file di log all'avvio (se possibile)",
                     "use_mute_check": "Utilizza lo stato di volume muto per identificare false accensioni",
                     "wol_repeat": "Numero di volte che il pacchetto WOL viene inviato per accendere la TV",
                     "power_on_delay": "Secondi di ritardo per passaggio allo stato ON",
-                    "ext_power_entity": "Binary sensor usato per identificare lo stato corrente"
+                    "ping_port": "Porta TCP usata per identificare lo stato (0 per ICMP)",
+                    "ext_power_entity": "Binary sensor usato per aiutare a identificare lo stato"
                 }
             }
         }

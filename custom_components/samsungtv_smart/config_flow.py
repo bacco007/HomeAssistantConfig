@@ -40,6 +40,7 @@ from .const import (
     CONF_DUMP_APPS,
     CONF_EXT_POWER_ENTITY,
     CONF_LOGO_OPTION,
+    CONF_PING_PORT,
     CONF_POWER_ON_DELAY,
     CONF_POWER_ON_METHOD,
     CONF_USE_ST_CHANNEL_INFO,
@@ -62,11 +63,7 @@ from .const import (
     PowerOnMethod,
     __min_ha_version__,
 )
-
-from .logo import (
-    LogoOption,
-    LOGO_OPTION_DEFAULT,
-)
+from .logo import LOGO_OPTION_DEFAULT, LogoOption
 
 APP_LAUNCH_METHODS = {
     AppLaunchMethod.Standard.value: "Control Web Socket Channel",
@@ -80,11 +77,6 @@ APP_LOAD_METHODS = {
     AppLoadMethod.NotLoad.value: "Not Load",
 }
 
-POWER_ON_METHODS = {
-    PowerOnMethod.WOL.value: "WOL Packet (better for wired connection)",
-    PowerOnMethod.SmartThings.value: "SmartThings (better for wireless connection)",
-}
-
 LOGO_OPTIONS = {
     LogoOption.Disabled.value: "Disabled",
     LogoOption.WhiteColor.value: "White background, Color logo",
@@ -93,6 +85,11 @@ LOGO_OPTIONS = {
     LogoOption.DarkWhite.value: "Dark background, White logo",
     LogoOption.TransparentColor.value: "Transparent background, Color logo",
     LogoOption.TransparentWhite.value: "Transparent background, White logo",
+}
+
+POWER_ON_METHODS = {
+    PowerOnMethod.WOL.value: "WOL Packet (better for wired connection)",
+    PowerOnMethod.SmartThings.value: "SmartThings (better for wireless connection)",
 }
 
 CONF_SHOW_ADV_OPT = "show_adv_opt"
@@ -104,14 +101,11 @@ ADVANCED_OPTIONS = [
     CONF_APP_LAUNCH_METHOD,
     CONF_DUMP_APPS,
     CONF_EXT_POWER_ENTITY,
+    CONF_PING_PORT,
     CONF_WOL_REPEAT,
     CONF_POWER_ON_DELAY,
     CONF_USE_MUTE_CHECK,
 ]
-OPT_LOGO_OPTION = f"{CONF_LOGO_OPTION}_opt"
-OPT_APP_LOAD_METHOD = f"{CONF_APP_LOAD_METHOD}_opt"
-OPT_APP_LAUNCH_METHOD = f"{CONF_APP_LAUNCH_METHOD}_opt"
-OPT_POWER_ON_METHOD = f"{CONF_POWER_ON_METHOD}_opt"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -368,11 +362,12 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle a option flow for Samsung TV Smart."""
+    """Handle an option flow for Samsung TV Smart."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry):
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
+        self._entry_id = config_entry.entry_id
+        self._std_options = config_entry.options.copy()
         self._adv_options = {
             key: values
             for key, values in config_entry.options.items()
@@ -382,104 +377,90 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         st_dev = config_entry.data.get(CONF_DEVICE_ID)
         self._use_st = api_key and st_dev
 
-    def _save_entry(self, data: dict):
+    @callback
+    def _save_entry(self, data):
         """Save configuration options"""
-        data[CONF_POWER_ON_METHOD] = _get_key_from_value(
-            POWER_ON_METHODS, data.pop(OPT_POWER_ON_METHOD, None)
-        )
-        data[CONF_LOGO_OPTION] = _get_key_from_value(
-            LOGO_OPTIONS, data.pop(OPT_LOGO_OPTION, None)
-        )
         data.update(self._adv_options)
-
         entry_data = {k: v for k, v in data.items() if v is not None}
         return self.async_create_entry(title="", data=entry_data)
 
-    async def async_step_init(self, user_input: dict = None):
+    async def async_step_init(self, user_input=None):
         """Handle options flow."""
         if user_input is not None:
             if user_input.pop(CONF_SHOW_ADV_OPT, False):
+                self._std_options = user_input
                 return await self.async_step_adv_opt()
             return self._save_entry(data=user_input)
+        return self._async_option_form()
 
+    @callback
+    def _async_option_form(self):
+        """Return configuration form for options."""
         switch_entities = _async_get_matching_entities(
             self.hass,
             _async_get_domains_service(self.hass, SERVICE_TURN_ON),
-            _async_get_entry_entities(self.hass, self.config_entry.entry_id),
+            _async_get_entry_entities(self.hass, self._entry_id),
         )
-        options = _validate_options(self.config_entry.options, switch_entities)
-        data_schema = vol.Schema({})
+        options = _validate_options(self._std_options, switch_entities)
+
+        opt_schema = {
+            vol.Required(
+                CONF_LOGO_OPTION,
+                default=options.get(
+                    CONF_LOGO_OPTION, LOGO_OPTION_DEFAULT.value
+                ),
+            ): vol.In(LOGO_OPTIONS),
+            vol.Optional(
+                CONF_SYNC_TURN_OFF,
+                description={
+                    "suggested_value": options.get(CONF_SYNC_TURN_OFF)
+                },
+            ): cv.multi_select(switch_entities),
+            vol.Optional(
+                CONF_SYNC_TURN_ON,
+                description={
+                    "suggested_value": options.get(CONF_SYNC_TURN_ON)
+                },
+            ): cv.multi_select(switch_entities),
+            vol.Required(CONF_SHOW_ADV_OPT, default=False): bool,
+        }
 
         if self._use_st:
-            data_schema = data_schema.extend(
-                {
-                    vol.Required(
-                        CONF_USE_ST_STATUS_INFO,
-                        default=options.get(
-                            CONF_USE_ST_STATUS_INFO, True
-                        ),
-                    ): bool,
-                    vol.Required(
-                        CONF_USE_ST_CHANNEL_INFO,
-                        default=options.get(
-                            CONF_USE_ST_CHANNEL_INFO, True
-                        ),
-                    ): bool,
-                    vol.Required(
-                        CONF_SHOW_CHANNEL_NR,
-                        default=options.get(
-                            CONF_SHOW_CHANNEL_NR, False
-                        ),
-                    ): bool,
-                    vol.Required(
-                        OPT_POWER_ON_METHOD,
-                        default=POWER_ON_METHODS.get(
-                            options.get(
-                                CONF_POWER_ON_METHOD, PowerOnMethod.WOL.value
-                            )
-                        ),
-                    ): vol.In(list(POWER_ON_METHODS.values())),
-                }
-            )
-
-        data_schema = data_schema.extend(
-            {
+            data_schema = {
                 vol.Required(
-                    OPT_LOGO_OPTION,
-                    default=LOGO_OPTIONS.get(
-                        options.get(CONF_LOGO_OPTION, LOGO_OPTION_DEFAULT[0])
+                    CONF_USE_ST_STATUS_INFO,
+                    default=options.get(CONF_USE_ST_STATUS_INFO, True),
+                ): bool,
+                vol.Required(
+                    CONF_USE_ST_CHANNEL_INFO,
+                    default=options.get(CONF_USE_ST_CHANNEL_INFO, True),
+                ): bool,
+                vol.Required(
+                    CONF_SHOW_CHANNEL_NR,
+                    default=options.get(CONF_SHOW_CHANNEL_NR, False),
+                ): bool,
+                vol.Required(
+                    CONF_POWER_ON_METHOD,
+                    default=options.get(
+                        CONF_POWER_ON_METHOD, PowerOnMethod.WOL.value
                     ),
-                ): vol.In(list(LOGO_OPTIONS.values())),
-                vol.Optional(
-                    CONF_SYNC_TURN_OFF,
-                    description={
-                        "suggested_value": options.get(CONF_SYNC_TURN_OFF)
-                    },
-                ): cv.multi_select(switch_entities),
-                vol.Optional(
-                    CONF_SYNC_TURN_ON,
-                    description={
-                        "suggested_value": options.get(CONF_SYNC_TURN_ON)
-                    },
-                ): cv.multi_select(switch_entities),
-                vol.Required(CONF_SHOW_ADV_OPT, default=False): bool,
+                ): vol.In(POWER_ON_METHODS),
             }
+
+            data_schema.update(opt_schema)
+
+        else:
+            data_schema = opt_schema
+
+        return self.async_show_form(
+            step_id="init", data_schema=vol.Schema(data_schema)
         )
-        return self.async_show_form(step_id="init", data_schema=data_schema)
 
     async def async_step_adv_opt(self, user_input=None):
         """Handle advanced options flow."""
-
         if user_input is not None:
-            user_input[CONF_APP_LOAD_METHOD] = _get_key_from_value(
-                APP_LOAD_METHODS, user_input.pop(OPT_APP_LOAD_METHOD, None)
-            )
-            user_input[CONF_APP_LAUNCH_METHOD] = _get_key_from_value(
-                APP_LAUNCH_METHODS, user_input.pop(OPT_APP_LAUNCH_METHOD, None)
-            )
             self._adv_options = user_input
             return await self.async_step_init()
-
         return self._async_adv_opt_form()
 
     @callback
@@ -490,55 +471,49 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         )
         options = self._adv_options
 
-        data_schema = vol.Schema(
-            {
-                vol.Required(
-                    OPT_APP_LOAD_METHOD,
-                    default=APP_LOAD_METHODS.get(
-                        options.get(
-                            CONF_APP_LOAD_METHOD, AppLoadMethod.All.value
-                        )
-                    ),
-                ): vol.In(list(APP_LOAD_METHODS.values())),
-                vol.Required(
-                    OPT_APP_LAUNCH_METHOD,
-                    default=APP_LAUNCH_METHODS.get(
-                        options.get(
-                            CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value
-                        )
-                    ),
-                ): vol.In(list(APP_LAUNCH_METHODS.values())),
-                vol.Required(
-                    CONF_DUMP_APPS,
-                    default=options.get(CONF_DUMP_APPS, False),
-                ): bool,
-                vol.Required(
-                    CONF_USE_MUTE_CHECK,
-                    default=options.get(CONF_USE_MUTE_CHECK, True),
-                ): bool,
-                vol.Required(
-                    CONF_WOL_REPEAT,
-                    default=min(
-                        options.get(CONF_WOL_REPEAT, 1),
-                        MAX_WOL_REPEAT,
-                    ),
-                ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=MAX_WOL_REPEAT)),
-                vol.Required(
-                    CONF_POWER_ON_DELAY,
-                    default=options.get(
-                        CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY
-                    ),
-                ): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=60)),
-                vol.Optional(
-                    CONF_EXT_POWER_ENTITY,
-                    description={
-                        "suggested_value": options.get(CONF_EXT_POWER_ENTITY)
-                    }
-                ): vol.In(external_entities),
-            }
-        )
+        data_schema = {
+            vol.Required(
+                CONF_APP_LOAD_METHOD,
+                default=options.get(
+                    CONF_APP_LOAD_METHOD, AppLoadMethod.All.value
+                ),
+            ): vol.In(APP_LOAD_METHODS),
+            vol.Required(
+                CONF_DUMP_APPS,
+                default=options.get(CONF_DUMP_APPS, False),
+            ): bool,
+            vol.Required(
+                CONF_APP_LAUNCH_METHOD,
+                default=options.get(
+                    CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value
+                ),
+            ): vol.In(APP_LAUNCH_METHODS),
+            vol.Required(
+                CONF_WOL_REPEAT,
+                default=min(options.get(CONF_WOL_REPEAT, 1), MAX_WOL_REPEAT),
+            ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=MAX_WOL_REPEAT)),
+            vol.Required(
+                CONF_POWER_ON_DELAY,
+                default=options.get(CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY),
+            ): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=60)),
+            vol.Required(
+                CONF_PING_PORT, default=options.get(CONF_PING_PORT, 0)
+            ): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=65535)),
+            vol.Optional(
+                CONF_EXT_POWER_ENTITY,
+                description={
+                    "suggested_value": options.get(CONF_EXT_POWER_ENTITY)
+                }
+            ): vol.In(external_entities),
+            vol.Required(
+                CONF_USE_MUTE_CHECK,
+                default=options.get(CONF_USE_MUTE_CHECK, True),
+            ): bool,
+        }
 
-        return self.async_show_form(step_id="adv_opt", data_schema=data_schema)
+        return self.async_show_form(
+            step_id="adv_opt", data_schema=vol.Schema(data_schema)
+        )
 
 
 def _validate_options(options: dict, sw_ent: dict):
@@ -551,15 +526,6 @@ def _validate_options(options: dict, sw_ent: dict):
             continue
         valid_options[opt_key] = opt_val
     return valid_options
-
-
-def _get_key_from_value(source: dict, value: str):
-    """Get dict key from corresponding value."""
-    if value:
-        for src_key, src_value in source.items():
-            if src_value == value:
-                return src_key
-    return None
 
 
 def _async_get_matching_entities(hass: HomeAssistant, domains=None, excl_entities=None):

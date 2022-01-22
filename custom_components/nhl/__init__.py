@@ -181,7 +181,9 @@ async def async_get_state(config) -> dict:
                 _LOGGER.info("Found Team_ID in scoreboard feed")
                 found_team = True
                 values["state"] = event["status"]["type"]["state"].upper()
-                team_index = 0 if event["competitions"][0]["competitors"][0]["team"]["id"] == team_id else 1
+                _LOGGER.info("Team ID: %s", team_id)
+                team_index = 0 if event["competitions"][0]["competitors"][0]["team"]["abbreviation"] == team_id else 1
+                _LOGGER.info("Team Index: %s", team_index)
                 oppo_index = abs((team_index - 1))
                 values["state"] = event["competitions"][0]["status"]["type"]["state"].upper()
                 values["date"] = event["date"]
@@ -193,7 +195,7 @@ async def async_get_state(config) -> dict:
                 else:
                     values["state"] = event["competitions"][0]["status"]["type"]["state"].upper()
                 _LOGGER.info("puck drop date: %s", event["date"])
-                values["puck_drop"] = None
+                values["puck_drop"] = arrow.get(event["date"]).humanize()
                 values["venue"] = event["competitions"][0]["venue"]["fullName"]
                 values["location"] = "%s, %s" % (event["competitions"][0]["venue"]["address"]["city"],
                                                  event["competitions"][0]["venue"]["address"]["state"])
@@ -212,19 +214,38 @@ async def async_get_state(config) -> dict:
                     ''.join(('#', event["competitions"][0]["competitors"][team_index]["team"]["color"])),
                     ''.join(('#', event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]))]
                 values["team_score"] = event["competitions"][0]["competitors"][team_index]["score"]
-                values["opponent_abbr"] = event["competitions"][0]["competitors"][oppo_index]["team"][
-                    "abbreviation"]
+                values["opponent_abbr"] = event["competitions"][0]["competitors"][oppo_index]["team"]["abbreviation"]
                 values["opponent_id"] = event["competitions"][0]["competitors"][oppo_index]["team"]["id"]
-                values["opponent_name"] = event["competitions"][0]["competitors"][oppo_index]["team"][
-                    "shortDisplayName"]
-                values["opponent_record"] = event["competitions"][0]["competitors"][oppo_index]["records"][0][
-                    "summary"]
+                values["opponent_name"] = event["competitions"][0]["competitors"][oppo_index]["team"]["shortDisplayName"]
+                values["opponent_record"] = event["competitions"][0]["competitors"][oppo_index]["records"][0]["summary"]
                 values["opponent_homeaway"] = event["competitions"][0]["competitors"][oppo_index]["homeAway"]
                 values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
                 values["opponent_colors"] = [
                     ''.join(('#', event["competitions"][0]["competitors"][oppo_index]["team"]["color"])),
                     ''.join(('#', event["competitions"][0]["competitors"][oppo_index]["team"]["alternateColor"]))]
                 values["opponent_score"] = event["competitions"][0]["competitors"][oppo_index]["score"]
+
+                if event["competitions"][0]["status"]["type"]["state"].lower() in ['in']:
+                    values["team_period_1"] = 0
+                    values["team_period_2"] = 0
+                    values["team_period_3"] = 0
+                    values["team_period_4"] = 0
+                    per = 1
+                    for score in event["competitions"][0]["competitors"][team_index]["linescores"]:
+                        values["team_period_%s", per] = score["value"]
+                        _LOGGER.info("team_period_%s", per)
+                        per = per+1
+
+                    values["opponent_period_1"] = 0
+                    values["opponent_period_2"] = 0
+                    values["opponent_period_3"] = 0
+                    values["opponent_period_4"] = 0
+                    per = 1
+                    for score in event["competitions"][0]["competitors"][oppo_index]["linescores"]:
+                        values["opponent_period_%s", per] = score["value"]
+                        _LOGGER.info("opponent_period_%s", per)
+                        per = per+1
+
                 values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
                 values["private_fast_refresh"] = False
 
@@ -232,8 +253,7 @@ async def async_get_state(config) -> dict:
                     values["last_play"] = event["competitions"][0]["situation"]["lastPlay"]["text"]
                 else:
                     values["last_play"] = None
-                if event["competitions"][0]["status"]["type"]["state"].lower() in [
-                    'pre']:  # odds only exist pre-game
+                if event["competitions"][0]["status"]["type"]["state"].lower() in ['pre']:  # odds only exist pre-game
                     values["odds"] = event["competitions"][0]["odds"][0]["details"]
                     values["overunder"] = event["competitions"][0]["odds"][0]["overUnder"]
                 else:
@@ -266,7 +286,7 @@ async def async_get_state(config) -> dict:
                     _LOGGER.info("Game is Postponed, set state")
                     values["state"] = "POSTPONED"
             values["date"] = next_event["date"]
-            team_index = 0 if next_event["competitions"][0]["competitors"][0]["team"]["id"] == team_id else 1
+            team_index = 0 if next_event["competitions"][0]["competitors"][0]["team"]["abbreviation"] == team_id else 1
             oppo_index = abs((team_index - 1))
             values["puck_drop"] = arrow.get(next_event["date"]).humanize()
             values["venue"] = next_event["competitions"][0]["venue"]["fullName"]
@@ -289,29 +309,34 @@ async def async_get_state(config) -> dict:
                 values["team_score"] = None
             values["team_colors"] = ["#000000", "#000000"]
             values["team_logo"] = next_event["competitions"][0]["competitors"][team_index]["team"]["logos"][3]["href"]
+            values["team_period_1"] = 0
+            values["team_period_2"] = 0
+            values["team_period_3"] = 0
+            values["team_period_4"] = 0
             values["opponent_abbr"] = next_event["competitions"][0]["competitors"][oppo_index]["team"]["abbreviation"]
             values["opponent_id"] = next_event["competitions"][0]["competitors"][oppo_index]["team"]["id"]
-            values["opponent_name"] = next_event["competitions"][0]["competitors"][oppo_index]["team"][
-                "shortDisplayName"]
+            values["opponent_name"] = next_event["competitions"][0]["competitors"][oppo_index]["team"]["shortDisplayName"]
             values["opponent_homeaway"] = next_event["competitions"][0]["competitors"][oppo_index]["homeAway"]
             if next_event["competitions"][0]["status"]["type"]["state"].lower() in ['post']:
                 values["opponent_score"] = next_event["competitions"][0]["competitors"][oppo_index]["score"]["value"]
-                values["opponent_record"] = next_event["competitions"][0]["competitors"][oppo_index]["record"][0][
-                    "displayValue"]
+                values["opponent_record"] = next_event["competitions"][0]["competitors"][oppo_index]["record"][0]["displayValue"]
             else:
                 values["opponent_record"] = None
                 values["opponent_score"] = None
             values["opponent_colors"] = ["#000000", "#000000"]
-            values["opponent_logo"] = next_event["competitions"][0]["competitors"][oppo_index]["team"]["logos"][3][
-                "href"]
+            values["opponent_logo"] = next_event["competitions"][0]["competitors"][oppo_index]["team"]["logos"][3]["href"]
+            values["opponent_period_1"] = 0
+            values["opponent_period_2"] = 0
+            values["opponent_period_3"] = 0
+            values["opponent_period_4"] = 0
             values["private_fast_refresh"] = False
-            values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+            values["last_play"] = None
             values["period"] = None
             values["clock"] = None
             values["odds"] = None
-            values["overunder"] = "available on gameday"
+            values["overunder"] = None
+            values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
 
-        
         # Never found the team. Either a bye or a post-season condition
         # if not found_team:
         #     _LOGGER.debug("Did not find a game with for the configured team. Checking if it's a bye week.")
@@ -377,6 +402,7 @@ async def async_clear_states(config) -> dict:
         "opponent_logo": None,
         "opponent_colors": None,
         "opponent_score": None,
+        "last_play": None,
         "last_update": None,
         "private_fast_refresh": False
     }

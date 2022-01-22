@@ -100,6 +100,7 @@ class NHLScoresSensor(CoordinatorEntity):
         self._opponent_colors = None
         self._opponent_score = None
         self._last_update = None
+        self._last_play = None
         self._team_id = entry.data[CONF_TEAM_ID]
         self.coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
 
@@ -156,6 +157,10 @@ class NHLScoresSensor(CoordinatorEntity):
         attrs["team_logo"] = self.coordinator.data["team_logo"]
         attrs["team_colors"] = self.coordinator.data["team_colors"]
         attrs["team_score"] = self.coordinator.data["team_score"]
+        attrs["team_period_1"] = self.coordinator.data["team_period_1"]
+        attrs["team_period_2"] = self.coordinator.data["team_period_2"]
+        attrs["team_period_3"] = self.coordinator.data["team_period_3"]
+        attrs["team_period_4"] = self.coordinator.data["team_period_4"]
         attrs["opponent_abbr"] = self.coordinator.data["opponent_abbr"]
         attrs["opponent_id"] = self.coordinator.data["opponent_id"]
         attrs["opponent_name"] = self.coordinator.data["opponent_name"]
@@ -164,7 +169,12 @@ class NHLScoresSensor(CoordinatorEntity):
         attrs["opponent_logo"] = self.coordinator.data["opponent_logo"]
         attrs["opponent_colors"] = self.coordinator.data["opponent_colors"]
         attrs["opponent_score"] = self.coordinator.data["opponent_score"]
+        attrs["opponent_period_1"] = self.coordinator.data["opponent_period_1"]
+        attrs["opponent_period_2"] = self.coordinator.data["opponent_period_2"]
+        attrs["opponent_period_3"] = self.coordinator.data["opponent_period_3"]
+        attrs["opponent_period_4"] = self.coordinator.data["opponent_period_4"]
         attrs["last_update"] = self.coordinator.data["last_update"]
+        attrs["last_play"] = self.coordinator.data["last_play"]
 
         return attrs
 
