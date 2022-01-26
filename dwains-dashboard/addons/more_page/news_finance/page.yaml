@@ -170,6 +170,8 @@
               - sensor.yahoofinance_manu
               - sensor.yahoofinance_nflx
               - sensor.yahoofinance_tsla
+              - sensor.yahoofinance_fwona
+              - sensor.yahoofinance_fwonk
           columns:
             - name: Name
               data: friendly_name

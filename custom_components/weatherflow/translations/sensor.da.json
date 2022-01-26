@@ -1,0 +1,59 @@
+{
+    "state": {
+        "trend": {
+            "falling": "Falder",
+            "rising": "Stiger",
+            "steady": "Stabil"
+        },
+        "beaufort": {
+            "calm": "Stille",
+            "light_air": "Næsten stille",
+            "light_breeze": "Svag vind",
+            "gentle_breeze": "Let vind",
+            "moderate_breeze": "Jævn vind",
+            "fresh_breeze": "Frisk vind",
+            "strong_breeze": "Hård vind",
+            "moderate_gale": "Stiv kuling",
+            "fresh_gale": "Hård kuling",
+            "strong_gale": "Stormende kuling",
+            "storm": "Storm",
+            "violent_storm": "Stærk storm",
+            "hurricane": "Orkan"
+        },
+        "wind_cardinal": {
+            "n": "N",
+            "nne": "NNØ",
+            "ne": "NØ",
+            "ene": "ØNØ",
+            "e": "Ø",
+            "ese": "ØSØ",
+            "se": "SØ",
+            "sse": "SSØ",
+            "s": "S",
+            "ssw": "SSV",
+            "sw": "SV",
+            "wsw": "VSV",
+            "w": "V",
+            "wnw": "VNV",
+            "nw": "NV",
+            "nnw": "NNV"
+        },
+        "precip_intensity": {
+            "none": "Ingen",
+            "very_light": "Meget Let",
+            "light": "Let",
+            "moderate": "Moderat",
+            "heavy": "Kraftig",
+            "very_heavy": "Meget Kraftig",
+            "extreme": "Ekstrem"
+        },
+        "uv_description": {
+            "extreme": "Ekstrem høj",
+            "very-high": "Meget høj",
+            "high": "Høj",
+            "moderate": "Moderat",
+            "low": "Lav",
+            "none": "Ingen data"
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "data": {
+            "region": "Region"
+          },
+          "description": "Choose Region",
+          "title": "OpenNEM"
+        }
+      }
+    },
+    "options": {
+      "step": {
+        "init": {
+          "data": {
+            "region": "Region"
+          },
+          "description": "Choose Region",
+          "title": "OpenNEM"
+        }
+      }
+    }
+  }

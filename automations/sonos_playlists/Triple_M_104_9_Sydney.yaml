@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Triple M 104.9 Sydney
 id: Triple_M_104_9_Sydney
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Triple M 104.9 Sydney"
   - platform: webhook
     webhook_id: sonos_Triple_M_104_9_Sydney
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Triple M 104.9 Sydney"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

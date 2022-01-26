@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - ABC Radio National (Sydney, NSW)
 id: ABC_Radio_National__Sydney__NSW
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "ABC Radio National (Sydney, NSW)"
   - platform: webhook
     webhook_id: sonos_ABC_Radio_National__Sydney__NSW
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "ABC Radio National (Sydney, NSW)"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

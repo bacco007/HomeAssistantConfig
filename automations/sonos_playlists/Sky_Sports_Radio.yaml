@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Sky Sports Radio
 id: Sky_Sports_Radio
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Sky Sports Radio"
   - platform: webhook
     webhook_id: sonos_Sky_Sports_Radio
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Sky Sports Radio"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

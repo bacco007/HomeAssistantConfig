@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - BBC World Service News
 id: BBC_World_Service_News
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "BBC World Service News"
   - platform: webhook
     webhook_id: sonos_BBC_World_Service_News
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "BBC World Service News"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

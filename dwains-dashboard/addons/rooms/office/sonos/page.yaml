@@ -75,6 +75,44 @@
                 service: media_player.volume_up
                 service_data:
                   entity_id: media_player.office_sonos
+        - type: custom:stack-in-card
+          cards:
+            - type: entities
+              entities:
+                - media_player.office_sonos
+                - entity: number.office_sonos_bass
+                  name: Bass Level
+                - entity: number.office_sonos_treble
+                  name: Treble Level
+                - entity: switch.sonos_office_sonos_crossfade
+                  name: Crossfade
+                - entity: switch.sonos_office_sonos_status_light
+                  name: Status Light
+                - entity: switch.sonos_office_sonos_touch_controls
+                  name: Touch Controls
+              title: Controls
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+
     - type: vertical-stack
       item_classes: "col-xs-12 col-sm-9"
       cards:

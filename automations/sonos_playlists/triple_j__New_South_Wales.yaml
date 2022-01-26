@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - triple j (New South Wales)
 id: triple_j__New_South_Wales
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "triple j (New South Wales)"
   - platform: webhook
     webhook_id: sonos_triple_j__New_South_Wales
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "triple j (New South Wales)"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

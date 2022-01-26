@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "WeatherFlow Station has already been configured."
+        },
+        "error": {
+            "wrong_station_id": "The Station Id entered is not correct.",
+            "invalid_data": "The data returned from WeatherFlow is invalid.",
+            "wrong_token": "The Api Token entered is not correct.",
+            "bad_request": "An unknown error occurred when retreiving data."
+        },
+        "step": {
+            "user": {
+                "description": "Set up a WeatherFlow Station",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Personal Api Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Interval in minutes between Sensor Updates (Default 2 min)",
+                    "forecast_hours": "Number of hours for the Hour based forecast (Default 48 hours)",
+                    "interval_forecast": "Interval in minutes between Forecast updates (Default 30 min)"
+                }
+            }
+        }
+    }
+}

@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Absolute Radio Classic Rock
 id: Absolute_Radio_Classic_Rock
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Absolute Radio Classic Rock"
   - platform: webhook
     webhook_id: sonos_Absolute_Radio_Classic_Rock
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Absolute Radio Classic Rock"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

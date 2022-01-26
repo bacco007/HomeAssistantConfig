@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Radio X
 id: Radio_X
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Radio X"
   - platform: webhook
     webhook_id: sonos_Radio_X
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Radio X"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

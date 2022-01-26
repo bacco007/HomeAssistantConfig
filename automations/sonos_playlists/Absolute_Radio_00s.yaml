@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Absolute Radio 00s
 id: Absolute_Radio_00s
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Absolute Radio 00s"
   - platform: webhook
     webhook_id: sonos_Absolute_Radio_00s
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Absolute Radio 00s"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

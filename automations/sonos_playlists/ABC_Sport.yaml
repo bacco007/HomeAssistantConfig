@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - ABC Sport
 id: ABC_Sport
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "ABC Sport"
   - platform: webhook
     webhook_id: sonos_ABC_Sport
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "ABC Sport"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

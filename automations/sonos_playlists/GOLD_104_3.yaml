@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - GOLD 104.3
 id: GOLD_104_3
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "GOLD 104.3"
   - platform: webhook
     webhook_id: sonos_GOLD_104_3
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "GOLD 104.3"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

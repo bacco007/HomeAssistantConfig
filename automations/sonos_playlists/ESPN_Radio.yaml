@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - ESPN Radio
 id: ESPN_Radio
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "ESPN Radio"
   - platform: webhook
     webhook_id: sonos_ESPN_Radio
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "ESPN Radio"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

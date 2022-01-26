@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Virgin Radio Groove UK
 id: Virgin_Radio_Groove_UK
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Virgin Radio Groove UK"
   - platform: webhook
     webhook_id: sonos_Virgin_Radio_Groove_UK
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Virgin Radio Groove UK"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

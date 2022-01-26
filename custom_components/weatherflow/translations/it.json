@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "La stazione WeatherFlow è già stata configurata."
+        },
+        "error": {
+            "wrong_station_id": "L'ID della stazione non è corretto.",
+            "invalid_data": "I dati ricevuti da WeatherFlow non sono corretti.",
+            "wrong_token": "Il Token API inserito non è corretto.",
+            "bad_request": "Errore sconosciuto in fase di accesso ai dati."
+        },
+        "step": {
+            "user": {
+                "description": "Configurazione della stazione WeatherFlow",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "ID stazione",
+                    "api_token": "Token API personale"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Frequenza di aggiornamento per i dati dei sensori (default: 2 min)",
+                    "forecast_hours": "Number of hours for the Hour based forecast (Default 48 hours)",
+                    "interval_forecast": "Frequenza di aggiornamento per le previsioni meteo (default: 30 min)"
+                }
+            }
+        }
+    }
+}

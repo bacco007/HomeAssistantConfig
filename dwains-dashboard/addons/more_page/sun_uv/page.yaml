@@ -168,23 +168,23 @@
               margin-left: 2px !important;
             }
           entities:
-            - binary_sensor.protection_window
+            - binary_sensor.protection_window_2
             - type: custom:multiple-entity-row
-              entity: sensor.current_uv_index
+              entity: sensor.current_uv_index_2
               secondary_info:
-                entity: sensor.current_uv_level
-            - sensor.max_uv_index
-            - sensor.current_ozone_level
+                entity: sensor.current_uv_level_2
+            - sensor.max_uv_index_2
+            - sensor.current_ozone_level_2
             - type: custom:fold-entity-row
               head:
                 type: section
                 label: Safe Exposure Times
               entities:
-                - sensor.skin_type_1_safe_exposure_time
-                - sensor.skin_type_2_safe_exposure_time
-                - sensor.skin_type_3_safe_exposure_time
-                - sensor.skin_type_4_safe_exposure_time
-                - sensor.skin_type_5_safe_exposure_time
+                - sensor.skin_type_1_safe_exposure_time_2
+                - sensor.skin_type_2_safe_exposure_time_2
+                - sensor.skin_type_3_safe_exposure_time_2
+                - sensor.skin_type_4_safe_exposure_time_2
+                - sensor.skin_type_5_safe_exposure_time_2
 
     - type: vertical-stack
       item_classes: "col-xs-12 col-sm-8"

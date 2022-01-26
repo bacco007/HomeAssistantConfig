@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - CNN International
 id: CNN_International
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "CNN International"
   - platform: webhook
     webhook_id: sonos_CNN_International
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "CNN International"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

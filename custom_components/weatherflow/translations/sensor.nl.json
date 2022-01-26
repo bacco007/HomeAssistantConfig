@@ -1,0 +1,59 @@
+{
+    "state": {
+        "trend": {
+            "falling": "Dalend",
+            "rising": "Stijgend",
+            "steady": "Constant"
+        },
+        "beaufort": {
+            "calm": "Windstil",
+            "light_air": "Zwakke wind",
+            "light_breeze": "Zwakke wind",
+            "gentle_breeze": "Matige wind",
+            "moderate_breeze": "Matige wind",
+            "fresh_breeze": "Vrij krachtige wind",
+            "strong_breeze": "Krachtige wind",
+            "moderate_gale": "Harde wind",
+            "fresh_gale": "Stormachtige wind",
+            "strong_gale": "Storm",
+            "storm": "Zware storm",
+            "violent_storm": "Zeer ware storm",
+            "hurricane": "Orkaan"
+        },
+        "wind_cardinal": {
+            "n": "N",
+            "nne": "NNO",
+            "ne": "NO",
+            "ene": "ONO",
+            "e": "O",
+            "ese": "OZO",
+            "se": "ZO",
+            "sse": "ZZO",
+            "s": "Z",
+            "ssw": "ZZW",
+            "sw": "ZW",
+            "wsw": "WZW",
+            "w": "W",
+            "wnw": "WNW",
+            "nw": "NW",
+            "nnw": "NNW"
+        },
+        "precip_intensity": {
+            "none": "Geen",
+            "very_light": "Zeer licht",
+            "light": "Licht",
+            "moderate": "Matig",
+            "heavy": "Zwaar",
+            "very_heavy": "Zeer zwaar",
+            "extreme": "Extreem"
+        },
+        "uv_description": {
+            "extreme": "Extreem",
+            "very-high": "Zeer sterk",
+            "high": "Sterk",
+            "moderate": "Matig",
+            "low": "Zwak",
+            "none": "Geen"
+        }
+    }
+}

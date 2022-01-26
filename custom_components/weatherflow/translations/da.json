@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "Denne WeatherFlow Station er allerede konfigureret."
+        },
+        "error": {
+            "wrong_station_id": "Det indtastede Station Id er ikke korrekt.",
+            "invalid_data": "Data returneret fra WeatherFlow er ikke gyldige.",
+            "wrong_token": "Den indtastede API Token er ikke gyldig.",
+            "bad_request": "Der opstod en ukendt fejl under hentning af data."
+        },
+        "step": {
+            "user": {
+                "description": "Konfigurer en WeatherFlow Station",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Personlig Api Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Interval i minutter mellem sensor opdateringer (Standard 2 min)",
+                    "forecast_hours": "Antal timer for Time baseret vejrudsigt (Standard 48 timer)",
+                    "interval_forecast": "Interval i minutter mellem forecast opdateringer (Standard 30 min)"
+                }
+            }
+        }
+    }
+}

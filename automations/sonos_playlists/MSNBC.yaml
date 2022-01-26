@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - MSNBC
 id: MSNBC
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "MSNBC"
   - platform: webhook
     webhook_id: sonos_MSNBC
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "MSNBC"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"

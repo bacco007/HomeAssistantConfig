@@ -10,19 +10,24 @@ yahoofinance:
     - RIO.AX
     - TLS.AX
     - TNE.AX
-    - PRT.AX
     - NEC.AX
     - JBH.AX
     - SWM.AX
     - SXL.AX
     - REX.AX
     - MGH.AX
+    - HT1.AX
+    - SEG.AX
+    - NWS.AX
+    - SKT.AX
     - AMZN
     - AAPL
     - GOOG
     - TSLA
     - NFLX
     - MANU
+    - FWONA
+    - FWONK
     - ^AXJO
     - ^AORD
     - ^DJI

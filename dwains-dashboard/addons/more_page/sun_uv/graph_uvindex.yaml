@@ -63,7 +63,7 @@ apex_config:
         strokeDashArray: 0
         fillColor: "#6A1B9A"
 series:
-  - entity: sensor.current_uv_index
+  - entity: sensor.current_uv_index_2
     type: area
     name: UV Index
     extend_to_end: false

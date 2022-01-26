@@ -2,9 +2,6 @@
 alias: Sonos - Playlist - Playlists
 id: Playlists
 trigger:
-  - platform: state
-    entity_id: input_select.sonosplaylist
-    to: "Playlists"
   - platform: webhook
     webhook_id: sonos_Playlists
 action:
@@ -12,7 +9,3 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Playlists"
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.sonosplaylist
-      option: "-- Select --"
