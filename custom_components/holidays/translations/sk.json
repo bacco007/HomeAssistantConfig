@@ -1,0 +1,52 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Holidays",
+                "description": "Zadej meno senzoru a nastav parametre. Viac na https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Friendly name",
+                    "icon_normal": "Ikona (mdi:trash-can)",
+                    "icon_tomorrow": "Ikona zvoz zajtra (mdi:delete-restore)",
+                    "icon_today": "Ikona zvoz dnes (mdi:delete-circle)",
+                    "country": "Štátne sviatky - krajiny (voliteľné)",
+                    "holiday_pop_named": "Ignorovať sviatky (volitelné)", 
+                    "prov": "Štátne sviatky - provincie (volitelné)",
+                    "state": "Štátne sviatky - štát (volitelné)",
+                    "observed": "Štátne sviatky - sledované (volitelné)"
+
+                }
+            }
+        },
+        "error": {
+            "value": "Chybná hodnota. Skontroluj zadané hodnoty!",
+            "icon": "Ikony musia býť zadané vo formáte 'prefix:meno'."
+        },
+        "abort": {
+            "single_instance_allowed": "Je povolená iba jedna konfigurácia Holidays."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Holidays - Nastavenia",
+                "description": "Zadaj meno senzora a nastav parametre. Viac na https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Ikona (mdi:trash-can)",
+                    "icon_tomorrow": "Ikona zvoz zajtra (mdi:delete-restore)",
+                    "icon_today": "Ikona zvoz dnes (mdi:delete-circle)",
+                    "country": "Štátne sviatky - krajiny (voliteľné)",
+                    "holiday_pop_named": "Ignorovať sviatky (volitelné)", 
+                    "prov": "Štátne sviatky - provincie (volitelné)",
+                    "state": "Štátne sviatky - štát (volitelné)",
+                    "observed": "Štátne sviatky - sledované (volitelné)"
+                }
+            }
+        },
+        "error": {
+            "value": "Chybná hodnota. Skontroluj zadané hodnoty!",
+            "icon": "Ikony musia býť zadané vo formáte 'prefix:meno'."
+        }
+    }
+
+}

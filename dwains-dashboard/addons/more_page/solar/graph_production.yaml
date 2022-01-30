@@ -3,9 +3,6 @@ type: custom:config-template-card
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.sungrowsolar_total_pv_power_kw
-  - sensor.sungrowsolar_power_meter_kw
-  - sensor.sungrowsolar_export_power_kw
 card:
   type: custom:apexcharts-card
   graph_span: 24h
@@ -82,18 +79,18 @@ card:
           text: "kW"
     stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
   series:
-    - entity: sensor.sungrowsolar_total_pv_power_kw
+    - entity: sensor.sungrowsolar_solar_production
       name: Solar Generation
       stroke_width: 3
       group_by:
         func: max
         duration: 5min
-    - entity: sensor.sungrowsolar_power_meter_kw
+    - entity: sensor.sungrowsolar_load_power
       name: House Consumption
       group_by:
         func: max
         duration: 5min
-    - entity: sensor.sungrowsolar_export_power_kw
+    - entity: sensor.sungrowsolar_export_to_grid
       name: Grid
       group_by:
         func: max

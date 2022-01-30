@@ -1,0 +1,50 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Holidays",
+                "description": "Enter the sensor name and configure sensor parameters. More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Friendly name",
+                    "icon_normal": "Icon (mdi:trash-can) - optional",
+                    "icon_tomorrow": "Icon collection tomorrow (mdi:delete-restore) - optional",
+                    "icon_today": "Icon collection today (mdi:delete-circle) - optional",
+                    "country": "Country",
+                    "holiday_pop_named": "Ignore holidays (list) - optional",
+                    "prov": "Prov (optional)",
+                    "state": "State (optional)",
+                    "observed": "Observed (optional)"
+                }
+            }
+        },
+        "error": {
+            "value": "Invalid value. Please check your input!",
+            "icon": "Icons should be specified in the form 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Only a single configuration of Holidays is allowed."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Holidays",
+                "description": "Change sensor parameters. More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Icon (mdi:trash-can) - optional",
+                    "icon_tomorrow": "Icon collection tomorrow (mdi:delete-restore) - optional",
+                    "icon_today": "Icon collection today (mdi:delete-circle) - optional",
+                    "country": "Country",
+                    "holiday_pop_named": "Ignore holidays (list) - optional",
+                    "prov": "Prov (optional)",
+                    "state": "State (optional)",
+                    "observed": "Observed (optional)"
+                }
+            }
+        },
+        "error": {
+            "value": "Invalid value. Please check your input!",
+            "icon": "Icons should be specified in the form 'prefix:name'."
+        }
+    }
+}

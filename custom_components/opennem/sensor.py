@@ -98,8 +98,8 @@ class OpenNEMSensor(CoordinatorEntity):
         """Return State of Sensor"""
         if self.coordinator.data is None:
             return None
-        elif "state" in self.coordinator.data.keys():
-            return self.coordinator.data["state"]
+        elif "generation" in self.coordinator.data.keys():
+            return self.coordinator.data["generation"]
         else:
             return None
 
@@ -110,33 +110,34 @@ class OpenNEMSensor(CoordinatorEntity):
         if self.coordinator.data is None:
             return attrs
         attrs[ATTR_ATTRIBUTION] = ATTRIBUTION
-        attrs["battery_discharging"] = self.coordinator.data["battery_discharging"]
-        attrs["battery_charging"] = self.coordinator.data["battery_charging"]
-        attrs["bioenergy_biomass"] = self.coordinator.data["bioenergy_biomass"]
-        attrs["bioenergy_biogas"] = self.coordinator.data["bioenergy_biogas"]
-        attrs["coal_black"] = self.coordinator.data["coal_black"]
-        attrs["coal_brown"] = self.coordinator.data["coal_brown"]
-        attrs["distillate"] = self.coordinator.data["distillate"]
-        attrs["gas_ccgt"] = self.coordinator.data["gas_ccgt"]
-        attrs["gas_ocgt"] = self.coordinator.data["gas_ocgt"]
-        attrs["gas_recip"] = self.coordinator.data["gas_recip"]
-        attrs["gas_steam"] = self.coordinator.data["gas_steam"]
-        attrs["gas_wcmg"] = self.coordinator.data["gas_wcmg"]
-        attrs["hydro"] = self.coordinator.data["hydro"]
-        attrs["pumps"] = self.coordinator.data["pumps"]
-        attrs["solar_utility"] = self.coordinator.data["solar_utility"]
-        attrs["solar_rooftop"] = self.coordinator.data["solar_rooftop"]
-        attrs["wind"] = self.coordinator.data["wind"]
-        attrs["exports"] = self.coordinator.data["exports"]
-        attrs["imports"] = self.coordinator.data["imports"]
-        attrs["price"] = self.coordinator.data["price"]
-        attrs["temperature"] = self.coordinator.data["temperature"]
-        attrs["demand"] = self.coordinator.data["demand"]
-        attrs["fossilfuel"] = self.coordinator.data["fossilfuel"]
-        attrs["generation"] = self.coordinator.data["generation"]
-        attrs["renewables"] = self.coordinator.data["renewables"]
         attrs["region"] = self._region
-        attrs["last_update"] = self.coordinator.data["last_update"]
+        for a in self.coordinator.data:
+            attrs[a] = self.coordinator.data[a]
+        # attrs["battery_charging"] = self.coordinator.data["battery_charging"]
+        # attrs["bioenergy_biomass"] = self.coordinator.data["bioenergy_biomass"]
+        # attrs["bioenergy_biogas"] = self.coordinator.data["bioenergy_biogas"]
+        # attrs["coal_black"] = self.coordinator.data["coal_black"]
+        # attrs["coal_brown"] = self.coordinator.data["coal_brown"]
+        # attrs["distillate"] = self.coordinator.data["distillate"]
+        # attrs["gas_ccgt"] = self.coordinator.data["gas_ccgt"]
+        # attrs["gas_ocgt"] = self.coordinator.data["gas_ocgt"]
+        # attrs["gas_recip"] = self.coordinator.data["gas_recip"]
+        # attrs["gas_steam"] = self.coordinator.data["gas_steam"]
+        # attrs["gas_wcmg"] = self.coordinator.data["gas_wcmg"]
+        # attrs["hydro"] = self.coordinator.data["hydro"]
+        # attrs["pumps"] = self.coordinator.data["pumps"]
+        # attrs["solar_utility"] = self.coordinator.data["solar_utility"]
+        # attrs["solar_rooftop"] = self.coordinator.data["solar_rooftop"]
+        # attrs["wind"] = self.coordinator.data["wind"]
+        # attrs["exports"] = self.coordinator.data["exports"]
+        # attrs["imports"] = self.coordinator.data["imports"]
+        # attrs["price"] = self.coordinator.data["price"]
+        # attrs["temperature"] = self.coordinator.data["temperature"]
+        # attrs["demand"] = self.coordinator.data["demand"]
+        # attrs["fossilfuel"] = self.coordinator.data["fossilfuel"]
+        # attrs["generation"] = self.coordinator.data["generation"]
+        # attrs["renewables"] = self.coordinator.data["renewables"]
+        # attrs["last_update"] = self.coordinator.data["last_update"]
         return attrs
 
     @property

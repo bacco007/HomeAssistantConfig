@@ -2,8 +2,6 @@ type: "custom:config-template-card"
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.weather_outside_temperature
-  - sensor.weather_outside_humidity
 card:
   type: custom:apexcharts-card
   header:
@@ -72,7 +70,7 @@ card:
       - seriesName: "Temp"
         show: false
   series:
-    - entity: sensor.weather_outside_temperature
+    - entity: sensor.tempest_st_00056115_temperature
       name: Temp
       type: line
       # color: "da1e28"
@@ -82,7 +80,7 @@ card:
       group_by:
         func: last
         duration: 10min
-    - entity: sensor.weather_outside_temperature
+    - entity: sensor.tempest_st_00056115_temperature
       type: line
       color: "#121619"
       name: Change
@@ -91,7 +89,8 @@ card:
       group_by:
         func: delta
         duration: 30min
-    - entity: sensor.weather_outside_humidity
+    - entity: sensor.tempest_st_00056115_humidity
+      name: Humidity
       type: line
       extend_to_end: false
       stroke_width: 1.5
@@ -99,7 +98,7 @@ card:
       group_by:
         func: last
         duration: 10min
-    - entity: sensor.weather_outside_temperature
+    - entity: sensor.tempest_st_00056115_temperature
       type: line
       name: Yesterday
       stroke_width: 1.8
@@ -110,7 +109,7 @@ card:
       group_by:
         func: last
         duration: 1h
-    - entity: sensor.weather_outside_feels_like_au
+    - entity: sensor.tempest_st_00056115_feels_like_temperature
       type: line
       name: Feels Like
       stroke_width: 2

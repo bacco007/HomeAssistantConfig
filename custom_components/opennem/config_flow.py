@@ -10,6 +10,7 @@ from homeassistant.core import callback
 
 from .const import (
     CONF_REGION,
+    CONF_REGION_SIMP,
     DEFAULT_NAME,
     DOMAIN,
 )
@@ -41,7 +42,7 @@ def _get_schema(hass: Any, user_input: list, default_dict: list) -> Any:
 async def _get_region_list(self):
     """Return list of team acronyms"""
 
-    region_list = ["nem", "nsw", "qld", "sa", "tas", "vic", "wa"]
+    region_list = CONF_REGION_SIMP
 
     _LOGGER.debug("OpenNEM: Region List: %s", region_list)
     return region_list

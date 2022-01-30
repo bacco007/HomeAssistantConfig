@@ -123,7 +123,7 @@ def getdata_untappd_project52(
         minrat = 0
     else:
         minrat = CONF_MINRATING
-    attributes["rating_maximum"] = minrat
+    attributes["rating_maximum"] = CONF_MAXRATING
     attributes["datefrom"] = datetime.strftime(CONF_STARTDATE, "%d/%m/%Y")
     attributes["datend"] = datetime.strftime(CONF_ENDDATE, "%d/%m/%Y")
     state.set(entity_id, value=ATTR_COUNT, new_attributes=attributes)

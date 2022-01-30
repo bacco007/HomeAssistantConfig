@@ -1,0 +1,51 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Holidays",
+                "description": "Ingrese el nombre del sensor y configure los parámetros del sensor. Más información en https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Nombre amigable",
+                    "icon_normal": "Icono (mdi:trash-can)",
+                    "icon_tomorrow": "Icono de recoleccion para mañana (mdi:delete-restore)",
+                    "icon_today": "Icono de recoleccion para hoy (mdi:delete-circle)",
+                    "country": "Mover vacaciones al día siguiente (opcional)",
+                    "holiday_pop_named": "Ignore holidays (list) - optional",
+                    "prov": "Días festivos - prov (opcional)",
+                    "state": "Días festivos - estado (opcional)",
+                    "observed": "Días festivos - observado (opcional)"
+                }
+            }
+        },
+        "error": {
+            "value": "Valor no válido. Por favor revise su entrada!",
+            "icon": "Los iconos deben especificarse en el formato 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Solo se permite una única configuración de Recolección de basura."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Holidays",
+                "description": "Cambiar los parámetros del sensor. Más información en https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Icono (mdi:trash-can)",
+                    "icon_tomorrow": "Icono de recoleccion para mañana (mdi:delete-restore)",
+                    "icon_today": "Icono de recoleccion para hoy (mdi:delete-circle)",
+                    "country": "Mover vacaciones al día siguiente (opcional)",
+                    "holiday_pop_named": "Ignore holidays (list) - optional",
+                    "prov": "Días festivos - prov (opcional)",
+                    "state": "Días festivos - estado (opcional)",
+                    "observed": "Días festivos - observado (opcional)"
+                }
+            }
+        },
+        "error": {
+            "value": "Valor no válido. Por favor revise su entrada!",
+            "icon": "Los iconos deben especificarse en el formato 'prefix:name'."
+        }
+    }
+
+}

@@ -1,0 +1,88 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    title: Extremes
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Maximum - Day
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info:
+          attribute: max_day_time
+          format: datetime
+        entities:
+          - attribute: max_day
+            unit: °C
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Maximum - Month
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info:
+          attribute: max_month_time
+          format: datetime
+        entities:
+          - attribute: max_month
+            unit: °C
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Maximum - All
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info:
+          attribute: max_all_time
+          format: datetime
+        entities:
+          - attribute: max_all
+            unit: °C
+      - type: section
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Minimum - Day
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info:
+          attribute: min_day_time
+          format: datetime
+        entities:
+          - attribute: min_day
+            unit: °C
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Minimum - Month
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info:
+          attribute: min_month_time
+          format: datetime
+        entities:
+          - attribute: min_month
+            unit: °C
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Minimum - All
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info:
+          attribute: min_all_time
+          format: datetime
+        entities:
+          - attribute: min_all
+            unit: °C

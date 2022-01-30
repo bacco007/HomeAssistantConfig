@@ -1,10 +1,12 @@
 {
   "domain": "eufy_security",
   "name": "Eufy Security",
+  "documentation": "https://github.com/fuatakgun/eufy_security",
+  "issue_tracker": "https://github.com/fuatakgun/eufy_security/issues",
+  "dependencies": ["ffmpeg", "http"],
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/eufy_security",
-  "requirements": ["python-eufy-security==0.3.0"],
-  "dependencies": ["ffmpeg"],
-  "codeowners": ["@nonsleepr"],
-  "version": "0.1"
+  "version": "2.2.3",
+  "codeowners": ["@fuatakgun"],
+  "requirements": ["websocket-client==1.1.0"],
+  "iot_class": "cloud_push"
 }

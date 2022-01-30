@@ -20,9 +20,9 @@ from .const import (
     API_ENDPOINT,
     API_ENDPOINT_NEM,
     API_ENDPOINT_WA,
+    API_ENDPOINT_AU,
     CONF_REGION,
     COORDINATOR,
-    DATA,
     DOMAIN,
     PLATFORMS,
     VERSION,
@@ -30,6 +30,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+DEFAULT_SCAN_INTERVAL = datetime.timedelta(minutes=10)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Load Saved Entities"""
@@ -78,7 +79,7 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data"""
 
     def __init__(self, hass, config):
-        self.interval = datetime.timedelta(minutes=10)
+        self.interval = DEFAULT_SCAN_INTERVAL
         self.name = config[CONF_NAME]
         self.config = config
         self.hass = hass
@@ -92,7 +93,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
             except Exception as error:
                 raise UpdateFailed(error) from error
             return data
-
 
 async def update_opennem(config) -> dict:
     """Fetch new state data"""
@@ -131,9 +131,13 @@ async def async_get_state(config) -> dict:
         "last_update": None,
     }
     data = None
+    regiondata = []
+
     region = config[CONF_REGION] + "1"
     if region == "nem1":
         url = API_ENDPOINT_NEM
+    elif region == "au1":
+        url = API_ENDPOINT_AU
     elif region == "wa1":
         url = API_ENDPOINT_WA
     else:
@@ -152,58 +156,78 @@ async def async_get_state(config) -> dict:
                 ftype = row["fuel_tech"]
             else:
                 ftype = row["type"]
+
+            #units = row["units"]
+            #last_update = row["history"]["last"]
+
             if row["type"] == "temperature":
                 value = row["history"]["data"][-2]
+            elif row["type"] == "price":
+                value = row["history"]["data"][-2]
+            elif ftype == "imports":
+                value = abs(row["history"]["data"][-1])
+            elif ftype == "exports":
+                value = -abs(row["history"]["data"][-1])
+            elif ftype == "battery_charging":
+                value = -abs(row["history"]["data"][-1])
             else:
                 value = row["history"]["data"][-1]
-            if value:
-                DATA[ftype][4] = round(value, 2)
-                values[ftype] = round(value, 2)
+
+            if value is None:
+                values[ftype] = 0.0
             else:
-                DATA[ftype][4] = 0
-                values[ftype] = 0
+                values[ftype] = round(value, 2)
+
+            regiondata.append(ftype)
 
         ffvalue = (
-            DATA["coal_black"][4]
-            + DATA["distillate"][4]
-            + DATA["coal_brown"][4]
-            + DATA["gas_ccgt"][4]
-            + DATA["gas_ocgt"][4]
-            + DATA["gas_recip"][4]
-            + DATA["gas_steam"][4]
-            + DATA["gas_wcmg"][4]
+            values["coal_black"]
+            + values["distillate"]
+            + values["coal_brown"]
+            + values["gas_ccgt"]
+            + values["gas_ocgt"]
+            + values["gas_recip"]
+            + values["gas_steam"]
+            + values["gas_wcmg"]
         )
         if ffvalue:
-            DATA["fossilfuel"][4] = round(ffvalue, 2)
             values["fossilfuel"] = round(ffvalue, 2)
         else:
-            DATA["fossilfuel"][4] = 0
             values["fossilfuel"] = 0
+        regiondata.append("fossilfuel")
 
         renvalue = (
-            DATA["bioenergy_biomass"][4]
-            + DATA["bioenergy_biogas"][4]
-            + DATA["hydro"][4]
-            + DATA["solar_utility"][4]
-            + DATA["wind"][4]
-            + DATA["solar_rooftop"][4]
+            values["bioenergy_biomass"]
+            + values["bioenergy_biogas"]
+            + values["hydro"]
+            + values["solar_utility"]
+            + values["wind"]
+            + values["solar_rooftop"]
         )
         if renvalue:
-            DATA["renewables"][4] = round(renvalue, 2)
             values["renewables"] = round(renvalue, 2)
         else:
-            DATA["renewables"][4] = 0
             values["renewables"] = 0
+        regiondata.append("renewables")
 
-        genvalue = DATA["fossilfuel"][4] + DATA["renewables"][4]
+        genvalue = values["fossilfuel"] + values["renewables"]
         if genvalue:
-            DATA["generation"][4] = round(genvalue, 2)
             values["generation"] = round(genvalue, 2)
             values["state"] = round(genvalue, 2)
         else:
-            DATA["generation"][4] = 0
             values["generation"] = 0
             values["state"] = 0
+        regiondata.append("generation")
+
+        if region == "wa1":
+            pass
+        else:
+            genvsdemand = values["generation"] - values["demand"]
+            if genvsdemand:
+                values["genvsdemand"] = round(genvsdemand,2)
+            else:
+                values["genvsdemand"] = 0
+            regiondata.append("genvsdemand")
 
         if region == "wa1":
             values["last_update"] = dt_util.as_utc(
@@ -221,7 +245,17 @@ async def async_get_state(config) -> dict:
         _LOGGER.debug("OpenNEM: No Data Found")
 
     _LOGGER.debug("OpenNEM: %s", values)
-    return values
+
+    attrs = {}
+    regiondata.append("last_update")
+    for a in values:
+        if a in regiondata:
+            attrs[a] = values[a]
+        else:
+            pass
+    _LOGGER.debug("OpenNEM: Values to pass to Sensor: %s", attrs)
+
+    return attrs
 
 
 async def async_clear_states(config) -> dict:

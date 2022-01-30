@@ -3,8 +3,6 @@ type: custom:config-template-card
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.sensor.sungrowsolar_daily_power_yield
-  - sensor.solcast_forecast_today
 card:
   type: custom:apexcharts-card
   graph_span: 24h
@@ -96,10 +94,10 @@ card:
       func: last
       duration: 15min
   series:
-    - entity: sensor.sungrowsolar_daily_power_yield
+    - entity: sensor.sungrowsolar_daily_power_yields
       name: Yield
       curve: smooth
-    - entity: sensor.sungrowsolar_daily_power_yield
+    - entity: sensor.sungrowsolar_daily_power_yields
       name: Yield
       curve: smooth
       offset: -1d

@@ -1,0 +1,11 @@
+---
+platform: template
+name: weatherflow_current
+condition_template: "{{ states('sensor.weatherflow_weather') }}"
+temperature_template: "{{ states('sensor.weatherflow_temperature') | float}}"
+humidity_template: "{{ states('sensor.weatherflow_humidity')| int }}"
+pressure_template: "{{ states('sensor.weatherflow_sea_level_pressure')| float }}"
+wind_speed_template: "{{ ( states('sensor.weatherflow_wind_speed_avg') | float * 18 / 5 ) | round(2) }}"
+wind_bearing_template: "{{ states('sensor.weatherflow_wind_bearing_avg')| int }}"
+visibility_template: "{{ states('sensor.weatherflow_visibility')| float }}"
+forecast_template: "{{ state_attr('sensor.weatherflow_weather', 'hourly_forecast') }}"

@@ -3,7 +3,6 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12 col-sm-12 col-sm-12 col-xl-12"
   cards:
-    - !include graph_indoortemp_day.yaml
     - !include graph_outdoortemp_day.yaml
     - !include graph_rain.yaml
 
@@ -16,9 +15,9 @@
           value: Wind
           icon: mdi:weather-windy
       indicator_sensors:
-        - sensor: sensor.weather_outside_winddirection
+        - sensor: sensor.tempest_st_00056115_wind_bearing_avg
       value_sensors:
-        - sensor: sensor.weather_outside_windspeed
+        - sensor: sensor.tempest_st_00056115_wind_speed_avg
       direction_offset: 0
       compass:
         north:
@@ -26,7 +25,7 @@
           offset: 0
     - type: custom:mini-graph-card
       entities:
-        - sensor.weather_outside_pressure
+        - sensor.tempest_st_00056115_station_pressure
       name: Pressure
       # height: 50
       line_color: "var(--dwains-theme-accent)"
@@ -40,7 +39,7 @@
         fill: fade
     - type: custom:mini-graph-card
       entities:
-        - sensor.weather_outside_radiation
+        - sensor.tempest_st_00056115_solar_radiation
       name: Radiation
       # height: 50
       line_color: "var(--dwains-theme-accent)"
@@ -54,7 +53,7 @@
         fill: fade
     - type: custom:mini-graph-card
       entities:
-        - sensor.weather_outside_uvindex
+        - sensor.tempest_st_00056115_uv_index
       name: UV Index
       # height: 50
       line_color: "var(--dwains-theme-accent)"
@@ -78,187 +77,9 @@
         - value: 0
           color: "#558B2F"
 
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
-  cards:
     - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-8"
       cards:
-        - type: custom:auto-entities
-          card:
-            type: entities
-            title: Inside Sensor (Lounge)
-            style: |
-              ha-card {
-                background-color: var(--dwains-theme-primary);
-                padding-bottom: 10px;
-              }
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
-          sort:
-            method: name
-          filter:
-            include:
-              - { entity_id: sensor.weather_inside_* }
-
-    - type: vertical-stack
-      cards:
-        - type: custom:auto-entities
-          card:
-            type: entities
-            title: Outside Sensor
-            style: |
-              ha-card {
-                background-color: var(--dwains-theme-primary);
-                padding-bottom: 10px;
-              }
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
-          sort:
-            method: name
-          filter:
-            include:
-              - { entity_id: sensor.weather_outside_* }
-            exclude:
-              - { entity_id: sensor.weather_outside_rain* }
-        - type: vertical-stack
-          cards:
-            - type: entities
-              title: Temperature Extremes
-              style: |
-                ha-card {
-                  padding-bottom: 10px;
-                  background-color: var(--dwains-theme-primary)
-                }
-                .card-header {
-                  padding: 5px 16px;
-                  font-size: 18px;
-                  font-weight: 700 !important;
-                }
-                .card-content div {
-                    margin: 0 !important;
-                }
-                #states {
-                  padding-top: 0px !important;
-                  padding-bottom: 0px !important;
-                }
-                .secondary {
-                  color: darkgray !important;
-                  margin-left: 2px !important;
-                }
-              entities:
-                - entity: sensor.weather_inside_temperature_average
-                  name: Home - Inside Temp Range (Midnight to now)
-                  type: custom:multiple-entity-row
-                  show_state: false
-                  entities:
-                    - attribute: max_value
-                      name: Max
-                    - attribute: min_value
-                      name: Min
-                - entity: sensor.weather_outside_temperature_average
-                  name: Home - Outside Temp Range (Midnight to now)
-                  type: custom:multiple-entity-row
-                  show_state: false
-                  entities:
-                    - attribute: max_value
-                      name: Max
-                    - attribute: min_value
-                      name: Min
-                - entity: sensor.weather_outside_apptemperature_average
-                  name: Home - Outside Apparent Temp Range (Midnight to now)
-                  type: custom:multiple-entity-row
-                  show_state: false
-                  entities:
-                    - attribute: max_value
-                      name: Max
-                    - attribute: min_value
-                      name: Min
-                - type: section
-                - entity: sensor.weather_home_tempmax_lastyr
-                  name: Home - Max Temp (Last 365 Days)
-                  type: custom:multiple-entity-row
-                  show_state: false
-                  entities:
-                    - attribute: max
-                      name: Max
-                    - attribute: min
-                      name: Min
-                    - attribute: avg
-                      name: Avg
-                  secondary_info:
-                    attribute: datestring
-                    name:
-                - entity: sensor.weather_home_tempmin_lastyr
-                  name: Home - Min Temp (Last 365 Days)
-                  type: custom:multiple-entity-row
-                  show_state: false
-                  entities:
-                    - attribute: max
-                      name: Max
-                    - attribute: min
-                      name: Min
-                    - attribute: avg
-                      name: Avg
-                  secondary_info:
-                    attribute: datestring
-                    name:
-    - type: vertical-stack
-      cards:
-        - type: custom:auto-entities
-          card:
-            type: entities
-            title: Rain
-            style: |
-              ha-card {
-                background-color: var(--dwains-theme-primary);
-                padding-bottom: 10px;
-              }
-              .card-header {
-                padding: 5px 16px;
-                font-size: 18px;
-                font-weight: 700 !important;
-              }
-              .card-content div {
-                  margin: 0 !important;
-              }
-              #states {
-                padding-top: 0px !important;
-                padding-bottom: 0px !important;
-              }
-              .secondary {
-                color: darkgray !important;
-                margin-left: 2px !important;
-              }
-          sort:
-            method: name
-          filter:
-            include:
-              - { entity_id: sensor.weather_outside_rain* }
+        - !include partial_temperature.yaml
+        - !include partial_rainfall.yaml
+        - !include partial_extreme.yaml

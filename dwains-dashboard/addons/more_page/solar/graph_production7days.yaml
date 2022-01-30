@@ -61,19 +61,19 @@ card:
           text: "kW"
     stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
   series:
-    - entity: sensor.sungrowsolar_total_pv_power_kw
+    - entity: sensor.sungrowsolar_solar_production
       name: Solar Generation
       stroke_width: 2
       group_by:
         func: max
         duration: 15min
-    - entity: sensor.sungrowsolar_power_meter_kw
+    - entity: sensor.sungrowsolar_load_power
       name: House Consumption
       group_by:
         func: max
         duration: 15min
-    - entity: sensor.sungrowsolar_export_power_kw
-      name: Grid
+    - entity: sensor.sungrowsolar_return_to_grid
+      name: To Grid
       group_by:
         func: max
         duration: 15min

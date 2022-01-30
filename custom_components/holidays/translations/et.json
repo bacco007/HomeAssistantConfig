@@ -1,0 +1,51 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Holidays",
+                "description": "Sisesta nduri andmed. Rohkem infot leiab https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Kuvatav nimi",
+                    "icon_normal": "Ikoon (mdi:trash-can) - valikuline",
+                    "icon_tomorrow": "Homme on prügivedu ikoon (mdi:delete-restore) - valikuline",
+                    "icon_today": "Täna on prügivedu ikoon (mdi:delete-circle) - valikuline",
+                    "country": "Liiguta prügivedu pühade tõttu üks päev edasi (valikuline)",
+                    "holiday_pop_named": "Eira pühi (nimekiri) - valikuline",
+                    "prov": "Kohalikud pühad (valikuline)",
+                    "state": "Riiklikud pühad (valikuline)",
+                    "observed": "Ise määratud pühad (valikuline)"
+                }
+            }
+        },
+        "error": {
+            "value": "Vigane sisestus, palun kontrolli!",
+            "icon": "Ikoonid tuleb esitada kujul 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Lubatud on ainult üks prügiveo olemi sidumine."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Holidays",
+                "description": "Sisesta nduri andmed. Rohkem infot leiab https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Ikoon (mdi:trash-can) - valikuline",
+                    "icon_tomorrow": "Homme on prügivedu ikoon (mdi:delete-restore) - valikuline",
+                    "icon_today": "Täna on prügivedu ikoon (mdi:delete-circle) - valikuline",
+                    "country": "Liiguta prügivedu pühade tõttu üks päev edasi (valikuline)",
+                    "holiday_pop_named": "Eira pühi (nimekiri) - valikuline",
+                    "prov": "Kohalikud pühad (valikuline)",
+                    "state": "Riiklikud pühad (valikuline)",
+                    "observed": "Ise määratud pühad (valikuline)"
+                }
+            }
+        },
+        "error": {
+            "value": "Vigane sisestus, palun kontrolli!",
+            "icon": "Ikoonid tuleb esitada kujul 'prefix:name'."
+        }
+    }
+
+}

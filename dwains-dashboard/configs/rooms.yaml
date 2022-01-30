@@ -20,8 +20,8 @@ rooms:
   - name: Lounge
     icon: mdi:television-classic
     media_player: group.lounge_media
-    temperature: sensor.weather_inside_temperature
-    humidity: sensor.weather_inside_humidity
+    temperature: sensor.zha_lounge_weather_temperature
+    humidity: sensor.zha_lounge_weather_humidity
     page_entities:
       entities:
         - entity: sensor.lounge_iaq_index
@@ -47,10 +47,12 @@ rooms:
         data: !include "../addons/rooms/office/sonos/data.yaml"
   - name: Spare Room
     icon: mdi:bed-empty
+    temperature: sensor.spare_temperature_temperature
+    humidity: sensor.spare_temperature_humidity
+    pressure: sensor.spare_temperature_pressure
     # light: light.zha_spare_light
   - name: Laundry
     icon: mdi:washing-machine
-    # temperature: sensor.zha_laundry_temperature
     # motion: binary_sensor.zha_laundry_motion
     # door: binary_sensor.zha_laundry_door
     addons:
@@ -68,8 +70,8 @@ rooms:
 
   - name: Outside
     icon: mdi:home-export-outline
-    temperature: sensor.weather_outside_temperature
-    humidity: sensor.weather_outside_humidity
+    temperature: sensor.tempest_st_00056115_temperature
+    humidity: sensor.tempest_st_00056115_humidity
     door: binary_sensor.gate
     addons:
       - name: Weather Station
@@ -77,7 +79,7 @@ rooms:
         path: "dwains-dashboard/addons/more_page/weatherstation/page.yaml"
         button_path: "dwains-dashboard/addons/rooms/button.yaml"
         data:
-          entity: sensor.weather_outside_temperature
+          entity: sensor.tempest_st_00056115_temperature
 
     # page_entities:
     #   entities:
@@ -105,14 +107,14 @@ rooms:
     # device: group.serverrack_device
     page_entities:
       entities:
-      - entity: sensor.tbsh01_package_updates
-      - entity: sensor.tbsh01_security_updates
-      - entity: sensor.tbsh03_package_updates
-      - entity: sensor.tbsh03_security_updates
-      - entity: sensor.vmtbsh01_package_updates
-      - entity: sensor.vmtbsh01_security_updates
-      - entity: sensor.vmtbsh02_package_updates
-      - entity: sensor.vmtbsh02_security_updates
+        - entity: sensor.tbsh01_package_updates
+        - entity: sensor.tbsh01_security_updates
+        - entity: sensor.tbsh03_package_updates
+        - entity: sensor.tbsh03_security_updates
+        - entity: sensor.vmtbsh01_package_updates
+        - entity: sensor.vmtbsh01_security_updates
+        - entity: sensor.vmtbsh02_package_updates
+        - entity: sensor.vmtbsh02_security_updates
     addons:
       - name: piServ
         icon: mdi:server

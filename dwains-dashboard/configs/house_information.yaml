@@ -5,7 +5,7 @@ house_information:
     - entity: sensor.binday_next
       icon_on: mdi:truck-delivery
       icon_off: mdi:truck-delivery
-    - entity: sensor.weather_outside_rain_day
+    - entity: sensor.tempest_st_00056115_rain_today
       icon_on: mdi:weather-rainy
       icon_off: mdi:weather-rainy
     - entity: sensor.tamworth_airport_rain_since_9am

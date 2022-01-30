@@ -1,0 +1,51 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Hodays",
+                "description": "Wprowadź nazwę dla sensora i zkonfiguruj jego parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Przyjazna nazwa",
+                    "icon_normal": "Ikona (mdi:trash-can) - opcjonalnie",
+                    "icon_tomorrow": "Ikona wywozu jutro (mdi:delete-restore) - opcjonalnie",
+                    "icon_today": "Ikona wywozu dzisiaj (mdi:delete-circle)- opcjonalnie",
+                    "country": "Przesuń świąteczne dni na kolejny dzień (opcjonalnie)",
+                    "holiday_pop_named": "Ignore holidays (list) - optional",
+                    "prov": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays",
+                    "state": "Święta państwowe - stan (opcjonalnie)",
+                    "observed": "Święta państwowe - przesunięte obchody (opcjonalnie)"
+                }
+            }
+        },
+        "error": {
+            "value": "Niewłaściwa wartość. Sprawdź swoje dane wejściowe!",
+            "icon": "Ikony powinny być określone w formacie 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Tylko jedna konfiguracja dla wywozu śmieci jest dozwolona."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Wywóz Śmieci - Częstotliwośc wywozu",
+                "description": "Zmień parametry sensora. Więcej informacji tutaj https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Ikona (mdi:trash-can) - opcjonalnie",
+                    "icon_tomorrow": "Ikona wywozu jutro (mdi:delete-restore) - opcjonalnie",
+                    "icon_today": "Ikona wywozu dzisiaj (mdi:delete-circle)- opcjonalnie",
+                    "country": "Przesuń państwowe święta na kolejny dzień (opcjonalnie)",
+                    "holiday_pop_named": "Ignore holidays (list) - optional",
+                    "prov": "Przesuń święta na kolejny dzień (opcjonalnie)",
+                    "state": "Święta państwowe - stan (opcjonalnie)",
+                    "observed": "Święta państwowe - przesunięte obchody (opcjonalnie)"
+                }
+            }
+        },
+        "error": {
+            "value": "Niewłaściwa wartość. Sprawdź swoje dane wejściowe!",
+            "icon": "Ikony powinny być określone w formacie 'prefix:name'."
+        }
+    }
+
+}

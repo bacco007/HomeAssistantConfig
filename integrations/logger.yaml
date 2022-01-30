@@ -2,8 +2,8 @@
 # https://www.home-assistant.io/integrations/logger/
 logger:
   default: warn
+  # logs:
+  # custom_components.opennem: debug
   filters:
     homeassistant.components.template.template_entity:
       - "Template loop detected while processing event"
-  # logs:
-  # custom_components.opennem: debug

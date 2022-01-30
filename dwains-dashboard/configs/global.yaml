@@ -14,8 +14,8 @@ global:
   show_covers: closed #New since 2.0
   language: en
   weather: weather.east_tamworth # Configure a weather entity!
-  outside_temperature: sensor.weather_outside_temperature # Configure a sensor here!
-  outside_humidity: sensor.weather_outside_humidity # Configure a sensor here!
+  outside_temperature: sensor.tempest_st_00056115_temperature # Configure a sensor here!
+  outside_humidity: sensor.tempest_st_00056115_humidity # Configure a sensor here!
   # alarm: alarm_control_panel.alarm_system #Alarm panel entity
-  inside_temperature: sensor.weather_inside_temperature #Can be climate. or sensor. entity
+  inside_temperature: sensor.zha_lounge_weather_temperature #Can be climate. or sensor. entity
   favorites_homepage: "true"

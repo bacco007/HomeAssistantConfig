@@ -84,11 +84,11 @@ card:
       func: last
       duration: 5min
   series:
-    - entity: sensor.sungrowsolar_daily_power_yield
+    - entity: sensor.sungrowsolar_daily_power_yields
       name: Solar Generation
-    - entity: sensor.sungrowsolar_daily_energy_consumption
+    - entity: sensor.sungrowsolar_daily_direct_energy_consumption
       name: Solar to House
-    - entity: sensor.sungrowsolar_calculated_solar_feed_in
+    - entity: sensor.sungrowsolar_daily_export_energy
       name: Solar to Grid
-    - entity: sensor.sungrowsolar_daily_purchased_energy
+    - entity: sensor.sungrowsolar_daily_import_energy
       name: Grid to House

@@ -2,7 +2,6 @@ type: "custom:config-template-card"
 entities:
   - sensor.sunrise
   - sensor.sunset
-  - sensor.weather_outside_rain_day
 card:
   type: custom:apexcharts-card
   header:
@@ -59,7 +58,7 @@ card:
         title:
           text: "Rainfall (mm)"
   series:
-    - entity: sensor.weather_outside_rain_day
+    - entity: sensor.tempest_st_00056115_rain_today
       name: Rainfall
       type: line
       # color: "da1e28"
@@ -69,7 +68,7 @@ card:
       group_by:
         func: last
         duration: 5min
-    - entity: sensor.weather_outside_rain_day
+    - entity: sensor.tempest_st_00056115_rain_today
       type: line
       color: "#121619"
       name: Change
@@ -78,7 +77,7 @@ card:
       group_by:
         func: delta
         duration: 30min
-    - entity: sensor.weather_outside_rain_day
+    - entity: sensor.tempest_st_00056115_rain_today
       type: line
       name: Yesterday
       stroke_width: 1.8
