@@ -14,7 +14,7 @@ action:
       database: homeassistant
       query: >-
         SELECT min("value") FROM "homeassistant"."autogen"."°C" WHERE time >=
-        now() - 30d AND "entity_id"='weather_outside_temperature' GROUP BY
+        now() - 30d AND ("entity_id"='weather_outside_temperature' or "entity_id" = 'tempest_st_00056115_temperature') GROUP BY
         time(1d) FILL(null) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: min

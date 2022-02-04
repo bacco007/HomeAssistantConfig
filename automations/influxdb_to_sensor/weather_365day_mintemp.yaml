@@ -15,7 +15,7 @@ action:
       query: >-
         SELECT min("value") FROM "homeassistant"."autogen"."°C"
         WHERE time >= now() - 365d
-        AND ("entity_id"='netatmo_brisbane_street_outdoor_temperature' or "entity_id"='weather_outside_temperature')
+        AND ("entity_id"='netatmo_brisbane_street_outdoor_temperature' or "entity_id"='weather_outside_temperature' or "entity_id" = 'tempest_st_00056115_temperature')
         GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
       key_field_name: time
       value_field_name: min
