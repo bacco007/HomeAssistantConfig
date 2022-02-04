@@ -114,9 +114,6 @@ sensor:
   ## Version Sensor
   ## https://www.home-assistant.io/components/sensor.version/
   #######################################################################################################################
-  - platform: version
-    source: local
-    name: HA Current Version
 
   - platform: command_line
     name: core_updates

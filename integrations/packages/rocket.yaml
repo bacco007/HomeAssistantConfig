@@ -1,4 +1,0 @@
----
-sensor:
-  - platform: launch_library
-    name: Launch Library

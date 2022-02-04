@@ -7,3 +7,13 @@ logger:
   filters:
     homeassistant.components.template.template_entity:
       - "Template loop detected while processing event"
+    homeassistant.components.media_player:
+      - "Updating spotify media_player took longer than the scheduled update interval 0:00:30"
+    homeassistant.helpers.entity:
+      - "Update of media_player.spotify_thomas_baxter is taking over 10 seconds"
+    spotipy.client:
+      - "Max Retries reached"
+    custom_components.ical:
+      - "Exception can't compare datetime.datetime to datetime.date in starts/ends"
+    homeassistant.components.waze_travel_time.sensor:
+      - "Error on retrieving data: empty response"

@@ -1,3 +1,0 @@
----
-platform: sensibo
-api_key: !secret sensibo_apikey
