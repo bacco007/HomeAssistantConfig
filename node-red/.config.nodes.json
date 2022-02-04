@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.1.6",
+        "version": "2.2.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -930,7 +930,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.1.4",
+        "version": "3.1.5",
         "local": false,
         "user": false,
         "nodes": {
@@ -1464,7 +1464,7 @@
     },
     "node-red-contrib-deconz": {
         "name": "node-red-contrib-deconz",
-        "version": "2.3.1",
+        "version": "2.3.3",
         "local": false,
         "user": false,
         "nodes": {
