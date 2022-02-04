@@ -5,7 +5,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: 0 2 * * *
+    - cron: 0 12 * * *
 
 jobs:
   yamllint:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
       - name: 🚀 Run yamllint
         uses: frenck/action-yamllint@v1.1.2
   remarklint:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2.4.0
       - name: 🚀 Run Remark Lint
         uses: "docker://pipelinecomponents/remark-lint:latest"
         continue-on-error: true
@@ -31,14 +31,14 @@ jobs:
   home_assistant:
     name: "🏠 Home Assistant Core ${{ matrix.version }} Configuration Check"
     runs-on: ubuntu-latest
-    needs: [yamllint, remarklint]
+    needs: [yamllint]
     strategy:
       fail-fast: false
       matrix:
         version: ["stable", "beta", "dev"]
     steps:
       - name: ⤵️  Check out configuration from GitHub
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
       - name: ➕  Create dummy files
         run: |
           touch home-assistant.log
