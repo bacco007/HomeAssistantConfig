@@ -96,7 +96,10 @@ class Holidays(RestoreEntity):
                 and not self._holiday_observed
             ):
                 kwargs["observed"] = self._holiday_observed  # type: ignore
-            hol = holidays.CountryHoliday(self._country, **kwargs)  # type: ignore
+            if self._country == "SE":
+                hol = holidays.Sweden(include_sundays=False, **kwargs)  # type: ignore
+            else:
+                hol = holidays.CountryHoliday(self._country, **kwargs)  # type: ignore
             if self._holiday_pop_named is not None:
                 for pop in self._holiday_pop_named:
                     try:
@@ -104,7 +107,7 @@ class Holidays(RestoreEntity):
                     except Exception as err:
                         _LOGGER.error("(%s) Holiday not removed (%s)", self._name, err)
             try:
-                for holiday_date, holiday_name in hol.items():
+                for holiday_date, holiday_name in sorted(hol.items()):
                     self._holidays.append(holiday_date)
                     self._holiday_names[f"{holiday_date}"] = holiday_name
                     log += f"\n  {holiday_date}: {holiday_name}"
