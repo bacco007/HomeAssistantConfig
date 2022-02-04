@@ -214,6 +214,10 @@ async def async_get_state(config) -> dict:
                     ''.join(('#', event["competitions"][0]["competitors"][team_index]["team"]["color"])),
                     ''.join(('#', event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]))]
                 values["team_score"] = event["competitions"][0]["competitors"][team_index]["score"]
+                values["team_period_1"] = 0
+                values["team_period_2"] = 0
+                values["team_period_3"] = 0
+                values["team_period_4"] = 0
                 values["opponent_abbr"] = event["competitions"][0]["competitors"][oppo_index]["team"]["abbreviation"]
                 values["opponent_id"] = event["competitions"][0]["competitors"][oppo_index]["team"]["id"]
                 values["opponent_name"] = event["competitions"][0]["competitors"][oppo_index]["team"]["shortDisplayName"]
@@ -224,22 +228,17 @@ async def async_get_state(config) -> dict:
                     ''.join(('#', event["competitions"][0]["competitors"][oppo_index]["team"]["color"])),
                     ''.join(('#', event["competitions"][0]["competitors"][oppo_index]["team"]["alternateColor"]))]
                 values["opponent_score"] = event["competitions"][0]["competitors"][oppo_index]["score"]
-
+                values["opponent_period_1"] = 0
+                values["opponent_period_2"] = 0
+                values["opponent_period_3"] = 0
+                values["opponent_period_4"] = 0
                 if event["competitions"][0]["status"]["type"]["state"].lower() in ['in']:
-                    values["team_period_1"] = 0
-                    values["team_period_2"] = 0
-                    values["team_period_3"] = 0
-                    values["team_period_4"] = 0
                     per = 1
                     for score in event["competitions"][0]["competitors"][team_index]["linescores"]:
                         values["team_period_%s", per] = score["value"]
                         _LOGGER.info("team_period_%s", per)
                         per = per+1
 
-                    values["opponent_period_1"] = 0
-                    values["opponent_period_2"] = 0
-                    values["opponent_period_3"] = 0
-                    values["opponent_period_4"] = 0
                     per = 1
                     for score in event["competitions"][0]["competitors"][oppo_index]["linescores"]:
                         values["opponent_period_%s", per] = score["value"]
