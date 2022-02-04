@@ -107,9 +107,6 @@ more_page:
     - name: People
       icon: mdi:account-group-outline
       path: "dwains-dashboard/addons/more_page/people/page.yaml"
-    - name: Pi-Hole
-      icon: mdi:pi-hole
-      path: "dwains-dashboard/addons/more_page/pi-hole/page.yaml"
     - name: Rainfall
       icon: mdi:water
       main_menu: "true"

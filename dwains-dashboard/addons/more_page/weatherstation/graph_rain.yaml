@@ -88,7 +88,7 @@ card:
       group_by:
         func: last
         duration: 5min
-    - entity: sensor.weather_outside_rain_day
+    - entity: sensor.tempest_st_00056115_rain_today
       type: line
       color: "#a7adba"
       name: Change
