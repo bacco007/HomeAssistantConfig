@@ -13,5 +13,6 @@ ATTRIBUTION: Final = "Data retrieved from Solcast"
 CONF_RESOURCE_ID = "resource_id"
 CONF_SSL_DISABLE = "disable_ssl_check"
 CONF_AUTO_FETCH = "disable_auto_fetching"
+CONF_CHANGE_TZ_OFFSET = "tz"
 
 CONF_SOLCAST_URL = "https://api.solcast.com.au/"

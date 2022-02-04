@@ -8,9 +8,10 @@
                 "resource_id": "Solcast rooftop id",
                 "disable_auto_fetching": "Auto fetch forecast API",
                 "disable_ssl_check": "Disable SSL check",
+                "tz": "Alter TZ offset for the Energy graph (IF NEEDED, else leave it as zero)",
                 "name": "[%key:common::config_flow::data::name%]"
+                }
             }
-        }
         }
     },
     "options": {
@@ -22,9 +23,10 @@
                 "resource_id": "Solcast rooftop id",
                 "disable_auto_fetching": "Auto fetch forecast API",
                 "disable_ssl_check": "Disable SSL check",
+                "tz": "Alter TZ offset for the Energy graph (IF NEEDED, else leave it as zero)",
                 "name": "[%key:common::config_flow::data::name%]"
+                }
             }
-        }
         }
     }
 }

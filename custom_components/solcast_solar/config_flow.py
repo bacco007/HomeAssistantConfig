@@ -11,7 +11,7 @@ from homeassistant.const import CONF_NAME, CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_RESOURCE_ID, CONF_SSL_DISABLE, DOMAIN, CONF_AUTO_FETCH
+from .const import CONF_RESOURCE_ID, CONF_SSL_DISABLE, DOMAIN, CONF_AUTO_FETCH, CONF_CHANGE_TZ_OFFSET
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -40,6 +40,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     CONF_RESOURCE_ID: user_input[CONF_RESOURCE_ID],
                     CONF_AUTO_FETCH: user_input[CONF_AUTO_FETCH],
                     CONF_SSL_DISABLE: user_input[CONF_SSL_DISABLE],
+                    CONF_CHANGE_TZ_OFFSET: user_input[CONF_CHANGE_TZ_OFFSET],
                 },
             )
 
@@ -54,6 +55,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_RESOURCE_ID, default=""): str,
                     vol.Optional(CONF_AUTO_FETCH, default=True): boolean,
                     vol.Optional(CONF_SSL_DISABLE, default=False): boolean,
+                    vol.Optional(CONF_CHANGE_TZ_OFFSET, default="0"): str,
                 }
             ),
         )
@@ -93,6 +95,10 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         CONF_SSL_DISABLE,
                         default=self.config_entry.options.get(CONF_SSL_DISABLE),
                     ): boolean,
+                    vol.Required(
+                        CONF_CHANGE_TZ_OFFSET,
+                        default=self.config_entry.options.get(CONF_CHANGE_TZ_OFFSET),
+                    ): str,
                 }
             ),
         )

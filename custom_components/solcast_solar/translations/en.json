@@ -8,7 +8,8 @@
                     "resource_id": "Solcast rooftop id",
                     "disable_auto_fetching": "Auto fetch forecast API",
                     "disable_ssl_check": "Disable SSL check",
-                    "name": "Name"
+                    "name": "Name",
+                    "tz": "Alter TZ offset for the Energy graph (IF NEEDED, else leave it as zero)"
                 },
                 "description": "Fill in the data of your solar panels."
             }
@@ -22,7 +23,8 @@
                     "resource_id": "Solcast rooftop id",
                     "disable_auto_fetching": "Auto fetch forecast API",
                     "disable_ssl_check": "Disable SSL check",
-                    "name": "Name"
+                    "name": "Name",
+                    "tz": "Alter TZ offset for the Energy graph (IF NEEDED, else leave it as zero)"
                 },
                 "description": "These values allow tweaking the Solcast Integration."
             }

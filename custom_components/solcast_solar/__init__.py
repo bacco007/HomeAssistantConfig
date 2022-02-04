@@ -19,7 +19,7 @@ from homeassistant.helpers.event import async_call_later, async_track_utc_time_c
 from homeassistant.helpers.sun import get_astral_location, get_location_astral_event_next
 from isodate import parse_datetime
 
-from .const import CONF_RESOURCE_ID, CONF_SOLCAST_URL, CONF_SSL_DISABLE,DOMAIN, CONF_AUTO_FETCH
+from .const import CONF_RESOURCE_ID, CONF_SOLCAST_URL, CONF_SSL_DISABLE,DOMAIN, CONF_AUTO_FETCH, CONF_CHANGE_TZ_OFFSET
 
 PLATFORMS = ["sensor"]
 
@@ -34,11 +34,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         resource_id = entry.options[CONF_RESOURCE_ID]
         auto_fetch = entry.options[CONF_AUTO_FETCH]
         disable_ssl = entry.options[CONF_SSL_DISABLE]
+        change_tz = entry.options[CONF_CHANGE_TZ_OFFSET]
 
         _LOGGER.debug("Setting up Solcast for rooftop id %s",resource_id)
         _LOGGER.debug("DB id %s",entry.entry_id)
 
-        rooftop_site = SolcastRooftopSite(hass, api_key, resource_id, disable_ssl,entry.entry_id,auto_fetch)
+        rooftop_site = SolcastRooftopSite(hass, api_key, resource_id, disable_ssl,entry.entry_id,auto_fetch, change_tz)
 
         hass.data.setdefault(DOMAIN, {})[entry.entry_id] = rooftop_site
 
@@ -78,12 +79,15 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
         coordinator._resource_id = entry.options[CONF_RESOURCE_ID]
         coordinator._auto_fetch = entry.options[CONF_AUTO_FETCH]
         coordinator._disable_ssl = entry.options[CONF_SSL_DISABLE]
+        coordinator._change_tz_offset = entry.options[CONF_CHANGE_TZ_OFFSET]
 
         coordinator._debugData["api_key"] = entry.options[CONF_API_KEY]
         coordinator._debugData["rooftop_id"] = entry.options[CONF_RESOURCE_ID]
         coordinator._debugData["disable_ssl"] = entry.options[CONF_SSL_DISABLE]
+        coordinator._debugData["change_tz_offset"] = entry.options[CONF_CHANGE_TZ_OFFSET]
         coordinator._debugData["auto_fetch_enabled"] = entry.options[CONF_AUTO_FETCH]
         coordinator._debugData["auto_fetch_timer_object"] = entry.options[CONF_API_KEY]
+
 
         if not entry.options[CONF_AUTO_FETCH]:
             if coordinator._auto_fetch_tracker:
@@ -181,7 +185,7 @@ class SolcastRooftopSite(SolcastAPI):
         SensorType.last_updated: {}
     }
 
-    def __init__(self, hass, api_key, resource_id, disable_ssl, entryId, auto_fetch):
+    def __init__(self, hass, api_key, resource_id, disable_ssl, entryId, auto_fetch, change_tz_offset):
         """Initialize solcast rooftop site."""
 
         super().__init__(api_key)
@@ -189,6 +193,7 @@ class SolcastRooftopSite(SolcastAPI):
         self._entry_id = entryId
         self._resource_id = resource_id
         self._disable_ssl = disable_ssl
+        self._change_tz_offset = change_tz_offset
         self._forecast_entity_id = None
         self._update_listeners = []
         self._forecasts = self.get_stored_forecast_data()
@@ -200,6 +205,7 @@ class SolcastRooftopSite(SolcastAPI):
         self._debugData = {"api_key": api_key, 
                             "rooftop_id": resource_id,
                             "disable_ssl": disable_ssl,
+                            "change_tz_offset": change_tz_offset,
                             "auto_fetch_enabled": auto_fetch,
                             "auto_fetch_start_hour": self._starthour,
                             "auto_fetch_end_hour": 18,
@@ -651,8 +657,11 @@ class SolcastRooftopSite(SolcastAPI):
                 watts = float(forecast["pv_estimate"])
                 if not (watts == 0 and wattsbefore == 0):
                     if wattsbefore == 0:
-                        lastforecast["period_end"] = parse_datetime(lastforecast["period_end"]).astimezone()
-                        f.append(lastforecast)
+                        try:
+                            lastforecast["period_end"] = parse_datetime(lastforecast["period_end"]).astimezone()
+                            f.append(lastforecast)
+                        except Exception:
+                            pass
 
                     forecast["period_end"] = parse_datetime(forecast["period_end"]).astimezone()
                     forecast["pv_estimate"] = round(float(forecast["pv_estimate"])*0.5,6)
@@ -678,6 +687,18 @@ class SolcastRooftopSite(SolcastAPI):
                 )
 
                 event_s: list[int] = [event.event_data for event in events]
+
+                tzoffset = 0
+                try:
+                    tzoffset = float(self._change_tz_offset)
+                    if tzoffset > 14.0 or tzoffset < -12.0:
+                        _LOGGER.error("Invalid offset tz value in config. Must be from -12.0 to 14.0")
+                        return None
+                    else:
+                        tzoffset = (60 * tzoffset) + 30
+                except:
+                    _LOGGER.error("Invalid offset tz value in config. Must be from -12.0 to 14.0")
+                    return None
                 
                 if event_s:
                     beforewatts = 0
@@ -686,7 +707,7 @@ class SolcastRooftopSite(SolcastAPI):
                         item = json.loads(item)
                         energy = float(item["pv_estimate"]*1000) #* 0.5
                         if energy > 0 or beforewatts > 0:
-                            timestamp = parse_datetime(item['period_end']) - timedelta(minutes=30)
+                            timestamp = parse_datetime(item['period_end']) - timedelta(minutes=tzoffset)
                             
                             #wh_hours
                             d = datetime(timestamp.year, timestamp.month, timestamp.day, timestamp.hour , 0, 0)
