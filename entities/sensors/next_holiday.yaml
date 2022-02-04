@@ -1,5 +1,0 @@
----
-platform: next_holiday
-sources:
-  - country: "AUS"
-    state: "NSW"
