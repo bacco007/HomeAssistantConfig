@@ -59,33 +59,3 @@ binary_sensor:
 # http://192.168.1.62:8123/api/supervisor/info
 # http://192.168.1.62:8123/api/hassio/snapshots
 # http://192.168.1.62:8123/api/hassio/info
-
-rest:
-  - resource: https://version.home-assistant.io/beta.json
-    scan_interval: 600
-    sensor:
-      - name: ha_version_beta
-        json_attributes:
-          - supervisor
-          - homeassistant
-          - hassos
-          - cli
-          - dns
-          - audio
-          - multicast
-          - observer
-        value_template: "OK"
-  - resource: https://version.home-assistant.io/dev.json
-    scan_interval: 600
-    sensor:
-      - name: ha_version_dev
-        json_attributes:
-          - supervisor
-          - homeassistant
-          - hassos
-          - cli
-          - dns
-          - audio
-          - multicast
-          - observer
-        value_template: "OK"
