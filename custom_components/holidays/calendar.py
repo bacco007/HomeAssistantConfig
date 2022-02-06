@@ -3,28 +3,11 @@ import logging
 from datetime import date, datetime, timedelta
 from typing import Optional
 
-import holidays
 import homeassistant.util.dt as dt_util
 from homeassistant.const import ATTR_HIDDEN, CONF_ENTITIES, CONF_NAME
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import (
-    ATTR_HOLIDAYS,
-    ATTR_LAST_UPDATED,
-    ATTR_NEXT_DATE,
-    ATTR_NEXT_HOLIDAY,
-    CALENDAR_PLATFORM,
-    CONF_COUNTRY,
-    CONF_HOLIDAY_POP_NAMED,
-    CONF_ICON_NORMAL,
-    CONF_ICON_TODAY,
-    CONF_ICON_TOMORROW,
-    CONF_OBSERVED,
-    CONF_PROV,
-    CONF_STATE,
-    DEVICE_CLASS,
-    DOMAIN,
-)
+from . import const, create_holidays
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,27 +17,33 @@ THROTTLE_INTERVAL = timedelta(seconds=60)
 
 async def async_setup_platform(hass, _, async_add_entities, discovery_info=None):
     """Create garbage collection entities defined in YAML and add them to HA."""
-    async_add_entities([Holidays(hass, discovery_info)], True)
+    # async_add_entities([Holidays(hass, discovery_info)], True)
+    return
 
 
 async def async_setup_entry(hass, config_entry, async_add_devices):
     """Create garbage collection entities defined in config_flow and add them to HA."""
-    async_add_devices([Holidays(hass, config_entry.data, config_entry.title)], True)
+    async_add_devices([Holidays(config_entry)], True)
 
 
 class Holidays(RestoreEntity):
     """Holidays Sensor class."""
 
-    def __init__(self, hass, config, title=None):
+    def __init__(self, config_entry):
         """Read configuration and initialise class variables."""
-        self.config = config
-        self._name = title if title is not None else config.get(CONF_NAME)
+        config = config_entry.data
+        self.config_entry = config_entry
+        self._name = (
+            config_entry.title
+            if config_entry.title is not None
+            else config.get(CONF_NAME)
+        )
         self._hidden = config.get(ATTR_HIDDEN, False)
-        self._country = config.get(CONF_COUNTRY)
-        self._holiday_pop_named = config.get(CONF_HOLIDAY_POP_NAMED)
-        self._holiday_prov = config.get(CONF_PROV)
-        self._holiday_state = config.get(CONF_STATE)
-        self._holiday_observed = config.get(CONF_OBSERVED, True)
+        self._country = config.get(const.CONF_COUNTRY, "")
+        self._holiday_pop_named = config.get(const.CONF_HOLIDAY_POP_NAMED)
+        self._holiday_prov = config.get(const.CONF_PROV, "")
+        self._holiday_state = config.get(const.CONF_STATE, "")
+        self._holiday_observed = config.get(const.CONF_OBSERVED, True)
         self._holidays = []
         self._holiday_names = {}
         self._event = None
@@ -63,9 +52,9 @@ class Holidays(RestoreEntity):
         self._last_updated = None
         self._entities = config.get(CONF_ENTITIES)
         self._date_format = "%d-%b-%Y"
-        self._icon_normal = config.get(CONF_ICON_NORMAL)
-        self._icon_today = config.get(CONF_ICON_TODAY)
-        self._icon_tomorrow = config.get(CONF_ICON_TOMORROW)
+        self._icon_normal = config.get(const.CONF_ICON_NORMAL)
+        self._icon_today = config.get(const.CONF_ICON_TODAY)
+        self._icon_tomorrow = config.get(const.CONF_ICON_TOMORROW)
         self._icon = self._icon_normal
 
     async def _async_load_holidays(self) -> None:
@@ -85,21 +74,13 @@ class Holidays(RestoreEntity):
                 self._holiday_state,
                 self._holiday_observed,
             )
-            kwargs = {"years": years}
-            if self._holiday_state is not None and self._holiday_state != "":
-                kwargs["state"] = self._holiday_state
-            if self._holiday_prov is not None and self._holiday_prov != "":
-                kwargs["prov"] = self._holiday_prov
-            if (
-                self._holiday_observed is not None
-                and isinstance(self._holiday_observed, bool)
-                and not self._holiday_observed
-            ):
-                kwargs["observed"] = self._holiday_observed  # type: ignore
-            if self._country == "SE":
-                hol = holidays.Sweden(include_sundays=False, **kwargs)  # type: ignore
-            else:
-                hol = holidays.CountryHoliday(self._country, **kwargs)  # type: ignore
+            hol = create_holidays(
+                years,
+                self._country,
+                self._holiday_state,
+                self._holiday_prov,
+                self._holiday_observed,
+            )
             if self._holiday_pop_named is not None:
                 for pop in self._holiday_pop_named:
                     try:
@@ -122,29 +103,28 @@ class Holidays(RestoreEntity):
     async def async_added_to_hass(self):
         """When calendar is added to hassio, add it to calendar."""
         await super().async_added_to_hass()
-        if DOMAIN not in self.hass.data:
-            self.hass.data[DOMAIN] = {}
-        if CALENDAR_PLATFORM not in self.hass.data[DOMAIN]:
-            self.hass.data[DOMAIN][CALENDAR_PLATFORM] = {}
-        self.hass.data[DOMAIN][CALENDAR_PLATFORM][self.entity_id] = self
-        # state = await self.async_get_last_state()
+        if const.DOMAIN not in self.hass.data:
+            self.hass.data[const.DOMAIN] = {}
+        if const.CALENDAR_PLATFORM not in self.hass.data[const.DOMAIN]:
+            self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM] = {}
+        self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM][self.entity_id] = self
 
     async def async_will_remove_from_hass(self):
         """When calendar is added to hassio, remove it."""
         await super().async_will_remove_from_hass()
-        del self.hass.data[DOMAIN][CALENDAR_PLATFORM][self.entity_id]
+        del self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM][self.entity_id]
 
     @property
     def unique_id(self):
         """Return a unique ID to use for this calendar."""
-        return self.config.get("unique_id", None)
+        return self.config_entry.data.get("unique_id", None)
 
     @property
     def device_info(self):
         """Return device info."""
         return {
-            "identifiers": {(DOMAIN, self.config.get("unique_id", None))},
-            "name": self.config.get("name"),
+            "identifiers": {(const.DOMAIN, self.unique_id, None)},
+            "name": self.name,
             "manufacturer": "bruxy70",
         }
 
@@ -177,32 +157,37 @@ class Holidays(RestoreEntity):
         """Return the state attributes."""
         res = {}
         if self._next_date is None:
-            res[ATTR_NEXT_DATE] = None
-            res[ATTR_NEXT_HOLIDAY] = None
+            res[const.ATTR_NEXT_DATE] = None
+            res[const.ATTR_NEXT_HOLIDAY] = None
         else:
-            res[ATTR_NEXT_DATE] = datetime(
+            res[const.ATTR_NEXT_DATE] = datetime(
                 self._next_date.year, self._next_date.month, self._next_date.day
             ).astimezone()
-            res[ATTR_NEXT_HOLIDAY] = self._next_holiday
-        res[ATTR_LAST_UPDATED] = self._last_updated
+            res[const.ATTR_NEXT_HOLIDAY] = self._next_holiday
+        res[const.ATTR_LAST_UPDATED] = self._last_updated
         holidays = ""
         for key, value in self._holiday_names.items():
             holidays += f"\n  {key}: {value}"
-        res[ATTR_HOLIDAYS] = holidays
+        res[const.ATTR_HOLIDAYS] = holidays
         return res
+
+    @property
+    def holidays(self):
+        """Return the dictionary of holidays."""
+        return self._holiday_names
 
     @property
     def device_class(self):
         """Return the class of the calendar."""
-        return DEVICE_CLASS
+        return const.DEVICE_CLASS
 
     def __repr__(self):
         """Return main calendar parameters."""
         return (
-            f"Holidays[ name: {self._name}, "
+            f"Holidays[name: {self.name}, "
             f"entity_id: {self.entity_id}, "
-            f"state: {self._state}\n"
-            f"config: {self.config}]"
+            f"state: {self.state}"
+            f"attributes: {self.extra_state_attributes}]"
         )
 
     async def async_get_events(self, _, start_datetime, end_datetime):

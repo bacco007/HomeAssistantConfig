@@ -2,18 +2,24 @@
     "config": {
         "step": {
             "user": {
-                "title": "Holidays",
+                "title": "Holidays (1/2)",
                 "description": "Ingrese el nombre del sensor y configure los parámetros del sensor. Más información en https://github.com/bruxy70/Holidays",
                 "data": {
                     "name": "Nombre amigable",
-                    "icon_normal": "Icono (mdi:trash-can)",
-                    "icon_tomorrow": "Icono de recoleccion para mañana (mdi:delete-restore)",
-                    "icon_today": "Icono de recoleccion para hoy (mdi:delete-circle)",
+                    "icon_normal": "Icono (mdi:calendar-blank)",
+                    "icon_tomorrow": "Icono de recoleccion para mañana (mdi:calendar-arrow-right)",
+                    "icon_today": "Icono de recoleccion para hoy (mdi:calendar-check)",
                     "country": "Mover vacaciones al día siguiente (opcional)",
-                    "holiday_pop_named": "Ignore holidays (list) - optional",
                     "prov": "Días festivos - prov (opcional)",
                     "state": "Días festivos - estado (opcional)",
                     "observed": "Días festivos - observado (opcional)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Más información en https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignore holidays (list) - optional"
                 }
             }
         },
@@ -28,17 +34,23 @@
     "options": {
         "step": {
             "init": {
-                "title": "Holidays",
-                "description": "Cambiar los parámetros del sensor. Más información en https://github.com/bruxy70/Holidays",
+                "title": "Holidays (1/2)",
+                "description": "Ingrese el nombre del sensor y configure los parámetros del sensor. Más información en https://github.com/bruxy70/Holidays",
                 "data": {
-                    "icon_normal": "Icono (mdi:trash-can)",
-                    "icon_tomorrow": "Icono de recoleccion para mañana (mdi:delete-restore)",
-                    "icon_today": "Icono de recoleccion para hoy (mdi:delete-circle)",
+                    "icon_normal": "Icono (mdi:calendar-blank)",
+                    "icon_tomorrow": "Icono de recoleccion para mañana (mdi:calendar-arrow-right)",
+                    "icon_today": "Icono de recoleccion para hoy (mdi:calendar-check)",
                     "country": "Mover vacaciones al día siguiente (opcional)",
-                    "holiday_pop_named": "Ignore holidays (list) - optional",
                     "prov": "Días festivos - prov (opcional)",
                     "state": "Días festivos - estado (opcional)",
                     "observed": "Días festivos - observado (opcional)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Más información en https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignore holidays (list) - optional"
                 }
             }
         },

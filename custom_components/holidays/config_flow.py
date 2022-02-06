@@ -1,89 +1,121 @@
 """Adds config flow for GarbageCollection."""
-import logging
 import uuid
+from collections import OrderedDict
 from typing import Dict
 
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 
-from . import config_definition
-from .const import (
-    CONF_HOLIDAY_POP_NAMED,
-    CONF_ICON_NORMAL,
-    CONF_ICON_TODAY,
-    CONF_ICON_TOMORROW,
-    DOMAIN,
-)
-
-_LOGGER = logging.getLogger(__name__)
+from . import const, create_holidays
 
 
-class holidays_shared:
+class HolidaysShared:
     """Store configuration for both YAML and config_flow."""
 
-    def __init__(self, unique_id):
+    def __init__(self, data):
         """Create class attributes and set initial values."""
-        self._data = {}
-        self._data["unique_id"] = unique_id
+        self._data = data.copy()
         self.name = None
         self.errors = {}
         self.data_schema = {}
+        self._defaults = {
+            const.CONF_ICON_NORMAL: const.DEFAULT_ICON_NORMAL,
+            const.CONF_ICON_TODAY: const.DEFAULT_ICON_TODAY,
+            const.CONF_ICON_TOMORROW: const.DEFAULT_ICON_TOMORROW,
+            const.CONF_OBSERVED: True,
+        }
 
-    def update_data(self, user_input: Dict, step: int):
+    def update_data(self, user_input: Dict):
         """Remove empty fields, and fields that should not be stored in the config."""
         self._data.update(user_input)
-        items = {
-            key: value
-            for (key, value) in config_definition.options.items()
-            if ("step" in value and value["step"] == step)
-        }
-        for key, value in items.items():
-            if key in self._data and (key not in user_input or user_input[key] == ""):
+        for key, value in user_input.items():
+            if value == "":
                 del self._data[key]
         if CONF_NAME in self._data:
             self.name = self._data[CONF_NAME]
             del self._data[CONF_NAME]
 
-    def step1_user_init(self, user_input: Dict, defaults=None):
+    def required(self, key, options):
+        """Return vol.Required."""
+        if isinstance(options, dict) and key in options:
+            suggested_value = options[key]
+        elif key in self._data:
+            suggested_value = self._data[key]
+        elif key in self._defaults:
+            suggested_value = self._defaults[key]
+        else:
+            return vol.Required(key)
+        return vol.Required(key, description={"suggested_value": suggested_value})
+
+    def optional(self, key, options):
+        """Return vol.Optional."""
+        if isinstance(options, dict) and key in options:
+            suggested_value = options[key]
+        elif key in self._data:
+            suggested_value = self._data[key]
+        elif key in self._defaults:
+            suggested_value = self._defaults[key]
+        else:
+            return vol.Optional(key)
+        return vol.Optional(key, description={"suggested_value": suggested_value})
+
+    def step1_user_init(self, user_input: Dict, options=None):
         """User init."""
         self.errors = {}
         if user_input is not None:
-            validation = config_definition.compile_schema(step=1)
-            # Name is not used in OptionsFlow
-            if defaults is not None and CONF_NAME in validation:
-                del validation[CONF_NAME]
-            if CONF_HOLIDAY_POP_NAMED in user_input:
-                user_input[CONF_HOLIDAY_POP_NAMED] = string_to_list(
-                    user_input[CONF_HOLIDAY_POP_NAMED]
-                )
             try:
-                _ = vol.Schema(validation)(user_input)
-            except vol.Invalid as exception:
-                error = str(exception)
-                if (
-                    CONF_ICON_NORMAL in error
-                    or CONF_ICON_TODAY in error
-                    or CONF_ICON_TOMORROW in error
-                ):
-                    self.errors["base"] = "icon"
-                else:
-                    _LOGGER.error(f"Unknown exception: {exception}")
-                    self.errors["base"] = "value"
-                config_definition.set_defaults(1, user_input)
+                cv.icon(
+                    user_input.get(const.CONF_ICON_NORMAL, const.DEFAULT_ICON_NORMAL)
+                )
+                cv.icon(user_input.get(const.CONF_ICON_TODAY, const.DEFAULT_ICON_TODAY))
+                cv.icon(
+                    user_input.get(
+                        const.CONF_ICON_TOMORROW, const.DEFAULT_ICON_TOMORROW
+                    )
+                )
+            except vol.Invalid:
+                self.errors["base"] = "icon"
             if self.errors == {}:
-                # Valid input - go to the next step!
-                self.update_data(user_input, 1)
+                self.update_data(user_input)
                 return True
-        elif defaults is not None:
-            config_definition.reset_defaults()
-            config_definition.set_defaults(1, defaults)
-            config_definition.join_list(CONF_HOLIDAY_POP_NAMED)
-        self.data_schema = config_definition.compile_config_flow(step=1)
-        # Do not show name for Options_Flow. The name cannot be changed here
-        if defaults is not None and CONF_NAME in self.data_schema:
-            del self.data_schema[CONF_NAME]
+        self.data_schema = OrderedDict()
+        if not options:
+            self.data_schema[self.required(CONF_NAME, user_input)] = str
+        self.data_schema[self.optional(const.CONF_ICON_NORMAL, user_input)] = str
+        self.data_schema[self.optional(const.CONF_ICON_TODAY, user_input)] = str
+        self.data_schema[self.optional(const.CONF_ICON_TOMORROW, user_input)] = str
+        self.data_schema[self.required(const.CONF_COUNTRY, user_input)] = vol.In(
+            const.COUNTRY_CODES
+        )
+        self.data_schema[self.optional(const.CONF_PROV, user_input)] = str
+        self.data_schema[self.optional(const.CONF_STATE, user_input)] = str
+        self.data_schema[self.optional(const.CONF_OBSERVED, user_input)] = bool
+        return False
+
+    def step2_detail(self, user_input: Dict):
+        """Step 2 - Pop countries."""
+        self.errors = {}
+        self.data_schema = {}
+
+        if user_input is not None and user_input != {}:
+            self.update_data(user_input)
+            return True
+        hol = create_holidays(
+            [dt_util.now().date().year],
+            self._data.get(const.CONF_COUNTRY, ""),
+            self._data.get(const.CONF_STATE, ""),
+            self._data.get(const.CONF_PROV, ""),
+            self._data.get(const.CONF_OBSERVED, True),
+        )
+        list_holidays = [h for h in sorted(hol.values())]
+        self.data_schema = OrderedDict()
+        self.data_schema[
+            self.optional(const.CONF_HOLIDAY_POP_NAMED, user_input)
+        ] = cv.multi_select(list_holidays)
         return False
 
     @property
@@ -92,32 +124,48 @@ class holidays_shared:
         return self._data
 
 
-@config_entries.HANDLERS.register(DOMAIN)
+@config_entries.HANDLERS.register(const.DOMAIN)
 class HolidaysFlowHandler(config_entries.ConfigFlow):
     """Config flow for holidays."""
 
-    VERSION = 1
+    VERSION = const.VERSION
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     def __init__(self):
         """Initialize."""
-        config_definition.reset_defaults()
-        self.shared_class = holidays_shared(str(uuid.uuid4()))
+        self.shared_class = HolidaysShared({"unique_id": str(uuid.uuid4())})
 
     async def async_step_user(
         self, user_input={}
     ):  # pylint: disable=dangerous-default-value
         """Step 1 - user init."""
         if self.shared_class.step1_user_init(user_input):
+            return await self.async_step_detail(re_entry=False)
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                self.shared_class.data_schema, extra=vol.ALLOW_EXTRA
+            ),
+            errors=self.shared_class.errors,
+        )
+
+    async def async_step_detail(
+        self, user_input={}, re_entry=True
+    ):  # pylint: disable=dangerous-default-value
+        """Step 2 - enter countries to pop."""
+        self.shared_class.hass = self.hass
+        self.shared_class.step2_detail(user_input)
+        if re_entry:
             return self.async_create_entry(
                 title=self.shared_class.name, data=self.shared_class.data
             )
-        else:
-            return self.async_show_form(
-                step_id="user",
-                data_schema=vol.Schema(self.shared_class.data_schema),
-                errors=self.shared_class.errors,
-            )
+        return self.async_show_form(
+            step_id="detail",
+            data_schema=vol.Schema(
+                self.shared_class.data_schema, extra=vol.ALLOW_EXTRA
+            ),
+            errors=self.shared_class.errors,
+        )
 
     async def async_step_import(self, user_input):  # pylint: disable=unused-argument
         """Import a config entry.
@@ -125,9 +173,10 @@ class HolidaysFlowHandler(config_entries.ConfigFlow):
         Special type of import, we're not actually going to store any data.
         Instead, we're going to rely on the values that are in config file.
         """
-        if self._async_current_entries():
-            return self.async_abort(reason="single_instance_allowed")
-        return self.async_create_entry(title="configuration.yaml", data={})
+        self.shared_class.update_data(user_input)
+        return self.async_create_entry(
+            title=self.shared_class.name, data=self.shared_class.data
+        )
 
     @staticmethod
     @callback
@@ -153,19 +202,33 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         """Create and initualize class variables."""
-        self.config_entry = config_entry
-        self.shared_class = holidays_shared(config_entry.data.get("unique_id"))
+        self.shared_class = HolidaysShared(config_entry.data)
 
     async def async_step_init(self, user_input=None):
         """Genral parameters."""
-        if self.shared_class.step1_user_init(user_input, self.config_entry.data):
-            return self.async_create_entry(title="", data=self.shared_class.data)
+        if self.shared_class.step1_user_init(user_input, options=True):
+            return await self.async_step_detail(re_entry=False)
         else:
             return self.async_show_form(
                 step_id="init",
                 data_schema=vol.Schema(self.shared_class.data_schema),
                 errors=self.shared_class.errors,
             )
+
+    async def async_step_detail(
+        self, user_input={}, re_entry=True
+    ):  # pylint: disable=dangerous-default-value
+        """Step 2 - enter detail depending on frequency."""
+        self.shared_class.step2_detail(user_input)
+        if re_entry:
+            return self.async_create_entry(
+                title=self.shared_class.name, data=self.shared_class.data
+            )
+        return self.async_show_form(
+            step_id="detail",
+            data_schema=vol.Schema(self.shared_class.data_schema),
+            errors=self.shared_class.errors,
+        )
 
 
 class EmptyOptions(config_entries.OptionsFlow):
@@ -174,10 +237,3 @@ class EmptyOptions(config_entries.OptionsFlow):
     def __init__(self, config_entry):
         """Just set the config_entry parameter."""
         self.config_entry = config_entry
-
-
-def string_to_list(string) -> list:
-    """Convert comma separated text to list."""
-    if string is None or string == "":
-        return []
-    return list(map(lambda x: x.strip("'\" "), string.split(",")))

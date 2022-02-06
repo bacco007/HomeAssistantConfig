@@ -2,18 +2,24 @@
     "config": {
         "step": {
             "user": {
-                "title": "Holidays",
+                "title": "Holidays (1/2)",
                 "description": "Sisesta nduri andmed. Rohkem infot leiab https://github.com/bruxy70/Holidays",
                 "data": {
                     "name": "Kuvatav nimi",
-                    "icon_normal": "Ikoon (mdi:trash-can) - valikuline",
-                    "icon_tomorrow": "Homme on prügivedu ikoon (mdi:delete-restore) - valikuline",
-                    "icon_today": "Täna on prügivedu ikoon (mdi:delete-circle) - valikuline",
+                    "icon_normal": "Ikoon (mdi:calendar-blank) - valikuline",
+                    "icon_tomorrow": "Homme on prügivedu ikoon (mdi:calendar-arrow-right) - valikuline",
+                    "icon_today": "Täna on prügivedu ikoon (mdi:calendar-check) - valikuline",
                     "country": "Liiguta prügivedu pühade tõttu üks päev edasi (valikuline)",
-                    "holiday_pop_named": "Eira pühi (nimekiri) - valikuline",
                     "prov": "Kohalikud pühad (valikuline)",
                     "state": "Riiklikud pühad (valikuline)",
                     "observed": "Ise määratud pühad (valikuline)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Rohkem infot leiab https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Eira pühi (nimekiri) - valikuline"
                 }
             }
         },
@@ -28,17 +34,23 @@
     "options": {
         "step": {
             "init": {
-                "title": "Holidays",
+                "title": "Holidays (1/2)",
                 "description": "Sisesta nduri andmed. Rohkem infot leiab https://github.com/bruxy70/Holidays",
                 "data": {
-                    "icon_normal": "Ikoon (mdi:trash-can) - valikuline",
-                    "icon_tomorrow": "Homme on prügivedu ikoon (mdi:delete-restore) - valikuline",
-                    "icon_today": "Täna on prügivedu ikoon (mdi:delete-circle) - valikuline",
+                    "icon_normal": "Ikoon (mdi:calendar-blank) - valikuline",
+                    "icon_tomorrow": "Homme on prügivedu ikoon (mdi:calendar-arrow-right) - valikuline",
+                    "icon_today": "Täna on prügivedu ikoon (mdi:calendar-check) - valikuline",
                     "country": "Liiguta prügivedu pühade tõttu üks päev edasi (valikuline)",
-                    "holiday_pop_named": "Eira pühi (nimekiri) - valikuline",
                     "prov": "Kohalikud pühad (valikuline)",
                     "state": "Riiklikud pühad (valikuline)",
                     "observed": "Ise määratud pühad (valikuline)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Rohkem infot leiab https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Eira pühi (nimekiri) - valikuline"
                 }
             }
         },

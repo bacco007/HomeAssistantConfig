@@ -2,18 +2,24 @@
     "config": {
         "step": {
             "user": {
-                "title": "Hodays",
+                "title": "Hodays (1/2)",
                 "description": "Wprowadź nazwę dla sensora i zkonfiguruj jego parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
                 "data": {
                     "name": "Przyjazna nazwa",
-                    "icon_normal": "Ikona (mdi:trash-can) - opcjonalnie",
-                    "icon_tomorrow": "Ikona wywozu jutro (mdi:delete-restore) - opcjonalnie",
-                    "icon_today": "Ikona wywozu dzisiaj (mdi:delete-circle)- opcjonalnie",
+                    "icon_normal": "Ikona (mdi:calendar-blank) - opcjonalnie",
+                    "icon_tomorrow": "Ikona wywozu jutro (mdi:calendar-arrow-right) - opcjonalnie",
+                    "icon_today": "Ikona wywozu dzisiaj (mdi:calendar-check)- opcjonalnie",
                     "country": "Przesuń świąteczne dni na kolejny dzień (opcjonalnie)",
-                    "holiday_pop_named": "Ignore holidays (list) - optional",
                     "prov": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays",
                     "state": "Święta państwowe - stan (opcjonalnie)",
                     "observed": "Święta państwowe - przesunięte obchody (opcjonalnie)"
+                }
+            },
+            "detail": {
+                "title": "Hodays (2/2)",
+                "description": "Więcej informacji na stronie https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignore holidays (list) - optional"
                 }
             }
         },
@@ -28,17 +34,23 @@
     "options": {
         "step": {
             "init": {
-                "title": "Wywóz Śmieci - Częstotliwośc wywozu",
-                "description": "Zmień parametry sensora. Więcej informacji tutaj https://github.com/bruxy70/Holidays",
+                "title": "Hodays (1/2)",
+                "description": "Wprowadź nazwę dla sensora i zkonfiguruj jego parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
                 "data": {
-                    "icon_normal": "Ikona (mdi:trash-can) - opcjonalnie",
-                    "icon_tomorrow": "Ikona wywozu jutro (mdi:delete-restore) - opcjonalnie",
-                    "icon_today": "Ikona wywozu dzisiaj (mdi:delete-circle)- opcjonalnie",
-                    "country": "Przesuń państwowe święta na kolejny dzień (opcjonalnie)",
-                    "holiday_pop_named": "Ignore holidays (list) - optional",
-                    "prov": "Przesuń święta na kolejny dzień (opcjonalnie)",
+                    "icon_normal": "Ikona (mdi:calendar-blank) - opcjonalnie",
+                    "icon_tomorrow": "Ikona wywozu jutro (mdi:calendar-arrow-right) - opcjonalnie",
+                    "icon_today": "Ikona wywozu dzisiaj (mdi:calendar-check)- opcjonalnie",
+                    "country": "Przesuń świąteczne dni na kolejny dzień (opcjonalnie)",
+                    "prov": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays",
                     "state": "Święta państwowe - stan (opcjonalnie)",
                     "observed": "Święta państwowe - przesunięte obchody (opcjonalnie)"
+                }
+            },
+            "detail": {
+                "title": "Hodays (2/2)",
+                "description": "Więcej informacji na stronie https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignore holidays (list) - optional"
                 }
             }
         },

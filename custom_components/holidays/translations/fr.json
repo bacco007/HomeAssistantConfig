@@ -2,18 +2,24 @@
     "config": {
         "step": {
             "user": {
-                "title": "Holidays",
+                "title": "Holidays (1/2)",
                 "description": "Définir le nom du capteur et configurer les paramètres du capteur. Plus d'info sur https://github.com/bruxy70/Holidays",
                 "data": {
                     "name": "Friendly name",
-                    "icon_normal": "Icône (mdi:trash-can)",
-                    "icon_tomorrow": "Icône pour collecte à jour J+1 (mdi:delete-restore)",
-                    "icon_today": "Icône pour collecte au jour J (mdi:delete-circle)",
+                    "icon_normal": "Icône (mdi:calendar-blank)",
+                    "icon_tomorrow": "Icône pour collecte à jour J+1 (mdi:calendar-arrow-right)",
+                    "icon_today": "Icône pour collecte au jour J (mdi:calendar-check)",
                     "country": "Reporter les vacances au lendemain (optionnel)",
-                    "holiday_pop_named": "Ignorer les vacances (liste) - optionnel",
                     "prov": "Prov (optional)",
                     "state": "State (optional)",
                     "observed": "Observed (optional)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Plus d'info sur https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignorer les vacances (liste) - optionnel"
                 }
             }
         },
@@ -28,17 +34,24 @@
     "options": {
         "step": {
             "init": {
-                "title": "Holidays",
-                "description": "Modifier les paramètres des capteurs. Plus d'infos sur https://github.com/bruxy70/Holidays",
+                "title": "Holidays (1/2)",
+                "description": "Définir le nom du capteur et configurer les paramètres du capteur. Plus d'info sur https://github.com/bruxy70/Holidays",
                 "data": {
-                    "icon_normal": "Icône (mdi:trash-can)",
-                    "icon_tomorrow": "Icône pour collecte à jour J+1 (mdi:delete-restore)",
-                    "icon_today": "Icône pour collecte au jour J (mdi:delete-circle)",
+                    "name": "Friendly name",
+                    "icon_normal": "Icône (mdi:calendar-blank)",
+                    "icon_tomorrow": "Icône pour collecte à jour J+1 (mdi:calendar-arrow-right)",
+                    "icon_today": "Icône pour collecte au jour J (mdi:calendar-check)",
                     "country": "Reporter les vacances au lendemain (optionnel)",
-                    "holiday_pop_named": "Ignorer les vacances (liste) - optionnel",
                     "prov": "Prov (optional)",
                     "state": "State (optional)",
                     "observed": "Observed (optional)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Plus d'info sur https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignorer les vacances (liste) - optionnel"
                 }
             }
         },

@@ -42,6 +42,7 @@ influxdb:
       - sensor.launch_library
       - sensor.adsb_fa_feeder
       - weather.home
+      - sensor.udm_unifios
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

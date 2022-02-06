@@ -2,19 +2,24 @@
     "config": {
         "step": {
             "user": {
-                "title": "Holidays",
+                "title": "Holidays (1/2)",
                 "description": "Zadej meno senzoru a nastav parametre. Viac na https://github.com/bruxy70/Holidays",
                 "data": {
                     "name": "Friendly name",
-                    "icon_normal": "Ikona (mdi:trash-can)",
-                    "icon_tomorrow": "Ikona zvoz zajtra (mdi:delete-restore)",
-                    "icon_today": "Ikona zvoz dnes (mdi:delete-circle)",
+                    "icon_normal": "Ikona (mdi:calendar-blank)",
+                    "icon_tomorrow": "Ikona zvoz zajtra (mdi:calendar-arrow-right)",
+                    "icon_today": "Ikona zvoz dnes (mdi:calendar-check)",
                     "country": "Štátne sviatky - krajiny (voliteľné)",
-                    "holiday_pop_named": "Ignorovať sviatky (volitelné)", 
                     "prov": "Štátne sviatky - provincie (volitelné)",
                     "state": "Štátne sviatky - štát (volitelné)",
                     "observed": "Štátne sviatky - sledované (volitelné)"
-
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Viac na https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignorovať sviatky (volitelné)"
                 }
             }
         },
@@ -29,17 +34,23 @@
     "options": {
         "step": {
             "init": {
-                "title": "Holidays - Nastavenia",
-                "description": "Zadaj meno senzora a nastav parametre. Viac na https://github.com/bruxy70/Holidays",
+                "title": "Holidays (1/2)",
+                "description": "Zadej meno senzoru a nastav parametre. Viac na https://github.com/bruxy70/Holidays",
                 "data": {
-                    "icon_normal": "Ikona (mdi:trash-can)",
-                    "icon_tomorrow": "Ikona zvoz zajtra (mdi:delete-restore)",
-                    "icon_today": "Ikona zvoz dnes (mdi:delete-circle)",
+                    "icon_normal": "Ikona (mdi:calendar-blank)",
+                    "icon_tomorrow": "Ikona zvoz zajtra (mdi:calendar-arrow-right)",
+                    "icon_today": "Ikona zvoz dnes (mdi:calendar-check)",
                     "country": "Štátne sviatky - krajiny (voliteľné)",
-                    "holiday_pop_named": "Ignorovať sviatky (volitelné)", 
                     "prov": "Štátne sviatky - provincie (volitelné)",
                     "state": "Štátne sviatky - štát (volitelné)",
                     "observed": "Štátne sviatky - sledované (volitelné)"
+                }
+            },
+            "detail": {
+                "title": "Holidays (2/2)",
+                "description": "Viac na https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignorovať sviatky (volitelné)"
                 }
             }
         },
