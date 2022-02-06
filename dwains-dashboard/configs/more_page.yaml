@@ -14,9 +14,6 @@ more_page:
     - name: Apple TV
       icon: si:appletv
       path: "dwains-dashboard/addons/more_page/appletv/page.yaml"
-    # - name: Coronavirus
-    #   icon: custom:corona-virus
-    #   path: "dwains-dashboard/addons/more_page/coronavirus/page.yaml"
     - name: Cryptocurrency
       icon: mdi:bitcoin
       path: "dwains-dashboard/addons/more_page/cryptocurrency/page.yaml"
@@ -41,6 +38,9 @@ more_page:
     - name: Google Home
       icon: "mdi:google-home"
       path: "dwains-dashboard/addons/more_page/googlehome/page.yaml"
+    - name: History Explorer
+      icon: "mdi:history"
+      path: "dwains-dashboard/addons/more_page/history-explorer/page.yaml"
     - name: Lightning
       icon: mdi:flash-alert
       path: "dwains-dashboard/addons/more_page/lightning/page.yaml"
