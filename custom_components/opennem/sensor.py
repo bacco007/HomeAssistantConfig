@@ -1,82 +1,73 @@
+"""OpenNEM Sensor"""
 import logging
 
 import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.util import slugify
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.device_registry import DeviceEntryType
+from homeassistant.helpers.entity import DeviceInfo
+
 from . import OpenNEMDataUpdateCoordinator
 
 from .const import (
     ATTRIBUTION,
-    CONF_REGION,
-    COORDINATOR,
     DEFAULT_NAME,
+    DEFAULT_FORCE_UPDATE,
     DEFAULT_ICON,
+    DEVICE_CLASS,
     DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_REGION): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
 
-
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Get Config from yaml"""
-    if DOMAIN not in hass.data.keys():
-        hass.data.setdefault(DOMAIN, {})
-        config.entry_id = slugify(f"{config.get(CONF_REGION)}")
-        config.data = config
-    else:
-        config.entry_id = slugify(f"{config.get(CONF_REGION)}")
-        config.data = config
-
-    # Setup the data coordinator
-    coordinator = OpenNEMDataUpdateCoordinator(hass, config)
-
-    # Fetch initial data
-    await coordinator.async_refresh()
-
-    hass.data[DOMAIN][config.entry_id] = {
-        COORDINATOR: coordinator,
-    }
-    async_add_entities([OpenNEMSensor(hass, config)], True)
-
-
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Setup Sensor Platform"""
-    async_add_entities([OpenNEMSensor(hass, entry)], True)
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    config_entry_unique_id = config_entry.unique_id
+    async_add_entities([OpenNEMSensor(coordinator, config_entry_unique_id)], True)
+    _LOGGER.debug("OpenNEM: Sensor Setup Complete")
 
 
 class OpenNEMSensor(CoordinatorEntity):
     """Representation of Sensor"""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+    coordinator: OpenNEMDataUpdateCoordinator
+    _attr_force_update = DEFAULT_FORCE_UPDATE
+
+    def __init__(
+        self, coordinator: OpenNEMDataUpdateCoordinator, config_entry_unique_id: str
+    ) -> None:
         """Init Sensor"""
-        super().__init__(hass.data[DOMAIN][entry.entry_id][COORDINATOR])
-        self._config = entry
-        self._name = entry.data[CONF_NAME]
+        super().__init__(coordinator)
+        self._config_entry_unique_id = config_entry_unique_id
+        self._name = f"{DEFAULT_NAME} {coordinator.region_name.upper()}"
+        self._attr_unique_id = f"{self._config_entry_unique_id}_sensor"
         self._icon = DEFAULT_ICON
-        self._state = 0
+        self._state = None
 
         self._generation = None
         self._renewables = None
         self._lastupdate = None
-        self._region = entry.data[CONF_REGION]
-        self.coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
+        self._region = coordinator._region
 
-    @property
-    def unique_id(self):
-        """Return Unique Identifier"""
-        return f"{slugify(self._name)}_{self._config.entry_id}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self.coordinator.config.entry_id)},
+            default_name=f"{DEFAULT_NAME} {self._region.upper()}",
+            default_mode=f"{self._region.upper()}",
+            name=self._name,
+            entry_type=DeviceEntryType.SERVICE,
+            configuration_url="https://opennem.org.au/",
+            manufacturer="OpenNEM",
+            model=f"{self._region.upper()}",
+        )
 
     @property
     def name(self):
@@ -94,50 +85,40 @@ class OpenNEMSensor(CoordinatorEntity):
         return "MW"
 
     @property
+    def device_class(self):
+        """Returns Device Class"""
+        return DEVICE_CLASS
+
+    @property
     def state(self):
         """Return State of Sensor"""
-        if self.coordinator.data is None:
-            return None
-        elif "generation" in self.coordinator.data.keys():
-            return self.coordinator.data["generation"]
-        else:
-            return None
+        if self.coordinator.data:
+            _LOGGER.debug(
+                "OpenNEM [%s1]: Updating state from %s",
+                self._region,
+                self.coordinator.data,
+            )
+            if "generation" in self.coordinator.data.keys():
+                self._state = self.coordinator.data["generation"]
+            else:
+                self._state = None
+        return self._state
 
     @property
     def extra_state_attributes(self):
-        """Return State Message"""
+        """Return Entity specific State Attributes"""
+        _LOGGER.debug(
+            "OpenNEM [%s1]: Updating attributes from %s",
+            self._region,
+            self.coordinator.data,
+        )
         attrs = {}
         if self.coordinator.data is None:
             return attrs
         attrs[ATTR_ATTRIBUTION] = ATTRIBUTION
         attrs["region"] = self._region
-        for a in self.coordinator.data:
-            attrs[a] = self.coordinator.data[a]
-        # attrs["battery_charging"] = self.coordinator.data["battery_charging"]
-        # attrs["bioenergy_biomass"] = self.coordinator.data["bioenergy_biomass"]
-        # attrs["bioenergy_biogas"] = self.coordinator.data["bioenergy_biogas"]
-        # attrs["coal_black"] = self.coordinator.data["coal_black"]
-        # attrs["coal_brown"] = self.coordinator.data["coal_brown"]
-        # attrs["distillate"] = self.coordinator.data["distillate"]
-        # attrs["gas_ccgt"] = self.coordinator.data["gas_ccgt"]
-        # attrs["gas_ocgt"] = self.coordinator.data["gas_ocgt"]
-        # attrs["gas_recip"] = self.coordinator.data["gas_recip"]
-        # attrs["gas_steam"] = self.coordinator.data["gas_steam"]
-        # attrs["gas_wcmg"] = self.coordinator.data["gas_wcmg"]
-        # attrs["hydro"] = self.coordinator.data["hydro"]
-        # attrs["pumps"] = self.coordinator.data["pumps"]
-        # attrs["solar_utility"] = self.coordinator.data["solar_utility"]
-        # attrs["solar_rooftop"] = self.coordinator.data["solar_rooftop"]
-        # attrs["wind"] = self.coordinator.data["wind"]
-        # attrs["exports"] = self.coordinator.data["exports"]
-        # attrs["imports"] = self.coordinator.data["imports"]
-        # attrs["price"] = self.coordinator.data["price"]
-        # attrs["temperature"] = self.coordinator.data["temperature"]
-        # attrs["demand"] = self.coordinator.data["demand"]
-        # attrs["fossilfuel"] = self.coordinator.data["fossilfuel"]
-        # attrs["generation"] = self.coordinator.data["generation"]
-        # attrs["renewables"] = self.coordinator.data["renewables"]
-        # attrs["last_update"] = self.coordinator.data["last_update"]
+        for val in self.coordinator.data:
+            attrs[val] = self.coordinator.data[val]
         return attrs
 
     @property

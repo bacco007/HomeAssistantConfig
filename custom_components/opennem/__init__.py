@@ -1,28 +1,28 @@
 """ OpenNEM """
 import logging
 import datetime
-from typing import ValuesView
+
+import voluptuous as vol
 
 import aiohttp
-from async_timeout import timeout
-from homeassistant import config_entries
-from homeassistant.const import CONF_NAME
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_registry import (
-    async_entries_for_config_entry,
-    async_get,
-)
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
+from homeassistant.config_entries import ConfigEntry, SOURCE_IMPORT
+from homeassistant.core import CoreState, HomeAssistant
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 import homeassistant.util.dt as dt_util
+from homeassistant.helpers import config_validation as cv
 
+from .config_flow import configured_instances
 from .const import (
     API_ENDPOINT,
+    API_ENDPOINT_EM,
+    API_ENDPOINT_FLOW,
     API_ENDPOINT_NEM,
     API_ENDPOINT_WA,
     API_ENDPOINT_AU,
     CONF_REGION,
-    COORDINATOR,
+    DEFAULT_NAME,
     DOMAIN,
     PLATFORMS,
     VERSION,
@@ -30,42 +30,70 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+CONFIG_SCHEMA = vol.Schema(
+    {DOMAIN: vol.Schema({vol.Required(CONF_REGION): cv.string})}, extra=vol.ALLOW_EXTRA
+)
+
 DEFAULT_SCAN_INTERVAL = datetime.timedelta(minutes=10)
 
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Setup OpenNEM Component"""
+    if DOMAIN not in config:
+        return True
+    conf = config[DOMAIN]
+    region = conf.get[CONF_REGION].upper()
+    identifier = f"{DEFAULT_NAME} {region}"
+    if identifier in configured_instances(hass):
+        return True
+
+    hass.async_create_task(
+        hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": SOURCE_IMPORT},
+            data={CONF_REGION: region},
+        )
+    )
+    return True
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Load Saved Entities"""
+    """Setup OpenNEM Component as Config Entry"""
     _LOGGER.info("OpenNEM: Version %s is starting", VERSION)
     hass.data.setdefault(DOMAIN, {})
 
-    if entry.unique_id is not None:
-        hass.config_entries.async_update_entry(entry, unique_id=None)
-        ent_reg = async_get(hass)
-        for entity in async_entries_for_config_entry(ent_reg, entry.entry_id):
-            ent_reg.async_update_entity(entity.entity_id, new_unique_id=entry.entry_id)
+    coordinator = OpenNEMDataUpdateCoordinator(hass, entry)
+    hass.data[DOMAIN][entry.entry_id] = coordinator
+    # _LOGGER.debug("OpenNEM: Feed Coordinator Added for %s", entry.entry_id)
 
-    # Setup Coordinator
-    coordinator = OpenNEMDataUpdateCoordinator(hass, entry.data)
+    async def _enable_scheduled_updates(*_):
+        """Activate Data Update Coordinator"""
+        scan_interval = DEFAULT_SCAN_INTERVAL
+        if isinstance(scan_interval, int):
+            coordinator.update_interval = datetime.timedelta(minutes=scan_interval)
+        else:
+            coordinator.update_interval = scan_interval
+        await coordinator.async_refresh()
 
-    await coordinator.async_refresh()
-
-    hass.data[DOMAIN][entry.entry_id] = {
-        COORDINATOR: coordinator,
-    }
+    if hass.state == CoreState.running:
+        await _enable_scheduled_updates()
+    else:
+        hass.bus.async_listen_once(
+            EVENT_HOMEASSISTANT_STARTED, _enable_scheduled_updates
+        )
 
     hass.config_entries.async_setup_platforms(entry, PLATFORMS)
+
     return True
 
 
-async def async_unload_entry(hass, config_entry):
-    """Handle Entry Removal"""
-    try:
-        await hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
-        _LOGGER.info(
-            "OpenNEM: Successfully removed sensor from " + DOMAIN + " integration"
-        )
-    except ValueError:
-        pass
-    return True
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload OpenNEM Component"""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
+        _LOGGER.debug("OpenNEM: Removed Config for %s", entry.entry_id)
+    return unload_ok
 
 
 async def update_listener(hass, entry):
@@ -78,215 +106,339 @@ async def update_listener(hass, entry):
 class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data"""
 
-    def __init__(self, hass, config):
-        self.interval = DEFAULT_SCAN_INTERVAL
-        self.name = config[CONF_NAME]
-        self.config = config
+    def __init__(self, hass: HomeAssistant, config: ConfigEntry) -> None:
+        self.config: ConfigEntry = config
         self.hass = hass
-        _LOGGER.debug("OpenNEM: Data will be updated every %s", self.interval)
-        super().__init__(hass, _LOGGER, name=self.name, update_interval=self.interval)
-
-    async def _async_update_data(self):
-        async with timeout(30):
-            try:
-                data = await update_opennem(self.config)
-            except Exception as error:
-                raise UpdateFailed(error) from error
-            return data
-
-async def update_opennem(config) -> dict:
-    """Fetch new state data"""
-    data = await async_get_state(config)
-    return data
-
-
-async def async_get_state(config) -> dict:
-    """Query API"""
-    values = {
-        "bioenergy_biomass": 0,
-        "bioenergy_biogas": 0,
-        "coal_black": 0,
-        "coal_brown": 0,
-        "distillate": 0,
-        "gas_ccgt": 0,
-        "gas_ocgt": 0,
-        "gas_recip": 0,
-        "gas_steam": 0,
-        "gas_wcmg": 0,
-        "hydro": 0,
-        "pumps": 0,
-        "solar_utility": 0,
-        "solar_rooftop": 0,
-        "wind": 0,
-        "battery_discharging": 0,
-        "battery_charging": 0,
-        "exports": 0,
-        "imports": 0,
-        "price": 0,
-        "demand": 0,
-        "generation": 0,
-        "temperature": 0,
-        "fossilfuel": 0,
-        "renewables": 0,
-        "last_update": None,
-    }
-    data = None
-    regiondata = []
-
-    region = config[CONF_REGION] + "1"
-    if region == "nem1":
-        url = API_ENDPOINT_NEM
-    elif region == "au1":
-        url = API_ENDPOINT_AU
-    elif region == "wa1":
-        url = API_ENDPOINT_WA
-    else:
-        url = API_ENDPOINT.format(region.upper())
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as remotedata:
-            _LOGGER.debug("OpenNEM: Getting State for %s from %s" % (region, url))
-            if remotedata.status == 200:
-                data = await remotedata.json()
-
-    if data is not None:
-        _LOGGER.debug("OpenNEM: Data Downloaded, Commencing Processing")
-
-        for row in data["data"]:
-            if row["type"] == "power":
-                ftype = row["fuel_tech"]
-            else:
-                ftype = row["type"]
-
-            #units = row["units"]
-            #last_update = row["history"]["last"]
-
-            if row["type"] == "temperature":
-                value = row["history"]["data"][-2]
-            elif row["type"] == "price":
-                value = row["history"]["data"][-2]
-            elif ftype == "imports":
-                value = abs(row["history"]["data"][-1])
-            elif ftype == "exports":
-                value = -abs(row["history"]["data"][-1])
-            elif ftype == "battery_charging":
-                value = -abs(row["history"]["data"][-1])
-            else:
-                value = row["history"]["data"][-1]
-
-            if value is None:
-                values[ftype] = 0.0
-            else:
-                values[ftype] = round(value, 2)
-
-            regiondata.append(ftype)
-
-        ffvalue = (
-            values["coal_black"]
-            + values["distillate"]
-            + values["coal_brown"]
-            + values["gas_ccgt"]
-            + values["gas_ocgt"]
-            + values["gas_recip"]
-            + values["gas_steam"]
-            + values["gas_wcmg"]
+        self._region = config.data[CONF_REGION]
+        self._config_entry_id = config.entry_id
+        self._values = {
+            "bioenergy_biomass": 0,
+            "bioenergy_biogas": 0,
+            "coal_black": 0,
+            "coal_brown": 0,
+            "distillate": 0,
+            "gas_ccgt": 0,
+            "gas_ocgt": 0,
+            "gas_recip": 0,
+            "gas_steam": 0,
+            "gas_wcmg": 0,
+            "hydro": 0,
+            "pumps": 0,
+            "solar_utility": 0,
+            "solar_rooftop": 0,
+            "wind": 0,
+            "battery_discharging": 0,
+            "battery_charging": 0,
+            "exports": 0,
+            "imports": 0,
+            "price": 0,
+            "demand": 0,
+            "generation": 0,
+            "temperature": 0,
+            "fossilfuel": 0,
+            "renewables": 0,
+            "emissions_factor": 0,
+            "flow_NSW": 0,
+            "flow_QLD": 0,
+            "flow_SA": 0,
+            "flow_TAS": 0,
+            "flow_VIC": 0,
+            "last_update": None,
+        }
+        self._interval = DEFAULT_SCAN_INTERVAL
+        _LOGGER.debug(
+            "OpenNEM [%s1]: Data will be updated every %s", self._region, self._interval
         )
-        if ffvalue:
-            values["fossilfuel"] = round(ffvalue, 2)
-        else:
-            values["fossilfuel"] = 0
-        regiondata.append("fossilfuel")
-
-        renvalue = (
-            values["bioenergy_biomass"]
-            + values["bioenergy_biogas"]
-            + values["hydro"]
-            + values["solar_utility"]
-            + values["wind"]
-            + values["solar_rooftop"]
+        super().__init__(
+            self.hass, _LOGGER, name=DOMAIN, update_method=self.async_update
         )
-        if renvalue:
-            values["renewables"] = round(renvalue, 2)
-        else:
-            values["renewables"] = 0
-        regiondata.append("renewables")
 
-        genvalue = values["fossilfuel"] + values["renewables"]
-        if genvalue:
-            values["generation"] = round(genvalue, 2)
-            values["state"] = round(genvalue, 2)
-        else:
-            values["generation"] = 0
-            values["state"] = 0
-        regiondata.append("generation")
+    @property
+    def region_name(self) -> str:
+        """Return Region Name of Coordinator"""
+        return self._region
 
-        if region == "wa1":
-            pass
+    async def async_update(self) -> dict:
+        """Get Latest Date and Update State"""
+
+        data = None
+        emdata = None
+        fldata = None
+        self._values = {
+            "bioenergy_biomass": 0,
+            "bioenergy_biogas": 0,
+            "coal_black": 0,
+            "coal_brown": 0,
+            "distillate": 0,
+            "gas_ccgt": 0,
+            "gas_ocgt": 0,
+            "gas_recip": 0,
+            "gas_steam": 0,
+            "gas_wcmg": 0,
+            "hydro": 0,
+            "pumps": 0,
+            "solar_utility": 0,
+            "solar_rooftop": 0,
+            "wind": 0,
+            "battery_discharging": 0,
+            "battery_charging": 0,
+            "exports": 0,
+            "imports": 0,
+            "price": 0,
+            "demand": 0,
+            "generation": 0,
+            "temperature": 0,
+            "fossilfuel": 0,
+            "renewables": 0,
+            "emissions_factor": 0,
+            "flow_NSW": 0,
+            "flow_QLD": 0,
+            "flow_SA": 0,
+            "flow_TAS": 0,
+            "flow_VIC": 0,
+            "last_update": None,
+        }
+        _LOGGER.debug("OpenNEM [%s]: Default Values - %s", self._region, self._values)
+
+        region = self._region + "1"
+        if region == "nem1":
+            url = API_ENDPOINT_NEM
+        elif region == "au1":
+            url = API_ENDPOINT_AU
+        elif region == "wa1":
+            url = API_ENDPOINT_WA
         else:
-            genvsdemand = values["generation"] - values["demand"]
-            if genvsdemand:
-                values["genvsdemand"] = round(genvsdemand,2)
+            url = API_ENDPOINT.format(region.upper())
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as remotedata:
+                _LOGGER.debug("OpenNEM [%s]: Getting State from %s", region, url)
+                if remotedata.status == 200:
+                    data = await remotedata.json()
+                else:
+                    _LOGGER.debug("OpenNEM [%s]: Issue getting data", region)
+
+            # Emission Factor
+            async with session.get(API_ENDPOINT_EM) as emremotedata:
+                _LOGGER.debug(
+                    "OpenNEM [%s]: Getting Emissions State from %s",
+                    region,
+                    API_ENDPOINT_EM,
+                )
+                if emremotedata.status == 200:
+                    edata = await emremotedata.json()
+                else:
+                    _LOGGER.debug("OpenNEM [%s]: Issue getting emissions data", region)
+
+            # Flow from other Regions
+            async with session.get(API_ENDPOINT_FLOW) as flremotedata:
+                _LOGGER.debug(
+                    "OpenNEM [%s]: Getting Flow State from %s",
+                    region,
+                    API_ENDPOINT_FLOW,
+                )
+                if flremotedata.status == 200:
+                    fldata = await flremotedata.json()
+                else:
+                    _LOGGER.debug("OpenNEM [%s]: Issue getting flow data", region)
+
+        if data is not None:
+            _LOGGER.debug(
+                "OpenNEM [%s]: Data Downloaded, Commencing Processing", region
+            )
+            attrs = {}
+            emdata = None
+            ffvalue = None
+            renvalue = None
+            emvalue = None
+            genvalue = None
+            genvsdemand = None
+            value = None
+            regiondata = []
+
+            _LOGGER.debug("OpenNEM [%s]: Values Before - %s", region, self._values)
+
+            for row in data["data"]:
+                if row["type"] == "power":
+                    ftype = row["fuel_tech"]
+                else:
+                    ftype = row["type"]
+
+                # units = row["units"]
+                # last_update = row["history"]["last"]
+
+                if row["type"] == "temperature":
+                    value = row["history"]["data"][-2]
+                elif row["type"] == "price":
+                    value = row["history"]["data"][-2]
+                elif ftype == "imports":
+                    value = abs(row["history"]["data"][-1])
+                elif ftype == "exports":
+                    value = -abs(row["history"]["data"][-1])
+                elif ftype == "battery_charging":
+                    value = -abs(row["history"]["data"][-1])
+                else:
+                    value = row["history"]["data"][-1]
+
+                if value is None:
+                    self._values[ftype] = 0.0
+                else:
+                    self._values[ftype] = round(value, 2)
+
+                regiondata.append(ftype)
+                value = None
+                ftype = None
+
+            ffvalue = None
+            ffvalue = (
+                self._values["coal_black"]
+                + self._values["distillate"]
+                + self._values["coal_brown"]
+                + self._values["gas_ccgt"]
+                + self._values["gas_ocgt"]
+                + self._values["gas_recip"]
+                + self._values["gas_steam"]
+                + self._values["gas_wcmg"]
+            )
+            if ffvalue:
+                self._values["fossilfuel"] = round(ffvalue, 2)
             else:
-                values["genvsdemand"] = 0
-            regiondata.append("genvsdemand")
+                self._values["fossilfuel"] = 0
+            regiondata.append("fossilfuel")
+            ffvalue = None
 
-        if region == "wa1":
-            values["last_update"] = dt_util.as_utc(
-                datetime.datetime.strptime(
-                    str(data["created_at"]), "%Y-%m-%dT%H:%M:%S+08:00"
-                )
+            renvalue = None
+            renvalue = (
+                self._values["bioenergy_biomass"]
+                + self._values["bioenergy_biogas"]
+                + self._values["hydro"]
+                + self._values["solar_utility"]
+                + self._values["wind"]
+                + self._values["solar_rooftop"]
             )
-        else:
-            values["last_update"] = dt_util.as_utc(
-                datetime.datetime.strptime(
-                    str(data["created_at"]), "%Y-%m-%dT%H:%M:%S+10:00"
+            if renvalue:
+                self._values["renewables"] = round(renvalue, 2)
+            else:
+                self._values["renewables"] = 0
+            regiondata.append("renewables")
+            renvalue = None
+
+            genvalue = None
+            genvalue = self._values["fossilfuel"] + self._values["renewables"]
+            if genvalue:
+                self._values["generation"] = round(genvalue, 2)
+                self._values["state"] = round(genvalue, 2)
+            else:
+                self._values["generation"] = 0
+                self._values["state"] = 0
+            regiondata.append("generation")
+            genvalue = None
+
+            genvsdemand = None
+            if region == "wa1":
+                pass
+            else:
+                genvsdemand = self._values["generation"] - self._values["demand"]
+                if genvsdemand:
+                    self._values["genvsdemand"] = round(genvsdemand, 2)
+                else:
+                    self._values["genvsdemand"] = 0
+                regiondata.append("genvsdemand")
+                genvsdemand = None
+
+            # Emission Factor
+            if region == "wa1":
+                pass
+            elif region == "au":
+                pass
+            else:
+                if edata is not None:
+                    for emrow in edata["data"]:
+                        if region.upper() in emrow["code"]:
+                            emvalue = emrow["history"]["data"][-1]
+                            self._values["emissions_factor"] = emvalue
+                            regiondata.append("emissions_factor")
+                            emvalue = None
+                else:
+                    _LOGGER.debug("OpenNEM [%s]: No Emissions Data Found", region)
+
+            # Flow from other region
+            if fldata is not None:
+                for frow in fldata["data"]:
+                    fcode = frow["code"]
+                    fregion = fcode.split("->")
+                    if region.upper() in fregion:
+                        fregion.remove(region.upper())
+                        fregionto = fregion[0].replace("1", "")
+                        value = frow["history"]["data"][-1]
+                        self._values["flow_" + fregionto] = value
+                        regiondata.append("flow_" + fregionto)
+                    fregionto = None
+                    value = None
+            else:
+                _LOGGER.debug("OpenNEM [%s]: No Flow Data Found", region)
+
+            if region == "wa1":
+                self._values["last_update"] = dt_util.as_utc(
+                    datetime.datetime.strptime(
+                        str(data["created_at"]), "%Y-%m-%dT%H:%M:%S+08:00"
+                    )
                 )
-            )
-    else:
-        _LOGGER.debug("OpenNEM: No Data Found")
-
-    _LOGGER.debug("OpenNEM: %s", values)
-
-    attrs = {}
-    regiondata.append("last_update")
-    for a in values:
-        if a in regiondata:
-            attrs[a] = values[a]
+            else:
+                self._values["last_update"] = dt_util.as_utc(
+                    datetime.datetime.strptime(
+                        str(data["created_at"]), "%Y-%m-%dT%H:%M:%S+10:00"
+                    )
+                )
         else:
-            pass
-    _LOGGER.debug("OpenNEM: Values to pass to Sensor: %s", attrs)
+            _LOGGER.debug("OpenNEM [%s]: No Data Found", region)
 
-    return attrs
+        _LOGGER.debug("OpenNEM [%s]: Values After - %s", region, self._values)
 
+        attrs = {}
+        regiondata.append("last_update")
+        _LOGGER.debug("OpenNEM [%s] Region Attrs: %s", region, regiondata)
+        for val in self._values:
+            if val in regiondata:
+                attrs[val] = self._values[val]
+            else:
+                pass
+        _LOGGER.debug("OpenNEM [%s]: Values to pass to Sensor: %s", region, attrs)
 
-async def async_clear_states(config) -> dict:
-    # Clear values
-    values = {}
-    values = {
-        "bioenergy_biomass": 0,
-        "bioenergy_biogas": 0,
-        "coal_black": 0,
-        "coal_brown": 0,
-        "distillate": 0,
-        "gas_ccgt": 0,
-        "gas_ocgt": 0,
-        "gas_recip": 0,
-        "gas_steam": 0,
-        "gas_wcmg": 0,
-        "hydro": 0,
-        "pumps": 0,
-        "solar_utility": 0,
-        "solar_rooftop": 0,
-        "wind": 0,
-        "battery_discharging": 0,
-        "battery_charging": 0,
-        "exports": 0,
-        "imports": 0,
-        "price": 0,
-        "demand": 0,
-        "generation": 0,
-        "temperature": 0,
-        "fossilfuel": 0,
-        "renewables": 0,
-        "last_update": None,
-    }
-    return values
+        regiondata = []
+        self._values = {
+            "bioenergy_biomass": 0,
+            "bioenergy_biogas": 0,
+            "coal_black": 0,
+            "coal_brown": 0,
+            "distillate": 0,
+            "gas_ccgt": 0,
+            "gas_ocgt": 0,
+            "gas_recip": 0,
+            "gas_steam": 0,
+            "gas_wcmg": 0,
+            "hydro": 0,
+            "pumps": 0,
+            "solar_utility": 0,
+            "solar_rooftop": 0,
+            "wind": 0,
+            "battery_discharging": 0,
+            "battery_charging": 0,
+            "exports": 0,
+            "imports": 0,
+            "price": 0,
+            "demand": 0,
+            "generation": 0,
+            "temperature": 0,
+            "fossilfuel": 0,
+            "renewables": 0,
+            "emissions_factor": 0,
+            "flow_NSW": 0,
+            "flow_QLD": 0,
+            "flow_SA": 0,
+            "flow_TAS": 0,
+            "flow_VIC": 0,
+            "last_update": None,
+        }
+        _LOGGER.debug("OpenNEM [%s]: Temp - %s", region, self._values)
+        _LOGGER.debug("OpenNEM [%s]: Values After - %s", region, self._values)
+        return attrs
