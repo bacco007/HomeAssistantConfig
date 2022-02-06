@@ -17,7 +17,7 @@ from .const import CONF_RESOURCE_ID, CONF_SSL_DISABLE, DOMAIN, CONF_AUTO_FETCH, 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Solcast Solar."""
 
-    VERSION = 1
+    VERSION = 2
 
     @staticmethod
     @callback

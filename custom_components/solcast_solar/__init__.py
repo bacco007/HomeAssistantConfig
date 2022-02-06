@@ -59,6 +59,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.error("async_setup_entry: %s",traceback.format_exc())
         return False
 
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle an options update."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     integrationrooftop: SolcastRooftopSite = hass.data[DOMAIN][entry.entry_id]
@@ -114,6 +118,22 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     except Exception as err:
         _LOGGER.error("async_remove_entry: %s",traceback.format_exc())
 
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Migrate old entry."""
+    try:
+        _LOGGER.debug("Solcast Config Migrating from version %s", config_entry.version)
+
+        if config_entry.version == 1:
+            new_data = {**config_entry.options, CONF_CHANGE_TZ_OFFSET: "0"}
+
+            config_entry.version = 2
+            hass.config_entries.async_update_entry(config_entry, options=new_data)
+
+        _LOGGER.info("Solcast Config Migration to version %s successful", config_entry.version)
+        return True
+    except Exception as err:
+        _LOGGER.error("async_remove_entry: %s",traceback.format_exc())
+        return False
 
 class SensorType(Enum):
     """Representation of Solcast SensorTypes."""
