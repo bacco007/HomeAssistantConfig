@@ -39,7 +39,7 @@ sensor:
           message: >
             {{ states.sensor.adsb_fa_feeder.attributes["piaware"]["message"] }}
       adsb_fa_flightaware:
-        friendly_name: FlightAwaare Feed
+        friendly_name: FlightAware Feed
         icon_template: mdi:airplane
         value_template: >
           {{ states.sensor.adsb_fa_feeder.attributes["adept"]["status"] }}
