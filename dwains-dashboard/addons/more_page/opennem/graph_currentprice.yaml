@@ -38,7 +38,9 @@ apex_config:
     }
 
 series:
-  - entity: sensor.opennem_nsw1_current_price
+  - entity: sensor.opennem_nsw
+    attribute: price
+    unit: $/MW
     type: area
     name: Temp
     extend_to_end: false

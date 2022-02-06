@@ -1,10 +1,11 @@
+---
 type: custom:apexcharts-card
 graph_span: 7d
 span:
   end: day
 header:
   show: true
-  title: "Generation Type"
+  title: "Demand (All Regions)"
   show_states: true
   colorize_states: true
 apex_config:
@@ -35,23 +36,33 @@ apex_config:
       type: "datetime",
       labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
     }
+all_series_config:
+  stroke_width: 2
+  type: area
+  extend_to_end: false
+  float_precision: 2
+  unit: "MW"
+  curve: smooth
+  group_by:
+    func: avg
+    duration: 30m
 
 series:
   - entity: sensor.opennem_nsw
-    attribute: fossilfuel
-    type: area
-    name: Fossil Fuels
-    extend_to_end: false
-    curve: smooth
-    group_by:
-      func: avg
-      duration: 30m
-  - entity: sensor.opennem_nsw
-    attribute: renewables
-    type: area
-    name: Renewables
-    extend_to_end: false
-    curve: smooth
-    group_by:
-      func: avg
-      duration: 30m
+    attribute: demand
+    name: NSW
+  - entity: sensor.opennem_qld
+    attribute: demand
+    name: Qld
+  - entity: sensor.opennem_sa
+    attribute: demand
+    name: SA
+  - entity: sensor.opennem_tas
+    attribute: demand
+    name: Tas
+  - entity: sensor.opennem_vic
+    attribute: demand
+    name: Vic
+  - entity: sensor.opennem_wa
+    attribute: demand
+    name: WA

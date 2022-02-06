@@ -39,7 +39,8 @@ apex_config:
     }
 
 series:
-  - entity: sensor.opennem_nsw1_generationvsdemand
+  - entity: sensor.opennem_nsw
+    attribute: genvsdemand
     type: area
     name: Demand
     extend_to_end: false
