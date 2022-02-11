@@ -2,6 +2,6 @@
 # https://github.com/dummylabs/thewatchman
 watchman:
   check_lovelace: True
-  column_width: [50, 10, 80]
+  columns_width: [50, 10, 80]
   ignored_files:
     - "/config/custom_components/icloud3/sample-lovelace-cards/"
