@@ -1,58 +1,4 @@
 ---
-sensor.pi_hole_status:
-  icon: mdi:pi-hole
-sensor.pi_hole_version:
-  icon: mdi:pi-hole
-sensor.weather_inside_dewpoint:
-  friendly_name: Dewpoint
-sensor.weather_inside_humidity:
-  friendly_name: Humidity
-sensor.weather_inside_temperature:
-  friendly_name: Temperature
-sensor.weather_outside_altimeter:
-  friendly_name: Altimeter
-sensor.weather_outside_apptemperature:
-  friendly_name: Temperature - Apparent
-sensor.weather_outside_barometer:
-  friendly_name: Barometer
-sensor.weather_outside_beaufort:
-  friendly_name: Beaufort
-sensor.weather_outside_cloudbase:
-  friendly_name: Cloud Base
-sensor.weather_outside_dewpoint:
-  friendly_name: Dewpoint
-sensor.weather_outside_heatindex:
-  friendly_name: Heat Index
-sensor.weather_outside_humidex:
-  friendly_name: Humidex
-sensor.weather_outside_humidity:
-  friendly_name: Humidity
-sensor.weather_outside_pressure:
-  friendly_name: Pressure
-sensor.weather_outside_radiation:
-  friendly_name: Radiation
-sensor.weather_outside_rain:
-  friendly_name: Instantaneous
-sensor.weather_outside_rain_24hr:
-  friendly_name: Last 24hrs
-sensor.weather_outside_rain_day:
-  friendly_name: Last Day
-sensor.weather_outside_rain_hour:
-  friendly_name: Last Hour
-sensor.weather_outside_rainrate:
-  friendly_name: Rate
-sensor.weather_outside_temperature:
-  friendly_name: Temperature
-sensor.weather_outside_uvindex:
-  friendly_name: UV Index
-sensor.weather_outside_windchill:
-  friendly_name: Windchill
-sensor.weather_outside_winddirection:
-  friendly_name: Wind Direction
-sensor.weather_outside_windgust:
-  friendly_name: Wind Gust
-sensor.weather_outside_windspeed:
-  friendly_name: Wind Speed
 sensor.yahoofinance_amx_ax:
   friendly_name: Aerometrex
 sensor.yahoofinance_aord:
@@ -73,8 +19,6 @@ sensor.yahoofinance_manu:
   friendly_name: Manchester United plc
 sensor.yahoofinance_nec_ax:
   friendly_name: Nine Entertainment
-sensor.yahoofinance_prt_ax:
-  friendly_name: Prime Media
 sensor.yahoofinance_rex_ax:
   friendly_name: Regional Express Airlines
 sensor.yahoofinance_rio_ax:

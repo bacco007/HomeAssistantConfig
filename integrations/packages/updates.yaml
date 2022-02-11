@@ -55,17 +55,17 @@ binary_sensor:
         unique_id: radarr_updateavailable
         device_class: problem
         value_template: >
-          {% if states('sensor.radarr_latest_version')|lower in ['unknown','unavailable','none'] %} False
-          {% elif state_attr('sensor.radarr_latest_version','installed') in ['true'] %} False
-          {% else %}{{ states('sensor.radarr_latest_version') != states('sensor.radarr_installed_version') }}
+          {% if states('sensor.radarr_latest_update')|lower in ['unknown','unavailable','none'] %} False
+          {% elif state_attr('sensor.radarr_latest_update','installed') in ['true'] %} False
+          {% else %}{{ states('sensor.radarr_latest_update') != states('sensor.radarr_installed_version') }}
           {% endif %}
       sonarr_updateavailable:
         unique_id: sonarr_updateavailable
         device_class: problem
         value_template: >
-          {% if states('sensor.sonarr_latest_version')|lower in ['unknown','unavailable','none'] %} False
-          {% elif state_attr('sensor.sonarr_latest_version','installed') in ['true'] %} False
-          {% else %}{{ states('sensor.sonarr_latest_version') != states('sensor.sonarr_installed_version') }}
+          {% if states('sensor.sonarr_latest_update')|lower in ['unknown','unavailable','none'] %} False
+          {% elif state_attr('sensor.sonarr_latest_update','installed') in ['true'] %} False
+          {% else %}{{ states('sensor.sonarr_latest_update') != states('sensor.sonarr_installed_version') }}
           {% endif %}
 
 sensor:
@@ -99,7 +99,7 @@ sensor:
     resource: !secret radarr_latestupdate_url
     name: radarr_latest_update
     value_template: >-
-      {{ value_json.0.version }}
+      {{ value_json[0]["version"] }}
     json_attributes_path: "$.[0]"
     json_attributes:
       - version
@@ -120,7 +120,7 @@ sensor:
     resource: !secret sonarr_latestupdate_url
     name: sonarr_latest_update
     value_template: >-
-      {{ value_json.0.version }}
+      {{ value_json[0]["version"] }}
     json_attributes_path: "$.[0]"
     json_attributes:
       - version
