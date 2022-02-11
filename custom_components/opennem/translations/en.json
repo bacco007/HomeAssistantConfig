@@ -1,24 +1,21 @@
 {
-    "config": {
-      "step": {
-        "user": {
-          "data": {
-            "region": "Region"
-          },
-          "description": "Choose Region",
-          "title": "OpenNEM"
-        }
+  "config": {
+    "abort": { "already_configured": "Region is already configured" },
+    "error": { "already_configured": "Region is already configured" },
+    "flow_title": "OpenNEM",
+    "step": {
+      "user": {
+        "title": "OpenNEM",
+        "data": { "region": "Choose Region to Monitor" }
       }
-    },
-    "options": {
-      "step": {
-        "init": {
-          "data": {
-            "region": "Region"
-          },
-          "description": "Choose Region",
-          "title": "OpenNEM"
-        }
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "OpenNEM",
+        "data": { "region": "Choose Region to Monitor" }
       }
     }
   }
+}

@@ -270,6 +270,8 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                     value = row["history"]["data"][-2]
                 elif row["type"] == "price":
                     value = row["history"]["data"][-2]
+                elif ftype == "solar_rooftop":
+                    value = row["history"]["data"][-2]
                 elif ftype == "imports":
                     value = abs(row["history"]["data"][-1])
                 elif ftype == "exports":
@@ -355,7 +357,7 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                     for emrow in edata["data"]:
                         if region.upper() in emrow["code"]:
                             emvalue = emrow["history"]["data"][-1]
-                            self._values["emissions_factor"] = emvalue
+                            self._values["emissions_factor"] = round(emvalue, 4)
                             regiondata.append("emissions_factor")
                             emvalue = None
                 else:
@@ -370,7 +372,7 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                         fregion.remove(region.upper())
                         fregionto = fregion[0].replace("1", "")
                         value = frow["history"]["data"][-1]
-                        self._values["flow_" + fregionto] = value
+                        self._values["flow_" + fregionto] = round(value, 4)
                         regiondata.append("flow_" + fregionto)
                     fregionto = None
                     value = None
