@@ -13,7 +13,7 @@ action:
     data:
       database: homeassistant
       query: >-
-        select yield from (SELECT last("value") AS "yield" FROM "homeassistant"."autogen"."kWh"
+        select yield from (SELECT max("value") AS "yield" FROM "homeassistant"."autogen"."kWh"
         WHERE time >= now() - 365d AND ("entity_id"='solar_sungrow_daily_yield' OR "entity_id"='sungrowsolar_daily_power_yields' OR "entity_id"='sungrowsolar_daily_power_yield')
         GROUP BY time(1d) FILL(null) tz('Australia/Sydney')) where yield < 100
       key_field_name: time
@@ -26,7 +26,7 @@ action:
     data:
       database: homeassistant
       query: >-
-        select yield from (SELECT moving_average(last("value"),7) AS "yield" FROM "homeassistant"."autogen"."kWh"
+        select yield from (SELECT moving_average(max("value"),7) AS "yield" FROM "homeassistant"."autogen"."kWh"
         WHERE time >= now() - 365d AND ("entity_id"='solar_sungrow_daily_yield' OR "entity_id"='sungrowsolar_daily_power_yields' OR "entity_id"='sungrowsolar_daily_power_yield')
         GROUP BY time(1d) FILL(null) tz('Australia/Sydney')) where yield < 100
       key_field_name: time
