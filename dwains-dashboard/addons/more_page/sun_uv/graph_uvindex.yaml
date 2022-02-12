@@ -72,7 +72,7 @@ series:
     group_by:
       func: last
       duration: 1h
-  - entity: sensor.weather_outside_uvindex
+  - entity: sensor.tempest_st_00056115_uv_index
     type: area
     name: Outside UVI
     extend_to_end: false

@@ -3,84 +3,96 @@ type: custom:stack-in-card
 cards:
   - type: custom:config-template-card
     variables:
-      - states['sensor.opennem_nsw1_electricity_generation'].state
+      - states['sensor.opennem_nsw'].state
     entities:
-      - sensor.opennem_nsw1_electricity_generation
+      - sensor.opennem_nsw
     card:
-      type: custom:auto-entities
-      card:
-        type: entities
-        title: Current Generation
-        style: |
-          ha-card {
-            padding-bottom: 10px;
-            background-color: var(--dwains-theme-primary)
-          }
-          .card-header {
-            padding: 5px 16px;
-            font-size: 18px;
-            font-weight: 700 !important;
-          }
-          .card-content div {
-              margin: 0 !important;
-          }
-          #states {
-            padding-top: 0px !important;
-            padding-bottom: 0px !important;
-          }
-          .secondary {
-            color: darkgray !important;
-            margin-left: 2px !important;
-          }
-      sort:
-        method: state
-        reverse: true
-        numeric: true
-      filter:
-        include:
-          - group: group.opennem
-            options:
-              type: custom:bar-card
-              style: |
-                ha-icon {
-                  color: var(--dwains-theme-accent) !important;
-                }
-                ha-icon	 {
-                  margin-top: -7px;
-                  padding-right: 5px;
-                }
-                bar-card-indicator	 {
-                  margin-top: -12px;
-                  padding-right: 5px;
-                }
-                bar-card-name	 {
-                  margin-top: -4.5px;
-                  padding-left: 5px;
-                }
-                bar-card-backgroundbar	 {
-                  margin-top: -3.5px;
-                  # border-radius: 2.5px;
-                }
-                bar-card-currentbar	 {
-                  margin-top: -3.5px;
-                  # border-radius: 2.5px;
-                }
-                bar-card-targetbar	 {
-                  margin-top: -3.5px;
-                  # border-radius: 2.5px;
-                }
-                bar-card-targetmarker	 {
-                  margin-top: -3.5px;
-                  # border-radius: 2.5px;
-                }
-                bar-card-value	 {
-                  margin-top: -4.5px;
-                  padding-left: 5px;
-                }
-              positions:
-                title: inside
-                value: inside
-              entity_row: true
-              min: 0
-              max: "${vars[0]}"
-              color: rgb(26,204,147,0.33)
+      type: entities
+      title: Generation Breakdown
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary);
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+        ha-icon {
+          color: var(--dwains-theme-accent) !important;
+        }
+
+      entities:
+        - entity: sensor.opennem_nsw
+          name: New South Wales
+        - type: custom:bar-card
+          positions:
+            title: inside
+            value: inside
+            icon: off
+            indicator: inside
+          entity_row: true
+          min: 0
+          max: "${vars[0]}"
+          color: rgb(26,204,147,0.33)
+          entities:
+            - entity: sensor.opennem_nsw
+              attribute: fossilfuel
+              color: rgba(68,68,68,0.5)
+              name: Fossil Fuels
+            - entity: sensor.opennem_nsw
+              attribute: renewables
+              color: rgb(82,188,163)
+              name: Renewables
+            - entity: sensor.opennem_nsw
+              attribute: coal_black
+              color: rgba(98,98,98,0.5)
+              name: Coal (Black)
+            - entity: sensor.opennem_nsw
+              attribute: gas_ccgt
+              color: rgb(253,180,98)
+              name: Gas (Combined Cycle Power Plant)
+            # - entity: sensor.opennem_nsw
+            #   attribute: gas_ocgt
+            #   color: rgb(255,205,150)
+            #   name: Gas (Open Cycle Gas Turbines)
+            - entity: sensor.opennem_nsw
+              attribute: hydro
+              color: rgb(69,130,180)
+              name: Hydro
+            - entity: sensor.opennem_nsw
+              attribute: solar_utility
+              color: rgb(251,213,0)
+              name: Solar (Utility)
+            - entity: sensor.opennem_nsw
+              attribute: solar_rooftop
+              color: rgb(255,224,61)
+              name: Solar (Rooftop)
+            - entity: sensor.opennem_nsw
+              attribute: wind
+              color: rgb(65,117,5)
+              name: Wind
+            - entity: sensor.opennem_nsw
+              attribute: distillate
+              color: rgb(243,80,32)
+              name: Distillate
+            - entity: sensor.opennem_nsw
+              attribute: imports
+              color: rgb(68,20,111)
+              name: Imports
+            - entity: sensor.opennem_nsw
+              attribute: exports
+              color: rgb(151,122,177)
+              name: Imports

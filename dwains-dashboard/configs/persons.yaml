@@ -17,19 +17,19 @@ persons:
     page_entities:
       # columns: 1 #optional
       entities:
-        - entity: sensor.tbiphone11_activity
-        - entity: sensor.tbiphone11_average_active_pace
-        - entity: sensor.tbiphone11_battery_level
-        - entity: sensor.tbiphone11_battery_state
-        - entity: sensor.tbiphone11_bssid
-        - entity: sensor.tbiphone11_connection_type
-        - entity: sensor.tbiphone11_distance
-        - entity: sensor.tbiphone11_floors_ascended
-        - entity: sensor.tbiphone11_floors_descended
-        - entity: sensor.tbiphone11_geocoded_location
-        - entity: sensor.tbiphone11_last_update_trigger
-        - entity: sensor.tbiphone11_sim_1
-        - entity: sensor.tbiphone11_sim_2
-        - entity: sensor.tbiphone11_ssid
-        - entity: sensor.tbiphone11_steps
-        - entity: sensor.tbiphone11_storage
+        - entity: sensor.tbiphone13pro_activity
+        - entity: sensor.tbiphone13pro_average_active_pace
+        - entity: sensor.tbiphone13pro_battery_level
+        - entity: sensor.tbiphone13pro_battery_state
+        - entity: sensor.tbiphone13pro_bssid
+        - entity: sensor.tbiphone13pro_connection_type
+        - entity: sensor.tbiphone13pro_distance
+        - entity: sensor.tbiphone13pro_floors_ascended
+        - entity: sensor.tbiphone13pro_floors_descended
+        - entity: sensor.tbiphone13pro_geocoded_location
+        - entity: sensor.tbiphone13pro_last_update_trigger
+        - entity: sensor.tbiphone13pro_sim_1
+        - entity: sensor.tbiphone13pro_sim_2
+        - entity: sensor.tbiphone13pro_ssid
+        - entity: sensor.tbiphone13pro_steps
+        - entity: sensor.tbiphone13pro_storage

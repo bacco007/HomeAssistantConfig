@@ -5,9 +5,8 @@ cards:
     title: Regions
     style: |
       ha-card {
-        margin-top: 10px;
         padding-bottom: 10px;
-        background-color: var(--dwains-theme-primary)
+        background-color: var(--dwains-theme-primary);
       }
       .card-header {
         padding: 5px 16px;
@@ -24,6 +23,9 @@ cards:
       .secondary {
         color: darkgray !important;
         margin-left: 2px !important;
+      }
+      ha-icon {
+        color: var(--dwains-theme-accent) !important;
       }
     entities:
       - entity: sensor.opennem_au

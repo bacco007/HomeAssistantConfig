@@ -3,7 +3,7 @@
 cameras:
   live_view: false
   entities:
-    - camera.camera_1_last_event
-    - camera.camera_2_last_event
-    - camera.camera_3_last_event
-    - camera.camera_4_last_event
+    - camera.back_door
+    - camera.front_door
+    - camera.front_gate
+    - camera.front_house

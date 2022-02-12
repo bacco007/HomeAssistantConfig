@@ -27,12 +27,13 @@
           margin-left: 2px !important;
         }
       entities:
-        - entity: sensor.vmtbsh01_monitordocker_transmission_state
+        - entity: sensor.tbsh1_monitordocker_transmission
           name: Docker Container
           icon: mdi:docker
-        - entity: sensor.vmtbsh01_monitordocker_transmission_status
+        - entity: switch.tbsh1_monitordocker_transmission
           name: Docker Container Status
           icon: mdi:docker
+        - type: divider
         - entity: sensor.transmission_status
           icon: mdi:transfer-down
         - type: divider
@@ -81,12 +82,13 @@
           margin-left: 2px !important;
         }
       entities:
-        - entity: sensor.vmtbsh01_monitordocker_sabnzbd_state
+        - entity: sensor.tbsh1_monitordocker_sabnzbd
           name: Docker Container
           icon: mdi:docker
-        - entity: sensor.vmtbsh01_monitordocker_sabnzbd_status
+        - entity: switch.tbsh1_monitordocker_sabnzbd
           name: Docker Container Status
           icon: mdi:docker
+        - type: divider
         - entity: sensor.sabnzbd_status
           icon: mdi:transfer-down
         - type: divider
@@ -138,18 +140,19 @@
           margin-left: 2px !important;
         }
       entities:
-        - entity: sensor.vmtbsh01_monitordocker_jdownloader_state
+        - entity: sensor.tbsh1_monitordocker_jdownloader
           name: Docker Container
           icon: mdi:docker
-        - entity: sensor.vmtbsh01_monitordocker_jdownloader_status
+        - entity: switch.tbsh1_monitordocker_jdownloader
           name: Docker Container Status
           icon: mdi:docker
         - type: divider
-        - binary_sensor.jdownloader_vmtbsh01_update_available
-        - sensor.jdownloader_vmtbsh01_download_speed
-        - sensor.jdownloader_vmtbsh01_links
-        - sensor.jdownloader_vmtbsh01_packages
-        - sensor.jdownloader_vmtbsh01_status
         - sensor.jdownloaders_online
-        - switch.jdownloader_vmtbsh01_limit
-        - switch.jdownloader_vmtbsh01_pause
+        - type: divider
+        - binary_sensor.jdownloader_tbsmarthome_update_available
+        - sensor.jdownloader_tbsmarthome_download_speed
+        - sensor.jdownloader_tbsmarthome_links
+        - sensor.jdownloader_tbsmarthome_packages
+        - sensor.jdownloader_tbsmarthome_status
+        - switch.jdownloader_tbsmarthome_limit
+        - switch.jdownloader_tbsmarthome_pause

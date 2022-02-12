@@ -26,3 +26,7 @@ cards:
       }
     entities:
       - entity: sensor.unavailable_entities
+      - type: section
+      - entity: sensor.watchman_last_updated
+      - entity: sensor.watchman_missing_entities
+      - entity: sensor.watchman_missing_services

@@ -1,11 +1,10 @@
-
 - type: custom:stack-in-card
   mode: vertical
   cards:
     - type: custom:dwains-flexbox-card
       cards:
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-3 col-md-1 col-lg-2'
+          item_classes: "col-xs-12 col-sm-3 col-md-1 col-lg-2"
           cards:
             - type: vertical-stack
               cards:
@@ -16,10 +15,10 @@
                   content: >
                     <h3>Birthdays, etc</h3>
         - type: custom:dwains-flexbox-card
-          item_classes: 'col-xs-12 col-sm-9 col-md-11 col-lg-10'
+          item_classes: "col-xs-12 col-sm-9 col-md-11 col-lg-10"
           cards:
             - type: custom:auto-entities
-              item_classes: 'col-xs-12 col-sm-12 col-md-12 col-lg-12'
+              item_classes: "col-xs-12 col-sm-12 col-md-12 col-lg-12"
               sort:
                 method: state
                 numeric: true
@@ -119,10 +118,3 @@
               name: "Here: Home -> Work by Car"
             - entity: sensor.here_travel_home_to_work_walk
               name: "Here: Home -> Work on Foot"
-            - type: section
-            - entity: sensor.waze_travel_home_to_work
-              name: "Waze: Home -> Work"
-            - entity: sensor.waze_travel_tom_to_work
-              name: "Waze: Current Location -> Work"
-            - entity: sensor.waze_travel_tom_to_home
-              name: "Waze: Current Location -> Home"
