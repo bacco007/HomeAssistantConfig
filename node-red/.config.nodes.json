@@ -405,27 +405,6 @@
             }
         }
     },
-    "node-red-contrib-actionflows": {
-        "name": "node-red-contrib-actionflows",
-        "version": "2.0.4",
-        "local": false,
-        "user": false,
-        "nodes": {
-            "actionfilters": {
-                "name": "actionfilters",
-                "types": [
-                    "actionflows",
-                    "actionflows_in",
-                    "actionflows_out"
-                ],
-                "enabled": true,
-                "local": false,
-                "user": false,
-                "module": "node-red-contrib-actionflows",
-                "file": "/opt/node_modules/node-red-contrib-actionflows/actionflows/actionflows.js"
-            }
-        }
-    },
     "node-red-contrib-alexa-home-skill": {
         "name": "node-red-contrib-alexa-home-skill",
         "version": "0.1.19",
@@ -506,7 +485,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.41.3",
+        "version": "0.42.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -519,8 +498,8 @@
                     "server",
                     "api-current-state",
                     "ha-device",
-                    "ha-entity-config",
                     "ha-entity",
+                    "ha-entity-config",
                     "server-events",
                     "server-state-changed",
                     "ha-fire-event",
@@ -540,25 +519,6 @@
                 "user": false,
                 "module": "node-red-contrib-home-assistant-websocket",
                 "file": "/opt/node_modules/node-red-contrib-home-assistant-websocket/dist/index.js"
-            }
-        }
-    },
-    "node-red-contrib-http-request": {
-        "name": "node-red-contrib-http-request",
-        "version": "0.1.14",
-        "local": false,
-        "user": false,
-        "nodes": {
-            "www-request": {
-                "name": "www-request",
-                "types": [
-                    "www-request"
-                ],
-                "enabled": true,
-                "local": false,
-                "user": false,
-                "module": "node-red-contrib-http-request",
-                "file": "/opt/node_modules/node-red-contrib-http-request/www-request.js"
             }
         }
     },

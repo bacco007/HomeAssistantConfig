@@ -8,7 +8,9 @@
                 "view-node-status": true,
                 "view-node-show-label": true,
                 "view-show-tips": true,
-                "view-show-welcome-tours": true
+                "view-show-welcome-tours": true,
+                "view-store-position": false,
+                "view-store-zoom": false
             },
             "keymap": {
                 "core:disable-selected-nodes": {
@@ -18,7 +20,7 @@
                 }
             },
             "tours": {
-                "welcome": "2.1.3"
+                "welcome": "2.2.0"
             }
         }
     }

@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, February 6th 2022_
+_Stats as at 05:00, Saturday, February 12th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 373     | 2606         | 1864 | 88 |
+| unknown | 374     | 2616         | 1879 | 88 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 88
-Binary Sensor | 250
+Binary Sensor | 249
 Camera | 8
 Device Tracker | 75
 Group | 10
@@ -92,7 +92,7 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 1864
+Sensor | 1879
 Sun | 1
 Switch | 158
 Weather | 9
@@ -136,6 +136,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
+| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
@@ -301,6 +302,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
+| [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [readme](https://www.home-assistant.io/components/readme) |
@@ -359,7 +361,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.icloud](https://www.home-assistant.io/components/sensor.icloud) |
 | [sensor.integration](https://www.home-assistant.io/components/sensor.integration) |
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
-| [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
 | [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app) |
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
 | [sensor.moon](https://www.home-assistant.io/components/sensor.moon) |
@@ -403,7 +404,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
-| [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.uptimerobot](https://www.home-assistant.io/components/sensor.uptimerobot) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
@@ -469,6 +469,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [vacuum.tuya](https://www.home-assistant.io/components/vacuum.tuya) |
 | [version](https://www.home-assistant.io/components/version) |
+| [watchman](https://www.home-assistant.io/components/watchman) |
 | [waze_travel_time](https://www.home-assistant.io/components/waze_travel_time) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
@@ -536,7 +537,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Spotcast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
-- [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
+- [Watchman](https://github.com/dummylabs/thewatchman)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 - [WeatherFlow Weather](https://github.com/briis/hass-weatherflow)
 - [Yahoo Finance](https://github.com/iprak/yahoofinance)</details>
