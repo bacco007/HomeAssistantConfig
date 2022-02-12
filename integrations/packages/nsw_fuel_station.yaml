@@ -10,14 +10,6 @@ homeassistant:
       friendly_name: Ampol Amplify 98 (WhiteSt)
       <<: *customize
 
-    sensor.fuelcheck_bp_tamworth_p98:
-      friendly_name: BP Ultimate98 (Viaduct)
-      <<: *customize
-
-    sensor.fuelcheck_bp_nemingha_p98:
-      friendly_name: BP Ultimate98 (Nemingha)
-      <<: *customize
-
     sensor.fuelcheck_caltex_tamworth_p98_2:
       friendly_name: Ampol Amplify 98 (GoonooGoonooRd)
       <<: *customize
@@ -34,12 +26,6 @@ sensor:
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
     fuel_types: P98
-    station_id: 1145
-    # BP Viaduct
-
-  - platform: nsw_fuel_station
-    entity_namespace: fuelcheck
-    fuel_types: P98
     station_id: 16921
     # Caltex White Stret
 
@@ -48,12 +34,6 @@ sensor:
     fuel_types: P98
     station_id: 573
     # Caltex Bridge St
-
-  - platform: nsw_fuel_station
-    entity_namespace: fuelcheck
-    fuel_types: P98
-    station_id: 2449
-    # BP Nemingha
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
