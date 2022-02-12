@@ -46,16 +46,6 @@ sensor:
         friendly_name: "All Components"
         icon_template: mdi:code-tags
         value_template: "{{ states.sensor.hass_main_config.attributes.components | count }}"
-
-binary_sensor:
-  - platform: template
-    sensors:
-      ha_update_available:
-        friendly_name: "HA Update Available"
-        icon_template: mdi:home-assistant
-        value_template: >-
-          {{ states('sensor.ha_latest_version') != 'unavailable' and states('sensor.ha_latest_version') > states('sensor.ha_current_version') }}
-
 # http://192.168.1.62:8123/api/supervisor/info
 # http://192.168.1.62:8123/api/hassio/snapshots
 # http://192.168.1.62:8123/api/hassio/info

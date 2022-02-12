@@ -2,9 +2,8 @@
 platform: template
 sensors:
   apple_tv_source:
+    icon_template: >-
+      phu:apple-tv-box
     value_template: >-
-      {% if states('media_player.apple_tv_bedroom') != 'idle' %}
-        {{ state_attr('media_player.apple_tv_bedroom', 'app_name') }}
-      {% else %}
-        Not Playing
-      {% endif %}
+      {%- set dev = 'media_player.apple_tv_bedroom' %}
+      {{ is_state(dev, 'idle') | iif("Not Playing", state_attr(dev, 'app_name')|default("Not Playing", true)) }}

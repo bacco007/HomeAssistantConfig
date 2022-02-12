@@ -7,4 +7,3 @@ ignored_unavailable_entities:
     - sensor.blitzortung_lightning_distance
     - sensor.lightning_counter_lasthour
     - sensor.lightning_distance_lasthour
-    - sensor.weather_outside_cloudbase

@@ -105,24 +105,33 @@ sensor:
       plex_topmovie:
         friendly_name: Plex Top Movie
         icon_template: mdi:plex
-        value_template: "{{state_attr('sensor.tautulli', 'Top Movie')}}"
+        value_template: >
+          {{ state_attr('sensor.tautulli', 'Top Movie')|default("No Top Movie", true) }}
       plex_toptvshow:
         friendly_name: Plex Top TV Show
         icon_template: mdi:plex
-        value_template: "{{state_attr('sensor.tautulli', 'Top TV Show')}}"
+        value_template: >
+          {{ state_attr('sensor.tautulli', 'Top TV Show')|default("No Top TV Show", true) }}
       plex_topuser:
         friendly_name: Plex Top User
         icon_template: mdi:plex
-        value_template: "{{state_attr('sensor.tautulli', 'Top User')}}"
+        value_template: >
+          {{ state_attr('sensor.tautulli', 'Top User')|default("No Top User", true)}}
       plex_lanbandwidth:
-        value_template: "{{ (state_attr('sensor.tautulli','lan_bandwidth') / 1024) | round(2) }}"
+        value_template: >
+          {{ (state_attr('sensor.tautulli','lan_bandwidth') / 1024) | round(2) | float(default=0) }}
         unit_of_measurement: "Mbps"
         friendly_name: "Plex LAN Bandwidth"
+        icon_template: mdi:plex
       plex_wanbandwidth:
-        value_template: "{{ (state_attr('sensor.tautulli','wan_bandwidth') / 1024) | round(2) }}"
+        value_template: >
+          {{ (state_attr('sensor.tautulli','wan_bandwidth') / 1024) | round(2) | float(default=0) }}
         unit_of_measurement: "Mbps"
         friendly_name: "Plex WAN Bandwidth"
+        icon_template: mdi:plex
       plex_totalbandwidth:
-        value_template: "{{ (state_attr('sensor.tautulli','total_bandwidth') / 1024) | round(2) }}"
+        value_template: >
+          {{ (state_attr('sensor.tautulli','total_bandwidth') / 1024) | round(2) | float(default=0) }}
         unit_of_measurement: "Mbps"
         friendly_name: "Plex Total Bandwidth"
+        icon_template: mdi:plex

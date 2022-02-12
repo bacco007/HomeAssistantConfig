@@ -28,10 +28,9 @@ binary_sensor:
           {{ is_state('binary_sensor.updater','on')
               or is_state('binary_sensor.updater_core','on')
               or is_state('binary_sensor.updater_supervisor','on')
-              or is_state('binary_sensor.updater_hassos','on')
+              or is_state('binary_sensor.updater_os','on')
               or is_state('binary_sensor.updater_addons','on')
               or is_state('binary_sensor.updater_hacs','on')
-              or is_state('binary_sensor.updater_breaking_changes','on')
               or is_state('binary_sensor.updater_cli','on')
               or is_state('binary_sensor.updater_dns','on')
               or is_state('binary_sensor.updater_audio','on')
@@ -110,11 +109,6 @@ binary_sensor:
           latest_version: "{{ state_attr('sensor.observer_updates', 'latest_version') }}"
 
 sensor:
-  #######################################################################################################################
-  ## Version Sensor
-  ## https://www.home-assistant.io/components/sensor.version/
-  #######################################################################################################################
-
   - platform: command_line
     name: core_updates
     command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''

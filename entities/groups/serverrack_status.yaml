@@ -1,5 +1,0 @@
----
-serverrack_device:
-  name: Server Rack - Devices
-  entities:
-    - sensor.pi_hole_status

@@ -1,7 +1,0 @@
----
-google_home_speakers:
-  name: Google Home Speakers
-  entities:
-    - media_player.office_speaker
-    - media_player.shield_2
-    - media_player.bedroom_display

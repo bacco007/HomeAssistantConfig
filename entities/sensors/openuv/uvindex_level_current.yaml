@@ -5,7 +5,7 @@ sensors:
     friendly_name: Current UV Index Level
     icon_template: mdi:weather-sunny
     value_template: >
-      {% set index = states('sensor.current_uv_index') | float(-1) %}
+      {% set index = states('sensor.current_uv_index_2') | float(-1) %}
       {% if index > 11 %}
         Extreme
       {% elif index > 8 %}

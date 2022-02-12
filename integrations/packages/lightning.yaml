@@ -18,5 +18,5 @@ sensor:
     sensors:
       lightning_countbolts_lasthour:
         value_template: >
-          {{ states.geo_location |selectattr('attributes.source','eq','blitzortung') | list | length }}
+          {{ states.geo_location |selectattr('attributes.source','eq','blitzortung') | list | length  | int(default=0) }}
         unit_of_measurement: "↯"

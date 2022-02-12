@@ -4,4 +4,6 @@ watchman:
   check_lovelace: True
   columns_width: [50, 10, 80]
   ignored_files:
-    - "/custom_components/icloud3/sample-lovelace-cards/*"
+    - "/config/custom_components/*"
+    - "/config/blueprints/*"
+

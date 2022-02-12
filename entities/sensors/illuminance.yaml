@@ -14,7 +14,7 @@ sensors:
       {%- set factors = namespace(condition='',sun='') %}
 
       {#- Retrieve the current condition and normalize the value #}
-      {%- set current_condition = states("weather.tamworth_airport") %}
+      {%- set current_condition = states("weather.east_tamworth") %}
       {%- set current_condition = current_condition|lower|replace("-day","")|replace("_day","")|replace("-night","")|replace("_night","")|replace("and","")|replace("-", " ")|replace("_", " ")|replace("(","")|replace(")","")|replace(" ", "")|replace(".", "") %}
 
       {#- Assign a seemingly arbitrary number to the condition factor #}

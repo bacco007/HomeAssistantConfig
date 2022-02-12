@@ -1,341 +1,157 @@
 ---
-homeassistant:
-  customize:
-    device_tracker.vmtbsh01:
-      name: vmTBSH01 (App Server)
-      icon: mdi:server
-
 binary_sensor:
   - platform: template
     sensors:
       networkstatus_router:
-        friendly_name: UniFi USG
-        value_template: "{{ is_state('device_tracker.usg', 'home') }}"
+        friendly_name: UniFi UDM
+        value_template: "{{ is_state('device_tracker.the_dream_police', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.usg', 'home') %}
-            mdi:router-wireless
-          {% else %}
-            mdi:router-wireless
-          {% endif %}
+          mdi:router-wireless
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.usg', 'home') %}
-              IP: {{ states.device_tracker.usg.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
-      networkstatus_wifi:
-        friendly_name: UniFi WiFi - AP-AC-Lite (UFO)
-        value_template: "{{ is_state('device_tracker.ufo', 'home') }}"
-        icon_template: >-
-          {% if is_state('device_tracker.ufo', 'home') %}
-            mdi:access-point
-          {% else %}
-            mdi:access-point
-          {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.ufo', 'home') %}
-              IP: {{ states.device_tracker.ufo.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.the_dream_police' %}
+            {{ is_state(dev, 'home') | iif( 'IP: 192.168.1.1', 'IP Address Not Available') }}
       networkstatus_switch:
         friendly_name: UniFi Switch - 8 Port 60W (Hateful8)
-        value_template: "{{ is_state('device_tracker.hateful8', 'home') }}"
+        value_template: "{{ is_state('device_tracker.hateful_8', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.hateful8', 'home') %}
-            mdi:switch
-          {% else %}
-            mdi:switch
-          {% endif %}
+          mdi:switch
         attribute_templates:
-          ip_address: "IP Address Not Available"
+          ip_address: >-
+            "IP Address Not Available"
       networkstatus_nas_thecube2:
         friendly_name: Synology NAS (TheCube2)
         value_template: "{{ is_state('device_tracker.thecube2', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.thecube2', 'home') %}
-            mdi:nas
-          {% else %}
-            mdi:nas
-          {% endif %}
+          mdi:nas
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.thecube2', 'home') %}
-              IP: {{ states.device_tracker.thecube2.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.thecube2' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_hdhomerun:
         friendly_name: HDHomeRun
         value_template: "{{ is_state('device_tracker.hdhomerun', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.hdhomerun', 'home') %}
-            mdi:television-box
-          {% else %}
-            mdi:television-box
-          {% endif %}
+          mdi:television-box
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.hdhomerun', 'home') %}
-              IP: {{ states.device_tracker.hdhomerun.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.hdhomerun' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_googlenesthub:
         friendly_name: Google Home - Nest Hub
         value_template: "{{ is_state('device_tracker.google_home_hub', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.google_home_hub', 'home') %}
-            mdi:google-home
-          {% else %}
-            mdi:google-home
-          {% endif %}
+          mdi:google-home
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.google_home_hub', 'home') %}
-              IP: {{ states.device_tracker.google_home_hub.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.google_home_hub' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_harmonyhub:
         friendly_name: Harmony Hub
         value_template: "{{ is_state('device_tracker.harmonyhub', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.harmonyhub', 'home') %}
-            mdi:remote
-          {% else %}
-            mdi:remote
-          {% endif %}
+          mdi:remote
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.harmonyhub', 'home') %}
-              IP: {{ states.device_tracker.harmonyhub.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.harmonyhub' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_amazonalexaplus:
         friendly_name: Amazon Alexa Plus
         value_template: "{{ is_state('device_tracker.amazon_alexa_plus', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.amazon_alexa_plus', 'home') %}
-            mdi:amazon-alexa
-          {% else %}
-            mdi:amazon-alexa
-          {% endif %}
+          mdi:amazon-alexa
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.amazon_alexa_plus', 'home') %}
-              IP: {{ states.device_tracker.amazon_alexa_plus.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
-      networkstatus_sonos:
-        friendly_name: Sonos Play:1 (Bedroom)
-        value_template: "{{ is_state('device_tracker.sonos_lounge_room', 'home') }}"
-        icon_template: >-
-          {% if is_state('device_tracker.sonos_lounge_room', 'home') %}
-            si:sonos
-          {% else %}
-            si:sonos
-          {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.sonos_lounge_room', 'home') %}
-              IP: {{ states.device_tracker.sonos_lounge_room.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.amazon_alexa_plus' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_sonos_office:
         friendly_name: Sonos One (Office)
-        value_template: "{{ is_state('device_tracker.sonoszp', 'home') }}"
+        value_template: "{{ is_state('device_tracker.sonosoneoffice', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.sonoszp', 'home') %}
-            si:sonos
-          {% else %}
-            si:sonos
-          {% endif %}
+          si:sonos
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.sonoszp', 'home') %}
-              IP: {{ states.device_tracker.sonoszp.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.sonosoneoffice' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_appletv:
         friendly_name: Apple TV (Bedroom)
         value_template: "{{ is_state('device_tracker.appletvbedroom', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.appletvbedroom', 'home') %}
-            mdi:apple-airplay
-          {% else %}
-            mdi:apple-airplay
-          {% endif %}
+          phu:apple-tv-box
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.appletvbedroom', 'home') %}
-              IP: {{ states.device_tracker.appletvbedroom.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
-      networkstatus_amazonfirestick:
-        friendly_name: Amazon Fire Stick
-        value_template: "{{ is_state('device_tracker.amazon_fire_stick', 'home') }}"
-        icon_template: >-
-          {% if is_state('device_tracker.amazon_fire_stick', 'home') %}
-            si:amazonfiretv
-          {% else %}
-            si:amazonfiretv
-          {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.amazon_fire_stick', 'home') %}
-              IP: {{ states.device_tracker.amazon_fire_stick.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
-      networkstatus_foxtelnowbox:
-        friendly_name: Foxtel Now Box
-        value_template: "{{ is_state('device_tracker.foxtelnow', 'home') }}"
-        icon_template: >-
-          {% if is_state('device_tracker.foxtelnow', 'home') %}
-            mdi:android
-          {% else %}
-            mdi:android
-          {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.foxtelnow', 'home') %}
-              IP: {{ states.device_tracker.foxtelnow.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
-      networkstatus_googlenestmini:
-        friendly_name: Google Home - Nest Mini
-        value_template: "{{ is_state('device_tracker.google_nest_mini', 'home') }}"
-        icon_template: >-
-          {% if is_state('device_tracker.google_nest_mini', 'home') %}
-            si:googleassistant
-          {% else %}
-            si:googleassistant
-          {% endif %}
-        attribute_templates:
-          ip_address: >-
-            {% if is_state('device_tracker.google_nest_mini', 'home') %}
-              IP: {{ states.device_tracker.google_nest_mini.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.appletvbedroom' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_xboxone:
         friendly_name: Xbox One
         value_template: "{{ is_state('device_tracker.xboxone', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.xboxone', 'home') %}
-            si:xbox
-          {% else %}
-            si:xbox
-          {% endif %}
+          si:xbox
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.xboxone', 'home') %}
-              IP: {{ states.device_tracker.xboxone.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.xboxone' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_fetchtv:
         friendly_name: Fetch TV Mighty
         value_template: "{{ is_state('device_tracker.fetch_tv_mighty', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.fetch_tv_mighty', 'home') %}
-            mdi:television-box
-          {% else %}
-            mdi:television-box
-          {% endif %}
+          mdi:television-box
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.fetch_tv_mighty', 'home') %}
-              IP: {{ states.device_tracker.fetch_tv_mighty.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.fetch_tv_mighty' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_loungetv:
         friendly_name: Sony Bravia TV - Lounge
         value_template: "{{ is_state('device_tracker.lounge_tv', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.lounge_tv', 'home') %}
-            mdi:television
-          {% else %}
-            mdi:television
-          {% endif %}
+          mdi:television
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.lounge_tv', 'home') %}
-              IP: {{ states.device_tracker.lounge_tv.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.lounge_tv' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_nvidiashield:
         friendly_name: Nvidia Shield
         value_template: "{{ is_state('device_tracker.nvidia_shield', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.nvidia_shield', 'home') %}
-            si:nvidia
-          {% else %}
           si:nvidia
-          {% endif %}
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.nvidia_shield', 'home') %}
-              IP: {{ states.device_tracker.nvidia_shield.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.nvidia_shield' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_solar:
         friendly_name: Solar Inverter
         value_template: "{{ is_state('device_tracker.rakmodule_7622ae', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.rakmodule_7622ae', 'home') %}
-            mdi:solar-panel
-          {% else %}
-            mdi:solar-panel
-          {% endif %}
+          mdi:solar-panel
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.rakmodule_7622ae', 'home') %}
-              IP: {{ states.device_tracker.rakmodule_7622ae.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.rakmodule_7622ae' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_bedroomtv:
         friendly_name: Samsung UA40ES6200 - Bedroom
         value_template: "{{ is_state('device_tracker.samsung_ua40es6200', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.samsung_ua40es6200', 'home') %}
-            si:samsung
-          {% else %}
           si:samsung
-          {% endif %}
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.samsung_ua40es6200', 'home') %}
-              IP: {{ states.device_tracker.samsung_ua40es6200.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.samsung_ua40es6200' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
+
       networkstatus_dysonfan:
         friendly_name: Dyson Hot+Cool Link
         value_template: "{{ is_state('device_tracker.sz2_au_kka0995a', 'home') }}"
         icon_template: >-
-          {% if is_state('device_tracker.sz2_au_kka0995a', 'home') %}
-            mdi:fan
-          {% else %}
-            mdi:fan
-          {% endif %}
+          mdi:fan
         attribute_templates:
           ip_address: >-
-            {% if is_state('device_tracker.sz2_au_kka0995a', 'home') %}
-              IP: {{ states.device_tracker.sz2_au_kka0995a.attributes['ip'] }}
-            {% else %}
-              IP Address Not Available
-            {% endif %}
+            {%- set dev = 'device_tracker.sz2_au_kka0995a' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
+      networkstatus_weatherflow:
+        friendly_name: Weatherflow Tempest
+        value_template: "{{ is_state('device_tracker.weatherflow', 'home') }}"
+        icon_template: >-
+          mdi:gauge
+        attribute_templates:
+          ip_address: >-
+            {%- set dev = 'device_tracker.weatherflow' %}
+            {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
