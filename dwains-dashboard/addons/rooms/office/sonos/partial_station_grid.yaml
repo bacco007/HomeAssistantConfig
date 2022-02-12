@@ -1,6 +1,6 @@
 ---
 type: custom:dwains-flexbox-card
-items_classes: 'col-xs-4 col-sm-2'
+items_classes: "col-xs-4 col-sm-2"
 cards:
   - type: custom:button-card
     entity: media_player.office_sonos
@@ -153,7 +153,7 @@ cards:
     name: ABC Radio National (Sydney, NSW)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/ABC_Radio_National__Sydney__NSW.png
+    entity_picture: ../local/radioicons/ABC_Radio_National_Sydney_NSW.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -175,7 +175,7 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_ABC_Radio_National__Sydney__NSW
+        entity_id: automation.sonos_playlist_ABC_Radio_National_Sydney_NSW
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -414,7 +414,7 @@ cards:
     name: Absolute Radio UK (AAC)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/Absolute_Radio_UK__AAC.png
+    entity_picture: ../local/radioicons/Absolute_Radio_UK_AAC.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -436,7 +436,7 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_Absolute_Radio_UK__AAC
+        entity_id: automation.sonos_playlist_Absolute_Radio_UK_AAC
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -646,7 +646,7 @@ cards:
     name: Double J (Sydney, NSW)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/Double_J__Sydney__NSW.png
+    entity_picture: ../local/radioicons/Double_J_Sydney_NSW.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -668,7 +668,7 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_Double_J__Sydney__NSW
+        entity_id: automation.sonos_playlist_Double_J_Sydney_NSW
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -994,7 +994,7 @@ cards:
     name: triple j (New South Wales)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/triple_j__New_South_Wales.png
+    entity_picture: ../local/radioicons/triple_j_New_South_Wales.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -1016,7 +1016,7 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_triple_j__New_South_Wales
+        entity_id: automation.sonos_playlist_triple_j_New_South_Wales
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -1081,7 +1081,7 @@ cards:
     name: Triple M 90s (Sydney)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/Triple_M_90s__Sydney.png
+    entity_picture: ../local/radioicons/Triple_M_90s_Sydney.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -1103,14 +1103,14 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_Triple_M_90s__Sydney
+        entity_id: automation.sonos_playlist_Triple_M_90s_Sydney
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
     name: Triple M Classic Rock Digital (Sydney)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/Triple_M_Classic_Rock_Digital__Sydney.png
+    entity_picture: ../local/radioicons/Triple_M_Classic_Rock_Digital_Sydney.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -1132,14 +1132,14 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_Triple_M_Classic_Rock_Digital__Sydney
+        entity_id: automation.sonos_playlist_Triple_M_Classic_Rock_Digital_Sydney
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
     name: Triple M Hard n Heavy (Sydney)
     show_name: false
     show_entity_picture: true
-    entity_picture: ../local/radioicons/Triple_M_Hard_n_Heavy__Sydney.png
+    entity_picture: ../local/radioicons/Triple_M_Hard_n_Heavy_Sydney.png
     aspect_ratio: 1/1
     styles:
       entity_picture:
@@ -1161,7 +1161,7 @@ cards:
       action: call-service
       service: automation.trigger
       service_data:
-        entity_id: automation.sonos_playlist_Triple_M_Hard_n_Heavy__Sydney
+        entity_id: automation.sonos_playlist_Triple_M_Hard_n_Heavy_Sydney
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false

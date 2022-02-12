@@ -1,9 +1,9 @@
 ---
 alias: Sonos - Playlist - Triple M Classic Rock Digital (Sydney)
-id: Triple_M_Classic_Rock_Digital__Sydney
+id: Triple_M_Classic_Rock_Digital_Sydney
 trigger:
   - platform: webhook
-    webhook_id: sonos_Triple_M_Classic_Rock_Digital__Sydney
+    webhook_id: sonos_Triple_M_Classic_Rock_Digital_Sydney
 action:
   - service: media_player.select_source
     data:

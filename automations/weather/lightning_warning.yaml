@@ -13,7 +13,7 @@ condition:
     below: 10
 
 action:
-  - service: notify.mobile_app_tbiphone11
+  - service: notify.mobile_app_tbiphone13pro
     data:
       title: Weather Alert
       message: Lightning within 10km of home!

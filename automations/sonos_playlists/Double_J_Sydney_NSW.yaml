@@ -1,9 +1,9 @@
 ---
 alias: Sonos - Playlist - Double J (Sydney, NSW)
-id: Double_J__Sydney__NSW
+id: Double_J_Sydney_NSW
 trigger:
   - platform: webhook
-    webhook_id: sonos_Double_J__Sydney__NSW
+    webhook_id: sonos_Double_J_Sydney_NSW
 action:
   - service: media_player.select_source
     data:
