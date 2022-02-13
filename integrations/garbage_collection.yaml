@@ -24,7 +24,7 @@ sensor:
         friendly_name: Next Bin Day
         icon_template: mdi:truck-delivery
         value_template: >-
-          {% set val = states.sensor.binday_waste.attributes['days'] %}
+          {% set val = states.sensor.binday_waste.attributes['days'] | int(default=0) %}
           {% if val == 0 %}
           {% set day = "Today" %}
           {% elif val == 1 %}
@@ -32,7 +32,7 @@ sensor:
           {% else %}
           {% set day = "In " ~ val ~ " Days" %}
           {% endif %}
-          {% set gwval = states.sensor.binday_greenwaste.attributes['days'] %}
+          {% set gwval = states.sensor.binday_greenwaste.attributes['days'] | int(default=0) %}
           {% if gwval <= 6 %}
             {% set bins = "Red + Green" %}
           {% else %}
@@ -47,7 +47,7 @@ sensor:
         friendly_name: General Waste
         icon_template: mdi:delete-empty
         value_template: >-
-          {% set val = states.sensor.binday_waste.attributes['days'] %}
+          {% set val = states.sensor.binday_waste.attributes['days'] | int(default=0) %}
           {% if val == 0 %}
             Today
           {% elif val == 1 %}
@@ -61,7 +61,7 @@ sensor:
         friendly_name: Green Waste
         icon_template: mdi:leaf
         value_template: >-
-          {% set val = states.sensor.binday_greenwaste.attributes['days'] %}
+          {% set val = states.sensor.binday_greenwaste.attributes['days'] | int(default=0) %}
           {% if val == 0 %}
             Today
           {% elif val == 1 %}
@@ -75,7 +75,7 @@ sensor:
         friendly_name: Recycling
         icon_template: mdi:recycle
         value_template: >-
-          {% set val = states.sensor.binday_recycling.attributes['days'] %}
+          {% set val = states.sensor.binday_recycling.attributes['days'] | int(default=0) %}
           {% if val == 0 %}
             Today
           {% elif val == 1 %}

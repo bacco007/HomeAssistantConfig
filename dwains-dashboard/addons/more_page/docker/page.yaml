@@ -18,180 +18,80 @@
                       - name: "TBSH1"
                         icon: "mdi:docker"
                         navpath: "#tbsh1"
-                    # - !include
-                    #   - ../../1_Templates/button_switch.yaml
-                    #   - name: "TBSH03"
-                    #     icon: "mdi:docker"
-                    #     navpath: "#tbsh03"
-                    # - !include
-                    #   - ../../1_Templates/button_switch.yaml
-                    #   - name: "PI4SRV"
-                    #     icon: "mdi:docker"
-                    #     navpath: "#p14srv"
+                    - !include
+                      - ../../1_Templates/button_switch.yaml
+                      - name: "TBSH03"
+                        icon: "mdi:docker"
+                        navpath: "#tbsh03"
+                    - !include
+                      - ../../1_Templates/button_switch.yaml
+                      - name: "PI4SRV"
+                        icon: "mdi:docker"
+                        navpath: "#p14srv"
             - type: vertical-stack
               cards:
                 - !include
                   - partial.yaml
                   - name: "TBSH1"
                     filter: "switch.tbsh1_monitordocker*"
-        # tbsh03:
-        #   type: vertical-stack
-        #   cards:
-        #     - type: custom:dwains-flexbox-card
-        #       padding: true
-        #       cards:
-        #         #heading
-        #         - type: horizontal-stack
-        #           cards:
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch_active.yaml
-        #               - name: "TBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh03"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH02"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh02"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh03"
-        #     - type: vertical-stack
-        #       cards:
-        #         - !include
-        #           - partial.yaml
-        #           - name: "TBSH03"
-        #             filter: "switch.tbsh03_monitordocker*"
+        tbsh03:
+          type: vertical-stack
+          cards:
+            - type: custom:dwains-flexbox-card
+              padding: true
+              cards:
+                #heading
+                - type: horizontal-stack
+                  cards:
+                    - !include
+                      - ../../1_Templates/button_switch.yaml
+                      - name: "TBSH1"
+                        icon: "mdi:docker"
+                        navpath: "#tbsh1"
+                    - !include
+                      - ../../1_Templates/button_switch_active.yaml
+                      - name: "TBSH03"
+                        icon: "mdi:docker"
+                        navpath: "#tbsh03"
+                    - !include
+                      - ../../1_Templates/button_switch.yaml
+                      - name: "PI4SRV"
+                        icon: "mdi:docker"
+                        navpath: "#p14srv"
+            - type: vertical-stack
+              cards:
+                - !include
+                  - partial.yaml
+                  - name: "TBSH03"
+                    filter: "switch.tbsh03_monitordocker*"
 
-        # vmtbsh01:
-        #   type: vertical-stack
-        #   cards:
-        #     - type: custom:dwains-flexbox-card
-        #       padding: true
-        #       cards:
-        #         #heading
-        #         - type: horizontal-stack
-        #           cards:
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh03"
-        #             - !include
-        #               - ../../1_Templates/button_switch_active.yaml
-        #               - name: "vmTBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH02"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh02"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh03"
-        #     - type: vertical-stack
-        #       cards:
-        #         - !include
-        #           - partial.yaml
-        #           - name: "vmTBSH01"
-        #             filter: "switch.vmtbsh01_monitordocker*"
-        # vmtbsh02:
-        #   type: vertical-stack
-        #   cards:
-        #     - type: custom:dwains-flexbox-card
-        #       padding: true
-        #       cards:
-        #         #heading
-        #         - type: horizontal-stack
-        #           cards:
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh03"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch_active.yaml
-        #               - name: "vmTBSH02"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh02"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh03"
-        #     - type: vertical-stack
-        #       cards:
-        #         - !include
-        #           - partial.yaml
-        #           - name: "vmTBSH01"
-        #             filter: "switch.vmtbsh02_monitordocker*"
-        # vmtbsh03:
-        #   type: vertical-stack
-        #   cards:
-        #     - type: custom:dwains-flexbox-card
-        #       padding: true
-        #       cards:
-        #         #heading
-        #         - type: horizontal-stack
-        #           cards:
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "TBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#tbsh03"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH01"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh01"
-        #             - !include
-        #               - ../../1_Templates/button_switch.yaml
-        #               - name: "vmTBSH02"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh02"
-        #             - !include
-        #               - ../../1_Templates/button_switch_active.yaml
-        #               - name: "vmTBSH03"
-        #                 icon: "mdi:docker"
-        #                 navpath: "#vmtbsh03"
-        #     - type: vertical-stack
-        #       cards:
-        #         - !include
-        #           - partial.yaml
-        #           - name: "vmTBSH01"
-        #             filter: "switch.vmtbsh03_monitordocker*"
+        p14srv:
+          type: vertical-stack
+          cards:
+            - type: custom:dwains-flexbox-card
+              padding: true
+              cards:
+                #heading
+                - type: horizontal-stack
+                  cards:
+                    - !include
+                      - ../../1_Templates/button_switch.yaml
+                      - name: "TBSH1"
+                        icon: "mdi:docker"
+                        navpath: "#tbsh1"
+                    - !include
+                      - ../../1_Templates/button_switch.yaml
+                      - name: "TBSH03"
+                        icon: "mdi:docker"
+                        navpath: "#tbsh03"
+                    - !include
+                      - ../../1_Templates/button_switch_active.yaml
+                      - name: "PI4SRV"
+                        icon: "mdi:docker"
+                        navpath: "#p14srv"
+            - type: vertical-stack
+              cards:
+                - !include
+                  - partial.yaml
+                  - name: "TBSH03"
+                    filter: "switch.pi4srv_monitordocker*"

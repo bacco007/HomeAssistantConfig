@@ -1,9 +1,8 @@
 ---
 # https://github.com/dummylabs/thewatchman
 watchman:
-  check_lovelace: True
+  check_lovelace: true
   columns_width: [50, 10, 80]
   ignored_files:
     - "/config/custom_components/*"
     - "/config/blueprints/*"
-

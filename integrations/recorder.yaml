@@ -23,6 +23,7 @@ recorder:
       - sensor.internet_time
       - weather.east_tamworth_hourly
       - sensor.udm_unifios
+      - sensor.sungrowsolar_runtime
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*

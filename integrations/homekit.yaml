@@ -3,9 +3,8 @@ homekit:
   name: Home Assistant
   filter:
     include_entities:
-      - binary_sensor.zha_office_motion
       - light.lamp
       - light.zha_office_light
-      - media_player.bedroom_sonos
+      - media_player.office_sonos
       - sensor.zha_bedroom_temperature
       - sensor.zha_office_temperature

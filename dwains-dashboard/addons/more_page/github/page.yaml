@@ -4,41 +4,5 @@
   # padding: true
   cards:
     - type: "custom:github-flexi-card"
-      title: Dwains Dashboard
-      secondary_info: "{latest_release_tag}"
-      url: true
-      attribute_urls: true
-      attributes:
-        - stargazers
-        - open_issues
-        - forks
-        - open_pull_requests
-      sort:
-        - by: stargazers
-        - by: views_unique
-      ascending: true
-      entities:
-        - sensor.github_dwains_dashboard
-        - entity: sensor.github_dwains_dashboard_addons
-          secondary_info: null
-
-    - type: "custom:github-flexi-card"
-      title: Home Assistant
-      secondary_info: "{latest_release_tag}"
-      url: true
-      attribute_urls: true
-      attributes:
-        - stargazers
-        - open_issues
-        - forks
-        - open_pull_requests
-      sort:
-        - by: stargazers
-        - by: views_unique
-      ascending: true
-      entities:
-        - sensor.github_home_assistant_website
-        - sensor.github_home_assistant_os
-        - sensor.github_home_assistant_core
-        - sensor.github_home_assistant_fronted
-        - sensor.github_home_assistant_supervisor
+      title: Github Projects
+      name: "{name}"

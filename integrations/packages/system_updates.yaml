@@ -62,14 +62,14 @@ binary_sensor:
       updater_addons:
         friendly_name: Supervisor Add-ons
         device_class: problem
-        value_template: "{{ states('sensor.addons_updates')|int != 0 }}"
+        value_template: "{{ states('sensor.addons_updates')|int(default=0) != 0 }}"
         attribute_templates:
           addons: "{{ state_attr('sensor.addons_updates', 'addons') }}"
 
       updater_hacs:
         friendly_name: HACS Integrations/Frontend
         device_class: problem
-        value_template: "{{ states('sensor.hacs')|int != 0 }}"
+        value_template: "{{ states('sensor.hacs')|int(default=0) != 0 }}"
         attribute_templates:
           repositories: "{{ state_attr('sensor.hacs', 'repositories') }}"
       updater_audio:

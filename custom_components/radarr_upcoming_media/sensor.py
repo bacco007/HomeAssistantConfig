@@ -110,11 +110,11 @@ class RadarrUpcomingMediaSensor(Entity):
                 card_item['runtime'] = movie.get('runtime', '')
                 card_item['studio'] = movie.get('studio', '')
                 card_item['genres'] = movie.get('genres', '')
-                if 'ratings' in movie and movie['ratings']['value'] > 0:
-                    card_item['rating'] = ('\N{BLACK STAR} ' +
-                                           str(movie['ratings']['value']))
-                else:
-                    card_item['rating'] = ''
+                # if 'ratings' in movie and movie['ratings']['value'] > 0:
+                #     card_item['rating'] = ('\N{BLACK STAR} ' +
+                #                            str(movie['ratings']['value']))
+                # else:
+                card_item['rating'] = ''
                 if 'images' in movie:
                     if len(movie['images']):
                         card_item['poster'] = movie['images'][0]

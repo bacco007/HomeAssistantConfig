@@ -116,12 +116,12 @@
                         name: Auto mode
                         show_state: false
                         icon: mdi:fan-auto
-                        entity: switch.dyson_link_auto_mode
+                        entity: switch.bedroom_auto_mode
                       - type: custom:button-card
                         name: Night mode
                         show_state: false
                         icon: mdi:weather-night
-                        entity: switch.dyson_link_night_mode
+                        entity: switch.bedroom_night_mode
                   - type: horizontal-stack
                     cards:
                       - type: custom:button-card

@@ -2,10 +2,10 @@
 platform: template
 name: weatherflow_current
 condition_template: "{{ states('weather.weatherflow_hourly_based_forecast') }}"
-temperature_template: "{{ states('sensor.tempest_st_00056115_temperature') | float}}"
-humidity_template: "{{ states('sensor.tempest_st_00056115_humidity')| int }}"
-pressure_template: "{{ states('sensor.tempest_st_00056115_sea_level_pressure')| float }}"
-wind_speed_template: "{{ ( states('sensor.tempest_st_00056115_wind_speed_avg') | float * 18 / 5 ) | round(2) }}"
-wind_bearing_template: "{{ states('sensor.tempest_st_00056115_wind_bearing_avg')| int }}"
-visibility_template: "{{ states('sensor.tempest_st_00056115_visibility')| float }}"
+temperature_template: "{{ states('sensor.tempest_st_00056115_temperature') | float(default=0)}}"
+humidity_template: "{{ states('sensor.tempest_st_00056115_humidity')| int(default=0) }}"
+pressure_template: "{{ states('sensor.tempest_st_00056115_sea_level_pressure')| float(default=0) }}"
+wind_speed_template: "{{ ( states('sensor.tempest_st_00056115_wind_speed_avg') | float(default=0) * 18 / 5 ) | round(2) }}"
+wind_bearing_template: "{{ states('sensor.tempest_st_00056115_wind_bearing_avg')| int(default=0) }}"
+visibility_template: "{{ states('sensor.tempest_st_00056115_visibility')| float(default=0) }}"
 forecast_template: "{{ state_attr('weather.weatherflow_hourly_based_forecast', 'forecast') }}"

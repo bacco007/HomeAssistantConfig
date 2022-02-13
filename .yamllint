@@ -17,6 +17,7 @@ ignore: |
   esphome/
   notebooks/
   blueprints/
+  zigbee2mqtt/
 rules:
   braces:
     level: error

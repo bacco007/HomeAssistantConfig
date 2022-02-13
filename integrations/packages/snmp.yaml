@@ -61,6 +61,7 @@ sensor:
       {%- set days = (time // 86400) %}
       {%- set days = '{}d '.format(days) if days > 0 else '' %}
       {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
   - platform: snmp
     host: 192.168.1.91
     name: TBSH1 Uptime

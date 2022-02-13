@@ -37,6 +37,7 @@ card:
               - entity: ${getEntityId('this.entity_id')}
                 attribute: cpu_percentage
                 name: CPU
+                unit: "%"
                 styles:
                   width: 90px
                   text-align: left
@@ -44,6 +45,7 @@ card:
               - entity: ${getEntityId('this.entity_id')}
                 attribute: memory
                 name: Memory
+                unit: "MB"
                 styles:
                   width: 90px
                   text-align: left
@@ -52,6 +54,7 @@ card:
                 attribute: network_speed_up
                 name: Up
                 default: "-"
+                unit: "kB/s"
                 styles:
                   width: 90px
                   text-align: left
@@ -60,6 +63,7 @@ card:
                 attribute: network_speed_down
                 name: Down
                 default: "-"
+                unit: "kB/s"
                 styles:
                   width: 90px
                   text-align: left
@@ -68,6 +72,7 @@ card:
                 attribute: network_total_up
                 name: Total Up
                 default: "-"
+                unit: "MB"
                 styles:
                   width: 90px
                   text-align: left
@@ -76,6 +81,7 @@ card:
                 attribute: network_total_down
                 name: Total Down
                 default: "-"
+                unit: "MB"
                 styles:
                   width: 90px
                   text-align: left

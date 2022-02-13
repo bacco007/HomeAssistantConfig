@@ -39,12 +39,12 @@ binary_sensor:
             {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_googlenesthub:
         friendly_name: Google Home - Nest Hub
-        value_template: "{{ is_state('device_tracker.google_home_hub', 'home') }}"
+        value_template: "{{ is_state('device_tracker.google_nest_hub', 'home') }}"
         icon_template: >-
           mdi:google-home
         attribute_templates:
           ip_address: >-
-            {%- set dev = 'device_tracker.google_home_hub' %}
+            {%- set dev = 'device_tracker.google_nest_hub' %}
             {{ is_state(dev, 'home') | iif( 'IP: ' + state_attr(dev, 'ip')|default("N/A", true), 'IP Address Not Available') }}
       networkstatus_harmonyhub:
         friendly_name: Harmony Hub

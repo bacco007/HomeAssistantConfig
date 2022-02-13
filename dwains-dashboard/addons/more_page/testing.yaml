@@ -1,3 +1,99 @@
+- type: entities
+  title: Home Assistant
+  show_header_toggle: false
+  entities:
+    - entity: switch.tbsh1_monitordocker_sonarr
+      name: Sonarr
+      secondary_info: status
+    - type: custom:bar-card
+      width: 55%
+      height: 2em
+      decimal: 0
+      unit_of_measurement: "%"
+      positions:
+        icon: outside
+        indicator: "off"
+        name: outside
+      severity:
+        - color: "#6d2525"
+          from: 90
+          to: 999
+      entity_row: true
+      entities:
+        - entity: sensor.tbsh1_monitordocker_sonarr
+          attribute: cpu_percentage
+          name: CPU
+          icon: mdi:chip
+
+        - entity: sensor.tbsh1_monitordocker_sonarr
+          attribute: memory_percentage
+          name: Memory
+          icon: mdi:memory
+- type: custom:apexcharts-card
+  layout: minimal
+  graph_span: 1h
+  apex_config:
+    chart:
+      height: 135px
+    tooltip:
+      style:
+        fontSize: 14px
+      x:
+        show: true
+        format: dddd HH:mm
+    xaxis:
+      crosshairs:
+        show: false
+    legend:
+      fontSize: 14px
+      fontWeight: 400
+      itemMargin:
+        horizontal: 25
+      # formatter: |
+      #   EVAL:(seriesName, opts) => {
+      #     var arr = opts.w.globals.series[opts.seriesIndex],
+      #       value = arr[arr.length - 1],
+      #       convert = (value / 1024).toFixed(2);
+      #     if (value == null) {
+      #       return seriesName;
+      #     } else {
+      #       return value < 1024 ? `${Math.round(value)} kB/s` : `${convert} MB/s`;
+      #     }
+      #   }
+      markers:
+        width: 26
+        height: 23
+        customHTML:
+          - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-down-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+          - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-up-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+        fillColors:
+          - none
+          - none
+    fill:
+      type: gradient
+      gradient:
+        type: vertical
+        opacityFrom: 0.8
+        opacityTo: 0
+        stops:
+          - 0
+          - 99
+          - 100
+    stroke:
+      width: 3
+  all_series_config:
+    type: area
+    fill_raw: last
+  series:
+    - entity: sensor.tbsh1_monitordocker_sonarr
+      attribute: network_speed_down
+      name: Down
+      color: green
+    - entity: sensor.tbsh1_monitordocker_sonarr
+      attribute: network_speed_up
+      name: Up
+      color: "#385581"
+
 - type: custom:apexcharts-card
   graph_span: 7d
   span:
