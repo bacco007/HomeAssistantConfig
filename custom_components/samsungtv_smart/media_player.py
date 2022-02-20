@@ -25,6 +25,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.service import async_call_from_config, CONF_SERVICE_ENTITY_ID
 from homeassistant.helpers.storage import STORAGE_DIR
 from homeassistant.util import dt as dt_util, Throttle
+from homeassistant.util.async_ import run_callback_threadsafe
 
 from homeassistant.components.media_player.const import (
     MEDIA_TYPE_APP,
@@ -59,12 +60,12 @@ from homeassistant.const import (
     CONF_SERVICE,
     CONF_SERVICE_DATA,
     CONF_TIMEOUT,
+    CONF_TOKEN,
     STATE_OFF,
     STATE_ON,
     STATE_UNAVAILABLE,
 )
 
-from . import get_token_file
 from .const import (
     DOMAIN,
     CONF_APP_LAUNCH_METHOD,
@@ -174,8 +175,13 @@ async def async_setup_entry(
 
     hostname = config[CONF_HOST]
     port = config.get(CONF_PORT, DEFAULT_PORT)
-    token_file = get_token_file(hass, hostname, port)
     logo_file = hass.config.path(STORAGE_DIR, f"{DOMAIN}_logo_paths")
+
+    def update_token_func(token: str) -> None:
+        """Update config entry with the new token."""
+        hass.config_entries.async_update_entry(
+            entry, data={**entry.data, CONF_TOKEN: token}
+        )
 
     async_add_entities(
         [
@@ -184,7 +190,7 @@ async def async_setup_entry(
                 config.get(CONF_ID, entry.entry_id),
                 hass.data[DOMAIN][entry.entry_id],
                 session,
-                token_file,
+                update_token_func,
                 logo_file,
             )
         ],
@@ -216,7 +222,7 @@ class SamsungTVDevice(MediaPlayerEntity):
     """Representation of a Samsung TV."""
 
     def __init__(
-            self, config, unique_id, entry_data, session: ClientSession, token_file, logo_file
+            self, config, unique_id, entry_data, session: ClientSession, update_token_func, logo_file
     ):
         """Initialize the Samsung device."""
 
@@ -300,15 +306,21 @@ class SamsungTVDevice(MediaPlayerEntity):
         ws_name = config.get(CONF_WS_NAME, self._attr_name)
         ws_port = config.get(CONF_PORT, DEFAULT_PORT)
         ws_timeout = config.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
+        ws_token = config.get(CONF_TOKEN)
         self._ws = SamsungTVWS(
             name=f"{WS_PREFIX} {ws_name}",  # this is the name shown in the TV list of external device.
             host=self._host,
             port=ws_port,
             timeout=ws_timeout,
             key_press_delay=KEYPRESS_DEFAULT_DELAY,
-            token_file=token_file,
+            token=ws_token,
             app_list=self._app_list,
         )
+
+        def new_token_callback():
+            """Update config entry with the new token."""
+            run_callback_threadsafe(self.hass.loop, update_token_func, self._ws.token)
+        self._ws.register_new_token_callback(new_token_callback)
 
         self._upnp = upnp(host=self._host, session=session)
 

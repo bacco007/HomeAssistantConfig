@@ -2,19 +2,10 @@
 type: custom:stack-in-card
 cards:
   - type: entities
-    entities:
-      - sensor.adguard_average_processing_speed
-      - sensor.adguard_dns_queries
-      - sensor.adguard_dns_queries_blocked
-      - sensor.adguard_dns_queries_blocked_ratio
-      - sensor.adguard_parental_control_blocked
-      - sensor.adguard_rules_count
-      - sensor.adguard_safe_browsing_blocked
-      - sensor.adguard_safe_searches_enforced
-    title: Stats
+    title: Subdomains
     style: |
       ha-card {
-        padding-bottom: 10px;
+        # padding-bottom: 10px;
         background-color: var(--dwains-theme-primary)
       }
       .card-header {
@@ -33,3 +24,14 @@ cards:
         color: darkgray !important;
         margin-left: 2px !important;
       }
+    entities:
+      - entity: sensor.backup_state
+      - entity: binary_sensor.backups_stale
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      |Sub-Domain|Domains Used|
+      |---|---|
+      {%- for s in state_attr('sensor.ha_overview', 'subdomains') | sort( attribute = 'subdomain') %}
+      |{{ s.subdomain }}|{{s.uses}}|
+      {%- endfor %}

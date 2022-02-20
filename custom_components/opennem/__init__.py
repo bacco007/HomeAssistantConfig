@@ -34,7 +34,7 @@ CONFIG_SCHEMA = vol.Schema(
     {DOMAIN: vol.Schema({vol.Required(CONF_REGION): cv.string})}, extra=vol.ALLOW_EXTRA
 )
 
-DEFAULT_SCAN_INTERVAL = datetime.timedelta(minutes=5)
+DEFAULT_SCAN_INTERVAL = datetime.timedelta(minutes=10)
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -127,7 +127,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
             "solar_utility": 0,
             "solar_rooftop": 0,
             "wind": 0,
-            "battery": 0,
             "battery_discharging": 0,
             "battery_charging": 0,
             "exports": 0,
@@ -138,7 +137,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
             "temperature": 0,
             "fossilfuel": 0,
             "renewables": 0,
-            "netinterchange":0,
             "emissions_factor": 0,
             "flow_NSW": 0,
             "flow_QLD": 0,
@@ -331,12 +329,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
             regiondata.append("renewables")
             renvalue = None
 
-            if self._values["battery_discharging"] or self._values["battery_charging"]:
-                self._values["battery"] = self._values["battery_discharging"] + self._values["battery_charging"]
-                regiondata.append("battery")
-            else:
-                self._values["battery"] = 0
-
             genvalue = None
             genvalue = self._values["fossilfuel"] + self._values["renewables"]
             if genvalue:
@@ -347,13 +339,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 self._values["state"] = 0
             regiondata.append("generation")
             genvalue = None
-
-            netinterchange = self._values["imports"] + self._values["exports"]
-            if netinterchange:
-                self._values["netinterchange"] = round(netinterchange,3)
-            else:
-                self._values["netinterchange"] = 0.0
-            regiondata.append("netinterchange")
 
             genvsdemand = None
             if region == "wa1":
@@ -443,7 +428,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
             "solar_utility": 0,
             "solar_rooftop": 0,
             "wind": 0,
-            "battery": 0,
             "battery_discharging": 0,
             "battery_charging": 0,
             "exports": 0,
@@ -454,7 +438,6 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
             "temperature": 0,
             "fossilfuel": 0,
             "renewables": 0,
-            "netinterchange":0,
             "emissions_factor": 0,
             "flow_NSW": 0,
             "flow_QLD": 0,

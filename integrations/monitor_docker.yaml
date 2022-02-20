@@ -13,15 +13,97 @@ monitor_docker:
     scan_interval: 60
     monitored_conditions:
       - allinone
+    rename:
+      alertmanager: Alert Manager
+      authelia: Authelia
+      bazarr: Bazarr
+      cadvisor: CAdvisor
+      codeserver: Visual Studio Code
+      cyberchef: Cyberchef
+      dockercleanup: Docker Cleanup
+      dockerproxy: Docker Proxy
+      dozzle: Dozzle
+      glances: Glances
+      grafana: Grafana
+      homer: Homer
+      influxdb2: InfluxDB 2
+      jdownloader: jDownloader
+      lidarr: Lidarr
+      nextcloud: Nextcloud
+      nextcloud_db: Nextcloud DB (MariaDB)
+      nextcloud_redis: Nextcloud Redis
+      nodeexporter: Node Exporter
+      overseerr: Overseerr
+      portainer: Portainer
+      prometheus: Prometheus
+      prowlarr: Prowlarr
+      pushgateway: Push Gateway
+      radarr: Radarr
+      sabnzbd: SABnzbd
+      sonarr: Sonarr
+      sungather: Sungather
+      tautulli: Tautulli
+      traefik: Traefik
+      transmission: Transmission
+      tvheadend: TVHeadend
+      varken: Varken
+      vaultwarden: Vaultwarden
+      watchtower: Watchtower
+      wud: What's Up Docker?
+      xteve: xteve
+      youtubedl: YouTube DL
 
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
     scan_interval: 60
     monitored_conditions:
       - allinone
+    rename:
+      adsb2influxdb: ADS-B to InfluxDB
+      adsb2mqtt: ADS-B to MQTT
+      adsbhub: ADS-B Hub
+      adsbx: ADS-B Exchange
+      autoheal: Autoheal
+      dockercleanup: Docker Cleanup
+      dockerproxy: Docker Proxy
+      fr24: FlightRadar24
+      glances: Glances
+      hammond: Hammond
+      homeassistant: Home Assistant (Dev)
+      ouroboros: Ouroboros
+      pfclient: Plane Finder
+      piaware: PiAware
+      rbfeeder: Radarbox
+      readsb: ADS-B
+      tar1090: tar1090
 
   - name: PI4SRV_monitordocker
     url: tcp://192.168.1.64:2375
     scan_interval: 60
     monitored_conditions:
       - allinone
+    rename:
+      adguard: Adguard Home
+      adguard_exporter: Adguard Exporter
+      dockercleanup: Docker Cleanup
+      dockerproxy: Docker Proxy
+      watchtower: Watchtower
+
+  - name: vmTBSHS02_monitordocker
+    url: tcp://192.168.1.62:2375
+    scan_interval: 60
+    monitored_conditions:
+      - allinone
+    rename:
+      chronograf: Chronograf
+      dockergc: Docker Garbage Cleanup
+      dozzle: Dozzle
+      duplicati: Duplicati
+      influxdb: InfluxDB
+      kapacitor: Kapacitor
+      ouroboros: Ouroboros
+      portainer: Portainer
+      suspicious_golick: Glances
+      telegraf: Telegraf
+      unifipoller: UniFi Poller
+      wud: What's Up Docker?

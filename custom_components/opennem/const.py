@@ -28,7 +28,7 @@ DEFAULT_NAME = "OpenNEM"
 DEFAULT_FORCE_UPDATE = True
 
 # Misc
-VERSION = "2022.02.2"
+VERSION = "2022.02.3b1"
 DOMAIN = "opennem"
 PLATFORM = "sensor"
 ATTRIBUTION = "Data provided by OpenNEM"

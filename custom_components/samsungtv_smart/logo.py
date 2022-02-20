@@ -4,7 +4,6 @@ import aiofiles
 import asyncio
 import json
 import logging
-import numpy as np
 import os
 import re
 import traceback
@@ -302,7 +301,7 @@ def _levenshtein_ratio(s: str, t: str):
 
     rows = len(s) + 1
     cols = len(t) + 1
-    distance = np.zeros((rows, cols), dtype=int)
+    distance = [[0 for _ in range(cols)] for _ in range(rows)]
 
     for i in range(1, rows):
         for k in range(1, cols):

@@ -21,7 +21,7 @@
         - !include graph_allregions_demand.yaml
         - !include graph_allregions_generation.yaml
         - type: custom:apexcharts-card
-          graph_span: 1d
+          graph_span: 3d
           span:
             end: day
           header:
@@ -64,7 +64,7 @@
             curve: smooth
             group_by:
               func: last
-              duration: 10m
+              duration: 30m
           series:
             - entity: sensor.opennem_nsw
               attribute: solar_rooftop

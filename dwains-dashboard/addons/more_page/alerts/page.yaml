@@ -1,12 +1,24 @@
 ---
-# dwains_theme
-
-- type: custom:dwains-flexbox-card
-  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+# dwains_dashboard
+- type: vertical-stack
   cards:
-    - type: vertical-stack
+    - type: custom:dwains-flexbox-card
+      items_classes: "col-xs-12"
       cards:
-        - !include partial_gdacs.yaml
-    - type: vertical-stack
-      cards:
-        - !include partial_rfs.yaml
+        # Left Column
+        - type: vertical-stack
+          item_classes: "col-xs-12 col-sm-3"
+          cards:
+            - !include partial_rfs.yaml
+            - !include partial_gdacs.yaml
+        # Right Column
+        - type: vertical-stack
+          item_classes: "col-xs-12 col-sm-9"
+          cards:
+            - type: map
+              default_zoom: 8
+              entities:
+                - zone.home
+              geo_location_sources:
+                - gdacs
+                - nsw_rural_fire_service_feed

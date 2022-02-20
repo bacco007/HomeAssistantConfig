@@ -1,34 +1,65 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: custom:auto-entities
-    card:
-      type: entities
-      title: Rainfall
-      style: |
-        ha-card {
-          padding-bottom: 10px;
-          background-color: var(--dwains-theme-primary)
-        }
-        .card-header {
-          padding: 5px 16px;
-          font-size: 18px;
-          font-weight: 700 !important;
-        }
-        .card-content div {
-            margin: 0 !important;
-        }
-        #states {
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-        }
-        .secondary {
-          color: darkgray !important;
-          margin-left: 2px !important;
-        }
-    sort:
-      method: name
-    filter:
-      include:
-        - entity_id: sensor.tempest_st_00056115_rain_*
-        - entity_id: sensor.tempest_st_00056115_precipitation_type
+  - type: entities
+    title: Rainfall
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.tempest_st_00056115_precipitation_type
+        name: Rainfall Now
+        type: custom:multiple-entity-row
+        show_state: true
+        secondary_info: last-changed
+        entities:
+          - entity: sensor.tempest_st_00056115_rain_intensity
+            name: Intensity
+            unit: ""
+          - entity: sensor.tempest_st_00056115_rain_rate
+            name: Rate
+            unit: "mm/h"
+
+      - entity: sensor.tempest_st_00056115_rain_today
+        name: Rainfall Amount
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info: last-changed
+        entities:
+          - entity: sensor.tempest_st_00056115_rain_today
+            name: Today
+            unit: "mm"
+          - entity: sensor.tempest_st_00056115_rain_yesterday
+            name: Yesterday
+            unit: "mm"
+
+      - entity: sensor.tempest_st_00056115_rain_today
+        name: Rainfall Duration
+        type: custom:multiple-entity-row
+        show_state: false
+        secondary_info: last-changed
+        entities:
+          - entity: sensor.tempest_st_00056115_rain_duration_today
+            name: Today
+            unit: "min"
+          - entity: sensor.tempest_st_00056115_rain_duration_yesterday
+            name: Yesterday
+            unit: "min"

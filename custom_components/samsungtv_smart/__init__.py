@@ -5,7 +5,6 @@ import asyncio
 import async_timeout
 import logging
 import os
-from shutil import copyfile
 import socket
 import voluptuous as vol
 from websocket import WebSocketException
@@ -25,6 +24,7 @@ from homeassistant.const import (
     CONF_NAME,
     CONF_PORT,
     CONF_TIMEOUT,
+    CONF_TOKEN,
     MAJOR_VERSION,
     MINOR_VERSION,
     __version__,
@@ -158,64 +158,45 @@ def token_file_name(hostname: str) -> str:
     return f"{DOMAIN}_{hostname}_token"
 
 
-def get_token_file(hass, hostname, port, overwrite=False):
-    """Get token file name and try to create it if not exists."""
-    if port != 8002:
-        return None
-
-    token_file = hass.config.path(STORAGE_DIR, token_file_name(hostname))
-
-    if not os.path.isfile(token_file) or overwrite:
-        # Create token file for catch possible errors
-        try:
-            handle = open(token_file, "w+", closefd=True)
-            handle.close()
-        except OSError:
-            _LOGGER.error(
-                "Samsung TV - Error creating token file: %s", token_file
-            )
-            return None
-
-    return token_file
-
-
-def remove_token_file(hass, hostname):
+def _remove_token_file(hass, hostname, token_file=None):
     """Try to remove token file."""
-    token_file = hass.config.path(STORAGE_DIR, token_file_name(hostname))
+    if not token_file:
+        token_file = hass.config.path(STORAGE_DIR, token_file_name(hostname))
 
     if os.path.isfile(token_file):
         try:
             os.remove(token_file)
-        except:
+        except Exception as exc:
             _LOGGER.error(
-                "Samsung TV - Error deleting token file: %s", token_file
+                "Samsung TV - Error deleting token file %s: %s", token_file, str(exc)
             )
 
 
-def _migrate_token_file(hass: HomeAssistant, hostname: str):
-    """Migrate token file from old path to new one."""
-
+def _migrate_token(hass: HomeAssistant, entry: ConfigEntry, hostname: str) -> None:
+    """Migrate token from old file to registry entry."""
     token_file = hass.config.path(STORAGE_DIR, token_file_name(hostname))
-    if os.path.isfile(token_file):
-        return
-
-    old_token_file = (
-        os.path.dirname(os.path.realpath(__file__)) + f"/token-{hostname}.txt"
-    )
-
-    if os.path.isfile(old_token_file):
-        try:
-            copyfile(old_token_file, token_file)
-        except IOError:
-            _LOGGER.error("Failed migration of token file from %s to %s", old_token_file, token_file)
+    if not os.path.isfile(token_file):
+        token_file = (
+            os.path.dirname(os.path.realpath(__file__)) + f"/token-{hostname}.txt"
+        )
+        if not os.path.isfile(token_file):
             return
 
-        try:
-            os.remove(old_token_file)
-        except:
-            _LOGGER.warning("Error while deleting old token file %s", old_token_file)
+    try:
+        with open(token_file, "r") as os_token_file:
+            token = os_token_file.readline()
+    except Exception as exc:
+        _LOGGER.error("Error reading token file %s: %s", token_file, str(exc))
+        return
 
-    return
+    if not token:
+        _LOGGER.warning("No token found inside token file %s", token_file)
+        return
+
+    hass.config_entries.async_update_entry(
+        entry, data={**entry.data, CONF_TOKEN: token}
+    )
+    _remove_token_file(hass, hostname, token_file)
 
 
 def _migrate_options_format(hass: HomeAssistant, entry: ConfigEntry):
@@ -273,13 +254,28 @@ class SamsungTVInfo:
         self._hostname = hostname
         self._ws_name = ws_name
         self._ws_port = 0
+        self._ws_token = None
+        self._ping_port = None
 
     @property
     def ws_port(self):
         return self._ws_port
 
+    @property
+    def ws_token(self):
+        return self._ws_token
+
+    @property
+    def ping_port(self):
+        return self._ping_port
+
     def _try_connect_ws(self):
         """Try to connect to device using web sockets on port 8001 and 8002"""
+
+        self._ping_port = SamsungTVWS.ping_probe(self._hostname)
+        if self._ping_port is None:
+            _LOGGER.error("Connection to SamsungTV %s failed. Check that TV is on", self._hostname)
+            return RESULT_NOT_SUCCESSFUL
 
         for port in (8001, 8002):
 
@@ -289,15 +285,14 @@ class SamsungTVInfo:
                     self._hostname,
                     str(port),
                 )
-                token_file = get_token_file(self._hass, self._hostname, port, True)
                 with SamsungTVWS(
                     name=f"{WS_PREFIX} {self._ws_name}",  # this is the name shown in the TV list of external device.
                     host=self._hostname,
                     port=port,
-                    token_file=token_file,
                     timeout=45,  # We need this high timeout because waiting for auth popup is just an open socket
                 ) as remote:
                     remote.open()
+                    self._ws_token = remote.token
                 _LOGGER.info("Found working configuration using port %s", str(port))
                 self._ws_port = port
                 return RESULT_SUCCESS
@@ -407,8 +402,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not is_valid_ha_version():
         return False
 
-    # migrate old token file if required
-    _migrate_token_file(hass, entry.unique_id)
+    # migrate old token file to registry entry if required
+    if CONF_TOKEN not in entry.data:
+        await hass.async_add_executor_job(_migrate_token, hass, entry, entry.unique_id)
 
     # migrate options to new format if required
     _migrate_options_format(hass, entry)
@@ -441,7 +437,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Remove a config entry."""
-    remove_token_file(hass, entry.unique_id)
+    await hass.async_add_executor_job(_remove_token_file, hass, entry.unique_id)
 
 
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):

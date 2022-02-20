@@ -40,8 +40,8 @@ binary_sensor:
         device_class: problem
         value_template: "{{ states('sensor.core_updates') }}"
         attribute_templates:
-          installed_version: "{{ state_attr('sensor.core_updates', 'installed_version') }}"
-          latest_version: "{{ state_attr('sensor.core_updates', 'latest_version') }}"
+          installed_version: "{{ state_attr('sensor.core_updates', 'current_version') }}"
+          latest_version: "{{ state_attr('sensor.core_updates', 'newest_version') }}"
 
       updater_supervisor:
         friendly_name: Supervisor
@@ -111,13 +111,19 @@ binary_sensor:
 sensor:
   - platform: command_line
     name: core_updates
-    command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
-    value_template: "{{ value_json.update_available }}"
-    scan_interval: 600
+    command: 'curl http://supervisor/core/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" 2> /dev/null | jq ''{"newest_version":.data.version_latest,"current_version":.data.version, "update_available":.data.update_available}'''
+    scan_interval: 300
+    value_template: "{% if value_json.update_available %}on{% else %}off{% endif %}"
     json_attributes:
       - update_available
-      - latest_version
-      - installed_version
+      - newest_version
+      - current_version
+
+  - platform: command_line
+    name: Check config addon status
+    scan_interval: 300
+    command: 'curl http://supervisor/addons/core_check_config/logs -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" 2> /dev/null | grep -E ''\[[0-9]{2}:[0-9]{2}:[0-9]{2}\] (ERROR:.+?The configuration check did not pass!|INFO:.+?Configuration check finished - no error found! :\))'' | sed -r ''s/(.*) (ERROR|INFO):.*/\2 \1/'''
+    value_template: "{{ value | lower | regex_replace('^info', 'pass') }}"
 
   - platform: command_line
     name: supervisor_updates

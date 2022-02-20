@@ -2,17 +2,10 @@
 type: custom:stack-in-card
 cards:
   - type: entities
-    entities:
-      - switch.adguard_filtering
-      - switch.adguard_parental_control
-      - switch.adguard_protection
-      - switch.adguard_query_log
-      - switch.adguard_safe_browsing
-      - switch.adguard_safe_search
-    title: Switches
+    title: Domains
     style: |
       ha-card {
-        padding-bottom: 10px;
+        # padding-bottom: 10px;
         background-color: var(--dwains-theme-primary)
       }
       .card-header {
@@ -31,3 +24,14 @@ cards:
         color: darkgray !important;
         margin-left: 2px !important;
       }
+    entities:
+      - entity: sensor.backup_state
+      - entity: binary_sensor.backups_stale
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      |Component|Integrations Used|
+      |---|---|
+      {%- for s in state_attr('sensor.ha_overview', 'components') | sort( attribute = 'domain') %}
+      |{{ s.domain }}|{{s.uses}}|
+      {%- endfor %}

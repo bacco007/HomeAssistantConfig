@@ -2,9 +2,9 @@
 
 more_page:
   addons:
-    - name: Adguard Home
+    - name: Ad Blocking (Adguard)
       icon: si:adguard
-      path: "dwains-dashboard/addons/more_page/adguardhome/page.yaml"
+      path: "dwains-dashboard/addons/more_page/adblock/page.yaml"
     - name: Alerts
       icon: mdi:alert
       path: "dwains-dashboard/addons/more_page/alerts/page.yaml"
@@ -206,6 +206,9 @@ more_page:
     - name: Zigbee
       icon: mdi:zigbee
       path: "dwains-dashboard/addons/more_page/zigbee/page.yaml"
+    # - name: zTemplate
+    #   icon: mdi:bookmark-plus-outline
+    #   path: "dwains-dashboard/addons/more_page/zTemplate/page.yaml"
 #     - name: Hello more page
 #       icon: fas:chart-area
 #       path: 'dwains-dashboard/addons/more_page/hello-more-page/page.yaml'

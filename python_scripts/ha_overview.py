@@ -1,23 +1,46 @@
-count_all = 0
-count_domains = 0
-domains = []
 attributes = {}
+components = hass.states.get('sensor.hass_main_config').attributes['components']
+cnt = len(components)
+components.sort()
 
-for entity_id in hass.states.entity_ids():
-    count_all = count_all + 1
-    entity_domain = entity_id.split('.')[0]
-    if entity_domain not in domains:
-        domains.append(entity_domain)
+# Make a dictionary of all main domains, add each sub domain to the main domain list.
+compdict = {}
+subdict = {}
+for component in components:
+    if component.count('.') == 0 and component not in compdict:
+        compdict[component] = []
+    if component.count('.') == 1:
+        domain, subdomain = component.split('.')
+#        compdict[domain].append(subdomain)
+        compdict.setdefault(domain, []).append(subdomain)
+        if len(subdomain) > 1:
+            subdict.setdefault(subdomain, []).append(domain)
+# Make the dictionary into a flat list of strings.
 
-count_domains = len(domains)
+complist = []
+for key, value in compdict.items():
+    if value:
+        value.sort()
+        complist.append(
+            {
+                "domain": key,
+                "uses": ', '.join(value),
+            }
+        )
 
-#attributes['Domains'] = len(domains)
-#attributes['--------------'] = '-------'
+sublist = []
+for key, value in subdict.items():
+    if value:
+        value.sort()
+        sublist.append(
+            {
+                "subdomain": key,
+                "uses": ', '.join(value),
+            }
+        )
 
-for domain in sorted(domains):
-    attributes[domain] = len(hass.states.entity_ids(domain))
-
-attributes['friendly_name'] = 'Entities/Domains'
-attributes['icon'] = 'mdi:format-list-numbered'
-
-hass.states.set('sensor.ha_overview', str(count_all) + '/' + str(count_domains), attributes)
+attributes['friendly_name'] = 'Components'
+attributes['icon'] = 'mdi:format-list-bulleted-type'
+attributes['components'] = complist #text
+attributes['subdomains'] = sublist
+hass.states.set('sensor.ha_overview', cnt, attributes)

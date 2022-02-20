@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, February 13th 2022_
+_Stats as at 05:00, Sunday, February 20th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 376     | 2529         | 1817 | 89 |
+| unknown | 377     | 2538         | 1828 | 90 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 89
-Binary Sensor | 243
+Automation | 90
+Binary Sensor | 239
 Camera | 8
 Device Tracker | 71
 Group | 5
@@ -88,13 +88,13 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 2
-Media Player | 14
+Media Player | 17
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 1817
+Sensor | 1828
 Sun | 1
-Switch | 158
+Switch | 161
 Weather | 9
 Zone | 11
 
@@ -136,7 +136,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
-| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
@@ -144,8 +143,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
+| [binary_sensor.threshold](https://www.home-assistant.io/components/binary_sensor.threshold) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
-| [binary_sensor.trend](https://www.home-assistant.io/components/binary_sensor.trend) |
 | [binary_sensor.tuya](https://www.home-assistant.io/components/binary_sensor.tuya) |
 | [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
@@ -250,6 +249,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
 | [ios](https://www.home-assistant.io/components/ios) |
+| [kodi](https://www.home-assistant.io/components/kodi) |
 | [launch_library](https://www.home-assistant.io/components/launch_library) |
 | [lifx](https://www.home-assistant.io/components/lifx) |
 | [light](https://www.home-assistant.io/components/light) |
@@ -268,6 +268,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
 | [media_player.dlna_dmr](https://www.home-assistant.io/components/media_player.dlna_dmr) |
+| [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
@@ -302,7 +303,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
-| [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [readme](https://www.home-assistant.io/components/readme) |
@@ -378,6 +378,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
+| [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
 | [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
@@ -528,6 +529,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Pyscript Python scripting](https://github.com/custom-components/pyscript)
 - [Radarr]()
+- [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Rocket Launch Live - Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
 - [SamsungTV Smart](https://github.com/ollo69/ha-samsungtv-smart)
 - [Satellite Tracker (N2YO)](https://github.com/djtimca/hasatellitetracker)
@@ -579,6 +581,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - https://github.com/sabeechen/hassio-google-drive-backup
 - https://github.com/TenySmart/HassioAddon
 - https://github.com/Ulrar/hassio-addons
+- https://github.com/zigbee2mqtt/hassio-zigbee2mqtt
 
 
 ### Addons

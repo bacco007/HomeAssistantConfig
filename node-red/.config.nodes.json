@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.2.0",
+        "version": "2.2.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -485,7 +485,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.42.0",
+        "version": "0.42.5",
         "local": false,
         "user": false,
         "nodes": {
@@ -584,7 +584,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.16.0",
+        "version": "5.21.0",
         "local": false,
         "user": false,
         "nodes": {

@@ -13,51 +13,23 @@
           cards:
             - !include
               - ../../1_Templates/button_entity.yaml
-              - name: "Currently"
-                entity: sensor.tempest_st_00056115_temperature
+              - name: "Ads Blocked"
+                entity: sensor.adguard_dns_queries_blocked
             - !include
               - ../../1_Templates/button_entity.yaml
-              - name: "Feels Like"
-                entity: sensor.tempest_st_00056115_feels_like_temperature
+              - name: "Block Ratio"
+                entity: sensor.adguard_dns_queries_blocked_ratio
             - !include
               - ../../1_Templates/button_entity.yaml
-              - name: "Rainfall"
-                entity: sensor.tempest_st_00056115_rain_today
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Humidity"
-                entity: sensor.tempest_st_00056115_humidity
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Pressure"
-                entity: sensor.tempest_st_00056115_station_pressure
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "UV Index"
-                entity: sensor.tempest_st_00056115_uv_index
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Wind"
-                entity: sensor.tempest_st_00056115_wind_gust
+              - name: "Processing Speed"
+                entity: sensor.adguard_average_processing_speed
 
     - type: custom:dwains-flexbox-card
       items_classes: "col-xs-12"
       cards:
-        # Left Column
-        - type: vertical-stack
-          item_classes: "col-xs-12 col-sm-4"
-          cards:
-            - type: custom:stack-in-card
-              cards:
-                - type: vertical-stack
-                  cards:
-                    - !include partial_temperature.yaml
-                    - !include partial_rainfall.yaml
-                    - !include partial_extreme.yaml
-
         # Right Column
         - type: vertical-stack
-          item_classes: "col-xs-12 col-sm-8"
+          item_classes: "col-xs-12"
           cards:
             - type: custom:dwains-hash-switch-card
               default: tab1
@@ -76,7 +48,7 @@
                           padding: true
                           cards:
                             - type: custom:button-card
-                              name: Graphs
+                              name: Data
                               template: partials_heading_switch
                               tap_action:
                                 action: navigate
@@ -85,17 +57,19 @@
                                 name:
                                   - color: var(--dwains-theme-accent)
                             - type: custom:button-card
-                              name: Forecasts
+                              name: Graphs
                               template: partials_heading_switch
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab2"
                     - type: custom:dwains-flexbox-card
                       padding: false
-                      items_classes: "col-xs-12"
+                      items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
                       cards:
-                        - !include graph_outdoortemp_day.yaml
-                        - !include graph_rain.yaml
+                        - !include partial_switches.yaml
+                        - !include partial_sensors.yaml
+
+                # Tab 2
                 tab2:
                   type: vertical-stack
                   cards:
@@ -109,13 +83,13 @@
                           padding: true
                           cards:
                             - type: custom:button-card
-                              name: Graphs
+                              name: Data
                               template: partials_heading_switch
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab1"
                             - type: custom:button-card
-                              name: Forecasts
+                              name: Graphs
                               template: partials_heading_switch
                               tap_action:
                                 action: navigate
@@ -125,7 +99,9 @@
                                   - color: var(--dwains-theme-accent)
                     - type: custom:dwains-flexbox-card
                       padding: false
-                      items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+                      items_classes: "col-xs-12"
                       cards:
-                        - !include partial_forecasthourly.yaml
-                        - !include partial_forecastdaily.yaml
+                        - !include graph_adsblocked.yaml
+                        - !include graph_adsblockedpct.yaml
+                        - !include graph_procspeed.yaml
+                        #- !include graph.yaml
