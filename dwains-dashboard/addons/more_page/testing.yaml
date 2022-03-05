@@ -1,3 +1,135 @@
+# - type: custom:button-card
+#   entity: sensor.time
+#   show_name: false
+#   show_icon: false
+#   show_state: true
+#   show_label: false
+#   show_last_changed: false
+#   custom_fields:
+#     weather:
+#       card:
+#         type: custom:button-card
+#         show_state: false
+#         show_icon: false
+#         show_label: false
+#         show_name: false
+#         show_entity_picture: true
+#         # tap_action:
+#         #   !include ../../popups/common/weather-forecast.yaml
+#         entity: weather.east_tamworth
+#         # entity_picture: "[[[ return `/local/img/weather/${states[variables.entity_weather].state}.svg` ]]]"
+#         styles:
+#           grid:
+#             - grid-template-areas: |
+#                 "i"
+#             - grid-template-columns: 1fr
+#             - grid-template-rows: 1fr
+#           img_cell:
+#             - justify-content: center
+#           icon:
+#             - width: 4.0rem
+#             - height: 3.5rem
+#           card:
+#             - background-color: transparent
+#             - box-shadow: none
+#     temp:
+#       card:
+#         type: custom:button-card
+#         show_state: true
+#         show_icon: false
+#         show_label: false
+#         show_name: false
+#         entity: sensor.tamworth_airport_temp
+#         state_display: |
+#           [[[
+#             var temperature = states['sensor.tamworth_airport_temp'].state
+#             return `<div><span class="value">${temperature}</span><span class="unit">&degC</span></div>`
+#           ]]]
+#         extra_styles: |
+#           span.unit {
+#             font-size: 1.4rem;
+#           }
+#         styles:
+#           grid:
+#             - grid-template-areas: |
+#                 "s"
+#             - grid-template-columns: 1fr
+#             - grid-template-rows: 1fr
+#           state:
+#             - justify-self: center
+#             - align-self: center
+#             - font-weight: 300
+#             - font-size: 2rem
+#             - filter: "opacity(40%)"
+#           card:
+#             - background-color: transparent
+#             - box-shadow: none
+#     date:
+#       card:
+#         type: custom:button-card
+#         show_state: true
+#         show_icon: false
+#         show_label: false
+#         show_name: false
+#         entity: sensor.date
+#         # state_display: |
+#         #   [[[
+#         #     var date = states['sensor.date'].state
+#         #     var lang = navigator.language || navigator.userLanguage
+#         #     const opts = { weekday: 'long', month: 'long', day: 'numeric' }
+#         #     return new Intl.DateTimeFormat(lang, opts).format(date)
+#         #     return ''
+#         #   ]]]
+#         styles:
+#           grid:
+#             - grid-template-areas: |
+#                 "s"
+#             - grid-template-columns: min-content
+#             - grid-template-rows: min-content
+#           state:
+#             - background-color: transparent
+#             - font-size: 1.2rem
+#             - justify-self: end
+#             - align-self: start
+#             - filter: "opacity(40%)"
+#           card:
+#             - border-radius: 0
+#             - background-color: transparent
+#             - box-shadow: none
+#             - padding: 0 1rem 0 0
+#             - border-right: 0.1rem solid rgba(var(--primary-text-color-rgb), 0.4)
+#             - justify-self: end
+#     styles:
+#       grid:
+#         - grid-template-areas: '"s weather" "s weather" "s temp" "date temp"'
+#         - grid-template-columns: "min-content max-content"
+#         - grid-template-rows: "repeat(4, min-content)"
+#       state:
+#         - font-weight: 200
+#         - font-size: 5rem
+#         - background-color: transparent
+#         - justify-self: end
+#         - align-self: end
+#         - padding-right: 0.8rem
+#         - border-right: 0.1rem solid rgba(var(--primary-text-color-rgb), 0.4)
+#       card:
+#         - background-color: transparent
+#         - border-radius: none
+#         - box-shadow: none
+#         - width: 100%
+#     custom_fields:
+#       weather:
+#         - place-self: end center
+#         - padding-bottom: 0.25rem
+#         - margin-left: 0.8rem
+#       temp:
+#         - place-self: start center
+#         - padding-top: 0.25rem
+#         - margin-left: 0.8rem
+#       date:
+#         - align-self: start
+#         - justify-self: end
+
 - type: entities
   title: Home Assistant
   show_header_toggle: false

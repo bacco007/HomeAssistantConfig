@@ -26,3 +26,4 @@ sport_upcoming:
     - sensor.sport_dtm
     - sensor.sport_extreme_e
     - sensor.sport_sydswans_vfl
+    - sensor.sport_swifts

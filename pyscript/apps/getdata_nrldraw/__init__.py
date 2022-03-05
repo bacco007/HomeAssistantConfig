@@ -16,7 +16,7 @@ def getdata_nrldraw(
         log.error("getdata_nrldraw: No Entity ID provided")
         return
 
-    URL = "https://www.nrl.com/draw/data?competition=111&season=2021&team=500003"
+    URL = "https://www.nrl.com/draw/data?competition=111&season=2022&team=500003"
     TEAM = "Knights"
 
     try:

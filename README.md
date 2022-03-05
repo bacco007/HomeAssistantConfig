@@ -69,32 +69,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, February 20th 2022_
+_Stats as at 05:00, Saturday, March 5th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 377     | 2538         | 1828 | 90 |
+| unknown | 384     | 2670         | 1918 | 90 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 90
-Binary Sensor | 239
+Binary Sensor | 246
 Camera | 8
-Device Tracker | 71
+Device Tracker | 72
 Group | 5
-Input Boolean | 0
+Input Boolean | 1
 Input Datetime | 0
 Input Text | 3
 Light | 2
-Media Player | 17
+Media Player | 19
 Person | 1
 Scene | 0
 Script | 1
-Sensor | 1828
+Sensor | 1918
 Sun | 1
-Switch | 161
+Switch | 176
 Weather | 9
 Zone | 11
 
@@ -127,6 +127,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
 | [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud) |
 | [binary_sensor.dyson_local](https://www.home-assistant.io/components/binary_sensor.dyson_local) |
+| [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
 | [binary_sensor.eufy_security](https://www.home-assistant.io/components/binary_sensor.eufy_security) |
 | [binary_sensor.hassio](https://www.home-assistant.io/components/binary_sensor.hassio) |
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
@@ -136,6 +137,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
+| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
@@ -143,11 +145,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
-| [binary_sensor.threshold](https://www.home-assistant.io/components/binary_sensor.threshold) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.tuya](https://www.home-assistant.io/components/binary_sensor.tuya) |
-| [binary_sensor.updater](https://www.home-assistant.io/components/binary_sensor.updater) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
+| [binary_sensor.version](https://www.home-assistant.io/components/binary_sensor.version) |
 | [binary_sensor.weatherflow](https://www.home-assistant.io/components/binary_sensor.weatherflow) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
@@ -158,7 +159,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [broadlink](https://www.home-assistant.io/components/broadlink) |
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
+| [button.esphome](https://www.home-assistant.io/components/button.esphome) |
 | [button.homekit_controller](https://www.home-assistant.io/components/button.homekit_controller) |
+| [button.plex](https://www.home-assistant.io/components/button.plex) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
 | [button.tuya](https://www.home-assistant.io/components/button.tuya) |
 | [button.zha](https://www.home-assistant.io/components/button.zha) |
@@ -201,9 +204,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
 | [dlna_dmr](https://www.home-assistant.io/components/dlna_dmr) |
+| [dlna_dms](https://www.home-assistant.io/components/dlna_dms) |
 | [dwains_dashboard](https://www.home-assistant.io/components/dwains_dashboard) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
 | [energy](https://www.home-assistant.io/components/energy) |
+| [esphome](https://www.home-assistant.io/components/esphome) |
 | [eufy_security](https://www.home-assistant.io/components/eufy_security) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.dyson_local](https://www.home-assistant.io/components/fan.dyson_local) |
@@ -249,6 +254,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
 | [ios](https://www.home-assistant.io/components/ios) |
+| [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
 | [launch_library](https://www.home-assistant.io/components/launch_library) |
 | [lifx](https://www.home-assistant.io/components/lifx) |
@@ -292,6 +298,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
 | [number](https://www.home-assistant.io/components/number) |
+| [number.sensibo](https://www.home-assistant.io/components/number.sensibo) |
 | [number.sonos](https://www.home-assistant.io/components/number.sonos) |
 | [number.tuya](https://www.home-assistant.io/components/number.tuya) |
 | [number.zha](https://www.home-assistant.io/components/number.zha) |
@@ -303,8 +310,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
+| [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
+| [radarr](https://www.home-assistant.io/components/radarr) |
+| [radio_browser](https://www.home-assistant.io/components/radio_browser) |
 | [readme](https://www.home-assistant.io/components/readme) |
 | [recorder](https://www.home-assistant.io/components/recorder) |
 | [remote](https://www.home-assistant.io/components/remote) |
@@ -314,7 +324,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [rest](https://www.home-assistant.io/components/rest) |
 | [rocketlaunchlive](https://www.home-assistant.io/components/rocketlaunchlive) |
-| [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
 | [samsungtv_smart](https://www.home-assistant.io/components/samsungtv_smart) |
 | [satellitetracker](https://www.home-assistant.io/components/satellitetracker) |
 | [scene](https://www.home-assistant.io/components/scene) |
@@ -346,6 +355,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dwains_dashboard](https://www.home-assistant.io/components/sensor.dwains_dashboard) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
 | [sensor.energy](https://www.home-assistant.io/components/sensor.energy) |
+| [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
@@ -381,14 +391,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
-| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
-| [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
@@ -466,7 +474,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [tuya](https://www.home-assistant.io/components/tuya) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
-| [updater](https://www.home-assistant.io/components/updater) |
 | [uptimerobot](https://www.home-assistant.io/components/uptimerobot) |
 | [usb](https://www.home-assistant.io/components/usb) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
@@ -528,7 +535,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [OpenNEM](https://github.com/bacco007/sensor.opennem)
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Pyscript Python scripting](https://github.com/custom-components/pyscript)
-- [Radarr]()
+- [Radarr](https://www.home-assistant.io/integrations/radarr)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Rocket Launch Live - Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
 - [SamsungTV Smart](https://github.com/ollo69/ha-samsungtv-smart)
@@ -586,7 +593,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Addons
 
-Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [Eufy Security Add-on]()
+Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ESPHome]()
+- [Eufy Security Add-on]()
 - [Glances]()
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab]()

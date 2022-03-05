@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.2.1",
+        "version": "2.2.2",
         "local": false,
         "user": false,
         "nodes": {
@@ -485,7 +485,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.42.5",
+        "version": "0.43.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -584,7 +584,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.21.0",
+        "version": "5.21.2",
         "local": false,
         "user": false,
         "nodes": {
@@ -890,7 +890,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.1.5",
+        "version": "3.1.6",
         "local": false,
         "user": false,
         "nodes": {
@@ -1324,7 +1324,7 @@
     },
     "node-red-node-serialport": {
         "name": "node-red-node-serialport",
-        "version": "0.15.0",
+        "version": "1.0.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1556,7 +1556,7 @@
     },
     "node-red-node-mysql": {
         "name": "node-red-node-mysql",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "local": false,
         "user": false,
         "nodes": {

@@ -16,7 +16,7 @@ def getdata_aflladder(
         log.error("getdata_aflladder: No Entity ID provided")
         return
 
-    URL = "https://aflapi.afl.com.au/afl/v2/compseasons/34/ladders"
+    URL = "https://aflapi.afl.com.au/afl/v2/compseasons/43/ladders"
     TEAM = "Sydney Swans"
 
     try:
@@ -36,7 +36,8 @@ def getdata_aflladder(
         position = key["position"]
         points = key["thisSeasonRecord"]["aggregatePoints"]
         percent = key["thisSeasonRecord"]["percentage"]
-        form = key["form"]
+        #form = key["form"]
+        form = ""
         if "nextOpponent" in key:
             nextop = key["nextOpponent"]["nickname"]
         else:

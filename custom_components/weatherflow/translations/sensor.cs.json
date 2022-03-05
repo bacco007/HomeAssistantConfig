@@ -1,0 +1,59 @@
+{
+    "state": {
+        "trend": {
+            "falling": "Klesající",
+            "rising": "Rostoucí",
+            "steady": "Stabilní"
+        },
+        "beaufort": {
+            "calm": "Bezvětří",
+            "light_air": "Klidný vánek",
+            "light_breeze": "Lehký vánek",
+            "gentle_breeze": "Mírný vánek",
+            "moderate_breeze": "Střední vítr",
+            "fresh_breeze": "Střední vítr",
+            "strong_breeze": "Silný vítr",
+            "moderate_gale": "Mírnější vichr",
+            "fresh_gale": "Střední vichr",
+            "strong_gale": "Silný vichr",
+            "storm": "Bouřka",
+            "violent_storm": "Silná bouřka",
+            "hurricane": "Vichřice"
+        },
+        "wind_cardinal": {
+            "n": "S",
+            "nne": "SSV",
+            "ne": "SV",
+            "ene": "VSV",
+            "e": "V",
+            "ese": "VJV",
+            "se": "JV",
+            "sse": "JJV",
+            "s": "J",
+            "ssw": "JJZ",
+            "sw": "JZ",
+            "wsw": "ZJZ",
+            "w": "Z",
+            "wnw": "ZSZ",
+            "nw": "SZ",
+            "nnw": "SSZ"
+        },
+        "precip_intensity": {
+            "none": "Žádné",
+            "very_light": "Velmi lehké",
+            "light": "Lehké",
+            "moderate": "Střední",
+            "heavy": "Silné",
+            "very_heavy": "Velmi silné",
+            "extreme": "Extrémní"
+        },
+        "uv_description": {
+            "extreme": "Extrémní",
+            "very-high": "Velmi vysoké",
+            "high": "Vysoké",
+            "moderate": "Střední",
+            "low": "Nízké",
+            "none": "Žádné"
+        }
+    }
+}

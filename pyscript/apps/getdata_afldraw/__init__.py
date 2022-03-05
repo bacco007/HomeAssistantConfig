@@ -16,7 +16,7 @@ def getdata_afldraw(
         log.error("getdata_afldraw: No Entity ID provided")
         return
 
-    URL = "https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=34&pageSize=50&teamId=13"
+    URL = "https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=43&pageSize=50&teamId=13"
     TEAM = "Sydney Swans"
 
     try:

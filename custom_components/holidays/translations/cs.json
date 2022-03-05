@@ -10,12 +10,17 @@
                     "icon_tomorrow": "Ikona svoz zítra (mdi:calendar-arrow-right)",
                     "icon_today": "Ikona svoz dnes (mdi:calendar-check)",
                     "country": "Státní svátky - země (volitelné)",
-                    "prov": "Státní svátky - provincie (volitelné)",
-                    "state": "Státní svátky - stát (volitelné)",
                     "observed": "Státní svátky - observed (volitelné)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "Více na https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Státní svátky - subdiv"
+                }
+            },
+            "pop": {
                 "title": "Holidays - (2/2)",
                 "description": "Více na https://github.com/bruxy70/Holidays",
                 "data": {
@@ -41,23 +46,27 @@
                     "icon_tomorrow": "Ikona svoz zítra (mdi:calendar-arrow-right)",
                     "icon_today": "Ikona svoz dnes (mdi:calendar-check)",
                     "country": "Státní svátky - země (volitelné)",
-                    "prov": "Státní svátky - provincie (volitelné)",
-                    "state": "Státní svátky - stát (volitelné)",
                     "observed": "Státní svátky - observed (volitelné)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "Více na https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Státní svátky - subdiv"
+                }
+            },
+            "pop": {
                 "title": "Holidays - (2/2)",
                 "description": "Více na https://github.com/bruxy70/Holidays",
                 "data": {
                     "holiday_pop_named": "Ignorovat svátky (volitelné)"
                 }
             }
-       },
+        },
         "error": {
             "value": "Chybná hodnota. Zkontroluj zadané hodnoty!",
             "icon": "Ikony musí být zadány ve formátu 'prefix:jmnéno'."
         }
     }
-
 }

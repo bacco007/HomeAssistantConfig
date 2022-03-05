@@ -1,7 +1,7 @@
 """Sensor platform to calculate IAQ UK index."""
 
 import logging
-from typing import Any, Mapping, Optional
+from typing import Any, Final, Mapping, Optional
 
 from homeassistant.components.sensor import (
     ENTITY_ID_FORMAT,
@@ -27,18 +27,18 @@ from .const import (
     LEVEL_POOR,
 )
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER: Final = logging.getLogger(__name__)
 
-SENSOR_INDEX = "iaq_index"
-SENSOR_LEVEL = "iaq_level"
+SENSOR_INDEX: Final = "iaq_index"
+SENSOR_LEVEL: Final = "iaq_level"
 
-SENSORS = {
+SENSORS: Final = {
     SENSOR_INDEX: "Indoor Air Quality Index",
     SENSOR_LEVEL: "Indoor Air Quality Level",
 }
 
 
-# pylint: disable=w0613
+# pylint: disable=unused-argument
 async def async_setup_platform(
     hass: HomeAssistant, config: ConfigType, async_add_entities, discovery_info=None
 ):
@@ -70,7 +70,7 @@ class IaqukSensor(SensorEntity):
         )
 
         self._attr_unique_id = f"{controller.unique_id}_{sensor_type}"
-        self._attr_name = "{} {}".format(controller.name, SENSORS[sensor_type])
+        self._attr_name = f"{controller.name} {SENSORS[sensor_type]}"
         self._attr_state_class = STATE_CLASS_MEASUREMENT
         self._attr_device_class = (
             f"{DOMAIN}__level" if sensor_type == SENSOR_LEVEL else None

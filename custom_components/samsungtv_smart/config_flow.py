@@ -138,7 +138,6 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._api_key = None
         self._device_id = None
         self._name = None
-        self._mac = None
         self._ws_name = None
         self._logo_option = None
         self._device_info = {}
@@ -208,7 +207,6 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._token = self._tv_info.ws_token
             self._ping_port = self._tv_info.ping_port
             self._device_info = await get_device_info(self._host, session)
-            self._mac = self._device_info.get(ATTR_DEVICE_MAC)
 
         return result
 
@@ -233,8 +231,7 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if not ip_address:
             return self._show_form(errors={"base": "invalid_host"})
 
-        await self.async_set_unique_id(ip_address)
-        self._abort_if_unique_id_configured()
+        self._async_abort_entries_match({CONF_HOST: ip_address})
 
         self._host = ip_address
         self._name = user_input[CONF_NAME]
@@ -261,14 +258,14 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if result == RESULT_SUCCESS:
             result = await self._try_connect()
 
-        return self._manage_result(result)
+        return await self._manage_result(result)
 
     async def async_step_stdevice(self, user_input=None):
         """Handle a flow to select ST device."""
         self._device_id = user_input.get(CONF_ST_DEVICE)
 
         result = await self._try_connect()
-        return self._manage_result(result)
+        return await self._manage_result(result)
 
     async def async_step_stdeviceid(self, user_input=None):
         """Handle a flow to manual input a ST device."""
@@ -281,10 +278,9 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._device_id = device_id
 
         result = await self._try_connect()
-        return self._manage_result(result)
+        return await self._manage_result(result)
 
-    @callback
-    def _manage_result(self, result):
+    async def _manage_result(self, result):
         """Manage the previous result."""
 
         if result != RESULT_SUCCESS:
@@ -292,6 +288,20 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors={"base": result},
                 step_id="stdeviceid" if result == RESULT_ST_DEVICE_NOT_FOUND else "user"
             )
+
+        if ATTR_DEVICE_ID in self._device_info:
+            unique_id = self._device_info[ATTR_DEVICE_ID]
+        elif ATTR_DEVICE_MAC in self._device_info:
+            unique_id = self._device_info[ATTR_DEVICE_MAC]
+        else:
+            unique_id = self._host
+
+        updates = None
+        if unique_id != self._host:
+            updates = {CONF_HOST: self._host}
+
+        await self.async_set_unique_id(unique_id)
+        self._abort_if_unique_id_configured(updates)
 
         return self._save_entry()
 
@@ -306,14 +316,13 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
         if self._token:
             data[CONF_TOKEN] = self._token
-        if self._mac:
-            data[CONF_MAC] = self._mac
 
         for key, attr in {
             CONF_ID: ATTR_DEVICE_ID,
             CONF_DEVICE_NAME: ATTR_DEVICE_NAME,
             CONF_DEVICE_MODEL: ATTR_DEVICE_MODEL,
             CONF_DEVICE_OS: ATTR_DEVICE_OS,
+            CONF_MAC: ATTR_DEVICE_MAC,
         }.items():
             if attr in self._device_info:
                 data[key] = self._device_info[attr]

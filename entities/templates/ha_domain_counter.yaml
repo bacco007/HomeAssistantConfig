@@ -1,0 +1,77 @@
+---
+sensor:
+  name: "HA Domain Counter"
+  unique_id: ha_domain_counter
+  icon: "mdi:home-assistant"
+  state: >
+    {{ states | count | int(default=0) }}
+  state_class: measurement
+  attributes:
+    domains: >
+      {%- for d in states | groupby('domain') %}
+      {%- if loop.first %}
+      {{loop.length | int(default=0)}}
+      {%- endif %}
+      {%- endfor %}
+    alarm_control_panel: >
+      {{ states.alarm_control_panel | count | int(default=0) }}
+    alert: >
+      {{ states.alert | count | int(default=0) }}
+    automation: >
+      {{ states.automation | count | int(default=0) }}
+    binary_sensor: >
+      {{ states.binary_sensor | list | length | int(default=0) }}
+    button: >
+      {{ states.button | list | length | int(default=0) }}
+    calendar: >
+      {{ states.calendar | list | length | int(default=0) }}
+    camera: >
+      {{ states.camera | list | length | int(default=0) }}
+    climate: >
+      {{ states.climate | list | length | int(default=0) }}
+    counter: >
+      {{ states.counter | list | length | int(default=0) }}
+    device_tracker: >
+      {{ states.device_tracker | list | length | int(default=0) }}
+    fan: >
+      {{ states.fan | list | length | int(default=0) }}
+    geolocation: >
+      {{ states.geo_location | list | length | int(default=0) }}
+    group: >
+      {{ states.group | list | length | int(default=0) }}
+    input_boolean: >
+      {{ states.input_boolean | list | length | int(default=0) }}
+    input_datetime: >
+      {{ states.input_datetime | list | length | int(default=0) }}
+    input_number: >
+      {{ states.input_number | list | length | int(default=0) }}
+    input_select: >
+      {{ states.input_select | list | length | int(default=0) }}
+    input_text: >
+      {{ states.input_text | list | length | int(default=0) }}
+    light: >
+      {{ states.light | list | length | int(default=0) }}
+    mediaplayer: >
+      {{ states.media_player | list | length | int(default=0) }}
+    number: >
+      {{ states.number | list | length | int(default=0) }}
+    persistent_notification: >
+      {{ states.persistent_notification | list | length | int(default=0) }}
+    person: >
+      {{ states.person | list | length | int(default=0) }}
+    remote: >
+      {{ states.remote | list | length | int(default=0) }}
+    script: >
+      {{ states.script | list | length | int(default=0) }}
+    select: >
+      {{ states.select | list | length | int(default=0) }}
+    sensor: >
+      {{ states.sensor | list | length | int(default=0) }}
+    sun: >
+      {{ states.sun | list | length | int(default=0) }}
+    switch: >
+      {{ states.switch | list | length | int(default=0) }}
+    weather: >
+      {{ states.weather | list | length | int(default=0) }}
+    zone: >
+      {{ states.zone | list | length | int(default=0) }}

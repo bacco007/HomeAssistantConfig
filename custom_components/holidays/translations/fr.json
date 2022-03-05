@@ -10,12 +10,17 @@
                     "icon_tomorrow": "Icône pour collecte à jour J+1 (mdi:calendar-arrow-right)",
                     "icon_today": "Icône pour collecte au jour J (mdi:calendar-check)",
                     "country": "Reporter les vacances au lendemain (optionnel)",
-                    "prov": "Prov (optional)",
-                    "state": "State (optional)",
                     "observed": "Observed (optional)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
                 "title": "Holidays (2/2)",
                 "description": "Plus d'info sur https://github.com/bruxy70/Holidays",
                 "data": {
@@ -42,12 +47,17 @@
                     "icon_tomorrow": "Icône pour collecte à jour J+1 (mdi:calendar-arrow-right)",
                     "icon_today": "Icône pour collecte au jour J (mdi:calendar-check)",
                     "country": "Reporter les vacances au lendemain (optionnel)",
-                    "prov": "Prov (optional)",
-                    "state": "State (optional)",
                     "observed": "Observed (optional)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
                 "title": "Holidays (2/2)",
                 "description": "Plus d'info sur https://github.com/bruxy70/Holidays",
                 "data": {

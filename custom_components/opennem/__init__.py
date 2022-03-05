@@ -266,25 +266,19 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 # units = row["units"]
                 # last_update = row["history"]["last"]
 
-                if row["type"] == "temperature":
-                    value = row["history"]["data"][-2]
-                elif row["type"] == "price":
-                    value = row["history"]["data"][-2]
-                elif ftype == "solar_rooftop":
-                    if (row["history"]["data"][-1] != 0):
-                        value = row["history"]["data"][-1]
-                    elif (row["history"]["data"][-2] != 0):
-                        value = row["history"]["data"][-2]
-                    else:
-                        value = row["history"]["data"][-3]
-                elif ftype == "imports":
-                    value = abs(row["history"]["data"][-1])
-                elif ftype == "exports":
-                    value = -abs(row["history"]["data"][-1])
-                elif ftype == "battery_charging":
-                    value = -abs(row["history"]["data"][-1])
-                else:
+                if (row["history"]["data"][-1] != 0):
                     value = row["history"]["data"][-1]
+                elif (row["history"]["data"][-2] != 0):
+                    value = row["history"]["data"][-2]
+                else:
+                    value = row["history"]["data"][-3]
+
+                if ftype == "imports":
+                    value = abs(value)
+                if ftype == "exports":
+                    value = -abs(value)
+                if ftype == "battery_charging":
+                    value = -abs(value)
 
                 if value is None:
                     self._values[ftype] = 0.0

@@ -10,12 +10,17 @@
                     "icon_tomorrow": "Homme on prügivedu ikoon (mdi:calendar-arrow-right) - valikuline",
                     "icon_today": "Täna on prügivedu ikoon (mdi:calendar-check) - valikuline",
                     "country": "Liiguta prügivedu pühade tõttu üks päev edasi (valikuline)",
-                    "prov": "Kohalikud pühad (valikuline)",
-                    "state": "Riiklikud pühad (valikuline)",
                     "observed": "Ise määratud pühad (valikuline)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
                 "title": "Holidays (2/2)",
                 "description": "Rohkem infot leiab https://github.com/bruxy70/Holidays",
                 "data": {
@@ -41,12 +46,17 @@
                     "icon_tomorrow": "Homme on prügivedu ikoon (mdi:calendar-arrow-right) - valikuline",
                     "icon_today": "Täna on prügivedu ikoon (mdi:calendar-check) - valikuline",
                     "country": "Liiguta prügivedu pühade tõttu üks päev edasi (valikuline)",
-                    "prov": "Kohalikud pühad (valikuline)",
-                    "state": "Riiklikud pühad (valikuline)",
                     "observed": "Ise määratud pühad (valikuline)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
                 "title": "Holidays (2/2)",
                 "description": "Rohkem infot leiab https://github.com/bruxy70/Holidays",
                 "data": {
@@ -59,5 +69,4 @@
             "icon": "Ikoonid tuleb esitada kujul 'prefix:name'."
         }
     }
-
 }

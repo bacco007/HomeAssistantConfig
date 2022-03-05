@@ -6,7 +6,7 @@ https://github.com/Limych/ha-iaquk
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Final, List, Optional, Union
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -61,9 +61,9 @@ from .const import (
 )
 from .sensor import SENSORS
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER: Final = logging.getLogger(__name__)
 
-SOURCES = [
+SOURCES: Final = [
     CONF_TEMPERATURE,
     CONF_HUMIDITY,
     CONF_CO2,
@@ -75,9 +75,9 @@ SOURCES = [
     CONF_PM,
 ]
 
-SOURCES_LISTS = [CONF_PM]
+SOURCES_LISTS: Final = [CONF_PM]
 
-SOURCES_SCHEMA = vol.All(
+SOURCES_SCHEMA: Final = vol.All(
     vol.Schema(
         {
             vol.Optional(src): (cv.entity_ids if src in SOURCES_LISTS else cv.entity_id)
@@ -87,7 +87,7 @@ SOURCES_SCHEMA = vol.All(
     cv.has_at_least_one_key(*SOURCES),
 )
 
-IAQ_SCHEMA = vol.Schema(
+IAQ_SCHEMA: Final = vol.Schema(
     {
         vol.Optional(CONF_NAME): cv.string,
         vol.Required(CONF_SOURCES): SOURCES_SCHEMA,
@@ -95,7 +95,7 @@ IAQ_SCHEMA = vol.Schema(
     }
 )
 
-CONFIG_SCHEMA = vol.Schema(
+CONFIG_SCHEMA: Final = vol.Schema(
     {DOMAIN: cv.schema_with_slug_keys(IAQ_SCHEMA)}, extra=vol.ALLOW_EXTRA
 )
 
@@ -245,7 +245,7 @@ class Iaquk:
         indexes = {}
         for src in self._sources:
             try:
-                idx = self.__getattribute__("_%s_index" % src)
+                idx = self.__getattribute__(f"_{src}_index")
                 _LOGGER.debug("[%s] %s_index=%s", self._entity_id, src, idx)
                 if idx is not None:
                     iaq += idx

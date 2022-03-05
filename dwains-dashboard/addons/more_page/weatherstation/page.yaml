@@ -39,6 +39,10 @@
               - ../../1_Templates/button_entity.yaml
               - name: "Wind"
                 entity: sensor.tempest_st_00056115_wind_gust
+            - !include
+              - ../../1_Templates/button_entity.yaml
+              - name: "Lightning Strikes"
+                entity: sensor.tempest_st_00056115_lightning_count_today
 
     - type: custom:dwains-flexbox-card
       items_classes: "col-xs-12"

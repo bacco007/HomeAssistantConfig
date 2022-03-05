@@ -90,6 +90,7 @@ from .const import (
     CONF_USE_ST_STATUS_INFO,
     CONF_WOL_REPEAT,
     CONF_WS_NAME,
+    DATA_CFG_YAML,
     DATA_OPTIONS,
     DEFAULT_APP,
     DEFAULT_PORT,
@@ -168,7 +169,7 @@ async def async_setup_entry(
     session = hass.helpers.aiohttp_client.async_get_clientsession()
 
     config = entry.data.copy()
-    add_conf = hass.data[DOMAIN][entry.unique_id]
+    add_conf = hass.data[DOMAIN][entry.entry_id].get(DATA_CFG_YAML, {})
     for attr, value in add_conf.items():
         if value:
             config[attr] = value

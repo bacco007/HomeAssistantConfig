@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "0.6.1";
+var VERSION = "0.7.1";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -111,29 +111,41 @@ class DataTable {
     get_rows() {
         // sorting is allowed asc/desc for one column
         if (this.cfg.sort_by) {
-            let sort_col = this.cfg.sort_by;
-            let sort_dir = 1;
-            if (sort_col) {
+            let sort_cols = listify(this.cfg.sort_by);
+            
+            let sort_conf = sort_cols.map((sort_col) => {
+                let out = { dir: 1, col: sort_col, idx: null };
                 if (["-", "+"].includes(sort_col.slice(-1))) {
                     // "-" => descending, "+" => ascending
-                    sort_dir = ((sort_col.slice(-1)) == "-") ? -1 : +1;
-                    sort_col = sort_col.slice(0, -1);
+                    out.dir = (((sort_col.slice(-1)) == "-") ? -1 : +1);
+                    out.col = sort_col.slice(0, -1);
                 }
+                // DEPRECATION CHANGES ALSO TO BE DONE HERE:
+                // determine col-by-idx to be sorted with...
+                out.idx = this.cols.findIndex((col) =>
+                    ["id", "attr", "prop", "attr_as_list", "data"].some(attr =>
+                        attr in col && out.col == col[attr]));
+                return out;
+            });
+
+            // sort conf checks
+            sort_conf = sort_conf.filter((conf) => conf.idx !== -1 && conf.idx !== null);
+            if (sort_conf.length > 0) {
+                
+                this.rows.sort((x, y) => 
+                    sort_conf.reduce((out, conf) => 
+                        out || conf.dir * compare(
+                            x.data[conf.idx] && x.data[conf.idx].content,
+                            y.data[conf.idx] && y.data[conf.idx].content),
+                        false
+                    )
+                );
+
+            } else {
+                console.error("cannot sort, no applicable columns found");
             }
 
-            // DEPRECATION CHANGES ALSO TO BE DONE HERE:
-            // determine col-by-idx to be sorted with...
-            var sort_idx = this.cols.findIndex((col) =>
-                ["id", "attr", "prop", "attr_as_list", "data"].some(attr =>
-                    attr in col && sort_col == col[attr]));
 
-            // if applicable sort according to config
-            if (sort_idx > -1)
-                this.rows.sort((x, y) => sort_dir * compare(
-                    x.data[sort_idx] && x.data[sort_idx].content,
-                    y.data[sort_idx] && y.data[sort_idx].content));
-            else
-                console.error(`config.sort_by: ${this.cfg.sort_by}, but column not found!`);
         }
         // mark rows to be hidden due to 'strict' property
         this.rows = this.rows.filter(row => !row.hidden);
@@ -191,7 +203,7 @@ class DataRow {
             // THIS WILL BE BREAKING OLD STUFF, INTRODUCE DEPRECATION WARNINGS!!!!!
             if ("data" in col) {
                 for (let tok of col.data.split(","))
-                    col_getter.push(["auto", tok]);
+                    col_getter.push(["auto", tok.trim()]);
 
             // OLD data source selection: CALL DEPRECATION WARNING HERE!!!
             // start with console.log(), continue with console.warn(), console.error()
@@ -223,7 +235,8 @@ class DataRow {
 
                 // newest stuff, automatically dispatch to correct data source
                 if (col_type == "auto") {
-                    if (col_key == "name") {
+                    if (col_key === "name") {
+                        // "smart" name determination
                         if ("friendly_name" in this.entity.attributes)
                             raw_content.push(this.entity.attributes.friendly_name);
                         else if ("name" in this.entity)
@@ -232,18 +245,38 @@ class DataRow {
                             raw_content.push(this.entity.attributes.name);
                         else
                             raw_content.push(this.entity.entity_id);
-                    } else if (col_key == "object_id") {
+                    } else if (col_key === "object_id") {
+                        // return Object ID ('entity_id' after 1st dot)
                         raw_content.push(this.entity.entity_id.split(".").slice(1).join("."));
+                    } else if (col_key === "_state" && "state" in this.entity.attributes) {
+                        // '_state' denotes 'attributes.state'
+                        raw_content.push(this.entity.attributes.state);
+                    } else if (col_key === "icon") {
+                        // 'icon' will show the entity's default icon
+                        let _icon = this.entity.attributes.icon;
+                        raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
                     } else if (col_key in this.entity) {
+                        // easy direct member of entity
                         raw_content.push(this.entity[col_key]);
+                    } else if (col_key in this.entity.attributes) {
+                        // finally fall back to '.attributes' member
+                        raw_content.push(this.entity.attributes[col_key]);
                     } else {
-                        raw_content.push(((col_key in this.entity.attributes) ?
-                            this.entity.attributes[col_key] : null));
+                        // no matching data found, complain:
+                        //raw_content.push("[[ no match ]]");
+                        raw_content.push(null);
                     }
+
+                    // @todo: not really nice to clean `raw_content` up here, why
+                    //        putting garbage in it in the 1st place? Need to check
+                    //        if this is ever executed, since the data-collection
+                    //        improvements...
+                    /*raw_content = raw_content.filter(
+                        (item) => item !== undefined && item.slice(0, 9) !== 'undefined'
+                    );*/
 
                     // technically all of the above might be handled as list
                     this.has_multiple = Array.isArray(raw_content.slice(-1)[0]);
-
 
                 ////////// ALL OF THE FOLLOWING TO BE REMOVED ONCE DEPRECATION IS REALIZED....
                 //
@@ -278,8 +311,10 @@ class DataRow {
                 //
                 ////////// ... REMOVAL UNTIL THIS POINT HERE (DUE TO DEPRECATION)
 
-                } else
+                } else {
                     console.error(`no selector found for col: ${col.name} - skipping...`);
+                    //raw_content.push("[failed selecting data]");
+                }
             }
             /* finally concat all raw_contents together using 'col.multi_delimiter' */
             let delim = (col.multi_delimiter) ? col.multi_delimiter : " ";
@@ -399,7 +434,7 @@ class FlexTableCard extends HTMLElement {
         // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
         var css_styles = {
             "table":                    "width: 100%; padding: 16px; ",
-            "thead th":                 "text-align: left; height: 1em;",
+            "thead th":                 "height: 1em;",
             "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; ",
             "th":                       "padding-left: 0.5em; padding-right: 0.5em; ",
             "tr td.left":               "text-align: left; ",

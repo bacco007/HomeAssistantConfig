@@ -14,7 +14,7 @@ API_BASEURL = "https://api.smartthings.com/v1"
 API_DEVICES = f"{API_BASEURL}/devices"
 
 DEVICE_TYPE_OCF = "OCF"
-DEVICE_TYPEID_OCF = "f7b59139-a784-41d1-8624-56d10931b6c3"
+DEVICE_TYPE_NAME_TV = "Samsung OCF TV"
 
 COMMAND_POWER_OFF = {"capability": "switch", "command": "off"}
 COMMAND_POWER_ON = {"capability": "switch", "command": "on"}
@@ -248,20 +248,23 @@ class SmartThingsTV:
         if device_list:
             _LOGGER.debug("SmartThings available devices: %s", str(device_list))
 
-            for k in device_list.get("items", []):
-                device_id = k.get("deviceId", "")
-                device_type = k.get("type", "")
-                device_type_id = k.get("deviceTypeId", "")
-                if device_id and (
-                    device_type_id == DEVICE_TYPEID_OCF
-                    or device_type == DEVICE_TYPE_OCF
-                ):
-                    label = k.get("label", "")
-                    if device_label == "" or (label == device_label and label != ""):
-                        result[device_id] = {
-                            "name": k.get("name", ""),
-                            "label": label,
-                        }
+            for dev in device_list.get("items", []):
+                if (device_id := dev.get("deviceId")) is None:
+                    continue
+                if dev.get("type", "") != DEVICE_TYPE_OCF:
+                    continue
+
+                label = dev.get("label", "")
+                if device_label:
+                    if label != device_label:
+                        continue
+                elif dev.get("deviceTypeName", "") != DEVICE_TYPE_NAME_TV:
+                    continue
+
+                result[device_id] = {
+                    "name": dev.get("name", f"TV ID {device_id}"),
+                    "label": label,
+                }
 
         _LOGGER.info("SmartThings discovered TV devices: %s", str(result))
 

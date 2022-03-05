@@ -3,7 +3,7 @@ type: entities
 title: Extremes
 style: |
   .card-header {
-    padding: 5px 16px;
+    padding: 5px 16px; 
     font-size: 18px;
     font-weight: 700 !important;
   }
@@ -38,6 +38,7 @@ entities:
           font-size: 12px
       - entity: sensor.weather_home_rain_last7days
         name: Total
+        unit: false
         styles:
           font-size: 12px
   - entity: sensor.weather_home_rain_prior7days
@@ -58,6 +59,7 @@ entities:
           font-size: 12px
       - entity: sensor.weather_home_rain_prior7days
         name: Total
+        unit: false
         styles:
           font-size: 12px
   - entity: sensor.weather_home_rain_last30days
@@ -78,6 +80,7 @@ entities:
           font-size: 12px
       - entity: sensor.weather_home_rain_last30days
         name: Total
+        unit: false
         styles:
           font-size: 12px
   - entity: sensor.weather_home_totalrain_lastyr

@@ -124,3 +124,14 @@ card:
         return entity.attributes.forecasts.map((entry) => {
           return [new Date(entry.period_end), entry.pv_estimate90];
         });
+    - entity: sensor.sungrowsolar_solar_production
+      extend_to_end: false
+      unit: kW
+      stroke_width: 1
+      name: Actual
+      type: area
+      show:
+        legend_value: false
+      group_by:
+        func: avg
+        duration: 5min

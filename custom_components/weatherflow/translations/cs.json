@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "Stanice WeatherFlow už je nakonfigurovaná."
+        },
+        "error": {
+            "wrong_station_id": "Zadané Station Id je chybné.",
+            "invalid_data": "Chybná data z WeatherFlow.",
+            "wrong_token": "Zadaný Api Token je chybný.",
+            "bad_request": "Nastala neznámá chyba při přenosu dat."
+        },
+        "step": {
+            "user": {
+                "description": "Nastavit Stanici WeatherFlow",
+                "title": "WeatherFlow",
+                "data": {
+                    "station_id": "Station Id",
+                    "api_token": "Osobní Api Token"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "interval_observation": "Interval aktualizace senzoru v minutách (Výchozí: 2 minuty)",
+                    "forecast_hours": "Počet zobrazených hodin v hodinové předpovědi (Výchozí: 48 hodin)",
+                    "interval_forecast": "Interval aktualizace předpovšdi v minutách (Výchozí: 30 minut)"
+                }
+            }
+        }
+    }
+}

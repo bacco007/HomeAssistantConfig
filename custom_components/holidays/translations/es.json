@@ -10,12 +10,17 @@
                     "icon_tomorrow": "Icono de recoleccion para mañana (mdi:calendar-arrow-right)",
                     "icon_today": "Icono de recoleccion para hoy (mdi:calendar-check)",
                     "country": "Mover vacaciones al día siguiente (opcional)",
-                    "prov": "Días festivos - prov (opcional)",
-                    "state": "Días festivos - estado (opcional)",
                     "observed": "Días festivos - observado (opcional)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
                 "title": "Holidays (2/2)",
                 "description": "Más información en https://github.com/bruxy70/Holidays",
                 "data": {
@@ -41,12 +46,17 @@
                     "icon_tomorrow": "Icono de recoleccion para mañana (mdi:calendar-arrow-right)",
                     "icon_today": "Icono de recoleccion para hoy (mdi:calendar-check)",
                     "country": "Mover vacaciones al día siguiente (opcional)",
-                    "prov": "Días festivos - prov (opcional)",
-                    "state": "Días festivos - estado (opcional)",
                     "observed": "Días festivos - observado (opcional)"
                 }
             },
-            "detail": {
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
                 "title": "Holidays (2/2)",
                 "description": "Más información en https://github.com/bruxy70/Holidays",
                 "data": {
@@ -59,5 +69,4 @@
             "icon": "Los iconos deben especificarse en el formato 'prefix:name'."
         }
     }
-
 }

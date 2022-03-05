@@ -20,6 +20,7 @@ from homeassistant.const import (
     CONF_BROADCAST_ADDRESS,
     CONF_DEVICE_ID,
     CONF_HOST,
+    CONF_ID,
     CONF_MAC,
     CONF_NAME,
     CONF_PORT,
@@ -29,7 +30,7 @@ from homeassistant.const import (
     MINOR_VERSION,
     __version__,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import callback, HomeAssistant
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.storage import STORAGE_DIR
 from homeassistant.helpers.typing import ConfigType
@@ -51,6 +52,7 @@ from .const import (
     CONF_UPDATE_METHOD,
     CONF_UPDATE_CUSTOM_PING_URL,
     CONF_SCAN_APP_HTTP,
+    DATA_CFG_YAML,
     DATA_OPTIONS,
     DEFAULT_PORT,
     DEFAULT_TIMEOUT,
@@ -199,7 +201,8 @@ def _migrate_token(hass: HomeAssistant, entry: ConfigEntry, hostname: str) -> No
     _remove_token_file(hass, hostname, token_file)
 
 
-def _migrate_options_format(hass: HomeAssistant, entry: ConfigEntry):
+@callback
+def _migrate_options_format(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Migrate options to new format."""
     opt_migrated = False
     new_options = {}
@@ -214,6 +217,33 @@ def _migrate_options_format(hass: HomeAssistant, entry: ConfigEntry):
 
     if opt_migrated:
         hass.config_entries.async_update_entry(entry, options=new_options)
+
+
+@callback
+def _migrate_entry_unique_id(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Migrate unique_is to new format."""
+    if CONF_ID in entry.data:
+        new_unique_id = entry.data[CONF_ID]
+    elif CONF_MAC in entry.data:
+        new_unique_id = entry.data[CONF_MAC]
+    else:
+        new_unique_id = entry.data[CONF_HOST]
+
+    if entry.unique_id == new_unique_id:
+        return
+
+    entries_list = hass.config_entries.async_entries(DOMAIN)
+    for other_entry in entries_list:
+        if other_entry.unique_id == new_unique_id:
+            _LOGGER.warning(
+                "Found duplicated entries %s and %s that refer to the same device. Please remove unused entry",
+                entry.data[CONF_HOST],
+                other_entry.data[CONF_HOST],
+            )
+            return
+
+    _LOGGER.info("Migrated entry unique id from %s to %s", entry.unique_id, new_unique_id)
+    hass.config_entries.async_update_entry(entry, unique_id=new_unique_id)
 
 
 async def get_device_info(hostname: str, session: ClientSession) -> dict:
@@ -360,9 +390,8 @@ class SamsungTVInfo:
         return result
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType):
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Samsung TV integration."""
-
     if not is_valid_ha_version():
         msg = "This integration require at least HomeAssistant version" \
               f" {__min_ha_version__}, you are running version {__version__}." \
@@ -372,7 +401,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
         return True
 
     if DOMAIN in config:
-        hass.data[DOMAIN] = {}
         entries_list = hass.config_entries.async_entries(DOMAIN)
         for entry_config in config[DOMAIN]:
 
@@ -380,7 +408,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
             ip_address = entry_config[CONF_HOST]
 
             # check if already configured
-            valid_entries = [entry for entry in entries_list if entry.unique_id == ip_address]
+            valid_entries = [
+                entry.entry_id for entry in entries_list if entry.data[CONF_HOST] == ip_address
+            ]
             if not valid_entries:
                 _LOGGER.warning(
                     "Found yaml configuration for not configured device %s. Please use UI to configure",
@@ -388,58 +418,65 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
                 )
                 continue
 
-            hass.data[DOMAIN][ip_address] = {
+            data_yaml = {
                 key: value
                 for key, value in entry_config.items()
                 if key in SAMSMART_SCHEMA and value
             }
+            if data_yaml:
+                if DOMAIN not in hass.data:
+                    hass.data[DOMAIN] = {}
+                hass.data[DOMAIN][valid_entries[0]] = {DATA_CFG_YAML: data_yaml}
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the Samsung TV platform."""
     if not is_valid_ha_version():
         return False
 
+    # migrate unique id to a accepted format
+    _migrate_entry_unique_id(hass, entry)
+
     # migrate old token file to registry entry if required
     if CONF_TOKEN not in entry.data:
-        await hass.async_add_executor_job(_migrate_token, hass, entry, entry.unique_id)
+        await hass.async_add_executor_job(_migrate_token, hass, entry, entry.data[CONF_HOST])
 
     # migrate options to new format if required
     _migrate_options_format(hass, entry)
 
     # setup entry
     entry.async_on_unload(entry.add_update_listener(_update_listener))
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN].setdefault(entry.unique_id, {})  # unique_id = host
-    hass.data[DOMAIN][entry.entry_id] = {
-        DATA_OPTIONS: entry.options.copy(),
-    }
+    hass.data.setdefault(DOMAIN, {}).setdefault(entry.entry_id, {})
+    hass.data[DOMAIN][entry.entry_id][DATA_OPTIONS] = entry.options.copy()
 
     hass.config_entries.async_setup_platforms(entry, [MP_DOMAIN])
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(
         entry, [MP_DOMAIN]
     ):
-        hass.data[DOMAIN].pop(entry.entry_id)
-        hass.data[DOMAIN].pop(entry.unique_id)
-        if not hass.data[DOMAIN]:
-            hass.data.pop(DOMAIN)
+        hass.data[DOMAIN][entry.entry_id].pop(DATA_OPTIONS)
+        if not hass.data[DOMAIN][entry.entry_id]:
+            hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
 
 
-async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Remove a config entry."""
-    await hass.async_add_executor_job(_remove_token_file, hass, entry.unique_id)
+    await hass.async_add_executor_job(_remove_token_file, hass, entry.data[CONF_HOST])
+    if DOMAIN in hass.data:
+        hass.data[DOMAIN].pop(entry.entry_id, None)
+        if not hass.data[DOMAIN]:
+            hass.data.pop(DOMAIN)
 
 
-async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update when config_entry options update."""
     hass.data[DOMAIN][entry.entry_id][DATA_OPTIONS] = entry.options.copy()

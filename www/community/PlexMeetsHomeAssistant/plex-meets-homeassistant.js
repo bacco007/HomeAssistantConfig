@@ -20211,10 +20211,10 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
         this.port = document.createElement('paper-input');
         this.maxCount = document.createElement('paper-input');
         this.maxRows = document.createElement('paper-input');
-        this.displayTitleMain = document.createElement('paper-dropdown-menu');
-        this.displaySubtitleMain = document.createElement('paper-dropdown-menu');
-        this.useHorizontalScroll = document.createElement('paper-dropdown-menu');
-        this.useShuffle = document.createElement('paper-dropdown-menu');
+        this.displayTitleMain = document.createElement('select');
+        this.displaySubtitleMain = document.createElement('select');
+        this.useHorizontalScroll = document.createElement('select');
+        this.useShuffle = document.createElement('select');
         this.minWidth = document.createElement('paper-input');
         this.minEpisodeWidth = document.createElement('paper-input');
         this.minExpandedWidth = document.createElement('paper-input');
@@ -20224,17 +20224,18 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
         this.fontSize3 = document.createElement('paper-input');
         this.fontSize4 = document.createElement('paper-input');
         this.cardTitle = document.createElement('paper-input');
-        this.libraryName = document.createElement('paper-dropdown-menu');
-        this.protocol = document.createElement('paper-dropdown-menu');
+        this.libraryName = document.createElement('select');
+        this.protocol = document.createElement('select');
         this.tabs = document.createElement('paper-tabs');
-        this.sort = document.createElement('paper-dropdown-menu');
-        this.displayType = document.createElement('paper-dropdown-menu');
-        this.sortOrder = document.createElement('paper-dropdown-menu');
-        this.playTrailer = document.createElement('paper-dropdown-menu');
-        this.showExtras = document.createElement('paper-dropdown-menu');
-        this.showSearch = document.createElement('paper-dropdown-menu');
-        this.runBefore = document.createElement('paper-dropdown-menu');
-        this.runAfter = document.createElement('paper-dropdown-menu');
+        this.sort = document.createElement('select');
+        this.displayTypeData = {};
+        this.displayType = document.createElement('select');
+        this.sortOrder = document.createElement('select');
+        this.playTrailer = document.createElement('select');
+        this.showExtras = document.createElement('select');
+        this.showSearch = document.createElement('select');
+        this.runBefore = document.createElement('select');
+        this.runAfter = document.createElement('select');
         this.entitiesSection = document.createElement('div');
         this.devicesTabs = 0;
         this.entities = [];
@@ -20258,6 +20259,18 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             event.detail = detail;
             node.dispatchEvent(event);
             return event;
+        };
+        this.generateTitle = (titleText) => {
+            const title = document.createElement('h4');
+            title.innerText = titleText;
+            title.style.marginBottom = '0';
+            title.style.marginTop = '0';
+            title.style.paddingTop = '0';
+            title.style.paddingBottom = '0';
+            title.style.color = 'rgb(225, 225, 225)';
+            title.style.fontWeight = '300';
+            title.style.fontSize = '12px';
+            return title;
         };
         this.valueUpdated = () => {
             const originalConfig = lodash.clone(this.config);
@@ -20284,7 +20297,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     else {
                         this.config.sort = ``;
                     }
-                    this.config.displayType = this.displayType.value;
+                    this.config.displayType = this.displayTypeData[this.displayType.value];
                     if (lodash.isEmpty(this.maxCount.value)) {
                         this.config.maxCount = '';
                     }
@@ -20418,9 +20431,10 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     // eslint-disable-next-line no-param-reassign
                     text = value;
                 }
-                const libraryItem = document.createElement('paper-item');
+                const libraryItem = document.createElement('option');
                 libraryItem.innerHTML = text.replace(/ /g, '&nbsp;');
                 libraryItem.label = value;
+                libraryItem.value = value;
                 if (disabled) {
                     libraryItem.disabled = true;
                 }
@@ -20428,9 +20442,9 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             };
             const createEntitiesDropdown = (selected, changeHandler) => {
                 if (this.entitiesRegistry) {
-                    const entitiesDropDown = document.createElement('paper-dropdown-menu');
-                    const entities = document.createElement('paper-listbox');
-                    entities.appendChild(addDropdownItem(''));
+                    const container = document.createElement('div');
+                    const entitiesDropDown = document.createElement('select');
+                    entitiesDropDown.appendChild(addDropdownItem(''));
                     const addedEntityStrings = [];
                     lodash.forEach(this.entitiesRegistry, entityRegistry => {
                         if (lodash.isEqual(entityRegistry.platform, 'cast') ||
@@ -20441,32 +20455,33 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                             lodash.isEqual(entityRegistry.platform, 'vlc_telnet') ||
                             lodash.isEqual(entityRegistry.platform, 'sonos')) {
                             const entityName = `${entityRegistry.platform} | ${entityRegistry.entity_id}`;
-                            entities.appendChild(addDropdownItem(entityName));
+                            entitiesDropDown.appendChild(addDropdownItem(entityName));
                             addedEntityStrings.push(entityName);
                         }
                     });
                     lodash.forEach(this.clients, value => {
                         const entityName = `plexPlayer | ${value.name} | ${value.address} | ${value.machineIdentifier}`;
-                        entities.appendChild(addDropdownItem(entityName));
+                        entitiesDropDown.appendChild(addDropdownItem(entityName));
                         addedEntityStrings.push(entityName);
                     });
                     if (lodash.isArray(this.config.entity)) {
                         lodash.forEach(this.config.entity, value => {
                             if (!lodash.includes(addedEntityStrings, value)) {
-                                entities.appendChild(addDropdownItem(value));
+                                entitiesDropDown.appendChild(addDropdownItem(value));
                                 addedEntityStrings.push(value);
                             }
                         });
                     }
-                    entities.slot = 'dropdown-content';
                     entitiesDropDown.label = 'Entity';
                     entitiesDropDown.value = selected;
-                    entitiesDropDown.appendChild(entities);
                     entitiesDropDown.style.width = '100%';
+                    entitiesDropDown.style.height = '40px';
                     entitiesDropDown.className = 'entitiesDropDown';
-                    entitiesDropDown.addEventListener('value-changed', changeHandler);
+                    entitiesDropDown.addEventListener('change', changeHandler);
                     this.entities.push(entitiesDropDown);
-                    return entitiesDropDown;
+                    container.appendChild(this.generateTitle('Entity'));
+                    container.appendChild(entitiesDropDown);
+                    return container;
                 }
                 return false;
             };
@@ -20487,19 +20502,17 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             plexTitle.style.margin = '0px';
             plexTitle.style.padding = '0px';
             this.content.appendChild(plexTitle);
+            this.content.appendChild(this.generateTitle('Plex Protocol'));
             this.protocol.innerHTML = '';
-            const protocolItems = document.createElement('paper-listbox');
             // eslint-disable-next-line no-restricted-globals
             const pageProtocol = location.protocol;
             if (lodash.isEqual(pageProtocol, 'http:')) {
-                protocolItems.appendChild(addDropdownItem('http'));
+                this.protocol.appendChild(addDropdownItem('http'));
             }
-            protocolItems.appendChild(addDropdownItem('https'));
-            protocolItems.slot = 'dropdown-content';
-            this.protocol.label = 'Plex Protocol';
-            this.protocol.appendChild(protocolItems);
+            this.protocol.appendChild(addDropdownItem('https'));
             this.protocol.style.width = '100%';
-            this.protocol.addEventListener('value-changed', this.valueUpdated);
+            this.protocol.style.height = '40px';
+            this.protocol.addEventListener('change', this.valueUpdated);
             if (lodash.isEmpty(this.config.protocol)) {
                 if (lodash.isEqual(pageProtocol, 'http:')) {
                     this.protocol.value = 'http';
@@ -20530,19 +20543,17 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.token.value = this.config.token;
             this.token.addEventListener('change', this.valueUpdated);
             this.content.appendChild(this.token);
+            this.content.appendChild(this.generateTitle('Plex Library'));
             this.libraryName.innerHTML = '';
-            const libraryItems = document.createElement('paper-listbox');
-            libraryItems.appendChild(addDropdownItem('Smart Libraries', '', true));
-            libraryItems.appendChild(addDropdownItem('Continue Watching'));
-            libraryItems.appendChild(addDropdownItem('Deck'));
-            libraryItems.appendChild(addDropdownItem('Recently Added'));
-            libraryItems.appendChild(addDropdownItem('Watch Next'));
-            libraryItems.slot = 'dropdown-content';
-            this.libraryName.label = 'Plex Library';
+            this.libraryName.appendChild(addDropdownItem('Smart Libraries', '', true));
+            this.libraryName.appendChild(addDropdownItem('Continue Watching'));
+            this.libraryName.appendChild(addDropdownItem('Deck'));
+            this.libraryName.appendChild(addDropdownItem('Recently Added'));
+            this.libraryName.appendChild(addDropdownItem('Watch Next'));
             this.libraryName.disabled = true;
-            this.libraryName.appendChild(libraryItems);
             this.libraryName.style.width = '100%';
-            this.libraryName.addEventListener('value-changed', this.valueUpdated);
+            this.libraryName.style.height = '40px';
+            this.libraryName.addEventListener('change', this.valueUpdated);
             const warningLibrary = document.createElement('div');
             warningLibrary.style.color = 'red';
             this.content.appendChild(this.libraryName);
@@ -20552,15 +20563,15 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.sections = await this.plex.getSections();
             lodash.forEach(this.sections, section => {
                 if (lodash.isEqual(section.title, this.config.libraryName) && lodash.isEqual(section.type, 'artist')) {
+                    this.content.appendChild(this.generateTitle('Use shuffle when playing'));
                     this.useShuffle.innerHTML = '';
-                    const useShuffleItems = document.createElement('paper-listbox');
-                    useShuffleItems.appendChild(addDropdownItem('Yes'));
-                    useShuffleItems.appendChild(addDropdownItem('No'));
-                    useShuffleItems.slot = 'dropdown-content';
+                    this.useShuffle.appendChild(addDropdownItem('Yes'));
+                    this.useShuffle.appendChild(addDropdownItem('No'));
+                    this.useShuffle.slot = 'dropdown-content';
                     this.useShuffle.label = 'Use shuffle when playing';
-                    this.useShuffle.appendChild(useShuffleItems);
                     this.useShuffle.style.width = '100%';
-                    this.useShuffle.addEventListener('value-changed', this.valueUpdated);
+                    this.useShuffle.style.height = '40px';
+                    this.useShuffle.addEventListener('change', this.valueUpdated);
                     if (lodash.isEmpty(this.config.useShuffle)) {
                         this.useShuffle.value = 'No';
                     }
@@ -20660,12 +20671,10 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             viewTitle.style.marginTop = '20px';
             this.plexValidSection.appendChild(viewTitle);
             this.displayType.innerHTML = '';
-            const typeItems = document.createElement('paper-listbox');
-            typeItems.slot = 'dropdown-content';
-            this.displayType.label = 'Display Type (Optional)';
-            this.displayType.appendChild(typeItems);
             this.displayType.style.width = '100%';
-            this.displayType.addEventListener('value-changed', this.valueUpdated);
+            this.displayType.style.height = '40px';
+            this.displayType.addEventListener('change', this.valueUpdated);
+            this.plexValidSection.appendChild(this.generateTitle('Display Type (Optional)'));
             this.plexValidSection.appendChild(this.displayType);
             this.cardTitle.label = 'Card title (Optional)';
             this.cardTitle.value = this.config.title;
@@ -20677,14 +20686,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.maxCount.addEventListener('change', this.valueUpdated);
             this.plexValidSection.appendChild(this.maxCount);
             this.useHorizontalScroll.innerHTML = '';
-            const useHorizontalScrollItems = document.createElement('paper-listbox');
-            useHorizontalScrollItems.appendChild(addDropdownItem('Yes'));
-            useHorizontalScrollItems.appendChild(addDropdownItem('No'));
-            useHorizontalScrollItems.slot = 'dropdown-content';
-            this.useHorizontalScroll.label = 'Use horizontal scroll';
-            this.useHorizontalScroll.appendChild(useHorizontalScrollItems);
+            this.plexValidSection.appendChild(this.generateTitle('Use horizontal scroll'));
+            this.useHorizontalScroll.appendChild(addDropdownItem('Yes'));
+            this.useHorizontalScroll.appendChild(addDropdownItem('No'));
             this.useHorizontalScroll.style.width = '100%';
-            this.useHorizontalScroll.addEventListener('value-changed', this.valueUpdated);
+            this.useHorizontalScroll.style.height = '40px';
+            this.useHorizontalScroll.addEventListener('change', this.valueUpdated);
             if (lodash.isEmpty(this.config.useHorizontalScroll)) {
                 this.useHorizontalScroll.value = 'No';
             }
@@ -20698,22 +20705,18 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.maxRows.addEventListener('change', this.valueUpdated);
             this.plexValidSection.appendChild(this.maxRows);
             this.sort.innerHTML = '';
-            const sortItems = document.createElement('paper-listbox');
-            sortItems.slot = 'dropdown-content';
-            this.sort.label = 'Sort';
-            this.sort.appendChild(sortItems);
             this.sort.style.width = '100%';
-            this.sort.addEventListener('value-changed', this.valueUpdated);
+            this.sort.style.height = '40px';
+            this.sort.addEventListener('change', this.valueUpdated);
+            this.plexValidSection.appendChild(this.generateTitle('Sort'));
             this.plexValidSection.appendChild(this.sort);
             this.sortOrder.innerHTML = '';
-            const sortOrderItems = document.createElement('paper-listbox');
-            sortOrderItems.appendChild(addDropdownItem('Ascending'));
-            sortOrderItems.appendChild(addDropdownItem('Descending'));
-            sortOrderItems.slot = 'dropdown-content';
-            this.sortOrder.label = 'Sort Order';
-            this.sortOrder.appendChild(sortOrderItems);
+            this.sortOrder.appendChild(addDropdownItem('Ascending'));
+            this.sortOrder.appendChild(addDropdownItem('Descending'));
+            this.plexValidSection.appendChild(this.generateTitle('Sort Order'));
             this.sortOrder.style.width = '100%';
-            this.sortOrder.addEventListener('value-changed', this.valueUpdated);
+            this.sortOrder.style.height = '40px';
+            this.sortOrder.addEventListener('change', this.valueUpdated);
             if (lodash.isEmpty(this.config.sort)) {
                 this.sortOrder.value = 'Ascending';
             }
@@ -20730,16 +20733,14 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                 }
             }
             this.plexValidSection.appendChild(this.sortOrder);
+            this.plexValidSection.appendChild(this.generateTitle('Play Trailer'));
             this.playTrailer.innerHTML = '';
-            const playTrailerItems = document.createElement('paper-listbox');
-            playTrailerItems.appendChild(addDropdownItem('Yes'));
-            playTrailerItems.appendChild(addDropdownItem('Muted'));
-            playTrailerItems.appendChild(addDropdownItem('No'));
-            playTrailerItems.slot = 'dropdown-content';
-            this.playTrailer.label = 'Play Trailer';
-            this.playTrailer.appendChild(playTrailerItems);
+            this.playTrailer.appendChild(addDropdownItem('Yes'));
+            this.playTrailer.appendChild(addDropdownItem('Muted'));
+            this.playTrailer.appendChild(addDropdownItem('No'));
             this.playTrailer.style.width = '100%';
-            this.playTrailer.addEventListener('value-changed', this.valueUpdated);
+            this.playTrailer.style.height = '40px';
+            this.playTrailer.addEventListener('change', this.valueUpdated);
             let playTrailerValue = 'Yes';
             if (lodash.isEqual(this.config.playTrailer, 'muted')) {
                 playTrailerValue = 'Muted';
@@ -20750,14 +20751,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.playTrailer.value = playTrailerValue;
             this.plexValidSection.appendChild(this.playTrailer);
             this.showExtras.innerHTML = '';
-            const showExtrasItems = document.createElement('paper-listbox');
-            showExtrasItems.appendChild(addDropdownItem('Yes'));
-            showExtrasItems.appendChild(addDropdownItem('No'));
-            showExtrasItems.slot = 'dropdown-content';
-            this.showExtras.label = 'Show Extras';
-            this.showExtras.appendChild(showExtrasItems);
+            this.showExtras.appendChild(addDropdownItem('Yes'));
+            this.showExtras.appendChild(addDropdownItem('No'));
+            this.plexValidSection.appendChild(this.generateTitle('Show Extras'));
             this.showExtras.style.width = '100%';
-            this.showExtras.addEventListener('value-changed', this.valueUpdated);
+            this.showExtras.style.height = '40px';
+            this.showExtras.addEventListener('change', this.valueUpdated);
             let showExtrasValue = 'Yes';
             if (!this.config.showExtras) {
                 showExtrasValue = 'No';
@@ -20765,14 +20764,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.showExtras.value = showExtrasValue;
             this.plexValidSection.appendChild(this.showExtras);
             this.showSearch.innerHTML = '';
-            const showSearchItems = document.createElement('paper-listbox');
-            showSearchItems.appendChild(addDropdownItem('Yes'));
-            showSearchItems.appendChild(addDropdownItem('No'));
-            showSearchItems.slot = 'dropdown-content';
-            this.showSearch.label = 'Show Search';
-            this.showSearch.appendChild(showSearchItems);
+            this.showSearch.appendChild(addDropdownItem('Yes'));
+            this.showSearch.appendChild(addDropdownItem('No'));
+            this.plexValidSection.appendChild(this.generateTitle('Show Search'));
             this.showSearch.style.width = '100%';
-            this.showSearch.addEventListener('value-changed', this.valueUpdated);
+            this.showSearch.style.height = '40px';
+            this.showSearch.addEventListener('change', this.valueUpdated);
             let showSearchValue = 'Yes';
             if (!this.config.showSearch) {
                 showSearchValue = 'No';
@@ -20780,29 +20777,25 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.showSearch.value = showSearchValue;
             this.plexValidSection.appendChild(this.showSearch);
             this.runBefore.innerHTML = '';
-            const runBeforeItems = document.createElement('paper-listbox');
-            runBeforeItems.appendChild(addDropdownItem(''));
+            this.runBefore.appendChild(addDropdownItem(''));
             lodash.forEach(this.scriptEntities, entity => {
-                runBeforeItems.appendChild(addDropdownItem(entity));
+                this.runBefore.appendChild(addDropdownItem(entity));
             });
-            runBeforeItems.slot = 'dropdown-content';
-            this.runBefore.label = 'Script to execute before starting the media (Optional)';
-            this.runBefore.appendChild(runBeforeItems);
+            this.plexValidSection.appendChild(this.generateTitle('Script to execute before starting the media (Optional)'));
             this.runBefore.style.width = '100%';
-            this.runBefore.addEventListener('value-changed', this.valueUpdated);
+            this.runBefore.style.height = '40px';
+            this.runBefore.addEventListener('change', this.valueUpdated);
             this.runBefore.value = this.config.runBefore;
             this.plexValidSection.appendChild(this.runBefore);
             this.runAfter.innerHTML = '';
-            const runAfterItems = document.createElement('paper-listbox');
-            runAfterItems.appendChild(addDropdownItem(''));
+            this.runAfter.appendChild(addDropdownItem(''));
             lodash.forEach(this.scriptEntities, entity => {
-                runAfterItems.appendChild(addDropdownItem(entity));
+                this.runAfter.appendChild(addDropdownItem(entity));
             });
-            runAfterItems.slot = 'dropdown-content';
-            this.runAfter.label = 'Script to execute after starting the media (Optional)';
-            this.runAfter.appendChild(runAfterItems);
+            this.plexValidSection.appendChild(this.generateTitle('Script to execute after starting the media (Optional)'));
             this.runAfter.style.width = '100%';
-            this.runAfter.addEventListener('value-changed', this.valueUpdated);
+            this.runAfter.style.height = '40px';
+            this.runAfter.addEventListener('change', this.valueUpdated);
             this.runAfter.value = this.config.runAfter;
             this.plexValidSection.appendChild(this.runAfter);
             const styleTitle = document.createElement('h2');
@@ -20832,14 +20825,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.minEpisodeWidth.addEventListener('change', this.valueUpdated);
             this.plexValidSection.appendChild(this.minEpisodeWidth);
             this.displayTitleMain.innerHTML = '';
-            const displayTitleMainItems = document.createElement('paper-listbox');
-            displayTitleMainItems.appendChild(addDropdownItem('Yes'));
-            displayTitleMainItems.appendChild(addDropdownItem('No'));
-            displayTitleMainItems.slot = 'dropdown-content';
-            this.displayTitleMain.label = 'Display title under poster';
-            this.displayTitleMain.appendChild(displayTitleMainItems);
+            this.displayTitleMain.appendChild(addDropdownItem('Yes'));
+            this.displayTitleMain.appendChild(addDropdownItem('No'));
+            this.plexValidSection.appendChild(this.generateTitle('Display title under poster'));
             this.displayTitleMain.style.width = '100%';
-            this.displayTitleMain.addEventListener('value-changed', this.valueUpdated);
+            this.displayTitleMain.style.height = '40px';
+            this.displayTitleMain.addEventListener('change', this.valueUpdated);
             if (lodash.isEmpty(this.config.displayTitleMain)) {
                 this.displayTitleMain.value = 'Yes';
             }
@@ -20853,14 +20844,12 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.fontSize1.addEventListener('change', this.valueUpdated);
             this.plexValidSection.appendChild(this.fontSize1);
             this.displaySubtitleMain.innerHTML = '';
-            const displaySubtitleMainItems = document.createElement('paper-listbox');
-            displaySubtitleMainItems.appendChild(addDropdownItem('Yes'));
-            displaySubtitleMainItems.appendChild(addDropdownItem('No'));
-            displaySubtitleMainItems.slot = 'dropdown-content';
-            this.displaySubtitleMain.label = 'Display sub-title under poster';
-            this.displaySubtitleMain.appendChild(displaySubtitleMainItems);
+            this.displaySubtitleMain.appendChild(addDropdownItem('Yes'));
+            this.displaySubtitleMain.appendChild(addDropdownItem('No'));
+            this.plexValidSection.appendChild(this.generateTitle('Display sub-title under poster'));
             this.displaySubtitleMain.style.width = '100%';
-            this.displaySubtitleMain.addEventListener('value-changed', this.valueUpdated);
+            this.displaySubtitleMain.style.height = '40px';
+            this.displaySubtitleMain.addEventListener('change', this.valueUpdated);
             if (lodash.isEmpty(this.config.displaySubtitleMain)) {
                 this.displaySubtitleMain.value = 'Yes';
             }
@@ -20885,29 +20874,29 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.fontSize4.addEventListener('change', this.valueUpdated);
             this.plexValidSection.appendChild(this.fontSize4);
             if (!lodash.isEmpty(this.livetv)) {
-                libraryItems.appendChild(addDropdownItem('Live TV', '', true));
+                this.libraryName.appendChild(addDropdownItem('Live TV', '', true));
                 lodash.forEach(lodash.keys(this.livetv), (livetv) => {
                     if (lodash.isEqual(this.config.libraryName, livetv)) {
                         warningLibrary.innerHTML = `Warning: ${this.config.libraryName} play action currently only supported with Kodi.<br/>You might also need custom build of kodi-media-sensors, see <a href="https://github.com/JurajNyiri/PlexMeetsHomeAssistant/blob/main/DETAILED_CONFIGURATION.md#kodi" target="_blank">detailed configuration</a> for more information.`;
                     }
-                    libraryItems.appendChild(addDropdownItem(livetv));
+                    this.libraryName.appendChild(addDropdownItem(livetv));
                 });
             }
             if (!lodash.isEmpty(this.sections)) {
-                libraryItems.appendChild(addDropdownItem('Libraries', '', true));
+                this.libraryName.appendChild(addDropdownItem('Libraries', '', true));
                 lodash.forEach(this.sections, (section) => {
-                    libraryItems.appendChild(addDropdownItem(section.title));
+                    this.libraryName.appendChild(addDropdownItem(section.title));
                 });
                 if (!lodash.isEmpty(this.collections)) {
-                    libraryItems.appendChild(addDropdownItem('Collections', '', true));
+                    this.libraryName.appendChild(addDropdownItem('Collections', '', true));
                     lodash.forEach(this.collections, (collection) => {
-                        libraryItems.appendChild(addDropdownItem(collection.title));
+                        this.libraryName.appendChild(addDropdownItem(collection.title));
                     });
                 }
                 if (!lodash.isEmpty(this.playlists)) {
-                    libraryItems.appendChild(addDropdownItem('Playlists', '', true));
+                    this.libraryName.appendChild(addDropdownItem('Playlists', '', true));
                     lodash.forEach(this.playlists, (playlist) => {
-                        libraryItems.appendChild(addDropdownItem(playlist.title));
+                        this.libraryName.appendChild(addDropdownItem(playlist.title));
                     });
                 }
                 this.libraryName.disabled = false;
@@ -20925,7 +20914,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     const types = lodash.get(libraryData, '[0].Meta.Type');
                     if (!lodash.isNil(types) && types.length > 1) {
                         let addedTypes = 0;
-                        typeItems.appendChild(addDropdownItem('', ''));
+                        this.displayType.appendChild(addDropdownItem('', ''));
                         let typeAvailable = false;
                         lodash.forEach(types, (sectionType) => {
                             if (sectionType.type !== 'track' &&
@@ -20939,7 +20928,8 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                                 if (lodash.isEqual(key, this.config.displayType)) {
                                     typeAvailable = true;
                                 }
-                                typeItems.appendChild(addDropdownItem(key, sectionType.title));
+                                this.displayTypeData[sectionType.title] = key;
+                                this.displayType.appendChild(addDropdownItem(sectionType.title));
                                 addedTypes += 1;
                             }
                         });
@@ -20949,7 +20939,11 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                                 this.displayType.value = '';
                             }
                             else {
-                                this.displayType.value = this.config.displayType;
+                                lodash.forEach(this.displayTypeData, (value, key) => {
+                                    if (lodash.isEqual(value, this.config.displayType)) {
+                                        this.displayType.value = key;
+                                    }
+                                });
                             }
                         }
                         else {
@@ -20975,7 +20969,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     const sortFields = lodash.get(libraryData, `[0].Meta.Type[${displayTypeIndex}].Sort`);
                     if (!lodash.isNil(sortFields) && sortFields.length > 0 && this.config.displayType !== 'folder') {
                         lodash.forEach(sortFields, (sortField) => {
-                            sortItems.appendChild(addDropdownItem(sortField.key));
+                            this.sort.appendChild(addDropdownItem(sortField.key));
                         });
                         this.sort.style.display = 'block';
                         this.sortOrder.style.display = 'block';

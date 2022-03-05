@@ -1,13 +1,13 @@
-from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry
-from homeassistant.helpers import config_validation as cv
-import voluptuous as vol
-from homeassistant.core import callback
+"ConfigFlow definition for watchman"
 from typing import Dict
 import json
 from json.decoder import JSONDecodeError
 import logging
-
-from .utils import is_service, get_columns_width
+from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry
+from homeassistant.core import callback
+from homeassistant.helpers import config_validation as cv
+import voluptuous as vol
+from .utils import is_service, get_columns_width, get_report_path
 
 from .const import (
     DOMAIN,
@@ -24,17 +24,15 @@ from .const import (
     CONF_CHUNK_SIZE,
     CONF_COLUMNS_WIDTH,
     CONF_STARTUP_DELAY,
-    CONF_FRIENDLY_NAMES
+    CONF_FRIENDLY_NAMES,
 )
-
-
 
 DEFAULT_DATA = {
     CONF_SERVICE_NAME: "",
     CONF_SERVICE_DATA2: '{}',
     CONF_INCLUDED_FOLDERS: [],
     CONF_HEADER: "-== Watchman Report ==-",
-    CONF_REPORT_PATH: "/config/watchman_report.txt",
+    CONF_REPORT_PATH: "",
     CONF_IGNORED_ITEMS: [],
     CONF_IGNORED_STATES: [],
     CONF_CHUNK_SIZE: 3500,
@@ -87,7 +85,6 @@ class OptionsFlowHandler(OptionsFlow):
     def __init__(self, config_entry: ConfigEntry) -> None:
         self.config_entry = config_entry
 
-
     def default(self, key, uinput=None):
         """provide default value for an OptionsFlow field"""
         if uinput and key in uinput:
@@ -97,9 +94,12 @@ class OptionsFlowHandler(OptionsFlow):
             # supply last saved value or default one
             result = self.config_entry.options.get(key, DEFAULT_DATA[key])
 
-        if result == "" and DEFAULT_DATA[key]:
+        if result == "":
             # some default values cannot be empty
-            result = DEFAULT_DATA[key]
+            if DEFAULT_DATA[key]:
+                result = DEFAULT_DATA[key]
+            elif key == CONF_REPORT_PATH:
+                result = get_report_path(self.hass, None)
 
         if isinstance(result, list):
             return ", ".join([str(i) for i in result])

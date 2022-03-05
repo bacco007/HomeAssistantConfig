@@ -1,12 +1,14 @@
 """Constants for temperature_feels_like."""
 
 # Base component constants
-NAME = "Temperature Feels Like"
-DOMAIN = "temperature_feels_like"
-VERSION = "0.3.2"
-ISSUE_URL = "https://github.com/Limych/ha-temperature-feeling/issues"
+from typing import Final
 
-STARTUP_MESSAGE = f"""
+NAME: Final = "Temperature Feels Like"
+DOMAIN: Final = "temperature_feels_like"
+VERSION: Final = "0.3.3"
+ISSUE_URL: Final = "https://github.com/Limych/ha-temperature-feeling/issues"
+
+STARTUP_MESSAGE: Final = f"""
 -------------------------------------------------------------------
 {NAME}
 Version: {VERSION}
@@ -18,6 +20,6 @@ If you have ANY issues with this you need to open an issue here:
 
 
 # Attributes
-ATTR_TEMPERATURE_SOURCE = "temperature_source"
-ATTR_HUMIDITY_SOURCE = "humidity_source"
-ATTR_WIND_SPEED_SOURCE = "wind_speed_source"
+ATTR_TEMPERATURE_SOURCE: Final = "temperature_source"
+ATTR_HUMIDITY_SOURCE: Final = "humidity_source"
+ATTR_WIND_SPEED_SOURCE: Final = "wind_speed_source"

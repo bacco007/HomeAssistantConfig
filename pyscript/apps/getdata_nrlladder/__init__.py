@@ -16,7 +16,7 @@ def getdata_nrlladder(
         log.error("getdata_nrlladder: No Entity ID provided")
         return
 
-    URL = "https://www.nrl.com/ladder/data?competition=111&season=2021"
+    URL = "https://www.nrl.com/ladder/data?competition=111&season=2022"
 
     try:
         r = task.executor(requests.get, URL)

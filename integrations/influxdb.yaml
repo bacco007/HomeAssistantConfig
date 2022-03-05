@@ -73,3 +73,4 @@ influxdb:
       - sensor.international_space_station*
       - sensor.zha*
       - sensor.plex_tautulli*
+      - sensor.watchman*

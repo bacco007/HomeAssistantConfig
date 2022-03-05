@@ -21,7 +21,7 @@
         - !include graph_allregions_demand.yaml
         - !include graph_allregions_generation.yaml
         - type: custom:apexcharts-card
-          graph_span: 3d
+          graph_span: 1d
           span:
             end: day
           header:
@@ -64,17 +64,17 @@
             curve: smooth
             group_by:
               func: last
-              duration: 30m
+              duration: 10m
           series:
             - entity: sensor.opennem_nsw
-              attribute: solar_rooftop
+              attribute: price
             - entity: sensor.opennem_qld
-              attribute: solar_rooftop
+              attribute: price
             - entity: sensor.opennem_sa
-              attribute: solar_rooftop
+              attribute: price
             - entity: sensor.opennem_tas
-              attribute: solar_rooftop
+              attribute: price
             - entity: sensor.opennem_vic
-              attribute: solar_rooftop
+              attribute: price
             - entity: sensor.opennem_wa
-              attribute: solar_rooftop
+              attribute: price

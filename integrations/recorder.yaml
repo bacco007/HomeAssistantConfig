@@ -58,6 +58,7 @@ recorder:
       - sensor.space_*
       - weather.climacell*
       - sensor.plex_tautulli*
+      - sensor.watchman*
     domains:
       - anniversaries
       - automation

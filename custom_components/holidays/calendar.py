@@ -1,9 +1,10 @@
 """Calendar platform for holidays."""
 import logging
 from datetime import date, datetime, timedelta
-from typing import Optional
+from typing import Dict, List, Optional
 
 import homeassistant.util.dt as dt_util
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_HIDDEN, CONF_ENTITIES, CONF_NAME
 from homeassistant.helpers.restore_state import RestoreEntity
 
@@ -15,41 +16,39 @@ SCAN_INTERVAL = timedelta(seconds=10)
 THROTTLE_INTERVAL = timedelta(seconds=60)
 
 
-async def async_setup_platform(hass, _, async_add_entities, discovery_info=None):
-    """Create garbage collection entities defined in YAML and add them to HA."""
-    # async_add_entities([Holidays(hass, discovery_info)], True)
-    return
-
-
-async def async_setup_entry(hass, config_entry, async_add_devices):
+async def async_setup_entry(_, config_entry: ConfigEntry, async_add_devices):
     """Create garbage collection entities defined in config_flow and add them to HA."""
     async_add_devices([Holidays(config_entry)], True)
+
+
+def now() -> datetime:
+    """Return current date and time. Needed for testing."""
+    return dt_util.now()
 
 
 class Holidays(RestoreEntity):
     """Holidays Sensor class."""
 
-    def __init__(self, config_entry):
+    def __init__(self, config_entry: ConfigEntry):
         """Read configuration and initialise class variables."""
         config = config_entry.data
         self.config_entry = config_entry
-        self._name = (
+        self._name: str = (
             config_entry.title
             if config_entry.title is not None
             else config.get(CONF_NAME)
         )
         self._hidden = config.get(ATTR_HIDDEN, False)
         self._country = config.get(const.CONF_COUNTRY, "")
-        self._holiday_pop_named = config.get(const.CONF_HOLIDAY_POP_NAMED)
-        self._holiday_prov = config.get(const.CONF_PROV, "")
-        self._holiday_state = config.get(const.CONF_STATE, "")
+        self._holiday_subdiv = config.get(const.CONF_SUBDIV, "")
         self._holiday_observed = config.get(const.CONF_OBSERVED, True)
-        self._holidays = []
-        self._holiday_names = {}
-        self._event = None
-        self._next_date = None
-        self._next_holiday = None
-        self._last_updated = None
+        self._holiday_pop_named = config.get(const.CONF_HOLIDAY_POP_NAMED)
+        self._holidays: List[date] = []
+        self._holiday_names: Dict = {}
+        self._event: Optional[Dict] = None
+        self._next_date: Optional[date] = None
+        self._next_holiday: Optional[str] = None
+        self._last_updated: Optional[datetime] = None
         self._entities = config.get(CONF_ENTITIES)
         self._date_format = "%d-%b-%Y"
         self._icon_normal = config.get(const.CONF_ICON_NORMAL)
@@ -63,29 +62,27 @@ class Holidays(RestoreEntity):
         self._holidays.clear()
         self._holiday_names.clear()
         if self._country is not None and self._country != "":
-            this_year = dt_util.now().date().year
+            this_year = now().date().year
             years = [this_year - 1, this_year, this_year + 1]
             _LOGGER.debug(
                 "(%s) Country Holidays with parameters: "
-                "country: %s, prov: %s, state: %s, observed: %s",
+                "country: %s, subdivision: %s, observed: %s",
                 self._name,
                 self._country,
-                self._holiday_prov,
-                self._holiday_state,
+                self._holiday_subdiv,
                 self._holiday_observed,
             )
             hol = create_holidays(
                 years,
                 self._country,
-                self._holiday_state,
-                self._holiday_prov,
+                self._holiday_subdiv,
                 self._holiday_observed,
             )
             if self._holiday_pop_named is not None:
                 for pop in self._holiday_pop_named:
                     try:
                         hol.pop_named(pop)
-                    except Exception as err:
+                    except KeyError as err:
                         _LOGGER.error("(%s) Holiday not removed (%s)", self._name, err)
             try:
                 for holiday_date, holiday_name in sorted(hol.items()):
@@ -100,7 +97,7 @@ class Holidays(RestoreEntity):
                 )
             _LOGGER.debug("(%s) Found these holidays: %s", self._name, log)
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """When calendar is added to hassio, add it to calendar."""
         await super().async_added_to_hass()
         if const.DOMAIN not in self.hass.data:
@@ -109,7 +106,7 @@ class Holidays(RestoreEntity):
             self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM] = {}
         self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM][self.entity_id] = self
 
-    async def async_will_remove_from_hass(self):
+    async def async_will_remove_from_hass(self) -> None:
         """When calendar is added to hassio, remove it."""
         await super().async_will_remove_from_hass()
         del self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM][self.entity_id]
@@ -141,7 +138,7 @@ class Holidays(RestoreEntity):
     @property
     def state(self):
         """Return the calendar state."""
-        today = dt_util.now().date()
+        today = now().date()
         try:
             return (self._next_date - today).days
         except TypeError:
@@ -165,10 +162,7 @@ class Holidays(RestoreEntity):
             ).astimezone()
             res[const.ATTR_NEXT_HOLIDAY] = self._next_holiday
         res[const.ATTR_LAST_UPDATED] = self._last_updated
-        holidays = ""
-        for key, value in self._holiday_names.items():
-            holidays += f"\n  {key}: {value}"
-        res[const.ATTR_HOLIDAYS] = holidays
+        res[const.ATTR_HOLIDAYS] = self._holiday_names
         return res
 
     @property
@@ -190,9 +184,11 @@ class Holidays(RestoreEntity):
             f"attributes: {self.extra_state_attributes}]"
         )
 
-    async def async_get_events(self, _, start_datetime, end_datetime):
+    async def async_get_events(
+        self, _, start_datetime: datetime, end_datetime: datetime
+    ) -> List[Dict]:
         """Get all tasks in a specific time frame."""
-        events = []
+        events: List[Dict] = []
         start_date = start_datetime.date()
         end_date = end_datetime.date()
         start = await self.async_next_date(start_date)
@@ -217,23 +213,22 @@ class Holidays(RestoreEntity):
 
         Skip the update if the calendar was updated today
         """
-        now = dt_util.now()
-        today = now.date()
+        today = now().date()
         try:
-            ready_for_update = bool(self._last_updated.date() != today)
+            ready_for_update = bool(self._last_updated.date() != today)  # type: ignore
         except AttributeError:
             ready_for_update = True
         return ready_for_update
 
     async def async_next_date(self, first_date: date) -> Optional[date]:
         """Get next date from self._holidays."""
-        for d in self._holidays:
-            if d < first_date:
+        for holiday in self._holidays:
+            if holiday < first_date:
                 continue
-            return d
+            return holiday
         return None
 
-    def holiday_name(self, holiday_date: Optional[date]):
+    def holiday_name(self, holiday_date: Optional[date]) -> Optional[str]:
         """Get holiday name for a date."""
         try:
             return self._holiday_names[f"{holiday_date}"]
@@ -251,11 +246,10 @@ class Holidays(RestoreEntity):
     async def async_update_state(self) -> None:
         """Pick the first event from holiday dates, update attributes."""
         _LOGGER.debug("(%s) Looking for next collection", self._name)
-        now = dt_util.now()
-        today = now.date()
+        today = now().date()
         self._next_date = await self.async_next_date(today)
         self._next_holiday = self.holiday_name(self._next_date)
-        self._last_updated = now
+        self._last_updated = now()
         if self._next_date is not None:
             _LOGGER.debug(
                 "(%s) next_date (%s), today (%s)", self._name, self._next_date, today

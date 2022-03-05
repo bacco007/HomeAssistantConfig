@@ -2,24 +2,29 @@
     "config": {
         "step": {
             "user": {
-                "title": "Hodays (1/2)",
-                "description": "Wprowadź nazwę dla sensora i zkonfiguruj jego parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
+                "title": "Święta (1/2)",
+                "description": "Wprowadź nazwę dla encji i skonfiguruj jej parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
                 "data": {
                     "name": "Przyjazna nazwa",
-                    "icon_normal": "Ikona (mdi:calendar-blank) - opcjonalnie",
-                    "icon_tomorrow": "Ikona wywozu jutro (mdi:calendar-arrow-right) - opcjonalnie",
-                    "icon_today": "Ikona wywozu dzisiaj (mdi:calendar-check)- opcjonalnie",
-                    "country": "Przesuń świąteczne dni na kolejny dzień (opcjonalnie)",
-                    "prov": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays",
-                    "state": "Święta państwowe - stan (opcjonalnie)",
+                    "icon_normal": "Ikona dzień powszedni (mdi:calendar-blank) - opcjonalnie",
+                    "icon_tomorrow": "Ikona dzień świąteczny jutro (mdi:calendar-arrow-right) - opcjonalnie",
+                    "icon_today": "Ikona dzień świąteczny dzisiaj (mdi:calendar-check) - opcjonalnie",
+                    "country": "Kraj",
                     "observed": "Święta państwowe - przesunięte obchody (opcjonalnie)"
                 }
             },
-            "detail": {
-                "title": "Hodays (2/2)",
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays"
+                }
+            },
+            "pop": {
+                "title": "Święta (2/2)",
                 "description": "Więcej informacji na stronie https://github.com/bruxy70/Holidays",
                 "data": {
-                    "holiday_pop_named": "Ignore holidays (list) - optional"
+                    "holiday_pop_named": "Ignoruj święta (lista) - opcjonalnie"
                 }
             }
         },
@@ -28,29 +33,34 @@
             "icon": "Ikony powinny być określone w formacie 'prefix:name'."
         },
         "abort": {
-            "single_instance_allowed": "Tylko jedna konfiguracja dla wywozu śmieci jest dozwolona."
+            "single_instance_allowed": "Tylko jedna konfiguracja dla świąt jest dozwolona."
         }
     },
     "options": {
         "step": {
             "init": {
-                "title": "Hodays (1/2)",
-                "description": "Wprowadź nazwę dla sensora i zkonfiguruj jego parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
+                "title": "Święta (1/2)",
+                "description": "Wprowadź nazwę dla encji i skonfiguruj jej parametry. Więcej informacji na stronie https://github.com/bruxy70/Holidays",
                 "data": {
-                    "icon_normal": "Ikona (mdi:calendar-blank) - opcjonalnie",
-                    "icon_tomorrow": "Ikona wywozu jutro (mdi:calendar-arrow-right) - opcjonalnie",
-                    "icon_today": "Ikona wywozu dzisiaj (mdi:calendar-check)- opcjonalnie",
-                    "country": "Przesuń świąteczne dni na kolejny dzień (opcjonalnie)",
-                    "prov": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays",
-                    "state": "Święta państwowe - stan (opcjonalnie)",
+                    "icon_normal": "Ikona dzień powszedni (mdi:calendar-blank) - opcjonalnie",
+                    "icon_tomorrow": "Ikona dzień świąteczny jutro (mdi:calendar-arrow-right) - opcjonalnie",
+                    "icon_today": "Ikona dzień świąteczny dzisiaj (mdi:calendar-check) - opcjonalnie",
+                    "country": "Kraj",
                     "observed": "Święta państwowe - przesunięte obchody (opcjonalnie)"
                 }
             },
-            "detail": {
-                "title": "Hodays (2/2)",
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Święta państwowe - prowincje (opcjonalnie) - BRAK dla PL patrz https://github.com/dr-prodigy/python-holidays"
+                }
+            },
+            "pop": {
+                "title": "Święta (2/2)",
                 "description": "Więcej informacji na stronie https://github.com/bruxy70/Holidays",
                 "data": {
-                    "holiday_pop_named": "Ignore holidays (list) - optional"
+                    "holiday_pop_named": "Ignoruj święta (lista) - opcjonalnie"
                 }
             }
         },
@@ -59,5 +69,4 @@
             "icon": "Ikony powinny być określone w formacie 'prefix:name'."
         }
     }
-
 }

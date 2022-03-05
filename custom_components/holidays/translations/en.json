@@ -10,13 +10,18 @@
                     "icon_tomorrow": "Icon collection tomorrow (mdi:calendar-arrow-right) - optional",
                     "icon_today": "Icon collection today (mdi:calendar-check) - optional",
                     "country": "Country",
-                    "prov": "Prov (optional)",
-                    "state": "State (optional)",
                     "observed": "Observed (optional)"
                 }
             },
-            "detail": {
-                "title": "Holidays (2/2)",
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
+                "title": "Holidays - (2/2)",
                 "description": "More info on https://github.com/bruxy70/Holidays",
                 "data": {
                     "holiday_pop_named": "Ignore holidays (list) - optional"
@@ -41,13 +46,18 @@
                     "icon_tomorrow": "Icon collection tomorrow (mdi:calendar-arrow-right) - optional",
                     "icon_today": "Icon collection today (mdi:calendar-check) - optional",
                     "country": "Country",
-                    "prov": "Prov (optional)",
-                    "state": "State (optional)",
                     "observed": "Observed (optional)"
                 }
             },
-            "detail": {
-                "title": "Holidays (2/2)",
+            "subdiv": {
+                "title": "Holidays - (1½/2)",
+                "description": "More info on https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Holidays - subdividion"
+                }
+            },
+            "pop": {
+                "title": "Holidays - (2/2)",
                 "description": "More info on https://github.com/bruxy70/Holidays",
                 "data": {
                     "holiday_pop_named": "Ignore holidays (list) - optional"
