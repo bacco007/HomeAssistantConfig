@@ -1,7 +1,7 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.2.1",
+        "version": "2.2.2",
         "local": false,
         "user": false,
         "nodes": {
@@ -485,13 +485,14 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.42.5",
+        "version": "0.43.1",
         "local": false,
         "user": false,
         "nodes": {
             "all": {
                 "name": "all",
                 "types": [
+                    "ha_entity_filter",
                     "ha-api",
                     "ha-button",
                     "api-call-service",
@@ -584,7 +585,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.21.0",
+        "version": "5.21.2",
         "local": false,
         "user": false,
         "nodes": {
@@ -890,7 +891,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.1.5",
+        "version": "3.1.6",
         "local": false,
         "user": false,
         "nodes": {
@@ -1324,7 +1325,7 @@
     },
     "node-red-node-serialport": {
         "name": "node-red-node-serialport",
-        "version": "0.15.0",
+        "version": "1.0.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1556,7 +1557,7 @@
     },
     "node-red-node-mysql": {
         "name": "node-red-node-mysql",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1797,6 +1798,25 @@
                 "user": false,
                 "module": "node-red-contrib-broadlink-control",
                 "file": "/opt/node_modules/node-red-contrib-broadlink-control/nodes/SetupNode.js"
+            }
+        }
+    },
+    "node-red-contrib-string": {
+        "name": "node-red-contrib-string",
+        "version": "1.0.0",
+        "local": false,
+        "user": false,
+        "nodes": {
+            "string": {
+                "name": "string",
+                "types": [
+                    "string"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-string",
+                "file": "/opt/node_modules/node-red-contrib-string/string/string.js"
             }
         }
     }

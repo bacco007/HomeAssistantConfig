@@ -87,6 +87,12 @@ NUMERIC_DATA_GROUPS: Final = {
     ],
 }
 
+PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION: Final = [
+    "fiftyDayAverageChangePercent",
+    "twoHundredDayAverageChangePercent",
+]
+
+
 # Defaults for missing numeric keys
 NUMERIC_DATA_DEFAULTS: Final = {DATA_DIVIDEND_DATE: None}
 

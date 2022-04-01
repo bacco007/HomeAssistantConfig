@@ -49,6 +49,7 @@ from .const import (
     HASS_DATA_CONFIG,
     HASS_DATA_COORDINATOR,
     NUMERIC_DATA_GROUPS,
+    PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -287,6 +288,9 @@ class YahooFinanceSensor(CoordinatorEntity):
             # Convert if currency value
             if value[1]:
                 attr_value = self.safe_convert(attr_value, conversion)
+
+            if key in PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION:
+                attr_value = attr_value * 100
 
             self._attr_extra_state_attributes[key] = self._round(attr_value)
 

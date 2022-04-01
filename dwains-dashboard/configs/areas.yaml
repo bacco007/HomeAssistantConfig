@@ -1,0 +1,21 @@
+bf296b332b7b489e847e8a9961d27b7e:
+  floor: ''
+  icon: mdi:bed
+laundry:
+  floor: ''
+  icon: phu:rooms-laundry-room
+lounge:
+  floor: ''
+  icon: fas:couch
+office:
+  floor: ''
+  icon: phu:rooms-office
+outside:
+  floor: ''
+  icon: phu:outside-temp
+server_rack:
+  floor: ''
+  icon: mdi:server
+tamworth:
+  icon: fas:road
+  floor: ''

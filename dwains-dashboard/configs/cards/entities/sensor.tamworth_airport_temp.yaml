@@ -1,0 +1,6 @@
+detail: 2
+entity: sensor.tamworth_airport_temp
+graph: line
+hours_to_show: 48
+name: Temperature
+type: sensor

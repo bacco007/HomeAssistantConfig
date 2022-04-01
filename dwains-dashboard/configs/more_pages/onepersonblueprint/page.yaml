@@ -1,0 +1,67 @@
+blueprint: onepersonblueprint.yaml
+card:
+  cards:
+  - cards:
+    - title: $person_name$
+      type: custom:dwains-heading-card
+    - entities:
+      - entity: $person_entity$
+      state_color: true
+      type: entities
+    - title: Displacements for 24 hours
+      type: custom:dwains-heading-card
+    - entities:
+      - entity: $tracker_entity$
+      hours_to_show: 24
+      refresh_interval: 0
+      type: history-graph
+    - title: Battery charging
+      type: custom:dwains-heading-card
+    - entities:
+      - entity: $battery_charging_entity$
+      hours_to_show: 24
+      refresh_interval: 0
+      type: history-graph
+    - title: Battery charge level
+      type: custom:dwains-heading-card
+    - decimals: 0
+      entities:
+      - entity: $battery_level_entity$
+      hour24: true
+      hours_to_show: 24
+      line_color: green
+      line_width: 2
+      points_per_hour: 2
+      show:
+        animate: true
+        average: false
+        extrema: false
+        fill: true
+        graph: bar
+        icon: false
+        labels: false
+        legend: false
+        name: false
+      style: ".cal-titleContainer {\n  display: none;\n}\n"
+      type: custom:mini-graph-card
+    item_classes: col-xs-12 col-sm-6
+    type: vertical-stack
+  - cards:
+    - title: Map
+      type: custom:dwains-heading-card
+    - default_zoom: 12
+      entities:
+      - entity: $tracker_entity$
+      hours_to_show: 24
+      type: map
+    item_classes: col-xs-12 col-sm-6
+    type: vertical-stack
+  items_classes: col-xs-12
+  type: custom:dwains-flexbox-card
+data:
+  battery_charging_entity: sensor.tbiphone13pro_battery_state
+  battery_level_entity: sensor.tbiphone13pro_battery_level
+  person_entity: person.thomas_baxter
+  person_name: Thomas Baxter
+  tracker_entity: device_tracker.tbiphone13pro
+type: custom:dwains-blueprint-card

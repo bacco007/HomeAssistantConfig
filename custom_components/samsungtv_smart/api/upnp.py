@@ -1,17 +1,18 @@
 # Smartthings TV integration#
 from aiohttp import ClientSession
 import async_timeout
+import logging
 from typing import Optional
 import xml.etree.ElementTree as ET
 
 DEFAULT_TIMEOUT = 0.2
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class upnp:
     def __init__(self, host, session: Optional[ClientSession] = None):
         self._host = host
-        self._mute = False
-        self._volume = 0
         self._connected = False
         if session:
             self._session = session
@@ -61,12 +62,14 @@ class upnp:
         response = await self._SOAPrequest(
             "GetVolume", "<Channel>Master</Channel>", "RenderingControl"
         )
-        if response is not None:
-            volume_xml = response.decode("utf8")
-            tree = ET.fromstring(volume_xml)
-            for elem in tree.iter(tag="CurrentVolume"):
-                self._volume = elem.text
-        return self._volume
+        if response is None:
+            return None
+
+        tree = ET.fromstring(response.decode("utf8"))
+        volume = None
+        for elem in tree.iter(tag="CurrentVolume"):
+            volume = elem.text
+        return volume
 
     async def async_set_volume(self, volume):
         await self._SOAPrequest(
@@ -79,18 +82,16 @@ class upnp:
         response = await self._SOAPrequest(
             "GetMute", "<Channel>Master</Channel>", "RenderingControl"
         )
-        if response is not None:
-            # mute_xml = response.decode('utf8')
-            tree = ET.fromstring(response.decode("utf8"))
-            mute = 0
-            for elem in tree.iter(tag="CurrentMute"):
-                mute = elem.text
-            if int(mute) == 0:
-                self._mute = False
-            else:
-                self._mute = True
+        if response is None:
+            return None
 
-        return self._mute
+        tree = ET.fromstring(response.decode("utf8"))
+        mute = None
+        for elem in tree.iter(tag="CurrentMute"):
+            mute = elem.text
+        if mute is None:
+            return None
+        return int(mute) != 0
 
     async def async_set_current_media(self, url):
         """ Set media to playback and play it."""

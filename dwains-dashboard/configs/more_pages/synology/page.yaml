@@ -1,0 +1,564 @@
+# dwains_theme
+
+- type: custom:stack-in-card
+  mode: vertical
+  cards:
+    - type: custom:dwains-flexbox-card
+      cards:
+        - type: custom:dwains-flexbox-card
+          item_classes: "col-xs-12 col-sm-3 col-md-2 col-lg-2"
+          cards:
+            - type: vertical-stack
+              cards:
+                - !include
+                  - ../../1_Templates/button_link.yaml
+                  - name: "Synology DSM Console"
+                    icon: "mdi:nas"
+                    url: http://192.168.1.100:5000
+        - type: custom:dwains-flexbox-card
+          item_classes: "col-xs-12 col-sm-9 col-md-10 col-lg-10"
+          cards:
+            - type: vertical-stack
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    **Server Performance**
+                - type: custom:bar-card
+                  positions:
+                    name: outside
+                    value: inside
+                  height: 15px
+                  width: 75%
+                  decimal: 1
+                  entities:
+                    - entity: sensor.thecube2_cpu_load_total
+                      name: CPU Load
+                      icon: mdi:speedometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 10
+                        - color: rgb(206,133,0,0.60)
+                          from: 11
+                          to: 25
+                        - color: rgb(163,0,0,0.60)
+                          from: 26
+                          to: 150
+                    - entity: sensor.thecube2_memory_usage_real
+                      name: Memory
+                      icon: mdi:memory
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_volume_1_volume_used
+                      name: Volume 1
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_volume_2_volume_used
+                      name: Volume 2
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_volume_used
+                      name: Volume 3
+                      icon: mdi:harddisk
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                  style: |
+                    ha-card {
+                      --paper-item-icon-color: rgb(47,186,229);
+                      border-radius: 2.5px;
+                      box-shadow: none;
+                    }
+                    #states {
+                      padding-top: 0 !important;
+                    }
+                    ha-icon	 {
+                      #margin-left: -100px;
+                      margin-top: -5px;
+                      padding-right: 5px;
+                    }
+                    bar-card-iconbar {
+                      height: 20px;
+                    }
+                    bar-card-indicator	 {
+                      #margin-left: -50px;
+                      margin-top: -6px;
+                      padding-right: 5px;
+                    }
+                    bar-card-name	 {
+                      margin-top: 3px;
+                      padding-left: 5px;
+                    }
+                    bar-card-backgroundbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-currentbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-value	 {
+                      #margin-right: -105px;
+                      margin-top: 3px;
+                      padding-left: 5px;
+                        font-size: 9.5px;
+                    }
+                    bar-card-row {
+                      margin-bottom: 0px !important;
+                    }
+
+            - type: vertical-stack
+              item_classes: "col-xs-12 col-sm-12 col-md-3 col-lg-4"
+              cards:
+                - type: markdown
+                  style: |
+                    ha-card { box-shadow: none; }
+                    ha-markdown { padding-bottom: 1px !important; }
+                  content: >
+                    **Temperatures**
+                - type: custom:bar-card
+                  positions:
+                    name: outside
+                    value: inside
+                  height: 15px
+                  width: 75%
+                  entities:
+                    - entity: sensor.synology_temperature
+                      name: NAS
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_drive_1_temperature
+                      name: Disk 1
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_drive_2_temperature
+                      name: Disk 2
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_temperature_2
+                      name: Disk 3
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                    - entity: sensor.thecube2_drive_4_temperature
+                      name: Disk 4
+                      icon: mdi:thermometer
+                      severity:
+                        - color: rgb(26,204,147,0.33)
+                          from: 0
+                          to: 69.9
+                        - color: rgb(206,133,0,0.60)
+                          from: 70
+                          to: 85
+                        - color: rgb(163,0,0,0.60)
+                          from: 85
+                          to: 150
+                  style: |
+                    ha-card {
+                      --paper-item-icon-color: rgb(47,186,229);
+                      border-radius: 2.5px;
+                      box-shadow: none;
+                    }
+                    #states {
+                      padding-top: 0 !important;
+                    }
+                    ha-icon	 {
+                      #margin-left: -100px;
+                      margin-top: -5px;
+                      padding-right: 5px;
+                    }
+                    bar-card-iconbar {
+                      height: 20px;
+                    }
+                    bar-card-indicator	 {
+                      #margin-left: -50px;
+                      margin-top: -6px;
+                      padding-right: 5px;
+                    }
+                    bar-card-name	 {
+                      margin-top: 3px;
+                      padding-left: 5px;
+                    }
+                    bar-card-backgroundbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-currentbar	 {
+                      margin-top: 0px;
+                      border-radius: 2.5px;
+                    }
+                    bar-card-value	 {
+                      #margin-right: -105px;
+                      margin-top: 3px;
+                      padding-left: 5px;
+                      font-size: 9.5px;
+                    }
+                    bar-card-row {
+                      margin-bottom: 0px !important;
+                    }
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - sensor.thecube2_network_up
+      name: Network Up
+      animate: true
+      decimals: 2
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 24
+      lower_bound: 0
+      points_per_hour: 10
+      line_width: 3
+      align_state: center
+      show:
+        extrema: true
+        average: true
+        fill: fade
+    - type: custom:mini-graph-card
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+        }
+      entities:
+        - sensor.thecube2_network_down
+      name: Network Down
+      animate: true
+      decimals: 2
+      line_color: "var(--dwains-theme-accent)"
+      hours_to_show: 24
+      lower_bound: 0
+      points_per_hour: 10
+      line_width: 3
+      align_state: center
+      show:
+        extrema: true
+        average: true
+        fill: fade
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-sm-6 col-xl-6"
+  padding: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: TheCube2 CPU
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_cpu* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: TheCube2 Memory
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_memory* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: TheCube2 Network
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_network* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Drive 1
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_drive_1* }
+              - { entity_id: binary_sensor.thecube2_drive_1* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Drive 2
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_drive_2* }
+              - { entity_id: binary_sensor.thecube2_drive_2* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Drive 4
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_drive_4* }
+              - { entity_id: binary_sensor.thecube2_drive_4* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Volume 1
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_volume_1* }
+              - { entity_id: binary_sensor.thecube2_volume_1* }
+    - type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+            title: Volume 2
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                padding-bottom: 10px;
+              }
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          filter:
+            include:
+              - { entity_id: sensor.thecube2_volume_2* }
+              - { entity_id: binary_sensor.thecube2_volume_2* }

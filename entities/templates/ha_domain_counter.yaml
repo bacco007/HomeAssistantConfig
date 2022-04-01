@@ -51,7 +51,9 @@ sensor:
       {{ states.input_text | list | length | int(default=0) }}
     light: >
       {{ states.light | list | length | int(default=0) }}
-    mediaplayer: >
+    lock: >
+      {{ states.lock | list | length | int(default=0) }}
+    media_player: >
       {{ states.media_player | list | length | int(default=0) }}
     number: >
       {{ states.number | list | length | int(default=0) }}
@@ -61,6 +63,8 @@ sensor:
       {{ states.person | list | length | int(default=0) }}
     remote: >
       {{ states.remote | list | length | int(default=0) }}
+    scene: >
+      {{ states.scene | list | length | int(default=0) }}
     script: >
       {{ states.script | list | length | int(default=0) }}
     select: >
@@ -71,6 +75,10 @@ sensor:
       {{ states.sun | list | length | int(default=0) }}
     switch: >
       {{ states.switch | list | length | int(default=0) }}
+    timer: >
+      {{ states.timer | list | length | int(default=0) }}
+    vacuum: >
+      {{ states.vacuum | list | length | int(default=0) }}
     weather: >
       {{ states.weather | list | length | int(default=0) }}
     zone: >

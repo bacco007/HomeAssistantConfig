@@ -1,0 +1,52 @@
+{
+    "config": {
+        "abort": {
+            "abort_details": "Unable to gather the details.",
+            "already_configured": "Device is already configured."
+        },
+        "error": {
+            "client_response_error": "Error in response ({error_message})",
+            "connection_error": "Connection error.",
+            "invalid_serial": "Invalid serial number found ({error_message})"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "confirm": {
+                "description": "Do you want to start set up?"
+            },
+            "friendly_name": {
+                "data": {
+                    "friendly_name": "Friendly name"
+                },
+                "title": "Friendly name"
+            },
+            "user": {
+                "data": {
+                    "friendly_name": "Friendly name",
+                    "host": "Host"
+                },
+                "description": "Enter the address of a single HDHomerun device on the network",
+                "title": "Enter an address"
+            }
+        },
+        "title": "HDHomerun"
+    },
+    "options": {
+        "step": {
+            "options": {
+                "data": {
+                    "channel_entity_picture_path": "Channel logo path",
+                    "channel_format":"Pick the format you'd like the channel to be displayed in"
+                },
+                "title": "Options"
+            },
+            "timeouts": {
+                "data": {
+                    "scan_interval": "Scan interval (in seconds)",
+                    "scan_interval_tuner_status": "Tuner status update (in seconds)"
+                },
+                "title": "Timeouts"
+            }
+        }
+    }
+}

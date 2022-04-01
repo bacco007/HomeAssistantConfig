@@ -1,10 +1,12 @@
 """The samsungtv_smart integration."""
+from __future__ import annotations
 
 from aiohttp import ClientConnectionError, ClientSession, ClientResponseError
 import asyncio
 import async_timeout
 import logging
 import os
+from pathlib import Path
 import socket
 import voluptuous as vol
 from websocket import WebSocketException
@@ -58,6 +60,7 @@ from .const import (
     DEFAULT_TIMEOUT,
     DEFAULT_SOURCE_LIST,
     DOMAIN,
+    LOCAL_LOGO_PATH,
     MIN_HA_MAJ_VER,
     MIN_HA_MIN_VER,
     RESULT_NOT_SUCCESSFUL,
@@ -69,6 +72,7 @@ from .const import (
     AppLoadMethod,
     __min_ha_version__,
 )
+from .logo import CUSTOM_IMAGE_BASE_URL, STATIC_IMAGE_BASE_URL
 
 DEVICE_INFO = {
     ATTR_DEVICE_ID: "id",
@@ -244,6 +248,24 @@ def _migrate_entry_unique_id(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
     _LOGGER.info("Migrated entry unique id from %s to %s", entry.unique_id, new_unique_id)
     hass.config_entries.async_update_entry(entry, unique_id=new_unique_id)
+
+
+def _register_logo_paths(hass: HomeAssistant) -> str | None:
+    """Register paths for local logos."""
+
+    static_logo_path = Path(__file__).parent / "static"
+    hass.http.register_static_path(STATIC_IMAGE_BASE_URL, str(static_logo_path), False)
+
+    local_logo_path = Path(hass.config.path("www", f"{DOMAIN}_logos"))
+    if not local_logo_path.exists():
+        try:
+            local_logo_path.mkdir(parents=True)
+        except Exception as exc:
+            _LOGGER.warning("Error registering custom logo folder %s: %s", str(local_logo_path), exc)
+            return None
+
+    hass.http.register_static_path(CUSTOM_IMAGE_BASE_URL, str(local_logo_path), False)
+    return str(local_logo_path)
 
 
 async def get_device_info(hostname: str, session: ClientSession) -> dict:
@@ -427,6 +449,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if DOMAIN not in hass.data:
                     hass.data[DOMAIN] = {}
                 hass.data[DOMAIN][valid_entries[0]] = {DATA_CFG_YAML: data_yaml}
+
+    # Register path for local logo
+    if local_logo_path := await hass.async_add_executor_job(_register_logo_paths, hass):
+        hass.data.setdefault(DOMAIN, {})[LOCAL_LOGO_PATH] = local_logo_path
 
     return True
 

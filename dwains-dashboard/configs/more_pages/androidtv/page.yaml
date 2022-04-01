@@ -1,0 +1,205 @@
+---
+# dwains_theme
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-12"
+  cards:
+    - entity: media_player.nvidia_shield
+      name: Nvidia Shield
+      type: media-control
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12"
+  cards:
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-3"
+      cards:
+        - !include partial_tvremote.yaml
+        - !include partial_remote.yaml
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-9"
+      cards:
+        - type: custom:state-switch
+          entity: hash
+          default: apps
+          states:
+            apps:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: Apps
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#apps"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          name: Live Channels
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#livechannels"
+                        - type: custom:button-card
+                          name: TV Shows
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plextvshows"
+                        - type: custom:button-card
+                          name: Movies
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plexmovies"
+                - type: vertical-stack
+                  cards:
+                    - !include partial_app_grid.yaml
+            livechannels:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: Apps
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#apps"
+                        - type: custom:button-card
+                          name: Live Channels
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#livechannels"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          name: TV Shows
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plextvshows"
+                        - type: custom:button-card
+                          name: Movies
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plexmovies"
+                - type: vertical-stack
+                  cards:
+                    - !include partial_station_grid.yaml
+
+            plextvshows:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: Apps
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#apps"
+                        - type: custom:button-card
+                          name: Live Channels
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#livechannels"
+                        - type: custom:button-card
+                          name: TV Shows
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plextvshows"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                        - type: custom:button-card
+                          name: Movies
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plexmovies"
+                - type: vertical-stack
+                  cards:
+                    - type: custom:plex-meets-homeassistant
+                      token: !secret plex_token
+                      ip: !secret plex_host
+                      port: !secret plex_port
+                      libraryName: Watch Next
+                      maxCount: 10
+                      entity:
+                        - media_player.nvidia_shield
+                    - type: custom:plex-meets-homeassistant
+                      token: !secret plex_token
+                      ip: !secret plex_host
+                      port: !secret plex_port
+                      libraryName: TV Shows
+                      maxCount: 20
+                      sort: episode.addedAt:desc
+                      entity:
+                        - media_player.nvidia_shield
+
+            plexmovies:
+              type: vertical-stack
+              cards:
+                - type: custom:dwains-flexbox-card
+                  padding: true
+                  cards:
+                    #heading
+                    - type: horizontal-stack
+                      cards:
+                        - type: custom:button-card
+                          name: Apps
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#apps"
+                        - type: custom:button-card
+                          name: Live Channels
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#livechannels"
+                        - type: custom:button-card
+                          name: TV Shows
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plextvshows"
+                        - type: custom:button-card
+                          name: Movies
+                          template: weather_dashboard_blueprint_heading
+                          tap_action:
+                            action: navigate
+                            navigation_path: "#plexmovies"
+                          styles:
+                            name:
+                              - color: var(--dwains-theme-accent)
+                - type: vertical-stack
+                  cards:
+                    - type: custom:plex-meets-homeassistant
+                      token: !secret plex_token
+                      ip: !secret plex_host
+                      port: !secret plex_port
+                      libraryName: Movies
+                      maxCount: 20
+                      sort: addedAt:desc
+                      entity:
+                        - media_player.nvidia_shield

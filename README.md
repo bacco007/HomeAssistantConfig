@@ -69,32 +69,32 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, March 5th 2022_
+_Stats as at 05:00, Friday, April 1st 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 384     | 2670         | 1918 | 90 |
+| unknown | 389     | 2695         | 1933 | 90 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 90
-Binary Sensor | 246
+Binary Sensor | 248
 Camera | 8
 Device Tracker | 72
 Group | 5
 Input Boolean | 1
-Input Datetime | 0
-Input Text | 3
+Input Datetime | 2
+Input Text | 6
 Light | 2
-Media Player | 19
+Media Player | 21
 Person | 1
 Scene | 0
-Script | 1
-Sensor | 1918
+Script | 3
+Sensor | 1933
 Sun | 1
-Switch | 176
+Switch | 179
 Weather | 9
 Zone | 11
 
@@ -130,6 +130,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.esphome](https://www.home-assistant.io/components/binary_sensor.esphome) |
 | [binary_sensor.eufy_security](https://www.home-assistant.io/components/binary_sensor.eufy_security) |
 | [binary_sensor.hassio](https://www.home-assistant.io/components/binary_sensor.hassio) |
+| [binary_sensor.hdhomerun](https://www.home-assistant.io/components/binary_sensor.hdhomerun) |
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
@@ -137,7 +138,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
-| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
@@ -233,6 +233,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
 | [hassio](https://www.home-assistant.io/components/hassio) |
+| [hdhomerun](https://www.home-assistant.io/components/hdhomerun) |
 | [history](https://www.home-assistant.io/components/history) |
 | [holidays](https://www.home-assistant.io/components/holidays) |
 | [homeassistant](https://www.home-assistant.io/components/homeassistant) |
@@ -276,6 +277,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.dlna_dmr](https://www.home-assistant.io/components/media_player.dlna_dmr) |
 | [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
+| [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
 | [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
@@ -310,7 +312,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
-| [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
@@ -324,6 +325,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [rest](https://www.home-assistant.io/components/rest) |
 | [rocketlaunchlive](https://www.home-assistant.io/components/rocketlaunchlive) |
+| [sabnzbd](https://www.home-assistant.io/components/sabnzbd) |
+| [samsungtv](https://www.home-assistant.io/components/samsungtv) |
 | [samsungtv_smart](https://www.home-assistant.io/components/samsungtv_smart) |
 | [satellitetracker](https://www.home-assistant.io/components/satellitetracker) |
 | [scene](https://www.home-assistant.io/components/scene) |
@@ -365,6 +368,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
+| [sensor.hdhomerun](https://www.home-assistant.io/components/sensor.hdhomerun) |
 | [sensor.here_travel_time](https://www.home-assistant.io/components/sensor.here_travel_time) |
 | [sensor.iaquk](https://www.home-assistant.io/components/sensor.iaquk) |
 | [sensor.ical](https://www.home-assistant.io/components/sensor.ical) |
@@ -391,6 +395,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
+| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
@@ -520,6 +525,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Generate readme](https://github.com/custom-components/readme)
 - [Google Fit](https://github.com/cyberjunky/home-assistant-google_fit)
 - [HACS](https://hacs.xyz/docs/configuration/start)
+- [HDHomerun](https://github.com/uvjim/hass_hdhomerun)
 - [Holidays](https://github.com/bruxy70/Holidays/)
 - [HomeAssistant Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
@@ -599,7 +605,6 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab]()
 - [MariaDB](https://github.com/home-assistant/hassio-addons/tree/master/mariadb)
-- [ModbusTCP2MQTT]()
 - [Mosquitto broker]()
 - [Node-RED]()
 - [phpMyAdmin]()

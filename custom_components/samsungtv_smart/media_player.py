@@ -7,6 +7,7 @@ import json
 import logging
 from socket import error as socketError
 from time import sleep
+from urllib.parse import parse_qs, urlparse
 import voluptuous as vol
 from wakeonlan import send_magic_packet
 from websocket import WebSocketTimeoutException
@@ -15,23 +16,15 @@ from .api.samsungws import SamsungTVWS, ArtModeStatus
 from .api.smartthings import SmartThingsTV, STStatus
 from .api.upnp import upnp
 
+from homeassistant.components import media_source
+from homeassistant.components.media_player.browse_media import async_process_play_media_url
 from homeassistant.components.media_player import DEVICE_CLASS_TV, MediaPlayerEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import DOMAIN as HA_DOMAIN, HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import config_validation as cv, entity_platform
-from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
-from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers.service import async_call_from_config, CONF_SERVICE_ENTITY_ID
-from homeassistant.helpers.storage import STORAGE_DIR
-from homeassistant.util import dt as dt_util, Throttle
-from homeassistant.util.async_ import run_callback_threadsafe
-
 from homeassistant.components.media_player.const import (
     MEDIA_TYPE_APP,
     MEDIA_TYPE_CHANNEL,
     MEDIA_TYPE_URL,
     MEDIA_TYPE_VIDEO,
+    SUPPORT_BROWSE_MEDIA,
     SUPPORT_NEXT_TRACK,
     SUPPORT_PAUSE,
     SUPPORT_PLAY,
@@ -46,6 +39,7 @@ from homeassistant.components.media_player.const import (
     SUPPORT_VOLUME_SET,
     SUPPORT_VOLUME_STEP,
 )
+from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.const import (
     ATTR_SW_VERSION,
@@ -65,6 +59,15 @@ from homeassistant.const import (
     STATE_ON,
     STATE_UNAVAILABLE,
 )
+from homeassistant.core import DOMAIN as HA_DOMAIN, HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
+from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.service import async_call_from_config, CONF_SERVICE_ENTITY_ID
+from homeassistant.helpers.storage import STORAGE_DIR
+from homeassistant.util import dt as dt_util, Throttle
+from homeassistant.util.async_ import run_callback_threadsafe
 
 from .const import (
     DOMAIN,
@@ -85,6 +88,7 @@ from .const import (
     CONF_SOURCE_LIST,
     CONF_SYNC_TURN_OFF,
     CONF_SYNC_TURN_ON,
+    CONF_USE_LOCAL_LOGO,
     CONF_USE_MUTE_CHECK,
     CONF_USE_ST_CHANNEL_INFO,
     CONF_USE_ST_STATUS_INFO,
@@ -97,6 +101,7 @@ from .const import (
     DEFAULT_POWER_ON_DELAY,
     DEFAULT_SOURCE_LIST,
     DEFAULT_TIMEOUT,
+    LOCAL_LOGO_PATH,
     MAX_WOL_REPEAT,
     SERVICE_SELECT_PICTURE_MODE,
     SERVICE_SET_ART_MODE,
@@ -108,7 +113,12 @@ from .const import (
     AppLaunchMethod,
     PowerOnMethod,
 )
-from .logo import LOGO_OPTION_DEFAULT, Logo, LogoOption
+from .logo import (
+    LOGO_OPTION_DEFAULT,
+    LocalImageUrl,
+    Logo,
+    LogoOption,
+)
 
 ATTR_ART_MODE_STATUS = "art_mode_status"
 ATTR_IP_ADDRESS = "ip_address"
@@ -136,23 +146,25 @@ POWER_ON_DELAY = 5
 ST_APP_SEPARATOR = "/"
 ST_UPDATE_TIMEOUT = 5
 
+YT_APP_IDS = ("111299001912", "9Ur5IzDKqV.TizenYouTube")
+
 MAX_CONTROLLED_ENTITY = 4
 
 MIN_TIME_BETWEEN_APP_SCANS = timedelta(seconds=60)
 
 SUPPORT_SAMSUNGTV_SMART = (
     SUPPORT_PAUSE
-    | SUPPORT_PLAY
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_STOP
+    | SUPPORT_VOLUME_SET
     | SUPPORT_VOLUME_STEP
     | SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_SET
     | SUPPORT_PREVIOUS_TRACK
     | SUPPORT_NEXT_TRACK
     | SUPPORT_SELECT_SOURCE
-    | SUPPORT_TURN_ON
     | SUPPORT_TURN_OFF
+    | SUPPORT_TURN_ON
+    | SUPPORT_PLAY
+    | SUPPORT_PLAY_MEDIA
+    | SUPPORT_STOP
 )
 
 SCAN_INTERVAL = timedelta(seconds=15)
@@ -167,6 +179,7 @@ async def async_setup_entry(
 
     # session used by aiohttp
     session = hass.helpers.aiohttp_client.async_get_clientsession()
+    local_logo_path = hass.data[DOMAIN].get(LOCAL_LOGO_PATH)
 
     config = entry.data.copy()
     add_conf = hass.data[DOMAIN][entry.entry_id].get(DATA_CFG_YAML, {})
@@ -193,6 +206,7 @@ async def async_setup_entry(
                 session,
                 update_token_func,
                 logo_file,
+                local_logo_path,
             )
         ],
         True,
@@ -219,11 +233,27 @@ async def async_setup_entry(
     )
 
 
+def _get_default_app_info(app_id):
+    """Get information for default app."""
+    if not app_id:
+        return None, None, None
+
+    if app_id in STD_APP_LIST:
+        info = STD_APP_LIST[app_id]
+        return app_id, info.get("st_app_id"), info.get("logo")
+
+    for info in STD_APP_LIST.values():
+        st_app_id = info.get("st_app_id", "")
+        if st_app_id == app_id:
+            return app_id, None, info.get("logo")
+    return None, None, None
+
+
 class SamsungTVDevice(MediaPlayerEntity):
     """Representation of a Samsung TV."""
 
     def __init__(
-            self, config, unique_id, entry_data, session: ClientSession, update_token_func, logo_file
+            self, config, unique_id, entry_data, session: ClientSession, update_token_func, logo_file, local_logo_path
     ):
         """Initialize the Samsung device."""
 
@@ -237,9 +267,13 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._attr_unique_id = unique_id
         self._attr_icon = "mdi:television"
         self._attr_device_class = DEVICE_CLASS_TV
-        self._attr_supported_features = SUPPORT_SAMSUNGTV_SMART
         self._attr_media_title = None
         self._attr_media_image_url = None
+        self._attr_media_image_remotely_accessible = False
+
+        # Assume that the TV is not muted and volume is 0
+        self._attr_is_volume_muted = False
+        self._attr_volume_level = 0.0
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._attr_unique_id)},
@@ -288,9 +322,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         self._source = None
         self._running_app = None
-        # Assume that the TV is not muted and volume is 0
-        self._muted = False
-        self._volume = 0
+        self._yt_app_id = None
         # Assume that the TV is in Play mode
         self._playing = True
         self._state = STATE_UNAVAILABLE
@@ -335,11 +367,11 @@ class SamsungTVDevice(MediaPlayerEntity):
                 use_channel_info=True,
                 session=session,
             )
-            self. _attr_supported_features |= SUPPORT_SELECT_SOUND_MODE
 
         self._st_error_count = 0
         self._setvolumebyst = False
 
+        self._local_image_url = LocalImageUrl(local_logo_path)
         self._logo_option = LOGO_OPTION_DEFAULT
         self._logo = Logo(
             logo_option=self._logo_option,
@@ -387,11 +419,11 @@ class SamsungTVDevice(MediaPlayerEntity):
             value_split = value.split(sep, 1)
             app_id = value_split[0]
             if len(value_split) == 1:
-                st_app_id = STD_APP_LIST.get(app_id, app_id) or app_id
+                _, st_app_id, _ = _get_default_app_info(app_id)
             else:
                 st_app_id = value_split[1]
             retval["app"][app_name] = app_id
-            retval["appST"][app_name] = st_app_id
+            retval["appST"][app_name] = st_app_id or app_id
 
         return retval
 
@@ -454,12 +486,15 @@ class SamsungTVDevice(MediaPlayerEntity):
         if self._state == STATE_ON:
 
             # if self._st and self._setvolumebyst:
-            # self._volume = self._st.volume
-            # self._muted = self._st.muted
-            # return
+            #     self._attr_volume_level = self._st.volume
+            #     self._attr_is_volume_muted = self._st.muted
+            #     return
 
-            self._volume = int(await self._upnp.async_get_volume()) / 100
-            self._muted = await self._upnp.async_get_mute()
+            if (volume := await self._upnp.async_get_volume()) is not None:
+                self._attr_volume_level = int(volume) / 100
+            else:
+                self._attr_volume_level = None
+            self._attr_is_volume_muted = await self._upnp.async_get_mute()
 
     def _get_external_entity_status(self):
         """Get status from external binary sensor."""
@@ -501,8 +536,9 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         return result
 
-    async def _get_running_app(self):
-        """Retrieve list of running apps."""
+    @callback
+    def _get_running_app(self):
+        """Retrieve name of running apps."""
 
         if self._app_list is not None:
 
@@ -596,12 +632,12 @@ class SamsungTVDevice(MediaPlayerEntity):
             try:
                 app_name = app.app_name
                 app_id = app.app_id
-                st_app_id = STD_APP_LIST.get(app_id)
+                def_app_id, st_app_id, _ = _get_default_app_info(app_id)
                 # app_list is automatically created only with apps in hard coded short list (STD_APP_LIST)
                 # other available apps are dumped in a file that can be used to create a custom list
                 # this is to avoid unuseful long list that can impact performance
                 if app_load_method != AppLoadMethod.NotLoad:
-                    if app_id in STD_APP_LIST or app_load_method == AppLoadMethod.All:
+                    if def_app_id or app_load_method == AppLoadMethod.All:
                         filtered_app_list[app_name] = app_id
                         filtered_app_list_st[app_name] = st_app_id or app_id
 
@@ -674,9 +710,9 @@ class SamsungTVDevice(MediaPlayerEntity):
             ch_num = source_key.replace("ST_CH", "")
             if ch_num.isdigit():
                 await self._st.async_send_command("selectchannel", ch_num)
-        elif source_key == "ST_MUTE":
+        elif source_key in ["ST_MUTE", "ST_UNMUTE"]:
             await self._st.async_send_command(
-                "audiomute", "off" if self._muted else "on"
+                "audiomute", "off" if source_key == "ST_UNMUTE" else "on"
             )
         elif source_key == "ST_VOLUP":
             await self._st.async_send_command("stepvolume", "up")
@@ -744,8 +780,10 @@ class SamsungTVDevice(MediaPlayerEntity):
         elif self._state == STATE_OFF and use_mute_check:
             first_detect = self._fake_on is None
             if first_detect or self._fake_on is True:
-                is_muted = await self._upnp.async_get_mute()
-                self._fake_on = is_muted or not self._upnp.connected
+                if (is_muted := await self._upnp.async_get_mute()) is None:
+                    self._fake_on = True
+                else:
+                    self._fake_on = is_muted
                 if self._fake_on:
                     if first_detect:
                         _LOGGER.debug(
@@ -771,7 +809,7 @@ class SamsungTVDevice(MediaPlayerEntity):
                 else:
                     await self.async_select_source(self._delayed_set_source, False)
             await self._update_volume_info()
-            await self._get_running_app()
+            self._get_running_app()
             await self._update_media()
 
         if self._state == STATE_OFF:
@@ -792,9 +830,12 @@ class SamsungTVDevice(MediaPlayerEntity):
                 app_cmd = payload.split(",")
                 app_id = app_cmd[0]
                 action_type = ""
+                meta_tag = ""
                 if len(app_cmd) > 1:
-                    action_type = app_cmd[1]
-                ret_val = self._ws.run_app(app_id, action_type, "", use_remote=True)
+                    action_type = app_cmd[1].strip()
+                if len(app_cmd) > 2:
+                    meta_tag = app_cmd[2].strip()
+                ret_val = self._ws.run_app(app_id, action_type, meta_tag, use_remote=True)
             elif command_type == CMD_RUN_APP_REST:
                 result = self._ws.rest_app_run(payload)
                 _LOGGER.debug("Rest API result launching app %s: %s", payload, result)
@@ -861,8 +902,9 @@ class SamsungTVDevice(MediaPlayerEntity):
         new_media_title = self._get_new_media_title()
 
         if not new_media_title:
-            self._attr_media_image_url = None
             self._attr_media_title = None
+            self._attr_media_image_url = None
+            self._attr_media_image_remotely_accessible = False
             return
 
         _LOGGER.debug(
@@ -887,20 +929,22 @@ class SamsungTVDevice(MediaPlayerEntity):
             if self._attr_media_title and new_media_title == self._attr_media_title:
                 return
 
-        media_image_url = await self._logo.async_find_match(new_media_title)
-        self._attr_media_image_url = media_image_url
+        remote_access = False
+        if (media_image_url := await self._local_media_image(new_media_title)) is None:
+            media_image_url = await self._logo.async_find_match(new_media_title)
+            remote_access = media_image_url is not None
+
         self._attr_media_title = new_media_title
+        self._attr_media_image_url = media_image_url
+        self._attr_media_image_remotely_accessible = remote_access
 
     def _get_new_media_title(self):
         """Get the current media title."""
         if self._state != STATE_ON:
             return None
 
-        if self._st:
-            if self._st.state == STStatus.STATE_OFF:
-                return None
-
-            if self._running_app == DEFAULT_APP:
+        if self._running_app == DEFAULT_APP:
+            if self._st and self._st.state != STStatus.STATE_OFF:
                 if self._st.source in ["digitalTv", "TV"]:
                     if self._st.channel_name != "":
                         show_channel_number = self._get_option(CONF_SHOW_CHANNEL_NR, False)
@@ -921,6 +965,30 @@ class SamsungTVDevice(MediaPlayerEntity):
             return media_title
         return None
 
+    async def _local_media_image(self, media_title):
+        """Get local media image if available."""
+        if not self._get_option(CONF_USE_LOCAL_LOGO, True):
+            return None
+        app_id = media_title
+        if self._running_app != DEFAULT_APP:
+            if run_app_id := self._app_list.get(self._running_app):
+                app_id = run_app_id
+
+        _, _, logo_file = _get_default_app_info(app_id)
+        return await self.hass.async_add_executor_job(
+            self._local_image_url.get_image_url, media_title, logo_file
+        )
+
+    @property
+    def supported_features(self) -> int:
+        """Flag media player features that are supported."""
+        features = SUPPORT_SAMSUNGTV_SMART
+        if self.state == STATE_ON:
+            features |= SUPPORT_BROWSE_MEDIA
+        if self._st:
+            features |= SUPPORT_SELECT_SOUND_MODE
+        return features
+
     @property
     def media_channel(self):
         """Channel currently playing."""
@@ -937,26 +1005,24 @@ class SamsungTVDevice(MediaPlayerEntity):
             if self._running_app == DEFAULT_APP:
                 if self.media_channel:
                     return MEDIA_TYPE_CHANNEL
-                else:
-                    return MEDIA_TYPE_VIDEO
-            else:
-                return MEDIA_TYPE_APP
+                return MEDIA_TYPE_VIDEO
+            return MEDIA_TYPE_APP
         return STATE_OFF
 
     @property
     def app_id(self):
         """ID of the current running app."""
-        if self._state == STATE_ON:
-            app = None
-            if self._app_list_ST and self._running_app != DEFAULT_APP:
-                app = self._app_list_ST.get(self._running_app, None)
-            if app:
+        if self._state != STATE_ON:
+            return None
+
+        if self._app_list_ST and self._running_app != DEFAULT_APP:
+            if app := self._app_list_ST.get(self._running_app):
                 return app
-            elif self._st:
-                if not self._st.channel and self._st.channel_name:
-                    return self._st.channel_name
-            return DEFAULT_APP
-        return None
+
+        if self._st:
+            if not self._st.channel and self._st.channel_name:
+                return self._st.channel_name
+        return DEFAULT_APP
 
     @property
     def state(self):
@@ -1140,46 +1206,43 @@ class SamsungTVDevice(MediaPlayerEntity):
         if result:
             await self._async_switch_entity(False)
 
-    @property
-    def volume_level(self):
-        """Volume level of the media player (0..1)."""
-        # self._volume = int(self._upnp.get_volume()) / 100
-        if self.support_volume_set:
-            return self._volume
-        else:
-            return None
-
-    @property
-    def is_volume_muted(self):
-        """Boolean if volume is currently muted."""
-        # self._muted = self._upnp.get_mute()
-        return self._muted
-
-    def volume_up(self):
+    async def async_volume_up(self):
         """Volume up the media player."""
-        self.send_command("KEY_VOLUP")
-        if self.support_volume_set:
-            self._volume = min(1.0, self._volume + 0.01)
+        if self._state != STATE_ON:
+            return
+        await self.async_send_command("KEY_VOLUP")
+        if self.volume_level is not None:
+            self._attr_volume_level = min(1.0, self.volume_level + 0.01)
 
-    def volume_down(self):
+    async def async_volume_down(self):
         """Volume down media player."""
-        self.send_command("KEY_VOLDOWN")
-        if self.support_volume_set:
-            self._volume = max(0.0, self._volume - 0.01)
+        if self._state != STATE_ON:
+            return
+        await self.async_send_command("KEY_VOLDOWN")
+        if self.volume_level is not None:
+            self._attr_volume_level = max(0.0, self.volume_level - 0.01)
 
-    def mute_volume(self, mute):
+    async def async_mute_volume(self, mute):
         """Send mute command."""
-        self.send_command("KEY_MUTE")
-        if self.support_volume_set:
-            self._muted = False if self._muted else True
+        if self._state != STATE_ON:
+            return
+        if self.is_volume_muted is not None and mute == self.is_volume_muted:
+            return
+        await self.async_send_command("KEY_MUTE")
+        if self.is_volume_muted is not None:
+            self._attr_is_volume_muted = mute
 
     async def async_set_volume_level(self, volume):
         """Set the volume level."""
+        if self._state != STATE_ON:
+            return
+        if self.volume_level is None:
+            return
         if self._st and self._setvolumebyst:
             await self._st.async_send_command("setvolume", int(volume * 100))
         else:
             await self._upnp.async_set_volume(int(volume * 100))
-        self._volume = volume
+        self._attr_volume_level = volume
 
     def media_play_pause(self):
         """Simulate play pause media player."""
@@ -1306,15 +1369,23 @@ class SamsungTVDevice(MediaPlayerEntity):
         await self.hass.async_add_executor_job(send_digit)
         return True
 
-    async def _async_launch_app(self, app_data):
+    async def _async_launch_app(self, app_data, meta_data=None):
         """Launch app with different methods."""
 
-        method = CMD_RUN_APP
+        method = ""
         app_cmd = app_data.split("@")
         app_id = app_cmd[0]
-        if len(app_cmd) > 1:
-            method = app_cmd[1]
-        else:
+        if app_id_from_list := self._app_list.get(app_id):
+            app_id = app_id_from_list
+        if meta_data:
+            app_id += f",,{meta_data}"
+            method = CMD_RUN_APP_REMOTE
+        elif len(app_cmd) > 1:
+            req_method = app_cmd[1].strip()
+            if req_method in (CMD_RUN_APP, CMD_RUN_APP_REMOTE, CMD_RUN_APP_REST):
+                method = req_method
+
+        if not method:
             app_launch_method = AppLaunchMethod(
                 self._get_option(CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value)
             )
@@ -1323,12 +1394,58 @@ class SamsungTVDevice(MediaPlayerEntity):
                 method = CMD_RUN_APP_REMOTE
             elif app_launch_method == AppLaunchMethod.Rest:
                 method = CMD_RUN_APP_REST
+            else:
+                method = CMD_RUN_APP
 
         await self.async_send_command(app_id, method)
 
+    def _get_youtube_app_id(self):
+        """Search youtube app id used to launch video."""
+        if self._yt_app_id is not None:
+            return len(self._yt_app_id) > 0
+        if not self._app_list:
+            return False
+        self._yt_app_id = ""
+        for app_name, app_id in self._app_list.items():
+            if app_name.casefold().find("youtube") >= 0:
+                if not self._yt_app_id:
+                    self._yt_app_id = app_id
+            if app_id in YT_APP_IDS:
+                self._yt_app_id = app_id
+                break
+
+        return len(self._yt_app_id) > 0
+
+    def _get_youtube_video_id(self, url):
+        """Try to get youtube video id from url."""
+        if not self._get_youtube_app_id():
+            return None
+        url_parsed = urlparse(url)
+        url_host = url_parsed.hostname.casefold()
+        if url_host.find("youtube") < 0:
+            return None
+
+        url_query = parse_qs(url_parsed.query)
+        if "v" not in url_query:
+            return None
+        return url_query["v"][0]
+
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Support running different media type command."""
-        media_type = media_type.lower()
+        if media_source.is_media_source_id(media_id):
+            media_type = MEDIA_TYPE_URL
+            play_item = await media_source.async_resolve_media(self.hass, media_id)
+            media_id = play_item.url
+        else:
+            media_type = media_type.lower()
+
+        if media_type in [MEDIA_TYPE_BROWSER, MEDIA_TYPE_URL, MEDIA_TYPE_VIDEO]:
+            media_id = async_process_play_media_url(self.hass, media_id)
+            try:
+                cv.url(media_id)
+            except vol.Invalid:
+                _LOGGER.error('Media ID must be a valid url (ex: "http://"')
+                return
 
         # Type channel
         if media_type == MEDIA_TYPE_CHANNEL:
@@ -1346,17 +1463,18 @@ class SamsungTVDevice(MediaPlayerEntity):
                 _LOGGER.error('Media ID must be a string (ex: "KEY_HOME"')
                 return
 
-            source_key = media_id
-            await self._async_send_keys(source_key)
+            await self._async_send_keys(media_id)
+
+        # Open url in browser or youtube app
+        elif media_type in [MEDIA_TYPE_BROWSER, MEDIA_TYPE_URL]:
+            if media_type == MEDIA_TYPE_URL:
+                if video_id := self._get_youtube_video_id(media_id):
+                    await self._async_launch_app(self._yt_app_id, video_id)
+                    return
+            await self.async_send_command(media_id, CMD_OPEN_BROWSER)
 
         # Play media
-        elif media_type == MEDIA_TYPE_URL:
-            try:
-                cv.url(media_id)
-            except vol.Invalid:
-                _LOGGER.error('Media ID must be an url (ex: "http://"')
-                return
-
+        elif media_type == MEDIA_TYPE_VIDEO:
             await self._upnp.async_set_current_media(media_id)
             self._playing = True
 
@@ -1365,15 +1483,15 @@ class SamsungTVDevice(MediaPlayerEntity):
             await self._upnp.async_set_current_media(media_id)
             self._playing = True
 
-        elif media_type == MEDIA_TYPE_BROWSER:
-            await self.async_send_command(media_id, CMD_OPEN_BROWSER)
-
         elif media_type == MEDIA_TYPE_TEXT:
             await self.async_send_command(media_id, CMD_SEND_TEXT)
 
         else:
-            _LOGGER.error("Unsupported media type: %s", media_type)
-            return
+            raise NotImplementedError(f"Unsupported media type: {media_type}")
+
+    async def async_browse_media(self, media_content_type=None, media_content_id=None):
+        """Implement the websocket media browsing helper."""
+        return await media_source.async_browse_media(self.hass, media_content_id)
 
     async def async_select_source(self, source, reset_delayed=True):
         """Select input source."""

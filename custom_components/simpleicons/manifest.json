@@ -2,11 +2,15 @@
     "codeowners": [],
     "config_flow": true,
     "dependencies": [
+        "http",
         "frontend"
     ],
     "documentation": "https://github.com/vigonotion/hass-simpleicons",
     "domain": "simpleicons",
+    "iot_class": "local_polling",
     "name": "Simple Icons",
-    "requirements": [],
-    "version": "v1.20.0"
+    "requirements": [
+        "simpleicons==6.16.0"
+    ],
+    "version": "v2.0.0"
 }

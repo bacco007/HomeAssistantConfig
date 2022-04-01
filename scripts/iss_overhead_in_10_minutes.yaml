@@ -1,0 +1,21 @@
+---
+alias: ISS overhead in 10 minutes
+sequence:
+  - service: notify.mobile_app_tbiphone13pro
+    data:
+      title: 🛰 ISS is arriving in 10 minutes 🛰
+      message:
+        The ISS will arrive at {{ as_timestamp (states.input_datetime.iss_next_overhead_date_time.state)
+        | timestamp_custom('%I:%M %p') }} from {{ states.sensor.iss_approach.state
+        }} reaching a maximum height of {{ states.sensor.iss_elevation.state }} above
+        the horizon. After {{ states.sensor.iss_duration.state }} minutes, it will
+        leave {{ states.sensor.iss_departure.state }}.
+      data:
+        chronometer: true
+        when: "{{ (as_timestamp(now()) + 600) | round }}"
+        timeout: 600
+        tag: iss
+        ttl: 86400
+        priority: high
+mode: single
+icon: mdi:space-station

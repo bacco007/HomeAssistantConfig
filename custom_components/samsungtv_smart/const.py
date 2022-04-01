@@ -21,12 +21,13 @@ class PowerOnMethod(Enum):
 
 DOMAIN = "samsungtv_smart"
 
-MIN_HA_MAJ_VER = 2021
-MIN_HA_MIN_VER = 7
+MIN_HA_MAJ_VER = 2022
+MIN_HA_MIN_VER = 3
 __min_ha_version__ = f"{MIN_HA_MAJ_VER}.{MIN_HA_MIN_VER}.0"
 
 DATA_CFG_YAML = "cfg_yaml"
 DATA_OPTIONS = "options"
+LOCAL_LOGO_PATH = "local_logo_path"
 WS_PREFIX = "[Home Assistant]"
 
 ATTR_DEVICE_MAC = "device_mac"
@@ -52,6 +53,7 @@ CONF_SHOW_CHANNEL_NR = "show_channel_number"
 CONF_SOURCE_LIST = "source_list"
 CONF_SYNC_TURN_OFF = "sync_turn_off"
 CONF_SYNC_TURN_ON = "sync_turn_on"
+CONF_USE_LOCAL_LOGO = "use_local_logo"
 CONF_USE_MUTE_CHECK = "use_mute_check"
 CONF_USE_ST_CHANNEL_INFO = "use_st_channel_info"
 CONF_USE_ST_STATUS_INFO = "use_st_status_info"
@@ -87,14 +89,15 @@ SERVICE_TURN_ON = "turn_on"
 
 STD_APP_LIST = {
     # app_id: smartthings app id (if different and available)
-    "org.tizen.browser": "",  # Internet
-    "11101200001": "RN1MCdNq8t.Netflix",  # Netflix
-    "3201907018807": "org.tizen.netflix-app",  # Netflix (New)
-    "111299001912": "9Ur5IzDKqV.TizenYouTube",  # YouTube
-    "3201512006785": "org.tizen.ignition",  # Prime Video
-    # "3201512006785": "evKhCgZelL.AmazonIgnitionLauncher2",  # Prime Video
-    "3201901017640": "MCmYXNxgcu.DisneyPlus",  # Disney+
-    "11091000000": "4ovn894vo9.Facebook",  # Facebook
-    "3201601007250": "QizQxC7CUf.PlayMovies",  # Google Play
-    "3201606009684": "rJeHak5zRg.Spotify",  # Spotify
+    "org.tizen.browser": {"st_app_id": "", "logo": "tizenbrowser.png"},  # Internet
+    "11101200001": {"st_app_id": "RN1MCdNq8t.Netflix", "logo": "netflix.png"},  # Netflix
+    "3201907018807": {"st_app_id": "org.tizen.netflix-app", "logo": "netflix.png"},  # Netflix (New)
+    "111299001912": {"st_app_id": "9Ur5IzDKqV.TizenYouTube", "logo": "youtube.png"},  # YouTube
+    "3201512006785": {"st_app_id": "org.tizen.ignition", "logo": "primevideo.png"},  # Prime Video
+    # "3201512006785": {"st_app_id": "evKhCgZelL.AmazonIgnitionLauncher2", "logo": ""},  # Prime Video
+    "3201901017640": {"st_app_id": "MCmYXNxgcu.DisneyPlus", "logo": "disneyplus.png"},  # Disney+
+    "11091000000": {"st_app_id": "4ovn894vo9.Facebook", "logo": "facebook.png"},  # Facebook
+    "3201806016390": {"st_app_id": "yu1NM3vHsU.DAZN", "logo": "dazn.png"},  # Facebook
+    "3201601007250": {"st_app_id": "QizQxC7CUf.PlayMovies", "logo": ""},  # Google Play
+    "3201606009684": {"st_app_id": "rJeHak5zRg.Spotify", "logo": "spotify.png"},  # Spotify
 }

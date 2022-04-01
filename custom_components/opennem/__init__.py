@@ -215,7 +215,7 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 if remotedata.status == 200:
                     data = await remotedata.json()
                 else:
-                    _LOGGER.debug("OpenNEM [%s]: Issue getting data", region)
+                    _LOGGER.error("OpenNEM [%s]: Issue getting data", region)
 
             # Emission Factor
             async with session.get(API_ENDPOINT_EM) as emremotedata:
@@ -227,7 +227,7 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 if emremotedata.status == 200:
                     edata = await emremotedata.json()
                 else:
-                    _LOGGER.debug("OpenNEM [%s]: Issue getting emissions data", region)
+                    _LOGGER.error("OpenNEM [%s]: Issue getting emissions data", region)
 
             # Flow from other Regions
             async with session.get(API_ENDPOINT_FLOW) as flremotedata:
@@ -239,7 +239,7 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 if flremotedata.status == 200:
                     fldata = await flremotedata.json()
                 else:
-                    _LOGGER.debug("OpenNEM [%s]: Issue getting flow data", region)
+                    _LOGGER.error("OpenNEM [%s]: Issue getting flow data", region)
 
         if data is not None:
             _LOGGER.debug(
@@ -266,9 +266,9 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 # units = row["units"]
                 # last_update = row["history"]["last"]
 
-                if (row["history"]["data"][-1] != 0):
+                if (row["history"]["data"][-1] != 0 or row["history"]["data"][-1] == None):
                     value = row["history"]["data"][-1]
-                elif (row["history"]["data"][-2] != 0):
+                elif (row["history"]["data"][-2] != 0 or row["history"]["data"][-2] == None):
                     value = row["history"]["data"][-2]
                 else:
                     value = row["history"]["data"][-3]
@@ -347,20 +347,32 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                 genvsdemand = None
 
             # Emission Factor
-            if region == "wa1":
-                pass
-            elif region == "au":
+            try:
+                edata
+            except NameError:
                 pass
             else:
-                if edata is not None:
-                    for emrow in edata["data"]:
-                        if region.upper() in emrow["code"]:
-                            emvalue = emrow["history"]["data"][-1]
-                            self._values["emissions_factor"] = round(emvalue, 4)
-                            regiondata.append("emissions_factor")
-                            emvalue = None
+                if region == "wa1":
+                    pass
+                elif region == "au":
+                    pass
                 else:
-                    _LOGGER.debug("OpenNEM [%s]: No Emissions Data Found", region)
+                    if edata is not None:
+                        if edata["response_status"] == "ERROR":
+                            self._values["emissions_factor"] = 0
+                            regiondata.append("emissions_factor")
+                            _LOGGER.debug("OpenNEM [%s]: Error reported on emissions factor data", region)
+                        else:
+                            for emrow in edata["data"]:
+                                if region.upper() in emrow["code"]:
+                                    emvalue = emrow["history"]["data"][-1]
+                                    if emvalue == None:
+                                        emvalue = 0
+                                    self._values["emissions_factor"] = round(emvalue, 4)
+                                    regiondata.append("emissions_factor")
+                                    emvalue = None
+                    else:
+                        _LOGGER.debug("OpenNEM [%s]: No Emissions Data Found", region)
 
             # Flow from other region
             if fldata is not None:
@@ -371,6 +383,8 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
                         fregion.remove(region.upper())
                         fregionto = fregion[0].replace("1", "")
                         value = frow["history"]["data"][-1]
+                        if value == None:
+                            value = 0
                         self._values["flow_" + fregionto] = round(value, 4)
                         regiondata.append("flow_" + fregionto)
                     fregionto = None

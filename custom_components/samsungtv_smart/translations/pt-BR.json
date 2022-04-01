@@ -27,7 +27,7 @@
                     "use_ha_name_for_ws": "Use o nome da instância do HA para a identificação na TV",
                     "api_key": "Token gerado pelo SmartThings (opcional)"
                 },
-                "description": "Insira as informações da sua TV Samsung. O token SmartThings é opcional, mas muito sugerido. Se você nunca conectou o Home Assistant antes, verá um pop-up na TV solicitando uma autorização.",
+                "description": "Insira as informações da sua TV Samsung. O token SmartThings é opcional, mas muito sugerido. Depois de confirmar os dados, verá um pop-up na TV solicitando uma autorização.",
                 "title": "SamsungTV Smart"
             },
             "stdevice": {
@@ -50,20 +50,21 @@
     "options": {
         "step": {
             "init": {
-                "title": "Opções",
+                "title": "Opções SamsungTV Smart",
                 "data": {
                     "use_st_status_info": "Use as informações de status da TV SmartThings",
                     "use_st_channel_info": "Use as informações dos canais de TV SmartThings",
                     "show_channel_number": "Use as informações de número dos canais de TV SmartThings",
                     "power_on_method": "Método usado para ligar a TV",
                     "logo_option": "Exiba uma logo para fontes, aplicativos e canais conhecidos",
+                    "use_local_logo": "Permitir o uso de imagens de logotipos locais",
                     "sync_turn_off": "Lista de entidades para desligar com a TV",
                     "sync_turn_on": "Lista de entidades para ligar com a TV",
                     "show_adv_opt": "Mostrar opções avançadas"
                 }
             },
             "adv_opt": {
-                "title": "Opções avançadas",
+                "title": "Opções avançadas SamsungTV Smart",
                 "data": {
                     "app_load_method": "Modo de carregamento da lista de aplicativos na inicialização",
                     "app_launch_method": "Método usado na inicialização de aplicativos",

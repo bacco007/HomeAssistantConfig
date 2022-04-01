@@ -23,46 +23,20 @@ jinja = jinja2.Environment(loader=jinja2.FileSystemLoader("/"))
 
 jinja.filters['fromjson'] = fromjson
 
-dwains_dashboard_config = {}
-dwains_dashboard_translations = {}
-dwains_dashboard_icons = {}
-dwains_dashboard_global = {}
-dwains_dashboard_customize = {}
+dwains_dashboard_more_pages = {}
 llgen_config = {}
-
-LANGUAGES = {
-    "English": "en",
-    "Danish": "da",
-    "German": "de",
-    "Spanish": "es",
-    "French": "fr",
-    "Italian": "it",
-    "Norwegian": "no",
-    "Romanian": "ro",
-    "Swedish": "se",
-    "Dutch": "nl",
-    "Czech": "cs",
-    "Slovak": "sk",
-    "Slovak": "sk",
-    "Portuguese": "pt",
-    "Polish": "pl"
-}
 
 def load_yamll(fname, secrets = None, args={}):
     try:
         process_yaml = False
         with open(fname, encoding="utf-8") as f:
-            if f.readline().lower().startswith(("# dwains_dashboard", "# dwains_theme", "# lovelace_gen")):
+            if f.readline().lower().startswith(("# dwains_dashboard", "# dwains_theme", "# lovelace_gen", "#dwains_dashboard")):
                 process_yaml = True
 
         if process_yaml:
             stream = io.StringIO(jinja.get_template(fname).render({
                 **args, 
-                "_dd_config": dwains_dashboard_config, 
-                "_dd_trans": dwains_dashboard_translations,
-                "_dd_icons": dwains_dashboard_icons,
-                "_dd_global": dwains_dashboard_global,
-                "_dd_customize": dwains_dashboard_customize,
+                "_dd_more_pages": dwains_dashboard_more_pages,
                 "_global": llgen_config
                 }))
             stream.name = fname
@@ -117,7 +91,6 @@ def compose_node(self, parent, index):
 yaml.composer.Composer.compose_node = compose_node
 
 def process_yaml(hass, config_entry):
-
     #_LOGGER.warning('Start of function to process all yaml files!')
 
     #Check for HKI intallation
@@ -128,221 +101,72 @@ def process_yaml(hass, config_entry):
             if isinstance(loaded_yaml, dict):
                 llgen_config.update(loaded_yaml)
 
-    #_LOGGER.error(llgen_config)
-
-
-    for fname in os.listdir(hass.config.path("custom_components/dwains_dashboard/installation/ignorethisfolder")):
-        if not os.path.isfile(hass.config.path("dwains-dashboard/configs/"+fname)):
-            if fname.endswith('.yaml'):
-                _LOGGER.debug("Copy: "+fname)
-                os.makedirs(hass.config.path("dwains-dashboard/addons"), exist_ok=True)
-                os.makedirs(hass.config.path("dwains-dashboard/configs"), exist_ok=True)
-                shutil.copy2(
-                    hass.config.path("custom_components/dwains_dashboard/installation/ignorethisfolder/"+fname),
-                    hass.config.path("dwains-dashboard/configs")
-            )
-
     if os.path.exists(hass.config.path("dwains-dashboard/configs")):
-        
-        entity_popups = OrderedDict()
-        # Get custom entity popups if set
-        if ("customize_path" in config_entry.options):
-            if os.path.exists(hass.config.path(config_entry.options["customize_path"])):
-                #_LOGGER.warning("Process customize.yaml")
-                customize_file = load_yamll(hass.config.path(config_entry.options["customize_path"]))
-
-                for key, values in customize_file.items():
-                    if ("dwains_dashboard_popup" in values):
-                        data = values.get("dwains_dashboard_popup_data", "")
-                        title = values.get("dwains_dashboard_popup_title", "")
-                        entity_popups[key] = OrderedDict(
-                            {
-                                "popup_path": values["dwains_dashboard_popup"],
-                                "popup_data": data,
-                                "popup_title": title
+        if os.path.isdir(hass.config.path("dwains-dashboard/configs/more_pages")):
+            for subdir in os.listdir(hass.config.path("dwains-dashboard/configs/more_pages")):
+                #Lets check if there is a page.yaml in the more_pages folder
+                if os.path.exists(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml")):
+                    #Page.yaml exists now check if there is a config.yaml otherwise create it
+                    if not os.path.exists(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml")):
+                        with open(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml"), 'w') as f:
+                            page_config = OrderedDict()
+                            page_config.update({
+                                "name": subdir,
+                                "icon": "mdi:puzzle"
+                            })
+                            yaml.safe_dump(page_config, f, default_flow_style=False)
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": subdir,
+                                "icon": "mdi:puzzle",
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
                             }
-                        )
-
-        dwains_dashboard_customize.update(
-            [
-                ("entity_popups", entity_popups)
-            ]
-        )
-        #_LOGGER.error(dwains_dashboard_customize)
-
-        #Main config
-        for fname in loader._find_files(hass.config.path("dwains-dashboard/configs/"), "*.yaml"):
-            loaded_yaml = load_yamll(fname)
-            if isinstance(loaded_yaml, dict):
-                dwains_dashboard_config.update(loaded_yaml)
-
-        #_LOGGER.error(dwains_dashboard_config)
-
-        #Set defaults for safety_ok_strings and battery_empty_strings if not set in globals.yaml
-        if (not dwains_dashboard_config["global"]):
-            #_LOGGER.error("empty")
-            dwains_dashboard_config["global"] = OrderedDict(
-                [
-                    ("safety_ok_strings", ['Ok', 'Idle', 'off']),
-                    ("battery_empty_strings", ['unavailable'])
-                ]
-            )
-        else:
-            #_LOGGER.error("not empty")
-            if ("safety_ok_strings" not in dwains_dashboard_config["global"]):
-                dwains_dashboard_config["global"].update(
-                    [
-                        ("safety_ok_strings", ['Ok', 'Idle', 'off'])
-                    ]
-                )
-            if ("battery_empty_strings" not in dwains_dashboard_config["global"]):
-                dwains_dashboard_config["global"].update(
-                    [
-                        ("battery_empty_strings", ['unavailable'])
-                    ]
-                )
-        # if ("show_covers" not in dwains_dashboard_config["global"]):
-        #     dwains_dashboard_config["global"].update(
-        #         [
-        #             ("show_covers", ['open'])
-        #         ]
-        #     )
-
-        #_LOGGER.error(dwains_dashboard_config)
-        
-
-        #Translations
-        if ("language" in config_entry.options):
-            language = LANGUAGES[config_entry.options["language"]]
-        else:
-            language = "en"
-        translations = load_yamll(hass.config.path("custom_components/dwains_dashboard/lovelace/translations/"+language+".yaml"))
-
-        dwains_dashboard_translations.update(translations[language])
-
-        #Load themes
-        themes = OrderedDict()
-        for fname in loader._find_files(hass.config.path("custom_components/dwains_dashboard/lovelace/themefiles"), "*.yaml"):
-            loaded_yaml = load_yamll(fname)
-            if isinstance(loaded_yaml, dict):
-                themes.update(loaded_yaml)
-        
-        if ("theme" in config_entry.options):
-            config_theme = config_entry.options["theme"]
-        else:
-            config_theme = "Auto Mode (Dark/Light)"
-
-        if ("primary_color" in config_entry.options):
-            config_primary_color = config_entry.options["primary_color"]
-        else:
-            config_primary_color = "#299ec2"
-
-
-        if os.path.exists(hass.config.path("custom_components/dwains_dashboard/.installed")):
-            installed = "true"
-        else:
-            installed = "false"
-
-        dwains_dashboard_global.update(
-            [
-                ("version", VERSION),
-                ("theme", config_theme),
-                ("primary_color", config_primary_color),
-                ("themes", json.dumps(themes)),
-                ("installed", installed)
-            ]
-        )
-
-        #_LOGGER.error(dwains_dashboard_global)
-
-        #Icons
-        icons = load_yamll(hass.config.path("dwains-dashboard/configs/icons.yaml"))
-        dwains_dashboard_icons.clear()
-        if isinstance(icons, dict):
-            if ("icons" in icons):
-                dwains_dashboard_icons.update(icons["icons"]);
+                    else:
+                        with open(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml")) as f:
+                            filecontent = yaml.safe_load(f)
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": filecontent["name"],
+                                "icon": filecontent["icon"],
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
+                            }
         
         hass.bus.async_fire("dwains_dashboard_reload")
 
     async def handle_reload(call):
         #Service call to reload Dwains Theme config
-        _LOGGER.debug("Reload Dwains Dashboard Configuration")
+        _LOGGER.warning("Reload Dwains Dashboard Configuration")
 
         reload_configuration(hass)
 
     # Register service dwains_dashboard.reload
     hass.services.async_register(DOMAIN, "reload", handle_reload)
 
-
-    async def handle_installed(call):
-        #Service call to Change the installed key in global config for Dwains dashboard
-        _LOGGER.debug("Handle installed")
-
-        path = hass.config.path("custom_components/dwains_dashboard/.installed")
-
-        if not os.path.exists(path):
-            _LOGGER.debug("Create .installed file")
-            open(path, 'w').close()
-
-        reload_configuration(hass)
-
-    # Register service dwains_dashboard.installed
-    hass.services.async_register(DOMAIN, "installed", handle_installed)
-
 def reload_configuration(hass):
     if os.path.exists(hass.config.path("dwains-dashboard/configs")):
-        #Main config
-        config_new = OrderedDict()
-        for fname in loader._find_files(hass.config.path("dwains-dashboard/configs/"), "*.yaml"):
-            loaded_yaml = load_yamll(fname)
-            if isinstance(loaded_yaml, dict):
-                config_new.update(loaded_yaml)
-
-        dwains_dashboard_config.update(config_new)
-
-        #Set defaults for safety_ok_strings and battery_empty_strings if not set in globals.yaml
-        if (dwains_dashboard_config["global"]):
-            if ("safety_ok_strings" not in dwains_dashboard_config["global"]):
-                dwains_dashboard_config["global"].update(
-                    [
-                        ("safety_ok_strings", ['Ok', 'Idle', 'off'])
-                    ]
-                )
-            if ("battery_empty_strings" not in dwains_dashboard_config["global"]):
-                dwains_dashboard_config["global"].update(
-                    [
-                        ("battery_empty_strings", ['unavailable'])
-                    ]
-                )
-        else:
-            dwains_dashboard_config["global"] = OrderedDict(
-                [
-                    ("safety_ok_strings", ['Ok', 'Idle', 'off']),
-                    ("battery_empty_strings", ['unavailable'])
-                ]
-            )
-
-        if os.path.exists(hass.config.path("custom_components/dwains_dashboard/.installed")):
-            installed = "true"
-        else:
-            installed = "false"
-
-        dwains_dashboard_global.update(
-            [
-                ("installed", installed)
-            ]
-        )
-
-        #Translations
-        #language = dwains_dashboard_config["global"]["language"];
-        #translations = load_yaml(hass.config.path("custom_components/dwains_dashboard/lovelace/translations/"+language+".yaml"))
-        #dwains_dashboard_translations.update(translations[language])
-
-        #Icons
-        icons = load_yamll(hass.config.path("dwains-dashboard/configs/icons.yaml"))
-        dwains_dashboard_icons.clear()
-        if isinstance(icons, dict):
-            if ("icons" in icons):
-                dwains_dashboard_icons.update(icons["icons"]);
+        if os.path.isdir(hass.config.path("dwains-dashboard/configs/more_pages")):
+            for subdir in os.listdir(hass.config.path("dwains-dashboard/configs/more_pages")):
+                #Lets check if there is a page.yaml in the more_pages folder
+                if os.path.exists(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml")):
+                    #Page.yaml exists now check if there is a config.yaml otherwise create it
+                    if not os.path.exists(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml")):
+                        with open(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml"), 'w') as f:
+                            page_config = OrderedDict()
+                            page_config.update({
+                                "name": subdir,
+                                "icon": "mdi:puzzle"
+                            })
+                            yaml.safe_dump(page_config, f, default_flow_style=False)
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": subdir,
+                                "icon": "mdi:puzzle",
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
+                            }
+                    else:
+                        with open(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml")) as f:
+                            filecontent = yaml.safe_load(f)
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": filecontent["name"],
+                                "icon": filecontent["icon"],
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
+                            }
 
     hass.bus.async_fire("dwains_dashboard_reload")

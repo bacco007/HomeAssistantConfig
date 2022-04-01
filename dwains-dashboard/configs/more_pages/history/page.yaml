@@ -1,0 +1,25 @@
+axisAddMarginMax: false
+axisAddMarginMin: false
+cardName: historycard-34140269
+combineSameUnits: true
+defaultTimeRange: 1d
+entityOptions:
+  humidity:
+    color: blue
+    fill: rgba(0,0,255,0.2)
+    lineMode: lines
+    ymax: 100
+    ymin: 20
+graphs: null
+header: hide
+showUnavailable: false
+type: custom:history-explorer-card
+uiColors:
+  buttons: '#80f00050'
+  closeButton: '#0000001f'
+  gridlines: '#ff000040'
+  labels: green
+  selector: rgba(255,255,255,255)
+uiLayout:
+  selector: bottom
+  toolbar: top

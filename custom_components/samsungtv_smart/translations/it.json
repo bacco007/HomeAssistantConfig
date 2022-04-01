@@ -27,7 +27,7 @@
                     "use_ha_name_for_ws": "Usare il nome dell'istanza HA per identificarsi sulla TV",
                     "api_key": "SmartThings token generato (opzionale)"
                 },
-                "description": "Inserisci le informazioni del tuo Samsung TV. Il token SmartThings \u00e8 opzionale ma fortemente consigliato. Se non hai mai connesso Home Assistant in precedenza, dovresti vedere un messaggio sul TV in cui \u00e8 richiesta l'autorizzazione.",
+                "description": "Inserisci le informazioni del tuo Samsung TV. Il token SmartThings \u00e8 opzionale ma fortemente consigliato. Dopo aver confermato i dati, dovresti vedere un messaggio sul TV in cui \u00e8 richiesta l'autorizzazione.",
                 "title": "SamsungTV Smart"
             },
             "stdevice": {
@@ -50,20 +50,21 @@
     "options": {
         "step": {
             "init": {
-                "title": "Opzioni",
+                "title": "Opzioni SamsungTV Smart",
                 "data": {
                     "use_st_status_info": "Usa informazioni Stato TV da SmartThings",
                     "use_st_channel_info": "Usa informazioni Canale TV da SmartThings",
                     "show_channel_number": "Usa informazioni Numero Canale TV da SmartThings",
                     "power_on_method": "Metodo usato per accendere la TV",
                     "logo_option": "Visualizza il logo per sorgenti, apps e canali conosciuti",
+                    "use_local_logo": "Permetti l'uso delle immagini logo locali",
                     "sync_turn_off": "Elenco entit\u00e0 da Spegnere con la TV",
                     "sync_turn_on": "Elenco entit\u00e0 da Accendere con la TV",
                     "show_adv_opt": "Mostra opzioni avanzate"
                 }
             },
             "adv_opt": {
-                "title": "Opzioni avanzate",
+                "title": "Opzioni avanzate SamsungTV Smart",
                 "data": {
                     "app_load_method": "Modalità caricamento lista applicazioni all'avvio",
                     "app_launch_method": "Metodo usato per lanciare le applicazioni",

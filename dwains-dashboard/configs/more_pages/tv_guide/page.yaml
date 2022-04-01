@@ -1,0 +1,9 @@
+cards:
+- aspect_ratio: 75%
+  type: iframe
+  url: https://www.xmlepg.net/?page=tvguide&b=111&g=all&sdsim=hide&span=4
+- aspect_ratio: 75%
+  type: iframe
+  url: https://www.xmlepg.net/?page=tvguide&b=3300&g=all&sdsim=show&span=4
+items_classes: col-xs-12
+type: custom:dwains-flexbox-card

@@ -1,0 +1,99 @@
+---
+type: custom:stack-in-card
+cards:
+  # - type: markdown
+  #   title: Next ISS Passes
+  #   style: |
+  #     ha-card {
+  #       padding-bottom: 10px;
+  #       background-color: var(--dwains-theme-primary);
+  #     }
+  #     ha-card table {
+  #       padding-top: 0px !important;
+  #     }
+  #     .card-header {
+  #       padding: 5px 16px;
+  #       font-size: 18px;
+  #       font-weight: 700 !important;
+  #     }
+  #     .card-content div {
+  #         margin: 0 !important;
+  #     }
+  #     #states {
+  #       padding-top: 0px !important;
+  #       padding-bottom: 0px !important;
+  #     }
+  #     .secondary {
+  #       color: darkgray !important;
+  #       margin-left: 2px !important;
+  #     }
+  #   content: |-
+  #     {% set prev = namespace(risetime=false) %}
+  #     {% for item in state_attr('sensor.iss_pass_times', 'response') %}
+  #     {% if item.risetime %}
+  #     {% set risetime = item.risetime | timestamp_custom('%a %b %d') %}
+  #     {% if risetime != prev.risetime %}
+  #     <b>{{ risetime }}</b>
+  #     {% set prev.risetime = risetime %}
+  #     {% endif %}
+  #     {% set passtime = item.risetime | timestamp_custom('%H:%M') %}
+  #     {% set dur = item.duration/60 %}
+  #     * {{passtime}} - {{dur|round(2, 'floor')}} min
+  #     {% endif %}
+  #     {% endfor %}
+
+  # type: vertical-stack
+  #cards:
+  - type: map
+    entities:
+      - entity: device_tracker.home
+      - entity: binary_sensor.iss
+    hours_to_show: 1
+    title: ISS
+    aspect_ratio: "16:9"
+  - type: conditional
+    conditions:
+      - entity: sensor.iss_approach
+        state: No sightings soon
+    card:
+      type: entity
+      entity: sensor.iss_approach
+      icon: mdi:database-off-outline
+      name: Next visible in Tamworth
+  - type: conditional
+    conditions:
+      - entity: sensor.iss_approach
+        state_not: No sightings soon
+    card:
+      type: entity
+      entity: sensor.iss_next_overhead_date_time_compact
+      name: Next visible in Tamworth
+  - type: conditional
+    conditions:
+      - entity: sensor.iss_approach
+        state: No sightings soon
+    card:
+      type: entities
+      entities:
+        - entity: sensor.iss_rss_feed_updated
+        - entity: input_number.iss_set_minimum_elevation
+      show_header_toggle: false
+  - type: conditional
+    conditions:
+      - entity: sensor.iss_approach
+        state_not: No sightings soon
+    card:
+      type: entities
+      entities:
+        - entity: sensor.iss_approach
+        - entity: sensor.iss_elevation
+        - entity: sensor.iss_duration
+        - entity: sensor.iss_departure
+        - entity: sensor.iss_rss_feed_updated
+        - entity: input_number.iss_set_minimum_elevation
+      show_header_toggle: false
+  - type: entity
+    entity: sensor.iss_crew
+    name: People in space
+    icon: mdi:account-group
+    unit: people

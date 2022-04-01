@@ -37,6 +37,14 @@ sensor:
     resource: !secret plex_tautulli_history_url
 
   - platform: rest
+    name: plex_tautulli_actvity
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - data
+    value_template: "{{ value_json['response']['result'] }}"
+    resource: !secret plex_tautulli_activity_url
+
+  - platform: rest
     name: plex_tautulli_toptv
     json_attributes_path: "$.response.data"
     json_attributes:

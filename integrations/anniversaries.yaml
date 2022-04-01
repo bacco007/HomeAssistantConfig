@@ -19,6 +19,8 @@ homeassistant:
       friendly_name: Kate's Birthday
     sensor.anniversary_datetracking_leahbirthday:
       friendly_name: Leah's Birthday
+    sensor.anniversary_datetracking_jeanbirthday:
+      friendly_name: Jean's Birthday
 
 anniversaries:
   sensors:
@@ -40,3 +42,5 @@ anniversaries:
       date: !secret date8_date
     - name: !secret date9_name
       date: !secret date9_date
+    - name: !secret date10_name
+      date: !secret date10_date

@@ -33,9 +33,9 @@ import sys
 from threading import Thread, Lock
 import time
 from typing import Any
+from urllib.parse import urlencode, urljoin
 import uuid
 import websocket
-from yarl import URL
 
 from . import shortcuts
 
@@ -226,21 +226,15 @@ class SamsungTVWS:
 
     def _format_websocket_url(self, path, is_ssl=False, use_token=True):
         scheme = "wss" if is_ssl else "ws"
-        token = None
+
+        base_uri = f"{scheme}://{self.host}:{self.port}"
+        ws_uri = urljoin(base_uri, path)
+        query = {"name": self._serialize_string(self.name)}
         if is_ssl and use_token:
-            token = self._get_token()
-
-        new_uri = URL.build(
-            scheme=scheme,
-            host=self.host,
-            port=self.port,
-            path=path,
-            query={"name": self._serialize_string(self.name)}
-        )
-
-        if token:
-            return str(new_uri.update_query({"token": token}))
-        return str(new_uri)
+            if token := self._get_token():
+                query["token"] = token
+        ws_query = urlencode(query)
+        return f"{ws_uri}?{ws_query}"
 
     def register_new_token_callback(self, func):
         """Register a callback function."""

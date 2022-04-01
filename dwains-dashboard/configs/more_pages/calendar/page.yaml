@@ -1,0 +1,64 @@
+calShowDescription: true
+disableCalEventLink: true
+disableCalLink: true
+disableCalLocationLink: true
+disableEventLink: true
+disableLocationLink: true
+entities:
+  - calendar.2021_nascar_schedule_nascar_cup_series
+  - calendar.2021_nascar_schedule_nascar_xfinity_series
+  - calendar.anaheim_ducks
+  - calendar.australia_holidays
+  - calendar.btcc
+  - calendar.cricket_australia
+  - calendar.dtm
+  - calendar.f1
+  - calendar.fia_formula_1_world_championship
+  - calendar.fia_formula_e
+  - calendar.garbage_collection
+  - calendar.gt_intercontinental_gt_challenge
+  - calendar.home_assistant_devs
+  - calendar.ical_extreme_e
+  - calendar.ical_formula_1
+  - calendar.ical_home_assistant
+  - calendar.ical_indycar
+  - calendar.ical_supercars
+  - calendar.ical_swifts
+  - calendar.ical_sydney_fc
+  - calendar.ical_sydney_swans
+  - calendar.ical_sydney_swans_vfl
+  - calendar.imsa_weathertech_sportscar_championship
+  - calendar.indycar
+  - calendar.lm_wec_fia_world_endurance_championship
+  - calendar.manchester_united_fixtures
+  - calendar.miscellaneous
+  - calendar.motogp
+  - calendar.nascar
+  - calendar.nascar_cup_series
+  - calendar.nascar_xfinity_series
+  - calendar.new_england_patriots
+  - calendar.new_york_yankees
+  - calendar.newcastle_knights
+  - calendar.nsw_waratahs
+  - calendar.other_sport
+  - calendar.rally_wrc_fia_world_rally_championship
+  - calendar.supercars
+firstDayOfWeek: 1
+maxDaysToShow: 90
+name: Calendar
+refreshInterval: 60
+showCalendarName: true
+showCurrentEventLine: true
+showDate: true
+showEventIcon: true
+showFullDayProgress: true
+showHiddenText: false
+showLastCalendarWeek: true
+showMonth: true
+showNoEventsForToday: true
+showProgressBar: false
+showRelativeTime: true
+showWeekDay: true
+sortByStartTime: true
+showMultiDayEventParts: true
+type: custom:atomic-calendar-revive

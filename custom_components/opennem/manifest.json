@@ -1,7 +1,7 @@
 {
   "domain": "opennem",
   "name": "OpenNEM",
-  "version": "2022.02.3b1",
+  "version": "2022.03.2",
   "documentation": "https://github.com/bacco007/sensor.opennem",
   "issue_tracker": "https://github.com/bacco007/sensor.opennem/issues",
   "dependencies": [],

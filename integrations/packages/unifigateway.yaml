@@ -17,10 +17,7 @@ sensor:
 
   - platform: command_line
     name: udm_unifios
-    command: |-
-      data='{"username":"homeassistant","password":"H0me@ss1st@nt"}'; ip='https://192.168.1.1:443';\
-      c=$(curl -H 'Content-Type: application/json' -d $data -ksc - $ip/api/auth/login -o /dev/null);\
-      echo "${c}" | curl -ksb - $ip/proxy/network/api/s/default/stat/device/
+    command: !secret unifi_udm_unifios
     value_template: |-
       {% set json = value_json.data[0] %}
       {{ json["system-stats"].cpu }}|

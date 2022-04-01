@@ -1,6 +1,6 @@
 // #### Add card info to console
 console.info(
-  `%cGENERIC-WEATHER-CARD\n%cVersion 0.92        `,
+  `%cGENERIC-WEATHER-CARD\n%cVersion 0.93        `,
   "color: #043ff6; font-weight: bold; background: white",
   "color: white; font-weight: bold; background: #043ff6"
 );
@@ -31,6 +31,7 @@ class BOMWeatherCard extends Lit {
 // #####
 
   render() {
+    if (!this.config || !this._hass) return html``;
 //  Handle Configuration Flags
 //    var icons = this.config.static_icons ? "static" : "animated";
     var currentText = this.config.entity_current_text ? html`<span class="currentText" id="current-text">${this._hass.states[this.config.entity_current_text].state}</span>` : ``;
@@ -494,9 +495,7 @@ get sunSet() {
     }
     else {
       nextSunSet = new Date(this._hass.states[this.config.entity_sun].attributes.next_setting).toLocaleTimeString(this.config.locale, {hour: '2-digit', minute: '2-digit', hour12: false});
-      nextSunSet = (nextSunSet.replace(":", ''));
       nextSunRise = new Date(this._hass.states[this.config.entity_sun].attributes.next_rising).toLocaleTimeString(this.config.locale, {hour: '2-digit', minute: '2-digit', hour12: false});
-	  nextSunRise = (nextSunRise.replace(":", ''));
     }
     var nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + 1);
@@ -874,6 +873,14 @@ style() {
       default:
         return this._hass.config.unit_system[measure] || '';
     }
+  }
+
+  // Watch this._hass and this.config - with the following, any changes to these properties will call render() again
+  static get properties() {
+    return {
+      _hass: {},
+      config: {},
+    };
   }
 
 // #####

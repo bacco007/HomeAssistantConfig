@@ -44,12 +44,13 @@ from .const import (
     CONF_PING_PORT,
     CONF_POWER_ON_DELAY,
     CONF_POWER_ON_METHOD,
-    CONF_USE_ST_CHANNEL_INFO,
-    CONF_USE_ST_STATUS_INFO,
-    CONF_USE_MUTE_CHECK,
     CONF_SHOW_CHANNEL_NR,
     CONF_SYNC_TURN_OFF,
     CONF_SYNC_TURN_ON,
+    CONF_USE_LOCAL_LOGO,
+    CONF_USE_MUTE_CHECK,
+    CONF_USE_ST_CHANNEL_INFO,
+    CONF_USE_ST_STATUS_INFO,
     CONF_WOL_REPEAT,
     CONF_WS_NAME,
     DEFAULT_POWER_ON_DELAY,
@@ -430,6 +431,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_LOGO_OPTION, LOGO_OPTION_DEFAULT.value
                 ),
             ): vol.In(LOGO_OPTIONS),
+            vol.Required(
+                CONF_USE_LOCAL_LOGO,
+                default=options.get(CONF_USE_LOCAL_LOGO, True),
+            ): bool,
             vol.Optional(
                 CONF_SYNC_TURN_OFF,
                 description={

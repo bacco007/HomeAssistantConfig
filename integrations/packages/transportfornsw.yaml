@@ -5,8 +5,12 @@ sensor:
     stop_id: !secret tfnsw_stopid1
     api_key: !secret tfnsw_apikey
   - platform: transport_nsw
+    name: "Bus Stop - Home 2"
+    stop_id: !secret tfnsw_stopid1a
+    api_key: !secret tfnsw_apikey
+  - platform: transport_nsw
     name: "Bus Stop - Work"
-    stop_id: !secret tfnsw_stopid1
+    stop_id: !secret tfnsw_stopid2
     api_key: !secret tfnsw_apikey
     route: "431"
   - platform: template
