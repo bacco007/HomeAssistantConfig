@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, April 1st 2022_
+_Stats as at 05:00, Saturday, April 2nd 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 389     | 2695         | 1933 | 90 |
+| unknown | 388     | 2466         | 1712 | 90 |
 
 Type | Qty
 -- | --
@@ -92,11 +92,11 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 1933
+Sensor | 1712
 Sun | 1
 Switch | 179
 Weather | 9
-Zone | 11
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -196,7 +196,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [device_tracker.icloud](https://www.home-assistant.io/components/device_tracker.icloud) |
-| [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
@@ -529,7 +528,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays/)
 - [HomeAssistant Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
-- [iCloud3 Device Tracker](https://gcobb321.github.io/icloud3/#/)
 - [Indoor Air Quality UK Index](https://github.com/Limych/ha-iaquk)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
