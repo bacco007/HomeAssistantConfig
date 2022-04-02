@@ -6,6 +6,7 @@ ignore: |
   themes/
   handy-code/
   dwains-dashboard/
+  dwains-dashboard-v2/
   packages/dwains-theme/
   .github/workflows/
   lovelace/
