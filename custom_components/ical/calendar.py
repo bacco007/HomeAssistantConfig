@@ -6,7 +6,8 @@ import logging
 from homeassistant.components.calendar import (
     ENTITY_ID_FORMAT,
     CalendarEventDevice,
-    calculate_offset,
+    extract_offset,
+    get_date,
     is_offset_reached,
 )
 from homeassistant.const import CONF_NAME
@@ -15,6 +16,7 @@ from homeassistant.helpers.entity import generate_entity_id
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+
 OFFSET = "!!"
 
 
@@ -73,11 +75,12 @@ class ICalCalendarEventDevice(CalendarEventDevice):
         if event is None:
             self._event = event
             return
-        event = calculate_offset(event, OFFSET)
+        (summary, offset) = extract_offset(event["summary"], OFFSET)
+        event["summary"] = summary
+        self._offset_reached = is_offset_reached(event["start"], offset)
         self._event = copy.deepcopy(event)
         self._event["start"] = {}
         self._event["end"] = {}
         self._event["start"]["dateTime"] = event["start"].isoformat()
         self._event["end"]["dateTime"] = event["end"].isoformat()
-        self._offset_reached = is_offset_reached(self.event)
         self._event["all_day"] = event["all_day"]

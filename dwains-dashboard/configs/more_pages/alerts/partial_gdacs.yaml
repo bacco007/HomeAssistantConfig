@@ -26,11 +26,11 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - entity: sensor.gdacs_near_me
+      - entity: sensor.gdacs_31_08133085871397_150_9416770935059
         name: GDACS Alerts Near Me
   - type: conditional
     conditions:
-      - entity: sensor.gdacs_near_me
+      - entity: sensor.gdacs_31_08133085871397_150_9416770935059
         state_not: "0"
     card:
       type: markdown

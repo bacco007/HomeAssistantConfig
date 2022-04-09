@@ -42,6 +42,7 @@ async def async_setup(hass, config):
     websocket_api.async_register_command(hass, websocket_get_blueprints)
 
     websocket_api.async_register_command(hass, ws_handle_install_blueprint)
+    websocket_api.async_register_command(hass, ws_handle_delete_blueprint)
 
     websocket_api.async_register_command(hass, ws_handle_add_card)
     websocket_api.async_register_command(hass, ws_handle_remove_card)
@@ -216,7 +217,7 @@ async def ws_handle_install_blueprint(
     
     filecontent = json.loads(msg["yamlCode"])
 
-    _LOGGER.warning(filecontent)
+    #_LOGGER.warning(filecontent)
 
     if not filecontent.get("blueprint"):
         _LOGGER.warning('no blueprint data')
@@ -264,6 +265,35 @@ async def ws_handle_install_blueprint(
             "succesfull": filename
         },
     )
+
+
+
+#delete_blueprint
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "dwains_dashboard/delete_blueprint",
+        vol.Required("blueprint"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_delete_blueprint(
+    hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict
+) -> None:
+    """Handle delete blueprint."""
+    
+    filename = hass.config.path("dwains-dashboard/blueprints/"+msg["blueprint"])
+
+    if os.path.exists(filename):
+        os.remove(filename)
+    
+    connection.send_result(
+        msg["id"],
+        {
+            "succesfull": "Blueprint deleted succesfull"
+        },
+    )
+
+
 
 #edit_area_button
 @websocket_api.websocket_command(

@@ -1,14 +1,12 @@
 """Config flow for Radarr."""
 from __future__ import annotations
 
-import logging
 from typing import Any
 
 from aiohttp import ClientConnectorError
 from aiopyarr import exceptions
 from aiopyarr.models.host_configuration import PyArrHostConfiguration
 from aiopyarr.radarr_client import RadarrClient
-from homeassistant import config_entries
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
@@ -30,12 +28,10 @@ from .const import (
     DEFAULT_UPCOMING_DAYS,
     DEFAULT_URL,
     DOMAIN,
+    LOGGER,
 )
 
-_LOGGER = logging.getLogger(__name__)
 
-
-@config_entries.HANDLERS.register(DOMAIN)
 class RadarrConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Radarr."""
 
@@ -128,7 +124,7 @@ class RadarrConfigFlow(ConfigFlow, domain=DOMAIN):
             if entry.data[CONF_API_KEY] == config[CONF_API_KEY]:
                 _part = config[CONF_API_KEY][0:4]
                 _msg = f"Radarr yaml config with partial key {_part} has been imported. Please remove it"
-                _LOGGER.warning(_msg)
+                LOGGER.warning(_msg)
                 return self.async_abort(reason="already_configured")
         proto = "https" if config[CONF_SSL] else "http"
         host_port = f"{config[CONF_HOST]}:{config[CONF_PORT]}"

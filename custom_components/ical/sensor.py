@@ -1,8 +1,9 @@
 """Creating sensors for upcoming events."""
 
 
-import logging
 from datetime import datetime, timedelta
+import logging
+
 
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity, generate_entity_id
@@ -33,6 +34,7 @@ async def async_setup_platform(hass, config, add_entities, discovery_info=None):
         sensors.append(ICalSensor(hass, ical_events, DOMAIN + " " + name, eventnumber))
 
     add_entities(sensors)
+
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

@@ -3,6 +3,7 @@
 import asyncio
 from datetime import datetime, timedelta
 import logging
+from urllib.parse import urlparse
 
 from dateutil.rrule import rruleset, rrulestr
 from dateutil.tz import gettz, tzutc
@@ -112,10 +113,18 @@ class ICalEvents:
     async def update(self):
         """Update list of upcoming events."""
         _LOGGER.debug("Running ICalEvents update for calendar %s", self.name)
-
-        session = async_get_clientsession(self.hass, verify_ssl=self.verify_ssl)
-        async with session.get(self.url) as response:
-            text = await response.text()
+        parts = urlparse(self.url)
+        if parts.scheme == 'file':
+            with open(parts.path) as f:
+                text = f.read()
+        else:
+            if parts.scheme == 'webcal':
+                # There is a potential issue here if the real URL is http, not https
+                self.url = parts.geturl().replace('webcal', 'https', 1)
+            session = async_get_clientsession(self.hass, verify_ssl=self.verify_ssl)
+            async with session.get(self.url) as response:
+                text = await response.text()
+        if text is not None:
             # Some calendars are for some reason filled with NULL-bytes.
             # They break the parsing, so we get rid of them
             event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))

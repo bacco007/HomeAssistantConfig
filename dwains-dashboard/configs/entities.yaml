@@ -77,6 +77,8 @@ sensor.tamworth_airport_temp:
   sort_order: 1
 sensor.tamworth_airport_temp_feels_like:
   sort_order: 3
+sensor.tempest_st_00056115_rain_today:
+  favorite: true
 sensor.weatherflow_precipitation_today:
   col_span: '1'
   col_span_lg: '1'
@@ -84,7 +86,7 @@ sensor.weatherflow_precipitation_today:
   custom_card: false
   custom_popup: false
   disabled: false
-  favorite: true
+  favorite: false
   friendly_name: Rainfall - Home
   hidden: false
   row_span: '1'

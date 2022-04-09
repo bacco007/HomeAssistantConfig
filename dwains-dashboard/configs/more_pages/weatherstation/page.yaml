@@ -9,47 +9,39 @@
         - type: custom:dwains-heading-card
           title: Key Stats
         - type: custom:dwains-flexbox-card
-          items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-3"
+          items_classes: "col-xs-6 col-sm-6 col-md-2 col-lg-2"
           cards:
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Currently"
-                entity: sensor.tempest_st_00056115_temperature
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Feels Like"
-                entity: sensor.tempest_st_00056115_feels_like_temperature
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Rainfall"
-                entity: sensor.tempest_st_00056115_rain_today
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Humidity"
-                entity: sensor.tempest_st_00056115_humidity
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Pressure"
-                entity: sensor.tempest_st_00056115_station_pressure
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "UV Index"
-                entity: sensor.tempest_st_00056115_uv_index
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Wind"
-                entity: sensor.tempest_st_00056115_wind_gust
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Lightning Strikes"
-                entity: sensor.tempest_st_00056115_lightning_count_today
+            - type: custom:dwains-button-card
+              friendly_name: "Currently"
+              entity: sensor.tempest_st_00056115_temperature
+            - type: custom:dwains-button-card
+              friendly_name: "Feels Like"
+              entity: sensor.tempest_st_00056115_feels_like_temperature
+            - type: custom:dwains-button-card
+              friendly_name: "Rainfall"
+              entity: sensor.tempest_st_00056115_rain_today
+            - type: custom:dwains-button-card
+              friendly_name: "Humidity"
+              entity: sensor.tempest_st_00056115_humidity
+            - type: custom:dwains-button-card
+              friendly_name: "Pressure"
+              entity: sensor.tempest_st_00056115_station_pressure
+            - type: custom:dwains-button-card
+              friendly_name: "UV Index"
+              entity: sensor.tempest_st_00056115_uv_index
+            - type: custom:dwains-button-card
+              friendly_name: "Wind"
+              entity: sensor.tempest_st_00056115_wind_gust
+            - type: custom:dwains-button-card
+              friendly_name: "Lightning Strikes"
+              entity: sensor.tempest_st_00056115_lightning_count_today
 
     - type: custom:dwains-flexbox-card
       items_classes: "col-xs-12"
       cards:
         # Left Column
         - type: vertical-stack
-          item_classes: "col-xs-12 col-sm-4"
+          item_classes: "col-xs-12 col-sm-3"
           cards:
             - type: custom:stack-in-card
               cards:
@@ -61,9 +53,10 @@
 
         # Right Column
         - type: vertical-stack
-          item_classes: "col-xs-12 col-sm-8"
+          item_classes: "col-xs-12 col-sm-9"
           cards:
-            - type: custom:dwains-hash-switch-card
+            - type: custom:state-switch
+              entity: hash
               default: tab1
               states:
                 # Tab 1
@@ -81,7 +74,7 @@
                           cards:
                             - type: custom:button-card
                               name: Graphs
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab1"
@@ -90,7 +83,7 @@
                                   - color: var(--dwains-theme-accent)
                             - type: custom:button-card
                               name: Forecasts
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab2"
@@ -114,13 +107,16 @@
                           cards:
                             - type: custom:button-card
                               name: Graphs
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab1"
+                              styles:
+                                name:
+                                  - color: var(--dwains-theme-accent)
                             - type: custom:button-card
                               name: Forecasts
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab2"

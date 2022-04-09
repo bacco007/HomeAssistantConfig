@@ -11,18 +11,15 @@
         - type: custom:dwains-flexbox-card
           items_classes: "col-xs-6 col-sm-6 col-md-3 col-lg-3"
           cards:
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Ads Blocked"
-                entity: sensor.adguard_dns_queries_blocked
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Block Ratio"
-                entity: sensor.adguard_dns_queries_blocked_ratio
-            - !include
-              - ../../1_Templates/button_entity.yaml
-              - name: "Processing Speed"
-                entity: sensor.adguard_average_processing_speed
+            - type: custom:dwains-button-card
+              friendly_name: Ads Blocked
+              entity: sensor.adguard_dns_queries_blocked
+            - type: custom:dwains-button-card
+              friendly_name: "Block Ratio"
+              entity: sensor.adguard_dns_queries_blocked_ratio
+            - type: custom:dwains-button-card
+              friendly_name: "Processing Speed"
+              entity: sensor.adguard_average_processing_speed
 
     - type: custom:dwains-flexbox-card
       items_classes: "col-xs-12"
@@ -31,7 +28,8 @@
         - type: vertical-stack
           item_classes: "col-xs-12"
           cards:
-            - type: custom:dwains-hash-switch-card
+            - type: custom:state-switch
+              entity: hash
               default: tab1
               states:
                 # Tab 1
@@ -49,7 +47,7 @@
                           cards:
                             - type: custom:button-card
                               name: Data
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab1"
@@ -58,7 +56,7 @@
                                   - color: var(--dwains-theme-accent)
                             - type: custom:button-card
                               name: Graphs
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab2"
@@ -84,13 +82,13 @@
                           cards:
                             - type: custom:button-card
                               name: Data
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab1"
                             - type: custom:button-card
                               name: Graphs
-                              template: partials_heading_switch
+                              template: weather_dashboard_blueprint_heading
                               tap_action:
                                 action: navigate
                                 navigation_path: "#tab2"
