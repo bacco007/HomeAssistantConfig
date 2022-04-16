@@ -7,5 +7,5 @@ trigger:
 action:
   - data:
       addon: a0d7b954_ssh
-      input: /config/ha_gitpush.sh
+      input: /config/bin/ha_gitpush.sh
     service: hassio.addon_stdin
