@@ -1,0 +1,161 @@
+# Theme based on Noctis
+# Creator: Colton @coltondick
+# Website: https://coltondick.com
+# My Home Assistant Config files: https://github.com/coltondick/home-assistant-config
+#
+#
+Nordic:
+  #Aurora
+  aurora-red: "#bf616a"
+  aurora-blue: "#5e81ac"
+  aurora-green: "#a3be8c"
+  aurora-yellow: "#ebcb8b"
+  aurora-orange: "#d08770"
+  aurora-pink: "#b48ead"
+
+  #Frost
+  frost-green: "#8fbcbb"
+  frost-sky-blue: "#88c0d0"
+  frost-cadet-blue: "#81a1c1"
+  frost-steel-blue: "#5e81ac"
+
+  #Snow Storm
+  snow-dark: "#d8dee9"
+  snow-medium: "#e5e9f0"
+  snow-light: "#eceff4"
+
+  #Polar Night
+  polar-dark-gray: "#2e3440"
+  polar-bright-gray: "#3B4252"
+  polar-river-gray: "#434c5e"
+  polar-light-gray: "#4c566a"
+
+  # Fonts
+  primary-font-family: "Roboto, sans-serif"
+  paper-font-common-base_-_font-family: "var(--primary-font-family)"
+  paper-font-common-code_-_font-family: "var(--primary-font-family)"
+  paper-font-body1_-_font-family: "var(--primary-font-family)"
+  paper-font-subhead_-_font-family: "var(--primary-font-family)"
+  paper-font-headline_-_font-family: "var(--primary-font-family)"
+  paper-font-caption_-_font-family: "var(--primary-font-family)"
+  paper-font-title_-_font-family: "var(--primary-font-family)"
+  ha-card-header-font-family: "var(--primary-font-family)"
+
+  # Text
+  text-color: "var(--snow-light)"
+  primary-text-color: "var(--text-color)"
+  text-primary-color: "var(--text-color)"
+  text-light-primary-color: "var(--text-color)"
+  secondary-text-color: "var(--snow-medium)"
+  text-medium-light-color: "var(--snow-medium)"
+  text-medium-color: "var(--snow-dark)"
+  disabled-text-color: "var(--snow-dark)"
+  primary-color: "var(--accent-color)"
+  mdc-text-field-ink-color: "var(--text-color)"
+  mdc-select-fill-color: "var(--background-color)"
+  mdc-select-ink-color: "var(--primary-text-color)"
+  mdc-select-label-ink-color: "var(--secondary-text-color)"
+  mdc-select-idle-line-color: "var(--primary-text-color)"
+  mdc-select-dropdown-icon-color: "var(--secondary-text-color)"
+
+  # Input
+  input-dropdown-icon-color: "var(--secondary-text-color)"
+  input-ink-color: "var(--primary-text-color)"
+  input-label-ink-color: "var(--secondary-text-color)"
+  input-idle-line-color: "var(--primary-text-color)"
+  input-hover-line-color: "var(--accent-color)"
+
+  # Main Colors
+  app-header-background-color: "var(--polar-light-gray)"
+  accent-color: "var(--frost-green)"
+  accent-medium-color: "var(--frost-cadet-blue)"
+
+  # Background
+  background-color: "var(--polar-dark-gray)"
+  primary-background-color: "var(--background-color)"
+  background-color-2: "var(--polar-light-gray)"
+  secondary-background-color: "var(--polar-dark-gray)"
+
+  # Code Editor
+  code-editor-gutter-color: "var(--secondary-background-color)"
+  markdown-code-background-color: "var(--secondary-background-color)"
+  input-fill-color: "var(--secondary-background-color)"
+  codemirror-keyword: "var(--aurora-blue)"
+  codemirror-string: "var(--aurora-green)"
+
+  # Card
+  card-background-color: "var(--ha-card-background)"
+  ha-card-background: "var(--polar-bright-gray)"
+  ha-card-box-shadow: "3px 3px 13px -6px rgba(17,35,52,1)"
+  ha-card-border-radius: "5px"
+  border-color: "transparent"
+  ha-card-border-color: "transparent"
+
+  # Icons
+  paper-item-icon-color: "var(--frost-sky-blue)"
+  paper-item-icon-active-color: "var(--aurora-yellow)"
+
+  # Sidebar
+  sidebar-background-color: "var(--polar-bright-gray)"
+  sidebar-icon-color: "var(--snow-light)"
+  sidebar-selected-icon-color: "var(--accent-color)"
+  sidebar-selected-text-color: "var(--text-color)"
+  paper-listbox-background-color: "var(--sidebar-background-color)"
+  divider-color: "var(--background-color)"
+  light-primary-color: "var(--ha-card-background)"
+
+  # Sliders
+  paper-slider-knob-color: "var(--accent-medium-color)"
+  paper-slider-pin-color: "var(--background-color-2)"
+  paper-slider-active-color: "var(--accent-medium-color)"
+  paper-slider-container-color: "var(--background-color-2)"
+
+  # Toggle:
+  paper-toggle-button-checked-bar-color: "var(--accent-medium-color)"
+  mdc-theme-primary: "var(--accent-medium-color)"
+
+  # Switch
+  switch-unchecked-color: "var(--snow-light)"
+  switch-checked-button-color: "var(--accent-color)"
+  switch-unchecked-track-color: "var(--background-color-2)"
+  switch-checked-track-color: "var(--background-color-2)"
+
+  # Radio Button
+  paper-radio-button-checked-color: "var(--accent-color)"
+
+  # Popups
+  more-info-header-background: "var(--secondary-background-color)"
+  paper-dialog-background-color: "var(--background-color)" #'rgba(47,59,82,0.4)'
+
+  # Tables
+  table-row-background-color: "var(--background-color)"
+  table-row-alternative-background-color: "var(--ha-card-background)"
+
+  # Badges
+  label-badge-background-color: "var(--background-color)"
+  label-badge-text-color: "var(--text-primary-color)"
+  label-badge-red: "var(--aurora-red)"
+  label-badge-blue: "var(--aurora-blue)"
+  label-badge-green: "var(--aurora-green)"
+  label-badge-yellow: "var(--aurora-yellow)"
+
+  paper-input-container-focus-color: "var(--accent-color)"
+
+  # Custom Header
+  ch-background: "var(--background-color)"
+  ch-active-tab-color: "var(--accent-color)"
+  ch-notification-dot-color: "var(--accent-color)"
+  ch-all-tabs-color: "var(--sidebar-icon-color)"
+  ch-tab-indicator-color: "var(--accent-color)"
+
+  # Mini Mediaplayer
+  mini-media-player-base-color: "var(--text-color)"
+  mini-media-player-accent-color: "var(--accent-color)"
+
+  # Thermostats
+  heat-color: "var(--aurora-orange)"
+  off-color: "var(--aurora-red)"
+
+  # Alarm States
+  alarm-color-disarmed: "var(--aurora-green)"
+  alarm-color-armed: "var(--aurora-red)"
