@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - 1-Playlist
-description: Play 1-Playlist on Sonosid: 1_Playlist
+description: Play 1-Playlist on Sonos
+id: 1_Playlist
 trigger:
   - platform: webhook
     webhook_id: sonos_1_Playlist

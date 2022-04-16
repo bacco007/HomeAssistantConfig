@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Radio X
-description: Play Radio X on Sonosid: Radio_X
+description: Play Radio X on Sonos
+id: Radio_X
 trigger:
   - platform: webhook
     webhook_id: sonos_Radio_X

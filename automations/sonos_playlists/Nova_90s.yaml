@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Nova 90s
-description: Play Nova 90s on Sonosid: Nova_90s
+description: Play Nova 90s on Sonos
+id: Nova_90s
 trigger:
   - platform: webhook
     webhook_id: sonos_Nova_90s

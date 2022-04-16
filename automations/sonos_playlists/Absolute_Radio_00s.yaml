@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Absolute Radio 00s
-description: Play Absolute Radio 00s on Sonosid: Absolute_Radio_00s
+description: Play Absolute Radio 00s on Sonos
+id: Absolute_Radio_00s
 trigger:
   - platform: webhook
     webhook_id: sonos_Absolute_Radio_00s

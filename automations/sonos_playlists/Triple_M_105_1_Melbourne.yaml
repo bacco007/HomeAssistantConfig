@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Triple M 105.1 Melbourne
-description: Play Triple M 105.1 Melbourne on Sonosid: Triple_M_105_1_Melbourne
+description: Play Triple M 105.1 Melbourne on Sonos
+id: Triple_M_105_1_Melbourne
 trigger:
   - platform: webhook
     webhook_id: sonos_Triple_M_105_1_Melbourne

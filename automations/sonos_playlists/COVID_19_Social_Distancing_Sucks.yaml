@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - COVID-19 Social Distancing Sucks
-description: Play COVID-19 Social Distancing Sucks on Sonosid: COVID_19_Social_Distancing_Sucks
+description: Play COVID-19 Social Distancing Sucks on Sonos
+id: COVID_19_Social_Distancing_Sucks
 trigger:
   - platform: webhook
     webhook_id: sonos_COVID_19_Social_Distancing_Sucks

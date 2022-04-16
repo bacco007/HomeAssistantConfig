@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Triple M 90s (Sydney)
-description: Play Triple M 90s (Sydney) on Sonosid: Triple_M_90s_Sydney
+description: Play Triple M 90s (Sydney) on Sonos
+id: Triple_M_90s_Sydney
 trigger:
   - platform: webhook
     webhook_id: sonos_Triple_M_90s_Sydney

@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - 102.7 KIIS-FM Los Angeles
-description: Play 102.7 KIIS-FM Los Angeles on Sonosid: 102_7_KIIS_FM_Los_Angeles
+description: Play 102.7 KIIS-FM Los Angeles on Sonos
+id: 102_7_KIIS_FM_Los_Angeles
 trigger:
   - platform: webhook
     webhook_id: sonos_102_7_KIIS_FM_Los_Angeles

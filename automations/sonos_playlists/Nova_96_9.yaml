@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Nova 96.9
-description: Play Nova 96.9 on Sonosid: Nova_96_9
+description: Play Nova 96.9 on Sonos
+id: Nova_96_9
 trigger:
   - platform: webhook
     webhook_id: sonos_Nova_96_9

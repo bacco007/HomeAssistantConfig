@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Virgin Radio Groove UK
-description: Play Virgin Radio Groove UK on Sonosid: Virgin_Radio_Groove_UK
+description: Play Virgin Radio Groove UK on Sonos
+id: Virgin_Radio_Groove_UK
 trigger:
   - platform: webhook
     webhook_id: sonos_Virgin_Radio_Groove_UK

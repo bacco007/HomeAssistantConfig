@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - BBC Radio 1
-description: Play BBC Radio 1 on Sonosid: BBC_Radio_1
+description: Play BBC Radio 1 on Sonos
+id: BBC_Radio_1
 trigger:
   - platform: webhook
     webhook_id: sonos_BBC_Radio_1

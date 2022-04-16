@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - CNN International
-description: Play CNN International on Sonosid: CNN_International
+description: Play CNN International on Sonos
+id: CNN_International
 trigger:
   - platform: webhook
     webhook_id: sonos_CNN_International

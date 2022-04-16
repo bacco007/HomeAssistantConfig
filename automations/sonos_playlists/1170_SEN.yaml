@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - 1170 SEN
-description: Play 1170 SEN on Sonosid: 1170_SEN
+description: Play 1170 SEN on Sonos
+id: 1170_SEN
 trigger:
   - platform: webhook
     webhook_id: sonos_1170_SEN

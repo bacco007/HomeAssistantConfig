@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - ABC New England North West
-description: Play ABC New England North West on Sonosid: ABC_New_England_North_West
+description: Play ABC New England North West on Sonos
+id: ABC_New_England_North_West
 trigger:
   - platform: webhook
     webhook_id: sonos_ABC_New_England_North_West

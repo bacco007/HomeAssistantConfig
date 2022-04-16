@@ -1,6 +1,7 @@
 ---
 alias: Sonos - Playlist - Absolute Radio 80s
-description: Play Absolute Radio 80s on Sonosid: Absolute_Radio_80s
+description: Play Absolute Radio 80s on Sonos
+id: Absolute_Radio_80s
 trigger:
   - platform: webhook
     webhook_id: sonos_Absolute_Radio_80s
