@@ -1,4 +1,4 @@
-cd /config
+#!/bin/bash
 
 git add .
 
