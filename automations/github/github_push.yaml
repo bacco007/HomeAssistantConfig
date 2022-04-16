@@ -1,0 +1,11 @@
+---
+id: github_push
+alias: Github - Push config to GitHub (Daily)
+trigger:
+  - at: "06:00:00"
+    platform: time
+action:
+  - data:
+      addon: a0d7b954_ssh
+      input: /config/ha_gitpush.sh
+    service: hassio.addon_stdin
