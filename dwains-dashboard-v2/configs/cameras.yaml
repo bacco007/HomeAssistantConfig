@@ -1,9 +1,0 @@
-# https://dwainscheeren.github.io/lovelace-dwains-theme/configuration/cameras.html
-
-cameras:
-  live_view: false
-  entities:
-    - camera.back_door
-    - camera.front_door
-    - camera.front_gate
-    - camera.front_house

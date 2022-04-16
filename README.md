@@ -69,17 +69,17 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 16th 2022_
+_Stats as at 05:00, Sunday, April 17th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 399     | 2869         | 1917 | 91 |
+| unknown | 399     | 2863         | 1921 | 93 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 91
+Automation | 93
 Binary Sensor | 256
 Camera | 8
 Device Tracker | 67
@@ -92,7 +92,7 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 1917
+Sensor | 1921
 Sun | 1
 Switch | 184
 Weather | 9
@@ -600,6 +600,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - https://github.com/fuatakgun/rtsp_simple_server
 - https://github.com/hassio-addons/repository
 - https://github.com/MickMake/HomeAssistantAddons
+- https://github.com/Poeschl/Hassio-Addons
 - https://github.com/sabeechen/hassio-google-drive-backup
 - https://github.com/Ulrar/hassio-addons
 - https://github.com/zigbee2mqtt/hassio-zigbee2mqtt
@@ -611,6 +612,7 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [Eufy Security Add-on]()
 - [Glances]()
 - [GoSungrow]()
+- [Home Assistant Git Exporter]()
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab]()
 - [MariaDB](https://github.com/home-assistant/hassio-addons/tree/master/mariadb)
@@ -621,6 +623,7 @@ Here are the addons I use inside Hass.io, some of the other things I run can be 
 - [RTSP Simple Server Add-on]()
 - [Samba share](https://github.com/home-assistant/hassio-addons/tree/master/samba)
 - [SSH & Web Terminal]()
+- [Syncthing]()
 - [WeatherFlow to MQTT]()
 - [Zigbee2mqtt]()
 
