@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - ABC News
-id: ABC_News
+description: Play ABC News on Sonosid: ABC_News
 trigger:
   - platform: webhook
     webhook_id: sonos_ABC_News

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - ABC Sport
-id: ABC_Sport
+description: Play ABC Sport on Sonosid: ABC_Sport
 trigger:
   - platform: webhook
     webhook_id: sonos_ABC_Sport

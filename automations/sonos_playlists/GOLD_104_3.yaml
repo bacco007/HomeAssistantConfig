@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - GOLD 104.3
-id: GOLD_104_3
+description: Play GOLD 104.3 on Sonosid: GOLD_104_3
 trigger:
   - platform: webhook
     webhook_id: sonos_GOLD_104_3

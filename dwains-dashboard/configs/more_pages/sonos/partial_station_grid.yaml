@@ -1,6 +1,6 @@
 ---
 type: custom:dwains-flexbox-card
-items_classes: 'col-xs-4 col-sm-2'
+items_classes: 'col-xs-3 col-sm-2'
 cards:
   - type: custom:button-card
     entity: media_player.office_sonos

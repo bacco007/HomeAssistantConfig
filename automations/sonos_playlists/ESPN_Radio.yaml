@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - ESPN Radio
-id: ESPN_Radio
+description: Play ESPN Radio on Sonosid: ESPN_Radio
 trigger:
   - platform: webhook
     webhook_id: sonos_ESPN_Radio

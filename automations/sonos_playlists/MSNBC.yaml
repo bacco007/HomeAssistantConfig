@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - MSNBC
-id: MSNBC
+description: Play MSNBC on Sonosid: MSNBC
 trigger:
   - platform: webhook
     webhook_id: sonos_MSNBC

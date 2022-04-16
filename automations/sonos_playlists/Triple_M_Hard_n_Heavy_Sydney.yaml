@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Triple M Hard n Heavy (Sydney)
-id: Triple_M_Hard_n_Heavy_Sydney
+description: Play Triple M Hard n Heavy (Sydney) on Sonosid: Triple_M_Hard_n_Heavy_Sydney
 trigger:
   - platform: webhook
     webhook_id: sonos_Triple_M_Hard_n_Heavy_Sydney

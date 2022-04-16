@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - triple j (New South Wales)
-id: triple_j_New_South_Wales
+description: Play triple j (New South Wales) on Sonosid: triple_j_New_South_Wales
 trigger:
   - platform: webhook
     webhook_id: sonos_triple_j_New_South_Wales

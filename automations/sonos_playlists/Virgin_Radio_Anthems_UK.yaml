@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Virgin Radio Anthems UK
-id: Virgin_Radio_Anthems_UK
+description: Play Virgin Radio Anthems UK on Sonosid: Virgin_Radio_Anthems_UK
 trigger:
   - platform: webhook
     webhook_id: sonos_Virgin_Radio_Anthems_UK

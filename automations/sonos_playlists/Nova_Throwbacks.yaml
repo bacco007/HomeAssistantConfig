@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Nova Throwbacks
-id: Nova_Throwbacks
+description: Play Nova Throwbacks on Sonosid: Nova_Throwbacks
 trigger:
   - platform: webhook
     webhook_id: sonos_Nova_Throwbacks

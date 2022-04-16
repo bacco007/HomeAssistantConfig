@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Sky Sports Radio
-id: Sky_Sports_Radio
+description: Play Sky Sports Radio on Sonosid: Sky_Sports_Radio
 trigger:
   - platform: webhook
     webhook_id: sonos_Sky_Sports_Radio

@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Absolute Radio UK (AAC)
-id: Absolute_Radio_UK_AAC
+description: Play Absolute Radio UK (AAC) on Sonosid: Absolute_Radio_UK_AAC
 trigger:
   - platform: webhook
     webhook_id: sonos_Absolute_Radio_UK_AAC

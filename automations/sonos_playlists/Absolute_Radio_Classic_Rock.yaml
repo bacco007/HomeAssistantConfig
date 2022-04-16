@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Absolute Radio Classic Rock
-id: Absolute_Radio_Classic_Rock
+description: Play Absolute Radio Classic Rock on Sonosid: Absolute_Radio_Classic_Rock
 trigger:
   - platform: webhook
     webhook_id: sonos_Absolute_Radio_Classic_Rock

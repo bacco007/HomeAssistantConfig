@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - BBC Radio 6 Music
-id: BBC_Radio_6_Music
+description: Play BBC Radio 6 Music on Sonosid: BBC_Radio_6_Music
 trigger:
   - platform: webhook
     webhook_id: sonos_BBC_Radio_6_Music

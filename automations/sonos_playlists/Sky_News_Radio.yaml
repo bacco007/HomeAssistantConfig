@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Sky News Radio
-id: Sky_News_Radio
+description: Play Sky News Radio on Sonosid: Sky_News_Radio
 trigger:
   - platform: webhook
     webhook_id: sonos_Sky_News_Radio

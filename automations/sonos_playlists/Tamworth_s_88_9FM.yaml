@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - Tamworth's 88.9FM
-id: Tamworth_s_88_9FM
+description: Play Tamworth's 88.9FM on Sonosid: Tamworth_s_88_9FM
 trigger:
   - platform: webhook
     webhook_id: sonos_Tamworth_s_88_9FM

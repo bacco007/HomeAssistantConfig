@@ -1,6 +1,6 @@
 ---
 alias: Sonos - Playlist - BBC World Service News
-id: BBC_World_Service_News
+description: Play BBC World Service News on Sonosid: BBC_World_Service_News
 trigger:
   - platform: webhook
     webhook_id: sonos_BBC_World_Service_News
