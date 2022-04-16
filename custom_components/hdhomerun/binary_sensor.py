@@ -5,6 +5,7 @@ import dataclasses
 from typing import (
     Any,
     Callable,
+    List,
     Optional,
 )
 
@@ -12,6 +13,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
     BinarySensorEntityDescription,
+    DOMAIN as ENTITY_DOMAIN,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -20,12 +22,18 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util import slugify
 
+from . import (
+    entity_cleanup,
+    HDHomerunEntity,
+)
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     DOMAIN,
     ENTITY_SLUG,
+    UPDATE_DOMAIN,
 )
-from . import HDHomerunEntity
+
+
 # endregion
 
 
@@ -71,7 +79,9 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
         self.entity_description: HDHomerunBinarySensorEntityDescription = description
 
         self._attr_name = f"{ENTITY_SLUG} {config_entry.title.replace(ENTITY_SLUG, '')}: {self.entity_description.name}"
-        self._attr_unique_id = f"{config_entry.unique_id}::binary_sensor::{slugify(self.entity_description.name)}"
+        self._attr_unique_id = f"{config_entry.unique_id}::" \
+                               f"{ENTITY_DOMAIN.lower()}::" \
+                               f"{slugify(self.entity_description.name)}"
 
     # region #-- properties --#
     @property
@@ -89,7 +99,9 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
 # endregion
 
 
-BINARY_SENSORS: tuple[HDHomerunBinarySensorEntityDescription, ...] = (
+BINARY_SENSORS: tuple[HDHomerunBinarySensorEntityDescription, ...] = ()
+
+BINARY_SENSORS_VERSIONS: tuple[HDHomerunBinarySensorEntityDescription, ...] = (
     HDHomerunBinarySensorEntityDescription(
         key="",
         name="Update available",
@@ -115,4 +127,30 @@ async def async_setup_entry(
         for description in BINARY_SENSORS
     ]
 
+    # region #-- add version sensors if need be --#
+    if UPDATE_DOMAIN is None:
+        for description in BINARY_SENSORS_VERSIONS:
+            sensors.append(
+                HDHomerunBinarySensor(
+                    config_entry=config_entry,
+                    coordinator=hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL],
+                    description=description,
+                )
+            )
+    # endregion
+
     async_add_entities(sensors, update_before_add=True)
+
+    sensors_to_remove: List[HDHomerunBinarySensor] = []
+    if UPDATE_DOMAIN is not None:  # remove the existing version sensors if the update entity is available
+        for description in BINARY_SENSORS_VERSIONS:
+            sensors_to_remove.append(
+                HDHomerunBinarySensor(
+                    config_entry=config_entry,
+                    coordinator=hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL],
+                    description=description
+                )
+            )
+
+    if sensors_to_remove:
+        entity_cleanup(config_entry=config_entry, entities=sensors_to_remove, hass=hass)

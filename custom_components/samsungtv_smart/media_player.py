@@ -504,7 +504,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         ext_state = self.hass.states.get(ext_entity)
         if not ext_state:
             return True
-        return ext_state.state == STATE_ON
+        return ext_state.state != STATE_OFF
 
     def _ping_device(self):
         """Ping TV with WS and others method to check power status."""
@@ -1375,8 +1375,9 @@ class SamsungTVDevice(MediaPlayerEntity):
         method = ""
         app_cmd = app_data.split("@")
         app_id = app_cmd[0]
-        if app_id_from_list := self._app_list.get(app_id):
-            app_id = app_id_from_list
+        if self._app_list:
+            if app_id_from_list := self._app_list.get(app_id):
+                app_id = app_id_from_list
         if meta_data:
             app_id += f",,{meta_data}"
             method = CMD_RUN_APP_REMOTE
@@ -1414,21 +1415,29 @@ class SamsungTVDevice(MediaPlayerEntity):
                 self._yt_app_id = app_id
                 break
 
+        _LOGGER.debug("YouTube App ID: %s", self._yt_app_id or "not found")
         return len(self._yt_app_id) > 0
 
     def _get_youtube_video_id(self, url):
         """Try to get youtube video id from url."""
         if not self._get_youtube_app_id():
+            _LOGGER.debug("You tube App ID not available")
             return None
+
         url_parsed = urlparse(url)
         url_host = url_parsed.hostname.casefold()
         if url_host.find("youtube") < 0:
+            _LOGGER.debug("URL not related to Youtube")
             return None
 
         url_query = parse_qs(url_parsed.query)
         if "v" not in url_query:
+            _LOGGER.debug("Youtube video ID not found")
             return None
-        return url_query["v"][0]
+
+        video_id = url_query["v"][0]
+        _LOGGER.debug("Youtube video ID: %s", video_id)
+        return video_id
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Support running different media type command."""
@@ -1439,7 +1448,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         else:
             media_type = media_type.lower()
 
-        if media_type in [MEDIA_TYPE_BROWSER, MEDIA_TYPE_URL, MEDIA_TYPE_VIDEO]:
+        if media_type in [MEDIA_TYPE_BROWSER, MEDIA_TYPE_URL]:
             media_id = async_process_play_media_url(self.hass, media_id)
             try:
                 cv.url(media_id)
@@ -1465,23 +1474,26 @@ class SamsungTVDevice(MediaPlayerEntity):
 
             await self._async_send_keys(media_id)
 
-        # Open url in browser or youtube app
-        elif media_type in [MEDIA_TYPE_BROWSER, MEDIA_TYPE_URL]:
-            if media_type == MEDIA_TYPE_URL:
-                if video_id := self._get_youtube_video_id(media_id):
-                    await self._async_launch_app(self._yt_app_id, video_id)
-                    return
+        # Open url or youtube app
+        elif media_type == MEDIA_TYPE_URL:
+            if await self._upnp.async_set_current_media(media_id):
+                self._playing = True
+                return
+
+            if video_id := self._get_youtube_video_id(media_id):
+                await self._async_launch_app(self._yt_app_id, video_id)
+                return
+
             await self.async_send_command(media_id, CMD_OPEN_BROWSER)
 
-        # Play media
-        elif media_type == MEDIA_TYPE_VIDEO:
-            await self._upnp.async_set_current_media(media_id)
-            self._playing = True
+        # Open url in browser
+        elif media_type == MEDIA_TYPE_BROWSER:
+            await self.async_send_command(media_id, CMD_OPEN_BROWSER)
 
         # Trying to make stream component work on TV
         elif media_type == "application/vnd.apple.mpegurl":
-            await self._upnp.async_set_current_media(media_id)
-            self._playing = True
+            if await self._upnp.async_set_current_media(media_id):
+                self._playing = True
 
         elif media_type == MEDIA_TYPE_TEXT:
             await self.async_send_command(media_id, CMD_SEND_TEXT)

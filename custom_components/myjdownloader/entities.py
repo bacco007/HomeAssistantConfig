@@ -7,6 +7,7 @@ from string import Template
 from myjdapi.exception import MYJDConnectionException
 
 from homeassistant.helpers.entity import DeviceInfo, Entity
+from homeassistant.helpers.device_registry import DeviceEntryType
 
 from . import MyJDownloaderHub
 from .const import DOMAIN
@@ -110,7 +111,7 @@ class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
             name=f"JDownloader {self._device_name}",
             manufacturer="AppWork GmbH",
             model=self._device_type,
-            entry_type="service",
+            entry_type=DeviceEntryType.SERVICE,
         )
 
     async def async_update(self) -> None:

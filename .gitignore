@@ -64,3 +64,7 @@ yamlint_errors.txt
 .google_fit.token
 check_config.txt
 watchman_report.txt
+
+node-red
+!node-red/flows.json
+!node-red/settings.js

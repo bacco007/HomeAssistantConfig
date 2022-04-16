@@ -4,13 +4,13 @@ from __future__ import annotations
 import datetime
 
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_PROBLEM,
     DOMAIN,
+    BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.const import ENTITY_CATEGORY_DIAGNOSTIC
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import EntityCategory
 
 from . import MyJDownloaderHub
 from .const import (
@@ -110,8 +110,8 @@ class MyJDownloaderUpdateAvailableSensor(MyJDownloaderBinarySensor):
             "JDownloader $device_name Update Available",
             None,
             "update_available",
-            DEVICE_CLASS_PROBLEM,
-            ENTITY_CATEGORY_DIAGNOSTIC,
+            BinarySensorDeviceClass.UPDATE,
+            EntityCategory.DIAGNOSTIC,
         )
 
     async def _myjdownloader_update(self) -> None:

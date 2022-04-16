@@ -1,0 +1,20 @@
+---
+sensor:
+  - name: HA Update Counter (All)
+    unique_id: ha_update_counter_all
+    icon: mdi:update
+    unit_of_measurement: updates
+    state: >
+      {{states | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | list | count}}
+  - name: HA Update Counter (HA)
+    unique_id: ha_update_counter_ha
+    icon: mdi:update
+    unit_of_measurement: updates
+    state: >
+      {{expand(integration_entities('hassio')) | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | list | count }}
+  - name: HA Update Counter (HACS)
+    unique_id: ha_update_counter_hacs
+    icon: mdi:update
+    unit_of_measurement: updates
+    state: >
+      {{expand(integration_entities('hacs')) | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | list | count }}

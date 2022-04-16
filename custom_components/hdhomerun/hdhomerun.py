@@ -1,17 +1,18 @@
 """"""
 
 # region #-- imports --#
-import logging
-
-import aiohttp
 import asyncio
+import logging
 from typing import (
     Any,
     List,
     Optional,
 )
 
+import aiohttp
+
 from .logger import HDHomerunLogger
+
 # endregion
 
 _LOGGER = logging.getLogger(__name__)

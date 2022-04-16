@@ -16,6 +16,7 @@ action:
   - service: persistent_notification.create
     data_template:
       title: HACS - Updates Available
+      notification_id: hacs_updatesavailable
       message: >-
         {% for repo in state_attr('sensor.hacs', 'repositories') %}
           *{{ repo.display_name }}* _{{ repo["installed_version"] }}_ -> _{{ repo["available_version"] }}_

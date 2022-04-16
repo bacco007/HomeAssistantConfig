@@ -1,0 +1,266 @@
+blueprint:
+  custom_cards:
+  - button-card
+  - bar-card
+  - vertical-stack-in-card
+  - auto-entities
+  description: Docker Page by Bourner
+  input:
+    docker_url:
+      description: This is your docker URL
+      name: Select docker URL
+      type: text-field
+  name: Docker Page Blueprint
+  type: page
+  version: 2.1.0
+card:
+  cards:
+  - cards:
+    - cards:
+      - cards:
+        - content: <ha-icon icon="si:portainer"></ha-icon>
+          style: "ha-card { box-shadow: none; \nbackground-color: var(--dwains-theme-primary);\n\
+            --mdc-icon-size: 128px; \ncolor: var(--primary-color)        \n}\nha-markdown\
+            \ { padding-bottom: 1px !important; }\n"
+          type: markdown
+        - color: var(--primary-color)
+          icon: mdi:docker
+          name: Portainer
+          show_state: false
+          styles:
+            card:
+            - background-color: var(--dwains-theme-primary)
+            - box-shadow: none
+            - width: 250px
+            grid:
+            - grid-template-areas: '"i n" "i n" "i n"'
+            - grid-template-columns: 25% 75%
+            - grid-template-rows: min-content min-content
+            name:
+            - font-size: 15px
+            - font-weight: bold
+          tap_action:
+            action: url
+            url_path: $docker_url$
+          type: custom:button-card
+        type: vertical-stack
+      - cards:
+        - content: Docker
+          style: "ha-card { box-shadow: none; \nbackground-color: var(--dwains-theme-primary);}\n\
+            ha-markdown { padding-bottom: 1px !important; }\n"
+          type: markdown
+        - entities:
+          - animation:
+              state: 'on'
+            color: var(--primary-color) !important;
+            entity: sensor.docker_containers_total
+            entity_row: true
+            height: 15px
+            icon: mdi:counter
+            name: Containers Total
+            positions:
+              icon: outside
+              indicator: inside
+              name: outside
+              value: outside
+            style: 'ha-icon { margin-top: -7px; color: var(--primary-color); } .value-direction-right
+              { padding-left: 15px; }'
+            type: custom:bar-card
+            width: 70%
+          - animation:
+              state: 'on'
+            color: var(--primary-color) !important;
+            entity: sensor.docker_containers_running
+            entity_row: true
+            height: 15px
+            icon: mdi:play
+            name: Containers Running
+            positions:
+              icon: outside
+              indicator: inside
+              name: outside
+              value: outside
+            style: "ha-icon\t {\n  margin-top: -7px;\n  color: var(--primary-color)\
+              \ !important;\n  padding-right: 5px;\n}\n .value-direction-right { padding-left:\
+              \ 15px; }"
+            type: custom:bar-card
+            width: 70%
+          - animation:
+              state: 'on'
+            color: var(--primary-color) !important;
+            entity: sensor.docker_containers_paused
+            entity_row: true
+            height: 15px
+            icon: mdi:pause
+            name: Containers Paused
+            positions:
+              icon: outside
+              indicator: inside
+              name: outside
+              value: outside
+            style: "ha-icon\t {\n  margin-top: -7px;\n  color: var(--primary-color)\
+              \ !important;\n  padding-right: 5px;\n}        \n .value-direction-right\
+              \ { padding-left: 15px; }"
+            type: custom:bar-card
+            width: 70%
+          - animation:
+              state: 'on'
+            color: var(--primary-color) !important;
+            entity: sensor.docker_containers_stopped
+            entity_row: true
+            height: 15px
+            icon: mdi:stop
+            name: Containers Stopped
+            positions:
+              icon: outside
+              indicator: inside
+              name: outside
+              value: outside
+            style: "ha-icon\t {\n  margin-top: -7px;\n  color: var(--primary-color)\
+              \ !important;\n  padding-right: 5px;\n}\t\t\t\n .value-direction-right\
+              \ { padding-left: 15px; }"
+            type: custom:bar-card
+            width: 70%
+          style: "ha-card { box-shadow: none;\nbackground-color: var(--dwains-theme-primary);\
+            \ }\t\t   \n"
+          type: entities
+        type: vertical-stack
+      items_classes: col-xs-12 col-md-12 col-lg-6 col-xl-6
+      type: custom:dwains-flexbox-card
+    type: custom:vertical-stack-in-card
+  - card:
+      items_classes: col-xs-12 col-lg-3
+      type: custom:dwains-flexbox-card
+    filter:
+      include:
+      - entity_id: sensor.docker_*_state
+        options:
+          custom_fields:
+            cpu: "[[[\n  return `<ha-icon\n    icon=\"mdi:chip\"\n    style=\"width:\
+              \ 24px; height: 24px; color:var(--primary-color); padding-left:20px;\
+              \ padding-right:20px;\">\n    </ha-icon>CPU Use`\n]]]\n"
+            cpu_value: "[[[\n  return `${states[entity.entity_id.replace('state',\
+              \ 'cpu')].state}%`\n]]]\n"
+            mem: "[[[\n  return `<ha-icon\n    icon=\"mdi:memory\"\n    style=\"width:\
+              \ 24px; height: 24px; color: var(--primary-color); padding-left:20px;\
+              \ padding-right:20px;\">\n    </ha-icon>Memory Use`\n]]]\n"
+            mem_value: "[[[\n  return `${states[entity.entity_id.replace('state',\
+              \ 'memory')].state} MB`\n]]]\n"
+            name: "[[[\n  return `${entity.attributes.friendly_name.replace(' State',\
+              \ '')}`\n]]]\n"
+            nw_down: "[[[\n  return `<ha-icon\n    icon=\"mdi:download\"\n    style=\"\
+              width: 24px; height: 24px; color: var(--primary-color); padding-left:20px;\
+              \ padding-right:20px;\">\n    </ha-icon>Down Link`\n]]]\n"
+            nw_down_value: "[[[\n  if (states[entity.entity_id.replace('state', 'network_speed_down')]\
+              \ == undefined)\n    return 'n.A.'\n  else\n  return `${states[entity.entity_id.replace('state',\
+              \ 'network_speed_down')].state} MB`\n]]]\n"
+            nw_total_down: "[[[\n  return `<ha-icon\n    icon=\"mdi:download-multiple\"\
+              \n    style=\"width: 24px; height: 24px; color: var(--primary-color);\
+              \ padding-left:20px; padding-right:20px;\">\n    </ha-icon>Total Down\
+              \ Link`\n]]]\n"
+            nw_total_down_value: "[[[\n  if (states[entity.entity_id.replace('state',\
+              \ 'network_total_down')] == undefined)\n    return 'n.A.'\n  else\n\
+              \  return `${states[entity.entity_id.replace('state', 'network_total_down')].state}\
+              \ MB`\n]]]\n"
+            nw_total_up: "[[[\n  return `<ha-icon\n    icon=\"mdi:upload-multiple\"\
+              \n    style=\"width: 24px; height: 24px; color: var(--primary-color);\
+              \ padding-left:20px; padding-right:20px;\">\n    </ha-icon>Total Up\
+              \ Link`\n]]]\n"
+            nw_total_up_value: "[[[\n  if (states[entity.entity_id.replace('state',\
+              \ 'network_total_up')] == undefined)\n    return 'n.A.'\n  else\n  return\
+              \ `${states[entity.entity_id.replace('state', 'network_total_up')].state}\
+              \ MB`\n]]]\n"
+            nw_up: "[[[\n  return `<ha-icon\n    icon=\"mdi:upload\"\n    style=\"\
+              width: 24px; height: 24px; color: var(--primary-color); padding-left:20px;\
+              \ padding-right:20px;\">\n    </ha-icon>Up Link`\n]]]\n"
+            nw_up_value: "[[[\n  if (states[entity.entity_id.replace('state', 'network_speed_up')]\
+              \ == undefined)\n    return 'n.A.'\n  else\n  return `${states[entity.entity_id.replace('state',\
+              \ 'network_speed_up')].state} MB`\n]]]\n"
+            state: "[[[\n  return `<ha-icon\n    icon=\"mdi:checkbox-marked-circle-outline\"\
+              \n    style=\"width: 24px; height: 24px; color: var(--primary-color);\
+              \ padding-left:20px; padding-right:20px;\">\n    </ha-icon>State`\n\
+              ]]]\n"
+            state_value: "[[[\n  return `${states[entity.entity_id].state}`\n]]]\n"
+            up: "[[[ \n  return `<ha-icon\n    icon=\"mdi:clock\"\n    style=\"width:\
+              \ 24px; height: 24px; color: var(--primary-color); padding-left:20px;\
+              \ padding-right:20px;\">\n    </ha-icon>Uptime`\n]]]\n"
+            up_value: "[[[ \n  return `${states[entity.entity_id.replace('state',\
+              \ 'status')].state}`\n]]]\n"
+          show_icon: false
+          show_name: false
+          styles:
+            custom_fields:
+              cpu:
+              - justify-self: left
+              - padding-bottom: 5px
+              cpu.icon:
+              - color: red
+              cpu_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              mem:
+              - justify-self: left
+              - padding-bottom: 5px
+              mem_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              name:
+              - justify-self: left
+              - padding-bottom: 10px
+              - padding-left: 15px
+              - font-size: 20px
+              - font-weight: bold
+              nw_down:
+              - justify-self: left
+              - padding-bottom: 5px
+              nw_down_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              nw_total_down:
+              - justify-self: left
+              - padding-bottom: 5px
+              nw_total_down_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              nw_total_up:
+              - justify-self: left
+              - padding-bottom: 5px
+              nw_total_up_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              nw_up:
+              - justify-self: left
+              - padding-bottom: 5px
+              nw_up_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              state:
+              - justify-self: left
+              - padding-bottom: 5px
+              state_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+              up:
+              - justify-self: left
+              - padding-bottom: 5px
+              up_value:
+              - justify-self: right
+              - padding-bottom: 5px
+              - padding-right: 20px
+            grid:
+            - grid-template-areas: '"name name" "state state_value" "up up_value"
+                "cpu cpu_value"  "mem mem_value" "nw_up nw_up_value" "nw_down nw_down_value"
+                "nw_total_up nw_total_up_value" "nw_total_down nw_total_down_value"'
+            icon:
+            - color: red
+          triggers_update: all
+          type: custom:button-card
+    type: custom:auto-entities
+  type: vertical-stack

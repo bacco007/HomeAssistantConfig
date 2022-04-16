@@ -86,6 +86,14 @@ card:
                   width: 90px
                   text-align: left
           entities:
+            - type: custom:apexhcarts-card
+              header:
+                show: true
+                title: CPU (24hrs)
+              graph_span: 24h
+              series:
+                - entity: ${getEntityId('this.entity_id')}
+                  attribute: cpu
             - entities:
                 - entity: ${getEntityId('this.entity_id') + '_cpu'}
                 - entity: ${getEntityId('this.entity_id') + '_memory'}
@@ -121,7 +129,8 @@ card:
     width: 1400
 filter:
   include:
-    - entity_id: {{ filter }}
+    - entity_id: >
+        {{ filter }}
 sort:
   method: friendly_name
 show_empty: true

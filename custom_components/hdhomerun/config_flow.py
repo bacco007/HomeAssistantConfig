@@ -1,13 +1,12 @@
 """Provice UI for configuring the integration"""
 
 # region #-- imports --#
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
-from typing import (
-    Optional,
-    Union
-)
+from typing import Optional
 from urllib.parse import urlparse
 
 import aiohttp
@@ -40,6 +39,7 @@ from .hdhomerun import (
     HDHomeRunExceptionUnreachable,
 )
 from .logger import HDHomerunLogger
+
 # endregion
 
 
@@ -300,7 +300,7 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, HDHomerunLogger):
         _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
         return await self.async_step_timeouts()
 
-    async def async_step_options(self, user_input: Union[dict, None] = None) -> data_entry_flow.FlowResult:
+    async def async_step_options(self, user_input: Optional[dict] = None) -> data_entry_flow.FlowResult:
         """"""
 
         _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
@@ -320,7 +320,7 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, HDHomerunLogger):
             last_step=True
         )
 
-    async def async_step_timeouts(self, user_input: Union[dict, None] = None) -> data_entry_flow.FlowResult:
+    async def async_step_timeouts(self, user_input: Optional[dict] = None) -> data_entry_flow.FlowResult:
         """"""
 
         _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)

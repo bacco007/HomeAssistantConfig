@@ -75,8 +75,10 @@ sensor:
         icon_template: "mdi:satellite-variant"
         value_template: "{{ states.binary_sensor.iss.state }}"
         attribute_templates:
-          latitude: '{{ states.binary_sensor.iss.attributes["lat"] }}'
-          longitude: '{{ states.binary_sensor.iss.attributes["long"] }}'
+          latitude: >
+            {{ state_attr('binary_sensor.iss', 'latitude')|float(default=0) }}
+          longitude: >
+            {{ state_attr('binary_sensor.iss', 'longitude')|float(default=0) }}
 
       iss_duration:
         friendly_name: "Visible for"

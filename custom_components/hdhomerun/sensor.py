@@ -1,6 +1,8 @@
 """"""
 
 # region #-- imports --#
+from __future__ import annotations
+
 import dataclasses
 import os.path
 import re
@@ -14,10 +16,10 @@ from typing import (
     List,
     Mapping,
     Optional,
-    Union,
 )
 
 from homeassistant.components.sensor import (
+    DOMAIN as ENTITY_DOMAIN,
     SensorEntity,
     StateType,
     SensorEntityDescription
@@ -29,6 +31,10 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util import slugify
 
+from . import (
+    entity_cleanup,
+    HDHomerunEntity,
+)
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     CONF_DATA_COORDINATOR_TUNER_STATUS,
@@ -41,8 +47,8 @@ from .const import (
     DEF_TUNER_CHANNEL_FORMAT,
     DOMAIN,
     ENTITY_SLUG,
+    UPDATE_DOMAIN,
 )
-from . import HDHomerunEntity
 from .hdhomerun import (
     HDHomeRunDevice,
     KEY_TUNER_CHANNEL_NAME,
@@ -50,6 +56,8 @@ from .hdhomerun import (
     KEY_TUNER_FREQUENCY,
     KEY_TUNER_NAME,
 )
+
+
 # endregion
 
 
@@ -95,10 +103,12 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
         self.entity_description: HDHomerunSensorEntityDescription = description
 
         self._attr_name = f"{ENTITY_SLUG} {config_entry.title.replace(ENTITY_SLUG, '')}: {self.entity_description.name}"
-        self._attr_unique_id = f"{config_entry.unique_id}::sensor::{slugify(self.entity_description.name)}"
+        self._attr_unique_id = f"{config_entry.unique_id}::" \
+                               f"{ENTITY_DOMAIN.lower()}::" \
+                               f"{slugify(self.entity_description.name)}"
 
     @property
-    def native_value(self) -> Union[StateType, date, datetime]:
+    def native_value(self) -> StateType | date | datetime:
         """Get the value of the sensor"""
 
         if self._data:  # we have data
@@ -140,7 +150,7 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         self._tuner = self._get_tuner()
         super()._handle_coordinator_update()
 
-    def _value(self) -> Union[StateType, date, datetime]:
+    def _value(self) -> StateType | date | datetime:
         """Determine the value of the sensor"""
 
         ret = STATE_IDLE
@@ -197,7 +207,7 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         return ret
 
     @property
-    def native_value(self) -> Union[StateType, date, datetime]:
+    def native_value(self) -> StateType | date | datetime:
         """Get the value of the sensor"""
 
         return self._value()
@@ -211,12 +221,15 @@ SENSORS: tuple[HDHomerunSensorEntityDescription, ...] = (
         state_value=lambda d: len(d)
     ),
     HDHomerunSensorEntityDescription(
-        key="current_firmware",
-        name="Version",
-    ),
-    HDHomerunSensorEntityDescription(
         key="tuner_count",
         name="Tuner Count",
+    ),
+)
+
+SENSOR_VERSIONS: tuple[HDHomerunSensorEntityDescription, ...] = (
+    HDHomerunSensorEntityDescription(
+        key="current_firmware",
+        name="Version",
     ),
     HDHomerunSensorEntityDescription(
         key="",
@@ -251,6 +264,18 @@ async def async_setup_entry(
     ]
     # endregion
 
+    # region #-- add version sensors if need be --#
+    if UPDATE_DOMAIN is None:
+        for description in SENSOR_VERSIONS:
+            sensors.append(
+                HDHomerunSensor(
+                    config_entry=config_entry,
+                    coordinator=cg,
+                    description=description
+                )
+            )
+    # endregion
+
     # region #-- add tuner sensors --#
     if cts:
         hdhomerun_device: HDHomeRunDevice = cts.data
@@ -269,3 +294,17 @@ async def async_setup_entry(
     # endregion
 
     async_add_entities(sensors)
+
+    sensors_to_remove: List[HDHomerunSensor] = []
+    if UPDATE_DOMAIN is not None:  # remove the existing version sensors if the update entity is available
+        for description in SENSOR_VERSIONS:
+            sensors_to_remove.append(
+                HDHomerunSensor(
+                    config_entry=config_entry,
+                    coordinator=cg,
+                    description=description
+                )
+            )
+
+    if sensors_to_remove:
+        entity_cleanup(config_entry=config_entry, entities=sensors_to_remove, hass=hass)

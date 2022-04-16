@@ -1,5 +1,5 @@
 bf296b332b7b489e847e8a9961d27b7e:
-  floor: ''
+  floor: ios:bed-double#fullcolor
   icon: mdi:bed
 laundry:
   floor: ''
@@ -17,5 +17,5 @@ server_rack:
   floor: ''
   icon: mdi:server
 tamworth:
-  icon: fas:road
   floor: ''
+  icon: fas:road

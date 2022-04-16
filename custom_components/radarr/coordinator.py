@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import timedelta
+import logging
 from typing import cast
 
 from aiopyarr import Command, Diskspace, RootFolder, exceptions
@@ -17,7 +18,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
-from .const import CONF_UPCOMING_DAYS, DOMAIN, LOGGER
+from .const import CONF_UPCOMING_DAYS, DOMAIN
 
 
 class RadarrDataUpdateCoordinator(DataUpdateCoordinator):
@@ -34,7 +35,7 @@ class RadarrDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize the coordinator."""
         super().__init__(
             hass=hass,
-            logger=LOGGER,
+            logger=logging.getLogger(__name__),
             name=DOMAIN,
             update_interval=timedelta(seconds=30),
         )

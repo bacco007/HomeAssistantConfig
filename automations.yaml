@@ -1,1 +1,17 @@
----
+- id: '1649996003926'
+  alias: Admin - Update Notifications (Blueprint)
+  description: ''
+  use_blueprint:
+    path: mdegat01/update_notifications.yaml
+    input:
+      reminder_hours: '12'
+      update_entities:
+      - update.home_assistant_core_update
+      - update.home_assistant_operating_system_update
+      mobile_app_device: 9e09ff6838383746ba31fe9914a10e47
+      send_to_ha: true
+      run_config_check: true
+      only_after: 07:00:00
+      only_before: '21:00:00'
+      mobile_app_device_2: a19e6cef95aa2710caafa1235d82aef9
+

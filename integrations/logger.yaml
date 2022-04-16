@@ -5,6 +5,10 @@ logger:
   # logs:
   # custom_components.opennem: debug
   filters:
+    homeassistant:
+      - "Error doing job: Task exception was never retrieved"
+    homeassistant.loader:
+      - "We found a custom integration"
     homeassistant.components.template.template_entity:
       - "Template loop detected while processing event"
     homeassistant.components.media_player:
@@ -19,3 +23,9 @@ logger:
       - "Error on retrieving data: empty response"
     TransportNSW.transportnsw:
       - "No stop events for this query"
+    homeassistant.components.recorder:
+      - "Unhandled database error while processing task EventTask"
+    custom_components.monitor_docker.helpers:
+      - "Can not determine network usage for container ('networks')"
+      - "No 'networks' found in raw packet"
+      - "Too many errors on 'networks' stats, disabling monitoring"

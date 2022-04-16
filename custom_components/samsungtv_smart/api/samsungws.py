@@ -322,16 +322,18 @@ class SamsungTVWS:
             )
 
     @staticmethod
-    def _process_api_response(response):
+    def _process_api_response(response, *, raise_error=True):
         try:
             return json.loads(response)
         except json.JSONDecodeError:
             _LOGGING.debug(
                 "Failed to parse response from TV. response text: %s", response
             )
-            raise ResponseError(
-                "Failed to parse response from TV. Maybe feature not supported on this model"
-            )
+            if raise_error:
+                raise ResponseError(
+                    "Failed to parse response from TV. Maybe feature not supported on this model"
+                )
+        return response
 
     def _check_conn_id(self, resp_data):
         if not resp_data:
@@ -969,27 +971,27 @@ class SamsungTVWS:
     def rest_device_info(self):
         _LOGGING.debug("Get device info via rest api")
         response = self._rest_request("")
-        return self._process_api_response(response.text)
+        return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_status(self, app_id):
         _LOGGING.debug("Get app %s status via rest api", app_id)
         response = self._rest_request("applications/" + app_id)
-        return self._process_api_response(response.text)
+        return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_run(self, app_id):
         _LOGGING.debug("Run app %s via rest api", app_id)
         response = self._rest_request("applications/" + app_id, "POST")
-        return self._process_api_response(response.text)
+        return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_close(self, app_id):
         _LOGGING.debug("Close app %s via rest api", app_id)
         response = self._rest_request("applications/" + app_id, "DELETE")
-        return self._process_api_response(response.text)
+        return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_install(self, app_id):
         _LOGGING.debug("Install app %s via rest api", app_id)
         response = self._rest_request("applications/" + app_id, "PUT")
-        return self._process_api_response(response.text)
+        return self._process_api_response(response.text, raise_error=False)
 
     def shortcuts(self):
         return shortcuts.SamsungTVShortcuts(self)

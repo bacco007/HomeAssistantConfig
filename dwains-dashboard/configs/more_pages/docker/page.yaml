@@ -1,7 +1,8 @@
 - type: custom:dwains-flexbox-card
   items_classes: "col-xs-12"
   cards:
-    - type: custom:dwains-hash-switch-card
+    - type: custom:state-switch
+      entity: hash
       default: tbsh1
       states:
         tbsh1:

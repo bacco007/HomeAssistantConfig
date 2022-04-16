@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 9th 2022_
+_Stats as at 05:00, Saturday, April 16th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 394     | 2697         | 1795 | 90 |
+| unknown | 399     | 2869         | 1917 | 91 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 90
-Binary Sensor | 250
+Automation | 91
+Binary Sensor | 256
 Camera | 8
 Device Tracker | 67
 Group | 5
@@ -92,9 +92,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 1795
+Sensor | 1917
 Sun | 1
-Switch | 183
+Switch | 184
 Weather | 9
 Zone | 3
 
@@ -135,6 +135,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.iss](https://www.home-assistant.io/components/binary_sensor.iss) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
+| [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
@@ -148,6 +149,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.tuya](https://www.home-assistant.io/components/binary_sensor.tuya) |
+| [binary_sensor.uptime_kuma](https://www.home-assistant.io/components/binary_sensor.uptime_kuma) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.version](https://www.home-assistant.io/components/binary_sensor.version) |
 | [binary_sensor.weatherflow](https://www.home-assistant.io/components/binary_sensor.weatherflow) |
@@ -224,7 +226,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
 | [github](https://www.home-assistant.io/components/github) |
 | [glances](https://www.home-assistant.io/components/glances) |
-| [google](https://www.home-assistant.io/components/google) |
 | [google_assistant](https://www.home-assistant.io/components/google_assistant) |
 | [group](https://www.home-assistant.io/components/group) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
@@ -364,6 +365,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
+| [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
 | [sensor.hdhomerun](https://www.home-assistant.io/components/sensor.hdhomerun) |
@@ -388,6 +390,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
+| [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
@@ -482,8 +485,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update](https://www.home-assistant.io/components/update) |
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
+| [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
+| [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
 | [uptimerobot](https://www.home-assistant.io/components/uptimerobot) |
 | [usb](https://www.home-assistant.io/components/usb) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
@@ -529,6 +534,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Fontawesome icons](https://github.com/thomasloven/hass-fontawesome)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
+- [Google Fit](https://github.com/cyberjunky/home-assistant-google_fit)
 - [HACS](https://hacs.xyz/docs/configuration/start)
 - [HDHomerun](https://github.com/uvjim/hass_hdhomerun)
 - [Holidays](https://github.com/bruxy70/Holidays/)
@@ -559,6 +565,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
+- [Uptime Kuma](None)
 - [Watchman](https://github.com/dummylabs/thewatchman)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 - [WeatherFlow Weather](https://github.com/briis/hass-weatherflow)
@@ -587,16 +594,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Addon Repositories
 
-- https://github.com/bentasker/HomeAssistantAddons/
 - https://github.com/briis/hass-weatherflow2mqtt
-- https://github.com/danielwelch/hassio-zigbee2mqtt
 - https://github.com/esphome/hassio
 - https://github.com/fuatakgun/eufy_security_addon
 - https://github.com/fuatakgun/rtsp_simple_server
 - https://github.com/hassio-addons/repository
-- https://github.com/OpenXbox/xboxone-home-assistant
+- https://github.com/MickMake/HomeAssistantAddons
 - https://github.com/sabeechen/hassio-google-drive-backup
-- https://github.com/TenySmart/HassioAddon
 - https://github.com/Ulrar/hassio-addons
 - https://github.com/zigbee2mqtt/hassio-zigbee2mqtt
 
@@ -606,6 +610,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.- [ESPHome]()
 - [Eufy Security Add-on]()
 - [Glances]()
+- [GoSungrow]()
 - [Home Assistant Google Drive Backup]()
 - [JupyterLab]()
 - [MariaDB](https://github.com/home-assistant/hassio-addons/tree/master/mariadb)

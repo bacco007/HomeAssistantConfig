@@ -6,6 +6,7 @@ sensor:
   state: >
     {{ states | count | int(default=0) }}
   state_class: measurement
+  unit_of_measurement: states
   attributes:
     domains: >
       {%- for d in states | groupby('domain') %}
@@ -77,6 +78,8 @@ sensor:
       {{ states.switch | list | length | int(default=0) }}
     timer: >
       {{ states.timer | list | length | int(default=0) }}
+    update: >
+      {{ states.update | list | length | int(default=0) }}
     vacuum: >
       {{ states.vacuum | list | length | int(default=0) }}
     weather: >

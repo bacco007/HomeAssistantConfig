@@ -7,6 +7,7 @@ from typing import (
     List,
 )
 
+import homeassistant.helpers.entity_registry as er
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
@@ -34,6 +35,7 @@ from .hdhomerun import (
     HDHomeRunExceptionOldFirmware,
 )
 from .logger import HDHomerunLogger
+
 # endregion
 
 _LOGGER = logging.getLogger(__name__)
@@ -181,4 +183,34 @@ class HDHomerunEntity(CoordinatorEntity):
             name=self._config.title,
             sw_version=self._data.current_firmware if self._data else "",
         )
+# endregion
+
+
+# region #-- cleanup entities --#
+def entity_cleanup(
+    config_entry: ConfigEntry,
+    entities: List[HDHomerunEntity],
+    hass: HomeAssistant
+):
+    """"""
+
+    log_formatter = HDHomerunLogger(unique_id=config_entry.unique_id, prefix=f"{entities[0].__class__.__name__} --> ")
+    _LOGGER.debug(log_formatter.message_format("entered"))
+
+    entity_registry: er.EntityRegistry = er.async_get(hass=hass)
+    er_entries: List[er.RegistryEntry] = er.async_entries_for_config_entry(
+        registry=entity_registry,
+        config_entry_id=config_entry.entry_id
+    )
+
+    cleanup_unique_ids = [e.unique_id for e in entities]
+    for entity in er_entries:
+        if entity.unique_id not in cleanup_unique_ids:
+            continue
+
+        # remove the entity
+        _LOGGER.debug(log_formatter.message_format("removing %s"), entity.entity_id)
+        entity_registry.async_remove(entity_id=entity.entity_id)
+
+    _LOGGER.debug(log_formatter.message_format("exited"))
 # endregion

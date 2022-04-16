@@ -3,11 +3,7 @@ from __future__ import annotations
 
 import datetime
 
-from homeassistant.components.sensor import (
-    DOMAIN,
-    STATE_CLASS_MEASUREMENT,
-    SensorEntity,
-)
+from homeassistant.components.sensor import DOMAIN, SensorEntity, SensorStateClass
 from homeassistant.const import DATA_RATE_MEGABYTES_PER_SECOND
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
@@ -125,13 +121,13 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         )
 
     @property
-    def state(self) -> str:
-        """Return the state of the sensor."""
+    def native_value(self) -> str:
+        """Return the native value of the sensor."""
         return self._state
 
     @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit this state is expressed in."""
+    def native_unit_of_measurement(self) -> str:
+        """Return the unit this entity's native value is expressed in."""
         return self._unit_of_measurement
 
     @property
@@ -230,7 +226,7 @@ class MyJDownloaderDownloadSpeedSensor(MyJDownloaderDeviceSensor):
             "mdi:download",
             "download_speed",
             DATA_RATE_MEGABYTES_PER_SECOND,
-            STATE_CLASS_MEASUREMENT,
+            SensorStateClass.MEASUREMENT,
         )
 
     async def _myjdownloader_update(self) -> None:

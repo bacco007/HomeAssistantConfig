@@ -1,15 +1,34 @@
-# dwains_theme
+card:
+  items_classes: col-xs-12 col-sm-6 col-md-4 col-lg-4
+  padding: true
+  type: custom:dwains-flexbox-card
+filter:
+  include:
+  - entity_id: binary_sensor.networkstatus_*
+    options:
+      double_tap_action: more-info
+      hold_action: more-info
+      icon: '{% set a = entity %}
 
-- type: custom:auto-entities
-  filter:
-    include:
-      - entity_id: binary_sensor.networkstatus_*
-        options:
-          type: custom:dwains-button-card
-  sort:
-    method: name
-    ignore_case: true
-  card:
-    type: custom:dwains-flexbox-card
-    padding: true
-    items_classes: "col-xs-12 col-sm-6 col-md-3 col-lg-3"
+        {{ state_attr(entity, ''icon'') }}
+
+        '
+      icon_color: '{{ ''green'' if is_state(entity, ''on'') else ''red'' }}
+
+        '
+      primary: '{% set a = entity %}
+
+        {{ state_attr(a, ''friendly_name'') }}
+
+        '
+      secondary: '{% set a = entity %}
+
+        {{ state_attr(entity, ''ip_address'') }}
+
+        '
+      tap_action: more-info
+      type: custom:mushroom-template-card
+sort:
+  ignore_case: true
+  method: friendly_name
+type: custom:auto-entities
