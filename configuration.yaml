@@ -4,5 +4,5 @@
 homeassistant:
   packages: !include_dir_named integrations
   customize: !include customize.yaml
-  # allowlist_external_dirs:
-  #   - /config/blueprints
+  allowlist_external_dirs:
+    - /config/
