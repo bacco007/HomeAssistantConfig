@@ -16,6 +16,7 @@ temp
 neighbours
 .ssh
 zigbee2mqtt
+image
 
 # Ignore File Extensions
 *.conf
