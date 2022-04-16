@@ -12,6 +12,7 @@ action:
   - service: persistent_notification.create
     data_template:
       title: Github - Repo Star
+      notification_id: github_repostar
       message: >-
         "{{ trigger.to_state.attributes.friendly_name | regex_replace(find='bacco007/', replace='', ignorecase=False) }}: {{ trigger.from_state.state }} => {{ trigger.to_state.state }}"
   # - service: notify.slack
