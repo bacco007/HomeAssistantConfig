@@ -3,8 +3,8 @@ alias: Admin - Run Watchman (Daily)
 id: 669e9cda-a9ba-484d-a715-53864fc0d61c
 initial_state: true
 trigger:
-  - platform: time
-    at: "07:00:00"
+  - platform: time_pattern
+    hours: "3"
 condition: []
 action:
   - service: watchman.report

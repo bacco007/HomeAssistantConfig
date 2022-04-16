@@ -4,7 +4,7 @@ import re
 p = re.compile(r"\d+-\d+-\d+\s+\d+:\d+:\d+\s+([A-Z]+)[^[]*\[([^]]+)\]")
 comps = {}
 n_comps = 0
-for line in open("../home-assistant.log").readlines():
+for line in open("home-assistant.log").readlines():
     m = p.match(line)
     if m:
         comp = (m.group(2), m.group(1))

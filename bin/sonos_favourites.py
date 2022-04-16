@@ -34,7 +34,7 @@ favorites = soco.music_library.get_sonos_favorites()
 # f.close()
 
 ### GRID ###
-f = open("../dwains-dashboard/addons/rooms/office/sonos/partial_station_grid.yaml", "w")
+f = open("dwains-dashboard/configs/more_pages/sonos/partial_station_grid.yaml", "w")
 f.write("---" + "\n")
 f.write("type: custom:dwains-flexbox-card" + "\n")
 f.write("items_classes: 'col-xs-4 col-sm-2'" + "\n")
@@ -89,7 +89,7 @@ for fav in favorites:
     title = fav.title
     # uri = fav["uri"]
     titleClean = make_safe_filename(title)
-    f = open("../automations/sonos_playlists/" + titleClean + ".yaml", "w")
+    f = open("automations/sonos_playlists/" + titleClean + ".yaml", "w")
     f.write("---")
     f.write("\n")
     f.write("alias: Sonos - Playlist - " + title + "\n")
