@@ -1,0 +1,10 @@
+{
+  "domain": "illuminance",
+  "name": "Illuminance",
+  "version": "2.4.0",
+  "documentation": "https://github.com/pnbruckner/ha-illuminance/blob/master/README.md",
+  "issue_tracker": "https://github.com/pnbruckner/ha-illuminance/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@pnbruckner"]
+}
