@@ -58,4 +58,5 @@ echo "#" >>${FPATH}
 eval $(parse_yaml ${ROOT}/secrets.yaml '' 'faker \"%s\" \"%s\" \"%s\" \"%s\";') >>${FPATH}
 echo ""
 
+git commit -m "Automated: Update Fake Secrets" ${ROOT}/fake_secrets.yaml
 exit
