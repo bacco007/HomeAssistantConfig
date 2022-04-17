@@ -5,15 +5,15 @@ sensor:
     unit_of_measurement: c/L
     icon: mdi:gas-station
     state: >
-      {%- set sensors = states|selectattr('entity_id','search','_ulp95') | map(attribute='entity_id')| list %}
-      {{ expand(sensors)  | rejectattr('state', 'in', ['unknown','unavailable']) | map(attribute='state')  | map('float', 0) | average | round(2) }}
+      {%- set sensors = states.sensor|selectattr('entity_id','search','_ulp95') | rejectattr('entity_id', 'search', '_365day') | rejectattr('entity_id', 'search', '_average_ulp95') | map(attribute='entity_id')| list %}
+      {{ expand(sensors)  | rejectattr('state', 'in', ['unknown','unavailable']) | map(attribute='state') | map('float', 0) | average | round(2) }}
     availability: >
-      {%- set sensors = states|selectattr('entity_id','search','_ulp95')  | map(attribute='entity_id')| list %}
+      {%- set sensors = states.sensor|selectattr('entity_id','search','_ulp95') | rejectattr('entity_id', 'search', '_365day') | rejectattr('entity_id', 'search', '_average_ulp95') | map(attribute='entity_id')| list %}
       {{ expand(sensors) | rejectattr('state', 'in', ['unknown','unavailable']) | list | count > 0}}
     attributes:
       max: >
-        {%- set sensors = states|selectattr('entity_id','search','_ulp95')  | map(attribute='entity_id')| list %}
+        {%- set sensors = states.sensor|selectattr('entity_id','search','_ulp95') | rejectattr('entity_id', 'search', '_365day') | rejectattr('entity_id', 'search', '_average_ulp95') | map(attribute='entity_id')| list %}
         {{ expand(sensors)  | rejectattr('state', 'in', ['unknown','unavailable']) | map(attribute='state')  | map('float', 0) | max | round(2) }}
       min: >
-        {%- set sensors = states|selectattr('entity_id','search','_ulp95') | map(attribute='entity_id')| list %}
-        {{ expand(sensors) | rejectattr('state', 'in', ['unknown','unavailable']) | map(attribute='state')  | map('float', 0) | min | round(2) }}
+        {%- set sensors = states.sensor|selectattr('entity_id','search','_ulp95') | rejectattr('entity_id', 'search', '_365day') | rejectattr('entity_id', 'search', '_average_ulp95') | map(attribute='entity_id')| list %}
+        {{ expand(sensors)  | rejectattr('state', 'in', ['unknown','unavailable']) | map(attribute='state')  | map('float', 0) | min | round(2) }}

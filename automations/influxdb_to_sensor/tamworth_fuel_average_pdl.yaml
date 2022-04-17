@@ -1,0 +1,68 @@
+---
+id: "tamworth_fuel_average_pdl_365day"
+alias: "InfluxDB to Entity: 365 Day Fuel Premium Diesel"
+description: "InfluxDB to Entity: 365 Day 365 Day Fuel Premium Diesel"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/1"
+condition: []
+action:
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT min("value") FROM "homeassistant"."autogen"."c/L"
+        WHERE time >= now() - 365d
+        AND ("entity_id" =~ /_pdl*/) and "entity_id" != 'tamworth_fuel_average_pdl'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: min
+      entity_id: sensor.archive_tamworth_fuel_min_pdl_365day
+      unit_of_measurement: c/L
+      friendly_name: Tamworth Fuel - PDL - Min - 365 Days
+      icon: "mdi:gas-station"
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT max("value") FROM "homeassistant"."autogen"."c/L"
+        WHERE time >= now() - 365d
+        AND ("entity_id" =~ /_pdl*/) and "entity_id" != 'tamworth_fuel_average_pdl'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: max
+      entity_id: sensor.archive_tamworth_fuel_max_pdl_365day
+      unit_of_measurement: c/L
+      friendly_name: Tamworth Fuel - PDL - Max - 365 Days
+      icon: "mdi:gas-station"
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT mean("value") FROM "homeassistant"."autogen"."c/L"
+        WHERE time >= now() - 365d
+        AND ("entity_id" =~ /_pdl*/) and "entity_id" != 'tamworth_fuel_average_pdl'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: mean
+      entity_id: sensor.archive_tamworth_fuel_avg_pdl_365day
+      unit_of_measurement: c/L
+      friendly_name: Tamworth Fuel - PDL - Average - 365 Days
+      icon: "mdi:gas-station"
+  - service: pyscript.influxdb_query_to_entity
+    data:
+      database: homeassistant
+      query: >-
+        SELECT moving_average(mean("value"),7) as move_average FROM "homeassistant"."autogen"."c/L"
+        WHERE time >= now() - 365d
+        AND ("entity_id" =~ /_pdl*/) and "entity_id" != 'tamworth_fuel_average_pdl'
+        GROUP BY time(1d) FILL(previous) tz('Australia/Sydney')
+      key_field_name: time
+      value_field_name: move_average
+      entity_id: sensor.archive_tamworth_fuel_7davg_pdl_365day
+      unit_of_measurement: c/L
+      friendly_name: Tamworth Fuel - PDL - 7 Day Average - 365 Days
+      icon: "mdi:gas-station"
+mode: single

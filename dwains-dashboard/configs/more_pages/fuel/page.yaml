@@ -95,6 +95,8 @@ cards:
                             secondary_info: last-changed
                       exclude:
                         - entity_id: sensor.tamworth_fuel_average_ulp98
+                        - entity_id: sensor.archive_*
+                        - domain: automation
                     sort:
                       method: state
                     card:
@@ -161,6 +163,8 @@ cards:
                             secondary_info: last-changed
                       exclude:
                         - entity_id: sensor.tamworth_fuel_average_ulp95
+                        - entity_id: sensor.archive_*
+                        - domain: automation
                     sort:
                       method: state
                     card:
@@ -227,6 +231,8 @@ cards:
                             secondary_info: last-changed
                       exclude:
                         - entity_id: sensor.tamworth_fuel_average_ulp91
+                        - entity_id: sensor.archive_*
+                        - domain: automation
                     sort:
                       method: state
                     card:
@@ -293,6 +299,8 @@ cards:
                             secondary_info: last-changed
                       exclude:
                         - entity_id: sensor.tamworth_fuel_average_pdl
+                        - entity_id: sensor.archive_*
+                        - domain: automation
                     sort:
                       method: state
                     card:
@@ -303,7 +311,7 @@ cards:
                 mode: vertical
                 cards:
                   - type: entities
-                    title: Premium Diesel
+                    title: Diesel
                     style: |
                       .card-header {
                         padding: 5px 16px;
@@ -359,6 +367,8 @@ cards:
                             secondary_info: last-changed
                       exclude:
                         - entity_id: sensor.tamworth_fuel_average_diesel
+                        - entity_id: sensor.archive_*
+                        - domain: automation
                     sort:
                       method: state
                     card:
@@ -425,7 +435,87 @@ cards:
                             secondary_info: last-changed
                       exclude:
                         - entity_id: sensor.tamworth_fuel_average_e10
+                        - entity_id: sensor.archive_*
+                        - domain: automation
                     sort:
                       method: state
                     card:
                       type: entities
+
+  - type: custom:dwains-flexbox-card
+    items_classes: "col-xs-12 col-sm-6 col-sm-12 col-xl-12"
+    cards:
+      - type: "custom:apexcharts-card"
+        header:
+          title: Premium Diesel - 365 Days
+          show: true
+          show_states: false
+        apex_config:
+          chart:
+            type: "area"
+            height: 300,
+            zoom:
+              type: x
+              enabled: true
+              autoScaleYaxis: true
+            toolbar:
+              show: true
+              autoSelected: zoom
+              tools:
+                zoom: true
+                zoomin: false
+                zoomout: false
+                pan: false
+                reset: true
+          stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5, 10] }
+          dataLabels: { enabled: true }
+          legend: { show: false }
+          fill:
+            {
+              type: "gradient",
+              gradient:
+                {
+                  shadeIntensity: 1,
+                  inverseColors: false,
+                  opacityFrom: 0.45,
+                  opacityTo: 0.05,
+                  stops: [20, 100, 100, 100],
+                },
+            }
+          yaxis:
+            - seriesName: "High"
+              decimalsInFloat: 1
+              title:
+                text: "c/L"
+        series:
+          - entity: sensor.archive_tamworth_fuel_max_pdl_365day
+            name: High
+            color: "#da1e28"
+          - entity: sensor.archive_tamworth_fuel_min_pdl_365day
+            name: Low
+            color: "#0043ce"
+          - entity: sensor.archive_tamworth_fuel_avg_pdl_365day
+            color: "green"
+            name: Average
+
+          - entity: sensor.archive_tamworth_fuel_7davg_pdl_365day
+            name: 7 Day Average
+            color: "#1192e8"
+        graph_span: 365days
+        span:
+          end: day
+        all_series_config:
+          type: area
+          extend_to_end: false
+          stroke_width: 2
+          unit: "c/L"
+          data_generator: |
+            let res = [];
+            for (const [key, value] of
+                Object.entries(entity.attributes)) {
+                res.push([new Date(key).getTime(), value]);
+            }
+            return res.sort((a, b) => { return a[0] - b[0] });
+          group_by:
+            func: last
+            duration: 1d
