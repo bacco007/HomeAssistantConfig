@@ -1,0 +1,12 @@
+---
+alias: Sonos - Playlist - The Rock 90.2 (Rock Music)
+description: Play The Rock 90.2 (Rock Music) on Sonos
+id: The_Rock_90_2_Rock_Music
+trigger:
+  - platform: webhook
+    webhook_id: sonos_The_Rock_90_2_Rock_Music
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "The Rock 90.2 (Rock Music)"

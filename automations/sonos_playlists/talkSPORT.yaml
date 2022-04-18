@@ -1,0 +1,12 @@
+---
+alias: Sonos - Playlist - talkSPORT
+description: Play talkSPORT on Sonos
+id: talkSPORT
+trigger:
+  - platform: webhook
+    webhook_id: sonos_talkSPORT
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "talkSPORT"

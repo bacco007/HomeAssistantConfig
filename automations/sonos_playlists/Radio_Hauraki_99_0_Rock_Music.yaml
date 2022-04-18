@@ -1,0 +1,12 @@
+---
+alias: Sonos - Playlist - Radio Hauraki 99.0 (Rock Music)
+description: Play Radio Hauraki 99.0 (Rock Music) on Sonos
+id: Radio_Hauraki_99_0_Rock_Music
+trigger:
+  - platform: webhook
+    webhook_id: sonos_Radio_Hauraki_99_0_Rock_Music
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Radio Hauraki 99.0 (Rock Music)"

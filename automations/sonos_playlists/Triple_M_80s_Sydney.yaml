@@ -1,0 +1,12 @@
+---
+alias: Sonos - Playlist - Triple M 80s (Sydney)
+description: Play Triple M 80s (Sydney) on Sonos
+id: Triple_M_80s_Sydney
+trigger:
+  - platform: webhook
+    webhook_id: sonos_Triple_M_80s_Sydney
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Triple M 80s (Sydney)"

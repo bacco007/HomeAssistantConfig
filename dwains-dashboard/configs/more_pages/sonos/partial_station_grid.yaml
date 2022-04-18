@@ -498,6 +498,35 @@ cards:
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
+    name: BBC Radio 4 Extra (Comedy)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_Radio_4_Extra_Comedy.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 4 Extra (Comedy)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 4 Extra (Comedy)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_Radio_4_Extra_Comedy
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
     name: BBC Radio 5 live
     show_name: false
     show_entity_picture: true
@@ -524,6 +553,35 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_BBC_Radio_5_live
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: BBC Radio 5 live sports extra
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/BBC_Radio_5_live_sports_extra.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 5 live sports extra')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'BBC Radio 5 live sports extra')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_BBC_Radio_5_live_sports_extra
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -875,6 +933,35 @@ cards:
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
+    name: Radio Hauraki 99.0 (Rock Music)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Radio_Hauraki_99_0_Rock_Music.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Radio Hauraki 99.0 (Rock Music)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Radio Hauraki 99.0 (Rock Music)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Radio_Hauraki_99_0_Rock_Music
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
     name: Radio X
     show_name: false
     show_entity_picture: true
@@ -962,6 +1049,35 @@ cards:
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
+    name: talkSPORT
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/talkSPORT.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'talkSPORT')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'talkSPORT')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_talkSPORT
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
     name: Tamworth's 88.9FM
     show_name: false
     show_entity_picture: true
@@ -988,6 +1104,93 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_Tamworth_s_88_9FM
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: The Edge 94.2 (Top 40 & Pop Music)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/The_Edge_94_2_Top_40_Pop_Music.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'The Edge 94.2 (Top 40 & Pop Music)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'The Edge 94.2 (Top 40 & Pop Music)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_The_Edge_94_2_Top_40_Pop_Music
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: The Hits Auckland 97.4 (World Music)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/The_Hits_Auckland_97_4_World_Music.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'The Hits Auckland 97.4 (World Music)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'The Hits Auckland 97.4 (World Music)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_The_Hits_Auckland_97_4_World_Music
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: The Rock 90.2 (Rock Music)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/The_Rock_90_2_Rock_Music.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'The Rock 90.2 (Rock Music)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'The Rock 90.2 (Rock Music)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_The_Rock_90_2_Rock_Music
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -1075,6 +1278,35 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_Triple_M_105_1_Melbourne
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Triple M 80s (Sydney)
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Triple_M_80s_Sydney.png
+    aspect_ratio: 1/1
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 80s (Sydney)')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['sensor.office_sonos_source'].state == 'Triple M 80s (Sydney)')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Triple_M_80s_Sydney
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
