@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+
 git config user.name "Thomas Baxter"
 
 git config user.email "thomas@thomasbaxter.info"
