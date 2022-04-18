@@ -5,4 +5,4 @@ trigger:
   platform: time_pattern
   hours: "/3"
 action:
-  service: shell_command.chores
+  service: shell_command.run_chores
