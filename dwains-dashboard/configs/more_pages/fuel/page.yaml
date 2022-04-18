@@ -100,7 +100,10 @@ cards:
                     sort:
                       method: state
                     card:
-                      type: entities
+                      type: custom:fold-entity-row
+                      head:
+                        label: Individual Service Stations
+                        type: section
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card

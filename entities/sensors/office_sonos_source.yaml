@@ -2,9 +2,11 @@
 platform: template
 sensors:
   office_sonos_source:
+    friendly_name: Sonos Source
+    icon_template: si:sonos
     value_template: >-
       {% if states('media_player.office_sonos') == 'playing' %}
-        {{ state_attr('media_player.office_sonos', 'source') }}
+        {{ state_attr('media_player.office_sonos', 'media_channel') }}
       {% else %}
         Not Playing
       {% endif %}
