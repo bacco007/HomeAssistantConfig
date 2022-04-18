@@ -1,15 +1,15 @@
 #!/bin/bash
 
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+ssh-keyscan github.com >> ~/.ssh/known_hosts > file.log
 
-git config user.name "Thomas Baxter"
+git config user.name "Thomas Baxter" > file.log
 
-git config user.email "thomas@thomasbaxter.info"
+git config user.email "thomas@thomasbaxter.info" > file.log
 
-git add . >> /dev/null
+git add . > file.log
 
-NOW=$(date +"%d/%m/%Y %H:%M")
+NOW=$(date +"%d/%m/%Y %H:%M") > file.log
 
-git commit -m "Automated: HA Config as at $NOW" >> /dev/null
+git commit -m "Automated: HA Config as at $NOW" > file.log
 
-git push -u origin master >> /dev/null
+git push -u origin master > file.log
