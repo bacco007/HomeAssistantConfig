@@ -14,4 +14,4 @@ action:
     target:
       entity_id: input_text.sonos_playlist_playing
     data:
-      value: "Tamworth\'s 88.9FM"
+      value: "Tamworth's 88.9FM"
