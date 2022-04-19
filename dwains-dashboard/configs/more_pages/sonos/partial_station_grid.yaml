@@ -10,8 +10,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/1_Playlist.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -41,8 +40,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/102_7_KIIS_FM_Los_Angeles.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -72,8 +70,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/1170_SEN.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -103,8 +100,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/ABC_New_England_North_West.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -134,8 +130,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/ABC_News.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -165,8 +160,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/ABC_Radio_National_Sydney_NSW.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -196,8 +190,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/ABC_Radio_Sydney.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -227,8 +220,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/ABC_Sport.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -258,8 +250,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_00s.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -289,8 +280,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_10s.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -320,8 +310,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_20s.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -351,8 +340,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_80s.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -382,8 +370,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_90s.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -413,8 +400,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_Classic_Rock.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -444,8 +430,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Absolute_Radio_UK_AAC.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -475,8 +460,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_Radio_1.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -506,8 +490,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_Radio_2.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -537,8 +520,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_Radio_4_Extra_Comedy.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -568,8 +550,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_Radio_5_live.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -599,8 +580,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_Radio_5_live_sports_extra.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -630,8 +610,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_Radio_6_Music.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -661,8 +640,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/BBC_World_Service_News.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -692,8 +670,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/CNN_International.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -723,8 +700,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/COVID_19_Social_Distancing_Sucks.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -754,8 +730,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Double_J_Sydney_NSW.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -785,8 +760,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/ESPN_Radio.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -816,8 +790,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/GOLD_104_3.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -847,8 +820,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/MSNBC.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -878,8 +850,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Nova_90s.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -909,8 +880,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Nova_96_9.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -940,8 +910,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Nova_Throwbacks.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -971,8 +940,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Playlists.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1002,8 +970,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Radio_Hauraki_99_0_Rock_Music.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1033,8 +1000,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Radio_X.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1064,8 +1030,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Sky_News_Radio.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1095,8 +1060,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Sky_Sports_Radio.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1126,8 +1090,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/talkSPORT.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1157,8 +1120,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Tamworth_s_88_9FM.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1188,8 +1150,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/The_Edge_94_2_Top_40_Pop_Music.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1219,8 +1180,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/The_Hits_Auckland_97_4_World_Music.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1250,8 +1210,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/The_Rock_90_2_Rock_Music.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1281,8 +1240,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/triple_j_New_South_Wales.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1312,8 +1270,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Triple_M_104_9_Sydney.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1343,8 +1300,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Triple_M_105_1_Melbourne.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1374,8 +1330,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Triple_M_80s_Sydney.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1405,8 +1360,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Triple_M_90s_Sydney.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1436,8 +1390,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Triple_M_Classic_Rock_Digital_Sydney.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1467,8 +1420,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Triple_M_Hard_n_Heavy_Sydney.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1498,8 +1450,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Virgin_Radio_Anthems_UK.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1529,8 +1480,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Virgin_Radio_Chilled_UK.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1560,8 +1510,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Virgin_Radio_Groove_UK.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
@@ -1591,8 +1540,7 @@ cards:
     show_entity_picture: true
     entity_picture: ../local/radioicons/Virgin_Radio_UK.png
     aspect_ratio: 1/1
-    triggers_update:
-      - input_text.sonos_playlist_playing
+    triggers_update: all
     styles:
       entity_picture:
         - width: 80%
