@@ -15,14 +15,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == '1-Playlist')
+              if (states['input_text.sonos_playlist_playing'].state == '1-Playlist')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == '1-Playlist')
+              if (states['input_text.sonos_playlist_playing'].state == '1-Playlist')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -44,14 +44,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == '102.7 KIIS-FM Los Angeles')
+              if (states['input_text.sonos_playlist_playing'].state == '102.7 KIIS-FM Los Angeles')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == '102.7 KIIS-FM Los Angeles')
+              if (states['input_text.sonos_playlist_playing'].state == '102.7 KIIS-FM Los Angeles')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -73,14 +73,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == '1170 SEN')
+              if (states['input_text.sonos_playlist_playing'].state == '1170 SEN')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == '1170 SEN')
+              if (states['input_text.sonos_playlist_playing'].state == '1170 SEN')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -102,14 +102,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC New England North West')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC New England North West')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC New England North West')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC New England North West')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -131,14 +131,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC News')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC News')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC News')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC News')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -160,14 +160,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC Radio National (Sydney, NSW)')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC Radio National (Sydney, NSW)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC Radio National (Sydney, NSW)')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC Radio National (Sydney, NSW)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -189,14 +189,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC Radio Sydney')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC Radio Sydney')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC Radio Sydney')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC Radio Sydney')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -218,14 +218,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC Sport')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC Sport')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ABC Sport')
+              if (states['input_text.sonos_playlist_playing'].state == 'ABC Sport')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -247,14 +247,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 00s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 00s')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 00s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 00s')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -276,14 +276,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 10s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 10s')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 10s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 10s')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -305,14 +305,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 20s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 20s')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 20s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 20s')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -334,14 +334,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 80s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 80s')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 80s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 80s')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -363,14 +363,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 90s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 90s')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio 90s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio 90s')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -392,14 +392,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio Classic Rock')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio Classic Rock')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio Classic Rock')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio Classic Rock')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -421,14 +421,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio UK (AAC)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio UK (AAC)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Absolute Radio UK (AAC)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Absolute Radio UK (AAC)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -450,14 +450,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 1')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 1')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 1')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 1')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -479,14 +479,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 2')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 2')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 2')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 2')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -508,14 +508,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 4 Extra (Comedy)')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 4 Extra (Comedy)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 4 Extra (Comedy)')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 4 Extra (Comedy)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -537,14 +537,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 5 live')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 5 live')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 5 live')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 5 live')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -566,14 +566,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 5 live sports extra')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 5 live sports extra')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 5 live sports extra')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 5 live sports extra')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -595,14 +595,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 6 Music')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 6 Music')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC Radio 6 Music')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC Radio 6 Music')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -624,14 +624,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC World Service News')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC World Service News')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'BBC World Service News')
+              if (states['input_text.sonos_playlist_playing'].state == 'BBC World Service News')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -653,14 +653,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'CNN International')
+              if (states['input_text.sonos_playlist_playing'].state == 'CNN International')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'CNN International')
+              if (states['input_text.sonos_playlist_playing'].state == 'CNN International')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -682,14 +682,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'COVID-19 Social Distancing Sucks')
+              if (states['input_text.sonos_playlist_playing'].state == 'COVID-19 Social Distancing Sucks')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'COVID-19 Social Distancing Sucks')
+              if (states['input_text.sonos_playlist_playing'].state == 'COVID-19 Social Distancing Sucks')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -711,14 +711,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Double J (Sydney, NSW)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Double J (Sydney, NSW)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Double J (Sydney, NSW)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Double J (Sydney, NSW)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -740,14 +740,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ESPN Radio')
+              if (states['input_text.sonos_playlist_playing'].state == 'ESPN Radio')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'ESPN Radio')
+              if (states['input_text.sonos_playlist_playing'].state == 'ESPN Radio')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -769,14 +769,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'GOLD 104.3')
+              if (states['input_text.sonos_playlist_playing'].state == 'GOLD 104.3')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'GOLD 104.3')
+              if (states['input_text.sonos_playlist_playing'].state == 'GOLD 104.3')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -798,14 +798,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'MSNBC')
+              if (states['input_text.sonos_playlist_playing'].state == 'MSNBC')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'MSNBC')
+              if (states['input_text.sonos_playlist_playing'].state == 'MSNBC')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -827,14 +827,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Nova 90s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Nova 90s')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Nova 90s')
+              if (states['input_text.sonos_playlist_playing'].state == 'Nova 90s')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -856,14 +856,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Nova 96.9')
+              if (states['input_text.sonos_playlist_playing'].state == 'Nova 96.9')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Nova 96.9')
+              if (states['input_text.sonos_playlist_playing'].state == 'Nova 96.9')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -885,14 +885,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Nova Throwbacks')
+              if (states['input_text.sonos_playlist_playing'].state == 'Nova Throwbacks')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Nova Throwbacks')
+              if (states['input_text.sonos_playlist_playing'].state == 'Nova Throwbacks')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -914,14 +914,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Playlists')
+              if (states['input_text.sonos_playlist_playing'].state == 'Playlists')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Playlists')
+              if (states['input_text.sonos_playlist_playing'].state == 'Playlists')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -943,14 +943,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Radio Hauraki 99.0 (Rock Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Radio Hauraki 99.0 (Rock Music)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Radio Hauraki 99.0 (Rock Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Radio Hauraki 99.0 (Rock Music)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -972,14 +972,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Radio X')
+              if (states['input_text.sonos_playlist_playing'].state == 'Radio X')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Radio X')
+              if (states['input_text.sonos_playlist_playing'].state == 'Radio X')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1001,14 +1001,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Sky News Radio')
+              if (states['input_text.sonos_playlist_playing'].state == 'Sky News Radio')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Sky News Radio')
+              if (states['input_text.sonos_playlist_playing'].state == 'Sky News Radio')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1030,14 +1030,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Sky Sports Radio')
+              if (states['input_text.sonos_playlist_playing'].state == 'Sky Sports Radio')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Sky Sports Radio')
+              if (states['input_text.sonos_playlist_playing'].state == 'Sky Sports Radio')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1059,14 +1059,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'talkSPORT')
+              if (states['input_text.sonos_playlist_playing'].state == 'talkSPORT')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'talkSPORT')
+              if (states['input_text.sonos_playlist_playing'].state == 'talkSPORT')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1088,14 +1088,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Tamworth\'s 88.9FM')
+              if (states['input_text.sonos_playlist_playing'].state == 'Tamworth\'s 88.9FM')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Tamworth\'s 88.9FM')
+              if (states['input_text.sonos_playlist_playing'].state == 'Tamworth\'s 88.9FM')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1117,14 +1117,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'The Edge 94.2 (Top 40 & Pop Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'The Edge 94.2 (Top 40 & Pop Music)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'The Edge 94.2 (Top 40 & Pop Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'The Edge 94.2 (Top 40 & Pop Music)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1146,14 +1146,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'The Hits Auckland 97.4 (World Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'The Hits Auckland 97.4 (World Music)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'The Hits Auckland 97.4 (World Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'The Hits Auckland 97.4 (World Music)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1175,14 +1175,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'The Rock 90.2 (Rock Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'The Rock 90.2 (Rock Music)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'The Rock 90.2 (Rock Music)')
+              if (states['input_text.sonos_playlist_playing'].state == 'The Rock 90.2 (Rock Music)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1204,14 +1204,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'triple j (New South Wales)')
+              if (states['input_text.sonos_playlist_playing'].state == 'triple j (New South Wales)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'triple j (New South Wales)')
+              if (states['input_text.sonos_playlist_playing'].state == 'triple j (New South Wales)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1233,14 +1233,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 104.9 Sydney')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 104.9 Sydney')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 104.9 Sydney')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 104.9 Sydney')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1262,14 +1262,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 105.1 Melbourne')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 105.1 Melbourne')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 105.1 Melbourne')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 105.1 Melbourne')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1291,14 +1291,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 80s (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 80s (Sydney)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 80s (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 80s (Sydney)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1320,14 +1320,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 90s (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 90s (Sydney)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M 90s (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M 90s (Sydney)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1349,14 +1349,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M Classic Rock Digital (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M Classic Rock Digital (Sydney)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M Classic Rock Digital (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M Classic Rock Digital (Sydney)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1378,14 +1378,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M Hard n Heavy (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M Hard n Heavy (Sydney)')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Triple M Hard n Heavy (Sydney)')
+              if (states['input_text.sonos_playlist_playing'].state == 'Triple M Hard n Heavy (Sydney)')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1407,14 +1407,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio Anthems UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio Anthems UK')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio Anthems UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio Anthems UK')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1436,14 +1436,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio Chilled UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio Chilled UK')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio Chilled UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio Chilled UK')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1465,14 +1465,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio Groove UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio Groove UK')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio Groove UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio Groove UK')
                 return 'null';
               return 'opacity(50%)';
             ]]]
@@ -1494,14 +1494,14 @@ cards:
         - width: 80%
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio UK')
                 return 'null';
               return 'grayscale(100%)';
             ]]]
       card:
         - filter: >
             [[[
-              if (states['input_text.set_value'].state == 'Virgin Radio UK')
+              if (states['input_text.sonos_playlist_playing'].state == 'Virgin Radio UK')
                 return 'null';
               return 'opacity(50%)';
             ]]]
