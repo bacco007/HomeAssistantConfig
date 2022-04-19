@@ -53,6 +53,10 @@ async def async_setup(hass, config):
     websocket_api.async_register_command(hass, ws_handle_edit_entity_favorite)
     websocket_api.async_register_command(hass, ws_handle_edit_entity_bool_value)
     websocket_api.async_register_command(hass, ws_handle_edit_device_button)
+    websocket_api.async_register_command(hass, ws_handle_edit_device_card)
+    websocket_api.async_register_command(hass, ws_handle_edit_device_popup)
+    websocket_api.async_register_command(hass, ws_handle_remove_device_card)
+    websocket_api.async_register_command(hass, ws_handle_remove_device_popup)
     websocket_api.async_register_command(hass, ws_handle_remove_entity_card)
     websocket_api.async_register_command(hass, ws_handle_remove_entity_popup)
 
@@ -147,6 +151,22 @@ def websocket_get_configuration(
                     filecontent = yaml.safe_load(f)
                     entities_popup.update({fname.replace(".yaml",""): filecontent})
     
+    devices_card = {}
+    if os.path.isdir(hass.config.path("dwains-dashboard/configs/cards/devices_card")):
+        for fname in os.listdir(hass.config.path("dwains-dashboard/configs/cards/devices_card")):
+            if fname.endswith('.yaml'):
+                with open(hass.config.path("dwains-dashboard/configs/cards/devices_card/"+fname)) as f:
+                    filecontent = yaml.safe_load(f)
+                    devices_card.update({fname.replace(".yaml",""): filecontent})
+
+    devices_popup = {}
+    if os.path.isdir(hass.config.path("dwains-dashboard/configs/cards/devices_popup")):
+        for fname in os.listdir(hass.config.path("dwains-dashboard/configs/cards/devices_popup")):
+            if fname.endswith('.yaml'):
+                with open(hass.config.path("dwains-dashboard/configs/cards/devices_popup/"+fname)) as f:
+                    filecontent = yaml.safe_load(f)
+                    devices_popup.update({fname.replace(".yaml",""): filecontent})
+
     more_pages = {}
     if os.path.isdir(hass.config.path("dwains-dashboard/configs/more_pages")):
         for subdir in os.listdir(hass.config.path("dwains-dashboard/configs/more_pages")):
@@ -169,7 +189,10 @@ def websocket_get_configuration(
             "devices": devices,
             "homepage_header": homepage_header,
             "more_pages": more_pages,
-            "installed_version": VERSION
+            "installed_version": VERSION,
+            "devices_card": devices_card,
+            "devices_popup": devices_popup,
+
         }
     )
 
@@ -352,6 +375,7 @@ async def ws_handle_edit_area_button(
     {
         vol.Required("type"): "dwains_dashboard/edit_homepage_header",
         vol.Optional("disableClock"): bool,
+        vol.Optional("disableWelcomeMessage"): bool,
         vol.Optional("weatherEntity"): str,
         vol.Optional("alarmEntity"): str,
 
@@ -371,6 +395,7 @@ async def ws_handle_edit_homepage_header(
 
     homepage_header.update({
         "disable_clock": msg["disableClock"],
+        "disable_welcome_message": msg["disableWelcomeMessage"],
         "weather_entity": msg["weatherEntity"],
         "alarm_entity": msg["alarmEntity"],
     })
@@ -439,6 +464,135 @@ async def ws_handle_edit_device_button(
         },
     )
 
+
+
+
+#edit_device_card
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "dwains_dashboard/edit_device_card",
+        vol.Required("cardData"): str,
+        vol.Required("domain"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_edit_device_card(
+    hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict
+) -> None:
+    """Handle saving device card."""
+
+    filecontent = json.loads(msg["cardData"])
+
+    path = "dwains-dashboard/configs/cards/devices_card/"
+    filename = hass.config.path(path+"/"+msg['domain']+".yaml")
+
+    os.makedirs(os.path.dirname(filename), exist_ok=True) #Create the folder if not exists     
+
+    ff = open(filename, 'w+')
+    yaml.dump(yaml.safe_load(json.dumps(filecontent)), ff, default_flow_style=False)
+    
+    hass.bus.async_fire("dwains_dashboard_devicespage_card_reload")
+
+    connection.send_result(
+        msg["id"],
+        {
+            "succesfull": "Device card saved"
+        },
+    )
+
+
+
+#remove_device_card
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "dwains_dashboard/remove_device_card",
+        vol.Required("domain"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_remove_device_card(
+    hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict
+) -> None:
+    """Handle remove domain card command."""
+
+    path = "dwains-dashboard/configs/cards/devices_card"
+    filename = hass.config.path(path+"/"+msg["domain"]+".yaml")
+
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    hass.bus.async_fire("dwains_dashboard_devicespage_card_reload")
+    
+    connection.send_result(
+        msg["id"],
+        {
+            "succesfull": "Entity card removed succesfully"
+        },
+    )
+
+
+#edit_device_popup
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "dwains_dashboard/edit_device_popup",
+        vol.Required("cardData"): str,
+        vol.Required("domain"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_edit_device_popup(
+    hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict
+) -> None:
+    """Handle saving device popup."""
+
+    filecontent = json.loads(msg["cardData"])
+
+    path = "dwains-dashboard/configs/cards/devices_popup/"
+    filename = hass.config.path(path+"/"+msg['domain']+".yaml")
+
+    os.makedirs(os.path.dirname(filename), exist_ok=True) #Create the folder if not exists     
+
+    ff = open(filename, 'w+')
+    yaml.dump(yaml.safe_load(json.dumps(filecontent)), ff, default_flow_style=False)
+    
+    hass.bus.async_fire("dwains_dashboard_reload")
+
+    connection.send_result(
+        msg["id"],
+        {
+            "succesfull": "Device popup saved"
+        },
+    )
+
+
+
+#remove_device_popup
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "dwains_dashboard/remove_device_popup",
+        vol.Required("domain"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_remove_device_popup(
+    hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict
+) -> None:
+    """Handle remove domain popup command."""
+
+    path = "dwains-dashboard/configs/cards/devices_popup"
+    filename = hass.config.path(path+"/"+msg["domain"]+".yaml")
+
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    hass.bus.async_fire("dwains_dashboard_reload")
+    
+    connection.send_result(
+        msg["id"],
+        {
+            "succesfull": "Device popup removed succesfully"
+        },
+    )
 
 
 
