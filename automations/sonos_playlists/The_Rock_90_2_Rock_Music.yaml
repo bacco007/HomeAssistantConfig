@@ -10,3 +10,8 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "The Rock 90.2 (Rock Music)"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "The Rock 90.2 (Rock Music)"

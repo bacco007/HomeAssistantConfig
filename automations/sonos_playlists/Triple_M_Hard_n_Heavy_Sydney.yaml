@@ -10,3 +10,8 @@ action:
     data:
       entity_id: media_player.office_sonos
       source: "Triple M Hard n Heavy (Sydney)"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Triple M Hard n Heavy (Sydney)"
