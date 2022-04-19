@@ -50,6 +50,7 @@ for fav in favorites:
     f.write("    show_entity_picture: true" + "\n")
     f.write("    entity_picture: ../local/radioicons/" + titleClean + ".png" + "\n")
     f.write("    aspect_ratio: 1/1" + "\n")
+    f.write("    triggers_update: all" + "\n")
     f.write("    styles:" + "\n")
     f.write("      entity_picture:" + "\n")
     f.write("        - width: 80%" + "\n")
@@ -57,7 +58,7 @@ for fav in favorites:
     f.write("        - filter: >" + "\n")
     f.write("            [[[" + "\n")
     f.write(
-        "              if (states['sensor.office_sonos_source'].state == '"
+        "              if (states['input_text.sonos_playlist_playing'].state == '"
         + title.replace("'", "\\'")
         + "')"
         + "\n"
@@ -69,7 +70,7 @@ for fav in favorites:
     f.write("        - filter: >" + "\n")
     f.write("            [[[" + "\n")
     f.write(
-        "              if (states['sensor.office_sonos_source'].state == '"
+        "              if (states['input_text.sonos_playlist_playing'].state == '"
         + title.replace("'", "\\'")
         + "')"
         + "\n"
@@ -103,4 +104,9 @@ for fav in favorites:
     f.write("    data:" + "\n")
     f.write("      entity_id: media_player.office_sonos" + "\n")
     f.write('      source: "' + title + '"\n')
+    f.write("  - service: input_text.set_value" + "\n")
+    f.write("    target:" + "\n")
+    f.write("      entity_id: input_text.sonos_playlist_playing" + "\n")
+    f.write("    data:" + "\n")
+    f.write('      value: "' + title + '"\n')
     f.close()

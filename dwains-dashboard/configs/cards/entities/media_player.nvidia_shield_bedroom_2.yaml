@@ -1,0 +1,21 @@
+blueprint: replace_mushroom_media_player_card.yaml
+card:
+  entity: $replace_with_input_entity$
+  media_controls:
+  - on_off
+  - shuffle
+  - previous
+  - play_pause_stop
+  - next
+  - repeat
+  type: custom:mushroom-media-player-card
+  use_media_artwork: true
+  use_media_info: true
+  volume_controls:
+  - volume_mute
+  - volume_buttons
+  - volume_set
+data:
+  name: name
+input_entity: media_player.nvidia_shield_bedroom_2
+type: custom:dwains-blueprint-card

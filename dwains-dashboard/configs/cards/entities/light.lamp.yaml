@@ -1,0 +1,13 @@
+blueprint: replace_mushroom_light_card.yaml
+card:
+  entity: $replace_with_input_entity$
+  hide_state: false
+  show_brightness_control: true
+  show_color_control: true
+  show_color_temp_control: true
+  type: custom:mushroom-light-card
+  use_light_color: true
+data:
+  name: name
+input_entity: light.lamp
+type: custom:dwains-blueprint-card

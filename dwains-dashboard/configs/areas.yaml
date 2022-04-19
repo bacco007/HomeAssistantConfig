@@ -1,6 +1,6 @@
 bf296b332b7b489e847e8a9961d27b7e:
-  floor: ios:bed-double#fullcolor
-  icon: mdi:bed
+  floor: ''
+  icon: ios:bed-double#fullcolor
 laundry:
   floor: ''
   icon: phu:rooms-laundry-room

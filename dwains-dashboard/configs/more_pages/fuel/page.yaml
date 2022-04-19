@@ -60,7 +60,21 @@ cards:
                     entities:
                       - entity: sensor.tamworth_fuel_average_ulp98
                         name: Unleaded 98 (Tamworth Average)
-                      - type: section
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*ulp98*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_ulp98
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
                   - type: custom:apexcharts-card
                     graph_span: 7d
                     span:
@@ -87,23 +101,7 @@ cards:
                       - entity: sensor.tamworth_fuel_average_ulp98
                         attribute: min
                         name: Min
-                  - type: custom:auto-entities
-                    filter:
-                      include:
-                        - entity_id: "*ulp98*"
-                          options:
-                            secondary_info: last-changed
-                      exclude:
-                        - entity_id: sensor.tamworth_fuel_average_ulp98
-                        - entity_id: sensor.archive_*
-                        - domain: automation
-                    sort:
-                      method: state
-                    card:
-                      type: custom:fold-entity-row
-                      head:
-                        label: Individual Service Stations
-                        type: section
+
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card
@@ -131,7 +129,21 @@ cards:
                     entities:
                       - entity: sensor.tamworth_fuel_average_ulp95
                         name: Unleaded 95 (Tamworth Average)
-                      - type: section
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*ulp95*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_ulp95
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
                   - type: custom:apexcharts-card
                     graph_span: 7d
                     span:
@@ -158,20 +170,7 @@ cards:
                       - entity: sensor.tamworth_fuel_average_ulp95
                         attribute: min
                         name: Min
-                  - type: custom:auto-entities
-                    filter:
-                      include:
-                        - entity_id: "*ulp95*"
-                          options:
-                            secondary_info: last-changed
-                      exclude:
-                        - entity_id: sensor.tamworth_fuel_average_ulp95
-                        - entity_id: sensor.archive_*
-                        - domain: automation
-                    sort:
-                      method: state
-                    card:
-                      type: entities
+
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card
@@ -199,7 +198,23 @@ cards:
                     entities:
                       - entity: sensor.tamworth_fuel_average_ulp91
                         name: Unleaded 91 (Tamworth Average)
-                      - type: section
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*ulp91*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_ulp91
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
                   - type: custom:apexcharts-card
                     graph_span: 7d
                     span:
@@ -226,20 +241,7 @@ cards:
                       - entity: sensor.tamworth_fuel_average_ulp91
                         attribute: min
                         name: Min
-                  - type: custom:auto-entities
-                    filter:
-                      include:
-                        - entity_id: "*ulp91*"
-                          options:
-                            secondary_info: last-changed
-                      exclude:
-                        - entity_id: sensor.tamworth_fuel_average_ulp91
-                        - entity_id: sensor.archive_*
-                        - domain: automation
-                    sort:
-                      method: state
-                    card:
-                      type: entities
+
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card
@@ -267,7 +269,23 @@ cards:
                     entities:
                       - entity: sensor.tamworth_fuel_average_pdl
                         name: PDL (Tamworth Average)
-                      - type: section
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*pdl*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_pdl
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
                   - type: custom:apexcharts-card
                     graph_span: 7d
                     span:
@@ -294,20 +312,7 @@ cards:
                       - entity: sensor.tamworth_fuel_average_pdl
                         attribute: min
                         name: Min
-                  - type: custom:auto-entities
-                    filter:
-                      include:
-                        - entity_id: "*pdl*"
-                          options:
-                            secondary_info: last-changed
-                      exclude:
-                        - entity_id: sensor.tamworth_fuel_average_pdl
-                        - entity_id: sensor.archive_*
-                        - domain: automation
-                    sort:
-                      method: state
-                    card:
-                      type: entities
+
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card
@@ -335,7 +340,23 @@ cards:
                     entities:
                       - entity: sensor.tamworth_fuel_average_diesel
                         name: Diesel (Tamworth Average)
-                      - type: section
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*diesel*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_diesel
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
                   - type: custom:apexcharts-card
                     graph_span: 7d
                     span:
@@ -362,20 +383,7 @@ cards:
                       - entity: sensor.tamworth_fuel_average_diesel
                         attribute: min
                         name: Min
-                  - type: custom:auto-entities
-                    filter:
-                      include:
-                        - entity_id: "*diesel*"
-                          options:
-                            secondary_info: last-changed
-                      exclude:
-                        - entity_id: sensor.tamworth_fuel_average_diesel
-                        - entity_id: sensor.archive_*
-                        - domain: automation
-                    sort:
-                      method: state
-                    card:
-                      type: entities
+
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card
@@ -403,7 +411,23 @@ cards:
                     entities:
                       - entity: sensor.tamworth_fuel_average_e10
                         name: E10 (Tamworth Average)
-                      - type: section
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*e10*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_e10
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
                   - type: custom:apexcharts-card
                     graph_span: 7d
                     span:
@@ -430,20 +454,6 @@ cards:
                       - entity: sensor.tamworth_fuel_average_e10
                         attribute: min
                         name: Min
-                  - type: custom:auto-entities
-                    filter:
-                      include:
-                        - entity_id: "*e10*"
-                          options:
-                            secondary_info: last-changed
-                      exclude:
-                        - entity_id: sensor.tamworth_fuel_average_e10
-                        - entity_id: sensor.archive_*
-                        - domain: automation
-                    sort:
-                      method: state
-                    card:
-                      type: entities
 
   - type: custom:dwains-flexbox-card
     items_classes: "col-xs-12 col-sm-6 col-sm-12 col-xl-12"

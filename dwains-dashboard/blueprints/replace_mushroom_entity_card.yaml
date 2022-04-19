@@ -1,0 +1,14 @@
+blueprint:
+  custom_cards:
+  - mushroom-entity-card
+  description: replaces entity card with mushroom entity card by Bourner
+  input:
+    name: null
+  name: Replace Mushroom Entity Card
+  type: replace-card
+  version: '1.0'
+card:
+  entity: $replace_with_input_entity$
+  tap_action:
+    action: toggle
+  type: custom:mushroom-entity-card

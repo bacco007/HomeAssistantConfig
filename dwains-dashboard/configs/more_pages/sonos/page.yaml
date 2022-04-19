@@ -80,6 +80,7 @@
             - type: entities
               entities:
                 - media_player.office_sonos
+                - input_text.sonos_playlist_playing
                 - entity: number.office_sonos_bass
                   name: Bass Level
                 - entity: number.office_sonos_treble

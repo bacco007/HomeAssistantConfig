@@ -69,30 +69,30 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, April 19th 2022_
+_Stats as at 05:00, Wednesday, April 20th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 399     | 2837         | 1925 | 96 |
+| unknown | 397     | 2836         | 1918 | 105 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 96
+Automation | 105
 Binary Sensor | 256
 Camera | 8
 Device Tracker | 67
 Group | 5
 Input Boolean | 1
 Input Datetime | 2
-Input Text | 6
+Input Text | 7
 Light | 2
 Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 1925
+Sensor | 1918
 Sun | 1
 Switch | 184
 Weather | 9
@@ -364,7 +364,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
-| [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
@@ -394,7 +393,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
-| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
