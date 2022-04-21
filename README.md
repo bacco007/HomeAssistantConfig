@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Thursday, April 21st 2022_
+_Stats as at 05:00, Friday, April 22nd 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 397     | 2844         | 1918 | 105 |
+| unknown | 399     | 2893         | 1961 | 105 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 105
-Binary Sensor | 256
+Binary Sensor | 267
 Camera | 8
 Device Tracker | 67
 Group | 5
@@ -92,9 +92,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 1918
+Sensor | 1961
 Sun | 1
-Switch | 184
+Switch | 181
 Weather | 9
 Zone | 3
 
@@ -364,6 +364,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
+| [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
 | [sensor.google_fit](https://www.home-assistant.io/components/sensor.google_fit) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
@@ -400,6 +401,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
+| [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
