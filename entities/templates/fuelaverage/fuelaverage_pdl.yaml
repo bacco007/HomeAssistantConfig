@@ -1,3 +1,4 @@
+---
 sensor:
   - name: "Tamworth Fuel Average PDL"
     unique_id: sensor.fuel_tamworth_average_pdl

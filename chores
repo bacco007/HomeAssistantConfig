@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./bin/yamllint.sh
+yamllint . > yamlint_errors.txt
 ./bin/make_fake_secrets.sh
 ./bin/sonos_favourites.sh
 python3 bin/commit_updates.py

@@ -50,5 +50,5 @@ action:
       entity_id: sensor.archive_bomtemp_range_365day
       unit_of_measurement: °C
       friendly_name: BOM - 365 Day - Temp Range
-      icon: "mdi:thermometer"            
+      icon: "mdi:thermometer"
 mode: single

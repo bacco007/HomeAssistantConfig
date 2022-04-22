@@ -34,5 +34,5 @@ action:
       entity_id: sensor.archive_homeoutsidetemp_min_30day
       unit_of_measurement: °C
       friendly_name: Home - 30 Day - Min Temp
-      icon: "mdi:thermometer"      
+      icon: "mdi:thermometer"
 mode: single
