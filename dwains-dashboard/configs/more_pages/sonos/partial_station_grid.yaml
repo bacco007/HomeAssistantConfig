@@ -1,6 +1,6 @@
 ---
 type: custom:dwains-flexbox-card
-items_classes: 'col-xs-3 col-sm-2'
+items_classes: 'col-xs-2 col-sm-1'
 cards:
   - type: custom:button-card
     entity: media_player.office_sonos
@@ -1142,6 +1142,36 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_Tamworth_s_88_9FM
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: The ACC - The Alternative Commentary
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/The_ACC_The_Alternative_Commentary.png
+    aspect_ratio: 1/1
+    triggers_update: all
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'The ACC - The Alternative Commentary')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'The ACC - The Alternative Commentary')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_The_ACC_The_Alternative_Commentary
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false

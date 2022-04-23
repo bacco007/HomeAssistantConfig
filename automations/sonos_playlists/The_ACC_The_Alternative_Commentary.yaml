@@ -1,0 +1,17 @@
+---
+alias: Sonos - Playlist - The ACC - The Alternative Commentary
+description: Play The ACC - The Alternative Commentary on Sonos
+id: The_ACC_The_Alternative_Commentary
+trigger:
+  - platform: webhook
+    webhook_id: sonos_The_ACC_The_Alternative_Commentary
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "The ACC - The Alternative Commentary"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "The ACC - The Alternative Commentary"
