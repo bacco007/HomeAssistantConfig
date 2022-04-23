@@ -45,7 +45,7 @@ series:
   - entity: sensor.archive_solar_yield_365day
     name: Yield
     type: area
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 2
     unit: "kWh"
     show:
@@ -60,7 +60,7 @@ series:
   - entity: sensor.archive_solar_yield_365day_avg
     name: 7d Avg
     type: area
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 2
     unit: "kWh"
     data_generator: |

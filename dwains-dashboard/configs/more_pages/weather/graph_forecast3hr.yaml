@@ -53,7 +53,7 @@ series:
     name: Rainfall
     type: area
     color: "#1192e8"
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 2
     unit: "mm"
     data_generator: |
@@ -64,7 +64,7 @@ series:
     name: Low
     type: area
     color: "#0043ce"
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 3
     unit: "%"
     data_generator: |
@@ -75,7 +75,7 @@ series:
     name: High
     type: area
     color: "#da1e28"
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 3
     unit: "°C"
     # show:
@@ -88,7 +88,7 @@ series:
     name: Feels Like
     type: area
     color: "#d2ae89"
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 2
     unit: "°C"
     # show:

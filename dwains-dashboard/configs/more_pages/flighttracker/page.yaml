@@ -142,7 +142,7 @@
               name: Flights
               type: area
               # color: "#008FFB"
-              extend_to_end: false
+              # extend_to_end: false
               stroke_width: 3
               group_by:
                 func: max
@@ -150,7 +150,7 @@
             - entity: sensor.flighttracker_maxdistance_km
               name: Max Distance
               type: area
-              extend_to_end: false
+              # extend_to_end: false
               stroke_width: 1.5
               group_by:
                 func: max
@@ -199,7 +199,7 @@
               name: Flights
               type: area
               # color: "#008FFB"
-              extend_to_end: false
+              # extend_to_end: false
               stroke_width: 3
               group_by:
                 func: max
@@ -207,7 +207,7 @@
             - entity: sensor.flighttracker_maxdistance_km
               name: Max Distance
               type: area
-              extend_to_end: false
+              # extend_to_end: false
               stroke_width: 1.5
               group_by:
                 func: max
@@ -225,7 +225,7 @@
             end: day
           all_series_config:
             type: line
-            extend_to_end: false
+            # extend_to_end: false
             group_by:
               func: last
               duration: 1d

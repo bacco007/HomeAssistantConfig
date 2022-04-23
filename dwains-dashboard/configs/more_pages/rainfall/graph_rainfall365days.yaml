@@ -32,7 +32,7 @@ series:
     name: Home
     type: area
     color: "#1192e8"
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 2
     unit: "mm"
     show:
@@ -48,7 +48,7 @@ series:
     name: Tamworth Airport
     type: area
     color: "#ee92e8"
-    extend_to_end: false
+    # extend_to_end: false
     stroke_width: 2
     unit: "mm"
     show:

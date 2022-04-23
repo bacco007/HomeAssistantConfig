@@ -34,7 +34,7 @@ series:
     name: Today
     type: area
     # color: "#008FFB"
-    extend_to_end: false
+    # extend_to_end: false
     group_by:
       func: avg
       duration: 1h
@@ -42,7 +42,7 @@ series:
     name: Yesterday
     type: area
     # color: "#008FFB"
-    extend_to_end: false
+    # extend_to_end: false
     offset: -1d
     group_by:
       func: avg

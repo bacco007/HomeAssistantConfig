@@ -24,6 +24,11 @@ recorder:
       - weather.east_tamworth_hourly
       - sensor.udm_unifios
       - sensor.sungrowsolar_runtime
+      - sensor.sungrowsolar_runtime
+      - sensor.nhl
+      - sensor.jdownloader_tbsmarthome_links
+      - sensor.jdownloader_tbsmarthome_packages
+      - sensor.bomforecast_tamworth_hr
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -56,9 +61,9 @@ recorder:
       - sensor.next_launch_*
       - sensor.unifi_*
       - sensor.space_*
-      - weather.climacell*
       - sensor.plex_tautulli*
       - sensor.watchman*
+      - sensor.*_upcoming_media
     domains:
       - anniversaries
       - automation
@@ -74,6 +79,7 @@ recorder:
       - switch
       - weblink
       - zone
+      - weather
     event_types:
       - service_removed
       - service_executed

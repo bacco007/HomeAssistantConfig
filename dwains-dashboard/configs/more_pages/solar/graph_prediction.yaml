@@ -20,7 +20,7 @@ card:
     stroke_width: 2
     curve: smooth
     fill_raw: last
-    extend_to_end: false
+    # extend_to_end: false
     unit: kW
   apex_config:
     annotations:
@@ -96,7 +96,7 @@ card:
         in_header: false
       color: "#E74C3C"
       type: line
-      extend_to_end: false
+      # extend_to_end: false
       unit: W
       data_generator: |
         return entity.attributes.forecasts.map((entry) => {
@@ -125,7 +125,7 @@ card:
           return [new Date(entry.period_end), entry.pv_estimate90];
         });
     - entity: sensor.sungrowsolar_solar_production
-      extend_to_end: false
+      # extend_to_end: false
       unit: kW
       stroke_width: 1
       name: Actual

@@ -42,7 +42,7 @@
           name: High
           type: area
           color: "da1e28"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           unit: "°C"
           show:
@@ -58,7 +58,7 @@
           name: Low
           type: area
           color: "#0043ce"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           unit: "°C"
           show:
@@ -75,7 +75,7 @@
           name: Rainfall
           type: area
           color: "#1192e8"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "mm"
           show:
@@ -150,7 +150,7 @@
           name: High
           type: area
           color: "da1e28"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "°C"
           show:
@@ -166,7 +166,7 @@
           name: Low
           type: area
           color: "#0043ce"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "°C"
           show:
@@ -183,7 +183,7 @@
           name: Rainfall
           type: area
           color: "#1192e8"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "mm"
           show:
@@ -250,7 +250,7 @@
           name: Range
           type: area
           color: "da1e28"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "°C"
           show:
@@ -325,7 +325,7 @@
           name: High
           type: area
           color: "da1e28"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "°C"
           show:
@@ -341,7 +341,7 @@
           name: Low
           type: area
           color: "#0043ce"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "°C"
           show:
@@ -358,7 +358,7 @@
           name: Rainfall
           type: area
           color: "#1192e8"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "mm"
           show:
@@ -425,7 +425,7 @@
           name: Range
           type: area
           color: "da1e28"
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "°C"
           show:

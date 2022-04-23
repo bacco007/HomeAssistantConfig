@@ -88,7 +88,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
-                      extend_to_end: false
+                      # extend_to_end: false
                       group_by:
                         func: last
                         duration: 1h
@@ -157,7 +157,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
-                      extend_to_end: false
+                      # extend_to_end: false
                       group_by:
                         func: last
                         duration: 1h
@@ -228,7 +228,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
-                      extend_to_end: false
+                      # extend_to_end: false
                       group_by:
                         func: last
                         duration: 1h
@@ -299,7 +299,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
-                      extend_to_end: false
+                      # extend_to_end: false
                       group_by:
                         func: last
                         duration: 1h
@@ -370,7 +370,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
-                      extend_to_end: false
+                      # extend_to_end: false
                       group_by:
                         func: last
                         duration: 1h
@@ -441,7 +441,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
-                      extend_to_end: false
+                      # extend_to_end: false
                       group_by:
                         func: last
                         duration: 1h
@@ -519,7 +519,7 @@ cards:
           end: day
         all_series_config:
           type: area
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 2
           unit: "c/L"
           data_generator: |

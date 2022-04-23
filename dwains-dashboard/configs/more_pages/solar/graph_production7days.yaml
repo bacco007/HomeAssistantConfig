@@ -12,7 +12,7 @@ all_series_config:
   stroke_width: 1
   type: line
   curve: smooth
-  extend_to_end: false
+  # extend_to_end: false
   unit: kW
 color_list:
   - rgb(35, 155, 86)

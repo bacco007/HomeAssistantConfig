@@ -70,7 +70,7 @@ series:
   - entity: sensor.waqi_tamworth_north_west_slopes
     type: area
     name: Air Quality
-    extend_to_end: false
+    # extend_to_end: false
     curve: smooth
     color: black
     group_by:

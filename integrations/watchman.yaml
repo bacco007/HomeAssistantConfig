@@ -1,8 +1,10 @@
 ---
 # https://github.com/dummylabs/thewatchman
 watchman:
-  check_lovelace: true
+  check_lovelace: false
   columns_width: [50, 10, 80]
   ignored_files:
     - "/config/custom_components/*"
     - "/config/blueprints/*"
+    - "/config/dwains-dashboard/configs/entities.yaml"
+    - "/config/esphome/*"

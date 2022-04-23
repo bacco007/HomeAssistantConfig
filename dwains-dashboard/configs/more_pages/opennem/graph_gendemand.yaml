@@ -43,7 +43,7 @@ series:
     attribute: genvsdemand
     type: area
     name: Demand
-    extend_to_end: false
+    # extend_to_end: false
     curve: smooth
     color: black
     group_by:

@@ -47,7 +47,7 @@ cards:
       all_series_config:
         stroke_width: 2
         type: area
-        extend_to_end: false
+        # extend_to_end: false
         float_precision: 2
         unit: "mm/h"
       series:

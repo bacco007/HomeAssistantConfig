@@ -41,7 +41,7 @@ series:
     attribute: fossilfuel
     type: area
     name: Fossil Fuels
-    extend_to_end: false
+    # extend_to_end: false
     curve: smooth
     group_by:
       func: avg
@@ -50,7 +50,7 @@ series:
     attribute: renewables
     type: area
     name: Renewables
-    extend_to_end: false
+    # extend_to_end: false
     curve: smooth
     group_by:
       func: avg

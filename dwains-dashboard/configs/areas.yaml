@@ -13,6 +13,9 @@ office:
 outside:
   floor: ''
   icon: phu:outside-temp
+roof:
+  icon: mdi:home-roof
+  floor: ''
 server_rack:
   floor: ''
   icon: mdi:server

@@ -477,7 +477,7 @@
                 name: Temp
                 type: line
                 # color: "da1e28"
-                extend_to_end: false
+                # extend_to_end: false
                 stroke_width: 4
                 unit: "°C"
                 group_by:
@@ -487,14 +487,14 @@
                 type: line
                 color: "#121619"
                 name: Change
-                extend_to_end: false
+                # extend_to_end: false
                 stroke_width: 2
                 group_by:
                   func: delta
                   duration: 30min
               - entity: sensor.bedroom_humidity_2
                 type: line
-                extend_to_end: false
+                # extend_to_end: false
                 stroke_width: 1.5
                 unit: "%"
                 group_by:
@@ -504,7 +504,7 @@
                 type: line
                 name: Yesterday
                 stroke_width: 1.8
-                extend_to_end: false
+                # extend_to_end: false
                 unit: "°C"
                 curve: smooth
                 offset: -1d

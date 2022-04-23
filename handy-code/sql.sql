@@ -85,3 +85,19 @@ FROM information_schema.TABLES
 WHERE table_schema = 'homeassistant'
 GROUP BY table_name
 ORDER BY table_name;
+
+select
+  entity_id
+, b.cnt
+, round(b.cnt * 100 / (select count(*) from states), 2) as "cnt_pct"
+, b.bytes
+, round(b.bytes * 100 / (select sum(length(shared_attrs)) from state_attributes), 2) as "bytes_pct"
+from (
+  select entity_id, count(*) as "cnt", sum(length(shared_attrs)) as "bytes"
+  from ( select distinct s.entity_id, sa.attributes_id, sa.shared_attrs
+         from states s join state_attributes sa on sa.attributes_id = s.attributes_id
+       ) a
+  group by entity_id
+) b
+order by bytes desc
+limit 20;

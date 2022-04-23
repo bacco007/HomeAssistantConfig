@@ -89,7 +89,7 @@ card:
     stroke_width: 2
     type: line
     curve: smooth
-    extend_to_end: false
+    # extend_to_end: false
     group_by:
       func: last
       duration: 15min

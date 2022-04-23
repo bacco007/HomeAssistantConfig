@@ -144,31 +144,22 @@
                     stops: [20, 100, 100, 100],
                   },
               }
+          all_series_config:
+            type: area
+            # # extend_to_end: false
+            group_by:
+              func: avg
+              duration: 1h
           series:
             - entity: sensor.speedtest_download
               yaxis_id: left
               name: Download
-              type: area
-              extend_to_end: false
               stroke_width: 3
-              group_by:
-                func: avg
-                duration: 1h
             - entity: sensor.speedtest_upload
               yaxis_id: left
               name: Upload
-              type: area
-              extend_to_end: false
               stroke_width: 3
-              group_by:
-                func: avg
-                duration: 1h
             - entity: sensor.speedtest_ping
               yaxis_id: right
               name: Ping
-              type: area
-              extend_to_end: false
               stroke_width: 1.5
-              group_by:
-                func: avg
-                duration: 1h

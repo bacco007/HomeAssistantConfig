@@ -41,7 +41,7 @@
           name: "Chaffey Dam"
           type: area
           # color: var(--dwains-theme-accent)
-          extend_to_end: false
+          # extend_to_end: false
           fill_raw: last
           group_by:
             func: avg
@@ -84,7 +84,7 @@
           name: "Keepit Dam"
           type: area
           # color: var(--dwains-theme-accent)
-          extend_to_end: false
+          # extend_to_end: false
           fill_raw: last
           group_by:
             func: avg
@@ -127,7 +127,7 @@
           name: "Split Rock Dam"
           type: area
           # color: var(--dwains-theme-accent)
-          extend_to_end: false
+          # extend_to_end: false
           fill_raw: last
           group_by:
             func: avg
@@ -341,7 +341,7 @@
         - entity: sensor.archive_waternsw_chaffeydam_30day
           name: Chaffey Dam
           type: area
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           unit: "%"
           show:
@@ -356,7 +356,7 @@
         - entity: sensor.archive_waternsw_keepitdam_30day
           name: Keepit Dam
           type: area
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           unit: "%"
           show:
@@ -371,7 +371,7 @@
         - entity: sensor.archive_waternsw_splitrockdam_30day
           name: Split Rock Dam
           type: area
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           unit: "%"
           show:

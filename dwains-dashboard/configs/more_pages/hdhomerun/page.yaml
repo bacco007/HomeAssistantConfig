@@ -144,7 +144,7 @@
                     transform: "return x / 1000000;"
                     unit: "Mb/s"
                     type: area
-                    extend_to_end: false
+                    # extend_to_end: false
                     group_by:
                       func: last
                       duration: 1m

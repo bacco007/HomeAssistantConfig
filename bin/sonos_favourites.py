@@ -1,4 +1,5 @@
 from soco import SoCo
+from soco import discover
 import re
 
 def make_safe_filename(s):
@@ -10,8 +11,8 @@ def make_safe_filename(s):
 
     return re.sub('_{2,}', '_', "".join(safe_char(c) for c in s).rstrip("_"))
 
-
-soco = SoCo("192.168.1.99")
+zone_list = list(discover())
+soco = zone_list[0]
 
 favorites = soco.music_library.get_sonos_favorites()
 
@@ -37,7 +38,7 @@ favorites = soco.music_library.get_sonos_favorites()
 f = open("dwains-dashboard/configs/more_pages/sonos/partial_station_grid.yaml", "w")
 f.write("---" + "\n")
 f.write("type: custom:dwains-flexbox-card" + "\n")
-f.write("items_classes: 'col-xs-3 col-sm-2'" + "\n")
+f.write("items_classes: 'col-xs-2 col-sm-1'" + "\n")
 f.write("cards:" + "\n")
 for fav in favorites:
     title = fav.title

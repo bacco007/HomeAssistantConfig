@@ -66,7 +66,7 @@ series:
   - entity: sensor.current_uv_index_2
     type: area
     name: UV Index
-    extend_to_end: false
+    # extend_to_end: false
     curve: smooth
     color: black
     group_by:
@@ -75,7 +75,7 @@ series:
   - entity: sensor.tempest_st_00056115_uv_index
     type: area
     name: Outside UVI
-    extend_to_end: false
+    # extend_to_end: false
     curve: smooth
     color: red
     group_by:

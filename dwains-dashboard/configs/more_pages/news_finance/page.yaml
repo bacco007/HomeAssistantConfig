@@ -40,7 +40,7 @@
         - entity: sensor.yahoofinance_aord
           name: ASX - All Ords
           type: area
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           group_by:
             func: last
@@ -82,7 +82,7 @@
         - entity: sensor.yahoofinance_axjo
           name: ASX - ASX200
           type: area
-          extend_to_end: false
+          # extend_to_end: false
           stroke_width: 3
           group_by:
             func: last
