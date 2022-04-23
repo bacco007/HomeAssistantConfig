@@ -49,7 +49,7 @@ Nordic:
   secondary-text-color: "var(--snow-medium)"
   text-medium-light-color: "var(--snow-medium)"
   text-medium-color: "var(--snow-dark)"
-  disabled-text-color: "var(--snow-dark)"
+  disabled-text-color: "var(--polar-dark-gray)"
   primary-color: "var(--accent-color)"
   mdc-text-field-ink-color: "var(--text-color)"
   mdc-select-fill-color: "var(--background-color)"
