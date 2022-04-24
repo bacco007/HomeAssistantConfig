@@ -1,7 +1,7 @@
 ---
 sensor:
   - name: "Tamworth Fuel Average ULP91"
-    unique_id: sensor.fuel_tamworth_average_ulp91
+    unique_id: fuel_tamworth_average_ulp91
     unit_of_measurement: c/L
     icon: mdi:gas-station
     state: >

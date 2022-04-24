@@ -1,7 +1,7 @@
 ---
 sensor:
   - name: "Tamworth Fuel Average LPG"
-    unique_id: sensor.fuel_tamworth_average_lpg
+    unique_id: fuel_tamworth_average_lpg
     unit_of_measurement: c/L
     icon: mdi:gas-station
     state: >

@@ -3,7 +3,3 @@ ignored_unavailable_entities:
   entities:
     - binary_sensor.updater
     - sensor.unavailable_entities
-    - sensor.blitzortung_lightning_azimuth
-    - sensor.blitzortung_lightning_distance
-    - sensor.lightning_counter_lasthour
-    - sensor.lightning_distance_lasthour

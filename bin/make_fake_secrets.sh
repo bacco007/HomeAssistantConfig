@@ -35,8 +35,7 @@ faker() {
   elif echo ${key} | grep -q '_\(lat\|lon\|latitude\|longitude\)$'; then
     value='00.000000'
   else
-    SEED=$(expr ${SEED} + 1)
-    value=$(echo ${value} | awk 'BEGIN {srand('${SEED}'); OFS = ""} { n = split($0, a, ""); for (i = 1; i <= n; i++) { if (a[i] ~ /[[:digit:]]/) { new = new int(rand() * 10) } else if (a[i] ~ /[[:alpha:]]/) { new = new sprintf("%c", int(rand() * 26 + 97)) } else { new = new a[i] } }; $0 = new; print }')
+    value='SoMeTh1nGsEcrEt'
   fi
 
   echo "$key: \"$value\""
