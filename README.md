@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Monday, April 25th 2022_
+_Stats as at 05:00, Tuesday, April 26th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 399     | 2915         | 1975 | 106 |
+| unknown | 404     | 2910         | 1977 | 95 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 106
-Binary Sensor | 268
+Automation | 95
+Binary Sensor | 277
 Camera | 8
 Device Tracker | 67
 Group | 5
@@ -92,9 +92,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 1975
+Sensor | 1977
 Sun | 1
-Switch | 183
+Switch | 184
 Weather | 9
 Zone | 3
 
@@ -139,6 +139,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
+| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.sensibo](https://www.home-assistant.io/components/binary_sensor.sensibo) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
@@ -149,6 +150,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.tuya](https://www.home-assistant.io/components/binary_sensor.tuya) |
+| [binary_sensor.upnp_availability](https://www.home-assistant.io/components/binary_sensor.upnp_availability) |
 | [binary_sensor.uptime_kuma](https://www.home-assistant.io/components/binary_sensor.uptime_kuma) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.version](https://www.home-assistant.io/components/binary_sensor.version) |
@@ -310,6 +312,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
+| [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
@@ -402,6 +405,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
+| [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
@@ -487,6 +491,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
 | [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
+| [upnp_availability](https://www.home-assistant.io/components/upnp_availability) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
 | [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
 | [uptimerobot](https://www.home-assistant.io/components/uptimerobot) |
@@ -565,6 +570,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
+- [UPnP Availability Sensor](https://github.com/rytilahti/homeassistant-upnp-availability/)
 - [Uptime Kuma](None)
 - [Watchman](https://github.com/dummylabs/thewatchman)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)

@@ -5,11 +5,11 @@ mode: single
 
 trigger:
   - platform: state
-    entity_id: sensor.blitzortung_lightning_counter
+    entity_id: sensor.weatherflow_lightning_strike_count
 
 condition:
   - condition: numeric_state
-    entity_id: sensor.blitzortung_lightning_distance
+    entity_id: sensor.weatherflow_last_lightning_strike_distance
     below: 10
 
 action:
@@ -20,4 +20,4 @@ action:
       data:
         tag: "weather-lightning"
         subtitle: "⚡️ Lightning within 10km ⚡"
-        url: "/dwains-dashboard/more_page_addon_lightning"
+        # url: "/dwains-dashboard/more_page_addon_lightning"
