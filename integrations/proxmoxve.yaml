@@ -7,6 +7,9 @@ proxmoxve:
     verify_ssl: false
     nodes:
       - node: pveTBSH
+        vms:
+          - 100
+          - 101
 
   - host: 192.168.1.75
     port: 8006
@@ -15,3 +18,5 @@ proxmoxve:
     verify_ssl: false
     nodes:
       - node: pve-ha
+        vms:
+          - 100

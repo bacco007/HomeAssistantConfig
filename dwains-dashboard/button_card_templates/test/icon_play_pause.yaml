@@ -1,0 +1,65 @@
+icon_play_pause:
+  styles:
+    custom_fields:
+      play_pause:
+        - top: 0
+        - right: 0
+        - bottom: 0
+        - left: 0
+        - margin: auto
+        - width: 21%
+        - height: 21%
+        - position: absolute
+        - fill: "#dedede"
+        - overflow: visible
+        - filter: >
+            [[[
+              return entity && variables.entity_picture
+                ? 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'
+                : 'none';
+            ]]]
+  custom_fields:
+    play_pause: >
+      [[[
+        let style = `
+          <style>
+            .scale-up {
+              animation: scale-up 1s forwards;
+              cubic-bezier(.05, .5, .3, 1);
+              transform-origin: center center;
+            }
+            @keyframes scale-up {
+              0% {
+                opacity: 0;
+                transform: scale(0);
+              }
+              20% {
+                transform: scale(1);
+              }
+              30% {
+                opacity: 1;
+              }
+              80% {
+                opacity: 1;
+              }
+              100% {
+                opacity: 0;
+              }
+            }
+          </style>
+        `;
+        if (variables.state === 'paused' && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 166 166">${style}
+              <path class="scale-up" d="M0 0h59.9v166H0zm106.1 0H166v166h-59.9z"/>
+            </svg>
+          `;
+        }
+        if (variables.state === 'playing' && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 166 166">${style}
+              <path class="scale-up" d="M0 0l166 83L0 166z"/>
+            </svg>
+          `;
+        }
+      ]]]

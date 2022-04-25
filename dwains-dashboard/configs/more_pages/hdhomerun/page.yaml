@@ -3,158 +3,78 @@
     - type: custom:dwains-flexbox-card
       items_classes: "col-xs-12"
       cards:
-        # Left Column
-        - type: vertical-stack
-          item_classes: "col-xs-12 col-sm-4"
+        - type: custom:dwains-flexbox-card
+          padding: false
+          items_classes: "col-xs-12"
           cards:
-            - type: custom:stack-in-card
-              cards:
-                - type: vertical-stack
-                  cards:
-                    - type: entities
-                      title: Firmware Version
-                      style: |
-                        ha-card {
-                          padding-bottom: 10px;
-                          background-color: var(--dwains-theme-primary)
-                        }
-                        .card-header {
-                          padding: 5px 16px;
-                          font-size: 18px;
-                          font-weight: 700 !important;
-                        }
-                        .card-content div {
-                            margin: 0 !important;
-                        }
-                        #states {
-                          padding-top: 0px !important;
-                          padding-bottom: 0px !important;
-                        }
-                        .secondary {
-                          color: darkgray !important;
-                          margin-left: 2px !important;
-                        }
-                      entities:
-                        - entity: sensor.hdhomerun_version
-                          name: Installed Version
-                        - entity: sensor.hdhomerun_newest_version
-                          name: Latest Version
-            - type: custom:stack-in-card
-              cards:
-                - type: vertical-stack
-                  cards:
-                    - type: custom:auto-entities
-                      card:
-                        type: entities
-                        title: Tuner Status
-                      filter:
-                        include:
-                          - domain: sensor
-                            integration: hdhomerun
-                            entity_id: /tuner\d+$/
-                            options:
-                              type: custom:template-entity-row
-                              image: >
-                                {% if states(config.entity) | lower not in ("idle", "in use", "scanning") %}
-                                  /local/images/channels/{{states(config.entity)| replace(" ", "") | replace("/","") | lower}}.png
-                                {% endif %}
-                              name: |
-                                {% if state_attr(config.entity, "friendly_name") is not none %}
-                                  {{ state_attr(config.entity, "friendly_name").split(":")[1] | title }}
-                                {% endif %}
-                              secondary: |
-                                {% if state_attr(config.entity, "friendly_name") is not none %}
-                                  {{ states[config.entity].last_changed | relative_time }}
-                                {% endif %}
-                    - type: entities
-                      title: Tuner Status
-                      style: |
-                        ha-card {
-                          padding-bottom: 10px;
-                          background-color: var(--dwains-theme-primary)
-                        }
-                        .card-header {
-                          padding: 5px 16px;
-                          font-size: 18px;
-                          font-weight: 700 !important;
-                        }
-                        .card-content div {
-                            margin: 0 !important;
-                        }
-                        #states {
-                          padding-top: 0px !important;
-                          padding-bottom: 0px !important;
-                        }
-                        .secondary {
-                          color: darkgray !important;
-                          margin-left: 2px !important;
-                        }
-                      entities:
-                        - entity: sensor.hdhomerun_tuner0
-                          name: Tuner 1
-                        - entity: sensor.hdhomerun_tuner1
-                          name: Tuner 2
-                        - entity: sensor.hdhomerun_tuner2
-                          name: Tuner 3
-                        - entity: sensor.hdhomerun_tuner3
-                          name: Tuner 4
+            - type: custom:auto-entities
+              card:
+                items_classes: col-xs-12 col-sm-6 col-md-3 col-lg-3
+                padding: true
+                type: custom:dwains-flexbox-card
+              filter:
+                include:
+                  - domain: sensor
+                    integration: hdhomerun
+                    entity_id: /tuner\d+$/
+                    options:
+                      type: custom:mushroom-entity-card
+                      tap_action: more-info
+                      hold_action: none
+                      double_tap_action: none
+                      layout: horizontal
 
-        # Right Column
-        - type: vertical-stack
-          item_classes: "col-xs-12 col-sm-8"
+        - type: custom:dwains-flexbox-card
+          padding: false
+          items_classes: "col-xs-12"
           cards:
-            - type: custom:dwains-flexbox-card
-              padding: false
-              items_classes: "col-xs-12"
-              cards:
-                - type: custom:apexcharts-card
-                  graph_span: 24h
-                  header:
-                    show: true
-                    show_states: true
-                    colorize_states: true
-                    title: "Network Rate"
-                  span:
-                    start: day
-                  apex_config:
-                    chart: { type: "area", height: 270 }
-                    stroke: { show: true, width: 2, curve: smooth }
-                    legend: { show: false }
-                    dataLabels: { enabled: false }
-                    xaxis:
+            - type: custom:apexcharts-card
+              graph_span: 24h
+              header:
+                show: true
+                show_states: true
+                colorize_states: true
+                title: "Network Rate"
+              span:
+                start: day
+              apex_config:
+                chart: { type: "area", height: 270 }
+                stroke: { show: true, width: 2, curve: smooth }
+                legend: { show: false }
+                dataLabels: { enabled: false }
+                xaxis:
+                  {
+                    type: "datetime",
+                    labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+                  }
+                fill:
+                  {
+                    type: "gradient",
+                    gradient:
                       {
-                        type: "datetime",
-                        labels:
-                          { datetimeFormatter: { month: "ddd", day: "ddd" } },
-                      }
-                    fill:
-                      {
-                        type: "gradient",
-                        gradient:
-                          {
-                            shadeIntensity: 1,
-                            inverseColors: false,
-                            opacityFrom: 0.45,
-                            opacityTo: 0.05,
-                            stops: [20, 100, 100, 100],
-                          },
-                      }
-                  all_series_config:
-                    attribute: network_rate
-                    transform: "return x / 1000000;"
-                    unit: "Mb/s"
-                    type: area
-                    # extend_to_end: false
-                    group_by:
-                      func: last
-                      duration: 1m
+                        shadeIntensity: 1,
+                        inverseColors: false,
+                        opacityFrom: 0.45,
+                        opacityTo: 0.05,
+                        stops: [20, 100, 100, 100],
+                      },
+                  }
+              all_series_config:
+                attribute: network_rate
+                transform: "return x / 1000000;"
+                unit: "Mb/s"
+                type: area
+                # extend_to_end: false
+                group_by:
+                  func: last
+                  duration: 1m
 
-                  series:
-                    - entity: sensor.hdhomerun_tuner0
-                      name: Tuner 1
-                    - entity: sensor.hdhomerun_tuner1
-                      name: Tuner 2
-                    - entity: sensor.hdhomerun_tuner2
-                      name: Tuner 3
-                    - entity: sensor.hdhomerun_tuner3
-                      name: Tuner 4
+              series:
+                - entity: sensor.hdhomerun_tuner0
+                  name: Tuner 1
+                - entity: sensor.hdhomerun_tuner1
+                  name: Tuner 2
+                - entity: sensor.hdhomerun_tuner2
+                  name: Tuner 3
+                - entity: sensor.hdhomerun_tuner3
+                  name: Tuner 4

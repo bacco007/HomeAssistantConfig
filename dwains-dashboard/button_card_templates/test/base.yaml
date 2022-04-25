@@ -1,0 +1,86 @@
+base:
+  template:
+    - settings
+    - extra_styles
+  variables:
+    state_on: >
+      [[[ return ['on', 'home', 'cool', 'fan_only', 'playing'].indexOf(entity === undefined || entity.state) !== -1; ]]]
+    state: >
+      [[[ return entity === undefined || entity.state; ]]]
+    entity_id: >
+      [[[ return entity === undefined || entity.entity_id; ]]]
+    media_on: >
+      [[[ return entity === undefined || ['playing', 'paused'].indexOf(entity.state) !== -1; ]]]
+    media_off: >
+      [[[ return entity === undefined || ['off', 'idle', 'standby', 'unknown', 'unavailable'].indexOf(entity.state) !== -1; ]]]
+    entity_picture: >
+      [[[ return entity === undefined || entity.attributes.entity_picture; ]]]
+    timeout: >
+      [[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed); ]]]
+    tilt_options: >
+      [[[
+        let options = {
+          max: 5,
+          scale: 1.06,
+          glare: true,
+          'max-glare': 0.15,
+          perspective: 800,
+          speed: 800,
+          parallax: '25px'
+        }
+        if (this._config.template.includes('conditional_media')) {
+          options.scale = options.scale % parseInt(options.scale) / 2 + parseInt(options.scale);
+          options.perspective = options.perspective * 2;
+          return options;
+        }
+        return options;
+      ]]]
+  aspect_ratio: 1/1
+  show_state: true
+  show_icon: false
+  state_display: >
+    [[[ if (variables.state === true) return variables.translate_unknown; ]]]
+  tap_action:
+    action: toggle
+    haptic: medium
+  hold_action:
+    haptic: success
+  styles:
+    grid:
+      - grid-template-areas: |
+          "icon  circle"
+          "n     n"
+          "s     s"
+      - grid-template-columns: repeat(2, 1fr)
+      - grid-template-rows: auto repeat(2, min-content)
+      - gap: 1.3%
+      - align-items: start
+    name:
+      - justify-self: start
+      - line-height: 121%
+    state:
+      - justify-self: start
+      - line-height: 115%
+    card:
+      - border-radius: 9.5%
+      - -webkit-tap-highlight-color: rgba(0,0,0,0)
+      - transition: none
+      - padding: 11.5% 10.5% 10.5% 11.5%
+      - --mdc-ripple-color: >
+          [[[
+            return variables.state_on
+              ? 'rgb(0, 0, 0)'
+              : 'rgba(255, 255, 255, 0.3)';
+          ]]]
+      - color: >
+          [[[
+            return variables.state_on
+              ? 'rgba(0, 0, 0, 0.6)'
+              : 'rgba(255, 255, 255, 0.3)';
+          ]]]
+      - background-color: >
+          [[[
+            return variables.state_on
+              ? 'rgba(255, 255, 255, 0.8)'
+              : 'rgba(115, 115, 115, 0.2)';
+          ]]]

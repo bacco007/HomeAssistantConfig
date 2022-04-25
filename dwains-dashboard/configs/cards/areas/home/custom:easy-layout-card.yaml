@@ -1,0 +1,32 @@
+cards:
+- entity: sensor.time
+  template: clock
+  type: custom:button-card
+  variables:
+    entity_date: sensor.date
+    entity_temperature: sensor.tempest_st_00056115_temperature
+    entity_weather: weather.east_tamworth_hourly
+  view_layout:
+    grid-area: clock
+    place-self: start right
+col_span: '2'
+col_span_lg: '3'
+col_span_xl: '4'
+layout:
+  layout:
+    grid-template-areas: '"notify . clock"
+
+      '
+    grid-template-columns: auto 30px 25%
+    grid-template-rows: auto
+  margin: 0
+  max_cols: 1
+  padding: 0
+  rtl: true
+layout_type: custom:grid-layout
+position: top
+row_span: '1'
+row_span_lg: '1'
+row_span_xl: '1'
+rtl: true
+type: custom:easy-layout-card

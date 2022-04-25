@@ -59,7 +59,7 @@ sensor:
       {%- endmacro %}
 
       {%- macro total(seconds) %}
-      {%- set values = [ 
+      {%- set values = [
         phrase(seconds, 'hour', 60*60, 60*60*24),
         phrase(seconds, 'minute', 60, 60),
         ] | select('!=','') | list %}
