@@ -1,0 +1,15 @@
+{
+  "config": {
+    "title": "UPnP Availability",
+    "step": {
+      "confirm": {
+        "title": "UPnP Availability",
+        "description": "Do you want to set up UPnP Availability?"
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single configuration of UPnP Availability is possible.",
+      "no_devices_found": "No UPnP Availability devices found on the network."
+    }
+  }
+}
