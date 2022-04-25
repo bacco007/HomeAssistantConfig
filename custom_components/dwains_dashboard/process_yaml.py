@@ -103,7 +103,7 @@ def process_yaml(hass, config_entry):
 
     if os.path.exists(hass.config.path("dwains-dashboard/configs")):
         if os.path.isdir(hass.config.path("dwains-dashboard/configs/more_pages")):
-            for subdir in os.listdir(hass.config.path("dwains-dashboard/configs/more_pages")):
+            for subdir in sorted(os.listdir(hass.config.path("dwains-dashboard/configs/more_pages"))):
                 #Lets check if there is a page.yaml in the more_pages folder
                 if os.path.exists(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml")):
                     #Page.yaml exists now check if there is a config.yaml otherwise create it
@@ -143,7 +143,7 @@ def process_yaml(hass, config_entry):
 def reload_configuration(hass):
     if os.path.exists(hass.config.path("dwains-dashboard/configs")):
         if os.path.isdir(hass.config.path("dwains-dashboard/configs/more_pages")):
-            for subdir in os.listdir(hass.config.path("dwains-dashboard/configs/more_pages")):
+            for subdir in sorted(os.listdir(hass.config.path("dwains-dashboard/configs/more_pages"))):
                 #Lets check if there is a page.yaml in the more_pages folder
                 if os.path.exists(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml")):
                     #Page.yaml exists now check if there is a config.yaml otherwise create it
