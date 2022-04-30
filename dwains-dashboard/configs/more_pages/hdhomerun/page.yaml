@@ -19,10 +19,11 @@
                     entity_id: /tuner\d+$/
                     options:
                       type: custom:mushroom-entity-card
+                      use_entity_picture: true
+                      layout: vertical
                       tap_action: more-info
                       hold_action: none
                       double_tap_action: none
-                      layout: horizontal
 
         - type: custom:dwains-flexbox-card
           padding: false

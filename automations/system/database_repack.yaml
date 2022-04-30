@@ -1,0 +1,15 @@
+---
+alias: "System - Database Repack (Weekly)"
+id: database_repack
+mode: single
+trigger:
+  - platform: time
+    at: "02:00"
+condition:
+  - condition: time
+    weekday:
+      - sun
+action:
+  - service: recorder.purge
+    data:
+      repack: true

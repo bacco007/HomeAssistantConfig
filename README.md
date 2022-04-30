@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 30th 2022_
+_Stats as at 05:00, Sunday, May 1st 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 404     | 2904         | 1977 | 95 |
+| unknown | 408     | 2887         | 1955 | 96 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 95
-Binary Sensor | 278
+Automation | 96
+Binary Sensor | 280
 Camera | 8
 Device Tracker | 67
 Group | 5
@@ -91,8 +91,8 @@ Light | 2
 Media Player | 22
 Person | 1
 Scene | 0
-Script | 3
-Sensor | 1977
+Script | 4
+Sensor | 1955
 Sun | 1
 Switch | 184
 Weather | 9
@@ -116,7 +116,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alarm_control_panel.eufy_security](https://www.home-assistant.io/components/alarm_control_panel.eufy_security) |
 | [alarm_control_panel.tuya](https://www.home-assistant.io/components/alarm_control_panel.tuya) |
 | [alarm_control_panel.zha](https://www.home-assistant.io/components/alarm_control_panel.zha) |
-| [alexa](https://www.home-assistant.io/components/alexa) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
@@ -150,6 +149,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.tuya](https://www.home-assistant.io/components/binary_sensor.tuya) |
+| [binary_sensor.upnp](https://www.home-assistant.io/components/binary_sensor.upnp) |
 | [binary_sensor.upnp_availability](https://www.home-assistant.io/components/binary_sensor.upnp_availability) |
 | [binary_sensor.uptime_kuma](https://www.home-assistant.io/components/binary_sensor.uptime_kuma) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
@@ -228,7 +228,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
 | [github](https://www.home-assistant.io/components/github) |
 | [glances](https://www.home-assistant.io/components/glances) |
-| [google_assistant](https://www.home-assistant.io/components/google_assistant) |
 | [group](https://www.home-assistant.io/components/group) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [harmony](https://www.home-assistant.io/components/harmony) |
@@ -425,6 +424,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
+| [sensor.upnp](https://www.home-assistant.io/components/sensor.upnp) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.uptimerobot](https://www.home-assistant.io/components/sensor.uptimerobot) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
@@ -449,6 +449,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |
 | [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
+| [sql](https://www.home-assistant.io/components/sql) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
 | [stream](https://www.home-assistant.io/components/stream) |
 | [stt](https://www.home-assistant.io/components/stt) |
@@ -476,6 +477,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [system_health](https://www.home-assistant.io/components/system_health) |
 | [system_log](https://www.home-assistant.io/components/system_log) |
 | [tag](https://www.home-assistant.io/components/tag) |
+| [tautulli](https://www.home-assistant.io/components/tautulli) |
 | [template](https://www.home-assistant.io/components/template) |
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
@@ -490,7 +492,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
 | [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
+| [update.sensibo](https://www.home-assistant.io/components/update.sensibo) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
+| [upnp](https://www.home-assistant.io/components/upnp) |
 | [upnp_availability](https://www.home-assistant.io/components/upnp_availability) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
 | [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
@@ -541,7 +545,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Generate readme](https://github.com/custom-components/readme)
 - [Google Fit](https://github.com/cyberjunky/home-assistant-google_fit)
 - [HACS](https://hacs.xyz/docs/configuration/start)
-- [HDHomerun](https://github.com/uvjim/hass_hdhomerun)
+- [HDHomeRun](https://github.com/uvjim/hass_hdhomerun)
 - [Holidays](https://github.com/bruxy70/Holidays/)
 - [HomeAssistant Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
