@@ -9,24 +9,6 @@ homeassistant:
       icon: mdi:lan-pending
 
 sensor:
-  - platform: tautulli
-    api_key: !secret plex_tautulli_apikey
-    host: !secret plex_tautulli_host
-    port: !secret plex_tautulli_port
-    monitored_conditions:
-      - lan_bandwidth
-      - wan_bandwidth
-      - total_bandwidth
-      - library_name
-      - full_title
-      - tagline
-      - title
-      - progress_percent
-      - summary
-      - container
-      - indexes
-      - libraries
-      - media_type
 
   - platform: rest
     name: plex_tautulli_history
