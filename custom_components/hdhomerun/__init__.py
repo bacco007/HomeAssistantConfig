@@ -11,8 +11,6 @@ import homeassistant.helpers.entity_registry as er
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
@@ -29,25 +27,16 @@ from .const import (
     DOMAIN,
     PLATFORMS,
 )
-from .hdhomerun import (
-    DEF_DISCOVER,
-    HDHomeRunDevice,
-    HDHomeRunExceptionOldFirmware,
-)
 from .logger import HDHomerunLogger
+from .pyhdhr import HDHomeRunDevice
 
 # endregion
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def _async_reload(hass: HomeAssistant, config_entry: ConfigEntry):
-    """Reload the config entry
-
-    :param hass:
-    :param config_entry:
-    :return:
-    """
+async def _async_reload(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Reload the config entry"""
 
     return await hass.config_entries.async_reload(config_entry.entry_id)
 
@@ -67,32 +56,19 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         config_entry.add_update_listener(_async_reload)
     )
 
-    hdhomerun_device = HDHomeRunDevice(
-        host=config_entry.data.get(CONF_HOST),
-        loop=hass.loop,
-        session=async_get_clientsession(hass=hass),
-    )
-    try:
-        await hdhomerun_device.get_details(
-            include_discover=True,
-            include_tuner_status=True,
-        )
-    except HDHomeRunExceptionOldFirmware as err:
-        _LOGGER.warning(log_formatter.message_format("%s"), err)
-        tuner_coordinator = False
-    except Exception as err:
-        raise ConfigEntryNotReady from err
+    hdhomerun_device: HDHomeRunDevice = HDHomeRunDevice(host=config_entry.data.get(CONF_HOST))
+    if config_entry.source == "ssdp":  # force the discovery url because this should be available
+        # noinspection HttpUrlsUsage
+        setattr(hdhomerun_device, "_discover_url", f"http://{hdhomerun_device.ip}/discover.json")
+    await hdhomerun_device.async_rediscover()
 
     # region #-- set up the coordinators --#
     async def _async_data_coordinator_update() -> HDHomeRunDevice:
         """"""
 
         try:
-            await hdhomerun_device.get_details(
-                include_discover=True,
-                include_lineups=True,
-            )
-        except HDHomeRunExceptionOldFirmware as exc:
+            await hdhomerun_device.async_rediscover()
+        except Exception as exc:
             _LOGGER.warning(log_formatter.message_format("%s"), exc)
 
         return hdhomerun_device
@@ -101,10 +77,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         """"""
 
         try:
-            await hdhomerun_device.get_details(
-                include_tuner_status=True,
-            )
-        except HDHomeRunExceptionOldFirmware as exc:
+            await hdhomerun_device.async_tuner_refresh()
+        except Exception as exc:
             _LOGGER.warning(log_formatter.message_format("%s"), exc)
 
         return hdhomerun_device
@@ -112,7 +86,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     coordinator_general: DataUpdateCoordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name=f"{DOMAIN}_general",
+        name=f"{DOMAIN}_{config_entry.unique_id}",
         update_method=_async_data_coordinator_update,
         update_interval=timedelta(seconds=config_entry.options.get(CONF_SCAN_INTERVAL, DEF_SCAN_INTERVAL_SECS)),
     )
@@ -123,7 +97,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         coordinator_tuner_status: DataUpdateCoordinator = DataUpdateCoordinator(
             hass,
             _LOGGER,
-            name=f"{DOMAIN}_tuner_status",
+            name=f"{DOMAIN}_tuner_status_{config_entry.unique_id}",
             update_method=_async_data_coordinator_tuner_status_update,
             update_interval=timedelta(
                 seconds=config_entry.options.get(CONF_SCAN_INTERVAL_TUNER_STATUS, DEF_SCAN_INTERVAL_TUNER_STATUS_SECS)
@@ -176,12 +150,12 @@ class HDHomerunEntity(CoordinatorEntity):
 
         # noinspection HttpUrlsUsage
         return DeviceInfo(
-            configuration_url=f"http://{self._config.data.get('host')}",
+            configuration_url=self._data.base_url,
             identifiers={(DOMAIN, self._config.unique_id)},
             manufacturer="SiliconDust",
             model=self._data.model if self._data else "",
             name=self._config.title,
-            sw_version=self._data.current_firmware if self._data else "",
+            sw_version=self._data.installed_version if self._data else "",
         )
 # endregion
 

@@ -1,4 +1,4 @@
-""""""
+"""Update entities"""
 
 # region #-- imports --#
 from __future__ import annotations
@@ -68,22 +68,27 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
 
         self.entity_description: HDHomerunUpdateEntityDescription = description
 
-        self._attr_name = f"{ENTITY_SLUG} {config_entry.title.replace(ENTITY_SLUG, '')}: {self.entity_description.name}"
+        self._attr_name = f"{ENTITY_SLUG} " \
+                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
+                          f"{self.entity_description.name}"
         self._attr_unique_id = f"{config_entry.unique_id}::" \
                                f"{ENTITY_DOMAIN.lower()}::" \
                                f"{slugify(self.entity_description.name)}"
 
     @property
     def installed_version(self) -> str | None:
-        """"""
+        """Get the currently installed firmware version"""
 
-        return self._data.current_firmware
+        return self._data.installed_version
 
     @property
     def latest_version(self) -> str | None:
-        """"""
+        """Get the latest available version of the firmware
 
-        return self._data.latest_firmware or self.installed_version
+        N.B. this is set to the currently installed version if not found
+        """
+
+        return self._data.latest_version or self.installed_version
 
 
 async def async_setup_entry(

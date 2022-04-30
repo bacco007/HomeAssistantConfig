@@ -1,4 +1,4 @@
-""""""
+"""Binary sensors"""
 
 # region #-- imports --#
 import dataclasses
@@ -70,7 +70,7 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
         coordinator: DataUpdateCoordinator,
         description: HDHomerunBinarySensorEntityDescription,
     ) -> None:
-        """"""
+        """Constructor"""
 
         super().__init__(coordinator=coordinator, config_entry=config_entry)
 
@@ -78,7 +78,9 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
 
         self.entity_description: HDHomerunBinarySensorEntityDescription = description
 
-        self._attr_name = f"{ENTITY_SLUG} {config_entry.title.replace(ENTITY_SLUG, '')}: {self.entity_description.name}"
+        self._attr_name = f"{ENTITY_SLUG} " \
+                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
+                          f"{self.entity_description.name}"
         self._attr_unique_id = f"{config_entry.unique_id}::" \
                                f"{ENTITY_DOMAIN.lower()}::" \
                                f"{slugify(self.entity_description.name)}"

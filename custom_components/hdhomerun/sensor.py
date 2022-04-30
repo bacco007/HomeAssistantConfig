@@ -1,4 +1,4 @@
-""""""
+"""Sensors"""
 
 # region #-- imports --#
 from __future__ import annotations
@@ -13,6 +13,7 @@ from datetime import (
 from typing import (
     Any,
     Callable,
+    Dict,
     List,
     Mapping,
     Optional,
@@ -49,14 +50,8 @@ from .const import (
     ENTITY_SLUG,
     UPDATE_DOMAIN,
 )
-from .hdhomerun import (
-    HDHomeRunDevice,
-    KEY_TUNER_CHANNEL_NAME,
-    KEY_TUNER_CHANNEL_NUMBER,
-    KEY_TUNER_FREQUENCY,
-    KEY_TUNER_NAME,
-)
 
+from .pyhdhr import HDHomeRunDevice
 
 # endregion
 
@@ -102,7 +97,9 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
 
         self.entity_description: HDHomerunSensorEntityDescription = description
 
-        self._attr_name = f"{ENTITY_SLUG} {config_entry.title.replace(ENTITY_SLUG, '')}: {self.entity_description.name}"
+        self._attr_name = f"{ENTITY_SLUG} " \
+                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
+                          f"{self.entity_description.name}"
         self._attr_unique_id = f"{config_entry.unique_id}::" \
                                f"{ENTITY_DOMAIN.lower()}::" \
                                f"{slugify(self.entity_description.name)}"
@@ -138,11 +135,17 @@ class HDHomerunTunerSensor(HDHomerunSensor):
 
         self._tuner: dict = self._get_tuner()
 
-    def _get_tuner(self) -> dict:
+    def _get_tuner(self) -> Dict[str, int | str]:
         """Get the tuner information from the coordinator"""
 
         hdhomerun_device: HDHomeRunDevice = self.coordinator.data
-        return hdhomerun_device.get_tuner(name=self.entity_description.name)
+        tuner: Dict[str, int | str] = {}
+        for t in hdhomerun_device.tuner_status:
+            if t.get("Resource", "").lower() == self.entity_description.name.lower():
+                tuner = t
+                break
+
+        return tuner
 
     def _handle_coordinator_update(self) -> None:
         """Update the tuner information when the coordinator updates"""
@@ -154,17 +157,17 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         """Determine the value of the sensor"""
 
         ret = STATE_IDLE
-        if self._tuner.get(KEY_TUNER_CHANNEL_NUMBER) and self._tuner.get(KEY_TUNER_CHANNEL_NAME):
+        if self._tuner.get("VctNumber") and self._tuner.get("VctName"):
             channel_format = self._config.options.get(CONF_TUNER_CHANNEL_FORMAT, DEF_TUNER_CHANNEL_FORMAT)
             if channel_format == CONF_TUNER_CHANNEL_NAME:
-                ret = self._tuner.get(KEY_TUNER_CHANNEL_NAME)
+                ret = self._tuner.get("VctName")
             elif channel_format == CONF_TUNER_CHANNEL_NUMBER:
-                ret = self._tuner.get(KEY_TUNER_CHANNEL_NUMBER)
+                ret = self._tuner.get("VctNumber")
             elif channel_format == CONF_TUNER_CHANNEL_NUMBER_NAME:
-                ret = f"{self._tuner.get(KEY_TUNER_CHANNEL_NUMBER)}: {self._tuner.get(KEY_TUNER_CHANNEL_NAME)}"
+                ret = f"{self._tuner.get('VctNumber')}: {self._tuner.get('VctName')}"
             else:
                 ret = None
-        elif self._tuner.get(KEY_TUNER_FREQUENCY):
+        elif self._tuner.get("Frequency"):
             ret = STATE_IN_USE
 
         return ret
@@ -179,7 +182,7 @@ class HDHomerunTunerSensor(HDHomerunSensor):
             DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH
         )
         if entity_picture_path and self._value() not in (STATE_IDLE, STATE_IN_USE, STATE_SCANNING):
-            ret = os.path.join(entity_picture_path, f"{self._tuner.get(KEY_TUNER_CHANNEL_NAME, '').lower()}.png")
+            ret = os.path.join(entity_picture_path, f"{self._tuner.get('VctName', '').lower()}.png")
 
         return ret
 
@@ -191,7 +194,7 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         ret = {
             regex.sub("_", k).lower().replace("_i_p", "_ip"): v
             for k, v in self._tuner.items()
-            if k.lower() != KEY_TUNER_NAME.lower()
+            if k.lower() != "resource"
         }
 
         return ret
@@ -280,14 +283,14 @@ async def async_setup_entry(
     if cts:
         hdhomerun_device: HDHomeRunDevice = cts.data
         if hdhomerun_device:
-            for tuner in hdhomerun_device.tuners:
+            for tuner in hdhomerun_device.tuner_status:
                 sensors.append(
                     HDHomerunTunerSensor(
                         config_entry=config_entry,
                         coordinator=cts,
                         description=HDHomerunSensorEntityDescription(
                             key="",
-                            name=tuner.get(KEY_TUNER_NAME),
+                            name=tuner.get("Resource"),
                         )
                     )
                 )

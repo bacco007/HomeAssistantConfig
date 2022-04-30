@@ -13,7 +13,7 @@ from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     DOMAIN,
 )
-from .hdhomerun import HDHomeRunDevice
+from .pyhdhr import HDHomeRunDevice
 
 # endregion
 
@@ -26,7 +26,7 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, config_entry: 
 
     cg: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL]
     hdhomerun_device: HDHomeRunDevice = cg.data
+    diags = hdhomerun_device.__dict__
+    diags.pop("_session", None)
 
-    ret = getattr(hdhomerun_device, "_results")
-
-    return async_redact_data(ret, ["DeviceAuth"])
+    return async_redact_data(diags, to_redact=("_device_auth_str", "_device_id"))

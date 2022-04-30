@@ -1,35 +1,33 @@
 {
     "config": {
         "abort": {
-            "abort_details": "Unable to gather the details.",
-            "already_configured": "Device is already configured."
+            "already_configured": "Device is already configured.",
+            "no_additional": "No additional devices found."
         },
         "error": {
-            "client_response_error": "Error in response ({error_message})",
-            "connection_error": "Connection error.",
-            "invalid_serial": "Invalid serial number found ({error_message})"
+            "generic_hdhomerun_error": "{error_message}",
+            "timeout_error": "Timeout connecting to device."
         },
         "flow_title": "{name}",
         "step": {
-            "confirm": {
-                "description": "Do you want to start set up?"
-            },
             "friendly_name": {
                 "data": {
                     "friendly_name": "Friendly name"
                 },
                 "title": "Friendly name"
             },
+            "select_device": {
+                "description": "Select the device from the list below.<br />Devices already configured are not shown in the list."
+            },
             "user": {
                 "data": {
-                    "friendly_name": "Friendly name",
                     "host": "Host"
                 },
-                "description": "Enter the address of a single HDHomerun device on the network",
+                "description": "Enter the address of an HDHomeRun device on the network.<br />Leave blank to invoke discovery.",
                 "title": "Enter an address"
             }
         },
-        "title": "HDHomerun"
+        "title": "HDHomeRun"
     },
     "options": {
         "step": {
