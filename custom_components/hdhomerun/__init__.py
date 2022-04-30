@@ -8,13 +8,17 @@ from typing import (
 )
 
 import homeassistant.helpers.entity_registry as er
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigEntryNotReady,
+)
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     CoordinatorEntity,
+    UpdateFailed,
 )
 
 from .const import (
@@ -60,7 +64,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     if config_entry.source == "ssdp":  # force the discovery url because this should be available
         # noinspection HttpUrlsUsage
         setattr(hdhomerun_device, "_discover_url", f"http://{hdhomerun_device.ip}/discover.json")
-    await hdhomerun_device.async_rediscover()
+
+    try:
+        await hdhomerun_device.async_rediscover()
+    except Exception as err:
+        raise ConfigEntryNotReady(str(err))
+
+    if not hdhomerun_device.online:
+        raise ConfigEntryNotReady("Not currently online.")
 
     # region #-- set up the coordinators --#
     async def _async_data_coordinator_update() -> HDHomeRunDevice:
@@ -70,6 +81,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             await hdhomerun_device.async_rediscover()
         except Exception as exc:
             _LOGGER.warning(log_formatter.message_format("%s"), exc)
+            raise UpdateFailed(str(exc))
 
         return hdhomerun_device
 
@@ -80,6 +92,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             await hdhomerun_device.async_tuner_refresh()
         except Exception as exc:
             _LOGGER.warning(log_formatter.message_format("%s"), exc)
+            raise UpdateFailed(str(exc))
 
         return hdhomerun_device
 
@@ -142,7 +155,13 @@ class HDHomerunEntity(CoordinatorEntity):
 
         super().__init__(coordinator)
         self._config: ConfigEntry = config_entry
-        self._data: HDHomeRunDevice = self.coordinator.data
+        self._device: HDHomeRunDevice = self.coordinator.data
+
+    def _handle_coordinator_update(self) -> None:
+        """Update the device information when the coordinator updates"""
+
+        self._device: HDHomeRunDevice = self.coordinator.data
+        super()._handle_coordinator_update()
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -150,12 +169,12 @@ class HDHomerunEntity(CoordinatorEntity):
 
         # noinspection HttpUrlsUsage
         return DeviceInfo(
-            configuration_url=self._data.base_url,
+            configuration_url=self._device.base_url,
             identifiers={(DOMAIN, self._config.unique_id)},
             manufacturer="SiliconDust",
-            model=self._data.model if self._data else "",
+            model=self._device.model if self._device else "",
             name=self._config.title,
-            sw_version=self._data.installed_version if self._data else "",
+            sw_version=self._device.installed_version if self._device else "",
         )
 # endregion
 

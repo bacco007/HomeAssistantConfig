@@ -26,14 +26,15 @@ async def main():
     _LOGGER.debug("entered")
 
     discovery = Discover(mode=DiscoverMode.AUTO)
-    # device = HDHomeRunDevice(host="192.168.123.254")
-    # await discovery.rediscover(target=device)
-    # devices: List[HDHomeRunDevice] = [device]
-    devices: List[HDHomeRunDevice] = await discovery.discover(broadcast_address="192.168.123.255")
+    device = HDHomeRunDevice(host="192.168.123.72")
+    await discovery.rediscover(target=device)
+    devices: List[HDHomeRunDevice] = [device]
+    # devices: List[HDHomeRunDevice] = await discovery.discover(broadcast_address="192.168.123.255")
     for dev in devices:
         def print_overview() -> None:
             print(dev.device_id)
             print('-' * len(dev.device_id))
+            print("Online:", dev.online)
             print("FriendlyName:", dev.friendly_name)
             print("IP:", dev.ip)
             print("Type:", dev.device_type)

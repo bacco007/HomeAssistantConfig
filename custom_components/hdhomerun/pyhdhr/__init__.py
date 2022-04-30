@@ -23,6 +23,7 @@ from .const import (
     HDHOMERUN_TAG_GETSET_NAME,
     HDHOMERUN_TAG_GETSET_VALUE,
 )
+from .exceptions import HDHomeRunTimeoutError
 from .protocol import HDHomeRunProtocol
 
 # endregion
@@ -64,6 +65,7 @@ class HDHomeRunDevice:
         self._device_type: Optional[DeviceType] = None
         self._discover_url: Optional[str] = None
         self._friendly_name: Optional[str] = None
+        self._is_online: bool = True
         self._lineup_url: Optional[str] = None
         self._sys_hwmodel: Optional[str] = None
         self._sys_model: Optional[str] = None
@@ -95,9 +97,12 @@ class HDHomeRunDevice:
             )
         except aiohttp.ClientResponseError as err:
             _LOGGER.error("ClientResponseError --> %s", err)
+        except asyncio.TimeoutError:
+            self._is_online = False
         except Exception as err:
             _LOGGER.error("%s type: %s", err, type(err))
         else:
+            self._is_online = True
             resp_json = await resp.json()
             self._tuner_status = resp_json
 
@@ -263,6 +268,12 @@ class HDHomeRunDevice:
         """Get the firmware name"""
 
         return self._sys_model
+
+    @property
+    def online(self) -> bool:
+        """Get whether the device is online or not"""
+
+        return self._is_online
 
     @property
     def tuner_count(self) -> Optional[int]:

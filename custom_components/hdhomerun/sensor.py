@@ -50,8 +50,8 @@ from .const import (
     ENTITY_SLUG,
     UPDATE_DOMAIN,
 )
-
 from .pyhdhr import HDHomeRunDevice
+
 
 # endregion
 
@@ -105,17 +105,23 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
                                f"{slugify(self.entity_description.name)}"
 
     @property
+    def available(self) -> bool:
+        """"""
+
+        return self._device.online
+
+    @property
     def native_value(self) -> StateType | date | datetime:
         """Get the value of the sensor"""
 
-        if self._data:  # we have data
+        if self._device:  # we have data
             if self.entity_description.state_value:  # custom state_value function
                 if self.entity_description.key:  # use the key attribute as the data for the state_value function
-                    return self.entity_description.state_value(getattr(self._data, self.entity_description.key, None))
+                    return self.entity_description.state_value(getattr(self._device, self.entity_description.key, None))
                 else:  # use the hdhomerun device as the data
-                    return self.entity_description.state_value(self._data)
+                    return self.entity_description.state_value(self._device)
             else:  # use the key attribute as the value
-                return getattr(self._data, self.entity_description.key, None)
+                return getattr(self._device, self.entity_description.key, None)
         else:  # no data
             return None
 
@@ -138,9 +144,9 @@ class HDHomerunTunerSensor(HDHomerunSensor):
     def _get_tuner(self) -> Dict[str, int | str]:
         """Get the tuner information from the coordinator"""
 
-        hdhomerun_device: HDHomeRunDevice = self.coordinator.data
         tuner: Dict[str, int | str] = {}
-        for t in hdhomerun_device.tuner_status:
+        device: HDHomeRunDevice = self.coordinator.data
+        for t in device.tuner_status:
             if t.get("Resource", "").lower() == self.entity_description.name.lower():
                 tuner = t
                 break
@@ -148,7 +154,7 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         return tuner
 
     def _handle_coordinator_update(self) -> None:
-        """Update the tuner information when the coordinator updates"""
+        """Update the device information when the coordinator updates"""
 
         self._tuner = self._get_tuner()
         super()._handle_coordinator_update()
@@ -282,7 +288,7 @@ async def async_setup_entry(
     # region #-- add tuner sensors --#
     if cts:
         hdhomerun_device: HDHomeRunDevice = cts.data
-        if hdhomerun_device:
+        if hdhomerun_device and hdhomerun_device.tuner_status:
             for tuner in hdhomerun_device.tuner_status:
                 sensors.append(
                     HDHomerunTunerSensor(

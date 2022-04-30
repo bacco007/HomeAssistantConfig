@@ -76,10 +76,16 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
                                f"{slugify(self.entity_description.name)}"
 
     @property
+    def available(self) -> bool:
+        """"""
+
+        return self._device.online
+
+    @property
     def installed_version(self) -> str | None:
         """Get the currently installed firmware version"""
 
-        return self._data.installed_version
+        return self._device.installed_version
 
     @property
     def latest_version(self) -> str | None:
@@ -88,7 +94,7 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
         N.B. this is set to the currently installed version if not found
         """
 
-        return self._data.latest_version or self.installed_version
+        return self._device.latest_version or self.installed_version
 
 
 async def async_setup_entry(

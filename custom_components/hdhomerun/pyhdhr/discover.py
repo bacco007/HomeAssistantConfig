@@ -232,12 +232,15 @@ class DiscoverHTTP:
 
         try:
             updated_device = await DiscoverHTTP.discover(discover_url=discover_url, session=session, timeout=timeout)
+        except HDHomeRunTimeoutError:
+            setattr(target, "_is_online", False)
         except HDHomeRunHTTPDiscoveryNotAvailableError as err:  # flag to not try again
             setattr(target, "_http_discovery_attempted", True)
             raise err from None
         else:
             setattr(target, "_discover_url", discover_url)
             setattr(target, "_http_discovery_attempted", False)
+            setattr(target, "_is_online", True)
             updated_device = updated_device[0]
             for json_property_name, property_name in DiscoverHTTP.JSON_PROPERTIES_MAP.items():  # set the properties
                 # noinspection PyRedundantParentheses
@@ -245,7 +248,7 @@ class DiscoverHTTP:
                     setattr(target, property_name, property_value)
 
         # region #-- get the channels from the lineup_url --#
-        if target.lineup_url is not None:
+        if target.lineup_url is not None and target.online:
             created_session: bool = False
             if session is None:
                 created_session = True
@@ -254,9 +257,10 @@ class DiscoverHTTP:
             try:
                 response = await session.get(url=target.lineup_url, timeout=timeout, raise_for_status=True)
             except asyncio.TimeoutError:
+                setattr(target, "_is_online", False)
                 _LOGGER.error("Timeout experienced reaching %s", target.lineup_url)
             except aiohttp.ClientConnectorError as err:
-                _LOGGER.error("%s", err)
+                setattr(target, "_is_online", False)
             except Exception as err:
                 raise err from None
             else:
