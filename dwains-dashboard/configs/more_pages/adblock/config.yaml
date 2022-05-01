@@ -1,3 +1,4 @@
-name: Ad Blocking (Adguard)
 icon: si:adguard
+name: Ad Blocking (Adguard)
 show_in_navbar: false
+sort_order: 1

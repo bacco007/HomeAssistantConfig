@@ -1,3 +1,4 @@
+icon: mdi:robot-industrial
 name: UptimeRobot
-icon: "mdi:robot-industrial"
 show_in_navbar: false
+sort_order: 39

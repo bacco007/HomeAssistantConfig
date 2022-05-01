@@ -1,3 +1,4 @@
-name: Weather
 icon: mdi:weather-partly-rainy
+name: Weather
 show_in_navbar: false
+sort_order: 42

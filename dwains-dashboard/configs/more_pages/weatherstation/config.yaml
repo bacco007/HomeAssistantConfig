@@ -1,3 +1,4 @@
-name: Weather Station
 icon: mdi:gauge
+name: Weather Station
 show_in_navbar: true
+sort_order: 44

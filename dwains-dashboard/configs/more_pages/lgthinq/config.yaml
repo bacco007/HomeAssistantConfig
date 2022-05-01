@@ -1,3 +1,4 @@
-name: LG ThinQ Washing Machine
 icon: si:lg
+name: LG ThinQ Washing Machine
 show_in_navbar: false
+sort_order: 19

@@ -1,3 +1,4 @@
-name: Updates
 icon: mdi:update
+name: Updates
 show_in_navbar: false
+sort_order: 38

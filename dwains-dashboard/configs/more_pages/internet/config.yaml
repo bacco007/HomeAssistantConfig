@@ -1,3 +1,4 @@
-name: Internet Performance
 icon: si:speedtest
+name: Internet Performance
 show_in_navbar: false
+sort_order: 18

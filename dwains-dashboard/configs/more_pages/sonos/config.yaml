@@ -1,3 +1,4 @@
-name: Sonos
 icon: si:sonos
+name: Sonos
 show_in_navbar: true
+sort_order: 28

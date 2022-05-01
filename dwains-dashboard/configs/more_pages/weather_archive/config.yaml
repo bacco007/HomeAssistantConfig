@@ -1,3 +1,4 @@
-name: Weather Data Archive
 icon: mdi:weather-partly-rainy
+name: Weather Data Archive
 show_in_navbar: false
+sort_order: 43

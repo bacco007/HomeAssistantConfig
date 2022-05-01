@@ -1,3 +1,4 @@
-name: Temp
 icon: mdi:test-tube
+name: Temp
 show_in_navbar: false
+sort_order: 46

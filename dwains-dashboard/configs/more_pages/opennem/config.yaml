@@ -1,3 +1,4 @@
-name: National Electricity Market
 icon: mdi:transmission-tower
+name: National Electricity Market
 show_in_navbar: false
+sort_order: 24

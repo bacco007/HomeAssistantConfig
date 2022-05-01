@@ -1,3 +1,4 @@
-name: Spotify
 icon: mdi:spotify
+name: Spotify
 show_in_navbar: false
+sort_order: 31

@@ -35,4 +35,7 @@ tamworth:
   icon: fas:road
   sort_order: 7
 thomas_s_smart_ac:
+  disabled: true
+  floor: ''
+  icon: ''
   sort_order: 10

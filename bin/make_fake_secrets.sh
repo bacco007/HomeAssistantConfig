@@ -28,6 +28,8 @@ faker() {
     value='2019-01-01'
   elif echo ${key} | grep -q '_\(host\|ipaddress\|server\)$'; then
     value='127.0.0.1'
+  elif echo ${key} | grep -q '_\(port\)$'; then
+    value='1234'
   elif echo ${key} | grep -q '_\(url\)$'; then
     value='http://localhost/somethingsecret'
   elif echo ${key} | grep -q '_\(login\|username\|password\)$'; then

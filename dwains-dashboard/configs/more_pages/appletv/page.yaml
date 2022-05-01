@@ -11,13 +11,13 @@
   items_classes: "col-xs-12"
   cards:
     - type: vertical-stack
-      item_classes: "col-xs-12 col-sm-3"
+      item_classes: "col-xs-12 col-sm-2"
       cards:
         - !include partial_tvremote.yaml
         - !include partial_remote.yaml
 
     - type: vertical-stack
-      item_classes: "col-xs-12 col-sm-9"
+      item_classes: "col-xs-12 col-sm-10"
       cards:
         - type: vertical-stack
           cards:

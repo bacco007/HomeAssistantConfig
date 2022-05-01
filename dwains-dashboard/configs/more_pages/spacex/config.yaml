@@ -1,3 +1,4 @@
-name: SpaceX Launches
 icon: si:spacex
+name: SpaceX Launches
 show_in_navbar: false
+sort_order: 29

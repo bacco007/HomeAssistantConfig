@@ -1,3 +1,4 @@
-name: HDHomerun
 icon: mdi:television
+name: HDHomerun
 show_in_navbar: false
+sort_order: 15

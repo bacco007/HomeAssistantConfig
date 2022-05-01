@@ -1,3 +1,4 @@
-name: Android TV
 icon: mdi:cast
+name: Android TV
 show_in_navbar: false
+sort_order: 3

@@ -1,3 +1,4 @@
-name: Docker
 icon: mdi:docker
+name: Docker
 show_in_navbar: false
+sort_order: 8

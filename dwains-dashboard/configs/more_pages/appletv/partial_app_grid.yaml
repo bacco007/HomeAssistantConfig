@@ -6,6 +6,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: 10 play
     show_entity_picture: true
     entity_picture: ../local/images/apps/10play.png
@@ -36,6 +37,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: 7plus
     show_entity_picture: true
     entity_picture: ../local/images/apps/7plus.png
@@ -66,6 +68,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: 9Now
     show_entity_picture: true
     entity_picture: ../local/images/apps/9now.png
@@ -96,6 +99,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: ABC iview
     show_entity_picture: true
     entity_picture: ../local/images/apps/abciview.png
@@ -126,6 +130,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: beIN Sports Connect
     show_entity_picture: true
     entity_picture: ../local/images/apps/beinsportsconnect.png
@@ -156,6 +161,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Binge
     show_entity_picture: true
     entity_picture: ../local/images/apps/binge.png
@@ -186,6 +192,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Channels
     show_entity_picture: true
     entity_picture: ../local/images/apps/channels.png
@@ -216,6 +223,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Flash
     show_entity_picture: true
     entity_picture: ../local/images/apps/flash.png
@@ -246,6 +254,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Kayo
     show_entity_picture: true
     entity_picture: ../local/images/apps/kayo.png
@@ -276,6 +285,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: LiSTNR
     show_entity_picture: true
     entity_picture: ../local/images/apps/listnr.png
@@ -306,6 +316,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Music
     show_entity_picture: true
     entity_picture: ../local/images/apps/music.png
@@ -336,6 +347,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Netflix
     show_entity_picture: true
     entity_picture: ../local/images/apps/netflix.png
@@ -366,6 +378,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Optus Sport
     show_entity_picture: true
     entity_picture: ../local/images/apps/optussport.png
@@ -396,6 +409,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Plex
     show_entity_picture: true
     entity_picture: ../local/images/apps/plex.png
@@ -426,6 +440,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Prime Video
     show_entity_picture: true
     entity_picture: ../local/images/apps/primevideo.png
@@ -456,6 +471,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Red Bull TV
     show_entity_picture: true
     entity_picture: ../local/images/apps/redbulltv.png
@@ -486,6 +502,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: SBS On Demand
     show_entity_picture: true
     entity_picture: ../local/images/apps/sbsondemand.png
@@ -516,6 +533,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Spotify
     show_entity_picture: true
     entity_picture: ../local/images/apps/spotify.png
@@ -546,6 +564,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: Stan
     show_entity_picture: true
     entity_picture: ../local/images/apps/stan.png
@@ -576,6 +595,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: TV
     show_entity_picture: true
     entity_picture: ../local/images/apps/tv.png
@@ -606,6 +626,7 @@ cards:
   - type: custom:button-card
     entity: media_player.apple_tv_bedroom
     show_state: false
+    show_name: false
     name: YouTube
     show_entity_picture: true
     entity_picture: ../local/images/apps/youtube.png

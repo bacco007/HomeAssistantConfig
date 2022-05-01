@@ -1,3 +1,4 @@
-name: Media
 icon: mdi:television
+name: Media
 show_in_navbar: false
+sort_order: 20

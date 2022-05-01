@@ -1,3 +1,4 @@
-name: Github
 icon: mdi:github
+name: Github
 show_in_navbar: false
+sort_order: 14

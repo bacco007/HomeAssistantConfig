@@ -1,3 +1,4 @@
-name: Watchman
 icon: mdi:shield-half-full
+name: Watchman
 show_in_navbar: false
+sort_order: 40

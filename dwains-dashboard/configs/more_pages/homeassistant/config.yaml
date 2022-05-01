@@ -1,3 +1,4 @@
-name: Home Assistant
 icon: mdi:home-assistant
+name: Home Assistant
 show_in_navbar: false
+sort_order: 17
