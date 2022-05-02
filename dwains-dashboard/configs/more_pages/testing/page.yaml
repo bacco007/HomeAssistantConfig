@@ -36,6 +36,14 @@ cards:
   template:
   - conditional_media
   type: custom:button-card
+- entity: binary_sensor.weekend
+  icon_color: pink
+  name: "Rainbow Hub \u2197"
+  style: 'ha-card {background: none;}'
+  tap_action:
+    action: url
+    url_path: https://
+  type: custom:mushroom-entity-card
 items_classes: col-xs-12 col-sm-6 col-md-2 col-lg-2
 padding: true
 type: custom:dwains-flexbox-card
