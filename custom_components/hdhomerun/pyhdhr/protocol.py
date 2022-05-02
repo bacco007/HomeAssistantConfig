@@ -167,6 +167,25 @@ class HDHomeRunProtocol:
 
         return ret or None
 
+    async def _async_close(self) -> None:
+        """Close the connection to the device"""
+
+        writer = self._writer
+        self._reader = self._writer = None
+        if writer:
+            writer.close()
+            with contextlib.suppress(Exception):
+                await writer.wait_closed()
+
+    async def _async_connect(self, timeout: Optional[int] = None) -> None:
+        """Connect to the device"""
+
+        if self._writer:  # the writer is already in use somehow
+            return
+
+        task = asyncio.open_connection(host=self._host, port=self._port)
+        self._reader, self._writer = await asyncio.wait_for(task, timeout=timeout or self._connection_timeout)
+
     async def _execute_query(self, request: bytes) -> Optional[Dict[str, Any]]:
         """Send the request to the device using the TCP control channel
 
@@ -221,8 +240,8 @@ class HDHomeRunProtocol:
             try:
                 await self._async_connect()
             except Exception as err:
+                _LOGGER.error("_query, %s --> %s", type(err), err)
                 await self._async_close()
-                _LOGGER.error(err)
             else:
                 ret = await asyncio.wait_for(
                     self._execute_query(request=request),
@@ -231,25 +250,6 @@ class HDHomeRunProtocol:
                 await self._async_close()
 
         return ret
-
-    async def _async_close(self) -> None:
-        """Close the connection to the device"""
-
-        writer = self._writer
-        self._reader = self._writer = None
-        if writer:
-            writer.close()
-            with contextlib.suppress(Exception):
-                await writer.wait_closed()
-
-    async def _async_connect(self, timeout: Optional[int] = None) -> None:
-        """Connect to the device"""
-
-        if self._writer:  # the writer is already in use somehow
-            return
-
-        task = asyncio.open_connection(host=self._host, port=self._port)
-        self._reader, self._writer = await asyncio.wait_for(task, timeout=timeout or self._connection_timeout)
 
     async def get_hwmodel(self, timeout: Optional[int] = None) -> Dict[str, bytes]:
         """Get the model number

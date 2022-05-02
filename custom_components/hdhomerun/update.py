@@ -60,11 +60,12 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
         self,
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
-        description: HDHomerunUpdateEntityDescription
+        description: HDHomerunUpdateEntityDescription,
+        hass: HomeAssistant,
     ) -> None:
         """Constructor"""
 
-        super().__init__(coordinator=coordinator, config_entry=config_entry)
+        super().__init__(coordinator=coordinator, config_entry=config_entry, hass=hass)
 
         self.entity_description: HDHomerunUpdateEntityDescription = description
 
@@ -74,12 +75,6 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
         self._attr_unique_id = f"{config_entry.unique_id}::" \
                                f"{ENTITY_DOMAIN.lower()}::" \
                                f"{slugify(self.entity_description.name)}"
-
-    @property
-    def available(self) -> bool:
-        """"""
-
-        return self._device.online
 
     @property
     def installed_version(self) -> str | None:
@@ -115,6 +110,7 @@ async def async_setup_entry(
                 key="",
                 name="Update",
             ),
+            hass=hass
         )
     ]
     # endregion

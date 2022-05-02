@@ -69,10 +69,11 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
         description: HDHomerunBinarySensorEntityDescription,
+        hass: HomeAssistant,
     ) -> None:
         """Constructor"""
 
-        super().__init__(coordinator=coordinator, config_entry=config_entry)
+        super().__init__(coordinator=coordinator, config_entry=config_entry, hass=hass)
 
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
@@ -86,12 +87,6 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
                                f"{slugify(self.entity_description.name)}"
 
     # region #-- properties --#
-    @property
-    def available(self) -> bool:
-        """"""
-
-        return self._device.online
-
     @property
     def is_on(self) -> bool:
         """Return if the service is on."""
@@ -131,6 +126,7 @@ async def async_setup_entry(
             config_entry=config_entry,
             coordinator=hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL],
             description=description,
+            hass=hass,
         )
         for description in BINARY_SENSORS
     ]
@@ -143,6 +139,7 @@ async def async_setup_entry(
                     config_entry=config_entry,
                     coordinator=hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL],
                     description=description,
+                    hass=hass,
                 )
             )
     # endregion
@@ -156,7 +153,8 @@ async def async_setup_entry(
                 HDHomerunBinarySensor(
                     config_entry=config_entry,
                     coordinator=hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL],
-                    description=description
+                    description=description,
+                    hass=hass,
                 )
             )
 

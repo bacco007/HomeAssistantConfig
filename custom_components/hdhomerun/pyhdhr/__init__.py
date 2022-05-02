@@ -54,7 +54,6 @@ class HDHomeRunDevice:
         self._host: str = host
 
         self._created_session: bool = False
-        self._http_discovery_attempted: bool = False
         self._session: Optional[aiohttp.ClientSession] = None
 
         self._available_firmware: Optional[str] = None
@@ -106,6 +105,7 @@ class HDHomeRunDevice:
             resp_json = await resp.json()
             self._tuner_status = resp_json
 
+    # noinspection PyUnresolvedReferences
     async def _async_tuner_refresh_tcp(self) -> None:
         """Refresh the tuner information using the TCP control protocol
 
@@ -120,10 +120,16 @@ class HDHomeRunDevice:
             proto.get_tuner_status(tuner_idx=idx)
             for idx in range(self.tuner_count)
         ]
-        tuner_status = await asyncio.gather(*tuners)
+        tuner_status_info = await asyncio.gather(*tuners)
 
         # -- process all tuners --#
-        for tuner in tuner_status:
+        tuner_status: List[Dict[str, str]] = []
+        for tuner in tuner_status_info:
+            if tuner is None:
+                self._is_online = False
+                continue
+
+            self._is_online = True
             key = tuner.get("data", {})[HDHOMERUN_TAG_GETSET_NAME].decode().rstrip("\0")
             val = tuner.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
             tuner_info: Dict[str, int | str] = {
@@ -169,9 +175,12 @@ class HDHomeRunDevice:
                         urlparse(tuner_target.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE]).hostname.decode()
                     )
 
-            if not self._tuner_status:
-                self._tuner_status = []
-            self._tuner_status.append(tuner_info)
+            if not tuner_status:
+                tuner_status = []
+            tuner_status.append(tuner_info)
+
+        if tuner_status:
+            self._tuner_status = tuner_status
 
     async def async_tuner_refresh(self, timeout: Optional[float] = 2.5) -> None:
         """Genric function refreshing tuners
@@ -187,14 +196,57 @@ class HDHomeRunDevice:
         else:
             await self._async_tuner_refresh_tcp()
 
-    async def async_rediscover(self) -> None:
+    async def async_rediscover(self, timeout: Optional[float] = 2.5) -> HDHomeRunDevice:
         """Refresh the information for a device
 
+        :param timeout: timeout for the query
         :return: None
         """
 
+        tcp_property_map: Dict[str, str] = {
+            "/sys/version": "_sys_version",
+            "/sys/model": "_sys_model",
+            "/sys/hwmodel": "_sys_hwmodel",
+        }
+
         from .discover import Discover  # late import for Discover to avoid a circular import
-        await Discover.rediscover(target=self)
+        device: HDHomeRunDevice = await Discover.rediscover(target=self)
+        if getattr(device, "_discover_url", None) is None and device.online:
+            proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
+            supplemental_info = [
+                proto.get_version(),
+                proto.get_model(),
+                proto.get_hwmodel(),
+            ]
+            info = await asyncio.gather(*supplemental_info)
+            prop: Dict[str, Dict[int | str, bytes]]
+            for prop in info:
+                tcp_prop_name = prop.get("data", {})[HDHOMERUN_TAG_GETSET_NAME].decode().rstrip("\0")
+                prop_value = prop.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
+                if (prop_name := tcp_property_map.get(tcp_prop_name, None)) is not None:
+                    setattr(device, prop_name, prop_value)
+
+        # region #-- get the channels from the lineup_url --#
+        if device.lineup_url and device.online:
+            if self._session is None:
+                self._created_session: bool = True
+                self._session = aiohttp.ClientSession()
+
+            try:
+                response = await self._session.get(url=device.lineup_url, timeout=timeout, raise_for_status=True)
+            except asyncio.TimeoutError:
+                setattr(device, "_is_online", False)
+                _LOGGER.error("Timeout experienced reaching %s", device.lineup_url)
+            except aiohttp.ClientConnectorError:
+                setattr(device, "_is_online", False)
+            except Exception as err:
+                raise err from None
+            else:
+                resp_json = await response.json()
+                setattr(device, "_channels", resp_json)
+        # endregion
+
+        return device
 
     # region #-- properties --#
     @property

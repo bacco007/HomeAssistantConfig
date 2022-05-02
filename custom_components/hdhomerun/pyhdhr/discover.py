@@ -36,11 +36,7 @@ from .const import (
     HDHOMERUN_DISCOVER_UDP_PORT,
 )
 from .exceptions import (
-    HDHomeRunConnectionError,
-    HDHomeRunError,
     HDHomeRunHTTPDiscoveryNotAvailableError,
-    HDHomeRunUDPDiscoveryDeviceNotFoundError,
-    HDHomeRunTimeoutError,
 )
 from .protocol import HDHomeRunProtocol
 
@@ -71,9 +67,7 @@ class Discover:
 
         N.B. when the mode is set to AUTO HTTP is discovery is attempted first and then UDP.
         The device lists are merged with the settings from UDP winning if they are not None.
-        A request is then made to the DiscoverURL to attempt to get more friendly information.
-        This request is made irrespective of whetherthe device has a registered URL or not
-        (one is built if there isn't one - UDP discovery does not tell us about the discover_url).
+        A request is then made to the discover_url to attempt to get more friendly information.
 
         :param broadcast_address: the address to broadcast to when using the UDP protocol
         :return: a list of device objects for those found
@@ -83,11 +77,16 @@ class Discover:
 
         # region #-- get the devices from HTTP --#
         if self._mode in (DiscoverMode.AUTO, DiscoverMode.HTTP):
-            for dev in (await DiscoverHTTP.discover()):
-                devices[dev.device_id] = dev
+            try:
+                discovered_devices: List[HDHomeRunDevice] = await DiscoverHTTP.discover()
+            except HDHomeRunHTTPDiscoveryNotAvailableError:
+                pass
+            else:
+                for dev in discovered_devices:
+                    devices[dev.device_id] = dev
         # endregion
 
-        # region #-- get the devices from UDP --#
+        # # region #-- get the devices from UDP --#
         if self._mode in (DiscoverMode.AUTO, DiscoverMode.UDP):
             discovered_devices: List[HDHomeRunDevice] = await DiscoverUDP.discover(target=broadcast_address)
             for dev in discovered_devices:
@@ -98,38 +97,35 @@ class Discover:
                         # noinspection PyRedundantParentheses
                         if (property_value := getattr(dev, property_name, None)):
                             setattr(devices.get(dev.device_id), property_name, property_value)
-        # endregion
+        # # endregion
 
-        # region #-- try and get the details from HTTP - just in case --#
+        # region #-- try and rediscover via HTTP to get further details (UDP won't offer any more) --#
         for device_id, dev in devices.items():
-            try:
-                await DiscoverHTTP.rediscover(target=dev)
-            except HDHomeRunHTTPDiscoveryNotAvailableError:
-                pass
+            await DiscoverHTTP.rediscover(target=dev)
         # endregion
 
         return list(devices.values())
 
     @staticmethod
-    async def rediscover(target: HDHomeRunDevice) -> None:
+    async def rediscover(target: HDHomeRunDevice) -> HDHomeRunDevice:
         """Get updated information for the given target
 
-        `target` is update in place with the latest information
-
         :param target: the device to refresh information for
-        :return: None
+        :return: the updated device
         """
 
-        try:
-            await DiscoverHTTP.rediscover(target=target)
-        except (HDHomeRunHTTPDiscoveryNotAvailableError, HDHomeRunTimeoutError):
-            result = await DiscoverUDP.rediscover(target=target.ip)
-            if len(result) == 0:
-                raise HDHomeRunUDPDiscoveryDeviceNotFoundError(device=target.ip)
-            # noinspection PyUnusedLocal
-            target = result[0]  # refresh the target
-        except Exception as err:
-            raise err from None
+        if getattr(target, "_discover_url", None) is not None:
+            device: HDHomeRunDevice = await DiscoverHTTP.rediscover(target=target)
+        else:
+            device: List[HDHomeRunDevice] = await DiscoverUDP.rediscover(target=target.ip)
+
+        if not device:
+            setattr(target, "_is_online", False)
+            return target
+        else:
+            ret = device[0] if isinstance(device, List) else device
+            setattr(ret, "_is_online", True)
+            return ret
 
 
 class DiscoverHTTP:
@@ -175,14 +171,9 @@ class DiscoverHTTP:
 
         try:
             response = await session.get(url=discover_url, timeout=timeout, raise_for_status=True)
-        except asyncio.TimeoutError:
-            raise HDHomeRunTimeoutError(device=urlparse(discover_url).hostname) from None
-        except aiohttp.ClientConnectorError:
-            raise HDHomeRunConnectionError(device=urlparse(discover_url).hostname) from None
-        except aiohttp.ClientResponseError:
-            raise HDHomeRunHTTPDiscoveryNotAvailableError(device=urlparse(discover_url).hostname) from None
         except Exception as err:
-            raise HDHomeRunError(device=urlparse(discover_url).hostname, message=str(err)) from None
+            _LOGGER.debug("Error in HTTP discovery, %s: %s", type(err), err)
+            raise HDHomeRunHTTPDiscoveryNotAvailableError(device=urlparse(discover_url).hostname) from None
         else:
             resp_json = await response.json()
             if resp_json:  # we didn't just get an empty list or dictionary
@@ -207,71 +198,39 @@ class DiscoverHTTP:
         target: HDHomeRunDevice,
         session: Optional[aiohttp.ClientSession] = None,
         timeout: float = 2.5
-    ) -> None:
+    ) -> HDHomeRunDevice:
         """Gather updated information about a device
 
         N.B. the discover_url will be used if available. If not, one is built (UDP discovered devices
-        won't have one). If the discovery attempt fails it is marked in the object so that we don't
-        try again during the object's lifetime (no point keep trying if it isn't there).
+        won't have one).
 
         :param target: the device to refresh information for
         :param session: existing session
         :param timeout: timeout for the query
-        :return:
+        :return: the updated device
         """
 
         _LOGGER.debug("entered, args: %s", locals())
 
         discover_url: str = getattr(target, "_discover_url", None)
-        if discover_url is None and not getattr(target, "_http_discovery_attempted", False):
+        _LOGGER.debug("discover_url, %s", discover_url)
+        if discover_url is None:
             # noinspection HttpUrlsUsage
             discover_url = f"http://{target.ip}/discover.json"
 
-        if not discover_url:
-            raise HDHomeRunHTTPDiscoveryNotAvailableError(device=target.ip)
-
         try:
             updated_device = await DiscoverHTTP.discover(discover_url=discover_url, session=session, timeout=timeout)
-        except HDHomeRunTimeoutError:
-            setattr(target, "_is_online", False)
-        except HDHomeRunHTTPDiscoveryNotAvailableError as err:  # flag to not try again
-            setattr(target, "_http_discovery_attempted", True)
-            raise err from None
+        except HDHomeRunHTTPDiscoveryNotAvailableError:
+            pass
         else:
             setattr(target, "_discover_url", discover_url)
-            setattr(target, "_http_discovery_attempted", False)
-            setattr(target, "_is_online", True)
             updated_device = updated_device[0]
             for json_property_name, property_name in DiscoverHTTP.JSON_PROPERTIES_MAP.items():  # set the properties
-                # noinspection PyRedundantParentheses
-                if (property_value := getattr(updated_device, property_name, None)):
+                if (property_value := getattr(updated_device, property_name, None)) is not None:
                     setattr(target, property_name, property_value)
 
-        # region #-- get the channels from the lineup_url --#
-        if target.lineup_url is not None and target.online:
-            created_session: bool = False
-            if session is None:
-                created_session = True
-                session = aiohttp.ClientSession()
-
-            try:
-                response = await session.get(url=target.lineup_url, timeout=timeout, raise_for_status=True)
-            except asyncio.TimeoutError:
-                setattr(target, "_is_online", False)
-                _LOGGER.error("Timeout experienced reaching %s", target.lineup_url)
-            except aiohttp.ClientConnectorError as err:
-                setattr(target, "_is_online", False)
-            except Exception as err:
-                raise err from None
-            else:
-                resp_json = await response.json()
-                setattr(target, "_channels", resp_json)
-            finally:
-                if created_session:
-                    await session.close()
-        # endregion
-
         _LOGGER.debug("exited")
+        return target
 
 
 class DiscoverUDP:

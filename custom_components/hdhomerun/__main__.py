@@ -26,8 +26,10 @@ async def main():
     _LOGGER.debug("entered")
 
     discovery = Discover(mode=DiscoverMode.AUTO)
-    device = HDHomeRunDevice(host="192.168.123.72")
-    await discovery.rediscover(target=device)
+    device = HDHomeRunDevice(host="192.168.123.1")
+    device = await discovery.rediscover(target=device)
+    # device = await device.async_rediscover()
+    _LOGGER.debug("main, %s", device.__dict__)
     devices: List[HDHomeRunDevice] = [device]
     # devices: List[HDHomeRunDevice] = await discovery.discover(broadcast_address="192.168.123.255")
     for dev in devices:

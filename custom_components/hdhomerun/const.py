@@ -15,6 +15,7 @@ ENTITY_SLUG: str = "HDHomeRun"
 
 CONF_DATA_COORDINATOR_GENERAL: str = "data_coordinator_general"
 CONF_DATA_COORDINATOR_TUNER_STATUS: str = "data_coordinaror_tuner_status"
+CONF_DEVICE: str = "hdhomerun_device"
 CONF_HOST: str = "host"
 CONF_SCAN_INTERVAL_TUNER_STATUS: str = "scan_interval_tuner_status"
 CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH: str = "channel_entity_picture_path"
@@ -40,3 +41,5 @@ PLATFORMS = [
     SENSOR_DOMAIN,
     UPDATE_DOMAIN,
 ]
+
+SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY: str = f"{DOMAIN}_device_availability"

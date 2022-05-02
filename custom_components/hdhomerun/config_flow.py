@@ -39,6 +39,7 @@ from .logger import HDHomerunLogger
 from .pyhdhr import HDHomeRunDevice
 from .pyhdhr.discover import Discover
 from .pyhdhr.exceptions import (
+    HDHomeRunDeviceNotFoundError,
     HDHomeRunError,
     HDHomeRunTimeoutError,
 )
@@ -173,7 +174,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
         if self._host:
             hdhomerun_device: HDHomeRunDevice = HDHomeRunDevice(host=self._host)
             try:
-                await Discover.rediscover(target=hdhomerun_device)
+                hdhomerun_device = await Discover.rediscover(target=hdhomerun_device)
+                if not hdhomerun_device.online:
+                    raise HDHomeRunDeviceNotFoundError(device=hdhomerun_device.ip)
             except HDHomeRunError as err:
                 if type(err) == HDHomeRunTimeoutError:
                     err_msg = "timeout_error"
