@@ -172,11 +172,22 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
 
         err_msg: Optional[str] = None
         if self._host:
-            hdhomerun_device: HDHomeRunDevice = HDHomeRunDevice(host=self._host)
+            hdhomerun_device: Optional[HDHomeRunDevice] = None
             try:
-                hdhomerun_device = await Discover.rediscover(target=hdhomerun_device)
-                if not hdhomerun_device.online:
-                    raise HDHomeRunDeviceNotFoundError(device=hdhomerun_device.ip)
+                await self._async_task_discover_all()
+                if len(self._discovered_devices_hd) == 0:
+                    raise ValueError
+
+                for dev in self._discovered_devices_hd:
+                    if dev.ip == self._host:
+                        hdhomerun_device = dev
+                        break
+
+                self._discovered_devices_hd = None
+
+                if hdhomerun_device is None:
+                    raise HDHomeRunDeviceNotFoundError(device=self._host)
+
             except HDHomeRunError as err:
                 if type(err) == HDHomeRunTimeoutError:
                     err_msg = "timeout_error"
