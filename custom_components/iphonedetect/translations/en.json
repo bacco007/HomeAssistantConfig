@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "If you need help with the configuration have a look here: https://github.com/mudape/iphonedetect",
+                "data": {
+                    "ip_address": "IP Address",
+                    "host": "Name"
+                }
+            }
+        },
+        "error": {
+            "ip_already_configured": "IP address already in use by other entity",
+            "ip_invalid": "Invalid IP address",
+            "ip_range": "IP not in range of HASS subnet"
+        }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "data": {
+                    "consider_home": "Consider Home (sec)"
+                },
+                "data_description": {
+                    "consider_home": "Time to wait before marking a device as not home"
+                }
+            }
+        }
+    }
+}
