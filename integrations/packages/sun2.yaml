@@ -30,3 +30,5 @@ sensor:
       - astronomical_night
       - elevation
       - max_elevation
+      - deconz_daylight
+      - sun_phase
