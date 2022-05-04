@@ -1,7 +1,8 @@
 """Adds config flow for GarbageCollection."""
+from __future__ import annotations
+
 import uuid
 from collections import OrderedDict
-from typing import Dict, List, Optional
 
 import holidays
 import homeassistant.helpers.config_validation as cv
@@ -18,16 +19,16 @@ from . import const, create_holidays
 class HolidaysShared:
     """Store configuration for both YAML and config_flow."""
 
-    def __init__(self, data: Dict):
+    def __init__(self, data: dict):
         """Create class attributes and set initial values."""
         self._data = data.copy()
-        self.name: Optional[str] = None
+        self.name: str | None = None
         # pylint: disable=maybe-no-member
-        self._supported_countries: Dict = holidays.list_supported_countries()
-        self.country_codes: List = sorted(
+        self._supported_countries: dict = holidays.list_supported_countries()
+        self.country_codes: list = sorted(
             [holiday for holiday in self._supported_countries]
         )
-        self.errors: Dict = {}
+        self.errors: dict = {}
         self.data_schema: OrderedDict = OrderedDict()
         self._defaults = {
             const.CONF_ICON_NORMAL: const.DEFAULT_ICON_NORMAL,
@@ -36,7 +37,7 @@ class HolidaysShared:
             const.CONF_OBSERVED: True,
         }
 
-    def update_data(self, user_input: Dict) -> None:
+    def update_data(self, user_input: dict) -> None:
         """Remove empty fields, and fields that should not be stored in the config."""
         self._data.update(user_input)
         for key, value in user_input.items():
@@ -46,9 +47,9 @@ class HolidaysShared:
             self.name = self._data[CONF_NAME]
             del self._data[CONF_NAME]
 
-    def required(self, key: str, options: Optional[Dict]) -> vol.Required:
+    def required(self, key: str, options: dict | None) -> vol.Required:
         """Return vol.Required."""
-        if isinstance(options, Dict) and key in options:
+        if isinstance(options, dict) and key in options:
             suggested_value = options[key]
         elif key in self._data:
             suggested_value = self._data[key]
@@ -58,9 +59,9 @@ class HolidaysShared:
             return vol.Required(key)
         return vol.Required(key, description={"suggested_value": suggested_value})
 
-    def optional(self, key: str, options: Optional[Dict]) -> vol.Optional:
+    def optional(self, key: str, options: dict | None) -> vol.Optional:
         """Return vol.Optional."""
-        if isinstance(options, Dict) and key in options:
+        if isinstance(options, dict) and key in options:
             suggested_value = options[key]
         elif key in self._data:
             suggested_value = self._data[key]
@@ -70,9 +71,7 @@ class HolidaysShared:
             return vol.Optional(key)
         return vol.Optional(key, description={"suggested_value": suggested_value})
 
-    def step1_user_init(
-        self, user_input: Optional[Dict], options: bool = False
-    ) -> bool:
+    def step1_user_init(self, user_input: dict | None, options: bool = False) -> bool:
         """User init."""
         self.errors.clear()
         if user_input is not None:
@@ -103,7 +102,7 @@ class HolidaysShared:
         self.data_schema[self.optional(const.CONF_OBSERVED, user_input)] = bool
         return False
 
-    def step2_subdiv(self, user_input: Dict) -> bool:
+    def step2_subdiv(self, user_input: dict) -> bool:
         """Step 2 - Pop countries."""
         self.errors.clear()
 
@@ -119,7 +118,7 @@ class HolidaysShared:
         self.data_schema[self.optional(const.CONF_SUBDIV, user_input)] = vol.In(subdivs)
         return False
 
-    def step3_pop(self, user_input: Dict) -> bool:
+    def step3_pop(self, user_input: dict) -> bool:
         """Step 2 - Pop countries."""
         self.errors = {}
 
@@ -161,7 +160,7 @@ class HolidaysFlowHandler(config_entries.ConfigFlow):
         self.shared_class.hass = self.hass
 
     async def async_step_user(
-        self, user_input: Dict = {}
+        self, user_input: dict = {}
     ):  # pylint: disable=dangerous-default-value
         """Step 1 - user init."""
         if self.shared_class.step1_user_init(user_input):
@@ -175,7 +174,7 @@ class HolidaysFlowHandler(config_entries.ConfigFlow):
         )
 
     async def async_step_subdiv(
-        self, user_input: Dict = {}, re_entry=True
+        self, user_input: dict = {}, re_entry=True
     ):  # pylint: disable=dangerous-default-value
         """Step 2 - enter country subdivision (e.g. states).
 
@@ -195,7 +194,7 @@ class HolidaysFlowHandler(config_entries.ConfigFlow):
         )
 
     async def async_step_pop(
-        self, user_input: Dict = {}, re_entry=True
+        self, user_input: dict = {}, re_entry=True
     ):  # pylint: disable=dangerous-default-value
         """Step 3 - enter holidays to pop.
 
@@ -217,7 +216,7 @@ class HolidaysFlowHandler(config_entries.ConfigFlow):
         )
 
     async def async_step_import(
-        self, user_input: Dict
+        self, user_input: dict
     ):  # pylint: disable=unused-argument
         """Import a config entry.
 
@@ -243,7 +242,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         """Create and initualize class variables."""
         self.shared_class = HolidaysShared(config_entry.data)
 
-    async def async_step_init(self, user_input: Optional[Dict] = None):
+    async def async_step_init(self, user_input: dict | None = None):
         """Genral parameters."""
         if self.shared_class.step1_user_init(user_input, options=True):
             return await self.async_step_subdiv(re_entry=False)
@@ -254,7 +253,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         )
 
     async def async_step_subdiv(
-        self, user_input: Dict = {}, re_entry=True
+        self, user_input: dict = {}, re_entry=True
     ):  # pylint: disable=dangerous-default-value
         """Step 2 - enter country subdivision (e.g. states).
 
@@ -272,7 +271,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         )
 
     async def async_step_pop(
-        self, user_input: Dict = {}, re_entry=True
+        self, user_input: dict = {}, re_entry=True
     ):  # pylint: disable=dangerous-default-value
         """Step 3 - enter holidays to pop.
 
