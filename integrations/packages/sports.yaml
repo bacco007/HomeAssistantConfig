@@ -335,17 +335,17 @@ sensor:
         friendly_name: Formula One
         entity_picture_template: /local/sportlogos/f1.png
         value_template: >-
-          {%- if state_attr('calendar.ical_formula_1', 'message') %}
-            {{ state_attr('calendar.ical_formula_1', 'message') | replace('F1 - ','') }}
+          {%- if state_attr('calendar.ical_f1', 'message') %}
+            {{ state_attr('calendar.ical_f1', 'message') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
         attribute_templates:
           nexttime: >-
-            {%- if is_state('calendar.ical_formula_1', 'on') %}
+            {%- if is_state('calendar.ical_f1', 'on') %}
               On Now!
             {%- else %}
-              {%- set st = state_attr('calendar.ical_formula_1', 'start_time') %}
+              {%- set st = state_attr('calendar.ical_f1', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {%- if diff > 6 %}
@@ -358,25 +358,25 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_formula_1', 'message') | replace('F1 - ','')  %}
-            {%- set st = state_attr('calendar.ical_formula_1', 'start_time') %}
+            {%- set op = state_attr('calendar.ical_f1', 'message')  %}
+            {%- set st = state_attr('calendar.ical_f1', 'start_time') %}
             {%- if st != None %}
               {{ op }}
             {%- else %}
               No Race Scheduled
             {%- endif %}
           nextlocation: >-
-            {%- set op = state_attr('calendar.ical_formula_1', 'location') %}
+            {%- set op = state_attr('calendar.ical_f1', 'location') %}
             {%- if op != None %}
               {{ op }}
             {%- else %}
               No Location Noted
             {%- endif %}
           sortorder: >-
-            {%- if is_state('calendar.ical_formula_1', 'on') %}
+            {%- if is_state('calendar.ical_f1', 'on') %}
               0
             {%- else %}
-              {%- set st = state_attr('calendar.ical_formula_1', 'start_time') %}
+              {%- set st = state_attr('calendar.ical_f1', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}

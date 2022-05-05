@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Thursday, May 5th 2022_
+_Stats as at 05:00, Friday, May 6th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 408     | 2877         | 1946 | 96 |
+| unknown | 408     | 2877         | 1951 | 96 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1946
+Sensor | 1951
 Sun | 1
 Switch | 184
 Weather | 9
@@ -278,7 +278,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
-| [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
 | [media_player.xbox](https://www.home-assistant.io/components/media_player.xbox) |
 | [media_source](https://www.home-assistant.io/components/media_source) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
@@ -363,6 +362,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
+| [sensor.formulaone_api](https://www.home-assistant.io/components/sensor.formulaone_api) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
@@ -541,6 +541,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Favicon changer](https://github.com/thomasloven/hass-favicon)
 - [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
 - [Fontawesome icons](https://github.com/thomasloven/hass-fontawesome)
+- [Formula One API](https://github.com/delzear/hass-formulaoneapi)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
 - [Generate readme](https://github.com/custom-components/readme)
 - [Google Fit](https://github.com/cyberjunky/home-assistant-google_fit)
