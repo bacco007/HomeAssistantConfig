@@ -213,6 +213,14 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return result
 
+    @callback
+    def _get_api_key(self):
+        """Get api key in configured entries if available."""
+        for entry in self._async_current_entries():
+            if CONF_API_KEY in entry.data:
+                return entry.data[CONF_API_KEY]
+        return None
+
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
 
@@ -223,6 +231,10 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     "req_ver": __min_ha_version__, "run_ver": __version__
                 },
             )
+
+        if not self._user_data:
+            if api_key := self._get_api_key():
+                self._user_data = {CONF_API_KEY: api_key}
 
         if user_input is None:
             return self._show_form()
@@ -292,19 +304,20 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 step_id="stdeviceid" if result == RESULT_ST_DEVICE_NOT_FOUND else "user"
             )
 
+        updates = {}
+        if mac := self._device_info.get(ATTR_DEVICE_MAC):
+            updates[CONF_MAC] = mac
+
         if ATTR_DEVICE_ID in self._device_info:
             unique_id = self._device_info[ATTR_DEVICE_ID]
-        elif ATTR_DEVICE_MAC in self._device_info:
-            unique_id = self._device_info[ATTR_DEVICE_MAC]
         else:
-            unique_id = self._host
+            unique_id = mac or self._host
 
-        updates = None
         if unique_id != self._host:
-            updates = {CONF_HOST: self._host}
+            updates[CONF_HOST] = self._host
 
         await self.async_set_unique_id(unique_id)
-        self._abort_if_unique_id_configured(updates)
+        self._abort_if_unique_id_configured(updates or None)
 
         return self._save_entry()
 
