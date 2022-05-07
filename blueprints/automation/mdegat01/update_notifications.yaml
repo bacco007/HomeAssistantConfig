@@ -87,16 +87,15 @@ blueprint:
     notification_channel:
       name: Channel/Group
       description: >-
-        Sets the channel (android) and group (ios) for update notifications
-        (https://companion.home-assistant.io/docs/notifications/notifications-basic#notification-channels,
-        https://companion.home-assistant.io/docs/notifications/notifications-basic#grouping)
+        Sets the [channel](https://companion.home-assistant.io/docs/notifications/notifications-basic#notification-channels) (android) and
+        [group](https://companion.home-assistant.io/docs/notifications/notifications-basic#grouping) (ios) for update notifications
       default: Updates
       selector:
         text:
     status_bar_icon:
       name: Status bar icon
       description: >-
-        (Android only) Sets the status bar icon (https://companion.home-assistant.io/docs/notifications/notifications-basic/#notification-icon).
+        (Android only) Sets the [status bar icon](https://companion.home-assistant.io/docs/notifications/notifications-basic/#notification-icon).
         NOTE: Different then the icon inside the notification, that is always set to the entity picture of the update
         entity (if it has one).
       default: mdi:package-up
@@ -107,7 +106,7 @@ mode: parallel
 max: 100
 trigger_variables:
   _reminder_hours: !input reminder_hours
-  reminder_hours: "{{ _reminder_hours | default(0) | int }}"
+  reminder_hours: "{{ _reminder_hours | default(0) | int(0) }}"
   run_config_check: !input run_config_check
   update_entities: !input update_entities
 trigger:
@@ -170,6 +169,11 @@ trigger:
       {{ states.update | selectattr('state', 'eq', 'on') | list | count > 0
         and reminder_hours > 0 and now().hour % reminder_hours == 0
         and now().minute == 0 and now().second == 0 }}
+  - id: sticky_ios
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: URI
 variables:
   mobile_app_device: !input mobile_app_device
   _mobile_app_device_2: !input mobile_app_device_2
@@ -248,9 +252,9 @@ action:
                     {{ message if device_attr(mobile_app_device, 'manufacturer') != 'Apple'
                         else message | replace('<br>', '\n') }}
                   data: >-
-                    {{ data if not (
-                          device_attr(mobile_app_device, 'manufacturer') == 'Apple' and data.icon_url
-                        ) else dict(data, image=data.icon_url) }}
+                    {{ data if
+                          device_attr(mobile_app_device, 'manufacturer') != 'Apple' or data.icon_url is not string
+                        else dict(data, image=data.icon_url) }}
             - choose:
                 alias: Send to second mobile device if specified
                 conditions: "{{ not not mobile_app_device_2 }}"
@@ -373,6 +377,17 @@ action:
           service: hassio.addon_start
           data:
             addon: core_check_config
+    - alias: Emulate sticky on IOS by recreating the notification
+      conditions:
+        - "{{ trigger.id == 'sticky_ios' }}"
+        - "{{ trigger.event.data.action_data is mapping and trigger.event.data.action_data.tag is string }}"
+        - "{{ is_state('update.' ~ trigger.event.data.action_data.tag, 'on') }}"
+      sequence:
+        - variables:
+            entity_id: *tag-to-entity
+        - *update-variables
+        - *send-to-mobile-devices
+        - *send-to-ha
     - alias: Core check addon completed
       conditions: "{{ trigger.id == 'core_check' }}"
       sequence:
