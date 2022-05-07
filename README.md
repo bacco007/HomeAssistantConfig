@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 7th 2022_
+_Stats as at 05:00, Sunday, May 8th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 408     | 2887         | 1951 | 96 |
+| unknown | 408     | 2879         | 1948 | 96 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1951
+Sensor | 1948
 Sun | 1
 Switch | 184
 Weather | 9
@@ -189,7 +189,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [config](https://www.home-assistant.io/components/config) |
-| [configurator](https://www.home-assistant.io/components/configurator) |
 | [counter](https://www.home-assistant.io/components/counter) |
 | [cover](https://www.home-assistant.io/components/cover) |
 | [cover.tuya](https://www.home-assistant.io/components/cover.tuya) |
@@ -278,6 +277,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
 | [media_player.samsungtv_smart](https://www.home-assistant.io/components/media_player.samsungtv_smart) |
 | [media_player.sonos](https://www.home-assistant.io/components/media_player.sonos) |
+| [media_player.spotify](https://www.home-assistant.io/components/media_player.spotify) |
 | [media_player.xbox](https://www.home-assistant.io/components/media_player.xbox) |
 | [media_source](https://www.home-assistant.io/components/media_source) |
 | [mobile_app](https://www.home-assistant.io/components/mobile_app) |
