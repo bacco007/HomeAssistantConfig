@@ -1,0 +1,349 @@
+cards:
+- cards:
+  - subtitle: Shortcuts
+    type: custom:mushroom-title-card
+  - entity: ''
+    icon: mdi:alpha-d-box
+    icon_color: blue
+    primary: Reload Dwains Dashboard
+    tap_action:
+      action: call-service
+      service: dwains_dashboard.reload
+      service_data: {}
+      target: {}
+    type: custom:mushroom-template-card
+  - entity: ''
+    icon: mdi:home-assistant
+    icon_color: blue
+    primary: Restart Home Assistant
+    tap_action:
+      action: call-service
+      service: homeassistant.restart
+      service_data: {}
+      target: {}
+    type: custom:mushroom-template-card
+  - entity: ''
+    icon: mdi:math-log
+    icon_color: white
+    primary: Logs
+    tap_action:
+      action: navigate
+      navigation_path: /config/logs
+    type: custom:mushroom-template-card
+  - entity: ''
+    icon: hacs:hacs
+    icon_color: white
+    primary: HACS
+    tap_action:
+      action: navigate
+      navigation_path: /hacs/entry
+    type: custom:mushroom-template-card
+  - entity: ''
+    icon: mdi:wrench
+    icon_color: white
+    primary: File Editor
+    tap_action:
+      action: navigate
+      navigation_path: /core_configurator/dashboard
+    type: custom:mushroom-template-card
+  - entity: ''
+    icon: mdi:console
+    icon_color: white
+    primary: Terminal
+    tap_action:
+      action: navigate
+      navigation_path: /core_ssh/dashboard
+    type: custom:mushroom-template-card
+  - entity: ''
+    icon: mdi:hammer
+    icon_color: white
+    primary: Developer Tools
+    tap_action:
+      action: navigate
+      navigation_path: /developer-tools/state
+    type: custom:mushroom-template-card
+  - card:
+      collapsible_controls: true
+      entity: update.home_assistant_core_update
+      fill_container: false
+      show_buttons_control: true
+      type: custom:mushroom-update-card
+      use_entity_picture: true
+    conditions:
+    - entity: update.home_assistant_core_update
+      state: 'on'
+    type: conditional
+  item_classes: col-lg-3 col-xs-12
+  type: vertical-stack
+- cards:
+  - subtitle: Speedtest
+    type: custom:mushroom-title-card
+  - entities:
+    - sensor.speedtest_ping
+    font_size: 70
+    height: 30
+    hours_to_show: 168
+    icon: mdi:pulse
+    line_color: var(--primary-color)
+    line_width: 2
+    name: Ping
+    points_per_hour: 1
+    show:
+      fill: true
+      graph: bar
+    type: custom:mini-graph-card
+  - cards:
+    - entities:
+      - entity: sensor.speedtest_download
+        show_points: false
+      font_size: 70
+      hours_to_show: 168
+      icon: mdi:arrow-down-bold
+      line_color: var(--primary-color)
+      line_width: 2
+      name: Download
+      show:
+        extrema: true
+        labels: false
+      type: custom:mini-graph-card
+    - entities:
+      - entity: sensor.speedtest_upload
+        show_points: false
+      font_size: 70
+      hours_to_show: 168
+      icon: mdi:arrow-up-bold
+      line_color: var(--primary-color)
+      line_width: 2
+      name: Upload
+      show:
+        extrema: true
+        labels: false
+      type: custom:mini-graph-card
+    type: horizontal-stack
+  - subtitle: System
+    type: custom:mushroom-title-card
+  - cards:
+    - entity: sensor.ipv4_address_eth0
+      name: IP Adress
+      type: custom:mushroom-entity-card
+    - entity: sensor.last_boot
+      type: custom:mushroom-entity-card
+    type: horizontal-stack
+  - cards:
+    - bar_style:
+        border-radius: 5px
+        padding-left: 4px
+        text-align: left
+      columns: 2
+      entities:
+      - entity: sensor.processor_use
+      - entity: sensor.memory_use_percent
+      - entity: sensor.processor_temperature
+        icon: mdi:thermometer
+      - entity: sensor.disk_use_percent
+      positions:
+        indicator: inside
+        name: 'off'
+      severity:
+      - color: Green
+        from: 0
+        to: 60
+      - color: Orange
+        from: 61
+        to: 80
+      - color: Red
+        from: 81
+        to: 100
+      style: "ha-card {\n  border-radius: 5px;\n}\nbar-card-backgroundbar, bar-card-currentbar\
+        \ {\n  border-radius: 5px;\n}\nbar-card-value {\n  font-weight: bold;\n}\n\
+        bar-card-iconbar {\n  height: 20px;\n}      \n"
+      type: custom:bar-card
+    type: horizontal-stack
+  - cards:
+    - entities:
+      - sensor.network_throughput_in_eth0
+      font_size: 70
+      hours_to_show: 24
+      icon: mdi:arrow-down-bold
+      icon_adaptive_color: true
+      line_color: var(--primary-color)
+      line_width: 2
+      name: Throughput In
+      points_per_hour: 5
+      show:
+        labels: false
+      type: custom:mini-graph-card
+    - entities:
+      - sensor.network_throughput_out_eth0
+      font_size: 70
+      hours_to_show: 24
+      icon: mdi:arrow-up-bold
+      line_color: var(--primary-color)
+      line_width: 2
+      name: Throughput Out
+      points_per_hour: 5
+      show:
+        labels: false
+      type: custom:mini-graph-card
+    type: horizontal-stack
+  item_classes: col-lg-6 col-xs-12
+  type: vertical-stack
+- cards:
+  - subtitle: Server Controls
+    type: custom:mushroom-title-card
+  - cards:
+    - entity: ''
+      icon: mdi:cloud-lock
+      icon_color: teal
+      primary: Home Assistant Cloud
+      tap_action:
+        action: navigate
+        navigation_path: /config/cloud/login
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:devices
+      icon_color: '#00008b'
+      primary: Devices & Services
+      tap_action:
+        action: navigate
+        navigation_path: /config/integrations
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:robot
+      icon_color: green
+      primary: Automations & Scenes
+      tap_action:
+        action: navigate
+        navigation_path: /config/automation/dashboard
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:sofa
+      icon_color: orange
+      primary: Areas & Zones
+      tap_action:
+        action: navigate
+        navigation_path: /config/areas/dashboard
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:puzzle
+      icon_color: yellow
+      primary: Add-ons
+      tap_action:
+        action: navigate
+        navigation_path: /hassio/dashboard
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:view-dashboard
+      icon_color: pink
+      primary: Dashboards
+      tap_action:
+        action: navigate
+        navigation_path: /config/lovelace/dashboards
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:nfc-variant
+      icon_color: grey
+      primary: NFC Tags
+      tap_action:
+        action: navigate
+        navigation_path: /config/tags
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:account
+      icon_color: blue
+      primary: Persons
+      tap_action:
+        action: navigate
+        navigation_path: /config/person
+      type: custom:mushroom-template-card
+    - entity: ''
+      icon: mdi:cog
+      icon_color: purple
+      primary: System
+      tap_action:
+        action: navigate
+        navigation_path: /config/system
+      type: custom:mushroom-template-card
+    type: custom:stack-in-card
+  - entities:
+    - entities:
+      - cards:
+        - entity: ''
+          icon: mdi:robot
+          icon_color: blue
+          primary: Reload Automations
+          tap_action:
+            action: call-service
+            service: automation.reload
+            service_data: {}
+            target: {}
+          type: custom:mushroom-template-card
+        - entity: ''
+          icon: mdi:script-text
+          icon_color: blue
+          primary: Reload Scripts
+          tap_action:
+            action: call-service
+            service: script.reload
+            service_data: {}
+            target: {}
+          type: custom:mushroom-template-card
+        - entity: ''
+          icon: mdi:google-circles-communities
+          icon_color: blue
+          primary: Reload Groups
+          tap_action:
+            action: call-service
+            service: group.reload
+            service_data: {}
+            target: {}
+          type: custom:mushroom-template-card
+        - entity: ''
+          icon: mdi:account
+          icon_color: blue
+          primary: Reload Persons
+          tap_action:
+            action: call-service
+            service: person.reload
+            service_data: {}
+            target: {}
+          type: custom:mushroom-template-card
+        - entity: ''
+          icon: mdi:palette
+          icon_color: blue
+          primary: Reload Scenes
+          tap_action:
+            action: call-service
+            service: scene.reload
+            service_data: {}
+            target: {}
+          type: custom:mushroom-template-card
+        - entity: ''
+          icon: mdi:map-marker
+          icon_color: blue
+          primary: Reload Zones
+          tap_action:
+            action: call-service
+            service: zone.reload
+            service_data: {}
+            target: {}
+          type: custom:mushroom-template-card
+        type: custom:stack-in-card
+      head:
+        label: Reload Scripts
+        type: section
+      padding: 0
+      type: custom:fold-entity-row
+    style:
+      '#states':
+        $: null
+        fold-entity-row:
+          $:
+            '#head':
+              hui-section-row:
+                $: ".divider {\n  opacity: 0 !important;\n}\n"
+    type: entities
+  item_classes: col-lg-3 col-xs-12
+  type: vertical-stack
+items_classes: col-xs-12
+type: custom:dwains-flexbox-card

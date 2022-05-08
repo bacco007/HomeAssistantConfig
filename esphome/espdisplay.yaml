@@ -1,3 +1,5 @@
+# https://www.reddit.com/r/homeassistant/comments/ujytvs/made_a_wireless_eink_dashboard_for_my_balcony/
+
 substitutions:
   esp_name: HA ePaper Display
   esp_hostname: esp-display
@@ -178,10 +180,17 @@ text_sensor:
   - platform: wifi_info
     ip_address:
       name: "${esp_name} IP Address"
+      id: ip_address
       icon: mdi:wifi
       entity_category: diagnostic
     ssid:
       name: "${esp_name} Connected SSID"
+      id: ssid
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    bssid:
+      name: "${esp_name} Connected BSSID"
+      id: bssid
       icon: mdi:wifi-strength-2
       entity_category: diagnostic
 
@@ -263,8 +272,30 @@ sensor:
       if (y < 100) {return y;} else {return 100;};
 
   - platform: wifi_signal
+    id: sensor_wifi_signal
     name: "${esp_name} WiFi"
     update_interval: 60s
+    on_value:
+      - component.update: sensor_wifi_signal_percentage
+
+  - platform: template
+    id: sensor_wifi_signal_percentage
+    name: "${esp_name} Wi-Fi Signal Percentage"
+    icon: "mdi:wifi"
+    unit_of_measurement: "%"
+    update_interval: never
+    lambda: |-
+      if (id(sensor_wifi_signal).state) {
+        if (id(sensor_wifi_signal).state <= -100 ) {
+          return 0;
+        } else if (id(sensor_wifi_signal).state >= -50) {
+          return 100;
+        } else {
+          return 2 * (id(sensor_wifi_signal).state + 100);
+        }
+      } else {
+        return NAN;
+      }
 
   - platform: homeassistant
     id: temp_now
@@ -558,7 +589,6 @@ display:
   - platform: lilygo_t5_47_display
     id: t5_display
     rotation: 0
-    full_update_every: 10
     power_off_delay_enabled: true
     update_interval: never
     pages:
@@ -648,20 +678,7 @@ display:
 
       - id: page_2
         lambda: |-
-
-          it.print(x1, y2, id(font_name), TextAlign::BASELINE_LEFT, "Bitcoin");
-          it.print(x2, y2, id(font_name), TextAlign::BASELINE_LEFT, "Ethereum");
-          it.print(x3, y2, id(font_name), TextAlign::BASELINE_LEFT, "Solana");
-
-          it.print(x1, y3, id(font_name), TextAlign::BASELINE_LEFT, "Litecoin");
-          it.print(x2, y3, id(font_name), TextAlign::BASELINE_LEFT, "Doge");
-          it.print(x3, y3, id(font_name), TextAlign::BASELINE_LEFT, "Stellar");          
-
-          // Footer
-          //it.line(0, yres-30, xres, yres-30);
-          it.strftime(x_pad, yres-y_pad/2, id(font_footer), COLOR_ON, TextAlign::BASELINE_LEFT, "%A %d %b %Y", id(ntp).now());
-          it.strftime(xres/2, yres-y_pad/2, id(font_footer), COLOR_ON, TextAlign::BASELINE_CENTER, "Updated %H:%M", id(ntp).now());
-          it.printf(xres-x_pad, yres-y_pad/2, id(font_footer), COLOR_ON, TextAlign::BASELINE_RIGHT, "%.2fV/%.0f%%", id(batt_volt).voltage->state, id(batt).state);
+          it.printf(20, 5, id(font_name), "Testing");
 
       - id: page_3
         lambda: |-

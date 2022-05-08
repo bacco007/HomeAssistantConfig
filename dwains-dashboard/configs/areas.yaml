@@ -2,6 +2,10 @@ bf296b332b7b489e847e8a9961d27b7e:
   floor: ''
   icon: ios:bed-double#fullcolor
   sort_order: 2
+display:
+  icon: ios:display-2
+  floor: ''
+  disabled: false
 home:
   floor: ''
   icon: mdi:home-automation
