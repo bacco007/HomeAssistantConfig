@@ -35,7 +35,7 @@ from .const import (
     DEF_TUNER_CHANNEL_FORMAT,
     DOMAIN,
 )
-from .logger import HDHomerunLogger
+from .logger import Logger
 from .pyhdhr import HDHomeRunDevice
 from .pyhdhr.discover import Discover
 from .pyhdhr.exceptions import (
@@ -121,7 +121,7 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
     return vol.Schema(schema)
 
 
-class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOMAIN):
+class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
     """
     1.  SSDP -> Friendly Name -> Finish
     2.  User -> IP provided -> Details -> Friendly Name -> Finish
@@ -131,7 +131,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
     def __init__(self):
         """"""
 
-        HDHomerunLogger.__init__(self)
+        Logger.__init__(self)
 
         self._discovered_devices: Optional[Dict[str, str]] = None
         self._discovered_devices_hd: Optional[List[HDHomeRunDevice]] = None
@@ -160,7 +160,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
         except Exception as err:
             err_msg = "generic_hdhomerun_error"
             self._error_message = str(err)
-            _LOGGER.error(self.message_format("%s"), err)
+            _LOGGER.error(self.format("%s"), err)
 
         if err_msg is not None:
             self._errors["base"] = err_msg
@@ -197,7 +197,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
             except Exception as err:
                 err_msg = "generic_hdhomerun_error"
                 self._error_message = str(err)
-                _LOGGER.error(self.message_format("%s"), err)
+                _LOGGER.error(self.format("%s"), err)
             else:
                 if hdhomerun_device.friendly_name:
                     self._friendly_name = hdhomerun_device.friendly_name
@@ -214,9 +214,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
     async def async_step_details(self, user_input=None) -> data_entry_flow.FlowResult:
         """Execute the discovery before proceeding"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if not self._task_details:
-            _LOGGER.debug(self.message_format("creating task for gathering details"))
+            _LOGGER.debug(self.format("creating task for gathering details"))
             if self._host:  # try and lookup the device
                 self._task_details = self.hass.async_create_task(
                     self._async_task_discover_single()
@@ -229,11 +229,11 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
 
         await self._task_details
 
-        _LOGGER.debug(self.message_format("_errors: %s"), self._errors)
+        _LOGGER.debug(self.format("_errors: %s"), self._errors)
         if self._errors:
             return self.async_show_progress_done(next_step_id=STEP_USER)
 
-        _LOGGER.debug(self.message_format("proceeding to next step"))
+        _LOGGER.debug(self.format("proceeding to next step"))
         if self._discovered_devices_hd is None:
             return self.async_show_progress_done(next_step_id=STEP_FRIENDLY_NAME)
         else:
@@ -242,7 +242,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
     async def async_step_finish(self, _=None) -> data_entry_flow.FlowResult:
         """Finalise the configuration entry"""
 
-        _LOGGER.debug(self.message_format("entered"))
+        _LOGGER.debug(self.format("entered"))
 
         if not self.unique_id:
             await self.async_set_unique_id(unique_id=self._serial, raise_on_progress=False)
@@ -258,7 +258,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
         N.B. defaults to the value of the friendly_name instance variable
         """
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
 
         if user_input is not None:
             self._friendly_name = user_input.get(CONF_FRIENDLY_NAME, "")
@@ -275,7 +275,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
     async def async_step_select_device(self, user_input=None) -> data_entry_flow.FlowResult:
         """Present a screen to select available devices from"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if user_input is not None:
             self._errors = {}
             self._host = user_input.get(CONF_HOST)
@@ -319,21 +319,21 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
     async def async_step_ssdp(self, discovery_info: ssdp.SsdpServiceInfo) -> data_entry_flow.FlowResult:
         """Manage the devices discovered by SSDP"""
 
-        _LOGGER.debug(self.message_format("entered, discovery_info: %s"), discovery_info)
+        _LOGGER.debug(self.format("entered, discovery_info: %s"), discovery_info)
 
         # region #-- get the important information --#
         self._friendly_name = f"{discovery_info.upnp.get('modelName', '')} " \
                               f"{discovery_info.upnp.get('serialNumber', '')}"
         service_list = discovery_info.upnp.get("serviceList", {}).get("service")
         if service_list:
-            _LOGGER.debug(self.message_format("%s"), json.dumps(service_list))
+            _LOGGER.debug(self.format("%s"), json.dumps(service_list))
             service = service_list[0]
             self._host = urlparse(url=service.get("controlURL", "")).hostname
         self._serial: str = discovery_info.upnp.get("serialNumber", "")
         # endregion
 
         # region #-- set a unique_id, update details if device has changed IP --#
-        _LOGGER.debug(self.message_format("setting unique_id: %s"), self._serial)
+        _LOGGER.debug(self.format("setting unique_id: %s"), self._serial)
         await self.async_set_unique_id(unique_id=self._serial)
         self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
         # endregion
@@ -345,7 +345,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
     async def async_step_user(self, user_input=None) -> data_entry_flow.FlowResult:
         """Handle a flow initiated by the user"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
 
         if user_input is not None:
             self._errors = {}
@@ -363,7 +363,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, HDHomerunLogger, domain=DOM
         )
 
 
-class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, HDHomerunLogger):
+class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
     """Manage the options flow"""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
@@ -377,19 +377,19 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, HDHomerunLogger):
     async def async_step_finish(self, user_input=None) -> data_entry_flow.FlowResult:
         """Finalise the settings to write back"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         return self.async_create_entry(title=self._config_entry.title, data=self._options)
 
     async def async_step_init(self, user_input=None) -> data_entry_flow.FlowResult:
         """First step in the flow"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         return await self.async_step_timeouts()
 
     async def async_step_options(self, user_input: Optional[dict] = None) -> data_entry_flow.FlowResult:
         """Present the main options"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if user_input is not None:
             self._errors = {}
             user_input[CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH] = user_input.get(
@@ -409,7 +409,7 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, HDHomerunLogger):
     async def async_step_timeouts(self, user_input: Optional[dict] = None) -> data_entry_flow.FlowResult:
         """Present the timeout options"""
 
-        _LOGGER.debug(self.message_format("entered, user_input: %s"), user_input)
+        _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if user_input is not None:
             self._errors = {}
             self._options.update(user_input)

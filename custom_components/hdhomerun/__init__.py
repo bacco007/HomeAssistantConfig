@@ -37,7 +37,7 @@ from .const import (
     PLATFORMS,
     SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY,
 )
-from .logger import HDHomerunLogger
+from .logger import Logger
 from .pyhdhr import HDHomeRunDevice
 
 # endregion
@@ -45,17 +45,17 @@ from .pyhdhr import HDHomeRunDevice
 _LOGGER = logging.getLogger(__name__)
 
 
-async def _async_reload(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+async def _async_reload(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     """Reload the config entry"""
 
-    return await hass.config_entries.async_reload(config_entry.entry_id)
+    await hass.config_entries.async_reload(config_entry.entry_id)
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Setup a config entry"""
 
-    log_formatter = HDHomerunLogger(unique_id=config_entry.unique_id)
-    _LOGGER.debug(log_formatter.message_format("entered"))
+    log_formatter = Logger(unique_id=config_entry.unique_id)
+    _LOGGER.debug(log_formatter.format("entered"))
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN].setdefault(config_entry.entry_id, {})
@@ -85,7 +85,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 await hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].async_rediscover()
             )
         except Exception as exc:
-            _LOGGER.warning(log_formatter.message_format("%s"), exc)
+            _LOGGER.warning(log_formatter.format("%s"), exc)
             raise UpdateFailed(str(exc))
 
         return True
@@ -97,11 +97,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         try:
             await hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].async_tuner_refresh()
         except Exception as exc:
-            _LOGGER.warning(log_formatter.message_format("%s"), exc)
+            _LOGGER.warning(log_formatter.format("%s"), exc)
             raise UpdateFailed(str(exc))
 
         if previous_availability != hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].online:
-            _LOGGER.debug(log_formatter.message_format("sending availability signal"))
+            _LOGGER.debug(log_formatter.format("sending availability signal"))
             async_dispatcher_send(hass, SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY)
 
         return True
@@ -139,11 +139,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     # region #-- setup the platforms --#
     setup_platforms: List[str] = list(filter(None, PLATFORMS))
-    _LOGGER.debug(log_formatter.message_format("setting up platforms: %s"), setup_platforms)
+    _LOGGER.debug(log_formatter.format("setting up platforms: %s"), setup_platforms)
     hass.config_entries.async_setup_platforms(config_entry, setup_platforms)
     # endregion
 
-    _LOGGER.debug(log_formatter.message_format("exited"))
+    _LOGGER.debug(log_formatter.format("exited"))
     return True
 
 
@@ -216,8 +216,8 @@ def entity_cleanup(
 ):
     """"""
 
-    log_formatter = HDHomerunLogger(unique_id=config_entry.unique_id, prefix=f"{entities[0].__class__.__name__} --> ")
-    _LOGGER.debug(log_formatter.message_format("entered"))
+    log_formatter = Logger(unique_id=config_entry.unique_id, prefix=f"{entities[0].__class__.__name__} --> ")
+    _LOGGER.debug(log_formatter.format("entered"))
 
     entity_registry: er.EntityRegistry = er.async_get(hass=hass)
     er_entries: List[er.RegistryEntry] = er.async_entries_for_config_entry(
@@ -231,8 +231,8 @@ def entity_cleanup(
             continue
 
         # remove the entity
-        _LOGGER.debug(log_formatter.message_format("removing %s"), entity.entity_id)
+        _LOGGER.debug(log_formatter.format("removing %s"), entity.entity_id)
         entity_registry.async_remove(entity_id=entity.entity_id)
 
-    _LOGGER.debug(log_formatter.message_format("exited"))
+    _LOGGER.debug(log_formatter.format("exited"))
 # endregion
