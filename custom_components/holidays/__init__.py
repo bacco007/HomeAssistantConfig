@@ -1,5 +1,5 @@
 """Component to integrate with holidays."""
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 import logging
 from datetime import timedelta

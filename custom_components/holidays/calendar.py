@@ -32,6 +32,28 @@ def now() -> datetime:
 class Holidays(CalendarEntity):
     """Holidays Sensor class."""
 
+    __slots__ = (
+        "config_entry",
+        "_name",
+        "_hidden",
+        "_country",
+        "_holiday_subdiv",
+        "_holiday_observed",
+        "_holiday_pop_named",
+        "_holidays",
+        "_holiday_names",
+        "_event",
+        "_next_date",
+        "_next_holiday",
+        "_last_updated",
+        "_entities",
+        "_date_format",
+        "_icon_normal",
+        "_icon_today",
+        "_icon_tomorrow",
+        "_icon",
+    )
+
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Read configuration and initialise class variables."""
         config = config_entry.data
@@ -180,10 +202,10 @@ class Holidays(CalendarEntity):
     def __repr__(self) -> str:
         """Return main calendar parameters."""
         return (
-            f"Holidays[name: {self.name}, "
-            f"entity_id: {self.entity_id}, "
-            f"state: {self.state}"
-            f"attributes: {self.extra_state_attributes}]"
+            f"Holidays(name={self.name}, "
+            f"entity_id={self.entity_id}, "
+            f"state={self.state}"
+            f"attributes={self.extra_state_attributes})"
         )
 
     async def async_get_events(
