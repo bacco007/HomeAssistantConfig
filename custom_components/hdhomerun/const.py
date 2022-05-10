@@ -2,6 +2,7 @@
 
 # region #-- imports --#
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 # TODO: remove try/except when minimum version of HASS is 2022.4.0
 try:
@@ -38,6 +39,7 @@ DEF_TUNER_CHANNEL_FORMAT: str = CONF_TUNER_CHANNEL_NAME
 
 PLATFORMS = [
     BINARY_SENSOR_DOMAIN,
+    BUTTON_DOMAIN,
     SENSOR_DOMAIN,
     UPDATE_DOMAIN,
 ]

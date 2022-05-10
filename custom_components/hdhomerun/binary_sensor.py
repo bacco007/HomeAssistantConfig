@@ -20,7 +20,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.util import slugify
 
 from . import (
     entity_cleanup,
@@ -29,7 +28,6 @@ from . import (
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     DOMAIN,
-    ENTITY_SLUG,
     UPDATE_DOMAIN,
 )
 
@@ -64,6 +62,8 @@ class HDHomerunBinarySensorEntityDescription(
 class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
     """"""
 
+    entity_description: HDHomerunBinarySensorEntityDescription
+
     def __init__(
         self,
         config_entry: ConfigEntry,
@@ -73,18 +73,9 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
     ) -> None:
         """Constructor"""
 
-        super().__init__(coordinator=coordinator, config_entry=config_entry, hass=hass)
-
+        self.ENTITY_DOMAIN = ENTITY_DOMAIN
+        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
-
-        self.entity_description: HDHomerunBinarySensorEntityDescription = description
-
-        self._attr_name = f"{ENTITY_SLUG} " \
-                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
-                          f"{self.entity_description.name}"
-        self._attr_unique_id = f"{config_entry.unique_id}::" \
-                               f"{ENTITY_DOMAIN.lower()}::" \
-                               f"{slugify(self.entity_description.name)}"
 
     # region #-- properties --#
     @property

@@ -30,7 +30,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.util import slugify
 
 from . import (
     entity_cleanup,
@@ -48,7 +47,6 @@ from .const import (
     DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
     DEF_TUNER_CHANNEL_FORMAT,
     DOMAIN,
-    ENTITY_SLUG,
     UPDATE_DOMAIN,
 )
 from .pyhdhr import HDHomeRunDevice
@@ -84,6 +82,8 @@ class HDHomerunSensorEntityDescription(
 class HDHomerunSensor(HDHomerunEntity, SensorEntity):
     """Representation of an HDHomeRun sensor"""
 
+    entity_description: HDHomerunSensorEntityDescription
+
     def __init__(
         self,
         config_entry: ConfigEntry,
@@ -93,16 +93,10 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
     ) -> None:
         """Constructor"""
 
-        super().__init__(config_entry=config_entry, coordinator=coordinator, hass=hass)
+        self.ENTITY_DOMAIN = ENTITY_DOMAIN
+        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
 
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
-        self.entity_description: HDHomerunSensorEntityDescription = description
-        self._attr_name = f"{ENTITY_SLUG} " \
-                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
-                          f"{self.entity_description.name}"
-        self._attr_unique_id = f"{config_entry.unique_id}::" \
-                               f"{ENTITY_DOMAIN.lower()}::" \
-                               f"{slugify(self.entity_description.name)}"
 
     @property
     def native_value(self) -> StateType | date | datetime:

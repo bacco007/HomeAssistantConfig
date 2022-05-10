@@ -3,6 +3,7 @@
 N.B. Implementation follows the instructions here: https://github.com/Silicondust/libhdhomerun
 """
 
+# region #-- imports --#
 from __future__ import annotations
 
 import asyncio
@@ -28,6 +29,10 @@ from .const import (
     HDHOMERUN_TYPE_GETSET_RPY,
 )
 
+from .logger import Logger
+
+# endregion
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -40,6 +45,7 @@ class HDHomeRunProtocol:
         self._connection_timeout: int = connection_timeout
         self._host: str = host
         self._lock_query: Optional[asyncio.Lock] = None
+        self._log_formatter: Logger = Logger(unique_id=self._host)
         self._port: int = HDHOMERUN_CONTROL_TCP_PORT
         self._query_timeout: int = query_timeout
         self._reader: Optional[asyncio.StreamReader] = None
@@ -177,7 +183,7 @@ class HDHomeRunProtocol:
             with contextlib.suppress(Exception):
                 await writer.wait_closed()
 
-    async def _async_connect(self, timeout: Optional[int] = None) -> None:
+    async def _async_connect(self, timeout: float = 2.5) -> None:
         """Connect to the device"""
 
         if self._writer:  # the writer is already in use somehow
@@ -205,26 +211,39 @@ class HDHomeRunProtocol:
 
         return response
 
-    async def _get_set_req(self, value: str, timeout: Optional[int] = None) -> Dict[int | str, bytes]:
+    async def _get_set_req(
+        self,
+        tag: str,
+        timeout: float = 2.5,
+        value: Optional[str] = None
+    ) -> Dict[int | str, bytes]:
         """Build the query ready to send on to the device
 
-        :param value: the variable to query
+        :param tag: the variable to query
         :param timeout: timeout for the request
+        :param value: value for a set request
         :return: dictionary containing the response in the form
                     {
                         <tag|variable>: <response data>
                     }
         """
 
+        _LOGGER.debug(self._log_formatter.format("entered, tag: %s, value: %s, timeout: %.2f"), tag, value, timeout)
         pkt_type: bytes = struct.pack(">H", HDHOMERUN_TYPE_GETSET_REQ)
         payload_data: List[Tuple[int, str]] = [
-            (HDHOMERUN_TAG_GETSET_NAME, value),
+            (HDHOMERUN_TAG_GETSET_NAME, tag),
         ]
+        if value is not None:
+            payload_data.append(
+                (HDHOMERUN_TAG_GETSET_VALUE, value)
+            )
         req: bytes = HDHomeRunProtocol.build_request(packet_payload=payload_data, packet_type=pkt_type)
 
-        return await self._query(request=req, timeout=timeout)
+        ret = await self._query(request=req, timeout=timeout)
+        _LOGGER.debug(self._log_formatter.format("exited"))
+        return ret
 
-    async def _query(self, request: bytes, timeout: Optional[int] = None) -> Optional[Dict[str, bytes]]:
+    async def _query(self, request: bytes, timeout: float = 2.5) -> Optional[Dict[str, bytes]]:
         """Create the connection to the device, lock, send and close
 
         :param request: full request to send to the device
@@ -251,7 +270,7 @@ class HDHomeRunProtocol:
 
         return ret
 
-    async def get_hwmodel(self, timeout: Optional[int] = None) -> Dict[str, bytes]:
+    async def get_hwmodel(self, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the model number
 
         :param timeout: timeout for the query
@@ -259,9 +278,9 @@ class HDHomeRunProtocol:
         """
 
         value_name = "/sys/hwmodel"
-        return await self._get_set_req(value=value_name, timeout=timeout)
+        return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_model(self, timeout: Optional[int] = None) -> Dict[str, bytes]:
+    async def get_model(self, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the firmware name
 
         :param timeout: timeout for the query
@@ -269,9 +288,9 @@ class HDHomeRunProtocol:
         """
 
         value_name = "/sys/model"
-        return await self._get_set_req(value=value_name, timeout=timeout)
+        return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_tuner_current_channel(self, tuner_idx, timeout: Optional[int] = None) -> Tuple[Dict[str, bytes], ...]:
+    async def get_tuner_current_channel(self, tuner_idx, timeout: float = 2.5) -> Tuple[Dict[str, bytes], ...]:
         """Get the current channel information from the tuner
 
         :param tuner_idx: the index number of the tuner
@@ -280,16 +299,16 @@ class HDHomeRunProtocol:
         """
 
         details = [
-            self._get_set_req(value=f"/tuner{tuner_idx}/program", timeout=timeout),
-            self._get_set_req(value=f"/tuner{tuner_idx}/streaminfo", timeout=timeout),
-            self._get_set_req(value=f"/tuner{tuner_idx}/target", timeout=timeout),
+            self._get_set_req(tag=f"/tuner{tuner_idx}/program", timeout=timeout),
+            self._get_set_req(tag=f"/tuner{tuner_idx}/streaminfo", timeout=timeout),
+            self._get_set_req(tag=f"/tuner{tuner_idx}/target", timeout=timeout),
         ]
 
         channel_details = await asyncio.gather(*details)
 
         return channel_details
 
-    async def get_tuner_status(self, tuner_idx: int, timeout: Optional[int] = None) -> Dict[str, bytes]:
+    async def get_tuner_status(self, tuner_idx: int, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the current tuner status
 
         :param tuner_idx: index number of the tuner
@@ -301,9 +320,9 @@ class HDHomeRunProtocol:
             raise ValueError
 
         value_name: str = f"/tuner{tuner_idx}/status"
-        return await self._get_set_req(value=value_name, timeout=timeout)
+        return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_version(self, timeout: Optional[int] = None) -> Dict[str, bytes]:
+    async def get_version(self, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the firmware version
 
         :param timeout: timeout for the query
@@ -311,9 +330,9 @@ class HDHomeRunProtocol:
         """
 
         value_name = "/sys/version"
-        return await self._get_set_req(value=value_name, timeout=timeout)
+        return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_available_options(self, timeout: Optional[int] = None) -> List[str]:
+    async def get_available_options(self, timeout: float = 2.5) -> List[str]:
         """Get the available variables that can be set/queried on the device
 
         :param timeout: timeout for the query
@@ -323,7 +342,7 @@ class HDHomeRunProtocol:
         ret: List[str] = []
         value_name: str = "help"
 
-        b_help: Dict[int | str, bytes] = await self._get_set_req(value=value_name, timeout=timeout)
+        b_help: Dict[int | str, bytes] = await self._get_set_req(tag=value_name, timeout=timeout)
         key: str = b_help.get("data", {})[HDHOMERUN_TAG_GETSET_NAME].decode()
         if key.rstrip("\0") == value_name:
             available_options: List[str] = b_help.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().split("\n")
@@ -333,3 +352,11 @@ class HDHomeRunProtocol:
             ]
 
         return ret
+
+    async def async_restart(self, timeout: float = 2.5) -> None:
+        """Instruct the device to do a restart"""
+
+        tag: str = "/sys/restart"
+        value: str = "self"
+
+        await self._get_set_req(tag=tag, timeout=timeout, value=value)

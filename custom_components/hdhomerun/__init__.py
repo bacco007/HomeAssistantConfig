@@ -24,6 +24,7 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     UpdateFailed,
 )
+from homeassistant.util import slugify
 
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
@@ -34,6 +35,7 @@ from .const import (
     DEF_SCAN_INTERVAL_SECS,
     DEF_SCAN_INTERVAL_TUNER_STATUS_SECS,
     DOMAIN,
+    ENTITY_SLUG,
     PLATFORMS,
     SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY,
 )
@@ -167,13 +169,29 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
 class HDHomerunEntity(CoordinatorEntity):
     """"""
 
-    def __init__(self, config_entry: ConfigEntry, coordinator: DataUpdateCoordinator, hass: HomeAssistant) -> None:
+    ENTITY_DOMAIN: str
+
+    def __init__(
+        self,
+        config_entry: ConfigEntry,
+        coordinator: DataUpdateCoordinator,
+        description,
+        hass: HomeAssistant
+    ) -> None:
         """Initialize the entity"""
 
         super().__init__(coordinator)
         self._config: ConfigEntry = config_entry
         self._hass: HomeAssistant = hass
         self._device: HDHomeRunDevice = self._hass.data[DOMAIN][self._config.entry_id][CONF_DEVICE]
+
+        self.entity_description = description
+        self._attr_name = f"{ENTITY_SLUG} " \
+                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
+                          f"{self.entity_description.name}"
+        self._attr_unique_id = f"{config_entry.unique_id}::" \
+                               f"{self.ENTITY_DOMAIN.lower()}::" \
+                               f"{slugify(self.entity_description.name)}"
 
     async def async_added_to_hass(self) -> None:
 

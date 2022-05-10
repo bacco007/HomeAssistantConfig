@@ -24,6 +24,7 @@ from .const import (
     HDHOMERUN_TAG_GETSET_VALUE,
 )
 from .exceptions import HDHomeRunTimeoutError
+from .logger import Logger
 from .protocol import HDHomeRunProtocol
 
 # endregion
@@ -52,6 +53,7 @@ class HDHomeRunDevice:
         """Constructor"""
 
         self._host: str = host
+        self._log_formatter: Logger = Logger(unique_id=self._host)
 
         self._created_session: bool = False
         self._session: Optional[aiohttp.ClientSession] = None
@@ -71,6 +73,11 @@ class HDHomeRunDevice:
         self._sys_version: Optional[str] = None
         self._tuner_count: Optional[int] = None
         self._tuner_status: Optional[List[Dict[str, int | str]]] = None
+
+    def __repr__(self) -> str:
+        """"""
+
+        return f"{self.__class__.__name__} {self._host}"
 
     async def _async_tuner_refresh_http(self, timeout: Optional[float] = 2.5) -> None:
         """Refresh the tuner data using HTTP
@@ -182,7 +189,32 @@ class HDHomeRunDevice:
         if tuner_status:
             self._tuner_status = tuner_status
 
-    async def async_tuner_refresh(self, timeout: Optional[float] = 2.5) -> None:
+    async def async_get_variable(self, variable: str, timeout: float = 2.5) -> Dict[str, int | str]:
+        """Retrieve the given variable from the device
+
+        :param variable: variable name
+        :param timeout: timeout for the request
+        :return: a dictionary in the form
+            {
+                "header": Any,
+                "length": Any,
+                "data": {
+                    "raw": <the data from the response sent by the device>
+                    "tag": <data> ...
+                }
+            }
+        """
+
+        _LOGGER.debug(self._log_formatter.format("entered, variable: %s, timeout: %.2f"), variable, timeout)
+        ret: Dict[str, int | str] = {}
+        proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
+        if (get_variable_func := getattr(proto, "_get_set_req", None)) is not None:
+            ret = await get_variable_func(tag=variable, timeout=timeout)
+
+        _LOGGER.debug(self._log_formatter.format("exited"))
+        return ret
+
+    async def async_tuner_refresh(self, timeout: float = 2.5) -> None:
         """Genric function refreshing tuners
 
         N.B. assumes that a discover_url means that the device will respond to HTTP
@@ -196,7 +228,7 @@ class HDHomeRunDevice:
         else:
             await self._async_tuner_refresh_tcp()
 
-    async def async_rediscover(self, timeout: Optional[float] = 2.5) -> HDHomeRunDevice:
+    async def async_rediscover(self, timeout: float = 2.5) -> HDHomeRunDevice:
         """Refresh the information for a device
 
         :param timeout: timeout for the query
@@ -247,6 +279,13 @@ class HDHomeRunDevice:
         # endregion
 
         return device
+
+    async def async_restart(self) -> None:
+        """"""
+
+        proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
+
+        await proto.async_restart()
 
     # region #-- properties --#
     @property

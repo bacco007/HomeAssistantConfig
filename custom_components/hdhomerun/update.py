@@ -18,13 +18,11 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.util import slugify
 
 from . import HDHomerunEntity
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     DOMAIN,
-    ENTITY_SLUG,
 )
 
 
@@ -56,6 +54,8 @@ class HDHomerunUpdateEntityDescription(
 class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
     """Representation of an HDHomeRun update entity"""
 
+    entity_description: HDHomerunUpdateEntityDescription
+
     def __init__(
         self,
         config_entry: ConfigEntry,
@@ -65,16 +65,8 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
     ) -> None:
         """Constructor"""
 
-        super().__init__(coordinator=coordinator, config_entry=config_entry, hass=hass)
-
-        self.entity_description: HDHomerunUpdateEntityDescription = description
-
-        self._attr_name = f"{ENTITY_SLUG} " \
-                          f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: " \
-                          f"{self.entity_description.name}"
-        self._attr_unique_id = f"{config_entry.unique_id}::" \
-                               f"{ENTITY_DOMAIN.lower()}::" \
-                               f"{slugify(self.entity_description.name)}"
+        self.ENTITY_DOMAIN = ENTITY_DOMAIN
+        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
 
     @property
     def installed_version(self) -> str | None:
