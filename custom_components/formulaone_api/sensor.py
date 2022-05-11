@@ -194,9 +194,12 @@ class FormulaOneSensor(Entity):
         found = False
         for race in races['MRData']['RaceTable']['Races']:
             if (not found): 
-                print(race)
+                #print(race)
                 #r = json.loads(race)
-                if (dt.strptime(race['date'], '%Y-%m-%d') >= dt.today()):
+                if (dt.strptime(race['date'], '%Y-%m-%d') == dt.today()):
+                    next_race = race
+                    found = True
+                elif (dt.strptime(race['date'], '%Y-%m-%d') > dt.today()):
                     next_race = race
                     found = True
 
