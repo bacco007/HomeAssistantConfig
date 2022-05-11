@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 11:17, Tuesday, May 10th 2022_
+_Stats as at 05:00, Thursday, May 12th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 408     | 2816         | 1894 | 96 |
+| unknown | 404     | 2743         | 1855 | 97 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 96
-Binary Sensor | 285
+Automation | 97
+Binary Sensor | 268
 Camera | 8
 Device Tracker | 68
 Group | 5
@@ -92,9 +92,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1894
+Sensor | 1855
 Sun | 1
-Switch | 183
+Switch | 126
 Weather | 9
 Zone | 3
 
@@ -151,7 +151,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.tuya](https://www.home-assistant.io/components/binary_sensor.tuya) |
 | [binary_sensor.upnp](https://www.home-assistant.io/components/binary_sensor.upnp) |
 | [binary_sensor.upnp_availability](https://www.home-assistant.io/components/binary_sensor.upnp_availability) |
-| [binary_sensor.uptime_kuma](https://www.home-assistant.io/components/binary_sensor.uptime_kuma) |
 | [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.version](https://www.home-assistant.io/components/binary_sensor.version) |
 | [binary_sensor.weatherflow](https://www.home-assistant.io/components/binary_sensor.weatherflow) |
@@ -165,6 +164,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
 | [button.esphome](https://www.home-assistant.io/components/button.esphome) |
+| [button.hdhomerun](https://www.home-assistant.io/components/button.hdhomerun) |
 | [button.homekit_controller](https://www.home-assistant.io/components/button.homekit_controller) |
 | [button.plex](https://www.home-assistant.io/components/button.plex) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
@@ -218,6 +218,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [feedreader](https://www.home-assistant.io/components/feedreader) |
 | [ffmpeg](https://www.home-assistant.io/components/ffmpeg) |
 | [fontawesome](https://www.home-assistant.io/components/fontawesome) |
+| [forecast_solar](https://www.home-assistant.io/components/forecast_solar) |
 | [frontend](https://www.home-assistant.io/components/frontend) |
 | [garbage_collection](https://www.home-assistant.io/components/garbage_collection) |
 | [gdacs](https://www.home-assistant.io/components/gdacs) |
@@ -362,6 +363,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
+| [sensor.forecast_solar](https://www.home-assistant.io/components/sensor.forecast_solar) |
 | [sensor.formulaone_api](https://www.home-assistant.io/components/sensor.formulaone_api) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
@@ -392,11 +394,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
-| [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
-| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.scrape](https://www.home-assistant.io/components/sensor.scrape) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
@@ -404,7 +404,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
-| [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
@@ -414,11 +413,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sun2](https://www.home-assistant.io/components/sensor.sun2) |
 | [sensor.synology_dsm](https://www.home-assistant.io/components/sensor.synology_dsm) |
 | [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor) |
-| [sensor.tautulli](https://www.home-assistant.io/components/sensor.tautulli) |
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
-| [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
@@ -468,7 +465,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
-| [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
 | [switch.tuya](https://www.home-assistant.io/components/switch.tuya) |
 | [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
 | [switch.uptimerobot](https://www.home-assistant.io/components/switch.uptimerobot) |
