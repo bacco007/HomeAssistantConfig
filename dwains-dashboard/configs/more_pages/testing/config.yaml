@@ -1,4 +1,3 @@
-icon: mdi:test-tube
 name: Temp
+icon: mdi:test-tube
 show_in_navbar: false
-sort_order: 20

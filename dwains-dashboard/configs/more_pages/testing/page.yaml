@@ -1,49 +1,87 @@
 cards:
-- entity: sensor.plex_recently_added
-  name: Plex (TV)
-  tap_action:
-    action: none
-  template:
-  - conditional_media
-  - icon_plex
-  type: custom:button-card
-- entity: sensor.plex_recently_added_movies
-  name: Plex (Movies)
-  tap_action:
-    action: none
-  template:
-  - conditional_media
-  - icon_plex
-  type: custom:button-card
-- entity: sensor.sonarr_upcoming_media
-  name: Sonarr (Upcoming)
-  tap_action:
-    action: none
-  template:
-  - conditional_media
-  type: custom:button-card
-- entity: sensor.radarr_upcoming_media
-  name: Radarr (Upcoming)
-  tap_action:
-    action: none
-  template:
-  - conditional_media
-  type: custom:button-card
-- entity: media_player.office_sonos
-  name: Sonos
-  tap_action:
-    action: none
-  template:
-  - conditional_media
-  type: custom:button-card
-- entity: binary_sensor.weekend
-  icon_color: pink
-  name: "Rainbow Hub \u2197"
-  style: 'ha-card {background: none;}'
-  tap_action:
-    action: url
-    url_path: https://
-  type: custom:mushroom-entity-card
-items_classes: col-xs-12 col-sm-6 col-md-2 col-lg-2
-padding: true
+- cards:
+  - entity: sensor.plex_recently_added
+    name: Plex (TV)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_plex
+    type: custom:button-card
+  - entity: sensor.plex_recently_added_movies
+    name: Plex (Movies)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_plex
+    type: custom:button-card
+  - entity: sensor.sonarr_upcoming_media
+    name: Sonarr (Upcoming)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    type: custom:button-card
+  - entity: sensor.radarr_upcoming_media
+    name: Radarr (Upcoming)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    type: custom:button-card
+  - entity: media_player.office_sonos
+    name: Sonos
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    type: custom:button-card
+  - entity: binary_sensor.weekend
+    icon_color: pink
+    name: "Rainbow Hub \u2197"
+    style: 'ha-card {background: none;}'
+    tap_action:
+      action: url
+      url_path: https://
+    type: custom:mushroom-entity-card
+  items_classes: col-xs-12 col-sm-6 col-md-2 col-lg-2
+  padding: true
+  type: custom:dwains-flexbox-card
+- apex_config:
+    chart:
+      foreColor: '#6D6D6D'
+      height: 380
+      type: line
+    fill:
+      gradient:
+        colorStops:
+        - color: '#fc440b'
+          offset: 10
+          opacity: 1
+        - color: '#ffce63'
+          offset: 55
+          opacity: 1
+        - color: '#0a95f9'
+          offset: 90
+          opacity: 1
+        opacityFrom: 1
+        opacityTo: 1
+        shadeIntensity: 1
+        type: vertical
+      type: gradient
+    grid:
+      borderColor: '#6D6D6D'
+    stroke:
+      curve: smooth
+  graph_span: 7d
+  series:
+  - entity: sensor.tempest_st_00056115_temperature
+    group_by:
+      duration: 15min
+      func: last
+    stroke_width: 4
+  type: custom:apexcharts-card
+items_classes: col-xs-12
+padding: false
 type: custom:dwains-flexbox-card
