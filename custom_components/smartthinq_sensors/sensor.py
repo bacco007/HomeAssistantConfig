@@ -1,5 +1,4 @@
-# REQUIREMENTS = ['wideq']
-# DEPENDENCIES = ['smartthinq']
+"""Support for ThinQ device sensors."""
 
 from __future__ import annotations
 
@@ -34,8 +33,9 @@ from .wideq import (
     FEAT_OVEN_LOWER_STATE,
     FEAT_OVEN_UPPER_CURRENT_TEMP,
     FEAT_OVEN_UPPER_STATE,
+    WM_DEVICE_TYPES,
+    DeviceType,
 )
-from .wideq.device import WM_DEVICE_TYPES, DeviceType
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,

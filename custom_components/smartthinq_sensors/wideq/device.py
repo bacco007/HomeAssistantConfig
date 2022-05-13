@@ -13,27 +13,23 @@ import time
 from typing import Any, Dict, Optional
 from threading import Lock
 
-from . import EMULATION, wideq_log_level
 from . import core_exceptions as core_exc
-
+from .const import (
+    STATE_OPTIONITEM_NONE,
+    STATE_OPTIONITEM_OFF,
+    STATE_OPTIONITEM_ON,
+    STATE_OPTIONITEM_UNKNOWN,
+    UNIT_TEMP_CELSIUS,
+    UNIT_TEMP_FAHRENHEIT,
+)
+from .core_v2 import EMULATION
+from .device_info import DeviceInfo, PlatformType
 
 BIT_OFF = "OFF"
 BIT_ON = "ON"
 
 LABEL_BIT_OFF = "@CP_OFF_EN_W"
 LABEL_BIT_ON = "@CP_ON_EN_W"
-
-MIN_TIME_BETWEEN_CLI_REFRESH = 10  # seconds
-MAX_RETRIES = 3
-MAX_UPDATE_FAIL_ALLOWED = 10
-
-STATE_OPTIONITEM_OFF = "off"
-STATE_OPTIONITEM_ON = "on"
-STATE_OPTIONITEM_NONE = "-"
-STATE_OPTIONITEM_UNKNOWN = "unknown"
-
-UNIT_TEMP_CELSIUS = "celsius"
-UNIT_TEMP_FAHRENHEIT = "fahrenheit"
 
 LOCAL_LANG_PACK = {
     LABEL_BIT_OFF: STATE_OPTIONITEM_OFF,
@@ -50,87 +46,16 @@ LOCAL_LANG_PACK = {
     "NOT_USE": "Not Used",
 }
 
-
-class OPTIONITEMMODES(enum.Enum):
-    ON = STATE_OPTIONITEM_ON
-    OFF = STATE_OPTIONITEM_OFF
-
-
-class UNITTEMPMODES(enum.Enum):
-    Celsius = UNIT_TEMP_CELSIUS
-    Fahrenheit = UNIT_TEMP_FAHRENHEIT
-
-
-class STATE_UNKNOWN(enum.Enum):
-    UNKNOWN = STATE_OPTIONITEM_UNKNOWN
-
-
-class DeviceType(enum.Enum):
-    """The category of device."""
-
-    REFRIGERATOR = 101
-    KIMCHI_REFRIGERATOR = 102
-    WATER_PURIFIER = 103
-    WASHER = 201
-    DRYER = 202
-    STYLER = 203
-    DISHWASHER = 204
-    TOWER_WASHER = 221
-    TOWER_DRYER = 222
-    RANGE = 301
-    MICROWAVE = 302
-    COOKTOP = 303
-    HOOD = 304
-    AC = 401
-    AIR_PURIFIER = 402
-    DEHUMIDIFIER = 403
-    FAN = 405
-    ROBOT_KING = 501
-    TV = 701
-    BOILER = 801
-    SPEAKER = 901
-    HOMEVU = 902
-    ARCH = 1001
-    MISSG = 3001
-    SENSOR = 3002
-    SOLAR_SENSOR = 3102
-    IOT_LIGHTING = 3003
-    IOT_MOTION_SENSOR = 3004
-    IOT_SMART_PLUG = 3005
-    IOT_DUST_SENSOR = 3006
-    EMS_AIR_STATION = 4001
-    AIR_SENSOR = 4003
-    PURICARE_AIR_DETECTOR = 4004
-    V2PHONE = 6001
-    HOMEROBOT = 9000
-    UNKNOWN = STATE_OPTIONITEM_UNKNOWN
-
-
-class PlatformType(enum.Enum):
-    """The category of device."""
-
-    THINQ1 = "thinq1"
-    THINQ2 = "thinq2"
-    UNKNOWN = STATE_OPTIONITEM_UNKNOWN
-
-
-class NetworkType(enum.Enum):
-    """The type of network."""
-
-    WIFI = "02"
-    NFC3 = "03"
-    NFC4 = "04"
-    UNKNOWN = STATE_OPTIONITEM_UNKNOWN
-
-
-WM_DEVICE_TYPES = [
-    DeviceType.DRYER,
-    DeviceType.TOWER_DRYER,
-    DeviceType.TOWER_WASHER,
-    DeviceType.WASHER,
-]
+MIN_TIME_BETWEEN_CLI_REFRESH = 10  # seconds
+MAX_RETRIES = 3
+MAX_UPDATE_FAIL_ALLOWED = 10
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class UnitTempModes(enum.Enum):
+    Celsius = UNIT_TEMP_CELSIUS
+    Fahrenheit = UNIT_TEMP_FAHRENHEIT
 
 
 class Monitor(object):
@@ -376,147 +301,6 @@ class Monitor(object):
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         self.stop()
-
-
-class DeviceInfo(object):
-    """Details about a user's device.
-        
-    This is populated from a JSON dictionary provided by the API.
-    """
-
-    def __init__(self, data: Dict[str, Any]) -> None:
-        self._data = data
-        self._device_id = None
-        self._device_type = None
-        self._platform_type = None
-        self._network_type = None
-
-    def as_dict(self):
-        """Return the data dictionary"""
-        if not self._data:
-            return {}
-        return self._data.copy()
-
-    def _get_data_key(self, keys):
-        for key in keys:
-            if key in self._data:
-                return key
-        return ""
-
-    def _get_data_value(self, key, default: Any = STATE_OPTIONITEM_UNKNOWN):
-        if isinstance(key, list):
-            vkey = self._get_data_key(key)
-        else:
-            vkey = key
-
-        return self._data.get(vkey, default)
-
-    @property
-    def model_id(self) -> str:
-        return self._get_data_value(["modelName", "modelNm"])
-
-    @property
-    def id(self) -> str:
-        if self._device_id is None:
-            self._device_id = self._get_data_value("deviceId")
-        return self._device_id
-
-    @property
-    def model_info_url(self) -> str:
-        return self._get_data_value(
-            ["modelJsonUrl", "modelJsonUri"], default=None
-        )
-
-    @property
-    def model_lang_pack_url(self) -> str:
-        return self._get_data_value(
-            ["langPackModelUrl", "langPackModelUri"], default=None
-        )
-
-    @property
-    def product_lang_pack_url(self) -> str:
-        return self._get_data_value(
-            ["langPackProductTypeUrl", "langPackProductTypeUri"], default=None
-        )
-
-    @property
-    def name(self) -> str:
-        return self._get_data_value("alias")
-
-    @property
-    def model_name(self) -> str:
-        return self._get_data_value(["modelName", "modelNm"])
-
-    @property
-    def macaddress(self) -> Optional[str]:
-        return self._data.get("macAddress")
-
-    @property
-    def firmware(self) -> Optional[str]:
-        if fw := self._data.get("fwVer"):
-            return fw
-        if "modemInfo" in self._data:
-            if fw := self._data["modemInfo"].get("appVersion"):
-                return fw
-        return None
-
-    @property
-    def devicestate(self) -> str:
-        """The kind of device, as a `DeviceType` value."""
-        return self._get_data_value("deviceState")
-
-    @property
-    def isonline(self) -> bool:
-        """The kind of device, as a `DeviceType` value."""
-        return self._data.get("online", False)
-
-    @property
-    def type(self) -> DeviceType:
-        """The kind of device, as a `DeviceType` value."""
-        if self._device_type is None:
-            device_type = self._get_data_value("deviceType")
-            try:
-                ret_val = DeviceType(device_type)
-            except ValueError:
-                _LOGGER.warning("Device %s: unknown device type with id %s", self.id, device_type)
-                ret_val = DeviceType.UNKNOWN
-            self._device_type = ret_val
-        return self._device_type
-
-    @property
-    def platform_type(self) -> PlatformType:
-        """The kind of platform, as a `PlatformType` value."""
-        if self._platform_type is None:
-            # for the moment if unavailable set THINQ1, probably not available in APIv1
-            plat_type = self._data.get("platformType", PlatformType.THINQ1.value)
-            try:
-                ret_val = PlatformType(plat_type)
-            except ValueError:
-                _LOGGER.warning("Device %s: unknown platform type with id %s", self.id, plat_type)
-                ret_val = PlatformType.UNKNOWN
-            self._platform_type = ret_val
-        return self._platform_type
-
-    @property
-    def network_type(self) -> NetworkType:
-        """The kind of network, as a `NetworkType` value."""
-        if self._network_type is None:
-            # for the moment we set WIFI if not available
-            net_type = self._data.get("networkType", NetworkType.WIFI.value)
-            try:
-                ret_val = NetworkType(net_type)
-            except ValueError:
-                _LOGGER.warning("Device %s: unknown network type with id %s", self.id, net_type)
-                # for the moment we set WIFI if unknown
-                ret_val = NetworkType.WIFI
-            self._network_type = ret_val
-        return self._network_type
-
-    @property
-    def snapshot(self) -> Optional[Dict[str, Any]]:
-        if "snapshot" in self._data:
-            return self._data["snapshot"]
-        return None
 
 
 EnumValue = namedtuple("EnumValue", ["options"])
@@ -1249,7 +1033,7 @@ class Device(object):
 
     def set(self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None):
         """Set a device's control for `key` to `value`."""
-        log_level = wideq_log_level()
+        log_level = logging.INFO if EMULATION else logging.DEBUG
         full_key = self._prepare_command(ctrl_key, command, key, value)
         if full_key:
             _LOGGER.log(
@@ -1516,19 +1300,19 @@ class DeviceStatus(object):
 
         return ""
 
-    def _set_unknown(self, state, key, type):
-        if state:
-            return state
+    def _set_unknown(self, status, key, status_type):
+        if status:
+            return status
 
         if self._device.is_unknown_status(key):
             _LOGGER.warning(
                 "ThinQ: received unknown %s status '%s' of type '%s'",
                 self._device.device_info.type.name,
                 key,
-                type,
+                status_type,
             )
 
-        return STATE_UNKNOWN.UNKNOWN
+        return STATE_OPTIONITEM_UNKNOWN
 
     def update_status(self, key, value):
         if key in self._data:

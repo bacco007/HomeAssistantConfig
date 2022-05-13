@@ -10,22 +10,15 @@ from datetime import datetime
 from urllib.parse import urljoin, urlencode, urlparse, parse_qs
 from typing import Any, Dict, Generator, Optional
 
-from . import (
-    DATA_ROOT,
-    DEFAULT_COUNTRY,
-    DEFAULT_LANGUAGE,
-    DEFAULT_TIMEOUT,
-    AuthHTTPAdapter,
-    CoreVersion,
-    as_list,
-    gen_uuid,
-)
 from . import core_exceptions as exc
-from .device import DeviceInfo
+from .const import DEFAULT_COUNTRY, DEFAULT_LANGUAGE, DEFAULT_TIMEOUT
+from .core_util import AuthHTTPAdapter, as_list, gen_uuid
+from .device_info import DeviceInfo
 
-CORE_VERSION = CoreVersion.CoreV1
-DEFAULT_REFRESH_TIMEOUT = 20  # seconds
+# The core version
+CORE_VERSION = "coreV1"
 
+DATA_ROOT = "lgedmRoot"
 GATEWAY_URL = "https://kic.lgthinq.com:46030/api/common/gatewayUriList"
 APP_KEY = "wideq"
 SECURITY_KEY = "nuts_securitykey"
@@ -42,6 +35,8 @@ API_ERRORS = {
     "0110": exc.InvalidCredentialError,
     9000: exc.InvalidRequestError,  # Surprisingly, an integer (not a string).
 }
+
+DEFAULT_REFRESH_TIMEOUT = 20  # seconds
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -486,7 +481,7 @@ class Client(object):
         return self._session
 
     @property
-    def hasdevices(self) -> bool:
+    def has_devices(self) -> bool:
         return True if self._devices else False
 
     @property
@@ -510,73 +505,6 @@ class Client(object):
             if device.id == device_id:
                 return device
         return None
-
-    @classmethod
-    def load(cls, state: Dict[str, Any]) -> "Client":
-        """Load a client from serialized state.
-            """
-
-        client = cls()
-
-        if "gateway" in state:
-            data = state["gateway"]
-            client._gateway = Gateway(
-                data["auth_base"],
-                data["api_root"],
-                data["oauth_root"],
-                data.get("country", DEFAULT_COUNTRY),
-                data.get("language", DEFAULT_LANGUAGE),
-            )
-
-        if "auth" in state:
-            data = state["auth"]
-            client._auth = Auth(
-                client.gateway, data["access_token"], data["refresh_token"]
-            )
-
-        if "session" in state:
-            client._session = Session(client.auth, state["session"])
-
-        if "model_info" in state:
-            client._model_info = state["model_info"]
-
-        if "country" in state:
-            client._country = state["country"]
-
-        if "language" in state:
-            client._language = state["language"]
-
-        return client
-
-    def dump(self) -> Dict[str, Any]:
-        """Serialize the client state."""
-
-        out = {
-            "model_url_info": self._model_url_info,
-        }
-
-        if self._gateway:
-            out["gateway"] = {
-                "auth_base": self._gateway.auth_base,
-                "api_root": self._gateway.api_root,
-                "oauth_root": self._gateway.oauth_root,
-                "country": self._gateway.country,
-                "language": self._gateway.language,
-            }
-
-        if self._auth:
-            out["auth"] = {
-                "access_token": self._auth.access_token,
-                "refresh_token": self._auth.refresh_token,
-            }
-
-        if self._session:
-            out["session"] = self._session.session_id
-
-        out["country"] = self._country
-        out["language"] = self._language
-
-        return out
 
     def refresh(self, refresh_gateway=False) -> None:
         if refresh_gateway:
@@ -608,7 +536,7 @@ class Client(object):
         return client
 
     @staticmethod
-    def oauthinfo_from_url(url):
+    def oauth_info_from_url(url):
         """Create an authentication using an OAuth callback URL.
         """
         access_token, refresh_token = parse_oauth_callback(url)
@@ -649,3 +577,70 @@ class Client(object):
                 )
             self._model_url_info[url] = self._load_json_info(url)
         return self._model_url_info[url]
+
+    def dump(self) -> Dict[str, Any]:
+        """Serialize the client state."""
+
+        out = {
+            "model_url_info": self._model_url_info,
+        }
+
+        if self._gateway:
+            out["gateway"] = {
+                "auth_base": self._gateway.auth_base,
+                "api_root": self._gateway.api_root,
+                "oauth_root": self._gateway.oauth_root,
+                "country": self._gateway.country,
+                "language": self._gateway.language,
+            }
+
+        if self._auth:
+            out["auth"] = {
+                "access_token": self._auth.access_token,
+                "refresh_token": self._auth.refresh_token,
+            }
+
+        if self._session:
+            out["session"] = self._session.session_id
+
+        out["country"] = self._country
+        out["language"] = self._language
+
+        return out
+
+    @classmethod
+    def load(cls, state: Dict[str, Any]) -> "Client":
+        """Load a client from serialized state.
+            """
+
+        client = cls()
+
+        if "gateway" in state:
+            data = state["gateway"]
+            client._gateway = Gateway(
+                data["auth_base"],
+                data["api_root"],
+                data["oauth_root"],
+                data.get("country", DEFAULT_COUNTRY),
+                data.get("language", DEFAULT_LANGUAGE),
+            )
+
+        if "auth" in state:
+            data = state["auth"]
+            client._auth = Auth(
+                client.gateway, data["access_token"], data["refresh_token"]
+            )
+
+        if "session" in state:
+            client._session = Session(client.auth, state["session"])
+
+        if "model_info" in state:
+            client._model_info = state["model_info"]
+
+        if "country" in state:
+            client._country = state["country"]
+
+        if "language" in state:
+            client._language = state["language"]
+
+        return client

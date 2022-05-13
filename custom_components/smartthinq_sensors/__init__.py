@@ -1,18 +1,15 @@
 """
 Support for LG SmartThinQ device.
 """
-# REQUIREMENTS = ['wideq']
-
-import logging
-import voluptuous as vol
 
 from datetime import timedelta
-from typing import Dict
+import logging
+from typing import Dict, Optional
+import voluptuous as vol
 
+from .wideq import UNIT_TEMP_CELSIUS, UNIT_TEMP_FAHRENHEIT, DeviceType, get_lge_device
 from .wideq.core import Client
 from .wideq.core_v2 import ClientV2, CoreV2HttpAdapter
-from .wideq.device import UNIT_TEMP_CELSIUS, UNIT_TEMP_FAHRENHEIT, DeviceType
-from .wideq.factory import get_lge_device
 from .wideq.core_exceptions import (
     InvalidCredentialError,
     MonitorRefreshError,
@@ -54,7 +51,6 @@ from .const import (
     __min_ha_version__,
 )
 
-
 SMARTTHINQ_PLATFORMS = [
     Platform.SENSOR, Platform.BINARY_SENSOR, Platform.CLIMATE, Platform.SWITCH
 ]
@@ -79,47 +75,42 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class LGEAuthentication:
+    """Class to authenticate connection with LG ThinQ."""
+
     def __init__(self, region, language, use_api_v2=True):
+        """Initialize the class."""
         self._region = region
         self._language = language
         self._use_api_v2 = use_api_v2
 
-    def _create_client(self):
-        if self._use_api_v2:
-            client = ClientV2(country=self._region, language=self._language)
-        else:
-            client = Client(country=self._region, language=self._language)
-
-        return client
-
     def init_http_adapter(self, use_tls_v1, exclude_dh):
+        """Initialize a request http adapter."""
         if self._use_api_v2:
             CoreV2HttpAdapter.init_http_adapter(use_tls_v1, exclude_dh)
 
-    def get_login_url(self) -> str:
-
-        login_url = None
-        client = self._create_client()
-
+    def get_login_url(self) -> Optional[str]:
+        """Get an url to login in browser."""
         try:
-            login_url = client.gateway.oauth_url()
+            if self._use_api_v2:
+                return ClientV2.get_oauth_url(self._region, self._language)
+
+            client = Client(country=self._region, language=self._language)
+            return client.gateway.oauth_url()
         except Exception:
             _LOGGER.exception("Error retrieving login URL from ThinQ")
 
-        return login_url
+        return None
 
-    def get_auth_info_from_url(self, callback_url) -> Dict[str, str]:
-
-        oauth_info = None
+    def get_auth_info_from_url(self, callback_url) -> Optional[Dict[str, str]]:
+        """Retrieve auth info from redirect url."""
         try:
             if self._use_api_v2:
-                oauth_info = ClientV2.oauthinfo_from_url(callback_url)
-            else:
-                oauth_info = Client.oauthinfo_from_url(callback_url)
+                return ClientV2.oauth_info_from_url(callback_url)
+            return Client.oauth_info_from_url(callback_url)
         except Exception:
             _LOGGER.exception("Error retrieving OAuth info from ThinQ")
 
-        return oauth_info
+        return None
 
     def create_client_from_login(self, username, password):
         """Create a new client using username and password."""
@@ -127,19 +118,15 @@ class LGEAuthentication:
             return None
         return ClientV2.from_login(username, password, self._region, self._language)
 
-    def create_client_from_token(self, token, oauth_url=None, oauth_user_num=None):
+    def create_client_from_token(self, token, oauth_url=None):
         """Create a new client using refresh token."""
         if self._use_api_v2:
-            client = ClientV2.from_token(
-                token, oauth_url, oauth_user_num, self._region, self._language
-            )
-        else:
-            client = Client.from_token(token, self._region, self._language)
-
-        return client
+            return ClientV2.from_token(token, oauth_url, self._region, self._language)
+        return Client.from_token(token, self._region, self._language)
 
 
 def is_valid_ha_version():
+    """Check if HA version is valid for this integration."""
     return (
         MAJOR_VERSION > MIN_HA_MAJ_VER or
         (MAJOR_VERSION == MIN_HA_MAJ_VER and MINOR_VERSION >= MIN_HA_MIN_VER)
@@ -170,12 +157,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.warning(msg)
         return False
 
-    refresh_token = entry.data.get(CONF_TOKEN)
-    region = entry.data.get(CONF_REGION)
-    language = entry.data.get(CONF_LANGUAGE)
+    refresh_token = entry.data[CONF_TOKEN]
+    region = entry.data[CONF_REGION]
+    language = entry.data[CONF_LANGUAGE]
     use_api_v2 = entry.data.get(CONF_USE_API_V2, False)
     oauth_url = entry.data.get(CONF_OAUTH_URL)
-    # oauth_user_num = entry.data.get(CONF_OAUTH_USER_NUM)
     use_tls_v1 = entry.data.get(CONF_USE_TLS_V1, False)
     exclude_dh = entry.data.get(CONF_EXCLUDE_DH, False)
 
@@ -209,7 +195,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         raise ConfigEntryNotReady("ThinQ platform not ready") from exc
 
-    if not client.hasdevices:
+    if not client.has_devices:
         _LOGGER.error("No ThinQ devices found. Component setup aborted")
         return False
 
