@@ -15,6 +15,7 @@ from homeassistant.const import (
     ATTR_DEVICE_ID,
     ATTR_FRIENDLY_NAME,
     CONF_API_KEY,
+    CONF_BASE,
     CONF_DEVICE_ID,
     CONF_HOST,
     CONF_ID,
@@ -146,6 +147,7 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._device_info = {}
         self._token = None
         self._ping_port = None
+        self._error: str | None = None
 
     def _stdev_already_used(self, devices_id):
         """Check if a device_id is in HA config."""
@@ -244,7 +246,7 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _get_ip, user_input[CONF_HOST]
         )
         if not ip_address:
-            return self._show_form(errors={"base": "invalid_host"})
+            return self._show_form(errors="invalid_host")
 
         self._async_abort_entries_match({CONF_HOST: ip_address})
 
@@ -266,17 +268,19 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if result == RESULT_SUCCESS and not self._device_id:
                 if self._st_devices_schema:
-                    return self._show_form(errors=None, step_id="stdevice")
-                else:
-                    return self._show_form(errors=None, step_id="stdeviceid")
+                    return await self.async_step_stdevice()
+                return await self.async_step_stdeviceid()
 
         if result == RESULT_SUCCESS:
             result = await self._try_connect()
 
-        return await self._manage_result(result)
+        return await self._manage_result(result, True)
 
     async def async_step_stdevice(self, user_input=None):
         """Handle a flow to select ST device."""
+        if user_input is None:
+            return self._show_form(step_id="stdevice")
+
         self._device_id = user_input.get(CONF_ST_DEVICE)
 
         result = await self._try_connect()
@@ -284,25 +288,30 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_stdeviceid(self, user_input=None):
         """Handle a flow to manual input a ST device."""
+        if user_input is None:
+            return self._show_form(step_id="stdeviceid")
+
         device_id = user_input.get(CONF_DEVICE_ID)
         if self._stdev_already_used(device_id):
-            return self._show_form(
-                {"base": RESULT_ST_DEVICE_USED}, step_id="stdeviceid"
-            )
+            return self._show_form(errors=RESULT_ST_DEVICE_USED, step_id="stdeviceid")
 
         self._device_id = device_id
 
         result = await self._try_connect()
+        if result == RESULT_ST_DEVICE_NOT_FOUND:
+            return self._show_form(errors=result, step_id="stdeviceid")
         return await self._manage_result(result)
 
-    async def _manage_result(self, result):
+    async def _manage_result(self, result: str, is_user_step=False):
         """Manage the previous result."""
 
         if result != RESULT_SUCCESS:
-            return self._show_form(
-                errors={"base": result},
-                step_id="stdeviceid" if result == RESULT_ST_DEVICE_NOT_FOUND else "user"
-            )
+            self._error = result
+            if result == RESULT_ST_DEVICE_NOT_FOUND:
+                return await self.async_step_stdeviceid()
+            if is_user_step:
+                return self._show_form()
+            return await self.async_step_user()
 
         updates = {}
         if mac := self._device_info.get(ATTR_DEVICE_MAC):
@@ -377,8 +386,11 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return init_schema
 
     @callback
-    def _show_form(self, errors=None, step_id="user"):
+    def _show_form(self, errors: str | None = None, step_id="user"):
         """Show the form to the user."""
+        base_err = errors or self._error
+        self._error = None
+
         if step_id == "stdevice":
             data_schema = self._st_devices_schema
         elif step_id == "stdeviceid":
@@ -387,7 +399,9 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema = self._get_init_schema()
 
         return self.async_show_form(
-            step_id=step_id, data_schema=data_schema, errors=errors if errors else {},
+            step_id=step_id,
+            data_schema=data_schema,
+            errors={CONF_BASE: base_err} if base_err else None,
         )
 
     @staticmethod

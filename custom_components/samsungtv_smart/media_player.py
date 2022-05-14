@@ -31,7 +31,6 @@ from homeassistant.components.media_player.const import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    ATTR_SW_VERSION,
     CONF_API_KEY,
     CONF_BROADCAST_ADDRESS,
     CONF_DEVICE_ID,
@@ -378,7 +377,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         dev_info = DeviceInfo(model=model)
         if dev_os:
-            dev_info[ATTR_SW_VERSION] = dev_os
+            dev_info["sw_version"] = dev_os
         if dev_mac:
             dev_info["connections"] = {(CONNECTION_NETWORK_MAC, dev_mac)}
 
@@ -1423,17 +1422,17 @@ class SamsungTVDevice(MediaPlayerEntity):
             return None
 
         url_parsed = urlparse(url)
-        url_host = url_parsed.hostname.casefold()
+        url_host = str(url_parsed.hostname).casefold()
         if url_host.find("youtube") < 0:
             _LOGGER.debug("URL not related to Youtube")
             return None
 
         url_query = parse_qs(url_parsed.query)
-        if "v" not in url_query:
+        if b"v" not in url_query:
             _LOGGER.debug("Youtube video ID not found")
             return None
 
-        video_id = url_query["v"][0]
+        video_id = str(url_query[b"v"][0])
         _LOGGER.debug("Youtube video ID: %s", video_id)
         return video_id
 
