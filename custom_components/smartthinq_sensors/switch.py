@@ -17,7 +17,7 @@ from .wideq import (
 )
 
 from homeassistant.components.switch import (
-    DEVICE_CLASS_SWITCH,
+    SwitchDeviceClass,
     SwitchEntity,
     SwitchEntityDescription,
 )
@@ -192,7 +192,7 @@ class LGESwitch(CoordinatorEntity, SwitchEntity):
         self.entity_description = description
         self._attr_name = get_entity_name(api, description.key, description.name)
         self._attr_unique_id = f"{api.unique_id}-{description.key}-switch"
-        self._attr_device_class = DEVICE_CLASS_SWITCH
+        self._attr_device_class = SwitchDeviceClass.SWITCH
         self._attr_device_info = api.device_info
 
     @property
@@ -287,10 +287,10 @@ class LGEDuctSwitch(LGESwitch):
             and self._wrap_device.is_power_on
         )
 
-    def turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs):
         """Turn the entity off."""
         self._wrap_device.device.set_duct_zone(self._zone, False)
 
-    def turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs):
         """Turn the entity on."""
         self._wrap_device.device.set_duct_zone(self._zone, True)
