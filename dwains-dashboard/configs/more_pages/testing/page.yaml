@@ -76,11 +76,17 @@ cards:
       curve: smooth
   graph_span: 7d
   series:
-  - entity: sensor.tempest_st_00056115_temperature
+  - data_generator: "let res = [];\nfor (const [key, value] of\n    Object.entries(entity.attributes))\
+      \ {\n    res.push([new Date(key).getTime(), value]);\n}\nreturn res.sort((a,\
+      \ b) => { return a[0] - b[0] });\n"
+    entity: sensor.temptemptemp
     group_by:
       duration: 15min
       func: last
+    show:
+      extremas: true
     stroke_width: 4
+    unit: "\xB0C"
   type: custom:apexcharts-card
 items_classes: col-xs-12
 padding: false

@@ -9,30 +9,34 @@ trigger:
     hours: "/1"
 condition: []
 action:
-  - service: pyscript.influxdb_query_to_entity
+  - service: pyscript.influxdb2_query_to_entity
     data:
-      database: homeassistant
-      query: >-
-        SELECT max("value") FROM "homeassistant"."autogen"."°C" WHERE time >=
-        now() - 30d AND ("entity_id"='weather_outside_temperature' or "entity_id" = 'tempest_st_00056115_temperature') GROUP BY
-        time(1d) FILL(null) tz('Australia/Sydney')
-      key_field_name: time
-      value_field_name: max
       entity_id: sensor.archive_homeoutsidetemp_max_30day
       unit_of_measurement: °C
-      friendly_name: Home - 30 Day - Max Temp
+      friendly_name: Home - Month - Max Temp
       icon: "mdi:thermometer"
-  - service: pyscript.influxdb_query_to_entity
-    data:
-      database: homeassistant
       query: >-
-        SELECT min("value") FROM "homeassistant"."autogen"."°C" WHERE time >=
-        now() - 30d AND ("entity_id"='weather_outside_temperature' or "entity_id" = 'tempest_st_00056115_temperature') GROUP BY
-        time(1d) FILL(null) tz('Australia/Sydney')
-      key_field_name: time
-      value_field_name: min
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1mo)
+          |> filter(fn: (r) => r["_measurement"] == "°C")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_temperature")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
+          |> yield(name: "max")
+  - service: pyscript.influxdb2_query_to_entity
+    data:
       entity_id: sensor.archive_homeoutsidetemp_min_30day
       unit_of_measurement: °C
-      friendly_name: Home - 30 Day - Min Temp
+      friendly_name: Home - Month - Min Temp
       icon: "mdi:thermometer"
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1mo)
+          |> filter(fn: (r) => r["_measurement"] == "°C")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_temperature")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: min, createEmpty: true)
+          |> yield(name: "min")
 mode: single

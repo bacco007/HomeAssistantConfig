@@ -4,7 +4,7 @@
   cards:
     - type: "custom:apexcharts-card"
       header:
-        title: Weather - Last 30 Days
+        title: Weather - Last Month
         show: true
         show_states: false
       apex_config:
@@ -87,7 +87,7 @@
                 res.push([new Date(key).getTime(), value]);
             }
             return res.sort((a, b) => { return a[0] - b[0] });
-      graph_span: 30days
+      graph_span: 1month
       span:
         end: day
       all_series_config:

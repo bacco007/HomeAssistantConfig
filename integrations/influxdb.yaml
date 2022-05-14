@@ -1,13 +1,18 @@
 ---
 # https://www.home-assistant.io/integrations/influxdb/
 influxdb:
+  api_version: 2
+  ssl: false
   host: !secret influxdb_host
   port: !secret influxdb_port
-  database: !secret influxdb_database
-  username: !secret influxdb_username
-  password: !secret influxdb_password
-  max_retries: 5
-  default_measurement: state
+  token: !secret influxdb_token
+  organization: !secret influxdb_org
+  bucket: !secret influxdb_bucket
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+  default_measurement: units
   exclude:
     domains:
       - anniversaries
