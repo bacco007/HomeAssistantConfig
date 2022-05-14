@@ -8,6 +8,7 @@ from homeassistant.const import DATA_RATE_MEGABYTES_PER_SECOND
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import EntityCategory
 
 from . import MyJDownloaderHub
 from .const import (
@@ -92,15 +93,15 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         hub: MyJDownloaderHub,
         device_id: str,
         name_template: str,
-        icon: str,
+        icon: str | None,
         measurement: str,
-        unit_of_measurement: str,
+        unit_of_measurement: str | None,
         state_class: str | None,
-        entity_category: str | None = None,
+        entity_category: EntityCategory | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader sensor."""
-        self._state = None
+        self._state: str | None = None
         self._unit_of_measurement = unit_of_measurement
         self._state_class = state_class
         self.measurement = measurement
@@ -121,12 +122,12 @@ class MyJDownloaderDeviceSensor(MyJDownloaderDeviceEntity, SensorEntity):
         )
 
     @property
-    def native_value(self) -> str:
+    def native_value(self) -> str | None:
         """Return the native value of the sensor."""
         return self._state
 
     @property
-    def native_unit_of_measurement(self) -> str:
+    def native_unit_of_measurement(self) -> str | None:
         """Return the unit this entity's native value is expressed in."""
         return self._unit_of_measurement
 
@@ -145,13 +146,13 @@ class MyJDownloaderSensor(MyJDownloaderEntity):
         name: str,
         icon: str,
         measurement: str,
-        unit_of_measurement: str,
+        unit_of_measurement: str | None,
         state_class: str | None,
-        entity_category: str | None = None,
+        entity_category: EntityCategory | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader sensor."""
-        self._state = None
+        self._state: str | None = None
         self._unit_of_measurement = unit_of_measurement
         self._state_class = state_class
         self.measurement = measurement
@@ -170,12 +171,12 @@ class MyJDownloaderSensor(MyJDownloaderEntity):
         )
 
     @property
-    def state(self) -> str:
+    def state(self) -> str | None:
         """Return the state of the sensor."""
         return self._state
 
     @property
-    def unit_of_measurement(self) -> str:
+    def unit_of_measurement(self) -> str | None:
         """Return the unit this state is expressed in."""
         return self._unit_of_measurement
 
@@ -196,13 +197,13 @@ class MyJDownloaderJDownloadersOnlineSensor(MyJDownloaderSensor):
         super().__init__(
             hub, "JDownloaders Online", "mdi:download-multiple", "number", None, None
         )
-        self.devices = []
+        self.devices: list = []
 
     async def _myjdownloader_update(self) -> None:
         """Update MyJDownloader entity."""
         await self.hub.async_update_devices()
         self.devices = self.hub.devices
-        self._state = len(self.devices)
+        self._state = str(len(self.devices))
 
     @property
     def extra_state_attributes(self):
@@ -248,7 +249,7 @@ class MyJDownloaderPackagesSensor(MyJDownloaderDeviceSensor):
         device_id: str,
     ) -> None:
         """Initialize MyJDownloader sensor."""
-        self._packages_list = []
+        self._packages_list: list = []
         super().__init__(
             hub,
             device_id,
@@ -267,7 +268,7 @@ class MyJDownloaderPackagesSensor(MyJDownloaderDeviceSensor):
         self._packages_list = await self.hub.async_query(
             device.downloads.query_packages
         )
-        self._state = len(self._packages_list)
+        self._state = str(len(self._packages_list))
 
     @property
     def extra_state_attributes(self):
@@ -284,7 +285,7 @@ class MyJDownloaderLinksSensor(MyJDownloaderDeviceSensor):
         device_id: str,
     ) -> None:
         """Initialize MyJDownloader sensor."""
-        self._links_list = []
+        self._links_list: list = []
         super().__init__(
             hub,
             device_id,
@@ -301,7 +302,7 @@ class MyJDownloaderLinksSensor(MyJDownloaderDeviceSensor):
         """Update MyJDownloader entity."""
         device = self.hub.get_device(self._device_id)
         self._links_list = await self.hub.async_query(device.downloads.query_links)
-        self._state = len(self._links_list)
+        self._state = str(len(self._links_list))
 
     @property
     def extra_state_attributes(self):
@@ -336,9 +337,11 @@ class MyJDownloaderStatusSensor(MyJDownloaderDeviceSensor):
         )
 
     @property
-    def icon(self) -> str:
+    def icon(self) -> str | None:
         """Return the mdi icon of the entity."""
-        return MyJDownloaderStatusSensor.STATE_ICONS.get(self._state, self._icon)
+        if self._state:
+            return MyJDownloaderStatusSensor.STATE_ICONS.get(self._state, self._icon)
+        return self._icon
 
     async def _myjdownloader_update(self) -> None:
         """Update MyJDownloader entity."""

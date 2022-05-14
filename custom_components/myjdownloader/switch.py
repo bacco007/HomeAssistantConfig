@@ -9,6 +9,7 @@ from myjdapi.myjdapi import MYJDException
 from homeassistant.components.switch import DOMAIN, SwitchEntity
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import EntityCategory
 
 from . import MyJDownloaderHub
 from .const import (
@@ -61,7 +62,7 @@ class MyJDownloaderSwitch(MyJDownloaderDeviceEntity, SwitchEntity):
         name: str,
         icon: str,
         key: str,
-        entity_category: str | None = None,
+        entity_category: EntityCategory | None = None,
         enabled_default: bool = True,
     ) -> None:
         """Initialize MyJDownloader switch."""

@@ -5,16 +5,22 @@ from __future__ import annotations
 import asyncio
 from collections import defaultdict
 import datetime
+from http.client import HTTPException
 import logging
 from typing import Dict
 
 from myjdapi.exception import MYJDConnectionException
 from myjdapi.myjdapi import Jddevice, Myjdapi, MYJDException
 
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.update import DOMAIN as UPDATE_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.util import Throttle
 
@@ -31,7 +37,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["sensor", "binary_sensor", "switch"]
+PLATFORMS = [SENSOR_DOMAIN, BINARY_SENSOR_DOMAIN, SWITCH_DOMAIN, UPDATE_DOMAIN]
 
 
 class MyJDownloaderHub:
@@ -40,6 +46,7 @@ class MyJDownloaderHub:
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the MyJDownloader hub."""
         self._hass = hass
+        self._websession = async_get_clientsession(self._hass)
         self._sem = asyncio.Semaphore(1)  # API calls need to be sequential
         self.myjd = Myjdapi()
         self.myjd.set_app_key(MYJDAPI_APP_KEY)
@@ -76,7 +83,7 @@ class MyJDownloaderHub:
         datetime.timedelta(seconds=SCAN_INTERVAL_SECONDS),
         limit_no_throttle=datetime.timedelta(seconds=5),
     )
-    async def async_update_devices(self):
+    async def async_update_devices(self, *args, **kwargs):
         """Update list of online devices."""
 
         # We need to reconnect to the API to query the list of active JDownloaders
@@ -87,7 +94,7 @@ class MyJDownloaderHub:
         new_devices = {}
         available_device_infos = await self.async_query(self.myjd.list_devices)
         for device_info in available_device_infos:
-            if not device_info["id"] in self._devices.keys():
+            if not device_info["id"] in self._devices:
                 _LOGGER.debug("JDownloader (%s) is online", device_info["name"])
                 new_devices.update(
                     {
@@ -103,7 +110,7 @@ class MyJDownloaderHub:
         # remove JDownloader objects, that are not online anymore
         unavailable_device_ids = [
             device_id
-            for device_id in self._devices.keys()
+            for device_id in self._devices
             if device_id not in [device["id"] for device in available_device_infos]
         ]
         for device_id in unavailable_device_ids:
@@ -126,6 +133,13 @@ class MyJDownloaderHub:
             return self._devices[device_id]
         except Exception as ex:
             raise Exception(f"JDownloader ({device_id}) not online") from ex
+
+    async def make_request(self, url):
+        """Make a http request."""
+        async with self._websession.get(url) as resp:
+            if resp.status == 200:
+                return await resp.text()
+            raise HTTPException("Request failed")
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
