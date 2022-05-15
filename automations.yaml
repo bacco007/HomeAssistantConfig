@@ -1,26 +1,27 @@
-- id: '1652174129163'
+---
+- id: "1652174129163"
   alias: New Automation
-  description: ''
+  description: ""
   trigger:
-  - platform: webhook
-    webhook_id: new-automation-S46tCiM5u7PhrAXch-AmIoIG
+    - platform: webhook
+      webhook_id: new-automation-S46tCiM5u7PhrAXch-AmIoIG
   condition: []
   action:
-  - service: media_player.play_media
-    target:
-      entity_id: media_player.office_sonos
-    data:
-      media_content_id: FV:2/77
-      media_content_type: favorite_item_id
-    metadata:
-      title: Radio Hauraki 99.0 (Rock Music)
-      thumbnail: http://cdn-profiles.tunein.com/s87118/images/logoq.png?t=154411
-      media_class: genre
-      children_media_class:
-      navigateIds:
-      - {}
-      - media_content_type: favorites
-        media_content_id: ''
-      - media_content_type: favorites_folder
-        media_content_id: object.item.audioItem.audioBroadcast
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.office_sonos
+      data:
+        media_content_id: FV:2/77
+        media_content_type: favorite_item_id
+      metadata:
+        title: Radio Hauraki 99.0 (Rock Music)
+        thumbnail: http://cdn-profiles.tunein.com/s87118/images/logoq.png?t=154411
+        media_class: genre
+        children_media_class:
+        navigateIds:
+          - {}
+          - media_content_type: favorites
+            media_content_id: ""
+          - media_content_type: favorites_folder
+            media_content_id: object.item.audioItem.audioBroadcast
   mode: single
