@@ -9,44 +9,50 @@ trigger:
     hours: "/1"
 condition: []
 action:
-  - service: pyscript.influxdb_query_to_entity
+  - service: pyscript.influxdb2_query_to_entity
     data:
-      database: homeassistant
       query: >-
-        SELECT max("value") AS "value"
-        FROM "homeassistant"."autogen"."Flights"
-        WHERE time >= now() - 365d AND "entity_id"='flighttracker_flights_24hr'
-        GROUP BY time(1d) FILL(linear) tz('Australia/Sydney')
-      key_field_name: time
-      value_field_name: value
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "Flights")
+          |> filter(fn: (r) => r["entity_id"] == "flighttracker_flights_24hr")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "max")
       entity_id: sensor.archive_flighttracker_flights_365day
       unit_of_measurement: Flights
       friendly_name: Flight Tracker - Flights - 365 Day
       icon: "mdi:airplane-takeoff"
-  - service: pyscript.influxdb_query_to_entity
+  - service: pyscript.influxdb2_query_to_entity
     data:
-      database: homeassistant
       query: >-
-        SELECT max("value") AS "value"
-        FROM "homeassistant"."autogen"."km"
-        WHERE time >= now() - 365d AND "entity_id"='flighttracker_maxdistance_km'
-        GROUP BY time(1d) FILL(linear) tz('Australia/Sydney')
-      key_field_name: time
-      value_field_name: value
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "km")
+          |> filter(fn: (r) => r["entity_id"] == "flighttracker_maxdistance_km")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "max")
       entity_id: sensor.archive_flighttracker_maxdistance_365day
       unit_of_measurement: km
       friendly_name: Flight Tracker - Max Distance - 365 Day
       icon: "mdi:airplane-marker"
-  - service: pyscript.influxdb_query_to_entity
+  - service: pyscript.influxdb2_query_to_entity
     data:
-      database: homeassistant
       query: >-
-        SELECT mean("value") AS "value"
-        FROM "homeassistant"."autogen"."km"
-        WHERE time >= now() - 365d AND "entity_id"='flighttracker_maxdistance_km'
-        GROUP BY time(1d) FILL(linear) tz('Australia/Sydney')
-      key_field_name: time
-      value_field_name: value
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "km")
+          |> filter(fn: (r) => r["entity_id"] == "flighttracker_maxdistance_km")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: mean, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "mean")
       entity_id: sensor.archive_flighttracker_avgdistance_365day
       unit_of_measurement: km
       friendly_name: Flight Tracker - Avg Distance - 365 Day

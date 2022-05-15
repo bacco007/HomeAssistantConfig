@@ -86,12 +86,11 @@ def influxdb2_query_to_entity(
             attributes[record.get_time().isoformat()] = record.get_value()
             lastPoint = record.get_value()
 
-    if lastPoint:
-        state.set(entity_id, value=lastPoint, new_attributes=attributes)
+    state.set(entity_id, value=lastPoint, new_attributes=attributes)
 
-        log.error(entity_id)
-        log.error(lastPoint)
-        log.error(attributes)
+    # log.error(entity_id)
+    # log.error(lastPoint)
+    # log.error(attributes)
 
 
 def get_config(name):

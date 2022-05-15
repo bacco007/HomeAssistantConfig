@@ -1,0 +1,76 @@
+---
+id: "influx2entity_yearlyhomestats"
+alias: "InfluxDB to Entity: Yearly Home Weather Stats"
+description: "InfluxDB to Entity: Yearly Home Weather Stats"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/1"
+condition: []
+action:
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "°C")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_temperature")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: min, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "min")
+      entity_id: sensor.archive_homeoutsidetemp_min_365day
+      unit_of_measurement: °C
+      friendly_name: Home - 365 Day - Min Temp
+      icon: "mdi:thermometer"
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "°C")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_temperature")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "max")
+      entity_id: sensor.archive_homeoutsidetemp_max_365day
+      unit_of_measurement: °C
+      friendly_name: Home - 365 Day - Max Temp
+      icon: "mdi:thermometer"
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "°C")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_temperature")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: spread, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield()
+      entity_id: sensor.archive_homeoutsidetemp_range_365day
+      unit_of_measurement: °C
+      friendly_name: Home - 365 Day - Temp Range
+      icon: "mdi:thermometer"
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "mm")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_rain_today")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "max")
+      entity_id: sensor.archive_homerain_365day
+      unit_of_measurement: mm
+      friendly_name: Home - Year - Rain
+      icon: "mdi:water"
+mode: single

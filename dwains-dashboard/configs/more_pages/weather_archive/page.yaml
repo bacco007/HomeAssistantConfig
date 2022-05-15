@@ -90,11 +90,14 @@
       graph_span: 1month
       span:
         end: day
+        offset: +1d
       all_series_config:
         type: line
+        extend_to: now
         group_by:
-          func: last
+          func: max
           duration: 1d
+
     - type: "custom:apexcharts-card"
       header:
         title: Weather - Last 365 Days
@@ -195,14 +198,17 @@
                 res.push([new Date(key).getTime(), value]);
             }
             return res.sort((a, b) => { return a[0] - b[0] });
-      graph_span: 365days
+      graph_span: 1year
       span:
         end: day
+        offset: +1d
       all_series_config:
         type: line
+        extend_to: now
         group_by:
-          func: last
+          func: max
           duration: 1d
+
     - type: "custom:apexcharts-card"
       header:
         title: Weather Temp Range - Last 365 Days
@@ -262,14 +268,17 @@
                 res.push([new Date(key).getTime(), value]);
             }
             return res.sort((a, b) => { return a[0] - b[0] });
-      graph_span: 365days
+      graph_span: 1year
       span:
         end: day
+        offset: +1d
       all_series_config:
         type: line
+        extend_to: now
         group_by:
-          func: last
+          func: max
           duration: 1d
+
     - type: "custom:apexcharts-card"
       header:
         title: BOM Weather - Last 365 Days
@@ -370,14 +379,17 @@
                 res.push([new Date(key).getTime(), value]);
             }
             return res.sort((a, b) => { return a[0] - b[0] });
-      graph_span: 365days
+      graph_span: 1year
       span:
         end: day
+        offset: +1d
       all_series_config:
         type: line
+        extend_to: now
         group_by:
-          func: last
+          func: max
           duration: 1d
+
     - type: "custom:apexcharts-card"
       header:
         title: BOM Weather Temp Range - Last 365 Days
@@ -437,11 +449,13 @@
                 res.push([new Date(key).getTime(), value]);
             }
             return res.sort((a, b) => { return a[0] - b[0] });
-      graph_span: 365days
+      graph_span: 1year
       span:
         end: day
+        offset: +1d
       all_series_config:
         type: line
+        extend_to: now
         group_by:
-          func: last
+          func: max
           duration: 1d
