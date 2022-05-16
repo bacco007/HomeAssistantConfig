@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Monday, May 16th 2022_
+_Stats as at 05:00, Tuesday, May 17th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 410     | 2885         | 1958 | 101 |
+| unknown | 412     | 2888         | 1978 | 94 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 101
-Binary Sensor | 273
+Automation | 94
+Binary Sensor | 272
 Camera | 8
 Device Tracker | 68
 Group | 5
@@ -92,7 +92,7 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1958
+Sensor | 1978
 Sun | 1
 Switch | 172
 Weather | 9
@@ -353,6 +353,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.broadlink](https://www.home-assistant.io/components/sensor.broadlink) |
+| [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
@@ -509,6 +510,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [watchman](https://www.home-assistant.io/components/watchman) |
 | [waze_travel_time](https://www.home-assistant.io/components/waze_travel_time) |
 | [weather](https://www.home-assistant.io/components/weather) |
+| [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.template](https://www.home-assistant.io/components/weather.template) |
 | [weather.tomorrowio](https://www.home-assistant.io/components/weather.tomorrowio) |
