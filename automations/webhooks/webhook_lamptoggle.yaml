@@ -10,6 +10,6 @@ trigger:
     event_data:
       actionName: "OfficeLightsOn"
 action:
-  - entity_id: light.zha_office_light
+  - entity_id: light.office_lamp
     service: light.toggle
     data: {}

@@ -1,0 +1,10 @@
+blueprint: homekit_conditional_media_monitors_blueprint.yaml
+card:
+  entity: $replace_with_input_entity$
+  name: $replace_with_input_name$
+  template:
+  - conditional_media
+  - icon_monitors
+  type: custom:button-card
+input_entity: media_player.spotify_thomas_baxter
+type: custom:dwains-blueprint-card

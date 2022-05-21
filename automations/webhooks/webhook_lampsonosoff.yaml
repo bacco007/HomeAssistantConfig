@@ -10,7 +10,7 @@ trigger:
     event_data:
       actionName: "LightsSonosActionOver"
 action:
-  - entity_id: light.zha_office_light
+  - entity_id: light.office_lamp
     service: light.turn_off
     data: {}
   - data: {}

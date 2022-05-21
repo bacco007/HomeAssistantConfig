@@ -1,0 +1,92 @@
+cards:
+- cards:
+  - entity: sensor.time
+    template: clock
+    type: custom:button-card
+    variables:
+      entity_date: sensor.date
+      entity_temperature: sensor.tempest_st_00056115_temperature
+      entity_weather: weather.east_tamworth_hourly
+    view_layout:
+      grid-area: clock
+      place-self: start right
+  layout:
+    layout:
+      grid-template-areas: '"notify . clock"
+
+        '
+      grid-template-columns: auto 30px 25%
+      grid-template-rows: auto
+    margin: 0
+    max_cols: 1
+    padding: 0
+    rtl: true
+  layout_type: custom:grid-layout
+  rtl: true
+  type: custom:easy-layout-card
+- cards:
+  - entity: media_player.office_sonos
+    name: Sonos
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_monitors
+    type: custom:button-card
+  - entity: media_player.spotify_thomas_baxter
+    name: Spotify
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_spotify
+    type: custom:button-card
+  - entity: media_player.apple_tv_bedroom
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_apple_tv
+    type: custom:button-card
+  - entity: sensor.plex_recently_added
+    name: Plex (TV)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_plex
+    type: custom:button-card
+  - entity: sensor.plex_recently_added_movies
+    name: Plex (Movies)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_plex
+    type: custom:button-card
+  - entity: sensor.sonarr_upcoming_media
+    name: Sonarr (Upcoming)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_tv
+    type: custom:button-card
+  - entity: sensor.radarr_upcoming_media
+    name: Radarr (Upcoming)
+    tap_action:
+      action: none
+    template:
+    - conditional_media
+    - icon_tv
+    type: custom:button-card
+  items_classes: col-xs-12 col-sm-6 col-md-3 col-lg-2
+  type: custom:dwains-flexbox-card
+col_span: '2'
+col_span_lg: '3'
+col_span_xl: '4'
+position: top
+row_span: '1'
+row_span_lg: '1'
+row_span_xl: '1'
+type: vertical-stack

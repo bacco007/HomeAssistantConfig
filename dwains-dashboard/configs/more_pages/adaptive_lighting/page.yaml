@@ -1,0 +1,135 @@
+cards:
+- cards:
+  - entities:
+    - light.bedroom_lamp
+    - switch.adaptive_lighting_adapt_brightness_bedroom_adaptive
+    - switch.adaptive_lighting_adapt_color_bedroom_adaptive
+    - switch.adaptive_lighting_bedroom_adaptive
+    - switch.adaptive_lighting_sleep_mode_bedroom_adaptive
+    show_header_toggle: false
+    style: "ha-card {\n  padding-bottom: 10px;\n  background-color: var(--dwains-theme-primary)\n\
+      }\n.card-header {\n  padding: 5px 16px;\n  font-size: 18px;\n  font-weight:\
+      \ 700 !important;\n}\n.card-content div {\n    margin: 0 !important;\n}\n#states\
+      \ {\n  padding-top: 0px !important;\n  padding-bottom: 0px !important;\n}\n\
+      .secondary {\n  color: darkgray !important;\n  margin-left: 2px !important;\n\
+      }\n"
+    title: Bedroom
+    type: entities
+  - apex_config:
+      chart:
+        foreColor: '#6D6D6D'
+        height: 150
+        type: line
+      dataLabels:
+        enabled: false
+      fill:
+        gradient:
+          colorStops:
+          - color: '#fc440b'
+            offset: 10
+            opacity: 1
+          - color: '#ffce63'
+            offset: 55
+            opacity: 1
+          - color: '#0a95f9'
+            offset: 90
+            opacity: 1
+          opacityFrom: 1
+          opacityTo: 1
+          shadeIntensity: 1
+          type: vertical
+        type: gradient
+      grid:
+        borderColor: '#6D6D6D'
+      legend:
+        show: false
+      stroke:
+        curve: smooth
+        show: true
+      xaxis:
+        labels:
+          datetimeFormatter:
+            day: ddd
+            month: ddd
+        type: datetime
+    graph_span: 24h
+    header:
+      show: true
+      title: Brightness
+    series:
+    - entity: sensor.adaptive_lighting_bedroom_brightness
+      group_by:
+        duration: 1min
+        func: last
+      show:
+        extremas: true
+      stroke_width: 3
+    type: custom:apexcharts-card
+  - apex_config:
+      chart:
+        foreColor: '#6D6D6D'
+        height: 150
+        type: line
+      dataLabels:
+        enabled: false
+      fill:
+        gradient:
+          colorStops:
+          - color: '#fc440b'
+            offset: 10
+            opacity: 1
+          - color: '#ffce63'
+            offset: 55
+            opacity: 1
+          - color: '#0a95f9'
+            offset: 90
+            opacity: 1
+          opacityFrom: 1
+          opacityTo: 1
+          shadeIntensity: 1
+          type: vertical
+        type: gradient
+      grid:
+        borderColor: '#6D6D6D'
+      legend:
+        show: false
+      stroke:
+        curve: smooth
+        show: true
+      xaxis:
+        labels:
+          datetimeFormatter:
+            day: ddd
+            month: ddd
+        type: datetime
+    graph_span: 24h
+    header:
+      show: true
+      title: Sun Position
+    series:
+    - entity: sensor.adaptive_lighting_bedroom_sun_position
+      group_by:
+        duration: 1min
+        func: last
+      show:
+        extremas: true
+      stroke_width: 3
+    type: custom:apexcharts-card
+  type: vertical-stack
+- entities:
+  - light.office_lamp
+  - switch.adaptive_lighting_adapt_brightness_office_adaptive
+  - switch.adaptive_lighting_adapt_color_office_adaptive
+  - switch.adaptive_lighting_office_adaptive
+  - switch.adaptive_lighting_sleep_mode_office_adaptive
+  show_header_toggle: false
+  style: "ha-card {\n  padding-bottom: 10px;\n  background-color: var(--dwains-theme-primary)\n\
+    }\n.card-header {\n  padding: 5px 16px;\n  font-size: 18px;\n  font-weight: 700\
+    \ !important;\n}\n.card-content div {\n    margin: 0 !important;\n}\n#states {\n\
+    \  padding-top: 0px !important;\n  padding-bottom: 0px !important;\n}\n.secondary\
+    \ {\n  color: darkgray !important;\n  margin-left: 2px !important;\n}\n"
+  title: Office
+  type: entities
+items_classes: col-xs-12 col-md-6 col-sm-6 col-xl-6
+padding: true
+type: custom:dwains-flexbox-card

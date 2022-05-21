@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 21st 2022_
+_Stats as at 05:00, Sunday, May 22nd 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 412     | 2925         | 1978 | 94 |
+| unknown | 411     | 2945         | 1991 | 94 |
 
 Type | Qty
 -- | --
@@ -87,14 +87,14 @@ Group | 5
 Input Boolean | 1
 Input Datetime | 2
 Input Text | 7
-Light | 2
+Light | 5
 Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 1978
+Sensor | 1991
 Sun | 1
-Switch | 172
+Switch | 180
 Weather | 9
 Zone | 3
 
@@ -111,6 +111,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 | Name |
 | --- |
+| [adaptive_lighting](https://www.home-assistant.io/components/adaptive_lighting) |
 | [adguard](https://www.home-assistant.io/components/adguard) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.eufy_security](https://www.home-assistant.io/components/alarm_control_panel.eufy_security) |
@@ -257,9 +258,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
 | [launch_library](https://www.home-assistant.io/components/launch_library) |
-| [lifx](https://www.home-assistant.io/components/lifx) |
 | [light](https://www.home-assistant.io/components/light) |
-| [light.lifx](https://www.home-assistant.io/components/light.lifx) |
+| [light.group](https://www.home-assistant.io/components/light.group) |
 | [light.tuya](https://www.home-assistant.io/components/light.tuya) |
 | [light.zha](https://www.home-assistant.io/components/light.zha) |
 | [lock](https://www.home-assistant.io/components/lock) |
@@ -410,7 +410,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
-| [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics) |
@@ -450,7 +449,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sonos](https://www.home-assistant.io/components/sonos) |
 | [spacex](https://www.home-assistant.io/components/spacex) |
 | [speedtestdotnet](https://www.home-assistant.io/components/speedtestdotnet) |
-| [spotcast](https://www.home-assistant.io/components/spotcast) |
 | [spotify](https://www.home-assistant.io/components/spotify) |
 | [sql](https://www.home-assistant.io/components/sql) |
 | [ssdp](https://www.home-assistant.io/components/ssdp) |
@@ -458,6 +456,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [stt](https://www.home-assistant.io/components/stt) |
 | [sun](https://www.home-assistant.io/components/sun) |
 | [switch](https://www.home-assistant.io/components/switch) |
+| [switch.adaptive_lighting](https://www.home-assistant.io/components/switch.adaptive_lighting) |
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
 | [switch.broadlink](https://www.home-assistant.io/components/switch.broadlink) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
@@ -530,6 +529,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 <details>
 <summary>Expand Custom Components List</summary>
 
+- [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting#readme)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
 - [Apple TV](https://www.home-assistant.io/integrations/apple_tv)
 - [Australia Fuel Prices](https://github.com/tonymyatt/homeassistant-custom-components)
@@ -575,7 +575,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Solcast PV Forecast](https://github.com/oziee/ha-solcast-solar)
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
-- [Spotcast](https://github.com/fondberg/spotcast)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)

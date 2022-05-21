@@ -17,7 +17,18 @@ light.lamp:
 light.zha_office_light:
   sort_order: 6
 media_player.apple_tv_bedroom:
+  col_span: '2'
+  col_span_lg: '1'
+  col_span_xl: '1'
   custom_card: true
+  custom_popup: false
+  disabled: false
+  excluded: false
+  friendly_name: ''
+  hidden: false
+  row_span: '1'
+  row_span_lg: '1'
+  row_span_xl: '1'
 media_player.homepod_mini_bedroom:
   custom_card: true
 media_player.m7_smart_monitor:
@@ -26,6 +37,8 @@ media_player.nvidia_shield_bedroom_2:
   custom_card: true
 media_player.office_sonos:
   sort_order: 8
+media_player.spotify_thomas_baxter:
+  custom_card: true
 number.office_sonos_bass:
   sort_order: 9
 number.office_sonos_treble:

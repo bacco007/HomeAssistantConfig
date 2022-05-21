@@ -1,0 +1,42 @@
+---
+sensor:
+  - name: adaptive_lighting_bedroom_color_temp_mired
+    unique_id: adaptive_lighting_bedroom_color_temp_mired
+    unit_of_measurement: "mired"
+    state: >
+      {{ state_attr("switch.adaptive_lighting_bedroom_adaptive", "color_temp_mired") }}
+  - name: adaptive_lighting_bedroom_color_temp_kelvin
+    unique_id: adaptive_lighting_bedroom_color_temp_kelvin
+    unit_of_measurement: "K"
+    state: >
+      {{ state_attr("switch.adaptive_lighting_bedroom_adaptive", "color_temp_kelvin") }}
+  - name: adaptive_lighting_bedroom_brightness
+    unique_id: adaptive_lighting_bedroom_brightness
+    unit_of_measurement: "%"
+    state: >
+      {{ state_attr("switch.adaptive_lighting_bedroom_adaptive", "brightness_pct") }}
+  - name: adaptive_lighting_bedroom_sun_position
+    unique_id: adaptive_lighting_bedroom_sun_position
+    unit_of_measurement: "%"
+    state: >
+      {{ 100 * state_attr("switch.adaptive_lighting_bedroom_adaptive", "sun_position") }}
+  - name: adaptive_lighting_office_color_temp_mired
+    unique_id: adaptive_lighting_office_color_temp_mired
+    unit_of_measurement: "mired"
+    state: >
+      {{ state_attr("switch.adaptive_lighting_office_adaptive", "color_temp_mired") }}
+  - name: adaptive_lighting_office_color_temp_kelvin
+    unique_id: adaptive_lighting_office_color_temp_kelvin
+    unit_of_measurement: "K"
+    state: >
+      {{ state_attr("switch.adaptive_lighting_office_adaptive", "color_temp_kelvin") }}
+  - name: adaptive_lighting_office_brightness
+    unique_id: adaptive_lighting_office_brightness
+    unit_of_measurement: "%"
+    state: >
+      {{ state_attr("switch.adaptive_lighting_office_adaptive", "brightness_pct") }}
+  - name: adaptive_lighting_office_sun_position
+    unique_id: adaptive_lighting_office_sun_position
+    unit_of_measurement: "%"
+    state: >
+      {{ 100 * state_attr("switch.adaptive_lighting_office_adaptive", "sun_position") }}
