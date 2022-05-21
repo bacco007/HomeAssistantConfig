@@ -1,25 +1,5 @@
 ---
 sensor:
-  - platform: github
-    access_token: !secret github_accesstoken
-    entity_namespace: github
-    repositories:
-      # - path: "home-assistant/home-assistant"
-      # - path: "bacco007/HomeAssistantConfig"
-      - path: "dwainscheeren/dwains-lovelace-dashboard"
-        name: Dwains Dashboard
-      - path: "dwainscheeren/dwains-dashboard-addons"
-        name: Dwains Dashboard addons
-      - path: "home-assistant/core"
-        name: Home Assistant Core
-      - path: "home-assistant/supervisor"
-        name: Home Assistant Supervisor
-      - path: "home-assistant/home-assistant.io"
-        name: Home Assistant Website
-      - path: "home-assistant/frontend"
-        name: Home Assistant Fronted
-      - path: "home-assistant/operating-system"
-        name: Home Assistant OS
 
   - platform: command_line
     command: "curl https://api.github.com/repos/bacco007/HomeAssistantConfig"
