@@ -1,0 +1,192 @@
+---
+homeassistant:
+  customize:
+    package.node_anchors:
+      customize: &customize
+        package: "hdhomerun"
+    sensor.hdhomerun_info:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_0:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_0_channel:
+      <<: *customize
+    sensor.hdhomerun_tuner_1:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_1_channel:
+      <<: *customize
+    sensor.hdhomerun_tuner_2:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_2_channel:
+      <<: *customize
+    sensor.hdhomerun_tuner_3:
+      <<: *customize
+      icon: mdi:television-box
+    sensor.hdhomerun_tuner_3_channel:
+      <<: *customize
+sensor:
+  - platform: rest
+    resource: http://192.168.1.120/discover.json
+    name: HDHomeRun Info
+    json_attributes:
+      - FriendlyName
+      - ModelNumber
+      - FirmwareName
+      - FirmwareVersion
+      - DeviceID
+      - DeviceAuth
+      - UpgradeAvailable
+      - BaseURL
+      - LineupURL
+      - TunerCount
+      - ConditionalAccess
+    value_template: "OK"
+  - platform: template
+    sensors:
+      hdhomerun_tuner_0_channel:
+        friendly_name: HDHomeRun Tuner 0 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_0', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_0', 'VctName') %}
+            {{ state_attr('sensor.hdhomerun_tuner_0', 'VctName') }}
+          {% else %}
+            Tuner Not In Use
+          {% endif %}
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_0', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_0', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+      hdhomerun_tuner_1_channel:
+        friendly_name: HDHomeRun Tuner 1 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_1', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_1', 'VctName') %}
+            {{ state_attr('sensor.hdhomerun_tuner_1', 'VctName') }}
+          {% else %}
+            Tuner Not In Use
+          {% endif %}
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_1', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_1', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+      hdhomerun_tuner_2_channel:
+        friendly_name: HDHomeRun Tuner 2 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_2', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_2', 'VctName') %}
+            {{ state_attr('sensor.hdhomerun_tuner_2', 'VctName') }}
+          {% else %}
+            Tuner Not In Use
+          {% endif %}
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_2', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_2', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+      hdhomerun_tuner_3_channel:
+        friendly_name: HDHomeRun Tuner 3 Channel
+        icon_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_3', 'VctName') %}
+            mdi:television-classic
+          {% else %}
+            mdi:television-classic-off
+          {% endif %}
+        value_template: >-
+          {% if state_attr('sensor.hdhomerun_tuner_3', 'VctName') %}
+            {{ state_attr('sensor.hdhomerun_tuner_3', 'VctName') }}
+          {% else %}
+            Tuner Not In Use
+          {% endif %}
+        entity_picture_template: >-
+          {%- if state_attr('sensor.hdhomerun_tuner_3', 'VctName') %}
+              /local/images/channels/{{ state_attr('sensor.hdhomerun_tuner_3', 'VctName') | replace(" ", "") | replace("/","") | lower }}.png
+          {%- endif %}
+
+rest:
+  - resource: http://192.168.1.120/status.json
+    sensor:
+      - name: HDHomeRun - Tuner 0
+        json_attributes_path: "$..[?(@.Resource=='tuner0')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+          - NetworkRate
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}
+      - name: HDHomeRun - Tuner 1
+        json_attributes_path: "$..[?(@.Resource=='tuner1')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+          - NetworkRate
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}
+      - name: HDHomeRun - Tuner 2
+        json_attributes_path: "$..[?(@.Resource=='tuner2')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+          - NetworkRate
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}
+      - name: HDHomeRun - Tuner 3
+        json_attributes_path: "$..[?(@.Resource=='tuner3')]"
+        json_attributes:
+          - Resource
+          - VctNumber
+          - VctName
+          - Frequency
+          - SignalStrengthPercent
+          - SymbolQualityPercent
+          - TargetIP
+          - NetworkRate
+        value_template: >-
+          {% if value_json[0].VctName is defined %}
+            {{ value_json[0].VctName }}
+          {% else %}
+            Not In Use
+          {% endif %}

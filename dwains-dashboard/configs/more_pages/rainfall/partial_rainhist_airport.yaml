@@ -18,8 +18,7 @@ clickable: true
 css: !include ../../1_Templates/style_flextable.yaml
 entities:
   include:
-    - sensor.weather_bom_rain_*
-    - sensor.weather_bom_totalrain_*
+    - sensor.weatherstats_rain_bom*
 columns:
   - name: sort
     attr: sort
@@ -34,6 +33,9 @@ columns:
     align: right
   - name: Max
     attr: highest
+    align: right
+  - name: Min
+    attr: lowest
     align: right
   - name: Total
     prop: state

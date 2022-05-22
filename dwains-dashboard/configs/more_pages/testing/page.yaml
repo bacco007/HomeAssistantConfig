@@ -1,5 +1,29 @@
 cards:
 - cards:
+  - double_tap_action: more-info
+    entity_id: sensor.weatherstats_rain_home
+    hold_action: more-info
+    icon: mdi:water
+    icon_color: blue
+    primary: 'Home: Max Rainfall (Past Year)'
+    secondary: '{{ state_attr(''sensor.weatherstats_rain_home'', ''highest'') }}mm
+
+      '
+    tap_action: more-info
+    type: custom:mushroom-template-card
+  - double_tap_action: more-info
+    entity_id: sensor.weatherstats_rain_bom
+    hold_action: more-info
+    icon: mdi:water
+    icon_color: blue
+    primary: 'Airport: Max Rainfall (Past Year)'
+    secondary: '{{ state_attr(''sensor.weatherstats_rain_bom'', ''highest'') }}mm
+
+      '
+    tap_action: more-info
+    type: custom:mushroom-template-card
+  type: vertical-stack
+- cards:
   - entity: sensor.plex_recently_added
     name: Plex (TV)
     tap_action:

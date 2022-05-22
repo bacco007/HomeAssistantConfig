@@ -73,8 +73,6 @@ recorder:
       - device_tracker
       - group
       - geo_location
-      - light
-      - media_player
       - persistent_notification
       - switch
       - weblink

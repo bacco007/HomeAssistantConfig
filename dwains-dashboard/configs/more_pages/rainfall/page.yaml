@@ -1,38 +1,26 @@
-# dwains_theme
+# dwains_dashboard
 ---
-- type: custom:dwains-flexbox-card
-  item_classes: "col-xs-12"
-  cards:
-    - type: vertical-stack
-      item_classes: "col-xs-12 col-sm-3"
-      cards:
-        - type: custom:auto-entities
-          filter:
-            include:
-              - entity_id: sensor.weather_*_maxrain_lastyr
-                options:
-                  type: custom:dwains-button-card
-          sort:
-            method: name
-            ignore_case: true
-          card:
-            type: custom:dwains-flexbox-card
-            items_classes: "col-xs-12"
-        - type: vertical-stack
-          cards:
-            - !include partial_rainhist_airport.yaml
-        - type: vertical-stack
-          cards:
-            - !include partial_rainhist_home.yaml
+type: custom:dwains-flexbox-card
+item_classes: "col-xs-12"
+cards:
+  - type: vertical-stack
+    item_classes: "col-xs-12 col-sm-3"
+    cards:
+      - type: vertical-stack
+        cards:
+          - !include partial_rainhist_airport.yaml
+      - type: vertical-stack
+        cards:
+          - !include partial_rainhist_home.yaml
 
-    - type: vertical-stack
-      item_classes: "col-xs-12 col-sm-9"
-      cards:
-        - !include graph_rainfall365days.yaml
-        - !include graph_intensity.yaml
-        - type: custom:dwains-flexbox-card
-          items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
-          cards:
-            - !include partial_intensity_last.yaml
-            - !include partial_intensity_7days.yaml
-            - !include partial_intensity_year.yaml
+  - type: vertical-stack
+    item_classes: "col-xs-12 col-sm-9"
+    cards:
+      - !include graph_rainfall365days.yaml
+      - !include graph_intensity.yaml
+      - type: custom:dwains-flexbox-card
+        items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
+        cards:
+          - !include partial_intensity_last.yaml
+          - !include partial_intensity_7days.yaml
+          - !include partial_intensity_year.yaml

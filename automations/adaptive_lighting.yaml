@@ -1,0 +1,17 @@
+---
+id: "1653186204936"
+alias: Adaptive Lighting - Turn off Sleep Mode at Sunrise
+description: ""
+trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+condition: []
+action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id:
+        - switch.adaptive_lighting_sleep_mode_office_adaptive
+        - switch.adaptive_lighting_sleep_mode_bedroom_adaptive
+mode: single
