@@ -1,35 +1,77 @@
+#################################################
+#                                               #
+#                   SETTINGS                    #
+#                                               #
+#################################################
+
+settings:
+  variables:
+    translate_unknown: Unbekannt
+    translate_heating: Heizen
+    translate_idle: Untätig
+
+#################################################
+#                                               #
+#                     BASE                      #
+#                                               #
+#################################################
+
 base:
-  hold_action:
-    haptic: success
-  show_icon: false
+  template:
+    - settings
+    - tilt
+    - extra_styles
+  variables:
+    state_on: >
+      [[[ return ['on', 'home', 'cool', 'fan_only', 'playing'].indexOf(entity === undefined || entity.state) !== -1; ]]]
+    state: >
+      [[[ return entity === undefined || entity.state; ]]]
+    entity_id: >
+      [[[ return entity === undefined || entity.entity_id; ]]]
+    media_on: >
+      [[[ return entity === undefined || ['playing', 'paused'].indexOf(entity.state) !== -1; ]]]
+    media_off: >
+      [[[ return entity === undefined || ['off',  'idle', 'standby', 'unknown', 'unavailable'].indexOf(entity.state) !== -1; ]]]
+    climate_on: >
+      [[[ return entity === undefined || ['on', 'heat', 'cool', 'dry', 'heat_cool', 'fan_only'].indexOf(entity.state) !== -1; ]]]
+    entity_picture: >
+      [[[ return entity === undefined || entity.attributes.entity_picture; ]]]
+    timeout: >
+      [[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed); ]]]
+    tilt_options: >
+      [[[
+        let options = {
+          max: 5,
+          scale: 1.06,
+          glare: true,
+          'max-glare': 0.15,
+          perspective: 800,
+          speed: 800,
+          parallax: '25px'
+        }
+        if (this._config.template.includes('conditional_media')) {
+          options.scale = options.scale % parseInt(options.scale) / 2 + parseInt(options.scale);
+          options.perspective = options.perspective * 2;
+          return options;
+        }
+        return options;
+      ]]]
   show_state: true
-  state_display:
-    "[[[ if (variables.state === true) return variables.translate_unknown;
-    ]]]
-
-    "
+  show_icon: false
+  state_display: >
+    [[[ if (variables.state === true) return variables.translate_unknown; ]]]
+  tap_action:
+    action: toggle
+    haptic: medium
+  hold_action:
+    action: more-info
+    haptic: success
   styles:
-    card:
-      - -webkit-tap-highlight-color: rgba(0,0,0,0)
-      - transition: none
-      - padding: 11.5px 10.5px 10.5px 11.5px
-      - --mdc-ripple-color:
-          "[[[\n  return variables.state_on\n    ? 'rgb(0, 0, 0)'\n\
-          \    : 'rgba(255, 255, 255, 0.3)';\n]]]\n"
-      - color:
-          "[[[\n  return variables.state_on\n    ? 'rgba(0, 0, 0, 0.6)'\n    :\
-          \ 'rgba(255, 255, 255, 0.3)';\n]]]\n"
-      - background-color:
-          "[[[\n  return variables.state_on\n    ? 'rgba(255, 255, 255,\
-          \ 0.8)'\n    : 'rgba(115, 115, 115, 0.2)';\n]]]\n"
     grid:
-      - grid-template-areas: '"icon  circle"
-
+      - grid-template-areas: |
+          "icon  circle"
           "n     n"
-
           "s     s"
-
-          '
       - grid-template-columns: repeat(2, 1fr)
       - grid-template-rows: auto repeat(2, min-content)
       - align-items: start
@@ -38,86 +80,183 @@ base:
       - margin-bottom: -2px
     state:
       - justify-self: start
-  tap_action:
-    action: toggle
-    haptic: medium
-  template:
-    - settings
-    - tilt
-    - extra_styles
-  variables:
-    entity_id: "[[[ return entity === undefined || entity.entity_id; ]]]
-
-      "
-    entity_picture:
-      "[[[ return entity === undefined || entity.attributes.entity_picture;
-      ]]]
-
-      "
-    media_off: "[[[ return entity === undefined || ['off',  'idle', 'standby',
-      'unknown', 'unavailable'].indexOf(entity.state) !== -1; ]]]
-
-      "
-    media_on:
-      "[[[ return entity === undefined || ['playing', 'paused'].indexOf(entity.state)
-      !== -1; ]]]
-
-      "
-    state: "[[[ return entity === undefined || entity.state; ]]]
-
-      "
-    state_on:
-      "[[[ return ['on', 'home', 'cool', 'fan_only', 'playing'].indexOf(entity
-      === undefined || entity.state) !== -1; ]]]
-
-      "
-    tilt_options:
-      "[[[\n  let options = {\n    max: 5,\n    scale: 1.06,\n    glare:\
-      \ true,\n    'max-glare': 0.15,\n    perspective: 800,\n    speed: 800,\n  \
-      \  parallax: '25px'\n  }\n  if (this._config.template.includes('conditional_media'))\
-      \ {\n    options.scale = options.scale % parseInt(options.scale) / 2 + parseInt(options.scale);\n\
-      \    options.perspective = options.perspective * 2;\n    return options;\n \
-      \ }\n  return options;\n]]]\n"
-    timeout:
-      "[[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed);
-      ]]]
-
-      "
-base_media:
-  double_tap_action:
-    action: more-info
-  styles:
     card:
-      - color:
-          "[[[\n  return variables.media_on && variables.entity_picture === undefined\n\
-          \    ? 'rgba(0, 0, 0, 0.6)'\n    : variables.media_off\n      ? 'rgba(255,\
-          \ 255, 255, 0.3)'\n      : '#efefef';\n]]]\n"
-      - text-shadow:
-          "[[[\n  return variables.media_off || variables.entity_picture\
-          \ === undefined\n    ? 'none'\n    : '1px 1px 5px rgba(18, 22, 23, 0.9)';\n\
-          ]]]\n"
-  tap_action:
-    action:
-      "[[[\n  return variables.media_on\n    ? 'call-service'\n    : 'none';\n\
-      ]]]\n"
-    service: media_player.media_play_pause
-    service_data:
-      entity_id: "[[[\n  return variables.entity_id;\n]]]\n"
-circle:
+      - -webkit-tap-highlight-color: rgba(0,0,0,0)
+      - transition: none
+      - padding: 11.5px 10.5px 10.5px 11.5px
+      - --mdc-ripple-color: >
+          [[[
+            return variables.state_on
+              ? 'rgb(0, 0, 0)'
+              : 'rgba(255, 255, 255, 0.3)';
+          ]]]
+      - color: >
+          [[[
+            return variables.state_on
+              ? 'rgba(0, 0, 0, 0.6)'
+              : 'rgba(255, 255, 255, 0.3)';
+          ]]]
+      - background-color: >
+          [[[
+            return variables.state_on
+              ? 'rgba(255, 255, 255, 0.8)'
+              : 'rgba(115, 115, 115, 0.2)';
+          ]]]
+
+base_info:
   custom_fields:
     circle:
-      "[[[\n  if (variables.state_on) {\n    let input = variables.circle_input,\n\
-      \      radius = 20.5,\n      circumference = radius * 2 * Math.PI;\n    return\
-      \ `\n      <svg viewBox=\"0 0 50 50\">\n        <style>\n          circle {\n\
-      \            transform: rotate(-90deg);\n            transform-origin: 50% 50%;\n\
-      \            stroke-dasharray: ${circumference};\n            stroke-dashoffset:\
-      \ ${circumference - input / 100 * circumference};\n          }\n          tspan\
-      \ {\n            font-size: 10px;\n          }\n        </style>\n        <circle\
-      \ cx=\"25\" cy=\"25\" r=\"${radius}\" stroke=\"#b2b2b2\" stroke-width=\"1.5\"\
-      \ fill=\"none\" />\n        <text x=\"50%\" y=\"54%\" fill=\"#8d8e90\" font-size=\"\
+      "[[[\n  if (entity) {\n    let time = c => {\n      let s = (c/1e3), m\
+      \ = (c/6e4), h = (c/36e5), d = (c/864e5);\n      return s < 60 ? parseInt(s)\
+      \ + 's' : m < 60 ? parseInt(m) + 'm' : h < 24 ? parseInt(h) + 'h' : parseInt(d)\
+      \ + 'd';\n    },\n    last_changed = states[variables.retain] == null || states[variables.retain].state\
+      \ == 'unavailable'\n      ? time(Date.now() - Date.parse(entity.last_changed))\n\
+      \      : time(Date.now() - Date.parse(states[variables.retain].state)),\n  \
+      \  stroke = variables.state === 'on'\n      ? '#b2b2b2'\n      : 'none',\n\
+      \    fill = variables.state !== 'on'\n      ? 'rgba(255,255,255,0.04)'\n \
+      \     : 'none';\n    return `\n      <svg viewBox=\"0 0 50 50\">\n        <circle\
+      \ cx=\"25\" cy=\"25\" r=\"20.5\" stroke=\"${stroke}\" stroke-width=\"1.5\" fill=\"\
+      ${fill}\" />\n        <text x=\"50%\" y=\"54%\" fill=\"#8d8e90\" font-size=\"\
       14\" text-anchor=\"middle\" alignment-baseline=\"middle\" dominant-baseline=\"\
-      middle\">${input}<tspan font-size=\"10\">%</tspan></text>\n      </svg>\n  \
-      \  `;\n  }\n]]]\n"
+      middle\">${last_changed}</text>\n      </svg>\n    `;\n  }\n]]]\n"
+    icon:
+      "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
+      \ width=\"100%\">`\n    : null;\n]]]\n"
+  tap_action:
+    action: more-info
+  template:
+    - base
+    - circle
+  triggers_update: sensor.time
+
+extra_styles:
+  extra_styles: |
+    [[[
+      if (entity) {
+        let hs = entity.attributes.hs_color === undefined,
+          h = hs || entity.attributes.hs_color[0],
+          s = hs || entity.attributes.hs_color[1],
+          l_min = 28,
+          l_max = 48,
+          l_calc = entity.attributes.brightness / 2.54 * (l_max - l_min) / 100 + l_min;
+        var light_color = entity.attributes.color_mode === 'color_temp' || entity.attributes.color_mode === 'brightness'
+          ? `hsl(204, 58%, ${l_calc}%);`
+          : `hsl(${h}, ${s}%, ${l_calc}%);`;
+      }
+
+      return `
+        svg {
+          --light-color:
+          ${ variables.state_on && entity.attributes.brightness !== undefined
+              ? light_color
+              : variables.state_on && entity.attributes.brightness === undefined
+                ? 'var(--state-icon-active-color);'
+                : 'var(--state-icon-color);'
+          }
+        }
+        #container {
+          text-align: left !important;
+        }
+        #name, #state {
+          font-size: 1.32vw;
+          letter-spacing: -0.02vw;
+        }
+        #state::first-letter {
+          text-transform: uppercase;
+        }
+        /* portrait */
+        @media screen and (max-width: 1200px) {
+          #name, #state {
+            font-size: 2vw;
+          }
+        }
+        /* phone */
+        @media screen and (max-width: 800px) {
+          #name, #state {
+            font-size: 3vw;
+          }
+        }
+
+        /* tilt */
+        #ripple, .js-tilt-glare {
+          clip-path: inset(0 round var(--custom-button-card-border-radius));
+          overflow: hidden;
+        }
+        .js-tilt-glare {
+          z-index: 1;
+        }
+        .js-tilt-glare-inner {
+          background-color: rgba(0,0,0,0.9);
+        }
+        #card {
+          transform-style: preserve-3d;
+          overflow: visible;
+        }
+
+        ${this._config.template.includes('conditional_media') ? `
+          :host {
+            --blur-intensity: blur(4.5px) brightness(0.8);
+          }
+          /* phone */
+          @media screen and (max-width: 800px) {
+            :host {
+              --blur-intensity: blur(2.5px) brightness(0.8);
+            }
+          }
+          #ripple, .js-tilt-glare {
+            clip-path: inset(0 round calc(var(--custom-button-card-border-radius) / 2));
+          }
+          #container {
+            overflow: hidden;
+          }
+          .marquee {
+            animation: marquee 20s linear infinite;
+          }
+          @keyframes marquee {
+            from {
+              transform: translateX(0%);
+            }
+            to {
+              transform: translateX(-50%);
+            }
+          }
+        `:''}
+      `
+    ]]]
+
+#################################################
+#                                               #
+#                    CIRCLE                     #
+#                                               #
+#################################################
+
+circle:
+  custom_fields:
+    circle: >
+      [[[
+        if (variables.state_on) {
+          let input = variables.circle_input,
+            radius = 20.5,
+            circumference = radius * 2 * Math.PI;
+          return `
+            <svg viewBox="0 0 50 50">
+              <style>
+                circle {
+                  transform: rotate(-90deg);
+                  transform-origin: 50% 50%;
+                  stroke-dasharray: ${circumference};
+                  stroke-dashoffset: ${circumference - input / 100 * circumference};
+                }
+                tspan {
+                  font-size: 10px;
+                }
+              </style>
+              <circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" />
+              <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">%</tspan></text>
+            </svg>
+          `;
+        }
+      ]]]
   styles:
     custom_fields:
       circle:
@@ -126,689 +265,590 @@ circle:
         - margin: -4px -4px 0 0
         - justify-self: end
         - opacity: 1
-climate:
+
+#################################################
+#                                               #
+#                    LOADER                     #
+#                                               #
+#################################################
+
+loader:
   custom_fields:
-    circle:
-      "[[[ if (entity.state === 'heat' && entity.attributes.temperature) { const\
-      \ temperature = entity.attributes.temperature;  const stroke_color = entity.state\
-      \ === 'heat' ? '#b2b2b2' : '#313638'; const fill_color = entity.state === 'heat'\
-      \ ? 'none' : '#FFFFFF08';  const radius = 25;  return `<svg viewBox=\"0 0 60\
-      \ 60\"><circle cx=\"30\" cy=\"30\" r=\"${radius}\" stroke=\"${stroke_color}\"\
-      \ stroke-width=\"3\" fill=\"${fill_color}\" style=\"  transform: rotate(-90deg);\
-      \ transform-origin: 50% 50%;\"/>  <text x=\"50%\" y=\"54%\" fill=\"#8d8e90\"\
-      \ font-size=\"17\" text-anchor=\"middle\" alignment-baseline=\"middle\">${temperature}<tspan\
-      \ font-size=\"15\">\xB0</tspan></text></svg>`; } ]]]\n"
-    icon:
-      "[[[ {  const temperature = entity.attributes.current_temperature;  const\
-      \ stroke_color = entity.state === 'heat' ? '#b2b2b2' : '#313638';  const fill_color\
-      \ = entity.state === 'heat' ? '#00ba32' : '#FFFFFF08';  const radius = 28; \
-      \ return `<svg viewBox=\"0 0 60 60\"><circle cx=\"30\" cy=\"30\" r=\"${radius}\"\
-      \ stroke=\"${stroke_color}\" stroke-width=\"1.5\" fill=\"${fill_color}\" style=\"\
-      \  transform:rotate(-90deg); transform-origin: 50% 50%;\"/>  <text x=\"50%\"\
-      \ y=\"54%\" fill=\"#f7f8fa\" font-size=\"18\" text-anchor=\"middle\" alignment-baseline=\"\
-      middle\">${temperature}<tspan font-size=\"16\">\xB0</tspan></text></svg>`; }\
-      \ ]]]        \n"
-  show_control: true
-  show_current_temperature: true
-  show_icon: false
-  show_name: true
-  show_state: true
-  state:
-    - operator: template
-      styles:
-        card:
-          - background-color: rgba(255, 255, 255, 0.8)
-        name:
-          - color: rgba(0, 0, 0, 0.6)
-        state:
-          - color: rgba(0, 0, 0, 0.6)
-      value:
-        "[[[ return (states[entity.entity_id].attributes.preset_mode == 'none')
-        && (states[entity.entity_id].state == 'heat') ]]]
-
-        "
-    - operator: template
-      styles:
-        card:
-          - background-color: rgba(227, 56, 18, 0.4)
-      value:
-        "[[[ return (states[entity.entity_id].attributes.preset_mode == 'Full
-        Power') ]]]
-
-        "
+    loader: >
+      <img src="/local/loader.svg" width="100%">
+  tap_action:
+    loader: >
+      [[[
+        if (entity) {
+          let elt = this.shadowRoot,
+            loader = (id, style, timeout) => {
+              elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                window.setTimeout(() => {
+                  elt.getElementById('loader').style.display = 'none'
+                }, 20000))
+            };
+          loader('circle', 'none', 'initial'),
+          loader('loader', 'initial', 'none');
+        }
+      ]]]
   styles:
-    card:
-      - color: rgba(255, 255, 255, 0.3)
     custom_fields:
-      circle:
-        - width: 60px
-        - justify-self: end
-        - margin-right: 3px
-        - margin-top: -5px
-      icon:
-        - width: 60px
-        - margin-left: 3px
-        - margin-top: -5px
+      loader:
+        - display: none
+        - top: -7.5px
+        - right: -5px
+        - width: 50px
+        - position: absolute
+        - opacity: 0.5
+        - filter: >
+            [[[ return variables.state_on ? 'none' : 'invert(1)'; ]]]
+
+#################################################
+#                                               #
+#                     TILT                      #
+#                                               #
+#################################################
+
+tilt:
+  custom_fields:
+    tilt: >
+      [[[
+        try {
+          setTimeout(() => {
+            let elt = this.shadowRoot,
+              card = elt.getElementById('card'),
+              ignore = window.navigator.userAgent;
+            if (elt && card && !ignore.match(/iPhone/i) && !ignore.match(/Android/i) && !ignore.match(/iPad/i)) {
+              VanillaTilt.init(card, variables.tilt_options);
+            }
+          }, 0);
+        }
+        catch (e) {
+        }
+      ]]]
+
+#################################################
+#                                               #
+#                    CLIMATE                    #
+#                                               #
+#################################################
+
+climate:
   template:
     - base
-climate_hvac:
-  custom_fields:
-    circle:
-      "[[[ if (entity.attributes.hvac_action === 'heating' && entity.attributes.temperature)\
-      \ { const temperature = entity.attributes.temperature; const stroke_color =\
-      \ entity.attributes.hvac_action === 'heating' ? '#b2b2b2' : '#313638'; const\
-      \ fill_color = entity.attributes.hvac_action === 'heating' ? 'none' : '#FFFFFF';\
-      \ const radius = 25; const circumference = radius * 2 * Math.PI; return `<svg\
-      \ viewBox=\"0 0 60 60\"><circle cx=\"30\" cy=\"30\" r=\"${radius}\" stroke=\"\
-      ${stroke_color}\" stroke-width=\"3\" fill=\"${fill_color}\" fill_opacity=\"\
-      1.0\" style=\" transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray:\
-      \ ${circumference}; stroke-dashoffset: \"100\";\"/> <text x=\"50%\" y=\"54%\"\
-      \ fill=\"#8d8e90\" font-size=\"17\" text-anchor=\"middle\" alignment-baseline=\"\
-      middle\">${temperature}<tspan font-size=\"15\">\xB0</tspan></text></svg>`; }\
-      \ ]]]   \n"
-    icon:
-      "[[[ { const temperature = entity.attributes.current_temperature; const\
-      \ stroke_color = entity.attributes.hvac_action === 'heating' ? '#b2b2b2' : '#313638';\
-      \ const fill_color = entity.attributes.hvac_action === 'heating' ? '#00ba32'\
-      \ : '#FFFFFF08'; const radius = 28; return `<svg viewBox=\"0 0 60 60\"><circle\
-      \ cx=\"30\" cy=\"30\" r=\"${radius}\" stroke=\"${stroke_color}\" stroke-width=\"\
-      1.5\" fill=\"${fill_color}\" style=\" transform: rotate(-90deg); transform-origin:\
-      \ 50% 50%; \" /> <text x=\"50%\" y=\"54%\" fill=\"#f7f8fa\" font-size=\"18\"\
-      \ text-anchor=\"middle\" alignment-baseline=\"middle\">${temperature}<tspan\
-      \ font-size=\"15\">\xB0</tspan></text></svg>`; } ]]]\n"
-  show_control: true
-  show_current_temperature: true
+  show_state: true
   show_icon: false
   show_name: true
-  show_state: true
-  state:
-    - operator: template
-      styles:
-        card:
-          - background-color: rgba(255, 255, 255, 0.8)
-        name:
-          - color: rgba(0, 0, 0, 0.6)
-        state:
-          - color: rgba(0, 0, 0, 0.6)
-      value:
-        "[[[ return (states[entity.entity_id].attributes.hvac_action == 'heating')
-        ]]]
-
-        "
-  state_display: "[[[ if (entity.attributes.hvac_action === 'heating' ) { return
-    variables.translate_heating; } if (entity.attributes.hvac_action === 'idle')
+  show_current_temperature: true
+  show_control: true
+  state_display:
+    "[[[ if (entity.attributes.hvac_action === 'heating' && entity.state === 'auto') { return
+    variables.translate_heating; } if (entity.attributes.hvac_action === 'idle' && entity.state === 'auto')
     { return variables.translate_idle; } ]]]
 
     "
+  state:
+    - operator: template
+      value: >
+        [[[ return  variables.climate_on  || (states[entity.entity_id].attributes.hvac_action == 'heating') 
+        ]]]
+      styles:
+        card: [background-color: "rgba(255, 255, 255, 0.8)"]
+        name: [color: "rgba(0, 0, 0, 0.6)"]
+        state: [color: "rgba(0, 0, 0, 0.6)"]
+    - operator: template
+      value: >
+        [[[ return (states[entity.entity_id].state == 'Full Power') ]]]
+      styles:
+        card: [background-color: "rgba(227, 56, 18, 0.4)"]
+  custom_fields:
+    icon: >
+      [[[ { 
+      const temperature = entity.attributes.current_temperature; 
+      const stroke_color = '#b2b2b2'; 
+      const fill_color = entity.attributes.hvac_action === 'heating' || variables.climate_on ? '#00ba32' : '#FFFFFF08';
+      const radius = 28; 
+      return `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="${radius}" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" style=" 
+      transform:rotate(-90deg); transform-origin: 50% 50%;"/> 
+      <text x="50%" y="54%" fill="#f7f8fa" font-size="18" text-anchor="middle" alignment-baseline="middle">${temperature}<tspan font-size="16">°</tspan></text></svg>`; } ]]]
+    circle: >
+      [[[ if ((variables.climate_on && entity.attributes.temperature) || (entity.attributes.hvac_action === 'heating' && entity.attributes.temperature)) {
+      const temperature = entity.attributes.temperature; 
+      const stroke_color = '#b2b2b2';
+      const fill_color = 'none'; 
+      const radius = 25; 
+      return `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="${radius}" stroke="${stroke_color}" stroke-width="3" fill="${fill_color}" style=" 
+      transform: rotate(-90deg); transform-origin: 50% 50%;"/> 
+      <text x="50%" y="54%" fill="#8d8e90" font-size="17" text-anchor="middle" alignment-baseline="middle">${temperature}<tspan font-size="15">°</tspan></text></svg>`; } ]]]
   styles:
     card:
-      - color: rgba(255, 255, 255, 0.3)
+      - color: "rgba(255, 255, 255, 0.3)"
     custom_fields:
       circle:
         - width: 60px
         - justify-self: end
-        - margin-top: -5px
         - margin-right: 3px
+        - margin-top: -5px
       icon:
         - width: 60px
         - margin-left: 3px
         - margin-top: -5px
+
+#################################################
+#                                               #
+#                     LIGHT                     #
+#                                               #
+#################################################
+
+light:
   template:
     - base
-conditional_media:
-  custom_fields:
-    blur_overlay:
-      "[[[\n  setTimeout(() => {\n    let elt = this.shadowRoot,\n   \
-      \   card = elt.getElementById('card'),\n      container = elt.getElementById('container'),\n\
-      \      blur_overlay = elt.getElementById('blur_overlay');\n\n    if (elt &&\
-      \ card && container && blur_overlay) {\n      card.insertBefore(blur_overlay,\
-      \ container);\n    }\n  }, 0);\n  return ' ';\n]]]\n"
-  double_tap_action:
+    - circle
+    - loader
+  variables:
+    circle_input: >
+      [[[ return entity === undefined || Math.round(entity.attributes.brightness / 2.54); ]]]
+
+#################################################
+#                                               #
+#                    PERSON                     #
+#                                               #
+#################################################
+
+person:
+  template:
+    - base
+    - circle
+  triggers_update: sensor.time
+  tap_action:
     action: more-info
-  state_display:
-    "[[[\n  if (entity) {\n    let elt = this.shadowRoot,\n      await\
-    \ = setTimeout(marquee,0),\n      data = entity.attributes.data,\n      artist\
-    \ = entity.attributes.media_artist,\n      title = entity.attributes.media_title;\n\
-    \n      if (data !== undefined) {\n        var number = data[variables.i].number\
-    \ === undefined && data[variables.i].aired !== undefined\n          ? `(${data[variables.i].aired.split(\"\
-    -\")[0]})`\n          : data[variables.i].number === undefined && data[variables.i].aired\
-    \ === undefined\n            ? ' '\n            : data[variables.i].number,\n\
-    \          output = `${data[variables.i].title} ${number}`;\n      } else {\n\
-    \        var output = artist === undefined && title !== undefined\n          ?\
-    \ title\n          : title === undefined && artist !== undefined\n           \
-    \ ? artist\n            : title !== undefined && artist !== undefined\n      \
-    \        ? `${artist} - ${title}`\n              : variables.translate_idle;\n\
-    \      }\n\n    function marquee() {\n      let state = elt.getElementById(\"\
-    state\"),\n        container = elt.getElementById(\"container\");\n\n      if\
-    \ (state && container) {\n        state.innerHTML = output;\n        let ro =\
-    \ new ResizeObserver(entries => {\n          let spacer = \"&nbsp;\".repeat(3),\n\
-    \            s = entries[0],\n            c = entries[1],\n            r = s &&\
-    \ s.contentRect &&\n                c && c.contentRect &&\n                s.contentRect.width\
-    \ !== 0 &&\n                c.contentRect.width !== 0;\n\n          if (r && s.contentRect.width\
-    \ < c.contentRect.width) {\n            state.classList.remove(\"marquee\");\n\
-    \          }\n          else if (r && s.contentRect.width >= c.contentRect.width)\
-    \ {\n            state.innerHTML = `${output} ${spacer} ${output} ${spacer}&nbsp;`;\n\
-    \            state.classList.add(\"marquee\");\n          }\n        });\n   \
-    \     ro.observe(state);\n        ro.observe(container);\n      }\n    }\n   \
-    \ return output;\n  }\n  return variables.translate_unknown;\n]]]\n"
+  styles:
+    custom_fields:
+      icon:
+        - clip-path: circle()
+        - width: 57px
+        - margin: -1px 0 3px 2px
+        - pointer-events: none
+        - display: grid
+  custom_fields:
+    icon: >
+      [[[
+        return entity && variables.entity_picture
+          ? `<img src="${variables.entity_picture}" width="100%">`
+          : null;
+      ]]]
+    circle: >
+      [[[
+        if (entity) {
+          let time = c => {
+            let s = (c/1e3), m = (c/6e4), h = (c/36e5), d = (c/864e5);
+            return s < 60 ? parseInt(s) + 's' : m < 60 ? parseInt(m) + 'm' : h < 24 ? parseInt(h) + 'h' : parseInt(d) + 'd';
+          },
+          last_changed = states[variables.retain] == null || states[variables.retain].state == 'unavailable'
+            ? time(Date.now() - Date.parse(entity.last_changed))
+            : time(Date.now() - Date.parse(states[variables.retain].state)),
+          stroke = variables.state === 'home'
+            ? '#b2b2b2'
+            : 'none',
+          fill = variables.state !== 'home'
+            ? 'rgba(255,255,255,0.04)'
+            : 'none';
+          return `
+            <svg viewBox="0 0 50 50">
+              <circle cx="25" cy="25" r="20.5" stroke="${stroke}" stroke-width="1.5" fill="${fill}" />
+              <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${last_changed}</text>
+            </svg>
+          `;
+        }
+      ]]]
+
+#################################################
+#                                               #
+#                  BASE MEDIA                   #
+#                                               #
+#################################################
+
+base_media:
+  hold_action:
+    action: more-info
+  tap_action:
+    action: >
+      [[[
+        return variables.media_on
+          ? 'call-service'
+          : 'none';
+      ]]]
+    service: media_player.media_play_pause
+    service_data:
+      entity_id: >
+        [[[
+          return variables.entity_id;
+        ]]]
   styles:
     card:
-      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
-      - background-image:
-          "[[[\n  if (entity) {\n    return entity.attributes.data !==\
-          \ undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
-          ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
-          ${variables.entity_picture}\")`;\n  }\n]]]\n"
-      - color:
-          "[[[\n  return variables.media_off || variables.entity_picture === undefined\n\
-          \    ? 'rgba(255, 255, 255, 0.3)'\n    : '#efefef'\n]]]     \n"
-      - text-shadow:
-          "[[[\n  return entity === undefined\n    ? 'none'\n    : '1px 1px\
-          \ 5px rgba(18, 22, 23, 0.9)';\n]]]\n"
+      - color: >
+          [[[
+            return variables.media_on && variables.entity_picture === undefined
+              ? 'rgba(0, 0, 0, 0.6)'
+              : variables.media_off
+                ? 'rgba(255, 255, 255, 0.3)'
+                : '#efefef';
+          ]]]
+      - text-shadow: >
+          [[[
+            return variables.media_off || variables.entity_picture === undefined
+              ? 'none'
+              : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+          ]]]
+
+#################################################
+#                                               #
+#                     MEDIA                     #
+#                                               #
+#################################################
+
+media:
+  template:
+    - base
+    - base_media
+  styles:
     custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 2px
+        - fill: "#9da0a2"
+    card:
+      - color: >
+          [[[
+            return variables.media_off || variables.entity_picture === undefined
+              ? 'rgba(255, 255, 255, 0.3)'
+              : '#efefef'
+          ]]]
+      - background-color: none
+      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
+      - background-image: &media_background_image >
+          [[[
+            if (entity) {
+              return entity.attributes.data !== undefined
+                ? `url("${entity.attributes.data[variables.i].fanart}"), url("${entity.attributes.data[variables.i].poster}")`
+                : `url("${variables.entity_picture}")`;
+            }
+          ]]]
+
+#################################################
+#                                               #
+#               CONDITIONAL MEDIA               #
+#                                               #
+#################################################
+
+conditional_media:
+  template:
+    - base
+    - icon_play_pause
+  variables:
+    i: >
+      [[[
+        if (entity) {
+          let data = entity.attributes.data;
+          return data === undefined || Math.floor(Math.random() * (data.length - 1)) + 1;
+        }
+      ]]]
+  state_display: >
+    [[[
+      if (entity) {
+        let elt = this.shadowRoot,
+          await = setTimeout(marquee,0),
+          data = entity.attributes.data,
+          artist = entity.attributes.media_artist,
+          title = entity.attributes.media_title;
+
+          if (data !== undefined) {
+            var number = data[variables.i].number === undefined && data[variables.i].aired !== undefined
+              ? `(${data[variables.i].aired.split("-")[0]})`
+              : data[variables.i].number === undefined && data[variables.i].aired === undefined
+                ? ' '
+                : data[variables.i].number,
+              output = `${data[variables.i].title} ${number}`;
+          } else {
+            var output = artist === undefined && title !== undefined
+              ? title
+              : title === undefined && artist !== undefined
+                ? artist
+                : title !== undefined && artist !== undefined
+                  ? `${artist} - ${title}`
+                  : variables.translate_idle;
+          }
+
+        function marquee() {
+          let state = elt.getElementById("state"),
+            container = elt.getElementById("container");
+
+          if (state && container) {
+            state.innerHTML = output;
+            let ro = new ResizeObserver(entries => {
+              let spacer = "&nbsp;".repeat(3),
+                s = entries[0],
+                c = entries[1],
+                r = s && s.contentRect &&
+                    c && c.contentRect &&
+                    s.contentRect.width !== 0 &&
+                    c.contentRect.width !== 0;
+
+              if (r && s.contentRect.width < c.contentRect.width) {
+                state.classList.remove("marquee");
+              }
+              else if (r && s.contentRect.width >= c.contentRect.width) {
+                state.innerHTML = `${output} ${spacer} ${output} ${spacer}&nbsp;`;
+                state.classList.add("marquee");
+              }
+            });
+            ro.observe(state);
+            ro.observe(container);
+          }
+        }
+        return output;
+      }
+      return variables.translate_unknown;
+    ]]]
+  tap_action:
+    action: call-service
+    service: media_player.media_play_pause
+    service_data:
+      entity_id: >
+        [[[ return variables.entity_id; ]]]
+  styles:
+    name:
+      - width: 100%
+    state:
+      - max-width: unset
+      - overflow: visible
+    card:
+      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
+      - background-image: &media_background_image >
+          [[[
+            if (entity) {
+              return entity.attributes.data !== undefined
+                ? `url("${entity.attributes.data[variables.i].fanart}"), url("${entity.attributes.data[variables.i].poster}")`
+                : `url("${variables.entity_picture}")`;
+            }
+          ]]]
+      - color: >
+          [[[
+            return variables.media_off || variables.entity_picture === undefined
+              ? 'rgba(255, 255, 255, 0.3)'
+              : '#efefef'
+          ]]]
+      - text-shadow: >
+          [[[
+            return entity === undefined
+              ? 'none'
+              : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+          ]]]
+    custom_fields:
+      icon:
+        - width: 30px
+        - fill: >
+            [[[
+              return entity && variables.media_on
+                ? 'rgba(255, 255, 255, 0.8)'
+                : '#9da0a2';
+            ]]]
       blur_overlay:
         - display: block
         - position: absolute
         - width: 103.1%
         - height: 103.1%
         - filter: var(--blur-intensity)
-        - clip-path:
-            "inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--ha-card-border-radius,
-            4px) / 2) calc(var(--ha-card-border-radius, 4px) / 2))
-
-            "
+        - clip-path: >
+            inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--ha-card-border-radius, 4px) / 2) calc(var(--ha-card-border-radius, 4px) / 2))
         - background: center center/cover no-repeat
-        - background-image:
-            "[[[\n  if (entity) {\n    return entity.attributes.data\
-            \ !== undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
-            ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
-            ${variables.entity_picture}\")`;\n  }\n]]]\n"
+        - background-image: *media_background_image
         - left: -1.5%
         - bottom: -1.6%
-      icon:
-        - width: 30px
-        - fill:
-            "[[[\n  return entity && variables.media_on\n    ? 'rgba(255, 255, 255,\
-            \ 0.8)'\n    : '#9da0a2';\n]]]\n"
-    name:
-      - width: 100%
-    state:
-      - max-width: unset
-      - overflow: visible
+  custom_fields:
+    blur_overlay: >
+      [[[
+        setTimeout(() => {
+          let elt = this.shadowRoot,
+            card = elt.getElementById('card'),
+            container = elt.getElementById('container'),
+            blur_overlay = elt.getElementById('blur_overlay');
+
+          if (elt && card && container && blur_overlay) {
+            card.insertBefore(blur_overlay, container);
+          }
+        }, 0);
+        return ' ';
+      ]]]
+
+#################################################
+#                                               #
+#                 COMPUTER LOCK                 #
+#                                               #
+#################################################
+
+lock:
   tap_action:
-    action: call-service
-    service: media_player.media_play_pause
-    service_data:
-      entity_id: "[[[ return variables.entity_id; ]]]
+    loader: |
+      [[[
+        let elt = this.shadowRoot;
+        if (variables.state_on && variables.lock === 'locked') {
+          elt.getElementById('lock').classList.add('locked');
+          window.setTimeout(() => {
+            elt.getElementById('lock').classList.remove('locked');
+          }, 1100);
+        } else {
 
-        "
-  template:
-    - base
-    - icon_play_pause
-  variables:
-    i:
-      "[[[\n  if (entity) {\n    let data = entity.attributes.data;\n    return data\
-      \ === undefined || Math.floor(Math.random() * (data.length - 1)) + 1;\n  }\n\
-      ]]]\n"
-extra_styles:
-  extra_styles:
-    "[[[\n  if (entity) {\n    let hs = entity.attributes.hs_color ===\
-    \ undefined,\n      h = hs || entity.attributes.hs_color[0],\n      s = hs ||\
-    \ entity.attributes.hs_color[1],\n      l_min = 28,\n      l_max = 48,\n     \
-    \ l_calc = entity.attributes.brightness / 2.54 * (l_max - l_min) / 100 + l_min;\n\
-    \    var light_color = entity.attributes.color_mode === 'color_temp' || entity.attributes.color_mode\
-    \ === 'brightness'\n      ? `hsl(204, 58%, ${l_calc}%);`\n      : `hsl(${h}, ${s}%,\
-    \ ${l_calc}%);`;\n  }\n\n  return `\n    svg {\n      --light-color:\n      ${\
-    \ variables.state_on && entity.attributes.brightness !== undefined\n         \
-    \ ? light_color\n          : variables.state_on && entity.attributes.brightness\
-    \ === undefined\n            ? 'var(--state-icon-active-color);'\n           \
-    \ : 'var(--state-icon-color);'\n      }\n    }\n    #container {\n      text-align:\
-    \ left !important;\n    }      \n    #name, #state {\n      font-size: 18px;\n\
-    \      margin-left: 5px;\n    }\n    #state::first-letter {\n      text-transform:\
-    \ uppercase;\n    }\n    /* portrait */\n    @media screen and (max-width: 1200px)\
-    \ {\n      #name, #state {\n        font-size: 18px;\n      }\n    }\n    /* phone\
-    \ */\n    @media screen and (max-width: 800px) {\n      #name, #state {\n    \
-    \    font-size: 18px;\n      }\n    }\n\n    /* tilt */\n    #ripple, .js-tilt-glare\
-    \ {\n      clip-path: inset(0 round var(--custom-button-card-border-radius));\n\
-    \      overflow: hidden;\n    }\n    .js-tilt-glare {\n      z-index: 1;\n   \
-    \ }\n    .js-tilt-glare-inner {\n      background-color: rgba(0,0,0,0.9);\n  \
-    \  }\n    #container {\n      transform: translateZ(${variables.tilt_options.parallax});\n\
-    \    }\n    #card {\n      transform-style: preserve-3d;\n      overflow: hidden;\n\
-    \    }\n\n    ${this._config.template.includes('conditional_media') ? `\n    \
-    \  :host {\n        --blur-intensity: blur(4.5px) brightness(0.8);\n      }\n\
-    \      /* phone */\n      @media screen and (max-width: 800px) {\n        :host\
-    \ {\n          --blur-intensity: blur(2.5px) brightness(0.8);\n        }\n   \
-    \   }\n      #ripple, .js-tilt-glare {\n        clip-path: inset(0 round calc(var(--custom-button-card-border-radius)\
-    \ / 2));\n      }\n      #container {\n        overflow: hidden;\n      }\n  \
-    \    .marquee {\n        animation: marquee 20s linear infinite;\n      }\n  \
-    \    @keyframes marquee {\n        from {\n          transform: translateX(0%);\n\
-    \        }\n        to {\n          transform: translateX(-50%);\n        }\n\
-    \      }\n    `:''}\n  `\n]]]\n"
-icon_apple_tv:
+          // duplicate of "loader" template
+          let loader = (id, style, timeout) => {
+              elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                window.setTimeout(() => {
+                  elt.getElementById('loader').style.display = 'none'
+                }, 20000))
+          };
+          loader('circle', 'none', 'initial'),
+          loader('loader', 'initial', 'none');
+        }
+      ]]]
   custom_fields:
-    icon:
-      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5\
-      \ 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6\
-      \ 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2\
-      \ 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8\
-      \ 0-.4-.1-.8-.3-1.2-.4-.3-.1-.7-.1-1-.1-1.5.2-2.4 1.1-3 2.6-.4 1.1-.3 2.2 0\
-      \ 3.5.4 1.5 1 2.9 2.1 4 .5.6 1.2.9 2 .6 1.1-.5 2.2-.5 3.4 0 .8.3 1.5 0 2.1-.6.7-.8\
-      \ 1.1-1.8 1.6-2.8v-.2c-1-.6-1.7-1.4-1.8-2.7-.2-1.4.5-2.4 1.5-3.1zm9.9-1.4c.1.2.1.3.1.4l3.6\
-      \ 9.5c.1.3.3.4.6.4h.7c.6 0 .6 0 .9-.6l3.7-9.4c.1-.1.1-.3.2-.5H39l-2.9 8.3-3.1-8.3-1.9.2zM27.3\
-      \ 18l-1.3.4c-.5.2-.5.2-.6.7v1.4h-1.6l.1 1.4h1.5v5c0 .7.1 1.4.2 2.1.1.5.3 1 .8\
-      \ 1.4.8.6 2.6.7 3.5.2l-.1-1.2h-1.3c-.5 0-.9-.3-1-.8-.1-.3-.2-.6-.2-1v-5.8H30c0-.5.1-1\
-      \ 0-1.4h-2.7V18zm-8.8-.9c-1.9.3-3 2-2.7 3.2 1.4.2 2.9-1.7 2.7-3.2z\"/>\n</svg>\n"
+    circle: >
+      [[[
+        if (entity && variables.trigger) {
+          let state = variables.trigger.state === 'on' ? 'locked' : null;
+          if (variables.lock === 'locked') {
+            return `
+              <svg viewBox="0 0 50 50">
+                <style>
+                  @keyframes locked {
+                    from,
+                    to {
+                      transform: translateX(0);
+                    }
+                    10%,
+                    30%,
+                    50%,
+                    70%,
+                    90% {
+                      transform: translateX(-8%);
+                    }
+                    20%,
+                    40%,
+                    60%,
+                    80% {
+                      transform: translateX(8%);
+                    }
+                  }
+                  .locked {
+                    animation: locked 1.1s;
+                  }
+                </style>
+                <path id="lock" class="${state}" d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/>
+              </svg>
+            `;
+          }
+        }
+      ]]]
   styles:
     custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: 3px
-icon_away:
-  custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
-      \ viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes on {\n         \
-      \ 10%,\n          20%,\n          100% {\n            transform: rotateZ(0deg);\n\
-      \          }\n          30%,\n          50%,\n          70% {\n            transform:\
-      \ rotateZ(7deg);\n          }\n          90% {\n            transform: rotateZ(3deg);\n\
-      \          }\n          40%,\n          60%,\n          80% {\n            transform:\
-      \ rotateZ(-7deg);\n          }\n        }\n        .on {\n          animation:\
-      \ on 1.35s cubic-bezier(0.5, 1, 0.89, 1);\n          animation-fill-mode: both;\n\
-      \          transform-origin: 70% 80%;\n          animation-delay: 0s;\n    \
-      \    }\n      </style>\n      <path class=\"${state}\" d=\"M32.1 18.4s.3-1.6.7-2.1c.3-.6.9-1.4\
-      \ 1.6-1.8.6-.4 1.1-.7 1.4-.7s.7-.1 1 .1.6.4.8 1.3l.3 2.7.1 2.4.2 4.1c0 .3.2\
-      \ 3.1.2 3.3s.2 2.7.2 3.2l-.1 2.5c.1 1.6.5 3.1-.2 4.6-.6 1.4-1.7 2.7-2.9 3.6-.5.4-1.9\
-      \ 1.3-2.9 1.7-1.1.5-2.2.8-3.3 1.1-.5.1-1.4.4-2.3.3s-1.8-.6-2.1-1l-1.6-2.3c-.6-.8-2.1-2.3-2.3-2.5l-2.7-2.8c-.2-.2-2.7-3.5-2.9-3.8l-3.1-4.7-1.8-3.2-1.5-2.8-.9-1.8c-.1-.2-.3-1.1-.2-1.4.3-1.2\
-      \ 1.4-1.4 2.3-.7.3.2.9 1 1.1 1.3s6.1 8.1 6.1 8.1c.2.3.7.3.9 0s-.1-.7-.2-.9c-.4-.6-8.3-11.5-8.3-11.5s-.6-.9-.7-1.1c-.3-1.1\
-      \ 0-2.3 1.1-2.7s1.9.3 2.6 1.1c.3.3 8.3 11.5 8.3 11.5.2.2.3.3.5.3.3 0 .5-.4.4-.7-.1-.2-.5-.9-.5-.9L11.8\
-      \ 9c-.6-1-.9-2-.1-3 .7-.8 2.2-1.3 3-.2.3.3 10.1 14.3 10.1 14.3.2.2.5.4.7.3.5-.1.3-.7.1-1-.1-.2-8.4-11.8-8.4-11.8-.4-.9-.6-2\
-      \ .2-2.8 1-1.1 2.5-.5 3.3.5.2.3 1 1.4 1 1.4l2.7 3.7c.1.2 3.4 4.4 3.8 4.8.9 1.1\
-      \ 1.8 2.2 2.7 3.2l.5.5c.1.1.1.4.1.8 0 1.3.1 2.6.1 3.9 0 .2.1.4.2.6.3.3.6.1.7-.2.1-.2\
-      \ 0-2.4 0-2.7-.3-.3-.5-1.3-.4-2.9zM12.2 46.9s-2.8-.8-4.8-2.7-2.6-2.7-2.8-3-1.8-3-2-3.6c-.2-.5-.2-.7.2-1\
-      \ .4-.4 1-.5 1.3.1.1.2.4 1 .5 1.2s1 1.9 1.7 2.8 1.6 2.2 4.4 3.8c.6.3 1.2.6 1.9.9.3.1.6.2.8.4.1.2.1.6-.1.8-.2.4-.7.4-1.1.3zM7.1\
-      \ 30.7l.9 3.1c.3.7 1.1 2.3 1.9 3.3s2.4 2.6 3.4 3.2 2 1.1 3 1.5c1 .3 1.1.4 1.2.5.3.4.2\
-      \ 1.2-.4 1.3-.2 0-1.2 0-1.8-.3L12 41.7c-.5-.4-3.9-3.1-5.1-6S5.3 31 5.2 30.4s-.2-1.1\
-      \ 0-1.4c.3-.4.9-.8 1.3-.3.2.3.3.6.3.9.1 0 .2.8.3 1.1zm26.8-25s.2-.1.5-.1.8.3\
-      \ 1.4.7 1.9 1 3.6 2.9 2.9 3.9 3.4 5.8c.5 1.8.8 3.1.9 5.5 0 .5.1 1.6 0 1.7-.2.5-.5.7-1\
-      \ .7-.6 0-.7-.5-.7-1l-.1-2.9c-.1-.6-.3-1.9-.7-2.9-.3-1-.7-2.3-1.7-3.6-.9-1.3-2.1-2.8-3.2-3.5l-2.4-1.5c-.6-.6-.7-1.2\
-      \ 0-1.8zm4.9-2.5s.3-.2.5-.1c.2 0 .7.3.9.4s2.1 1.3 3.6 3c1.5 1.6 3.5 5.1 3.7\
-      \ 7.4.1.4.2.9 0 1-.2.2-.4.4-.7.4-.2 0-.5 0-.7-.1-.1-.2-.4-1.1-.4-1.3s-.6-2-1.1-3.1C44\
-      \ 9.7 43.5 8.5 42 7.1s-2.2-1.9-2.8-2.2-1.1-.6-1.1-1c.1-.3.3-.6.7-.7z\"/>\n \
-      \   </svg>\n  `;\n]]]\n"
-  state_display: Auto
-  styles:
-    card:
-      - transition: all 0.3s ease-out
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: 1px
-        - margin-top: -1px
-        - fill: "[[[ return variables.state_on ? '#516d82' : '#9da0a2'; ]]]
+      circle:
+        - width: 45px
+        - fill: var(--state-icon-color)
+        - margin: 1px 2px 0 0
+        - justify-self: end
+        - opacity: 1
+        - display: grid
 
-            "
-icon_bathroom:
-  custom_fields:
-    icon:
-      "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000)\
-      \ {\n    state = 'on';\n  } \n  if (variables.state === 'off' && variables.timeout\
-      \ < 2000) {\n    state = 'off';\n  }\n  if (variables.state_on && variables.timeout\
-      \ > 2000) {\n    state = 'on_timeout';\n  }\n  return `\n    <svg viewBox=\"\
-      0 0 50 50\" fill=\"var(--light-color)\">\n      <style>\n        @keyframes\
-      \ on {\n          0% {\n            transform: rotateZ(0deg) translate(0%, 0%);\n\
-      \          }\n          100% {\n            transform: rotateZ(-90deg) translate(-1.5%,\
-      \ 0%);\n          }\n        }\n        @keyframes off {\n          0% {\n \
-      \           transform: rotateZ(-90deg) translate(-1.5%, 0%);\n          }\n\
-      \          45% {\n            transform: rotateZ(-40deg);\n          }\n   \
-      \       55% {\n            transform: rotateZ(0deg);\n          }\n        \
-      \  65% {\n            transform: rotateZ(-15deg);\n          }\n          75%\
-      \ {\n            transform: rotateZ(0deg);\n          }\n          85% {\n \
-      \           transform: rotateZ(-5deg);\n          }\n          95% {\n     \
-      \       transform: rotateZ(0deg);\n          }\n        }\n        .on {\n \
-      \         animation: on 0.45s;\n          animation-fill-mode: forwards;\n \
-      \         transform-origin: 45% 41%;\n          transition-timing-function:\
-      \ cubic-bezier(0.85, 0, 0.15, 1);\n        }\n        .on_timeout {\n      \
-      \    transform: rotateZ(-90deg) translate(-1.5%, 0%);\n          transform-origin:\
-      \ 45% 41%;\n        }\n        .off {\n          animation: off 1.1s linear;\n\
-      \          animation-delay: 0.05s;\n          animation-fill-mode: both;\n \
-      \         transform-origin: 45% 41%;\n        }\n      </style>\n      <path\
-      \ d=\"M12.9 1.2h2.5c1.6 0 2.9 1.3 2.9 2.9v18.6c0 1.4 1.1 2.5 2.4 2.5h20.5c.5\
-      \ 0 1 .4.9 1-.1 2.6-1.2 9.6-10.2 11v7.6c0 .2.2.4.4.4h1.5a1.58 1.58 0 0 1 1.6\
-      \ 1.6v.3a1.58 1.58 0 0 1-1.6 1.6H11a1.58 1.58 0 0 1-1.6-1.6v-.3a1.58 1.58 0\
-      \ 0 1 1.6-1.6h1.6c.2 0 .4-.2.4-.4v-7.6s-5.2-.3-5.2-5.9V4.2c0-1.6 1.3-2.9 2.9-2.9l2.2-.1c0\
-      \ .1 0 0 0 0z\"/>\n      <path class=\"${state}\" d=\"M22.3 18.8h18.3a1.58 1.58\
-      \ 0 0 1 1.6 1.6v.6a1.58 1.58 0 0 1-1.6 1.6h-19c-.4 0-.7-.3-.8-.7v-2.3c0-.4.3-.7.7-.8h.8z\"\
-      />\n    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -2px
-icon_climate:
-  custom_fields:
-    icon:
-      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3\
-      \ 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6\
-      \ 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2\
-      \ 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
-      \ .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1\
-      \ 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1\
-      \ .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5\
-      \ 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
-      \ .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1\
-      \ 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1\
-      \ .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5\
-      \ 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
-      \ .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1\
-      \ 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1\
-      \ .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5\
-      \ 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z\"\
-      />\n</svg>\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -3px
-        - margin-top: 1px
-        - fill:
-            "[[[ return variables.state === 'cool' || variables.state === 'fan_only'
-            ? '#5daeea' : '#9da0a2'; ]]]
+#################################################
+#                                               #
+#                 POPUP BUTTONS                 #
+#                                               #
+#################################################
 
-            "
-icon_closet:
-  custom_fields:
-    icon:
-      "[[[\n  let room = `d=\"M11.4,1.4h27.2v43.1H11.4V1.4z\" fill=\"#bcbcbc\"\
-      `,\n    door = `d=\"M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1\
-      \ 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z\"`;\n\n\
-      \  if (variables.state_on && variables.timeout < 2000) {\n    return `\n   \
-      \   <style>\n        .state {\n          animation: state 0.5s cubic-bezier(0.250,\
-      \ 0.460, 0.450, 0.940) both;\n        }\n        .opacity {\n          animation:\
-      \ opacity 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;\n        }\n \
-      \       @keyframes state {\n          0% {\n            transform: none;\n \
-      \           fill: #9da0a2;\n          }\n          100% {\n            transform:\
-      \ skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);\n            fill: #b68349;\n\
-      \          }\n        }\n        @keyframes opacity {\n          0% {\n    \
-      \        opacity: 0;\n          }\n          100% {\n            opacity: 1;\n\
-      \          }\n        }\n      </style>\n      <svg viewBox=\"0 0 50 50\">\n\
-      \        <path class=\"opacity\" ${room}/>\n        <path class=\"state\" ${door}/>\n\
-      \      </svg>\n    `;\n  }\n\n  if (variables.state_on && variables.timeout\
-      \ > 2000) {\n    return `\n      <svg viewBox=\"0 0 50 50\">\n        <style>\n\
-      \          .state_timeout_on {\n            transform: skewY(10deg) translate(4.5%,\
-      \ -3.9%) scaleX(0.8);\n            fill: #b68349;\n          }\n        </style>\n\
-      \        <path ${room}/>\n        <path class=\"state_timeout_on\" ${door}/>\n\
-      \      </svg>\n    `;\n  }\n\n  return variables.state === 'off' && variables.timeout\
-      \ < 2000 ? `\n    <style>\n      .state {\n        animation: state 0.4s cubic-bezier(0.250,\
-      \ 0.460, 0.450, 0.940) both;\n      }\n      .opacity {\n        animation:\
-      \ opacity 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;\n      }\n   \
-      \   .reverse {\n        animation-direction: reverse;\n      }\n      @keyframes\
-      \ state {\n        0% {\n          transform: none;\n          fill: #9da0a2;\n\
-      \        }\n        100% {\n          transform: skewY(10deg) translate(4.5%,\
-      \ -3.9%) scaleX(0.8);\n          fill: #b68349;\n        }\n      }\n      @keyframes\
-      \ opacity {\n        0% {\n          opacity: 0;\n        }\n        100% {\n\
-      \          opacity: 1;\n        }\n      }\n    </style>\n    <svg viewBox=\"\
-      0 0 50 50\">\n      <path class=\"opacity reverse\" ${room}/>\n      <path class=\"\
-      state reverse\" ${door}/>\n    </svg>\n  ` : `\n    <svg viewBox=\"0 0 50 50\"\
-      >\n      <style>\n        .state_timeout_off {\n          fill: var(--state-icon-color);\n\
-      \        }\n      </style>\n      <path class=\"state_timeout_off\" ${door}/>\n\
-      \    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -6px
-        - margin-top: -1px
-icon_fan:
-  custom_fields:
-    icon:
-      "[[[\n  let path = `\n    <circle cx=\"25\" cy=\"25\" r=\"6.6\"/>\n    <path\
-      \ d=\"M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9\
-      \ 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9\
-      \ 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7\
-      \ 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7\
-      \ 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8\
-      \ 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4\
-      \ 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z\"/>\n \
-      \ `,\n  style = `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes\
-      \ rotate {\n          0% {\n            visibility: visible;\n            transform:\
-      \ rotate(0deg) translateZ(0);\n          }\n          100% {\n            transform:\
-      \ rotate(1080deg) translateZ(0);\n          }\n        }\n        .start {\n\
-      \          animation: rotate 2.8s ease-in;\n          transform-origin: center;\n\
-      \          fill: #5daeea;\n          visibility: hidden;\n          will-change:\
-      \ transform;\n        }\n        .on {\n          animation: rotate 1.8s linear\
-      \ infinite;\n          transform-origin: center;\n          fill: #5daeea;\n\
-      \          animation-delay: 2.8s;\n          visibility: hidden;\n         \
-      \ will-change: transform;\n        }\n        .end {\n          animation: rotate\
-      \ 2.8s;\n          transform-origin: center;\n          fill: #9ca2a5;\n   \
-      \       animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);\n       \
-      \   will-change: transform;\n        }\n        .start_timeout {\n         \
-      \ animation: rotate 1.8s linear infinite;\n          transform-origin: center;\n\
-      \          fill: #5daeea;\n          visibility: hidden;\n          will-change:\
-      \ transform;\n        }\n        .end_timeout {\n          fill: #9ca2a5;\n\
-      \        }\n      </style>\n  `;\n  if (variables.state_on && variables.timeout\
-      \ < 2000) {\n    return `${style}<g class=\"start\">${path}</g><g class=\"on\"\
-      >${path}</g></svg>`;\n  }\n  if (variables.state === 'off' && variables.timeout\
-      \ < 2000) {\n    return `${style}<g class=\"end\">${path}</g></svg>`;\n  }\n\
-      \  if (variables.state_on && variables.timeout > 2000) {\n    return `${style}<g\
-      \ class=\"start_timeout\">${path}</g></svg>`;\n  } else {\n    return `${style}<g\
-      \ class=\"end_timeout\">${path}</g></svg>`;\n  }\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: 1px
-        - margin-top: 1px
-icon_home:
-  custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
-      \ viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes on {\n         \
-      \ from,\n          20%,\n          40%,\n          60%,\n          80%,\n  \
-      \        to {\n            animation-timing-function: cubic-bezier(0.215, 0.61,\
-      \ 0.355, 1);\n          }\n          0% {\n            transform: scale(0.3);\n\
-      \          }\n          20% {\n            transform: scale(1.1);\n        \
-      \  }\n          40% {\n            transform: scale(0.9);\n          }\n   \
-      \       60% {\n            transform: scale(1.03);\n          }\n          80%\
-      \ {\n            transform: scale(0.97);\n          }\n          to {\n    \
-      \        transform: scale(1);\n          }\n        }\n        .on {\n     \
-      \     animation: on 1s;\n          transform-origin: center;\n        }\n  \
-      \    </style>\n      <path class=\"${state}\" d=\"M42.2 28.3c0-.8-.2-1-.2-1L26\
-      \ 12.1s-.5-.4-1-.4-1 .3-1 .3L8.2 27.1c-.4.5-.4.9-.4.9v18.3c0 1.1.9 2 1.9 2h8.2a1.47\
-      \ 1.47 0 0 0 1.5-1.5v-14a1.47 1.47 0 0 1 1.5-1.5h8.4a1.47 1.47 0 0 1 1.5 1.5v14a1.47\
-      \ 1.47 0 0 0 1.5 1.5h8.2c1.1 0 2-.9 2-1.9 0-.2-.3-18.1-.3-18.1zM7.3 25l-1.6\
-      \ 1.5s-.3.3-.5.3-.5 0-.8-.2c-.2-.2-2-2.8-2-2.8s-.1-.4-.1-.7c.1-.3.2-.7.3-.8.4-.1\
-      \ 21.5-20.1 21.5-20.1s.4-.3.9-.3c.4 0 .8.1.9.2s.5.4.5.4l8.9 8.5V6s.1-.4.2-.7c.1-.2.3-.3.4-.3s.3-.1.3-.1h3s.3.1.4.3a1.08\
-      \ 1.08 0 0 1 .3.7v9.8l7.2 6.9s.2.3.3.4c.1.2.1.7.1.7 0 .1-.1.4-.2.5s-1.6 2.5-1.6\
-      \ 2.5-.1.3-.3.3c-.2.1-.4.1-.7 0-.2-.1-.5-.4-.5-.4L26.4 9.4s-.3-.3-.5-.4-.4-.2-.8-.2-.5.1-.8.1c-.1.1-.4.3-.7.5C23.3\
-      \ 9.8 7.3 25 7.3 25z\"/>\n    </svg>\n  `;\n]]]\n"
-  state_display: Auto
-  styles:
-    card:
-      - transition: all 0.3s ease-out
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: 1px
-        - margin-top: -1px
-        - fill: "[[[ return variables.state_on ? '#c7983e' : '#9da0a2'; ]]]
-
-            "
-icon_hue:
-  custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
-      \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
-      \    @keyframes on {\n          0% {\n            transform: scale(0.85);\n\
-      \          }\n          20% {\n            transform: scale(1.1);\n        \
-      \  }\n          40% {\n            transform: scale(0.95);\n          }\n  \
-      \        60% {\n            transform: scale(1.03);\n          }\n         \
-      \ 80% {\n            transform: scale(0.97);\n          }\n          100% {\n\
-      \            transform: scale(1);\n          }\n        }\n        .on {\n \
-      \         animation: on 0.8s;\n          transform-origin: center;\n       \
-      \ }\n      </style>\n      <path fill=\"#9da0a2\" d=\"M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3\
-      \ 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8\
-      \ 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2\
-      \ 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9\
-      \ 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1\
-      \ 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7\"/>\n      <path\
-      \ class=\"${state}\" fill=\"var(--light-color)\" d=\"M14.1 15.3c3.4-.3 7-.4\
-      \ 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7\
-      \ 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z\"/>\n    </svg>\n  `;\n\
-      ]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -4px
-icon_imac:
-  custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
-      \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
-      \    @keyframes on {\n          from {\n            opacity: 0.5;\n        \
-      \    transform: scale(0.6);\n          }\n          100% {\n            opacity:\
-      \ 1;\n          }\n        }\n        .on {\n          animation: on 0.8s cubic-bezier(0.25,\
-      \ 1, 0.5, 1);\n          transform-origin: center;\n        }\n      </style>\n\
-      \      <path class=\"${state}\" d=\"M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9\
-      \ 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0\
-      \ 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z\"\
-      />\n    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: 5px
-        - fill: "[[[ return variables.state_on ? '#72757c' : '#9da0a2'; ]]]
-
-            "
-icon_lamp:
-  custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
-      \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
-      \    @keyframes on {\n          0% {\n            transform: scale(0.85);\n\
-      \          }\n          20% {\n            transform: scale(1.1);\n        \
-      \  }\n          40% {\n            transform: scale(0.95);\n          }\n  \
-      \        60% {\n            transform: scale(1.03);\n          }\n         \
-      \ 80% {\n            transform: scale(0.97);\n          }\n        }\n     \
-      \   .on {\n          animation: on 0.8s;\n          transform-origin: center;\n\
-      \        }\n      </style>\n      <path fill=\"#9da0a2\" d=\"M26.5 21.8l3.8-6.1H19.7l3.8\
-      \ 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29\
-      \ 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2\
-      \ 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z\"/>\n      <path class=\"\
-      ${state}\" fill=\"var(--light-color)\" d=\"M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4\
-      \ 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3\
-      \ 12.8-.3z\"/>\n    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -6px
-        - margin-top: 1px
-icon_monitors:
-  custom_fields:
-    icon:
-      "[[[\n  let style = `\n    <style>\n      @keyframes cone {\n        35%\
-      \ {\n          transform: scale(0.8);\n          animation-timing-function:\
-      \ cubic-bezier(0, 0.55, 0.45, 1);\n        }\n        36% {\n          transform:\
-      \ translateY(0%);\n        }\n        49% {\n          transform: scale(1.25);\n\
-      \        }\n        63% {\n          transform: scale(0.85);\n          animation-timing-function:\
-      \ cubic-bezier(0, 0.55, 0.45, 1);\n        }\n        77% {\n          transform:\
-      \ scale(1.15);\n          animation-timing-function: cubic-bezier(0, 0.55, 0.45,\
-      \ 1);\n        }\n        95% {\n          transform: scale(1);\n        }\n\
-      \      }\n      .cone {\n        animation: cone 1.2s;\n        transform-origin:\
-      \ center;\n      }\n      @keyframes speaker {\n        0% {\n          transform:\
-      \ scale(1);\n        }\n        40% {\n          transform: scale(1);\n    \
-      \    }\n        49% {\n          transform: scale(0.95);\n        }\n      \
-      \  63% {\n          transform: scale(1);\n        }\n        77% {\n       \
-      \   transform: scale(0.95);\n        }\n        100% {\n          transform:\
-      \ scale(1);\n        }\n      }\n      .speaker {\n        animation: speaker\
-      \ 1.3s;\n        transform-origin: center;\n      }\n    </style>\n  `,\n  \
-      \  paths = `\n      <g class=\"speaker\">\n        <path fill=\"#686868\" d=\"\
-      M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0\
-      \ 1.2-.9 2.3-1.9 2.3z\"/>\n        <path fill=\"#2a2a2a\" d=\"M39.2 1H10.8C9.4\
-      \ 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25\
-      \ 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25\
-      \ 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z\"\
-      />\n      </g>\n      <path class=\"cone\" fill=\"#e5dd00\" d=\"M25 15.7c-6.2\
-      \ 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0\
-      \ 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1\
-      \ 1.9-1.5 3.3-3.3 3.3z\"/>\n    `;\n  if (variables.state_on && variables.timeout\
-      \ < 2000) {\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      ${style}\n \
-      \     ${paths}\n    </svg>\n  `;\n  }\n\n  return variables.state_on && variables.timeout\
-      \ > 2000 ? `\n    <svg viewBox=\"0 0 50 50\">\n      ${paths}\n    </svg>\n\
-      \  ` : `\n    <svg viewBox=\"0 0 50 50\">\n      <path fill=\"#9da0a2\" d=\"\
-      M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0\
-      \ 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0\
-      \ 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0\
-      \ 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3\
-      \ 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4\
-      \ 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25\
-      \ 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3\
-      \ 11.3z\"/>\n    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -2px
 icon_name:
-  color: "#9da0a2"
   size: 1.4em
+  color: "#9da0a2"
   styles:
+    grid:
+      - grid-template-areas: '"i n"'
+      - grid-column-gap: 0.3em
     card:
       - padding: 3.35em 1.4em 3.35em 1.2em
       - font-size: 1.06em
       - font-weight: 500
       - letter-spacing: 0.015em
       - background: "#FFFFFF10"
-    grid:
-      - grid-template-areas: '"i n"'
-      - grid-column-gap: 0.3em
     img_cell:
       - overflow: visible
-icon_nest_mini:
-  custom_fields:
+
+icon_only:
+  show_name: false
+  color: "#9da0a2"
+  styles:
+    img_cell:
+      - width: 55px
+      - height: 55px
     icon:
-      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M49.7 25c0 13.6-11.1 24.7-24.8\
-      \ 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25 .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22\
-      \ 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9 2.3-2.2h0zm10.8\
-      \ 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3\
-      \ 2.2zm-3.2 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2\
-      \ 2.2c1.3 0 2.3-.9 2.3-2.2h0zm13 2.2a2.22 2.22 0 0 0 2.2-2.2c0-1.2-1-2.3-2.2-2.3a2.22\
-      \ 2.22 0 0 0-2.2 2.2c0 1.3 1 2.3 2.2 2.3z\" />\n</svg>\n"
+      - width: 100%
+    card:
+      - padding: 1.95em 0
+      - background: "#FFFFFF10"
+
+#################################################
+#                                               #
+#                     ICONS                     #
+#                                               #
+#################################################
+
+icon_plex:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 3px
+  custom_fields:
+    icon: >
+      <svg viewBox="0 0 50 50">
+        <path d="M7.7.3h34.6c4.1 0 7.4 3.3 7.4 7.4v34.6c0 4.1-3.3 7.4-7.4 7.4H7.7c-4.1 0-7.4-3.3-7.4-7.4V7.7C.3 3.6 3.6.3 7.7.3z" fill="#282a2d"/>
+        <path d="M25,7.1H14.6L25,25L14.6,42.9H25L35.4,25L25,7.1z" fill="#e5a00d"/>
+      </svg>
+
+icon_apple_tv:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 3px
+  custom_fields:
+    icon: >
+      <svg viewBox="0 0 50 50">
+        <path d="M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8 0-.4-.1-.8-.3-1.2-.4-.3-.1-.7-.1-1-.1-1.5.2-2.4 1.1-3 2.6-.4 1.1-.3 2.2 0 3.5.4 1.5 1 2.9 2.1 4 .5.6 1.2.9 2 .6 1.1-.5 2.2-.5 3.4 0 .8.3 1.5 0 2.1-.6.7-.8 1.1-1.8 1.6-2.8v-.2c-1-.6-1.7-1.4-1.8-2.7-.2-1.4.5-2.4 1.5-3.1zm9.9-1.4c.1.2.1.3.1.4l3.6 9.5c.1.3.3.4.6.4h.7c.6 0 .6 0 .9-.6l3.7-9.4c.1-.1.1-.3.2-.5H39l-2.9 8.3-3.1-8.3-1.9.2zM27.3 18l-1.3.4c-.5.2-.5.2-.6.7v1.4h-1.6l.1 1.4h1.5v5c0 .7.1 1.4.2 2.1.1.5.3 1 .8 1.4.8.6 2.6.7 3.5.2l-.1-1.2h-1.3c-.5 0-.9-.3-1-.8-.1-.3-.2-.6-.2-1v-5.8H30c0-.5.1-1 0-1.4h-2.7V18zm-8.8-.9c-1.9.3-3 2-2.7 3.2 1.4.2 2.9-1.7 2.7-3.2z"/>
+      </svg>
+
+icon_spotify:
   styles:
     custom_fields:
       icon:
         - width: 55px
         - margin-left: 2px
-icon_only:
-  color: "#9da0a2"
-  show_name: false
-  styles:
-    card:
-      - padding: 1.95em 0
-      - background: "#FFFFFF10"
-    icon:
-      - width: 100%
-    img_cell:
-      - width: 55px
-      - height: 55px
-icon_play_pause:
   custom_fields:
-    play_pause:
-      "[[[\n  let style = `\n    <style>\n      .scale-up {\n        animation:\
-      \ scale-up 1s forwards;\n        cubic-bezier(.05, .5, .3, 1);\n        transform-origin:\
-      \ center center;\n      }\n      @keyframes scale-up {\n        0% {\n     \
-      \     opacity: 0;\n          transform: scale(0);\n        }\n        20% {\n\
-      \          transform: scale(1);\n        }\n        30% {\n          opacity:\
-      \ 1;\n        }\n        80% {\n          opacity: 1;\n        }\n        100%\
-      \ {\n          opacity: 0;\n        }\n      }\n    </style>\n  `;\n  if (variables.state\
-      \ === 'paused' && variables.timeout < 2000) {\n    return `\n      <svg viewBox=\"\
-      0 0 166 166\">${style}\n        <path class=\"scale-up\" d=\"M0 0h59.9v166H0zm106.1\
-      \ 0H166v166h-59.9z\"/>\n      </svg>\n    `;\n  }\n  if (variables.state ===\
-      \ 'playing' && variables.timeout < 2000) {\n    return `\n      <svg viewBox=\"\
-      0 0 166 166\">${style}\n        <path class=\"scale-up\" d=\"M0 0l166 83L0 166z\"\
-      />\n      </svg>\n    `;\n  }\n]]]\n"
+    icon: >
+      <svg viewBox="0 0 50 50">
+        <path d="M25 .3C11.4.3.3 11.4.3 25S11.4 49.7 25 49.7 49.7 38.6 49.7 25 38.6.3 25 .3zm11.3 35.6c-.4.7-1.4 1-2.1.5-5.8-3.5-13.1-4.3-21.7-2.4-.8.2-1.7-.3-1.8-1.2-.2-.8.3-1.7 1.2-1.8 9.4-2.2 17.5-1.2 24 2.8.6.5.9 1.4.4 2.1zm3.1-6.7c-.6.9-1.7 1.2-2.6.6-6.6-4.1-16.8-5.3-24.6-2.9a1.96 1.96 0 0 1-2.4-1.3 1.96 1.96 0 0 1 1.3-2.4c9-2.7 20.1-1.4 27.7 3.3.8.6 1.1 1.8.6 2.7h0zm.2-7c-8-4.7-21.1-5.2-28.7-2.9-1.2.4-2.5-.3-2.9-1.5s.3-2.5 1.5-2.9c8.7-2.6 23.2-2.1 32.4 3.3 1.1.7 1.5 2.1.8 3.2-.6 1.1-2 1.4-3.1.8h0z"/>
+      </svg>
+
+icon_nest_mini:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 2px
+  custom_fields:
+    icon: >
+      <svg viewBox="0 0 50 50">
+        <path d="M49.7 25c0 13.6-11.1 24.7-24.8 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25 .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9 2.3-2.2h0zm10.8 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3 2.2zm-3.2 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3 0 2.3-.9 2.3-2.2h0zm13 2.2a2.22 2.22 0 0 0 2.2-2.2c0-1.2-1-2.3-2.2-2.3a2.22 2.22 0 0 0-2.2 2.2c0 1.3 1 2.3 2.2 2.3z" />
+      </svg>
+
+icon_play_pause:
   styles:
     custom_fields:
       play_pause:
@@ -822,274 +862,828 @@ icon_play_pause:
         - position: absolute
         - fill: "#dedede"
         - overflow: visible
-        - filter:
-            "[[[\n  return entity && variables.entity_picture\n    ? 'drop-shadow(0\
-            \ 0 1.3vw rgba(0,0,0,0.7))'\n    : 'none';\n]]]\n"
-icon_plex:
+        - filter: >
+            [[[
+              return entity && variables.entity_picture
+                ? 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'
+                : 'none';
+            ]]]
   custom_fields:
-    icon:
-      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M7.7.3h34.6c4.1 0 7.4 3.3 7.4\
-      \ 7.4v34.6c0 4.1-3.3 7.4-7.4 7.4H7.7c-4.1 0-7.4-3.3-7.4-7.4V7.7C.3 3.6 3.6.3\
-      \ 7.7.3z\" fill=\"#282a2d\"/>\n  <path d=\"M25,7.1H14.6L25,25L14.6,42.9H25L35.4,25L25,7.1z\"\
-      \ fill=\"#e5a00d\"/>\n</svg>\n"
+    play_pause: >
+      [[[
+        let style = `
+          <style>
+            .scale-up {
+              animation: scale-up 1s forwards;
+              cubic-bezier(.05, .5, .3, 1);
+              transform-origin: center center;
+            }
+            @keyframes scale-up {
+              0% {
+                opacity: 0;
+                transform: scale(0);
+              }
+              20% {
+                transform: scale(1);
+              }
+              30% {
+                opacity: 1;
+              }
+              80% {
+                opacity: 1;
+              }
+              100% {
+                opacity: 0;
+              }
+            }
+          </style>
+        `;
+        if (variables.state === 'paused' && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 166 166">${style}
+              <path class="scale-up" d="M0 0h59.9v166H0zm106.1 0H166v166h-59.9z"/>
+            </svg>
+          `;
+        }
+        if (variables.state === 'playing' && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 166 166">${style}
+              <path class="scale-up" d="M0 0l166 83L0 166z"/>
+            </svg>
+          `;
+        }
+      ]]]
+
+icon_hue:
   styles:
     custom_fields:
       icon:
         - width: 55px
-        - margin-left: 3px
-icon_plug:
+        - margin-left: -4px
   custom_fields:
-    icon:
-      "[[[ if (entity.state === 'on') return '<svg id=\"el0k5alfrd2e1\" xmlns=\"\
-      http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"\
-      0 0 24 24\" shape-rendering=\"geometricPrecision\" text-rendering=\"geometricPrecision\"\
-      ><style><![CDATA[#el0k5alfrd2e3 {animation: el0k5alfrd2e3_c_o 1000ms linear\
-      \ infinite normal forwards}@keyframes el0k5alfrd2e3_c_o { 0% {opacity: 0.500000}\
-      \ 50% {opacity: 1} 100% {opacity: 0.500000} }]]></style><path id=\"el0k5alfrd2e2\"\
-      \ d=\"M2.790000,2.338000L20.923000,2.338000C21.241000,2.338000,21.495000,2.592000,21.495000,2.910000L21.495000,21.107000C21.495000,21.424000,21.241000,21.679000,20.923000,21.679000L2.790000,21.679000C2.472000,21.679000,2.218000,21.424000,2.218000,21.107000L2.218000,2.910000C2.218000,2.592000,2.472000,2.338000,2.790000,2.338000Z\"\
-      \ fill=\"rgb(95,98,103)\" stroke=\"none\" stroke-width=\"1\"/><path id=\"el0k5alfrd2e3\"\
-      \ d=\"M18.392000,18.872000L18.392000,5.881000L18.392000,18.872000ZM11.896000,6.963000C8.913000,6.963000,6.483000,9.394000,6.483000,12.376000C6.483000,15.359000,8.913000,17.790000,11.896000,17.790000C14.879000,17.790000,17.309000,15.359000,17.309000,12.376000C17.309000,9.394000,14.879000,6.963000,11.896000,6.963000ZM11.356000,8.082000L11.356000,10.212000L12.438000,10.212000L12.438000,8.082000C14.578000,8.348000,16.227000,10.163000,16.227000,12.376000C16.227000,14.590000,14.578000,16.405000,12.438000,16.670000L12.438000,14.541000L11.356000,14.541000L11.356000,16.670000C9.214000,16.405000,7.565000,14.590000,7.565000,12.376000C7.565000,10.163000,9.214000,8.348000,11.356000,8.082000ZM9.190000,11.834000L9.190000,12.919000L10.272000,12.919000L10.272000,11.834000L9.190000,11.834000ZM13.521000,11.834000L13.521000,12.919000L14.603000,12.919000L14.603000,11.834000L13.521000,11.834000Z\"\
-      \ opacity=\"0.5\" fill=\"rgb(236,84,63)\" stroke=\"none\" stroke-width=\"0.529167\"\
-      /></svg> ';   else return '<svg id=\"eafen1hwgbxn1\" xmlns=\"http://www.w3.org/2000/svg\"\
-      \ xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 24 24\" shape-rendering=\"\
-      geometricPrecision\" text-rendering=\"geometricPrecision\"><style><![CDATA[#eafen1hwgbxn3\
-      \ {animation: eafen1hwgbxn3_c_o 1000ms linear 1 normal forwards}@keyframes eafen1hwgbxn3_c_o\
-      \ { 0% {opacity: 0.500000} 100% {opacity: 1} }]]></style><path id=\"eafen1hwgbxn2\"\
-      \ d=\"M2.790000,2.338000L20.923000,2.338000C21.241000,2.338000,21.495000,2.592000,21.495000,2.910000L21.495000,21.107000C21.495000,21.424000,21.241000,21.679000,20.923000,21.679000L2.790000,21.679000C2.472000,21.679000,2.218000,21.424000,2.218000,21.107000L2.218000,2.910000C2.218000,2.592000,2.472000,2.338000,2.790000,2.338000Z\"\
-      \ fill=\"rgb(95,98,103)\" stroke=\"none\" stroke-width=\"1\"/><path id=\"eafen1hwgbxn3\"\
-      \ d=\"M18.392000,18.872000L18.392000,5.881000L18.392000,18.872000ZM11.896000,6.963000C8.913000,6.963000,6.483000,9.394000,6.483000,12.376000C6.483000,15.359000,8.913000,17.790000,11.896000,17.790000C14.879000,17.790000,17.309000,15.359000,17.309000,12.376000C17.309000,9.394000,14.879000,6.963000,11.896000,6.963000ZM11.356000,8.082000L11.356000,10.212000L12.438000,10.212000L12.438000,8.082000C14.578000,8.348000,16.227000,10.163000,16.227000,12.376000C16.227000,14.590000,14.578000,16.405000,12.438000,16.670000L12.438000,14.541000L11.356000,14.541000L11.356000,16.670000C9.214000,16.405000,7.565000,14.590000,7.565000,12.376000C7.565000,10.163000,9.214000,8.348000,11.356000,8.082000ZM9.190000,11.834000L9.190000,12.919000L10.272000,12.919000L10.272000,11.834000L9.190000,11.834000ZM13.521000,11.834000L13.521000,12.919000L14.603000,12.919000L14.603000,11.834000L13.521000,11.834000Z\"\
-      \ opacity=\"0.5\" fill=\"rgb(158,160,162)\" stroke=\"none\" stroke-width=\"\
-      0.529167\"/></svg>'; ]]]          \n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-icon_ps5:
-  custom_fields:
-    icon:
-      "[[[\n  if (variables.state_on && variables.timeout < 2000) {\n    return\
-      \ `\n      <svg viewBox=\"0 0 50 50\">\n        <style>\n        @keyframes\
-      \ on {\n          50% {\n            transform: translateY(0);\n          }\n\
-      \          100% {\n            transform: translateY(-45%);\n          }\n \
-      \       }\n        .on {\n          animation: on 2s cubic-bezier(0.550, 0.085,\
-      \ 0.680, 0.530) both;\n        }\n      </style>\n      <g style=\"clip-path:\
-      \ url(#mask);\">\n        <g class=\"on\">\n          <path fill=\"#00aa9e\"\
-      \ d=\"M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z\"/>\n          <path fill=\"#f3c202\"\
-      \ d=\"M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z\"/>\n          <path fill=\"#326db3\"\
-      \ d=\"M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z\"\
-      />\n        </g>\n      </g>\n      <defs>\n        <clipPath id=\"mask\">\n\
-      \          <path d=\"M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2v-5.7l-5.7.8-4.6\
-      \ 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3\
-      \ 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6\
-      \ 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5\
-      \ 1.8 1.8z\"/>\n        </clipPath>\n      </defs>\n      <path fill=\"#de0029\"\
-      \ d=\"M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7\
-      \ 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z\"/>\n    </svg>\n  `;\n  }\n\n  return\
-      \ variables.state_on && variables.timeout > 2000 ? `\n    <svg viewBox=\"0 0\
-      \ 50 50\">\n    <g style=\"clip-path: url(#mask);\">\n      <g style=\"transform:\
-      \ translateY(-45%);\">\n        <path fill=\"#00aa9e\" d=\"M49.2 38.9l-75.6-25.1v7.4l75.6\
-      \ 25.2z\"/>\n        <path fill=\"#f3c202\" d=\"M49.2 46.4l-75.6-25.2v7.5l75.6\
-      \ 25.1z\"/>\n        <path fill=\"#326db3\" d=\"M49.2 53.8l-75.6-25.1V51l75.6\
-      \ 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z\"/>\n      </g>\n    </g>\n    <defs>\n\
-      \      <clipPath id=\"mask\">\n        <path d=\"M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1\
-      \ 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7\
-      \ 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3\
-      \ 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2\
-      \ 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z\"/>\n      </clipPath>\n    </defs>\n\
-      \    <path fill=\"#de0029\" d=\"M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6\
-      \ 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z\"/>\n  </svg>\n\
-      \  ` : `\n    <svg viewBox=\"0 0 50 50\">\n      <path fill=\"#9da0a2\" d=\"\
-      M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8\
-      \ 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7\
-      \ 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6\
-      \ 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7\
-      \ 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2 2.5.1.1V14.6c.1-1.4\
-      \ 2.9-1.3 2.9.3z\"/>\n    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 60px
-        - margin-left: 3px
-        - margin-top: -5px
+    icon: >
+      [[[
+        let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                0% {
+                  transform: scale(0.85);
+                }
+                20% {
+                  transform: scale(1.1);
+                }
+                40% {
+                  transform: scale(0.95);
+                }
+                60% {
+                  transform: scale(1.03);
+                }
+                80% {
+                  transform: scale(0.97);
+                }
+                100% {
+                  transform: scale(1);
+                }
+              }
+              .on {
+                animation: on 0.8s;
+                transform-origin: center;
+              }
+            </style>
+            <path fill="#9da0a2" d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7"/>
+            <path class="${state}" fill="var(--light-color)" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/>
+          </svg>
+        `;
+      ]]]
+
 icon_shade:
-  custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
-      \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
-      \    @keyframes on {\n          0% {\n            transform: scale(0.85);\n\
-      \          }\n          20% {\n            transform: scale(1.1);\n        \
-      \  }\n          40% {\n            transform: scale(0.95);\n          }\n  \
-      \        60% {\n            transform: scale(1.03);\n          }\n         \
-      \ 80% {\n            transform: scale(0.97);\n          }\n          100% {\n\
-      \            transform: scale(1);\n          }\n        }\n        .on {\n \
-      \         animation: on 0.8s;\n          transform-origin: center;\n       \
-      \ }\n      </style>\n      <path fill=\"#9da0a2\" d=\"M26.4 25.6c.6-.3 1.1-.7\
-      \ 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z\"\
-      />\n      <path class=\"${state}\" fill=\"var(--light-color)\" d=\"M24.6.9l-9.4.5c-.6.1-1.9\
-      \ 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3\
-      \ 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5\"\
-      />\n    </svg>\n  `;\n]]]\n"
   styles:
     custom_fields:
       icon:
         - width: 55px
         - margin-left: -4px
         - margin-top: -1px
-icon_spot:
   custom_fields:
-    icon:
-      "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000)\
-      \ {\n    state = 'on';\n  } \n  if (variables.state === 'off' && variables.timeout\
-      \ < 2000) {\n    state = 'off';\n  }\n  if (variables.state_on && variables.timeout\
-      \ > 2000) {\n    state = 'on_timeout';\n  }\n  return `\n    <svg viewBox=\"\
-      0 0 50 50\">\n      <style>\n        @keyframes on {\n          0% {\n     \
-      \       transform: rotateZ(0deg);\n            animation-timing-function: cubic-bezier(0.7,\
-      \ 0, 0.84, 0);\n          }\n          70% {\n            transform: rotateZ(-15deg);\n\
-      \            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n   \
-      \       }\n          75% {\n            transform: rotateZ(-15deg);\n      \
-      \      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n         \
-      \ }\n          88% {\n            transform: rotateZ(-11deg);\n          }\n\
-      \          100% {\n            transform: rotateZ(-15deg);\n          }\n  \
-      \      }\n        @keyframes off {\n          0% {\n            transform: rotateZ(-15deg);\n\
-      \            animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);\n   \
-      \       }\n          70% {\n            transform: rotateZ(0deg);\n        \
-      \    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n          }\n\
-      \          75% {\n            transform: rotateZ(0deg);\n            animation-timing-function:\
-      \ cubic-bezier(0.16, 1, 0.3, 1);\n          }\n          88% {\n           \
-      \ transform: rotateZ(-4deg);\n          }\n          100% {\n            transform:\
-      \ rotateZ(0deg);\n          }\n        }\n        .on {\n          animation:\
-      \ on 0.7s;\n          transform-origin: 40% 20%;\n          animation-fill-mode:\
-      \ forwards;\n          animation-delay: -0.1s;\n        }\n        .off {\n\
-      \          animation: off 0.7s;\n          transform-origin: 40% 20%;\n    \
-      \      animation-fill-mode: forwards;\n        }\n        .on_timeout {\n  \
-      \        transform: rotateZ(-15deg);\n          transform-origin: 40% 20%;\n\
-      \        }\n      </style>\n      <path style=\"clip-path: url(#mask);\" fill=\"\
-      #9da0a2\" d=\"M40.5.8H17.1c-.1 0-.1 0-.1.1A3.12 3.12 0 0 0 20.1 4h6.1c.1 0 .1\
-      \ 0 .1.1v7.4L18 19.1l3.6 3.5 9.1-8.6c.4-.4.6-1 .7-1.6V4c0-.1 0-.1.1-.1h6c1.7.1\
-      \ 3.1-1.3 3-3.1z\"/>\n      <defs>\n        <clipPath id=\"mask\">\n       \
-      \   <path class=\"${state}\" d=\"M0 9.1h24l8.3 8.8H50V-9H0z\"/>\n        </clipPath>\n\
-      \      </defs>\n      <path class=\"${state}\" fill=\"var(--light-color)\" d=\"\
-      M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6\
-      \ 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z\"/>\n    </svg>\n  `;\n]]]\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: -3px
-icon_spotify:
-  custom_fields:
-    icon:
-      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25 .3C11.4.3.3 11.4.3 25S11.4\
-      \ 49.7 25 49.7 49.7 38.6 49.7 25 38.6.3 25 .3zm11.3 35.6c-.4.7-1.4 1-2.1.5-5.8-3.5-13.1-4.3-21.7-2.4-.8.2-1.7-.3-1.8-1.2-.2-.8.3-1.7\
-      \ 1.2-1.8 9.4-2.2 17.5-1.2 24 2.8.6.5.9 1.4.4 2.1zm3.1-6.7c-.6.9-1.7 1.2-2.6.6-6.6-4.1-16.8-5.3-24.6-2.9a1.96\
-      \ 1.96 0 0 1-2.4-1.3 1.96 1.96 0 0 1 1.3-2.4c9-2.7 20.1-1.4 27.7 3.3.8.6 1.1\
-      \ 1.8.6 2.7h0zm.2-7c-8-4.7-21.1-5.2-28.7-2.9-1.2.4-2.5-.3-2.9-1.5s.3-2.5 1.5-2.9c8.7-2.6\
-      \ 23.2-2.1 32.4 3.3 1.1.7 1.5 2.1.8 3.2-.6 1.1-2 1.4-3.1.8h0z\"/>\n</svg>\n"
-  styles:
-    custom_fields:
-      icon:
-        - width: 55px
-        - margin-left: 2px
+    icon: >
+      [[[
+        let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                0% {
+                  transform: scale(0.85);
+                }
+                20% {
+                  transform: scale(1.1);
+                }
+                40% {
+                  transform: scale(0.95);
+                }
+                60% {
+                  transform: scale(1.03);
+                }
+                80% {
+                  transform: scale(0.97);
+                }
+                100% {
+                  transform: scale(1);
+                }
+              }
+              .on {
+                animation: on 0.8s;
+                transform-origin: center;
+              }
+            </style>
+            <path fill="#9da0a2" d="M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z"/>
+            <path class="${state}" fill="var(--light-color)" d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5"/>
+          </svg>
+        `;
+      ]]]
+
 icon_tv:
-  custom_fields:
-    icon:
-      "[[[\n  let style = `\n    <style>\n      @keyframes on {\n        from\
-      \ {\n          transform: scaleY(0);\n        }\n        to {\n          transform:\
-      \ scaleY(1);\n        }\n      }\n      .on {\n        animation: on 1s;\n \
-      \       transform-origin: -100% 46%;\n        animation-fill-mode: forwards;\n\
-      \      }\n      @keyframes off {\n        from {\n          transform: scaleY(1);\n\
-      \        }\n        to {\n          transform: scaleY(0);\n        }\n     \
-      \ }\n      .off {\n        animation: off 1s;\n        transform-origin: -100%\
-      \ 46%;\n        animation-fill-mode: forwards;\n      }\n    </style>\n  `,\n\
-      \    path = `\n      <path d=\"M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1\
-      \ 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6\
-      \ 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z\"/>\n    `,\n    gradient = `\n\
-      \      <linearGradient id=\"A\" gradientUnits=\"userSpaceOnUse\" x1=\"5.401\"\
-      \ y1=\"34.714\" x2=\"43.817\" y2=\"11.74\">\n        <stop offset=\"0\" stop-color=\"\
-      #64acb7\"/>\n        <stop offset=\"1\" stop-color=\"#7fdbe9\"/>\n      </linearGradient>\n\
-      \    `;\n  if (variables.state_on && variables.timeout < 2000) {\n    return\
-      \ `\n      <svg viewBox=\"0 0 50 50\"> ${style} ${gradient} \n        <path\
-      \ d=\"M2.9,8h44.3v29.9H2.9V8z\" fill=\"#20262890\"/>\n        <path class=\"\
-      on\" d=\"M2.9,8h44.3v29.9H2.9V8z\" fill=\"url(#A)\"/> ${path} \n      </svg>\n\
-      \    `;\n  }\n  if (variables.state_on && variables.timeout > 2000) {\n    return\
-      \ `\n      <svg viewBox=\"0 0 50 50\"> ${gradient} \n        <path d=\"M2.9,8h44.3v29.9H2.9V8z\"\
-      \ fill=\"#20262890\"/>\n        <path class=\"on\" d=\"M2.9,8h44.3v29.9H2.9V8z\"\
-      \ fill=\"url(#A)\"/> ${path} \n      </svg>\n    `;\n  }\n  if (variables.state\
-      \ === 'off' && variables.timeout < 2000) {\n    return `\n      <svg viewBox=\"\
-      0 0 50 50\"> ${style} ${gradient} \n        <path class=\"off\" d=\"M2.9,8h44.3v29.9H2.9V8z\"\
-      \ fill=\"url(#A)\"/> ${path} \n      </svg>\n    `;\n  } else {\n    return\
-      \ `\n      <svg viewBox=\"0 0 50 50\"> ${style} \n        ${path}\n      </svg>\n\
-      \    `;\n  }\n]]]\n"
   styles:
     custom_fields:
       icon:
         - width: 55px
         - margin-top: -1px
         - margin-left: 5px
-        - fill: "[[[\n  return variables.state_on ? '#616161' : '#9da0a2';\n]]]\n"
-icon_vacuum:
+        - fill: >
+            [[[
+              return variables.state_on ? '#616161' : '#9da0a2';
+            ]]]
   custom_fields:
-    icon:
-      '[[[ if (entity.state === ''cleaning'') return ''<svg id="egx3seajtt481"
-      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-      viewBox="0 0 24 24" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><style><![CDATA[#egx3seajtt484
-      {animation: egx3seajtt484_c_o 1000ms linear infinite normal forwards}@keyframes
-      egx3seajtt484_c_o { 0% {opacity: 1} 50% {opacity: 0.750000} 100% {opacity: 1}
-      }#egx3seajtt485_tr {animation: egx3seajtt485_tr__tr 1000ms linear infinite normal
-      forwards}@keyframes egx3seajtt485_tr__tr { 0% {transform: translate(-15.921411px,34.655067px)
-      rotate(0deg)} 20% {transform: translate(-15.921411px,34.655067px) rotate(-10deg)}
-      50% {transform: translate(-15.921411px,34.655067px) rotate(0deg)} 80% {transform:
-      translate(-15.921411px,34.655067px) rotate(10deg)} 100% {transform: translate(-15.921411px,34.655067px)
-      rotate(0deg)} }]]></style><g id="egx3seajtt482" transform="matrix(0.33023402094841
-      0 0 0.33023402094841 -12.17848396301270 -1.60764098167419)"><path id="egx3seajtt483"
-      d="M50.582000,41.719000C51.347000,23.263000,71.804000,12.557000,87.405000,22.447000C94.048000,26.659000,98.205000,33.860000,98.531000,41.719000L102.531000,41.719000C102.355000,36.658000,100.801000,31.742000,98.037000,27.499000L101.343000,25.184000C101.973000,24.743000,101.890000,23.784000,101.193000,23.458000C100.869000,23.307000,100.489000,23.340000,100.196000,23.545000L96.886000,25.862000C96.307000,25.095000,95.690000,24.358000,95.036000,23.653000L100.013000,18.677000C100.550000,18.126000,100.289000,17.199000,99.543000,17.010000C99.206000,16.924000,98.848000,17.020000,98.598000,17.263000L93.619000,22.242000C92.916000,21.586000,92.180000,20.967000,91.414000,20.387000L93.730000,17.079000C94.179000,16.453000,93.782000,15.577000,93.016000,15.501000C92.652000,15.465000,92.298000,15.630000,92.092000,15.932000L89.780000,19.234000C80.524000,13.214000,68.589000,13.214000,59.333000,19.234000L57.021000,15.933000C56.592000,15.294000,55.632000,15.359000,55.293000,16.050000C55.130000,16.383000,55.164000,16.779000,55.383000,17.079000L57.699000,20.387000C56.933000,20.967000,56.197000,21.586000,55.494000,22.241000L50.515000,17.263000C49.978000,16.711000,49.045000,16.949000,48.836000,17.690000C48.737000,18.042000,48.839000,18.421000,49.101000,18.677000L54.077000,23.653000C53.423000,24.358000,52.805000,25.095000,52.226000,25.862000L48.917000,23.545000C48.287000,23.103000,47.414000,23.510000,47.347000,24.277000C47.316000,24.633000,47.477000,24.979000,47.770000,25.184000L51.075000,27.499000C48.312000,31.742000,46.758000,36.658000,46.582000,41.719000L50.582000,41.719000ZM74.556000,66.719000C61.698000,66.703000,51.131000,56.566000,50.582000,43.719000L46.582000,43.719000C47.346000,65.254000,71.136000,77.886000,89.403000,66.457000C97.283000,61.527000,102.201000,53.008000,102.531000,43.719000L98.531000,43.719000C97.982000,56.566000,87.415000,66.703000,74.556000,66.719000Z"
-      transform="matrix(1 0 0 1 -1.34028837709955 -1.53274161016582)" fill="rgb(87,87,87)"
-      stroke="none" stroke-width="1"/></g><g id="egx3seajtt484" transform="matrix(0.33023402094841
-      0 0 0.33023402094841 17.25779151916504 0.55571800470352)"><g id="egx3seajtt485_tr"
-      transform="translate(-15.921411,34.655067) rotate(0)"><path id="egx3seajtt485"
-      d="M-13.277000,25.125000C-13.277000,25.895000,-14.110000,26.376000,-14.777000,25.991000C-15.444000,25.606000,-15.444000,24.644000,-14.777000,24.259000C-14.625000,24.171000,-14.453000,24.125000,-14.277000,24.125000C-13.725000,24.125000,-13.277000,24.573000,-13.277000,25.125000ZM-9.277000,37.125000C-9.277000,40.974000,-13.444000,43.380000,-16.777000,41.455000C-18.324000,40.562000,-19.277000,38.911000,-19.277000,37.125000L-19.277000,25.125000C-19.277000,21.276000,-15.110000,18.870000,-11.777000,20.795000C-10.230000,21.688000,-9.277000,23.339000,-9.277000,25.125000L-9.277000,37.125000ZM-11.277000,25.125000C-11.277000,22.816000,-13.777000,21.372000,-15.777000,22.527000C-17.777000,23.682000,-17.777000,26.568000,-15.777000,27.723000C-15.321000,27.986000,-14.804000,28.125000,-14.277000,28.125000C-12.621000,28.123000,-11.279000,26.781000,-11.277000,25.125000ZM7.723000,36.125000C7.723000,53.061000,-10.610000,63.645000,-25.277000,55.178000C-39.944000,46.710000,-39.944000,25.540000,-25.277000,17.072000C-21.933000,15.142000,-18.139000,14.125000,-14.277000,14.125000C-2.132000,14.139000,7.709000,23.980000,7.723000,36.125000ZM-19.277000,48.125000C-19.277000,47.355000,-20.110000,46.874000,-20.777000,47.259000C-21.444000,47.644000,-21.444000,48.606000,-20.777000,48.991000C-20.625000,49.079000,-20.453000,49.125000,-20.277000,49.125000C-19.725000,49.125000,-19.277000,48.677000,-19.277000,48.125000ZM-10.277000,53.125000C-10.277000,52.573000,-10.725000,52.125000,-11.277000,52.125000L-17.277000,52.125000C-18.047000,52.125000,-18.528000,52.958000,-18.143000,53.625000C-17.964000,53.934000,-17.634000,54.125000,-17.277000,54.125000L-11.277000,54.125000C-10.725000,54.125000,-10.277000,53.677000,-10.277000,53.125000ZM-16.277000,49.125000C-15.507000,49.125000,-15.026000,48.292000,-15.411000,47.625000C-15.796000,46.958000,-16.758000,46.958000,-17.143000,47.625000C-17.231000,47.777000,-17.277000,47.949000,-17.277000,48.125000C-17.277000,48.677000,-16.829000,49.125000,-16.277000,49.125000ZM-12.277000,49.125000C-11.507000,49.125000,-11.026000,48.292000,-11.411000,47.625000C-11.796000,46.958000,-12.758000,46.958000,-13.143000,47.625000C-13.231000,47.777000,-13.277000,47.949000,-13.277000,48.125000C-13.277000,48.677000,-12.829000,49.125000,-12.277000,49.125000ZM-7.277000,48.125000C-7.277000,47.355000,-8.110000,46.874000,-8.777000,47.259000C-9.444000,47.644000,-9.444000,48.606000,-8.777000,48.991000C-8.625000,49.079000,-8.453000,49.125000,-8.277000,49.125000C-7.725000,49.125000,-7.277000,48.677000,-7.277000,48.125000ZM-7.277000,25.125000C-7.277000,19.736000,-13.110000,16.369000,-17.777000,19.063000C-19.943000,20.313000,-21.277000,22.624000,-21.277000,25.125000L-21.277000,37.125000C-21.277000,42.514000,-15.444000,45.881000,-10.777000,43.187000C-8.611000,41.937000,-7.277000,39.626000,-7.277000,37.125000L-7.277000,25.125000Z"
-      transform="translate(14.277125,-36.141457)" fill="rgb(193,119,223)" stroke="none"
-      stroke-width="1"/></g></g></svg> '';   else return ''<svg id="esscqw7jqup1"
-      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-      viewBox="0 0 24 24" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><style><![CDATA[#esscqw7jqup4
-      {animation: esscqw7jqup4_c_o 1000ms linear 1 normal forwards}@keyframes esscqw7jqup4_c_o
-      { 0% {opacity: 1} 100% {opacity: 0.500000} }]]></style><g id="esscqw7jqup2"
-      transform="matrix(0.33023402094841 0 0 0.33023402094841 -12.17848396301270 -1.60764098167419)"><path
-      id="esscqw7jqup3" d="M50.582000,41.719000C51.347000,23.263000,71.804000,12.557000,87.405000,22.447000C94.048000,26.659000,98.205000,33.860000,98.531000,41.719000L102.531000,41.719000C102.355000,36.658000,100.801000,31.742000,98.037000,27.499000L101.343000,25.184000C101.973000,24.743000,101.890000,23.784000,101.193000,23.458000C100.869000,23.307000,100.489000,23.340000,100.196000,23.545000L96.886000,25.862000C96.307000,25.095000,95.690000,24.358000,95.036000,23.653000L100.013000,18.677000C100.550000,18.126000,100.289000,17.199000,99.543000,17.010000C99.206000,16.924000,98.848000,17.020000,98.598000,17.263000L93.619000,22.242000C92.916000,21.586000,92.180000,20.967000,91.414000,20.387000L93.730000,17.079000C94.179000,16.453000,93.782000,15.577000,93.016000,15.501000C92.652000,15.465000,92.298000,15.630000,92.092000,15.932000L89.780000,19.234000C80.524000,13.214000,68.589000,13.214000,59.333000,19.234000L57.021000,15.933000C56.592000,15.294000,55.632000,15.359000,55.293000,16.050000C55.130000,16.383000,55.164000,16.779000,55.383000,17.079000L57.699000,20.387000C56.933000,20.967000,56.197000,21.586000,55.494000,22.241000L50.515000,17.263000C49.978000,16.711000,49.045000,16.949000,48.836000,17.690000C48.737000,18.042000,48.839000,18.421000,49.101000,18.677000L54.077000,23.653000C53.423000,24.358000,52.805000,25.095000,52.226000,25.862000L48.917000,23.545000C48.287000,23.103000,47.414000,23.510000,47.347000,24.277000C47.316000,24.633000,47.477000,24.979000,47.770000,25.184000L51.075000,27.499000C48.312000,31.742000,46.758000,36.658000,46.582000,41.719000L50.582000,41.719000ZM74.556000,66.719000C61.698000,66.703000,51.131000,56.566000,50.582000,43.719000L46.582000,43.719000C47.346000,65.254000,71.136000,77.886000,89.403000,66.457000C97.283000,61.527000,102.201000,53.008000,102.531000,43.719000L98.531000,43.719000C97.982000,56.566000,87.415000,66.703000,74.556000,66.719000Z"
-      transform="matrix(1 0 0 1 -1.34028837709955 -1.53274161016582)" fill="rgb(95,98,103)"
-      stroke="none" stroke-width="1"/></g><g id="esscqw7jqup4" transform="matrix(0.33023402094841
-      0 0 0.33023402094841 17.25779151916504 0.55571800470352)"><path id="esscqw7jqup5"
-      d="M-13.277000,25.125000C-13.277000,25.895000,-14.110000,26.376000,-14.777000,25.991000C-15.444000,25.606000,-15.444000,24.644000,-14.777000,24.259000C-14.625000,24.171000,-14.453000,24.125000,-14.277000,24.125000C-13.725000,24.125000,-13.277000,24.573000,-13.277000,25.125000ZM-9.277000,37.125000C-9.277000,40.974000,-13.444000,43.380000,-16.777000,41.455000C-18.324000,40.562000,-19.277000,38.911000,-19.277000,37.125000L-19.277000,25.125000C-19.277000,21.276000,-15.110000,18.870000,-11.777000,20.795000C-10.230000,21.688000,-9.277000,23.339000,-9.277000,25.125000L-9.277000,37.125000ZM-11.277000,25.125000C-11.277000,22.816000,-13.777000,21.372000,-15.777000,22.527000C-17.777000,23.682000,-17.777000,26.568000,-15.777000,27.723000C-15.321000,27.986000,-14.804000,28.125000,-14.277000,28.125000C-12.621000,28.123000,-11.279000,26.781000,-11.277000,25.125000ZM7.723000,36.125000C7.723000,53.061000,-10.610000,63.645000,-25.277000,55.178000C-39.944000,46.710000,-39.944000,25.540000,-25.277000,17.072000C-21.933000,15.142000,-18.139000,14.125000,-14.277000,14.125000C-2.132000,14.139000,7.709000,23.980000,7.723000,36.125000ZM-19.277000,48.125000C-19.277000,47.355000,-20.110000,46.874000,-20.777000,47.259000C-21.444000,47.644000,-21.444000,48.606000,-20.777000,48.991000C-20.625000,49.079000,-20.453000,49.125000,-20.277000,49.125000C-19.725000,49.125000,-19.277000,48.677000,-19.277000,48.125000ZM-10.277000,53.125000C-10.277000,52.573000,-10.725000,52.125000,-11.277000,52.125000L-17.277000,52.125000C-18.047000,52.125000,-18.528000,52.958000,-18.143000,53.625000C-17.964000,53.934000,-17.634000,54.125000,-17.277000,54.125000L-11.277000,54.125000C-10.725000,54.125000,-10.277000,53.677000,-10.277000,53.125000ZM-16.277000,49.125000C-15.507000,49.125000,-15.026000,48.292000,-15.411000,47.625000C-15.796000,46.958000,-16.758000,46.958000,-17.143000,47.625000C-17.231000,47.777000,-17.277000,47.949000,-17.277000,48.125000C-17.277000,48.677000,-16.829000,49.125000,-16.277000,49.125000ZM-12.277000,49.125000C-11.507000,49.125000,-11.026000,48.292000,-11.411000,47.625000C-11.796000,46.958000,-12.758000,46.958000,-13.143000,47.625000C-13.231000,47.777000,-13.277000,47.949000,-13.277000,48.125000C-13.277000,48.677000,-12.829000,49.125000,-12.277000,49.125000ZM-7.277000,48.125000C-7.277000,47.355000,-8.110000,46.874000,-8.777000,47.259000C-9.444000,47.644000,-9.444000,48.606000,-8.777000,48.991000C-8.625000,49.079000,-8.453000,49.125000,-8.277000,49.125000C-7.725000,49.125000,-7.277000,48.677000,-7.277000,48.125000ZM-7.277000,25.125000C-7.277000,19.736000,-13.110000,16.369000,-17.777000,19.063000C-19.943000,20.313000,-21.277000,22.624000,-21.277000,25.125000L-21.277000,37.125000C-21.277000,42.514000,-15.444000,45.881000,-10.777000,43.187000C-8.611000,41.937000,-7.277000,39.626000,-7.277000,37.125000L-7.277000,25.125000Z"
-      transform="matrix(1 0 0 1 -1.64428582627723 -1.48639076794777)" fill="rgb(158,160,162)"
-      stroke="none" stroke-width="1"/></g></svg>''; ]]]
+    icon: >
+      [[[
+        let style = `
+          <style>
+            @keyframes on {
+              from {
+                transform: scaleY(0);
+              }
+              to {
+                transform: scaleY(1);
+              }
+            }
+            .on {
+              animation: on 1s;
+              transform-origin: -100% 46%;
+              animation-fill-mode: forwards;
+            }
+            @keyframes off {
+              from {
+                transform: scaleY(1);
+              }
+              to {
+                transform: scaleY(0);
+              }
+            }
+            .off {
+              animation: off 1s;
+              transform-origin: -100% 46%;
+              animation-fill-mode: forwards;
+            }
+          </style>
+        `,
+          path = `
+            <path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z"/>
+          `,
+          gradient = `
+            <linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74">
+              <stop offset="0" stop-color="#64acb7"/>
+              <stop offset="1" stop-color="#7fdbe9"/>
+            </linearGradient>
+          `;
+        if (variables.state_on && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 50 50"> ${style} ${gradient} 
+              <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
+              <path class="on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
+            </svg>
+          `;
+        }
+        if (variables.state_on && variables.timeout > 2000) {
+          return `
+            <svg viewBox="0 0 50 50"> ${gradient} 
+              <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
+              <path class="on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
+            </svg>
+          `;
+        }
+        if (variables.state === 'off' && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 50 50"> ${style} ${gradient} 
+              <path class="off" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
+            </svg>
+          `;
+        } else {
+          return `
+            <svg viewBox="0 0 50 50"> ${style} 
+              ${path}
+            </svg>
+          `;
+        }
+      ]]]
 
-      '
+icon_ps5:
+  styles:
+    custom_fields:
+      icon:
+        - width: 60px
+        - margin-left: 3px
+        - margin-top: -5px
+  custom_fields:
+    icon: >
+      [[[
+        if (variables.state_on && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 50 50">
+              <style>
+              @keyframes on {
+                50% {
+                  transform: translateY(0);
+                }
+                100% {
+                  transform: translateY(-45%);
+                }
+              }
+              .on {
+                animation: on 2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+              }
+            </style>
+            <g style="clip-path: url(#mask);">
+              <g class="on">
+                <path fill="#00aa9e" d="M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z"/>
+                <path fill="#f3c202" d="M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z"/>
+                <path fill="#326db3" d="M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z"/>
+              </g>
+            </g>
+            <defs>
+              <clipPath id="mask">
+                <path d="M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z"/>
+              </clipPath>
+            </defs>
+            <path fill="#de0029" d="M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z"/>
+          </svg>
+        `;
+        }
+
+        return variables.state_on && variables.timeout > 2000 ? `
+          <svg viewBox="0 0 50 50">
+          <g style="clip-path: url(#mask);">
+            <g style="transform: translateY(-45%);">
+              <path fill="#00aa9e" d="M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z"/>
+              <path fill="#f3c202" d="M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z"/>
+              <path fill="#326db3" d="M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z"/>
+            </g>
+          </g>
+          <defs>
+            <clipPath id="mask">
+              <path d="M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z"/>
+            </clipPath>
+          </defs>
+          <path fill="#de0029" d="M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z"/>
+        </svg>
+        ` : `
+          <svg viewBox="0 0 50 50">
+            <path fill="#9da0a2" d="M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2 2.5.1.1V14.6c.1-1.4 2.9-1.3 2.9.3z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_spot:
   styles:
     custom_fields:
       icon:
         - width: 55px
-icon_xbox:
+        - margin-left: -3px
   custom_fields:
-    icon:
-      "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
-      \ viewBox=\"0 0 16 16\">\n      <style>              \n        .on {\n     \
-      \     stroke-dasharray: 1000;\n          stroke-dashoffset: 1000;\n        \
-      \  animation: dash 2s;\n        }\n        \n        @keyframes dash {\n   \
-      \       from {\n            stroke-dashoffset: 1000;\n            fill: white;\n\
-      \          }\n          to {\n            stroke-dashoffset: 0;\n          \
-      \  fill: '#0e7a0d';\n          }\n        }            \n      </style>\n  \
-      \    <path class=\"${state}\" d=\"M7.202 15.967a7.987 7.987 0 0 1-3.552-1.26c-.898-.585-1.101-.826-1.101-1.306\
-      \ 0-.965 1.062-2.656 2.879-4.583C6.459 7.723 7.897 6.44 8.052 6.475c.302.068\
-      \ 2.718 2.423 3.622 3.531 1.43 1.753 2.088 3.189 1.754 3.829-.254.486-1.83 1.437-2.987\
-      \ 1.802-.954.301-2.207.429-3.239.33Zm-5.866-3.57C.589 11.253.212 10.127.03 8.497c-.06-.539-.038-.846.137-1.95.218-1.377\
-      \ 1.002-2.97 1.945-3.95.401-.417.437-.427.926-.263.595.2 1.23.638 2.213 1.528l.574.519-.313.385C4.056\
-      \ 6.553 2.52 9.086 1.94 10.653c-.315.852-.442 1.707-.306 2.063.091.24.007.15-.3-.319Zm13.101.195c.074-.36-.019-1.02-.238-1.687-.473-1.443-2.055-4.128-3.508-5.953l-.457-.575.494-.454c.646-.593\
-      \ 1.095-.948 1.58-1.25.381-.237.927-.448 1.161-.448.145 0 .654.528 1.065 1.104a8.372\
-      \ 8.372 0 0 1 1.343 3.102c.153.728.166 2.286.024 3.012a9.495 9.495 0 0 1-.6\
-      \ 1.893c-.179.393-.624 1.156-.82 1.404-.1.128-.1.127-.043-.148ZM7.335 1.952c-.67-.34-1.704-.705-2.276-.803a4.171\
-      \ 4.171 0 0 0-.759-.043c-.471.024-.45 0 .306-.358A7.778 7.778 0 0 1 6.47.128c.8-.169\
-      \ 2.306-.17 3.094-.005.85.18 1.853.552 2.418.9l.168.103-.385-.02c-.766-.038-1.88.27-3.078.853-.361.176-.676.316-.699.312a12.246\
-      \ 12.246 0 0 1-.654-.319Z\"/>\n    </svg>\n  `;\n]]]      \n"
+    icon: >
+      [[[
+        let state;
+        if (variables.state_on && variables.timeout < 2000) {
+          state = 'on';
+        } 
+        if (variables.state === 'off' && variables.timeout < 2000) {
+          state = 'off';
+        }
+        if (variables.state_on && variables.timeout > 2000) {
+          state = 'on_timeout';
+        }
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                0% {
+                  transform: rotateZ(0deg);
+                  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+                }
+                70% {
+                  transform: rotateZ(-15deg);
+                  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                75% {
+                  transform: rotateZ(-15deg);
+                  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                88% {
+                  transform: rotateZ(-11deg);
+                }
+                100% {
+                  transform: rotateZ(-15deg);
+                }
+              }
+              @keyframes off {
+                0% {
+                  transform: rotateZ(-15deg);
+                  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+                }
+                70% {
+                  transform: rotateZ(0deg);
+                  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                75% {
+                  transform: rotateZ(0deg);
+                  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                88% {
+                  transform: rotateZ(-4deg);
+                }
+                100% {
+                  transform: rotateZ(0deg);
+                }
+              }
+              .on {
+                animation: on 0.7s;
+                transform-origin: 40% 20%;
+                animation-fill-mode: forwards;
+                animation-delay: -0.1s;
+              }
+              .off {
+                animation: off 0.7s;
+                transform-origin: 40% 20%;
+                animation-fill-mode: forwards;
+              }
+              .on_timeout {
+                transform: rotateZ(-15deg);
+                transform-origin: 40% 20%;
+              }
+            </style>
+            <path style="clip-path: url(#mask);" fill="#9da0a2" d="M40.5.8H17.1c-.1 0-.1 0-.1.1A3.12 3.12 0 0 0 20.1 4h6.1c.1 0 .1 0 .1.1v7.4L18 19.1l3.6 3.5 9.1-8.6c.4-.4.6-1 .7-1.6V4c0-.1 0-.1.1-.1h6c1.7.1 3.1-1.3 3-3.1z"/>
+            <defs>
+              <clipPath id="mask">
+                <path class="${state}" d="M0 9.1h24l8.3 8.8H50V-9H0z"/>
+              </clipPath>
+            </defs>
+            <path class="${state}" fill="var(--light-color)" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_imac:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 5px
+        - fill: >
+            [[[ return variables.state_on ? '#72757c' : '#9da0a2'; ]]]
+  custom_fields:
+    icon: >
+      [[[
+        let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                from {
+                  opacity: 0.5;
+                  transform: scale(0.6);
+                }
+                100% {
+                  opacity: 1;
+                }
+              }
+              .on {
+                animation: on 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+                transform-origin: center;
+              }
+            </style>
+            <path class="${state}" d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_monitors:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: -2px
+  custom_fields:
+    icon: >
+      [[[
+        let style = `
+          <style>
+            @keyframes cone {
+              35% {
+                transform: scale(0.8);
+                animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+              }
+              36% {
+                transform: translateY(0%);
+              }
+              49% {
+                transform: scale(1.25);
+              }
+              63% {
+                transform: scale(0.85);
+                animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+              }
+              77% {
+                transform: scale(1.15);
+                animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+              }
+              95% {
+                transform: scale(1);
+              }
+            }
+            .cone {
+              animation: cone 1.2s;
+              transform-origin: center;
+            }
+            @keyframes speaker {
+              0% {
+                transform: scale(1);
+              }
+              40% {
+                transform: scale(1);
+              }
+              49% {
+                transform: scale(0.95);
+              }
+              63% {
+                transform: scale(1);
+              }
+              77% {
+                transform: scale(0.95);
+              }
+              100% {
+                transform: scale(1);
+              }
+            }
+            .speaker {
+              animation: speaker 1.3s;
+              transform-origin: center;
+            }
+          </style>
+        `,
+          paths = `
+            <g class="speaker">
+              <path fill="#686868" d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z"/>
+              <path fill="#2a2a2a" d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z"/>
+            </g>
+            <path class="cone" fill="#e5dd00" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z"/>
+          `;
+        if (variables.state_on && variables.timeout < 2000) {
+        return `
+          <svg viewBox="0 0 50 50">
+            ${style}
+            ${paths}
+          </svg>
+        `;
+        }
+
+        return variables.state_on && variables.timeout > 2000 ? `
+          <svg viewBox="0 0 50 50">
+            ${paths}
+          </svg>
+        ` : `
+          <svg viewBox="0 0 50 50">
+            <path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_lamp:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: -6px
+        - margin-top: 1px
+  custom_fields:
+    icon: >
+      [[[
+        let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                0% {
+                  transform: scale(0.85);
+                }
+                20% {
+                  transform: scale(1.1);
+                }
+                40% {
+                  transform: scale(0.95);
+                }
+                60% {
+                  transform: scale(1.03);
+                }
+                80% {
+                  transform: scale(0.97);
+                }
+              }
+              .on {
+                animation: on 0.8s;
+                transform-origin: center;
+              }
+            </style>
+            <path fill="#9da0a2" d="M26.5 21.8l3.8-6.1H19.7l3.8 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z"/>
+            <path class="${state}" fill="var(--light-color)" d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_climate:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: -3px
+        - margin-top: 1px
+        - fill: >
+            [[[ return variables.state === 'cool' || variables.state === 'fan_only' ? '#5daeea' : '#9da0a2'; ]]]
+  custom_fields:
+    icon: >
+      <svg viewBox="0 0 50 50">
+        <path d="M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z"/>
+      </svg>
+
+icon_bathroom:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: -2px
+  custom_fields:
+    icon: >
+      [[[
+        let state;
+        if (variables.state_on && variables.timeout < 2000) {
+          state = 'on';
+        } 
+        if (variables.state === 'off' && variables.timeout < 2000) {
+          state = 'off';
+        }
+        if (variables.state_on && variables.timeout > 2000) {
+          state = 'on_timeout';
+        }
+        return `
+          <svg viewBox="0 0 50 50" fill="var(--light-color)">
+            <style>
+              @keyframes on {
+                0% {
+                  transform: rotateZ(0deg) translate(0%, 0%);
+                }
+                100% {
+                  transform: rotateZ(-90deg) translate(-1.5%, 0%);
+                }
+              }
+              @keyframes off {
+                0% {
+                  transform: rotateZ(-90deg) translate(-1.5%, 0%);
+                }
+                45% {
+                  transform: rotateZ(-40deg);
+                }
+                55% {
+                  transform: rotateZ(0deg);
+                }
+                65% {
+                  transform: rotateZ(-15deg);
+                }
+                75% {
+                  transform: rotateZ(0deg);
+                }
+                85% {
+                  transform: rotateZ(-5deg);
+                }
+                95% {
+                  transform: rotateZ(0deg);
+                }
+              }
+              .on {
+                animation: on 0.45s;
+                animation-fill-mode: forwards;
+                transform-origin: 45% 41%;
+                transition-timing-function: cubic-bezier(0.85, 0, 0.15, 1);
+              }
+              .on_timeout {
+                transform: rotateZ(-90deg) translate(-1.5%, 0%);
+                transform-origin: 45% 41%;
+              }
+              .off {
+                animation: off 1.1s linear;
+                animation-delay: 0.05s;
+                animation-fill-mode: both;
+                transform-origin: 45% 41%;
+              }
+            </style>
+            <path d="M12.9 1.2h2.5c1.6 0 2.9 1.3 2.9 2.9v18.6c0 1.4 1.1 2.5 2.4 2.5h20.5c.5 0 1 .4.9 1-.1 2.6-1.2 9.6-10.2 11v7.6c0 .2.2.4.4.4h1.5a1.58 1.58 0 0 1 1.6 1.6v.3a1.58 1.58 0 0 1-1.6 1.6H11a1.58 1.58 0 0 1-1.6-1.6v-.3a1.58 1.58 0 0 1 1.6-1.6h1.6c.2 0 .4-.2.4-.4v-7.6s-5.2-.3-5.2-5.9V4.2c0-1.6 1.3-2.9 2.9-2.9l2.2-.1c0 .1 0 0 0 0z"/>
+            <path class="${state}" d="M22.3 18.8h18.3a1.58 1.58 0 0 1 1.6 1.6v.6a1.58 1.58 0 0 1-1.6 1.6h-19c-.4 0-.7-.3-.8-.7v-2.3c0-.4.3-.7.7-.8h.8z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_fan:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 1px
+        - margin-top: 1px
+  custom_fields:
+    icon: >
+      [[[
+        let path = `
+          <circle cx="25" cy="25" r="6.6"/>
+          <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>
+        `,
+        style = `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes rotate {
+                0% {
+                  visibility: visible;
+                  transform: rotate(0deg) translateZ(0);
+                }
+                100% {
+                  transform: rotate(1080deg) translateZ(0);
+                }
+              }
+              .start {
+                animation: rotate 2.8s ease-in;
+                transform-origin: center;
+                fill: #5daeea;
+                visibility: hidden;
+                will-change: transform;
+              }
+              .on {
+                animation: rotate 1.8s linear infinite;
+                transform-origin: center;
+                fill: #5daeea;
+                animation-delay: 2.8s;
+                visibility: hidden;
+                will-change: transform;
+              }
+              .end {
+                animation: rotate 2.8s;
+                transform-origin: center;
+                fill: #9ca2a5;
+                animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+                will-change: transform;
+              }
+              .start_timeout {
+                animation: rotate 1.8s linear infinite;
+                transform-origin: center;
+                fill: #5daeea;
+                visibility: hidden;
+                will-change: transform;
+              }
+              .end_timeout {
+                fill: #9ca2a5;
+              }
+            </style>
+        `;
+        if (variables.state_on && variables.timeout < 2000) {
+          return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`;
+        }
+        if (variables.state === 'off' && variables.timeout < 2000) {
+          return `${style}<g class="end">${path}</g></svg>`;
+        }
+        if (variables.state_on && variables.timeout > 2000) {
+          return `${style}<g class="start_timeout">${path}</g></svg>`;
+        } else {
+          return `${style}<g class="end_timeout">${path}</g></svg>`;
+        }
+      ]]]
+
+icon_closet:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: -6px
+        - margin-top: -1px
+  custom_fields:
+    icon: >
+      [[[
+        let room = `d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"`,
+          door = `d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z"`;
+
+        if (variables.state_on && variables.timeout < 2000) {
+          return `
+            <style>
+              .state {
+                animation: state 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+              }
+              .opacity {
+                animation: opacity 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+              }
+              @keyframes state {
+                0% {
+                  transform: none;
+                  fill: #9da0a2;
+                }
+                100% {
+                  transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);
+                  fill: #b68349;
+                }
+              }
+              @keyframes opacity {
+                0% {
+                  opacity: 0;
+                }
+                100% {
+                  opacity: 1;
+                }
+              }
+            </style>
+            <svg viewBox="0 0 50 50">
+              <path class="opacity" ${room}/>
+              <path class="state" ${door}/>
+            </svg>
+          `;
+        }
+
+        if (variables.state_on && variables.timeout > 2000) {
+          return `
+            <svg viewBox="0 0 50 50">
+              <style>
+                .state_timeout_on {
+                  transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);
+                  fill: #b68349;
+                }
+              </style>
+              <path ${room}/>
+              <path class="state_timeout_on" ${door}/>
+            </svg>
+          `;
+        }
+
+        return variables.state === 'off' && variables.timeout < 2000 ? `
+          <style>
+            .state {
+              animation: state 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+            }
+            .opacity {
+              animation: opacity 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+            }
+            .reverse {
+              animation-direction: reverse;
+            }
+            @keyframes state {
+              0% {
+                transform: none;
+                fill: #9da0a2;
+              }
+              100% {
+                transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);
+                fill: #b68349;
+              }
+            }
+            @keyframes opacity {
+              0% {
+                opacity: 0;
+              }
+              100% {
+                opacity: 1;
+              }
+            }
+          </style>
+          <svg viewBox="0 0 50 50">
+            <path class="opacity reverse" ${room}/>
+            <path class="state reverse" ${door}/>
+          </svg>
+        ` : `
+          <svg viewBox="0 0 50 50">
+            <style>
+              .state_timeout_off {
+                fill: var(--state-icon-color);
+              }
+            </style>
+            <path class="state_timeout_off" ${door}/>
+          </svg>
+        `;
+      ]]]
+
+icon_away:
+  state_display: Auto
   styles:
     card:
       - transition: all 0.3s ease-out
@@ -1098,222 +1692,359 @@ icon_xbox:
         - width: 55px
         - margin-left: 1px
         - margin-top: -1px
-        - fill: "[[[ return variables.state_on ? '#0e7a0d' : '#9da0a2'; ]]]
-
-            "
-light:
-  hold_action:
-    action: fire-dom-event
-    browser_mod:
-      card:
-        actionSize: 4.5em
-        actions:
-          - action: call-service
-            color: "#d8d9e1"
-            service: light.turn_on
-            service_data:
-              color_temp: 153
-              entity_id: "[[[ return variables.entity_id; ]]]
-
-                "
-          - action: call-service
-            color: "#d5b08d"
-            service: light.turn_on
-            service_data:
-              color_temp: 326
-              entity_id: "[[[ return variables.entity_id; ]]]
-
-                "
-          - action: call-service
-            color: "#ce944b"
-            service: light.turn_on
-            service_data:
-              color_temp: 500
-              entity_id: "[[[ return variables.entity_id; ]]]
-
-                "
-          - action: fire-dom-event
-            browser_mod:
-              card:
-                brightness: true
-                color_temp: true
-                consolidate_entities: true
-                entity: "[[[ return variables.entity_id; ]]]
-
-                  "
-                full_width_sliders: false
-                hide_header: true
-                persist_features: true
-                show_slider_percent: true
-                smooth_color_wheel: true
-                type: custom:light-entity-card
-                white_value: true
-              command: popup
-              title:
-                "[[[ return entity === undefined || entity.attributes.friendly_name;
-                ]]]
-
-                "
-            image:
-              data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0
-              0  50 50"%3E%3Cstyle%3Esvg%7Bbackground:radial-gradient(circle,rgba(255,255,
-              255,1) 0%25,rgba(255,255,255,0) 80%25),conic-gradient(%237827e6,%23e622e7,
-              %23e40588,%23e41919,%23e5691e,%23e8e22e,%237de629,%2334e828,%2333e75c,
-              %2334e8e0,%23207de5,%231227e5,%237827e6)%7D%3C/style%3E%3C/svg%3E
-        actionsInARow: 2
-        borderRadius: 1.7em
-        brightnessHeight: 360px
-        brightnessWidth: 130px
-        displayType: slider
-        entity: "[[[ return variables.entity_id; ]]]
-
-          "
-        fullscreen: false
-        icon: none
-        sliderColor: "#c7c7c7"
-        sliderTrackColor: rgba(25, 25, 25, 0.9)
-        type: custom:light-popup-card
-      command: popup
-      title:
-        "[[[ return entity === undefined || entity.attributes.friendly_name;
-        ]]]
-
-        "
-  template:
-    - base
-    - circle
-    - loader
-  variables:
-    circle_input:
-      "[[[ return entity === undefined || Math.round(entity.attributes.brightness
-      / 2.54); ]]]
-
-      "
-loader:
+        - fill: >
+            [[[ return variables.state_on ? '#516d82' : '#9da0a2'; ]]]
   custom_fields:
-    loader: '<img src="/local/loader.svg" width="100%">
+    icon: >
+      [[[
+        let state = variables.state_on ? 'on' : null;
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                10%,
+                20%,
+                100% {
+                  transform: rotateZ(0deg);
+                }
+                30%,
+                50%,
+                70% {
+                  transform: rotateZ(7deg);
+                }
+                90% {
+                  transform: rotateZ(3deg);
+                }
+                40%,
+                60%,
+                80% {
+                  transform: rotateZ(-7deg);
+                }
+              }
+              .on {
+                animation: on 1.35s cubic-bezier(0.5, 1, 0.89, 1);
+                animation-fill-mode: both;
+                transform-origin: 70% 80%;
+                animation-delay: 0s;
+              }
+            </style>
+            <path class="${state}" d="M32.1 18.4s.3-1.6.7-2.1c.3-.6.9-1.4 1.6-1.8.6-.4 1.1-.7 1.4-.7s.7-.1 1 .1.6.4.8 1.3l.3 2.7.1 2.4.2 4.1c0 .3.2 3.1.2 3.3s.2 2.7.2 3.2l-.1 2.5c.1 1.6.5 3.1-.2 4.6-.6 1.4-1.7 2.7-2.9 3.6-.5.4-1.9 1.3-2.9 1.7-1.1.5-2.2.8-3.3 1.1-.5.1-1.4.4-2.3.3s-1.8-.6-2.1-1l-1.6-2.3c-.6-.8-2.1-2.3-2.3-2.5l-2.7-2.8c-.2-.2-2.7-3.5-2.9-3.8l-3.1-4.7-1.8-3.2-1.5-2.8-.9-1.8c-.1-.2-.3-1.1-.2-1.4.3-1.2 1.4-1.4 2.3-.7.3.2.9 1 1.1 1.3s6.1 8.1 6.1 8.1c.2.3.7.3.9 0s-.1-.7-.2-.9c-.4-.6-8.3-11.5-8.3-11.5s-.6-.9-.7-1.1c-.3-1.1 0-2.3 1.1-2.7s1.9.3 2.6 1.1c.3.3 8.3 11.5 8.3 11.5.2.2.3.3.5.3.3 0 .5-.4.4-.7-.1-.2-.5-.9-.5-.9L11.8 9c-.6-1-.9-2-.1-3 .7-.8 2.2-1.3 3-.2.3.3 10.1 14.3 10.1 14.3.2.2.5.4.7.3.5-.1.3-.7.1-1-.1-.2-8.4-11.8-8.4-11.8-.4-.9-.6-2 .2-2.8 1-1.1 2.5-.5 3.3.5.2.3 1 1.4 1 1.4l2.7 3.7c.1.2 3.4 4.4 3.8 4.8.9 1.1 1.8 2.2 2.7 3.2l.5.5c.1.1.1.4.1.8 0 1.3.1 2.6.1 3.9 0 .2.1.4.2.6.3.3.6.1.7-.2.1-.2 0-2.4 0-2.7-.3-.3-.5-1.3-.4-2.9zM12.2 46.9s-2.8-.8-4.8-2.7-2.6-2.7-2.8-3-1.8-3-2-3.6c-.2-.5-.2-.7.2-1 .4-.4 1-.5 1.3.1.1.2.4 1 .5 1.2s1 1.9 1.7 2.8 1.6 2.2 4.4 3.8c.6.3 1.2.6 1.9.9.3.1.6.2.8.4.1.2.1.6-.1.8-.2.4-.7.4-1.1.3zM7.1 30.7l.9 3.1c.3.7 1.1 2.3 1.9 3.3s2.4 2.6 3.4 3.2 2 1.1 3 1.5c1 .3 1.1.4 1.2.5.3.4.2 1.2-.4 1.3-.2 0-1.2 0-1.8-.3L12 41.7c-.5-.4-3.9-3.1-5.1-6S5.3 31 5.2 30.4s-.2-1.1 0-1.4c.3-.4.9-.8 1.3-.3.2.3.3.6.3.9.1 0 .2.8.3 1.1zm26.8-25s.2-.1.5-.1.8.3 1.4.7 1.9 1 3.6 2.9 2.9 3.9 3.4 5.8c.5 1.8.8 3.1.9 5.5 0 .5.1 1.6 0 1.7-.2.5-.5.7-1 .7-.6 0-.7-.5-.7-1l-.1-2.9c-.1-.6-.3-1.9-.7-2.9-.3-1-.7-2.3-1.7-3.6-.9-1.3-2.1-2.8-3.2-3.5l-2.4-1.5c-.6-.6-.7-1.2 0-1.8zm4.9-2.5s.3-.2.5-.1c.2 0 .7.3.9.4s2.1 1.3 3.6 3c1.5 1.6 3.5 5.1 3.7 7.4.1.4.2.9 0 1-.2.2-.4.4-.7.4-.2 0-.5 0-.7-.1-.1-.2-.4-1.1-.4-1.3s-.6-2-1.1-3.1C44 9.7 43.5 8.5 42 7.1s-2.2-1.9-2.8-2.2-1.1-.6-1.1-1c.1-.3.3-.6.7-.7z"/>
+          </svg>
+        `;
+      ]]]
 
-      '
-  styles:
-    custom_fields:
-      loader:
-        - display: none
-        - top: -7.5px
-        - right: -5px
-        - width: 50px
-        - position: absolute
-        - opacity: 0.5
-        - filter: "[[[ return variables.state_on ? 'none' : 'invert(1)'; ]]]
-
-            "
-  tap_action:
-    loader:
-      "[[[\n  if (entity) {\n    let elt = this.shadowRoot,\n      loader =\
-      \ (id, style, timeout) => {\n        elt.getElementById(id) && (elt.getElementById(id).style.display\
-      \ = style,\n          window.setTimeout(() => {\n            elt.getElementById('loader').style.display\
-      \ = 'none'\n          }, 20000))\n      };\n    loader('circle', 'none', 'initial'),\n\
-      \    loader('loader', 'initial', 'none');\n  }\n]]]\n"
-lock:
-  custom_fields:
-    circle:
-      "[[[\n  if (entity && variables.trigger) {\n    let state = variables.trigger.state\
-      \ === 'on' ? 'locked' : null;\n    if (variables.lock === 'locked') {\n    \
-      \  return `\n        <svg viewBox=\"0 0 50 50\">\n          <style>\n      \
-      \      @keyframes locked {\n              from,\n              to {\n      \
-      \          transform: translateX(0);\n              }\n              10%,\n\
-      \              30%,\n              50%,\n              70%,\n              90%\
-      \ {\n                transform: translateX(-8%);\n              }\n        \
-      \      20%,\n              40%,\n              60%,\n              80% {\n \
-      \               transform: translateX(8%);\n              }\n            }\n\
-      \            .locked {\n              animation: locked 1.1s;\n            }\n\
-      \          </style>\n          <path id=\"lock\" class=\"${state}\" d=\"M8.2\
-      \ 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6\
-      \ 4.3-9.6 9.6v7.2\"/>\n        </svg>\n      `;\n    }\n  }\n]]]\n"
-  styles:
-    custom_fields:
-      circle:
-        - width: 45px
-        - fill: var(--state-icon-color)
-        - margin: 1px 2px 0 0
-        - justify-self: end
-        - opacity: 1
-        - display: grid
-  tap_action:
-    loader:
-      "[[[\n  let elt = this.shadowRoot;\n  if (variables.state_on && variables.lock\
-      \ === 'locked') {\n    elt.getElementById('lock').classList.add('locked');\n\
-      \    window.setTimeout(() => {\n      elt.getElementById('lock').classList.remove('locked');\n\
-      \    }, 1100);\n  } else {\n\n    // duplicate of \"loader\" template\n    let\
-      \ loader = (id, style, timeout) => {\n        elt.getElementById(id) && (elt.getElementById(id).style.display\
-      \ = style,\n          window.setTimeout(() => {\n            elt.getElementById('loader').style.display\
-      \ = 'none'\n          }, 20000))\n    };\n    loader('circle', 'none', 'initial'),\n\
-      \    loader('loader', 'initial', 'none');\n  }\n]]]\n"
-media:
+icon_home:
+  state_display: Auto
   styles:
     card:
-      - color:
-          "[[[\n  return variables.media_off || variables.entity_picture === undefined\n\
-          \    ? 'rgba(255, 255, 255, 0.3)'\n    : '#efefef'\n]]]         \n"
-      - background-color: none
-      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
-      - background-image:
-          "[[[\n  if (entity) {\n    return entity.attributes.data !==\
-          \ undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
-          ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
-          ${variables.entity_picture}\")`;\n  }\n]]]            \n"
+      - transition: all 0.3s ease-out
     custom_fields:
       icon:
         - width: 55px
-        - margin-left: 2px
-        - fill: "#9da0a2"
-  template:
-    - base
-    - base_media
-person:
+        - margin-left: 1px
+        - margin-top: -1px
+        - fill: >
+            [[[ return variables.state_on ? '#c7983e' : '#9da0a2'; ]]]
   custom_fields:
-    circle:
-      "[[[\n  if (entity) {\n    let time = c => {\n      let s = (c/1e3), m\
-      \ = (c/6e4), h = (c/36e5), d = (c/864e5);\n      return s < 60 ? parseInt(s)\
-      \ + 's' : m < 60 ? parseInt(m) + 'm' : h < 24 ? parseInt(h) + 'h' : parseInt(d)\
-      \ + 'd';\n    },\n    last_changed = states[variables.retain] == null || states[variables.retain].state\
-      \ == 'unavailable'\n      ? time(Date.now() - Date.parse(entity.last_changed))\n\
-      \      : time(Date.now() - Date.parse(states[variables.retain].state)),\n  \
-      \  stroke = variables.state === 'home'\n      ? '#b2b2b2'\n      : 'none',\n\
-      \    fill = variables.state !== 'home'\n      ? 'rgba(255,255,255,0.04)'\n \
-      \     : 'none';\n    return `\n      <svg viewBox=\"0 0 50 50\">\n        <circle\
-      \ cx=\"25\" cy=\"25\" r=\"20.5\" stroke=\"${stroke}\" stroke-width=\"1.5\" fill=\"\
-      ${fill}\" />\n        <text x=\"50%\" y=\"54%\" fill=\"#8d8e90\" font-size=\"\
-      14\" text-anchor=\"middle\" alignment-baseline=\"middle\" dominant-baseline=\"\
-      middle\">${last_changed}</text>\n      </svg>\n    `;\n  }\n]]]\n"
-    icon:
-      "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
-      \ width=\"100%\">`\n    : null;\n]]]\n"
-  hold_action:
-    action: none
+    icon: >
+      [[[
+        let state = variables.state_on ? 'on' : null;
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes on {
+                from,
+                20%,
+                40%,
+                60%,
+                80%,
+                to {
+                  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+                }
+                0% {
+                  transform: scale(0.3);
+                }
+                20% {
+                  transform: scale(1.1);
+                }
+                40% {
+                  transform: scale(0.9);
+                }
+                60% {
+                  transform: scale(1.03);
+                }
+                80% {
+                  transform: scale(0.97);
+                }
+                to {
+                  transform: scale(1);
+                }
+              }
+              .on {
+                animation: on 1s;
+                transform-origin: center;
+              }
+            </style>
+            <path class="${state}" d="M42.2 28.3c0-.8-.2-1-.2-1L26 12.1s-.5-.4-1-.4-1 .3-1 .3L8.2 27.1c-.4.5-.4.9-.4.9v18.3c0 1.1.9 2 1.9 2h8.2a1.47 1.47 0 0 0 1.5-1.5v-14a1.47 1.47 0 0 1 1.5-1.5h8.4a1.47 1.47 0 0 1 1.5 1.5v14a1.47 1.47 0 0 0 1.5 1.5h8.2c1.1 0 2-.9 2-1.9 0-.2-.3-18.1-.3-18.1zM7.3 25l-1.6 1.5s-.3.3-.5.3-.5 0-.8-.2c-.2-.2-2-2.8-2-2.8s-.1-.4-.1-.7c.1-.3.2-.7.3-.8.4-.1 21.5-20.1 21.5-20.1s.4-.3.9-.3c.4 0 .8.1.9.2s.5.4.5.4l8.9 8.5V6s.1-.4.2-.7c.1-.2.3-.3.4-.3s.3-.1.3-.1h3s.3.1.4.3a1.08 1.08 0 0 1 .3.7v9.8l7.2 6.9s.2.3.3.4c.1.2.1.7.1.7 0 .1-.1.4-.2.5s-1.6 2.5-1.6 2.5-.1.3-.3.3c-.2.1-.4.1-.7 0-.2-.1-.5-.4-.5-.4L26.4 9.4s-.3-.3-.5-.4-.4-.2-.8-.2-.5.1-.8.1c-.1.1-.4.3-.7.5C23.3 9.8 7.3 25 7.3 25z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_xbox:
+  styles:
+    card:
+      - transition: all 0.3s ease-out
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: 1px
+        - margin-top: -1px
+        - fill: >
+            [[[ return variables.state_on ? '#0e7a0d' : '#9da0a2'; ]]]
+  custom_fields:
+    icon: >
+      [[[
+        let state = variables.state_on ? 'on' : null;
+        return `
+          <svg viewBox="0 0 16 16">
+            <style>              
+              .on {
+                stroke-dasharray: 1000;
+                stroke-dashoffset: 1000;
+                animation: dash 2s;
+              }
+              
+              @keyframes dash {
+                from {
+                  stroke-dashoffset: 1000;
+                  fill: white;
+                }
+                to {
+                  stroke-dashoffset: 0;
+                  fill: '#0e7a0d';
+                }
+              }            
+            </style>
+            <path class="${state}" d="M7.202 15.967a7.987 7.987 0 0 1-3.552-1.26c-.898-.585-1.101-.826-1.101-1.306 0-.965 1.062-2.656 2.879-4.583C6.459 7.723 7.897 6.44 8.052 6.475c.302.068 2.718 2.423 3.622 3.531 1.43 1.753 2.088 3.189 1.754 3.829-.254.486-1.83 1.437-2.987 1.802-.954.301-2.207.429-3.239.33Zm-5.866-3.57C.589 11.253.212 10.127.03 8.497c-.06-.539-.038-.846.137-1.95.218-1.377 1.002-2.97 1.945-3.95.401-.417.437-.427.926-.263.595.2 1.23.638 2.213 1.528l.574.519-.313.385C4.056 6.553 2.52 9.086 1.94 10.653c-.315.852-.442 1.707-.306 2.063.091.24.007.15-.3-.319Zm13.101.195c.074-.36-.019-1.02-.238-1.687-.473-1.443-2.055-4.128-3.508-5.953l-.457-.575.494-.454c.646-.593 1.095-.948 1.58-1.25.381-.237.927-.448 1.161-.448.145 0 .654.528 1.065 1.104a8.372 8.372 0 0 1 1.343 3.102c.153.728.166 2.286.024 3.012a9.495 9.495 0 0 1-.6 1.893c-.179.393-.624 1.156-.82 1.404-.1.128-.1.127-.043-.148ZM7.335 1.952c-.67-.34-1.704-.705-2.276-.803a4.171 4.171 0 0 0-.759-.043c-.471.024-.45 0 .306-.358A7.778 7.778 0 0 1 6.47.128c.8-.169 2.306-.17 3.094-.005.85.18 1.853.552 2.418.9l.168.103-.385-.02c-.766-.038-1.88.27-3.078.853-.361.176-.676.316-.699.312a12.246 12.246 0 0 1-.654-.319Z"/>
+          </svg>
+        `;
+      ]]]
+
+icon_vacuum:
   styles:
     custom_fields:
       icon:
-        - clip-path: circle()
-        - width: 57px
-        - margin: -1px 0 3px 2px
-        - pointer-events: none
-        - display: grid
-  tap_action:
-    action: more-info
-  template:
-    - base
-    - circle
-  triggers_update: sensor.time
-settings:
-  variables:
-    translate_heating: Heating
-    translate_idle: Idle
-    translate_unknown: Unknown
-tilt:
+        - width: 55px
   custom_fields:
-    tilt:
-      "[[[\n  try {\n    setTimeout(() => {\n      let elt = this.shadowRoot,\n\
-      \        card = elt.getElementById('card'),\n        ignore = window.navigator.userAgent;\n\
-      \      if (elt && card && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)\
-      \ && !ignore.match(/iPad/i)) {\n        VanillaTilt.init(card, variables.tilt_options);\n\
-      \      }\n    }, 0);\n  }\n  catch (e) {\n  }\n]]]\n"
+    icon: >
+      [[[ if (entity.state === 'cleaning') return '<svg id="egx3seajtt481"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"><style><![CDATA[#egx3seajtt484
+      {animation: egx3seajtt484_c_o 1000ms linear infinite normal
+      forwards}@keyframes egx3seajtt484_c_o { 0% {opacity: 1} 50% {opacity:
+      0.750000} 100% {opacity: 1} }#egx3seajtt485_tr {animation:
+      egx3seajtt485_tr__tr 1000ms linear infinite normal forwards}@keyframes
+      egx3seajtt485_tr__tr { 0% {transform:
+      translate(-15.921411px,34.655067px) rotate(0deg)} 20% {transform:
+      translate(-15.921411px,34.655067px) rotate(-10deg)} 50% {transform:
+      translate(-15.921411px,34.655067px) rotate(0deg)} 80% {transform:
+      translate(-15.921411px,34.655067px) rotate(10deg)} 100% {transform:
+      translate(-15.921411px,34.655067px) rotate(0deg)} }]]></style><g
+      id="egx3seajtt482" transform="matrix(0.33023402094841 0 0
+      0.33023402094841 -12.17848396301270 -1.60764098167419)"><path
+      id="egx3seajtt483"
+      d="M50.582000,41.719000C51.347000,23.263000,71.804000,12.557000,87.405000,22.447000C94.048000,26.659000,98.205000,33.860000,98.531000,41.719000L102.531000,41.719000C102.355000,36.658000,100.801000,31.742000,98.037000,27.499000L101.343000,25.184000C101.973000,24.743000,101.890000,23.784000,101.193000,23.458000C100.869000,23.307000,100.489000,23.340000,100.196000,23.545000L96.886000,25.862000C96.307000,25.095000,95.690000,24.358000,95.036000,23.653000L100.013000,18.677000C100.550000,18.126000,100.289000,17.199000,99.543000,17.010000C99.206000,16.924000,98.848000,17.020000,98.598000,17.263000L93.619000,22.242000C92.916000,21.586000,92.180000,20.967000,91.414000,20.387000L93.730000,17.079000C94.179000,16.453000,93.782000,15.577000,93.016000,15.501000C92.652000,15.465000,92.298000,15.630000,92.092000,15.932000L89.780000,19.234000C80.524000,13.214000,68.589000,13.214000,59.333000,19.234000L57.021000,15.933000C56.592000,15.294000,55.632000,15.359000,55.293000,16.050000C55.130000,16.383000,55.164000,16.779000,55.383000,17.079000L57.699000,20.387000C56.933000,20.967000,56.197000,21.586000,55.494000,22.241000L50.515000,17.263000C49.978000,16.711000,49.045000,16.949000,48.836000,17.690000C48.737000,18.042000,48.839000,18.421000,49.101000,18.677000L54.077000,23.653000C53.423000,24.358000,52.805000,25.095000,52.226000,25.862000L48.917000,23.545000C48.287000,23.103000,47.414000,23.510000,47.347000,24.277000C47.316000,24.633000,47.477000,24.979000,47.770000,25.184000L51.075000,27.499000C48.312000,31.742000,46.758000,36.658000,46.582000,41.719000L50.582000,41.719000ZM74.556000,66.719000C61.698000,66.703000,51.131000,56.566000,50.582000,43.719000L46.582000,43.719000C47.346000,65.254000,71.136000,77.886000,89.403000,66.457000C97.283000,61.527000,102.201000,53.008000,102.531000,43.719000L98.531000,43.719000C97.982000,56.566000,87.415000,66.703000,74.556000,66.719000Z"
+      transform="matrix(1 0 0 1 -1.34028837709955 -1.53274161016582)"
+      fill="rgb(87,87,87)" stroke="none" stroke-width="1"/></g><g
+      id="egx3seajtt484" transform="matrix(0.33023402094841 0 0
+      0.33023402094841 17.25779151916504 0.55571800470352)"><g
+      id="egx3seajtt485_tr" transform="translate(-15.921411,34.655067)
+      rotate(0)"><path id="egx3seajtt485"
+      d="M-13.277000,25.125000C-13.277000,25.895000,-14.110000,26.376000,-14.777000,25.991000C-15.444000,25.606000,-15.444000,24.644000,-14.777000,24.259000C-14.625000,24.171000,-14.453000,24.125000,-14.277000,24.125000C-13.725000,24.125000,-13.277000,24.573000,-13.277000,25.125000ZM-9.277000,37.125000C-9.277000,40.974000,-13.444000,43.380000,-16.777000,41.455000C-18.324000,40.562000,-19.277000,38.911000,-19.277000,37.125000L-19.277000,25.125000C-19.277000,21.276000,-15.110000,18.870000,-11.777000,20.795000C-10.230000,21.688000,-9.277000,23.339000,-9.277000,25.125000L-9.277000,37.125000ZM-11.277000,25.125000C-11.277000,22.816000,-13.777000,21.372000,-15.777000,22.527000C-17.777000,23.682000,-17.777000,26.568000,-15.777000,27.723000C-15.321000,27.986000,-14.804000,28.125000,-14.277000,28.125000C-12.621000,28.123000,-11.279000,26.781000,-11.277000,25.125000ZM7.723000,36.125000C7.723000,53.061000,-10.610000,63.645000,-25.277000,55.178000C-39.944000,46.710000,-39.944000,25.540000,-25.277000,17.072000C-21.933000,15.142000,-18.139000,14.125000,-14.277000,14.125000C-2.132000,14.139000,7.709000,23.980000,7.723000,36.125000ZM-19.277000,48.125000C-19.277000,47.355000,-20.110000,46.874000,-20.777000,47.259000C-21.444000,47.644000,-21.444000,48.606000,-20.777000,48.991000C-20.625000,49.079000,-20.453000,49.125000,-20.277000,49.125000C-19.725000,49.125000,-19.277000,48.677000,-19.277000,48.125000ZM-10.277000,53.125000C-10.277000,52.573000,-10.725000,52.125000,-11.277000,52.125000L-17.277000,52.125000C-18.047000,52.125000,-18.528000,52.958000,-18.143000,53.625000C-17.964000,53.934000,-17.634000,54.125000,-17.277000,54.125000L-11.277000,54.125000C-10.725000,54.125000,-10.277000,53.677000,-10.277000,53.125000ZM-16.277000,49.125000C-15.507000,49.125000,-15.026000,48.292000,-15.411000,47.625000C-15.796000,46.958000,-16.758000,46.958000,-17.143000,47.625000C-17.231000,47.777000,-17.277000,47.949000,-17.277000,48.125000C-17.277000,48.677000,-16.829000,49.125000,-16.277000,49.125000ZM-12.277000,49.125000C-11.507000,49.125000,-11.026000,48.292000,-11.411000,47.625000C-11.796000,46.958000,-12.758000,46.958000,-13.143000,47.625000C-13.231000,47.777000,-13.277000,47.949000,-13.277000,48.125000C-13.277000,48.677000,-12.829000,49.125000,-12.277000,49.125000ZM-7.277000,48.125000C-7.277000,47.355000,-8.110000,46.874000,-8.777000,47.259000C-9.444000,47.644000,-9.444000,48.606000,-8.777000,48.991000C-8.625000,49.079000,-8.453000,49.125000,-8.277000,49.125000C-7.725000,49.125000,-7.277000,48.677000,-7.277000,48.125000ZM-7.277000,25.125000C-7.277000,19.736000,-13.110000,16.369000,-17.777000,19.063000C-19.943000,20.313000,-21.277000,22.624000,-21.277000,25.125000L-21.277000,37.125000C-21.277000,42.514000,-15.444000,45.881000,-10.777000,43.187000C-8.611000,41.937000,-7.277000,39.626000,-7.277000,37.125000L-7.277000,25.125000Z"
+      transform="translate(14.277125,-36.141457)" fill="rgb(193,119,223)"
+      stroke="none" stroke-width="1"/></g></g></svg> ';   else return '<svg
+      id="esscqw7jqup1" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"><style><![CDATA[#esscqw7jqup4
+      {animation: esscqw7jqup4_c_o 1000ms linear 1 normal forwards}@keyframes
+      esscqw7jqup4_c_o { 0% {opacity: 1} 100% {opacity: 0.500000}
+      }]]></style><g id="esscqw7jqup2" transform="matrix(0.33023402094841 0 0
+      0.33023402094841 -12.17848396301270 -1.60764098167419)"><path
+      id="esscqw7jqup3"
+      d="M50.582000,41.719000C51.347000,23.263000,71.804000,12.557000,87.405000,22.447000C94.048000,26.659000,98.205000,33.860000,98.531000,41.719000L102.531000,41.719000C102.355000,36.658000,100.801000,31.742000,98.037000,27.499000L101.343000,25.184000C101.973000,24.743000,101.890000,23.784000,101.193000,23.458000C100.869000,23.307000,100.489000,23.340000,100.196000,23.545000L96.886000,25.862000C96.307000,25.095000,95.690000,24.358000,95.036000,23.653000L100.013000,18.677000C100.550000,18.126000,100.289000,17.199000,99.543000,17.010000C99.206000,16.924000,98.848000,17.020000,98.598000,17.263000L93.619000,22.242000C92.916000,21.586000,92.180000,20.967000,91.414000,20.387000L93.730000,17.079000C94.179000,16.453000,93.782000,15.577000,93.016000,15.501000C92.652000,15.465000,92.298000,15.630000,92.092000,15.932000L89.780000,19.234000C80.524000,13.214000,68.589000,13.214000,59.333000,19.234000L57.021000,15.933000C56.592000,15.294000,55.632000,15.359000,55.293000,16.050000C55.130000,16.383000,55.164000,16.779000,55.383000,17.079000L57.699000,20.387000C56.933000,20.967000,56.197000,21.586000,55.494000,22.241000L50.515000,17.263000C49.978000,16.711000,49.045000,16.949000,48.836000,17.690000C48.737000,18.042000,48.839000,18.421000,49.101000,18.677000L54.077000,23.653000C53.423000,24.358000,52.805000,25.095000,52.226000,25.862000L48.917000,23.545000C48.287000,23.103000,47.414000,23.510000,47.347000,24.277000C47.316000,24.633000,47.477000,24.979000,47.770000,25.184000L51.075000,27.499000C48.312000,31.742000,46.758000,36.658000,46.582000,41.719000L50.582000,41.719000ZM74.556000,66.719000C61.698000,66.703000,51.131000,56.566000,50.582000,43.719000L46.582000,43.719000C47.346000,65.254000,71.136000,77.886000,89.403000,66.457000C97.283000,61.527000,102.201000,53.008000,102.531000,43.719000L98.531000,43.719000C97.982000,56.566000,87.415000,66.703000,74.556000,66.719000Z"
+      transform="matrix(1 0 0 1 -1.34028837709955 -1.53274161016582)"
+      fill="rgb(95,98,103)" stroke="none" stroke-width="1"/></g><g
+      id="esscqw7jqup4" transform="matrix(0.33023402094841 0 0
+      0.33023402094841 17.25779151916504 0.55571800470352)"><path
+      id="esscqw7jqup5"
+      d="M-13.277000,25.125000C-13.277000,25.895000,-14.110000,26.376000,-14.777000,25.991000C-15.444000,25.606000,-15.444000,24.644000,-14.777000,24.259000C-14.625000,24.171000,-14.453000,24.125000,-14.277000,24.125000C-13.725000,24.125000,-13.277000,24.573000,-13.277000,25.125000ZM-9.277000,37.125000C-9.277000,40.974000,-13.444000,43.380000,-16.777000,41.455000C-18.324000,40.562000,-19.277000,38.911000,-19.277000,37.125000L-19.277000,25.125000C-19.277000,21.276000,-15.110000,18.870000,-11.777000,20.795000C-10.230000,21.688000,-9.277000,23.339000,-9.277000,25.125000L-9.277000,37.125000ZM-11.277000,25.125000C-11.277000,22.816000,-13.777000,21.372000,-15.777000,22.527000C-17.777000,23.682000,-17.777000,26.568000,-15.777000,27.723000C-15.321000,27.986000,-14.804000,28.125000,-14.277000,28.125000C-12.621000,28.123000,-11.279000,26.781000,-11.277000,25.125000ZM7.723000,36.125000C7.723000,53.061000,-10.610000,63.645000,-25.277000,55.178000C-39.944000,46.710000,-39.944000,25.540000,-25.277000,17.072000C-21.933000,15.142000,-18.139000,14.125000,-14.277000,14.125000C-2.132000,14.139000,7.709000,23.980000,7.723000,36.125000ZM-19.277000,48.125000C-19.277000,47.355000,-20.110000,46.874000,-20.777000,47.259000C-21.444000,47.644000,-21.444000,48.606000,-20.777000,48.991000C-20.625000,49.079000,-20.453000,49.125000,-20.277000,49.125000C-19.725000,49.125000,-19.277000,48.677000,-19.277000,48.125000ZM-10.277000,53.125000C-10.277000,52.573000,-10.725000,52.125000,-11.277000,52.125000L-17.277000,52.125000C-18.047000,52.125000,-18.528000,52.958000,-18.143000,53.625000C-17.964000,53.934000,-17.634000,54.125000,-17.277000,54.125000L-11.277000,54.125000C-10.725000,54.125000,-10.277000,53.677000,-10.277000,53.125000ZM-16.277000,49.125000C-15.507000,49.125000,-15.026000,48.292000,-15.411000,47.625000C-15.796000,46.958000,-16.758000,46.958000,-17.143000,47.625000C-17.231000,47.777000,-17.277000,47.949000,-17.277000,48.125000C-17.277000,48.677000,-16.829000,49.125000,-16.277000,49.125000ZM-12.277000,49.125000C-11.507000,49.125000,-11.026000,48.292000,-11.411000,47.625000C-11.796000,46.958000,-12.758000,46.958000,-13.143000,47.625000C-13.231000,47.777000,-13.277000,47.949000,-13.277000,48.125000C-13.277000,48.677000,-12.829000,49.125000,-12.277000,49.125000ZM-7.277000,48.125000C-7.277000,47.355000,-8.110000,46.874000,-8.777000,47.259000C-9.444000,47.644000,-9.444000,48.606000,-8.777000,48.991000C-8.625000,49.079000,-8.453000,49.125000,-8.277000,49.125000C-7.725000,49.125000,-7.277000,48.677000,-7.277000,48.125000ZM-7.277000,25.125000C-7.277000,19.736000,-13.110000,16.369000,-17.777000,19.063000C-19.943000,20.313000,-21.277000,22.624000,-21.277000,25.125000L-21.277000,37.125000C-21.277000,42.514000,-15.444000,45.881000,-10.777000,43.187000C-8.611000,41.937000,-7.277000,39.626000,-7.277000,37.125000L-7.277000,25.125000Z"
+      transform="matrix(1 0 0 1 -1.64428582627723 -1.48639076794777)"
+      fill="rgb(158,160,162)" stroke="none" stroke-width="1"/></g></svg>'; ]]]
+
+icon_plug:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+  custom_fields:
+    icon: >
+      [[[ if (entity.state === 'on') return '<svg id="el0k5alfrd2e1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"><style><![CDATA[#el0k5alfrd2e3
+      {animation: el0k5alfrd2e3_c_o 1000ms linear infinite normal
+      forwards}@keyframes el0k5alfrd2e3_c_o { 0% {opacity: 0.500000} 50%
+      {opacity: 1} 100% {opacity: 0.500000} }]]></style><path
+      id="el0k5alfrd2e2"
+      d="M2.790000,2.338000L20.923000,2.338000C21.241000,2.338000,21.495000,2.592000,21.495000,2.910000L21.495000,21.107000C21.495000,21.424000,21.241000,21.679000,20.923000,21.679000L2.790000,21.679000C2.472000,21.679000,2.218000,21.424000,2.218000,21.107000L2.218000,2.910000C2.218000,2.592000,2.472000,2.338000,2.790000,2.338000Z"
+      fill="rgb(95,98,103)" stroke="none" stroke-width="1"/><path
+      id="el0k5alfrd2e3"
+      d="M18.392000,18.872000L18.392000,5.881000L18.392000,18.872000ZM11.896000,6.963000C8.913000,6.963000,6.483000,9.394000,6.483000,12.376000C6.483000,15.359000,8.913000,17.790000,11.896000,17.790000C14.879000,17.790000,17.309000,15.359000,17.309000,12.376000C17.309000,9.394000,14.879000,6.963000,11.896000,6.963000ZM11.356000,8.082000L11.356000,10.212000L12.438000,10.212000L12.438000,8.082000C14.578000,8.348000,16.227000,10.163000,16.227000,12.376000C16.227000,14.590000,14.578000,16.405000,12.438000,16.670000L12.438000,14.541000L11.356000,14.541000L11.356000,16.670000C9.214000,16.405000,7.565000,14.590000,7.565000,12.376000C7.565000,10.163000,9.214000,8.348000,11.356000,8.082000ZM9.190000,11.834000L9.190000,12.919000L10.272000,12.919000L10.272000,11.834000L9.190000,11.834000ZM13.521000,11.834000L13.521000,12.919000L14.603000,12.919000L14.603000,11.834000L13.521000,11.834000Z"
+      opacity="0.5" fill="rgb(236,84,63)" stroke="none"
+      stroke-width="0.529167"/></svg> ';   else return '<svg
+      id="eafen1hwgbxn1" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"><style><![CDATA[#eafen1hwgbxn3
+      {animation: eafen1hwgbxn3_c_o 1000ms linear 1 normal forwards}@keyframes
+      eafen1hwgbxn3_c_o { 0% {opacity: 0.500000} 100% {opacity: 1}
+      }]]></style><path id="eafen1hwgbxn2"
+      d="M2.790000,2.338000L20.923000,2.338000C21.241000,2.338000,21.495000,2.592000,21.495000,2.910000L21.495000,21.107000C21.495000,21.424000,21.241000,21.679000,20.923000,21.679000L2.790000,21.679000C2.472000,21.679000,2.218000,21.424000,2.218000,21.107000L2.218000,2.910000C2.218000,2.592000,2.472000,2.338000,2.790000,2.338000Z"
+      fill="rgb(95,98,103)" stroke="none" stroke-width="1"/><path
+      id="eafen1hwgbxn3"
+      d="M18.392000,18.872000L18.392000,5.881000L18.392000,18.872000ZM11.896000,6.963000C8.913000,6.963000,6.483000,9.394000,6.483000,12.376000C6.483000,15.359000,8.913000,17.790000,11.896000,17.790000C14.879000,17.790000,17.309000,15.359000,17.309000,12.376000C17.309000,9.394000,14.879000,6.963000,11.896000,6.963000ZM11.356000,8.082000L11.356000,10.212000L12.438000,10.212000L12.438000,8.082000C14.578000,8.348000,16.227000,10.163000,16.227000,12.376000C16.227000,14.590000,14.578000,16.405000,12.438000,16.670000L12.438000,14.541000L11.356000,14.541000L11.356000,16.670000C9.214000,16.405000,7.565000,14.590000,7.565000,12.376000C7.565000,10.163000,9.214000,8.348000,11.356000,8.082000ZM9.190000,11.834000L9.190000,12.919000L10.272000,12.919000L10.272000,11.834000L9.190000,11.834000ZM13.521000,11.834000L13.521000,12.919000L14.603000,12.919000L14.603000,11.834000L13.521000,11.834000Z"
+      opacity="0.5" fill="rgb(158,160,162)" stroke="none"
+      stroke-width="0.529167"/></svg>'; ]]]
+
+icon_window:
+  custom_fields:
+    icon: >
+      [[[ if (variables.state_on && variables.timeout < 2000) { return '<svg viewBox="0 0 721 668" fill="none">
+      <style><![CDATA[#left-closed {animation: opened-left 2s both;transform-origin: left;transform-box: fill-box;}
+      #right-closed {animation: opened-right 2s both;transform-origin: right;transform-box: fill-box;}
+      @keyframes opened-left {0% {transform: none;}100% {transform: rotateY(-160deg)  skewY(-22deg) translate(0%, -0.7%) scaleX(0.9);}}
+      @keyframes opened-right {0% {transform: none;}100% {transform: rotateY(160deg)  skewY(22deg) translate(0%, -0.7%) scaleX(0.9);}}]]></style>      
+      <path id="Vector" d="M596 66V0H129V66H144.567V594H129V660H596V594H580.433V66H596ZM144.567 22H580.433V44H144.567V22ZM580.433 638H144.567V616H580.433V638ZM564.867 594H160.133V66H564.867V594Z" fill="black"/>
+      <rect id="Rectangle 12" x="181.5" y="91.5" width="363" height="483" stroke="black" stroke-width="15"/>
+      <g id="right-closed">
+      <rect id="Rectangle 7" x="370.5" y="253.177" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 8" x="370.5" y="412.855" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 4" x="370.5" y="92.5" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      </g>
+      <g id="left-closed">
+      <rect id="Rectangle 10" x="181.5" y="412.855" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 9" x="181.5" y="253.177" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 11" x="181.5" y="92.5" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      </g>
+      </svg> '; } 
+      if (entity.state === 'off' && variables.timeout > 2000) { return '<svg viewBox="0 0 721 668" fill="none">     
+      <path id="Vector" d="M596 66V0H129V66H144.567V594H129V660H596V594H580.433V66H596ZM144.567 22H580.433V44H144.567V22ZM580.433 638H144.567V616H580.433V638ZM564.867 594H160.133V66H564.867V594Z" fill="black"/>
+      <rect id="Rectangle 12" x="181.5" y="91.5" width="363" height="483" stroke="black" stroke-width="15"/>
+      <g id="right-closed">
+      <rect id="Rectangle 7" x="370.5" y="253.177" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 8" x="370.5" y="412.855" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 4" x="370.5" y="92.5" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      </g>
+      <g id="left-closed">
+      <rect id="Rectangle 10" x="181.5" y="412.855" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 9" x="181.5" y="253.177" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 11" x="181.5" y="92.5" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      </g>
+      </svg> '; }
+      if (entity.state === 'off' && variables.timeout < 2000) { return '<svg viewBox="0 0 721 668" fill="none">
+      <style><![CDATA[#left-closed {animation: close-left 2s both;transform-origin: left;transform-box: fill-box;}
+      #right-closed {animation: close-right 2s both;transform-origin: right;transform-box: fill-box;}
+      @keyframes close-left {0% {transform: rotateY(-160deg)  skewY(-22deg) translate(0%, -0.7%) scaleX(0.9);}100% {transform: none;}}
+      @keyframes close-right {0% {transform: rotateY(160deg)  skewY(22deg) translate(0%, -0.7%) scaleX(0.9);}100% {transform: none;}}]]></style>        
+      <path id="Vector" d="M596 66V0H129V66H144.567V594H129V660H596V594H580.433V66H596ZM144.567 22H580.433V44H144.567V22ZM580.433 638H144.567V616H580.433V638ZM564.867 594H160.133V66H564.867V594Z" fill="black"/>
+      <rect id="Rectangle 12" x="181.5" y="91.5" width="363" height="483" stroke="black" stroke-width="15"/>
+      <g id="right-closed">
+      <rect id="Rectangle 7" x="370.5" y="253.177" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 8" x="370.5" y="412.855" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 4" x="370.5" y="92.5" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      </g>
+      <g id="left-closed">
+      <rect id="Rectangle 10" x="181.5" y="412.855" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 9" x="181.5" y="253.177" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      <rect id="Rectangle 11" x="181.5" y="92.5" width="174" height="161.645" stroke="black" stroke-width="15"/>
+      </g>
+      </svg> '; }      
+      ]]]
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+        - margin-left: -6px
+        - margin-top: -1px
+
+icon_strip_alternate:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+  custom_fields:
+    icon: >
+      [[[ if (entity.state === 'on') return '<svg id="e8ljwnv7m62d1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"><style><![CDATA[#e8ljwnv7m62d2 {
+      animation-name: e8ljwnv7m62d2__tt, e8ljwnv7m62d2_c_o;
+      animation-duration: 1000ms; animation-fill-mode: forwards;
+      animation-timing-function: linear; animation-direction: normal;
+      animation-iteration-count: 1;   }@keyframes e8ljwnv7m62d2__tt { 0%
+      {transform: translate(0px,0px) translate(0px,0px)} 50% {transform:
+      translate(0px,0px) translate(0px,-0.500000px)} 100% {transform:
+      translate(0px,0px) translate(0px,0px)} }@keyframes e8ljwnv7m62d2_c_o {
+      0% {opacity: 0} 100% {opacity: 1} }]]></style><g id="e8ljwnv7m62d2"
+      transform="translate(0,0) translate(0,0)" opacity="0"><path
+      id="e8ljwnv7m62d3"
+      d="M2.164000,2L1,6.346000L20.801000,11.652000L21.449000,9.238000C21.736000,8.168000,21.106000,7.076000,20.035000,6.789000L2.164000,2ZM4.070000,3.572000C4.153000,3.577000,4.237000,3.591000,4.320000,3.613000C4.987000,3.792000,5.384000,4.478000,5.205000,5.145000C5.026000,5.811000,4.341000,6.206000,3.674000,6.027000C3.007000,5.849000,2.610000,5.163000,2.789000,4.496000C2.945000,3.913000,3.490000,3.537000,4.070000,3.572000ZM7.693000,4.543000C7.776000,4.548000,7.860000,4.562000,7.943000,4.584000C8.610000,4.763000,9.005000,5.448000,8.826000,6.115000C8.647000,6.782000,7.962000,7.177000,7.295000,6.998000C6.628000,6.819000,6.233000,6.134000,6.412000,5.467000C6.568000,4.883000,7.113000,4.508000,7.693000,4.543000ZM11.557000,5.578000C11.640000,5.583000,11.723000,5.597000,11.807000,5.619000C12.473000,5.798000,12.870000,6.484000,12.691000,7.150000C12.513000,7.817000,11.827000,8.212000,11.160000,8.033000C10.493000,7.855000,10.097000,7.169000,10.275000,6.502000C10.432000,5.919000,10.976000,5.543000,11.557000,5.578000ZM15.180000,6.549000C15.263000,6.554000,15.346000,6.568000,15.430000,6.590000C16.096000,6.769000,16.491000,7.454000,16.312000,8.121000C16.134000,8.788000,15.448000,9.183000,14.781000,9.004000C14.114000,8.825000,13.720000,8.140000,13.898000,7.473000C14.055000,6.889000,14.599000,6.514000,15.180000,6.549000ZM18.801000,7.520000C18.884000,7.525000,18.967000,7.538000,19.051000,7.561000C19.718000,7.739000,20.114000,8.425000,19.935000,9.092000C19.757000,9.759000,19.071000,10.153000,18.404000,9.975000C17.737000,9.796000,17.341000,9.110000,17.519000,8.443000C17.676000,7.860000,18.220000,7.485000,18.801000,7.520000ZM3.197000,12.348000L2.551000,14.762000C2.264000,15.832000,2.895000,16.924000,3.965000,17.211000L21.836000,22L23,17.654000L3.197000,12.348000ZM5.346000,13.984000C5.429000,13.989000,5.512000,14.003000,5.596000,14.025000C6.262000,14.204000,6.659000,14.890000,6.480000,15.557000C6.302000,16.223000,5.616000,16.618000,4.949000,16.439000C4.282000,16.261000,3.886000,15.575000,4.064000,14.908000C4.221000,14.325000,4.765000,13.950000,5.346000,13.984000ZM8.969000,14.955000C9.052000,14.960000,9.135000,14.974000,9.219000,14.996000C9.885000,15.175000,10.280000,15.861000,10.101000,16.527000C9.923000,17.194000,9.237000,17.589000,8.570000,17.410000C7.903000,17.231000,7.509000,16.546000,7.687000,15.879000C7.844000,15.295000,8.388000,14.920000,8.969000,14.955000ZM12.590000,15.926000C12.673000,15.931000,12.756000,15.944000,12.840000,15.967000C13.507000,16.145000,13.903000,16.831000,13.724000,17.498000C13.546000,18.165000,12.860000,18.560000,12.193000,18.381000C11.526000,18.202000,11.130000,17.516000,11.308000,16.850000C11.465000,16.266000,12.009000,15.891000,12.590000,15.926000ZM16.453000,16.961000C16.536000,16.966000,16.620000,16.980000,16.703000,17.002000C17.370000,17.181000,17.766000,17.866000,17.588000,18.533000C17.409000,19.200000,16.723000,19.595000,16.057000,19.416000C15.390000,19.237000,14.995000,18.552000,15.174000,17.885000C15.330000,17.301000,15.873000,16.926000,16.453000,16.961000ZM20.076000,17.932000C20.159000,17.937000,20.243000,17.950000,20.326000,17.973000C20.993000,18.151000,21.388000,18.837000,21.209000,19.504000C21.030000,20.171000,20.346000,20.565000,19.680000,20.387000C19.013000,20.208000,18.616000,19.522000,18.795000,18.856000C18.951000,18.272000,19.496000,17.897000,20.076000,17.932000Z"
+      fill="var(--light-color)" stroke="none" stroke-width="1"/></g><g
+      id="e8ljwnv7m62d4"><path id="e8ljwnv7m62d5"
+      d="M11.483000,10.234000L5.121000,11.943000L12.637000,13.956000L18.998000,12.247000L11.483000,10.234000Z"
+      fill="rgb(87,168,215)" stroke="none" stroke-width="1"/></g></svg> '
+      ;   else return '<svg id="ei7lu4mye7q1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"><style><![CDATA[#ei7lu4mye7q2 {
+      animation-name: ei7lu4mye7q2__tt, ei7lu4mye7q2_c_o; animation-duration:
+      1000ms; animation-fill-mode: forwards; animation-timing-function:
+      linear; animation-direction: normal; animation-iteration-count: 1;  
+      }@keyframes ei7lu4mye7q2__tt { 0% {transform: translate(0px,0px)
+      translate(0px,0px)} 50% {transform: translate(0px,0px)
+      translate(0px,-0.500000px)} 100% {transform: translate(0px,0px)
+      translate(0px,0px)} }@keyframes ei7lu4mye7q2_c_o { 0% {opacity: 1} 100%
+      {opacity: 0.500000} }]]></style><g id="ei7lu4mye7q2"
+      transform="translate(0,0) translate(0,0)"><path id="ei7lu4mye7q3"
+      d="M2.164000,2L1,6.346000L20.801000,11.652000L21.449000,9.238000C21.736000,8.168000,21.106000,7.076000,20.035000,6.789000L2.164000,2ZM4.070000,3.572000C4.153000,3.577000,4.237000,3.591000,4.320000,3.613000C4.987000,3.792000,5.384000,4.478000,5.205000,5.145000C5.026000,5.811000,4.341000,6.206000,3.674000,6.027000C3.007000,5.849000,2.610000,5.163000,2.789000,4.496000C2.945000,3.913000,3.490000,3.537000,4.070000,3.572000ZM7.693000,4.543000C7.776000,4.548000,7.860000,4.562000,7.943000,4.584000C8.610000,4.763000,9.005000,5.448000,8.826000,6.115000C8.647000,6.782000,7.962000,7.177000,7.295000,6.998000C6.628000,6.819000,6.233000,6.134000,6.412000,5.467000C6.568000,4.883000,7.113000,4.508000,7.693000,4.543000ZM11.557000,5.578000C11.640000,5.583000,11.723000,5.597000,11.807000,5.619000C12.473000,5.798000,12.870000,6.484000,12.691000,7.150000C12.513000,7.817000,11.827000,8.212000,11.160000,8.033000C10.493000,7.855000,10.097000,7.169000,10.275000,6.502000C10.432000,5.919000,10.976000,5.543000,11.557000,5.578000ZM15.180000,6.549000C15.263000,6.554000,15.346000,6.568000,15.430000,6.590000C16.096000,6.769000,16.491000,7.454000,16.312000,8.121000C16.134000,8.788000,15.448000,9.183000,14.781000,9.004000C14.114000,8.825000,13.720000,8.140000,13.898000,7.473000C14.055000,6.889000,14.599000,6.514000,15.180000,6.549000ZM18.801000,7.520000C18.884000,7.525000,18.967000,7.538000,19.051000,7.561000C19.718000,7.739000,20.114000,8.425000,19.935000,9.092000C19.757000,9.759000,19.071000,10.153000,18.404000,9.975000C17.737000,9.796000,17.341000,9.110000,17.519000,8.443000C17.676000,7.860000,18.220000,7.485000,18.801000,7.520000ZM3.197000,12.348000L2.551000,14.762000C2.264000,15.832000,2.895000,16.924000,3.965000,17.211000L21.836000,22L23,17.654000L3.197000,12.348000ZM5.346000,13.984000C5.429000,13.989000,5.512000,14.003000,5.596000,14.025000C6.262000,14.204000,6.659000,14.890000,6.480000,15.557000C6.302000,16.223000,5.616000,16.618000,4.949000,16.439000C4.282000,16.261000,3.886000,15.575000,4.064000,14.908000C4.221000,14.325000,4.765000,13.950000,5.346000,13.984000ZM8.969000,14.955000C9.052000,14.960000,9.135000,14.974000,9.219000,14.996000C9.885000,15.175000,10.280000,15.861000,10.101000,16.527000C9.923000,17.194000,9.237000,17.589000,8.570000,17.410000C7.903000,17.231000,7.509000,16.546000,7.687000,15.879000C7.844000,15.295000,8.388000,14.920000,8.969000,14.955000ZM12.590000,15.926000C12.673000,15.931000,12.756000,15.944000,12.840000,15.967000C13.507000,16.145000,13.903000,16.831000,13.724000,17.498000C13.546000,18.165000,12.860000,18.560000,12.193000,18.381000C11.526000,18.202000,11.130000,17.516000,11.308000,16.850000C11.465000,16.266000,12.009000,15.891000,12.590000,15.926000ZM16.453000,16.961000C16.536000,16.966000,16.620000,16.980000,16.703000,17.002000C17.370000,17.181000,17.766000,17.866000,17.588000,18.533000C17.409000,19.200000,16.723000,19.595000,16.057000,19.416000C15.390000,19.237000,14.995000,18.552000,15.174000,17.885000C15.330000,17.301000,15.873000,16.926000,16.453000,16.961000ZM20.076000,17.932000C20.159000,17.937000,20.243000,17.950000,20.326000,17.973000C20.993000,18.151000,21.388000,18.837000,21.209000,19.504000C21.030000,20.171000,20.346000,20.565000,19.680000,20.387000C19.013000,20.208000,18.616000,19.522000,18.795000,18.856000C18.951000,18.272000,19.496000,17.897000,20.076000,17.932000Z"
+      fill="rgb(158,160,162)" stroke="none" stroke-width="1"/></g><g
+      id="ei7lu4mye7q4"><path id="ei7lu4mye7q5"
+      d="M11.483000,10.234000L5.121000,11.943000L12.637000,13.956000L18.998000,12.247000L11.483000,10.234000Z"
+      fill="rgb(95,98,103)" stroke="none" stroke-width="1"/></g></svg>'; ]]]
+
+icon_strip:
+  styles:
+    custom_fields:
+      icon:
+        - width: 55px
+  custom_fields:
+    icon: >
+      [[[ if (entity.state === 'on') return '<svg viewBox="0 0 24 24" fill="var(--light-color)">
+      <style><![CDATA[#icon {
+      animation-name: bouncein;
+      animation-duration: 1000ms;  }
+      @keyframes bouncein {0% {opacity: 0;transform: scale3d(0.3, 0.3, 0.3);} 
+      20% {transform: scale3d(1.1, 1.1, 1.1);}
+      40% {transform: scale3d(0.9, 0.9, 0.9);}
+      60% {opacity: 1;transform: scale3d(1.03, 1.03, 1.03);}
+      80% {transform: scale3d(0.97, 0.97, 0.97);}
+      to {opacity: 1;transform: scale3d(1, 1, 1);}}]]>
+      </style><path id="icon" d="M6.328 12.5c.406-.086.805.172.895.578s-.172.801-.574.891-.805-.172-.895-.574.172-.805.574-.895m3.668-.793c.402-.086.805.172.891.574s-.168.805-.574.895a.75.75 0 1 1-.316-1.469m3.664-.789c.406-.09.805.168.891.57a.75.75 0 0 1-.574.895c-.402.086-.805-.172-.891-.574s.168-.805.574-.891m3.664-.793a.75.75 0 0 1 .895.574c.086.402-.172.805-.574.891s-.805-.168-.895-.574a.75.75 0 0 1 .574-.891m-9.32 5.355l11.102-2.398c.809-.172 1.324-.973 1.148-1.781-.418-1.937-2.328-3.168-4.262-2.75L4.887 10.945a1.5 1.5 0 0 0-1.148 1.781 3.59 3.59 0 0 0 4.266 2.754M18.75 19.5a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m12.75-3H6.75c-3 0-3.75-2.25-3.75-3v3.75A3.75 3.75 0 0 0 6.75 21h13.5a.75.75 0 0 0 .75-.75v-3a.75.75 0 0 0-.75-.75M16.5 6a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5M9 6a.75.75 0 1 1 0-1.5A.75.75 0 1 1 9 6M5.25 6a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m12-3H3.75a.75.75 0 0 0-.75.75v3a.75.75 0 0 0 .75.75h13.5c3 0 3.75 2.25 3.75 3V6.75A3.75 3.75 0 0 0 17.25 3"/></svg> '
+      ;   else return '<svg viewBox="0 0 24 24" fill="rgb(95,98,103)"><path d="M6.328 12.5c.406-.086.805.172.895.578s-.172.801-.574.891-.805-.172-.895-.574.172-.805.574-.895m3.668-.793c.402-.086.805.172.891.574s-.168.805-.574.895a.75.75 0 1 1-.316-1.469m3.664-.789c.406-.09.805.168.891.57a.75.75 0 0 1-.574.895c-.402.086-.805-.172-.891-.574s.168-.805.574-.891m3.664-.793a.75.75 0 0 1 .895.574c.086.402-.172.805-.574.891s-.805-.168-.895-.574a.75.75 0 0 1 .574-.891m-9.32 5.355l11.102-2.398c.809-.172 1.324-.973 1.148-1.781-.418-1.937-2.328-3.168-4.262-2.75L4.887 10.945a1.5 1.5 0 0 0-1.148 1.781 3.59 3.59 0 0 0 4.266 2.754M18.75 19.5a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m12.75-3H6.75c-3 0-3.75-2.25-3.75-3v3.75A3.75 3.75 0 0 0 6.75 21h13.5a.75.75 0 0 0 .75-.75v-3a.75.75 0 0 0-.75-.75M16.5 6a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m-3.75 0a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5M9 6a.75.75 0 1 1 0-1.5A.75.75 0 1 1 9 6M5.25 6a.75.75 0 1 1 0-1.5.75.75 0 1 1 0 1.5m12-3H3.75a.75.75 0 0 0-.75.75v3a.75.75 0 0 0 .75.75h13.5c3 0 3.75 2.25 3.75 3V6.75A3.75 3.75 0 0 0 17.25 3"/></svg> '
+      ; ]]]
