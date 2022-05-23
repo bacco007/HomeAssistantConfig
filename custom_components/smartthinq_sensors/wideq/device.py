@@ -10,7 +10,7 @@ import enum
 import json
 import logging
 from numbers import Number
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from . import core_exceptions as core_exc
 from .const import (
@@ -282,12 +282,12 @@ class Monitor(object):
         return None
 
     @staticmethod
-    def decode_json(data: bytes) -> Dict[str, Any]:
+    def decode_json(data: bytes) -> dict[str, Any]:
         """Decode a bytestring that encodes JSON status data."""
 
         return json.loads(data.decode("utf8"))
 
-    async def poll_json(self) -> Optional[Dict[str, Any]]:
+    async def poll_json(self) -> Optional[dict[str, Any]]:
         """For devices where status is reported via JSON data, get the
             decoded status result (or None if status is not available).
             """
@@ -948,7 +948,7 @@ class Device(object):
         return self._model_info
 
     @property
-    def available_features(self) -> Dict:
+    def available_features(self) -> dict:
         return self._available_features
 
     @property
@@ -1216,10 +1216,10 @@ class Device(object):
         """Override this function to manage feature title per device type"""
         return feature_name
 
-    def feature_title(self, feature_name, item_key=None, status=None):
+    def feature_title(self, feature_name, item_key=None, status=None, allow_none=False):
         title = self._available_features.get(feature_name)
         if title is None:
-            if status is None:
+            if status is None and not allow_none:
                 return None
             title = self._get_feature_title(feature_name, item_key)
             if not title:
@@ -1257,7 +1257,7 @@ class DeviceStatus(object):
     def __init__(self, device, data):
         self._device = device
         self._data = {} if data is None else data
-        self._device_features = {}
+        self._device_features: dict[str, Any] = {}
         self._features_updated = False
 
     @staticmethod
@@ -1274,6 +1274,22 @@ class DeviceStatus(object):
             return int(value)
         except ValueError:
             return None
+
+    @staticmethod
+    def _str_to_num(s):
+        """Convert a string to either an `int` or a `float`.
+
+        Troublingly, the API likes values like "18", without a trailing
+        ".0", for whole numbers. So we use `int`s for integers and
+        `float`s for non-whole numbers.
+        """
+        if not s:
+            return None
+
+        f = float(s)
+        if f == int(f):
+            return int(f)
+        return f
 
     @property
     def has_data(self):
@@ -1389,16 +1405,18 @@ class DeviceStatus(object):
             return STATE_OPTIONITEM_ON
         return STATE_OPTIONITEM_OFF
 
-    def _update_feature(self, key, status, get_text=True, item_key=None):
-        title = self._device.feature_title(
-            key, item_key, status
-        )
-        if not title:
+    def _update_feature(self, key, status, get_text=True, item_key=None, *, allow_none=False):
+        """Update the status features."""
+        if not self._device.feature_title(key, item_key, status, allow_none):
             return None
 
-        if status is None:
+        if status is None and not allow_none:
             status = STATE_OPTIONITEM_NONE
-        if status == STATE_OPTIONITEM_NONE or not get_text:
+
+        if status == STATE_OPTIONITEM_NONE:
+            get_text = False
+
+        if status is None or not get_text:
             value = status
         else:
             value = self._device.get_enum_text(status)
@@ -1411,7 +1429,7 @@ class DeviceStatus(object):
         raise NotImplementedError()
 
     @property
-    def device_features(self):
+    def device_features(self) -> dict[str, Any]:
         if not self._features_updated:
             self._update_features()
             self._features_updated = True
