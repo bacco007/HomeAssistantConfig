@@ -48,7 +48,7 @@ cards:
     - conditional_media
     - icon_apple_tv
     type: custom:button-card
-  - entity: sensor.plex_recently_added
+  - entity: sensor.frontpage_plex_unwatched_tv
     name: Plex (TV)
     tap_action:
       action: none
@@ -56,7 +56,7 @@ cards:
     - conditional_media
     - icon_plex
     type: custom:button-card
-  - entity: sensor.plex_recently_added_movies
+  - entity: sensor.frontpage_plex_unwatched_movies
     name: Plex (Movies)
     tap_action:
       action: none
@@ -64,7 +64,7 @@ cards:
     - conditional_media
     - icon_plex
     type: custom:button-card
-  - entity: sensor.sonarr_upcoming_media
+  - entity: sensor.frontpage_sonarr_upcoming
     name: Sonarr (Upcoming)
     tap_action:
       action: none
@@ -72,7 +72,7 @@ cards:
     - conditional_media
     - icon_tv
     type: custom:button-card
-  - entity: sensor.radarr_upcoming_media
+  - entity: sensor.frontpage_radarr_upcoming
     name: Radarr (Upcoming)
     tap_action:
       action: none
@@ -80,7 +80,7 @@ cards:
     - conditional_media
     - icon_tv
     type: custom:button-card
-  items_classes: col-xs-12 col-sm-6 col-md-4 col-lg-2
+  items_classes: col-xs-12 col-sm-6 col-md-4 col-lg-3
   type: custom:dwains-flexbox-card
 col_span: '2'
 col_span_lg: '3'

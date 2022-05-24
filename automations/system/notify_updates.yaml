@@ -5,7 +5,7 @@ description: ""
 use_blueprint:
   path: mdegat01/update_notifications.yaml
   input:
-    reminder_hours: "12"
+    reminder_hours: "1"
     update_entities:
       - update.home_assistant_core_update
       - update.home_assistant_operating_system_update

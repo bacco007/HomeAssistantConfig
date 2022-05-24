@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, May 24th 2022_
+_Stats as at 05:00, Wednesday, May 25th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 411     | 2968         | 2003 | 95 |
+| unknown | 412     | 2970         | 2007 | 95 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 2003
+Sensor | 2007
 Sun | 1
 Switch | 180
 Weather | 9
@@ -242,6 +242,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [homekit_controller](https://www.home-assistant.io/components/homekit_controller) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
+| [humidifier.smartthinq_sensors](https://www.home-assistant.io/components/humidifier.smartthinq_sensors) |
 | [humidifier.tuya](https://www.home-assistant.io/components/humidifier.tuya) |
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
 | [ical](https://www.home-assistant.io/components/ical) |

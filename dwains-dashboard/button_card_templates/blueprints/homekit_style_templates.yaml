@@ -6,9 +6,9 @@
 
 settings:
   variables:
-    translate_unknown: Unbekannt
-    translate_heating: Heizen
-    translate_idle: Untätig
+    translate_unknown: Unknown
+    translate_heating: Heating
+    translate_idle: Idle
 
 #################################################
 #                                               #
@@ -122,12 +122,40 @@ base_info:
     icon:
       "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
       \ width=\"100%\">`\n    : null;\n]]]\n"
-  tap_action:
-    action: more-info
   template:
     - base
     - circle
   triggers_update: sensor.time
+
+graph:
+  custom_fields:
+    graph:
+      card:
+        entities:
+          - "[[[ return entity.entity_id ]]]"
+        font_size: 75
+        line_color: blue
+        line_width: 4
+        show:
+          icon: false
+          name: false
+          state: false
+        style: |
+          ha-card {
+            --ha-card-background: "rgba(0, 0, 0, 0.3)";
+            box-shadow: none;
+            color: var(--primary-color);
+          }
+        type: custom:mini-graph-card
+  styles:
+    custom_fields:
+      graph:
+        - bottom: 0px
+        - left: 0%
+        - width: 100%
+        - position: absolute
+  template:
+    - base
 
 extra_styles:
   extra_styles: |
@@ -302,7 +330,6 @@ loader:
         - opacity: 0.5
         - filter: >
             [[[ return variables.state_on ? 'none' : 'invert(1)'; ]]]
-
 #################################################
 #                                               #
 #                     TILT                      #
@@ -326,7 +353,6 @@ tilt:
         catch (e) {
         }
       ]]]
-
 #################################################
 #                                               #
 #                    CLIMATE                    #
@@ -408,7 +434,6 @@ light:
   variables:
     circle_input: >
       [[[ return entity === undefined || Math.round(entity.attributes.brightness / 2.54); ]]]
-
 #################################################
 #                                               #
 #                    PERSON                     #
@@ -420,8 +445,6 @@ person:
     - base
     - circle
   triggers_update: sensor.time
-  tap_action:
-    action: more-info
   styles:
     custom_fields:
       icon:
@@ -461,7 +484,6 @@ person:
           `;
         }
       ]]]
-
 #################################################
 #                                               #
 #                  BASE MEDIA                   #
@@ -500,7 +522,6 @@ base_media:
               ? 'none'
               : '1px 1px 5px rgba(18, 22, 23, 0.9)';
           ]]]
-
 #################################################
 #                                               #
 #                     MEDIA                     #
@@ -561,7 +582,6 @@ conditional_media:
           data = entity.attributes.data,
           artist = entity.attributes.media_artist,
           title = entity.attributes.media_title;
-
           if (data !== undefined) {
             var number = data[variables.i].number === undefined && data[variables.i].aired !== undefined
               ? `(${data[variables.i].aired.split("-")[0]})`
@@ -578,11 +598,9 @@ conditional_media:
                   ? `${artist} - ${title}`
                   : variables.translate_idle;
           }
-
         function marquee() {
           let state = elt.getElementById("state"),
             container = elt.getElementById("container");
-
           if (state && container) {
             state.innerHTML = output;
             let ro = new ResizeObserver(entries => {
@@ -593,7 +611,6 @@ conditional_media:
                     c && c.contentRect &&
                     s.contentRect.width !== 0 &&
                     c.contentRect.width !== 0;
-
               if (r && s.contentRect.width < c.contentRect.width) {
                 state.classList.remove("marquee");
               }
@@ -673,14 +690,12 @@ conditional_media:
             card = elt.getElementById('card'),
             container = elt.getElementById('container'),
             blur_overlay = elt.getElementById('blur_overlay');
-
           if (elt && card && container && blur_overlay) {
             card.insertBefore(blur_overlay, container);
           }
         }, 0);
         return ' ';
       ]]]
-
 #################################################
 #                                               #
 #                 COMPUTER LOCK                 #
@@ -698,7 +713,6 @@ lock:
             elt.getElementById('lock').classList.remove('locked');
           }, 1100);
         } else {
-
           // duplicate of "loader" template
           let loader = (id, style, timeout) => {
               elt.getElementById(id) && (elt.getElementById(id).style.display = style,
@@ -811,7 +825,6 @@ icon_plex:
         <path d="M7.7.3h34.6c4.1 0 7.4 3.3 7.4 7.4v34.6c0 4.1-3.3 7.4-7.4 7.4H7.7c-4.1 0-7.4-3.3-7.4-7.4V7.7C.3 3.6 3.6.3 7.7.3z" fill="#282a2d"/>
         <path d="M25,7.1H14.6L25,25L14.6,42.9H25L35.4,25L25,7.1z" fill="#e5a00d"/>
       </svg>
-
 icon_apple_tv:
   styles:
     custom_fields:
@@ -823,7 +836,6 @@ icon_apple_tv:
       <svg viewBox="0 0 50 50">
         <path d="M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8 0-.4-.1-.8-.3-1.2-.4-.3-.1-.7-.1-1-.1-1.5.2-2.4 1.1-3 2.6-.4 1.1-.3 2.2 0 3.5.4 1.5 1 2.9 2.1 4 .5.6 1.2.9 2 .6 1.1-.5 2.2-.5 3.4 0 .8.3 1.5 0 2.1-.6.7-.8 1.1-1.8 1.6-2.8v-.2c-1-.6-1.7-1.4-1.8-2.7-.2-1.4.5-2.4 1.5-3.1zm9.9-1.4c.1.2.1.3.1.4l3.6 9.5c.1.3.3.4.6.4h.7c.6 0 .6 0 .9-.6l3.7-9.4c.1-.1.1-.3.2-.5H39l-2.9 8.3-3.1-8.3-1.9.2zM27.3 18l-1.3.4c-.5.2-.5.2-.6.7v1.4h-1.6l.1 1.4h1.5v5c0 .7.1 1.4.2 2.1.1.5.3 1 .8 1.4.8.6 2.6.7 3.5.2l-.1-1.2h-1.3c-.5 0-.9-.3-1-.8-.1-.3-.2-.6-.2-1v-5.8H30c0-.5.1-1 0-1.4h-2.7V18zm-8.8-.9c-1.9.3-3 2-2.7 3.2 1.4.2 2.9-1.7 2.7-3.2z"/>
       </svg>
-
 icon_spotify:
   styles:
     custom_fields:
@@ -835,7 +847,6 @@ icon_spotify:
       <svg viewBox="0 0 50 50">
         <path d="M25 .3C11.4.3.3 11.4.3 25S11.4 49.7 25 49.7 49.7 38.6 49.7 25 38.6.3 25 .3zm11.3 35.6c-.4.7-1.4 1-2.1.5-5.8-3.5-13.1-4.3-21.7-2.4-.8.2-1.7-.3-1.8-1.2-.2-.8.3-1.7 1.2-1.8 9.4-2.2 17.5-1.2 24 2.8.6.5.9 1.4.4 2.1zm3.1-6.7c-.6.9-1.7 1.2-2.6.6-6.6-4.1-16.8-5.3-24.6-2.9a1.96 1.96 0 0 1-2.4-1.3 1.96 1.96 0 0 1 1.3-2.4c9-2.7 20.1-1.4 27.7 3.3.8.6 1.1 1.8.6 2.7h0zm.2-7c-8-4.7-21.1-5.2-28.7-2.9-1.2.4-2.5-.3-2.9-1.5s.3-2.5 1.5-2.9c8.7-2.6 23.2-2.1 32.4 3.3 1.1.7 1.5 2.1.8 3.2-.6 1.1-2 1.4-3.1.8h0z"/>
       </svg>
-
 icon_nest_mini:
   styles:
     custom_fields:
@@ -847,7 +858,6 @@ icon_nest_mini:
       <svg viewBox="0 0 50 50">
         <path d="M49.7 25c0 13.6-11.1 24.7-24.8 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25 .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9 2.3-2.2h0zm10.8 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3 2.2zm-3.2 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3 0 2.3-.9 2.3-2.2h0zm13 2.2a2.22 2.22 0 0 0 2.2-2.2c0-1.2-1-2.3-2.2-2.3a2.22 2.22 0 0 0-2.2 2.2c0 1.3 1 2.3 2.2 2.3z" />
       </svg>
-
 icon_play_pause:
   styles:
     custom_fields:
@@ -913,7 +923,6 @@ icon_play_pause:
           `;
         }
       ]]]
-
 icon_hue:
   styles:
     custom_fields:
@@ -957,7 +966,6 @@ icon_hue:
           </svg>
         `;
       ]]]
-
 icon_shade:
   styles:
     custom_fields:
@@ -1002,7 +1010,6 @@ icon_shade:
           </svg>
         `;
       ]]]
-
 icon_tv:
   styles:
     custom_fields:
@@ -1086,7 +1093,6 @@ icon_tv:
           `;
         }
       ]]]
-
 icon_ps5:
   styles:
     custom_fields:
@@ -1129,7 +1135,6 @@ icon_ps5:
           </svg>
         `;
         }
-
         return variables.state_on && variables.timeout > 2000 ? `
           <svg viewBox="0 0 50 50">
           <g style="clip-path: url(#mask);">
@@ -1152,7 +1157,6 @@ icon_ps5:
           </svg>
         `;
       ]]]
-
 icon_spot:
   styles:
     custom_fields:
@@ -1241,7 +1245,6 @@ icon_spot:
           </svg>
         `;
       ]]]
-
 icon_imac:
   styles:
     custom_fields:
@@ -1275,7 +1278,6 @@ icon_imac:
           </svg>
         `;
       ]]]
-
 icon_monitors:
   styles:
     custom_fields:
@@ -1355,7 +1357,6 @@ icon_monitors:
           </svg>
         `;
         }
-
         return variables.state_on && variables.timeout > 2000 ? `
           <svg viewBox="0 0 50 50">
             ${paths}
@@ -1366,7 +1367,6 @@ icon_monitors:
           </svg>
         `;
       ]]]
-
 icon_lamp:
   styles:
     custom_fields:
@@ -1408,7 +1408,6 @@ icon_lamp:
           </svg>
         `;
       ]]]
-
 icon_climate:
   styles:
     custom_fields:
@@ -1423,7 +1422,6 @@ icon_climate:
       <svg viewBox="0 0 50 50">
         <path d="M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z"/>
       </svg>
-
 icon_bathroom:
   styles:
     custom_fields:
@@ -1499,7 +1497,6 @@ icon_bathroom:
           </svg>
         `;
       ]]]
-
 icon_fan:
   styles:
     custom_fields:
@@ -1572,7 +1569,6 @@ icon_fan:
           return `${style}<g class="end_timeout">${path}</g></svg>`;
         }
       ]]]
-
 icon_closet:
   styles:
     custom_fields:
@@ -1585,7 +1581,6 @@ icon_closet:
       [[[
         let room = `d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"`,
           door = `d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z"`;
-
         if (variables.state_on && variables.timeout < 2000) {
           return `
             <style>
@@ -1620,7 +1615,6 @@ icon_closet:
             </svg>
           `;
         }
-
         if (variables.state_on && variables.timeout > 2000) {
           return `
             <svg viewBox="0 0 50 50">
@@ -1635,7 +1629,6 @@ icon_closet:
             </svg>
           `;
         }
-
         return variables.state === 'off' && variables.timeout < 2000 ? `
           <style>
             .state {
@@ -1681,7 +1674,6 @@ icon_closet:
           </svg>
         `;
       ]]]
-
 icon_away:
   state_display: Auto
   styles:
@@ -1732,7 +1724,6 @@ icon_away:
           </svg>
         `;
       ]]]
-
 icon_home:
   state_display: Auto
   styles:
