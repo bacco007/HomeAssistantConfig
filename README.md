@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, May 27th 2022_
+_Stats as at 05:00, Saturday, May 28th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 412     | 2977         | 2007 | 95 |
+| unknown | 432     | 2979         | 2007 | 95 |
 
 Type | Qty
 -- | --
@@ -115,6 +115,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [adguard](https://www.home-assistant.io/components/adguard) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.eufy_security](https://www.home-assistant.io/components/alarm_control_panel.eufy_security) |
+| [alarm_control_panel.mqtt](https://www.home-assistant.io/components/alarm_control_panel.mqtt) |
 | [alarm_control_panel.tuya](https://www.home-assistant.io/components/alarm_control_panel.tuya) |
 | [alarm_control_panel.zha](https://www.home-assistant.io/components/alarm_control_panel.zha) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
@@ -122,6 +123,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [api](https://www.home-assistant.io/components/api) |
 | [apple_tv](https://www.home-assistant.io/components/apple_tv) |
+| [application_credentials](https://www.home-assistant.io/components/application_credentials) |
 | [aus_fuel](https://www.home-assistant.io/components/aus_fuel) |
 | [auth](https://www.home-assistant.io/components/auth) |
 | [automation](https://www.home-assistant.io/components/automation) |
@@ -168,6 +170,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [button.esphome](https://www.home-assistant.io/components/button.esphome) |
 | [button.hdhomerun](https://www.home-assistant.io/components/button.hdhomerun) |
 | [button.homekit_controller](https://www.home-assistant.io/components/button.homekit_controller) |
+| [button.mqtt](https://www.home-assistant.io/components/button.mqtt) |
 | [button.plex](https://www.home-assistant.io/components/button.plex) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
 | [button.tuya](https://www.home-assistant.io/components/button.tuya) |
@@ -178,12 +181,14 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [calendar.ical](https://www.home-assistant.io/components/calendar.ical) |
 | [camera](https://www.home-assistant.io/components/camera) |
 | [camera.eufy_security](https://www.home-assistant.io/components/camera.eufy_security) |
+| [camera.mqtt](https://www.home-assistant.io/components/camera.mqtt) |
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [camera.tuya](https://www.home-assistant.io/components/camera.tuya) |
 | [cast](https://www.home-assistant.io/components/cast) |
 | [cert_expiry](https://www.home-assistant.io/components/cert_expiry) |
 | [climate](https://www.home-assistant.io/components/climate) |
 | [climate.dyson_local](https://www.home-assistant.io/components/climate.dyson_local) |
+| [climate.mqtt](https://www.home-assistant.io/components/climate.mqtt) |
 | [climate.sensibo](https://www.home-assistant.io/components/climate.sensibo) |
 | [climate.smartthinq_sensors](https://www.home-assistant.io/components/climate.smartthinq_sensors) |
 | [climate.tuya](https://www.home-assistant.io/components/climate.tuya) |
@@ -193,6 +198,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [config](https://www.home-assistant.io/components/config) |
 | [counter](https://www.home-assistant.io/components/counter) |
 | [cover](https://www.home-assistant.io/components/cover) |
+| [cover.mqtt](https://www.home-assistant.io/components/cover.mqtt) |
 | [cover.tuya](https://www.home-assistant.io/components/cover.tuya) |
 | [cover.zha](https://www.home-assistant.io/components/cover.zha) |
 | [cupertino](https://www.home-assistant.io/components/cupertino) |
@@ -200,6 +206,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
+| [device_tracker.mqtt](https://www.home-assistant.io/components/device_tracker.mqtt) |
 | [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
 | [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
@@ -214,6 +221,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [eufy_security](https://www.home-assistant.io/components/eufy_security) |
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.dyson_local](https://www.home-assistant.io/components/fan.dyson_local) |
+| [fan.mqtt](https://www.home-assistant.io/components/fan.mqtt) |
 | [fan.tuya](https://www.home-assistant.io/components/fan.tuya) |
 | [fan.zha](https://www.home-assistant.io/components/fan.zha) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
@@ -235,6 +243,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [harmony](https://www.home-assistant.io/components/harmony) |
 | [hassio](https://www.home-assistant.io/components/hassio) |
 | [hdhomerun](https://www.home-assistant.io/components/hdhomerun) |
+| [here_travel_time](https://www.home-assistant.io/components/here_travel_time) |
 | [history](https://www.home-assistant.io/components/history) |
 | [holidays](https://www.home-assistant.io/components/holidays) |
 | [homeassistant](https://www.home-assistant.io/components/homeassistant) |
@@ -242,6 +251,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [homekit_controller](https://www.home-assistant.io/components/homekit_controller) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
+| [humidifier.mqtt](https://www.home-assistant.io/components/humidifier.mqtt) |
 | [humidifier.smartthinq_sensors](https://www.home-assistant.io/components/humidifier.smartthinq_sensors) |
 | [humidifier.tuya](https://www.home-assistant.io/components/humidifier.tuya) |
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
@@ -261,10 +271,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [launch_library](https://www.home-assistant.io/components/launch_library) |
 | [light](https://www.home-assistant.io/components/light) |
 | [light.group](https://www.home-assistant.io/components/light.group) |
+| [light.mqtt](https://www.home-assistant.io/components/light.mqtt) |
 | [light.tuya](https://www.home-assistant.io/components/light.tuya) |
 | [light.zha](https://www.home-assistant.io/components/light.zha) |
 | [lock](https://www.home-assistant.io/components/lock) |
 | [lock.eufy_security](https://www.home-assistant.io/components/lock.eufy_security) |
+| [lock.mqtt](https://www.home-assistant.io/components/lock.mqtt) |
 | [lock.zha](https://www.home-assistant.io/components/lock.zha) |
 | [logbook](https://www.home-assistant.io/components/logbook) |
 | [logger](https://www.home-assistant.io/components/logger) |
@@ -301,6 +313,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
 | [number](https://www.home-assistant.io/components/number) |
+| [number.mqtt](https://www.home-assistant.io/components/number.mqtt) |
 | [number.sensibo](https://www.home-assistant.io/components/number.sensibo) |
 | [number.sonos](https://www.home-assistant.io/components/number.sonos) |
 | [number.tuya](https://www.home-assistant.io/components/number.tuya) |
@@ -333,6 +346,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [satellitetracker](https://www.home-assistant.io/components/satellitetracker) |
 | [scene](https://www.home-assistant.io/components/scene) |
 | [scene.homeassistant](https://www.home-assistant.io/components/scene.homeassistant) |
+| [scene.mqtt](https://www.home-assistant.io/components/scene.mqtt) |
 | [scene.tuya](https://www.home-assistant.io/components/scene.tuya) |
 | [script](https://www.home-assistant.io/components/script) |
 | [search](https://www.home-assistant.io/components/search) |
@@ -341,6 +355,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [select.dyson_local](https://www.home-assistant.io/components/select.dyson_local) |
 | [select.eufy_security](https://www.home-assistant.io/components/select.eufy_security) |
 | [select.harmony](https://www.home-assistant.io/components/select.harmony) |
+| [select.mqtt](https://www.home-assistant.io/components/select.mqtt) |
 | [select.sensibo](https://www.home-assistant.io/components/select.sensibo) |
 | [select.tuya](https://www.home-assistant.io/components/select.tuya) |
 | [select.zha](https://www.home-assistant.io/components/select.zha) |
@@ -411,6 +426,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
+| [sensor.spacex](https://www.home-assistant.io/components/sensor.spacex) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics) |
@@ -442,8 +458,10 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
 | [siren](https://www.home-assistant.io/components/siren) |
+| [siren.mqtt](https://www.home-assistant.io/components/siren.mqtt) |
 | [siren.tuya](https://www.home-assistant.io/components/siren.tuya) |
 | [siren.zha](https://www.home-assistant.io/components/siren.zha) |
+| [slack](https://www.home-assistant.io/components/slack) |
 | [smartthinq_sensors](https://www.home-assistant.io/components/smartthinq_sensors) |
 | [solcast_solar](https://www.home-assistant.io/components/solcast_solar) |
 | [sonarr](https://www.home-assistant.io/components/sonarr) |
@@ -498,6 +516,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.myjdownloader](https://www.home-assistant.io/components/update.myjdownloader) |
 | [update.sensibo](https://www.home-assistant.io/components/update.sensibo) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
+| [update.unifi](https://www.home-assistant.io/components/update.unifi) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
 | [upnp_availability](https://www.home-assistant.io/components/upnp_availability) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
@@ -505,6 +524,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [uptimerobot](https://www.home-assistant.io/components/uptimerobot) |
 | [usb](https://www.home-assistant.io/components/usb) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
+| [vacuum.mqtt](https://www.home-assistant.io/components/vacuum.mqtt) |
 | [vacuum.tuya](https://www.home-assistant.io/components/vacuum.tuya) |
 | [version](https://www.home-assistant.io/components/version) |
 | [watchman](https://www.home-assistant.io/components/watchman) |
