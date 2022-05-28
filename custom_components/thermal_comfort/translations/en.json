@@ -1,0 +1,45 @@
+{
+  "options": {
+    "error": {
+      "temperature_not_found": "Temperature sensor not found",
+      "humidity_not_found": "Humidity sensor not found"
+    },
+    "step": {
+      "init": {
+        "title": "Thermal comfort settings",
+        "data": {
+          "temperature_sensor": "Temperature sensor",
+          "humidity_sensor": "Humidity sensor",
+          "poll": "Enable Polling",
+          "scan_interval": "Poll interval (seconds)",
+          "custom_icons": "Use custom icons pack"
+        }
+      }
+    }
+  },
+  "config": {
+    "abort": {
+      "already_configured": "This combination of temperature and humidity sensors is already configured",
+      "no_sensors": "No temperature or humidity sensors found. Try again in advanced mode.",
+      "no_sensors_advanced": "No temperature or humidity sensors found."
+    },
+    "error": {
+      "temperature_not_found": "Temperature sensor not found",
+      "humidity_not_found": "Humidity sensor not found"
+    },
+    "step": {
+      "user": {
+        "title": "Thermal comfort settings",
+        "data": {
+          "name": "Name",
+          "temperature_sensor": "Temperature sensor",
+          "humidity_sensor": "Humidity sensor",
+          "poll": "Enable Polling",
+          "scan_interval": "Poll interval (seconds)",
+          "custom_icons": "Use custom icons pack",
+          "enabled_sensors": "Enabled sensors"
+        }
+      }
+    }
+  }
+}

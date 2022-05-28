@@ -1,0 +1,45 @@
+{
+  "options": {
+    "error": {
+      "temperature_not_found": "Temperatursensor konnte nicht gefunden werden",
+      "humidity_not_found": "Feuchtigkeitssensor konnte nicht gefunden werden"
+    },
+    "step": {
+      "init": {
+        "title": "Thermal Comfort Einstellungen",
+        "data": {
+          "temperature_sensor": "Temperatursensor",
+          "humidity_sensor": "Feuchtigkeitssensor",
+          "poll": "Polling verwenden",
+          "scan_interval": "Poll Interval (Sekunden)",
+          "custom_icons": "Benutzerdefinierte Icons verwenden"
+        }
+      }
+    }
+  },
+  "config": {
+    "abort": {
+      "already_configured": "Diese Kombination aus Temperatursensor und Feuchtigkeitssensor wird bereits verwendet",
+      "no_sensors": "Es wurden entweder keine Temperatursensoren oder Feuchtigkeitssensoren gefunden. Versuche es erneut im erweiterten Modus.",
+      "no_sensors_advanced": "Es wurden entweder keine Temperatursensoren oder Feuchtigkeitssensoren gefunden."
+    },
+    "error": {
+      "temperature_not_found": "Temperatursensor konnte nicht gefunden werden",
+      "humidity_not_found": "Feuchtigkeitssensor konnte nicht gefunden werden"
+    },
+    "step": {
+      "user": {
+        "title": "Thermal Comfort Einstellungen",
+        "data": {
+          "name": "Name",
+          "temperature_sensor": "Temperatursensor",
+          "humidity_sensor": "Feuchtigkeitssensor",
+          "poll": "Polling verwenden",
+          "scan_interval": "Poll Interval (Sekunden)",
+          "custom_icons": "Benutzerdefinierte Icons verwenden",
+          "enabled_sensors": "Aktivierte Sensoren"
+        }
+      }
+    }
+  }
+}
