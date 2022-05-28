@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 28th 2022_
+_Stats as at 05:00, Sunday, May 29th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 432     | 2979         | 2007 | 95 |
+| unknown | 434     | 2986         | 2022 | 95 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 95
-Binary Sensor | 272
+Binary Sensor | 273
 Camera | 8
 Device Tracker | 68
 Group | 5
@@ -88,11 +88,11 @@ Input Boolean | 1
 Input Datetime | 2
 Input Text | 7
 Light | 5
-Media Player | 22
+Media Player | 19
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 2007
+Sensor | 2022
 Sun | 1
 Switch | 180
 Weather | 9
@@ -435,6 +435,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor) |
 | [sensor.tautulli](https://www.home-assistant.io/components/sensor.tautulli) |
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
+| [sensor.thermal_comfort](https://www.home-assistant.io/components/sensor.thermal_comfort) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
 | [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission) |
@@ -500,6 +501,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tag](https://www.home-assistant.io/components/tag) |
 | [tautulli](https://www.home-assistant.io/components/tautulli) |
 | [template](https://www.home-assistant.io/components/template) |
+| [thermal_comfort](https://www.home-assistant.io/components/thermal_comfort) |
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
 | [trace](https://www.home-assistant.io/components/trace) |
@@ -597,6 +599,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
+- [Thermal Comfort](https://github.com/dolezsa/thermal_comfort/blob/master/README.md)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [UPnP Availability Sensor](https://github.com/rytilahti/homeassistant-upnp-availability/)
