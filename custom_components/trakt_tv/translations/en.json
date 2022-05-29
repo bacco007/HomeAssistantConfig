@@ -1,0 +1,33 @@
+{
+    "title": "Trakt",
+    "config": {
+        "abort": {
+            "authorize_url_timeout": "Timeout generating authorize URL.",
+            "missing_configuration": "The component is not configured. Please follow the documentation.",
+            "no_url_available": "No URL available. For information about this error, [check the help section]({docs_url})"
+        },
+        "create_entry": {
+            "default": "Successfully authenticated"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "Pick Authentication Method"
+            },
+            "user": {
+                "data": {
+                    "client_id": "Client ID",
+                    "client_secret": "Client secret"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "fetch_intervals": "Update frequency (seconds)"
+                }
+            }
+        }
+    }
+}
