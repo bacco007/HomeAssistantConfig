@@ -26,7 +26,7 @@ cards:
         margin-left: 2px !important;
       }
     entities:
-      - entity: sensor.plex_the_cube_2_electric_boogaloo
+      - entity: sensor.plex_thecube2
         name: Current User Count
         icon: mdi:plex
       - entity: sensor.plex_topuser

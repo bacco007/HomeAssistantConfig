@@ -1,0 +1,20 @@
+---
+trakt_tv:
+  language: en # Prefered language for movie/show title
+  sensors:
+    upcoming:
+      show:
+        days_to_fetch: 90 # How many days in the future you want to fetch
+        max_medias: 3 # How many medias you want to fetch
+      new_show:
+        days_to_fetch: 90
+        max_medias: 3
+      premiere:
+        days_to_fetch: 90
+        max_medias: 3
+      movie:
+        days_to_fetch: 90
+        max_medias: 3
+      dvd:
+        days_to_fetch: 90
+        max_medias: 3

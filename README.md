@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, May 29th 2022_
+_Stats as at 05:00, Monday, May 30th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 434     | 2986         | 2022 | 95 |
+| unknown | 437     | 2980         | 2024 | 95 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 95
-Binary Sensor | 273
+Binary Sensor | 272
 Camera | 8
 Device Tracker | 68
 Group | 5
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 2022
+Sensor | 2024
 Sun | 1
-Switch | 180
+Switch | 177
 Weather | 9
 Zone | 3
 
@@ -222,6 +222,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.dyson_local](https://www.home-assistant.io/components/fan.dyson_local) |
 | [fan.mqtt](https://www.home-assistant.io/components/fan.mqtt) |
+| [fan.smartthinq_sensors](https://www.home-assistant.io/components/fan.smartthinq_sensors) |
 | [fan.tuya](https://www.home-assistant.io/components/fan.tuya) |
 | [fan.zha](https://www.home-assistant.io/components/fan.zha) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
@@ -438,6 +439,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.thermal_comfort](https://www.home-assistant.io/components/sensor.thermal_comfort) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
+| [sensor.trakt_tv](https://www.home-assistant.io/components/sensor.trakt_tv) |
 | [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.tuya](https://www.home-assistant.io/components/sensor.tuya) |
@@ -505,6 +507,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
 | [trace](https://www.home-assistant.io/components/trace) |
+| [trakt_tv](https://www.home-assistant.io/components/trakt_tv) |
 | [transmission](https://www.home-assistant.io/components/transmission) |
 | [tts](https://www.home-assistant.io/components/tts) |
 | [tts.cloud](https://www.home-assistant.io/components/tts.cloud) |
@@ -600,6 +603,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [SpaceX Launches and Starman](https://github.com/djtimca/haspacex)
 - [Sun2](https://github.com/pnbruckner/ha-sun2/blob/master/README.md)
 - [Thermal Comfort](https://github.com/dolezsa/thermal_comfort/blob/master/README.md)
+- [Trakt](https://github.com/dylandoamaral/trakt-integration)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [UPnP Availability Sensor](https://github.com/rytilahti/homeassistant-upnp-availability/)
