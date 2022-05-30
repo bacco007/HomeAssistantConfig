@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Monday, May 30th 2022_
+_Stats as at 05:00, Tuesday, May 31st 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 437     | 2980         | 2024 | 95 |
+| unknown | 433     | 2978         | 2024 | 95 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 95
-Binary Sensor | 272
+Binary Sensor | 274
 Camera | 8
 Device Tracker | 68
 Group | 5
@@ -155,7 +155,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.upnp](https://www.home-assistant.io/components/binary_sensor.upnp) |
 | [binary_sensor.upnp_availability](https://www.home-assistant.io/components/binary_sensor.upnp_availability) |
 | [binary_sensor.uptime_kuma](https://www.home-assistant.io/components/binary_sensor.uptime_kuma) |
-| [binary_sensor.uptimerobot](https://www.home-assistant.io/components/binary_sensor.uptimerobot) |
 | [binary_sensor.version](https://www.home-assistant.io/components/binary_sensor.version) |
 | [binary_sensor.weatherflow](https://www.home-assistant.io/components/binary_sensor.weatherflow) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
@@ -448,7 +447,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.upnp](https://www.home-assistant.io/components/sensor.upnp) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
-| [sensor.uptimerobot](https://www.home-assistant.io/components/sensor.uptimerobot) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
@@ -495,7 +493,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
 | [switch.tuya](https://www.home-assistant.io/components/switch.tuya) |
 | [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
-| [switch.uptimerobot](https://www.home-assistant.io/components/switch.uptimerobot) |
 | [switch.zha](https://www.home-assistant.io/components/switch.zha) |
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
 | [system_health](https://www.home-assistant.io/components/system_health) |
@@ -526,7 +523,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [upnp_availability](https://www.home-assistant.io/components/upnp_availability) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
 | [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
-| [uptimerobot](https://www.home-assistant.io/components/uptimerobot) |
 | [usb](https://www.home-assistant.io/components/usb) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
 | [vacuum.mqtt](https://www.home-assistant.io/components/vacuum.mqtt) |

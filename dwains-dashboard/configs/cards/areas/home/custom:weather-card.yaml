@@ -1,5 +1,5 @@
 col_span: '1'
-col_span_lg: '2'
+col_span_lg: '1'
 col_span_xl: '2'
 daily_forecast_days: 5
 daily_forecast_layout: vertical
