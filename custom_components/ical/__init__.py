@@ -127,7 +127,13 @@ class ICalEvents:
         if text is not None:
             # Some calendars are for some reason filled with NULL-bytes.
             # They break the parsing, so we get rid of them
-            event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))
+            try:
+                event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))
+            except Exception as e:
+                _LOGGER.error(e)
+                _LOGGER.debug(self.url)
+                _LOGGER.debug(text)
+                return
             start_of_events = dt.start_of_local_day()
             end_of_events = dt.start_of_local_day() + timedelta(days=self.days)
 
