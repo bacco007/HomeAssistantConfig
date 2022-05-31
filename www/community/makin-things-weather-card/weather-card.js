@@ -314,17 +314,17 @@ let WeatherCard = class WeatherCard extends s$1 {
         if ((this.config.entity_update_time) && (this.hass.states[this.config.entity_update_time]) && (this.hass.states[this.config.entity_update_time].state !== undefined)) {
             const d = new Date(this.hass.states[this.config.entity_update_time].state);
             if (this.is12Hour) {
-                updateTime = d.toLocaleString(this.config.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" am", "am, ").replace(" pm", "pm, ") + d.toLocaleDateString(this.config.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
+                updateTime = d.toLocaleString(this.config.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" ", "") + ", " + d.toLocaleDateString(this.config.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
             }
             else {
-                updateTime = d.toLocaleString(this.config.locale, { hour: '2-digit', minute: '2-digit', hour12: false }).replace(" am", "am, ").replace(" pm", "pm, ") + d.toLocaleDateString(this.config.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
+                updateTime = d.toLocaleString(this.config.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) + d.toLocaleDateString(this.config.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
             }
         }
         else {
             updateTime = '---';
         }
         return $ `
-      <div class="title-section">
+      <div class="title-section section">
         ${this.config.text_card_title ? $ `<div class="card-header">${this.config.text_card_title}</div>` : $ ``}
         ${this.config.entity_update_time ? $ `<div class="updated">${this.config.text_update_time_prefix ? this.config.text_update_time_prefix + ' ' : ''}${updateTime}</div>` : $ ``}
       </div>
@@ -355,12 +355,26 @@ let WeatherCard = class WeatherCard extends s$1 {
         const separator = this.config.show_separator === true ? $ `<hr class=line>` : ``;
         const currentText = (this.config.entity_current_text) && (this.hass.states[this.config.entity_current_text]) ? (_b = this.hass.states[this.config.entity_current_text].state) !== null && _b !== void 0 ? _b : '---' : '---';
         return $ `
-      <div class="top-row">
-        <div class="top-left">${biggerIcon}</div>
-        <div class="currentTemps">${currentTemp}${apparentTemp}</div>
+      <div class="main-section section">
+        <div class="main-top">
+          <div class="top-left">${biggerIcon}</div>
+          <div class="currentTemps">${currentTemp}${apparentTemp}</div>
+        </div>
+        ${separator}
+        <div class="current-text">${currentText}</div>
       </div>
-      ${separator}
-      <div class="current-text">${currentText}</div>
+    `;
+    }
+    _renderExtendedSection() {
+        var _a;
+        if (((_a = this.config) === null || _a === void 0 ? void 0 : _a.show_section_extended) === false)
+            return $ ``;
+        const extendedEntity = this.config['entity_daily_summary'];
+        const extended = $ `<div class="f-extended">${this.hass.states[extendedEntity] !== undefined ? this.hass.states[extendedEntity].state : "---"}</div>`;
+        return $ `
+      <div class="extended-section section">
+        ${extended}
+      </div>
     `;
     }
     _renderSlotsSection() {
@@ -395,7 +409,7 @@ let WeatherCard = class WeatherCard extends s$1 {
       </div>
     `;
         return $ `
-      <div>${slot_section}</div>
+      <div class="slot-section section">${slot_section}</div>
     `;
     }
     _renderDailyForecastSection() {
@@ -406,10 +420,8 @@ let WeatherCard = class WeatherCard extends s$1 {
         const days = this.config.daily_forecast_days || 5;
         if (this.config.daily_forecast_layout !== 'vertical') {
             for (var i = 0; i < days; i++) {
-                const forecastDate = this.config['entity_forecast_icon_1'] && this.hass.states[this.config['entity_forecast_icon_1']] ? new Date(this.hass.states[this.config['entity_forecast_icon_1']].attributes['date']) : undefined;
-                if (forecastDate) {
-                    forecastDate.setDate(forecastDate.getDate() + i);
-                }
+                const forecastDate = new Date();
+                forecastDate.setDate(forecastDate.getDate() + i + 1);
                 var start = this.config['entity_forecast_icon_1'] ? this.config['entity_forecast_icon_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const iconEntity = start ? this.config['entity_forecast_icon_1'].replace(/(\d+)(?!.*\d)/g, Number(start) + i) : undefined;
                 const url = new URL(('icons/' + (this.config.static_icons ? 'static' : 'animated') + '/' + (this.hass.states[iconEntity] !== undefined ? this._weatherIcon(this.hass.states[iconEntity].state) : 'unknown') + '.svg').replace("-night", "-day"), import.meta.url);
@@ -452,19 +464,20 @@ let WeatherCard = class WeatherCard extends s$1 {
         `);
             }
             var daily_forecast_section = $ `
-        <div class="daily-forecast-horiz">
+        <div class="daily-forecast-horiz-section section">
           ${htmlDays}
         </div>
     `;
         }
         else {
             for (var i = 0; i < days; i++) {
-                const forecastDate = this.config['entity_forecast_icon_1'] && this.hass.states[this.config['entity_forecast_icon_1']] ? new Date(this.hass.states[this.config['entity_forecast_icon_1']].attributes['date']) : undefined;
-                if (forecastDate) {
-                    forecastDate.setDate(forecastDate.getDate() + i);
-                }
+                const forecastDate = new Date();
+                forecastDate.setDate(forecastDate.getDate() + i + 1);
                 var start = this.config['entity_forecast_icon_1'] ? this.config['entity_forecast_icon_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const iconEntity = start ? this.config['entity_forecast_icon_1'].replace(/(\d+)(?!.*\d)/g, Number(start) + i) : undefined;
+                if (this.hass.states[iconEntity] === undefined || this.hass.states[iconEntity].state === 'unknown') { // Stop adding forecast days as soon as an undefined entity is encountered
+                    break;
+                }
                 const url = new URL(('icons/' + (this.config.static_icons ? 'static' : 'animated') + '/' + (this.hass.states[iconEntity] !== undefined ? this._weatherIcon(this.hass.states[iconEntity].state) : 'unknown') + '.svg').replace("-night", "-day"), import.meta.url);
                 const htmlIcon = $ `<i class="icon" style="background: none, url(${url.href}) no-repeat; background-size: contain;"></i><br>`;
                 start = this.config['entity_forecast_high_temp_1'] ? this.config['entity_forecast_high_temp_1'].match(/(\d+)(?!.*\d)/g) : false;
@@ -491,31 +504,33 @@ let WeatherCard = class WeatherCard extends s$1 {
                 start = this.config['entity_pos_1'] ? this.config['entity_pos_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const posEntity = start ? this.config['entity_pos_1'].replace(/(\d+)(?!.*\d)/g, Number(start) + i) : undefined;
                 const pos = start ? $ `<br><div class="f-slot"><div class="f-label">Possible rain </div><div class="pos">${this.hass.states[posEntity] !== undefined ? this.hass.states[posEntity].state : "---"}</div><div class="unit">${this.getUOM('precipitation')}</div></div>` : ``;
-                start = this.config['entity_extended_1'] ? this.config['entity_extended_1'].match(/(\d+)(?!.*\d)/g) : false;
+                start = this.config['entity_extended_1'] && i < (this.config['daily_extended_forecast_days'] !== 0 ? this.config['daily_extended_forecast_days'] || 7 : 0) ? this.config['entity_extended_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const extendedEntity = start ? this.config['entity_extended_1'].replace(/(\d+)(?!.*\d)/g, Number(start) + i) : undefined;
-                const extended = start ? $ `<div class="f-slot">${this.hass.states[extendedEntity] !== undefined ? this.hass.states[extendedEntity].state : "---"}</div>` : ``;
+                const extended = start ? $ `<div class="f-extended">${this.hass.states[extendedEntity] !== undefined ? this.hass.states[extendedEntity].state : "---"}</div>` : ``;
                 htmlDays.push($ `
           <div class="day-vert fcasttooltip">
-            <div class="day-vert-left">
-              <span class="dayname">${forecastDate ? forecastDate.toLocaleDateString(this.config.locale, { weekday: 'short' }) : "---"}</span>
-              <br>${htmlIcon}
+            <div class="day-vert-top">
+              <div class="day-vert-dayicon">
+                <span class="dayname">${forecastDate ? forecastDate.toLocaleDateString(this.config.locale, { weekday: 'short' }) : "---"}</span>
+                <br>${htmlIcon}
+              </div>
+              <div class="day-vert-values">
+                ${minMax}
+                ${summary}
+              </div>
+              <div class="day-vert-values">
+                ${pop}
+                ${pos}
+              </div>
             </div>
-            <div class="day-vert-middle">
-              ${minMax}
-              ${summary}
-            </div>
-            <div class="day-vert-middle">
-              ${pop}
-              ${pos}
-            </div>
-            <div class="day-vert-right">
+            <div class="day-vert-bottom">
               ${extended}
             </div>
           </div>
         `);
             }
             var daily_forecast_section = $ `
-        <div  class="daily-forecast-vert">
+        <div  class="daily-forecast-vert-section section">
           ${htmlDays}
         </div>
     `;
@@ -537,6 +552,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         <div class="content">
           ${this._renderTitleSection()}
           ${this._renderMainSection()}
+          ${this._renderExtendedSection()}
           ${this._renderSlotsSection()}
           ${this._renderDailyForecastSection()}
         </div>
@@ -1645,24 +1661,27 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         // var summaryFontSize = this.config.summary_font_size || "0.8em";
         return r$4 `
       .card {
-        padding: 16px;
+        padding: 8px 16px 8px 16px;
       }
       .content {
         align-items: center;
       }
-      .title-section {
-        padding-bottom: 1.5em;
-      }
       .card-header {
         font-size: 1.5em;
         color: var(--primary-text-color);
+      }
+      .section {
+        margin: -1px;
+        border: 1px solid transparent;
+        padding-top: 8px;
+        padding-bottom: 8px;
       }
       .updated {
         font-size: 0.9em;
         font-weight: 300;
         color: var(--primary-text-color);
       }
-      .top-row {
+      .main-top {
         display: flex;
         justify-content: space-between;
         flex-wrap: nowrap;
@@ -1673,11 +1692,11 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         height: 8em;
       }
       .big-icon {
-        height: 10em;
-        width: 10em;
+        height: 140px;
+        width: 140px;
         position: relative;
-        left: -1em;
-        top: -2em;
+        left: -8px;
+        top: -20px;
       }
       .currentTemps {
         display: flex;
@@ -1729,8 +1748,8 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
       .line {
         margin-left: 0.5em;
         margin-right: 0.5em;
-        margin-top : -12px;
-        margin-bottom: 10px;
+        margin-top : -2px;
+        margin-bottom: 0px;
       }
       .current-text {
         font-size: ${o$6(currentTextFontSize)};
@@ -1738,7 +1757,8 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         overflow: hidden;
         white-space: nowrap;
         text-align: ${o$6(currentTextAlignment)};
-        padding-bottom: 0.2em;
+        line-height: 1.2em;
+        padding-top: 8px;
       }
       .variations {
         display: flex;
@@ -1746,7 +1766,9 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         font-weight: 300;
         color: var(--primary-text-color);
         list-style: none;
-        padding: 0.2em;
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+        padding-inline-start: 8px;
       }
       .slot-list-item-1 {
         min-width:50%;
@@ -1766,7 +1788,9 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         font-weight: 300;
         color: var(--primary-text-color);
         list-style: none;
-        padding: 0.2em;
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+        padding-inline-start: 8px;
       }
       .ha-icon {
         height: 24px;
@@ -1798,14 +1822,14 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         line-height: 80%;
         padding-top: 7px;
       }
-      .daily-forecast-horiz {
+      .daily-forecast-horiz-section {
         display: flex;
         flex-flow: row wrap;
         width: 100%;
         margin: 0 auto;
         clear: both;
       }
-      .daily-forecast-horiz .day-horiz:nth-last-child(1) {
+      .daily-forecast-horiz-section .day-horiz:nth-last-child(1) {
         border-right: none;
         margin-right: 0;
       }
@@ -1817,39 +1841,40 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         border-right: .1em solid #d9d9d9;
         line-height: 1.5;
         box-sizing: border-box;
-        margin-top: 1em;
       }
-      .daily-forecast-vert {
+      .daily-forecast-vert-section {
         display: flex;
         flex-flow: column nowrap;
         margin: 0 auto;
         clear: both;
       }
-      .daily-forecast-vert .day-vert:nth-last-child(1) {
-        border-bottom: none;
-        margin-bottom: 0;
-      }
       .day-vert {
         flex: 1;
         color: var(--primary-text-color);
-        border-bottom: .1em solid #d9d9d9;
+        border-top: .1em solid #d9d9d9;
         line-height: 1.5;
         box-sizing: border-box;
-        margin-top: 1em;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 8px;
       }
-      .day-vert-left {
-        text-align: center;
+      .day-vert-top {
         float: left;
       }
-      .day-vert-middle {
+      .day-vert-dayicon {
+        text-align: left;
+        float: left;
+        margin-bottom: -8px;
+      }
+      .day-vert-values {
         text-align: left;
         float: left;
         padding-left: 1em;
+        margin-top: 1.5em;
       }
-      .day-vert-right {
+      .day-vert-bottom {
         text-align: left;
         float: left;
-        padding-left: 1em;
       }
       .dayname {
         text-transform: uppercase;
@@ -1868,6 +1893,15 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
         display: inline-table;
         height: 24px;
         font-weight: 300;
+      }
+      .f-extended {
+        display: inline-table;
+        font-size: 13px;
+        font-weight: 300;
+        padding-top: 8px;
+      }
+      .extended-section .f-extended {
+        padding-top: 0;
       }
       .highTemp {
         display: table-cell;
@@ -1949,6 +1983,9 @@ ${this.hass.states[this.config.entity_temp_following].state}` : $ ``;
       .fcasttooltip:hover .fcasttooltiptext {
         visibility: ${o$6(tooltipVisible)};
       }
+      /* .section:hover {
+        border: 1px solid red;
+      } */
     `;
     }
 };
@@ -10438,6 +10475,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_separator) === true; // default off
     }
+    get _entity_daily_summary() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_daily_summary) || '';
+    }
     get _slot_l1() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_l1) || '';
@@ -10602,6 +10643,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.daily_forecast_days) || null;
     }
+    get _daily_extended_forecast_days() {
+        var _a, _b;
+        return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.daily_extended_forecast_days) !== null && _b !== void 0 ? _b : null;
+    }
     get _entity_forecast_icon_1() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_forecast_icon_1) || '';
@@ -10625,6 +10670,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
     get _entity_pos_1() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_pos_1) || '';
+    }
+    get _entity_extended_1() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_extended_1) || '';
     }
     get _optional_entities() {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -11000,6 +11049,14 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       </div>
     `;
     }
+    _sectionExtendedEditor() {
+        return $ `
+      <ha-entity-picker .hass=${this.hass} .configValue=${'entity_daily_summary'} .value=${this._entity_daily_summary}
+        name="entity_daily_summary" label="Entity Daily Summary (required)" allow-custom-entity
+        @value-changed=${this._valueChangedPicker}>
+      </ha-entity-picker>
+    `;
+    }
     _sectionSlotsEditor() {
         const slotValues = $ `<mwc-list-item></mwc-list-item>
 <mwc-list-item value="daytime_high">daytime_high</mwc-list-item>
@@ -11124,6 +11181,9 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
           <mwc-list-item value="horizontal">horizontal</mwc-list-item>
           <mwc-list-item value="vertical">vertical</mwc-list-item>
         </ha-select>
+        <div></div>
+      </div>
+      <div class="side-by-side">
         <ha-select label="Daily Forecast Days (optional)" .configValue=${'daily_forecast_days'}
           .value=${this._daily_forecast_days ? this._daily_forecast_days.toString() : null} @closed=${(ev) => ev.stopPropagation()}
           @selected=${this._valueChangedNumber}
@@ -11138,6 +11198,22 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
           ${this._daily_forecast_layout === 'vertical' ? $ `<mwc-list-item value="6">6</mwc-list-item>
           <mwc-list-item value="7">7</mwc-list-item>` : $ ``}
         </ha-select>
+        ${this._daily_forecast_layout === 'vertical' ? $ `<ha-select label="Daily Extended Days (optional)"
+          .configValue=${'daily_extended_forecast_days'} .value=${this._daily_extended_forecast_days !== null ?
+            this._daily_extended_forecast_days.toString() : null} @closed=${(ev) => ev.stopPropagation()}
+          @selected=${this._valueChangedNumber}
+          fixedMenuPosition
+          naturalMenuWidth>
+          <mwc-list-item></mwc-list-item>
+          <mwc-list-item value="0">0</mwc-list-item>
+          <mwc-list-item value="1">1</mwc-list-item>
+          <mwc-list-item value="2">2</mwc-list-item>
+          <mwc-list-item value="3">3</mwc-list-item>
+          <mwc-list-item value="4">4</mwc-list-item>
+          <mwc-list-item value="5">5</mwc-list-item>
+          <mwc-list-item value="6">6</mwc-list-item>
+          <mwc-list-item value="7">7</mwc-list-item>
+        </ha-select>` : $ `<div></div>`}
       </div>
       <ha-entity-picker .hass=${this.hass} .configValue=${'entity_forecast_icon_1'} .value=${this._entity_forecast_icon_1}
         name="entity_forecast_icon_1" label="Entity Forecast Icon 1 (optional)" allow-custom-entity
@@ -11161,6 +11237,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       <ha-entity-picker .hass=${this.hass} .configValue=${'entity_pos_1'} .value=${this._entity_pos_1} name="entity_pos_1"
         label="Entity Forecast Possible 1 (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
       </ha-entity-picker>
+      ${this._daily_forecast_layout === 'vertical' ? $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_extended_1'} .value=${this._entity_extended_1}
+        name="entity_extended_1" label="Entity Forecast Extended 1 (optional)" allow-custom-entity
+        @value-changed=${this._valueChangedPicker}>
+      </ha-entity-picker>` : ``}
     `;
     }
     _sectionMiscellaneousEditor() {
@@ -11188,6 +11268,9 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
             case 'section_main':
                 subel.push(this._sectionMainEditor());
                 break;
+            case 'section_extended':
+                subel.push(this._sectionExtendedEditor());
+                break;
             case 'section_slots':
                 subel.push(this._sectionSlotsEditor());
                 break;
@@ -11211,6 +11294,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_main) !== false; //default on
     }
+    get _show_section_extended() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_extended) !== false; //default on
+    }
     get _show_section_slots() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_slots) !== false; //default on
@@ -11226,7 +11313,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         if (this._subElementEditor)
             return this._renderSubElementEditor();
         return $ `
-      <div class="side-by-side">
+      <div class="side-by-side edit-title-section">
         <mwc-formfield .label=${`Title Section - ${this._show_section_title ? 'Visible' : 'Hidden'}`}>
           <mwc-switch .checked=${this._show_section_title !== false} .configValue=${'show_section_title'}
             @change=${this._valueChanged}>
@@ -11237,7 +11324,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
           </ha-icon-button>
         </div>
       </div>
-      <div class="side-by-side">
+      <div class="side-by-side edit-main-section">
         <mwc-formfield .label=${`Main Section - ${this._show_section_main ? 'Visible' : 'Hidden'}`}>
           <mwc-switch .checked=${this._show_section_main !== false} .configValue=${'show_section_main'}
             @change=${this._valueChanged}>
@@ -11248,7 +11335,18 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
           </ha-icon-button>
         </div>
       </div>
-      <div class="side-by-side">
+      <div class="side-by-side edit-extended-section">
+        <mwc-formfield .label=${`Extended Section - ${this._show_section_extended ? 'Visible' : 'Hidden'}`}>
+          <mwc-switch .checked=${this._show_section_extended !== false} .configValue=${'show_section_extended'}
+            @change=${this._valueChanged}>
+          </mwc-switch>
+        </mwc-formfield>
+        <div>
+          <ha-icon-button class="edit-icon" .value=${'section_extended'} .path=${mdiPencil} @click="${this._editSection}">
+          </ha-icon-button>
+        </div>
+      </div>
+      <div class="side-by-side edit-slots-section">
         <mwc-formfield .label=${`Slots Section - ${this._show_section_slots ? 'Visible' : 'Hidden'}`}>
           <mwc-switch .checked=${this._show_section_slots !== false} .configValue=${'show_section_slots'}
             @change=${this._valueChanged}>
@@ -11259,7 +11357,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
           </ha-icon-button>
         </div>
       </div>
-      <div class="side-by-side">
+      <div class="side-by-side edit-daily-forecast-section">
         <mwc-formfield .label=${`Daily Forecast Section - ${this._show_section_daily_forecast ? 'Visible' : 'Hidden'}`}>
           <mwc-switch .checked=${this._show_section_daily_forecast !== false} .configValue=${'show_section_daily_forecast'}
             @change=${this._valueChanged}>
