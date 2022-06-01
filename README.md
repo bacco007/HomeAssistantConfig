@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, June 1st 2022_
+_Stats as at 05:00, Thursday, June 2nd 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 433     | 2940         | 2002 | 95 |
+| unknown | 431     | 2919         | 2001 | 95 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 2002
+Sensor | 2001
 Sun | 1
 Switch | 165
 Weather | 9
@@ -162,7 +162,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.zha](https://www.home-assistant.io/components/binary_sensor.zha) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
-| [breaking_changes](https://www.home-assistant.io/components/breaking_changes) |
 | [broadlink](https://www.home-assistant.io/components/broadlink) |
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
@@ -367,7 +366,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.authenticated](https://www.home-assistant.io/components/sensor.authenticated) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
-| [sensor.breaking_changes](https://www.home-assistant.io/components/sensor.breaking_changes) |
 | [sensor.broadlink](https://www.home-assistant.io/components/sensor.broadlink) |
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
@@ -558,7 +556,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Authenticated](https://github.com/custom-components/authenticated)
 - [Average Sensor](https://github.com/Limych/ha-average)
 - [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
-- [Breaking Changes](https://github.com/custom-components/breaking_changes)
 - [Bureau of Meteorology](https://github.com/bremor/bureau_of_meteorology)
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
 - [Dwains Dashboard](https://dwainscheeren.github.io/dwains-lovelace-dashboard/)
