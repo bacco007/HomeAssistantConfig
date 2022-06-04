@@ -10,7 +10,7 @@ from homeassistant.components.climate import (
 )
 from homeassistant.components.climate import DOMAIN as CLIMATE
 from homeassistant.components.group import expand_entity_ids
-from homeassistant.components.history import LazyState
+from homeassistant.components.recorder.models import LazyState
 from homeassistant.components.weather import (
     ATTR_WEATHER_HUMIDITY,
     ATTR_WEATHER_TEMPERATURE,
