@@ -1,0 +1,2 @@
+---
+mqtt: !include_dir_list ../entities/mqtt

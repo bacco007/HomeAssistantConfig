@@ -1,0 +1,22 @@
+---
+sensor:
+  - unique_id: helper_dayofweek
+    icon: mdi:calendar-arrow-right
+    value: >
+      {{ ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] }}
+    attributes:
+      friendly_name: Day of Week
+
+  - unique_id: helper_daymonth
+    icon: mdi:calendar
+    value: >
+      {{ ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th','30th','31st' ][ now().day-1] }}
+    attributes:
+      friendly_name: Day of Month
+
+  - unique_id: helper_monthname
+    icon: mdi:calendar
+    value: >
+      {{ ['January','February','March','April','May','June','July','August','September','October','November','December'][now().month-1] }}
+    attributes:
+      friendly_name: Month Name

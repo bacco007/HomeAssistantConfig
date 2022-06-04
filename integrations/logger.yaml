@@ -1,9 +1,21 @@
 ---
 # https://www.home-assistant.io/integrations/logger/
+# Log Severities: notset, debug, info, warn, warning, error, fatal, critical
 logger:
-  default: warn
-  # logs:
-  # custom_components.opennem: debug
+  default: error
+  logs:
+    #root: debug
+    homeassistant: fatal
+    homeassistant.core: info
+    homeassistant.config: debug
+    homeassistant.helpers.entity: error
+    homeassistant.helpers.script: debug
+    homeassistant.loader: error
+
+    slixmpp.basexmpp: error
+    slixmpp.stringprep: fatal
+    aioharmony.harmonyclient: fatal
+
   filters:
     homeassistant:
       - "Error doing job: Task exception was never retrieved"
