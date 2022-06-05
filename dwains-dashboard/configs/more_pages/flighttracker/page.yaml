@@ -95,6 +95,14 @@
                 - entity: binary_sensor.adsb_fr24_mlat_connected
                   type: custom:multiple-entity-row
 
+        - type: vertical-stack
+          cards:
+            - type: custom:fr24-card
+              entity: sensor.adsb_aircraft_tracked
+              zone: zone.home
+              units: metric
+              larger_units: true
+
     - type: vertical-stack
       item_classes: "col-xs-12 col-sm-8"
       cards:

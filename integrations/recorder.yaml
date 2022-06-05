@@ -29,6 +29,7 @@ recorder:
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
       - sensor.bomforecast_tamworth_hr
+      - sensor.adsb_aircraft_tracked
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*

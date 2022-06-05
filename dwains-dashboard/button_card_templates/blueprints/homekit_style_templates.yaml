@@ -104,7 +104,7 @@ base_info:
   - base
   - circle
   triggers_update: sensor.time
-base_media:
+base_media: 
   hold_action:
     action: more-info
   styles:
