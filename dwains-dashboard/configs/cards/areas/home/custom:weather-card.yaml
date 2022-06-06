@@ -25,7 +25,7 @@ entity_wind_bearing: sensor.tamworth_airport_wind_direction
 entity_wind_gust: sensor.tamworth_airport_gust_speed_kilometre
 entity_wind_speed: sensor.tamworth_airport_wind_speed_kilometre
 extended_use_attr: false
-position: top
+position: bottom
 row_span: '1'
 row_span_lg: '1'
 row_span_xl: '1'
