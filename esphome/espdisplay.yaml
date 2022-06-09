@@ -135,7 +135,7 @@ binary_sensor:
             - logger.log: "Automatic deep sleep disabled"
             - deep_sleep.prevent: deep_sleep_1
 
-text_sensor:
+≈
   - platform: homeassistant
     id: current_page_select
     entity_id: input_select.epaper_page
