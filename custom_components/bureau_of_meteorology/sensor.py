@@ -1,8 +1,11 @@
 """Platform for sensor integration."""
 import logging
+from datetime import datetime, tzinfo
+from pytz import timezone
+import pytz
 
 from homeassistant.const import (
-    ATTR_ATTRIBUTION, ATTR_DATE,
+    ATTR_ATTRIBUTION, ATTR_DATE, ATTR_STATE,
 )
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
@@ -144,12 +147,15 @@ class ForecastSensor(SensorBase):
     @property
     def extra_state_attributes(self):
         """Return the state attributes of the sensor."""
-        attr = self.collector.daily_forecasts_data["metadata"]
-        attr[ATTR_ATTRIBUTION] = ATTRIBUTION
+        attr = []
 
         # If there is no data for this day, do not add attributes for this day.
         if self.day < len(self.collector.daily_forecasts_data["data"]):
+            attr = self.collector.daily_forecasts_data["metadata"]
+            attr[ATTR_ATTRIBUTION] = ATTRIBUTION
             attr[ATTR_DATE] = self.collector.daily_forecasts_data["data"][self.day]["date"]
+            if self.sensor_name.startswith('extended'):
+                attr[ATTR_STATE] = self.collector.daily_forecasts_data["data"][self.day]["extended_text"]
 
         return attr
 
@@ -158,12 +164,29 @@ class ForecastSensor(SensorBase):
         """Return the state of the sensor."""
         # If there is no data for this day, return state as 'None'.
         if self.day < len(self.collector.daily_forecasts_data["data"]):
-
+            if (self.sensor_name == 'uv_forecast'):
+                if (self.collector.daily_forecasts_data["data"][self.day]["uv_category"] is None):
+                    return None
+                if (self.collector.daily_forecasts_data["data"][self.day]["uv_start_time"] is None):
+                    return f'Sun protection not recommended, UV Index predicted to reach ' \
+                        f'{self.collector.daily_forecasts_data["data"][self.day]["uv_max_index"]} ' \
+                        f'[{self.collector.daily_forecasts_data["data"][self.day]["uv_category"].replace("veryhigh", "very high").title()}]'
+                else:
+                    utc = pytz.utc
+                    local = timezone(self.collector.locations_data["data"]["timezone"])
+                    start_time = utc.localize(datetime.strptime(self.collector.daily_forecasts_data["data"][self.day]["uv_start_time"], '%Y-%m-%dT%H:%M:%SZ')).astimezone(local)
+                    end_time = utc.localize(datetime.strptime(self.collector.daily_forecasts_data["data"][self.day]["uv_end_time"], '%Y-%m-%dT%H:%M:%SZ')).astimezone(local)
+                    return f'Sun protection recommended from {start_time.strftime("%-I:%M%p").lower()} to ' \
+                        f'{end_time.strftime("%-I:%M%p").lower()}, UV Index predicted to reach ' \
+                        f'{self.collector.daily_forecasts_data["data"][self.day]["uv_max_index"]} ' \
+                        f'[{self.collector.daily_forecasts_data["data"][self.day]["uv_category"].replace("veryhigh", "very high").title()}]'
             new_state = self.collector.daily_forecasts_data["data"][self.day][self.sensor_name]
             if type(new_state) == str and len(new_state) > 251:
                     self.current_state = new_state[:251] + '...'
             else:
                 self.current_state = new_state
+            if (self.sensor_name == 'uv_category') and (self.current_state != None):
+                self.current_state = self.current_state.replace("veryhigh", "very high").title()
 
             return self.current_state
 
