@@ -11,7 +11,7 @@ from homeassistant.const import CONF_NAME, CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_RESOURCE_ID, CONF_SSL_DISABLE, DOMAIN, CONF_AUTO_FETCH, CONF_CHANGE_TZ_OFFSET
+from .const import DOMAIN #,CONF_RESOURCE_ID
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -33,14 +33,11 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         """Handle a flow initiated by the user."""
         if user_input is not None:
             return self.async_create_entry(
-                title=user_input[CONF_NAME],
+                title= "Solcast Solar", #user_input[CONF_NAME],
                 data = {},
                 options={
                     CONF_API_KEY: user_input[CONF_API_KEY],
-                    CONF_RESOURCE_ID: user_input[CONF_RESOURCE_ID],
-                    CONF_AUTO_FETCH: user_input[CONF_AUTO_FETCH],
-                    CONF_SSL_DISABLE: user_input[CONF_SSL_DISABLE],
-                    CONF_CHANGE_TZ_OFFSET: user_input[CONF_CHANGE_TZ_OFFSET],
+                    #CONF_RESOURCE_ID: user_input[CONF_RESOURCE_ID],
                 },
             )
 
@@ -48,14 +45,11 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required(
-                        CONF_NAME, default=self.hass.config.location_name
-                    ): str,
+                    #vol.Required(
+                    #    CONF_NAME, default=self.hass.config.location_name
+                    #): str,
                     vol.Required(CONF_API_KEY, default=""): str,
-                    vol.Required(CONF_RESOURCE_ID, default=""): str,
-                    vol.Optional(CONF_AUTO_FETCH, default=True): boolean,
-                    vol.Optional(CONF_SSL_DISABLE, default=False): boolean,
-                    vol.Optional(CONF_CHANGE_TZ_OFFSET, default="0"): str,
+                    #vol.Required(CONF_RESOURCE_ID, default=""): str,
                 }
             ),
         )
@@ -73,7 +67,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
     ) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
+            return self.async_create_entry(title="Solcast Solar", data=user_input)
 
         return self.async_show_form(
             step_id="init",
@@ -83,22 +77,10 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         CONF_API_KEY,
                         default=self.config_entry.options.get(CONF_API_KEY),
                     ): str,
-                    vol.Required(
-                        CONF_RESOURCE_ID,
-                        default=self.config_entry.options.get(CONF_RESOURCE_ID),
-                    ): str,
-                    vol.Required(
-                        CONF_AUTO_FETCH,
-                        default=self.config_entry.options.get(CONF_AUTO_FETCH),
-                    ): boolean,
-                    vol.Required(
-                        CONF_SSL_DISABLE,
-                        default=self.config_entry.options.get(CONF_SSL_DISABLE),
-                    ): boolean,
-                    vol.Required(
-                        CONF_CHANGE_TZ_OFFSET,
-                        default=self.config_entry.options.get(CONF_CHANGE_TZ_OFFSET),
-                    ): str,
+                    #vol.Required(
+                    #    CONF_RESOURCE_ID,
+                    #    default=self.config_entry.options.get(CONF_RESOURCE_ID),
+                    #): str,
                 }
             ),
         )
