@@ -226,7 +226,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         console.info(`getCardSize`);
         var cardHeight = 16;
         cardHeight += this._config.show_section_title === true ? 56 : 0;
-        cardHeight += this._config.show_section_main !== false ? 162 : 0;
+        cardHeight += this._config.overview !== false ? 162 : 0;
         cardHeight += this._config.show_section_extended !== false ? 58 : 0;
         const cardSize = Math.ceil(cardHeight / 50);
         console.info(`CardHeight=${cardHeight} CardSize=${cardSize}`);
@@ -323,11 +323,16 @@ let WeatherCard = class WeatherCard extends s$1 {
         var updateTime;
         if ((this._config.entity_update_time) && (this.hass.states[this._config.entity_update_time]) && (this.hass.states[this._config.entity_update_time].state !== undefined)) {
             const d = new Date(this.hass.states[this._config.entity_update_time].state);
-            if (this.is12Hour) {
-                updateTime = d.toLocaleString(this._config.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" ", "") + ", " + d.toLocaleDateString(this._config.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
-            }
-            else {
-                updateTime = d.toLocaleString(this._config.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) + d.toLocaleDateString(this._config.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
+            switch (this.timeFormat) {
+                case '12hour':
+                    updateTime = d.toLocaleString(this.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" ", "") + ", " + d.toLocaleDateString(this.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
+                    break;
+                case '24hour':
+                    updateTime = d.toLocaleString(this.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) + ", " + d.toLocaleDateString(this.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(",", "");
+                    break;
+                case 'system':
+                    updateTime = d.toLocaleTimeString(navigator.language, { timeStyle: 'short' }).replace(" ", "") + ", " + d.toLocaleDateString(navigator.language).replace(",", "");
+                    break;
             }
         }
         else {
@@ -341,12 +346,12 @@ let WeatherCard = class WeatherCard extends s$1 {
       </div>
     `;
     }
-    _renderMainSection() {
+    _renderOverviewSection() {
         var _a, _b;
-        if (((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_main) === false)
+        if (((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_overview) === false)
             return $ ``;
         const weatherIcon = this._weatherIcon(this.currentConditions);
-        const url = new URL('icons/' + (this._config.static_icons ? 'static' : 'animated') + '/' + weatherIcon + '.svg', import.meta.url);
+        const url = new URL('icons/' + (this._config.option_static_icons ? 'static' : 'animated') + '/' + weatherIcon + '.svg', import.meta.url);
         const hoverText = weatherIcon !== 'unknown' ? '' : `Unknown condition\n${this.currentConditions}`;
         const biggerIcon = $ `<div class="big-icon"><img src="${url.href}" width="100%" height="100%" title="${hoverText}"></div>`;
         const currentTemp = $ `
@@ -366,8 +371,8 @@ let WeatherCard = class WeatherCard extends s$1 {
         const separator = this._config.show_separator === true ? $ `<hr class=line>` : ``;
         const currentText = (this._config.entity_current_text) && (this.hass.states[this._config.entity_current_text]) ? (_b = this.hass.states[this._config.entity_current_text].state) !== null && _b !== void 0 ? _b : '---' : '---';
         return $ `
-      <div class="main-section section">
-        <div class="main-top">
+      <div class="overview-section section">
+        <div class="overview-top">
           <div class="top-left">${biggerIcon}</div>
           <div class="currentTemps">${currentTemp}${apparentTemp}</div>
         </div>
@@ -453,7 +458,7 @@ let WeatherCard = class WeatherCard extends s$1 {
                 forecastDate.setDate(forecastDate.getDate() + i + 1);
                 var start = this._config['entity_forecast_icon_1'] ? this._config['entity_forecast_icon_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const iconEntity = this._config['entity_forecast_icon_1'] ? this._config['entity_forecast_icon_1'].replace(/(\d+)(?!.*\d)/g, String(Number(start) + i)) : undefined;
-                const url = new URL(('icons/' + (this._config.static_icons ? 'static' : 'animated') + '/' + (iconEntity && this.hass.states[iconEntity] ? this._weatherIcon(this.hass.states[iconEntity].state) : 'unknown') + '.svg').replace("-night", "-day"), import.meta.url);
+                const url = new URL(('icons/' + (this._config.option_static_icons ? 'static' : 'animated') + '/' + (iconEntity && this.hass.states[iconEntity] ? this._weatherIcon(this.hass.states[iconEntity].state) : 'unknown') + '.svg').replace("-night", "-day"), import.meta.url);
                 const htmlIcon = $ `<i class="icon" style="background: none, url(${url.href}) no-repeat; background-size: contain;"></i><br>`;
                 start = this._config['entity_forecast_high_temp_1'] ? this._config['entity_forecast_high_temp_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const maxEntity = start && this._config['entity_forecast_high_temp_1'] ? this._config['entity_forecast_high_temp_1'].replace(/(\d+)(?!.*\d)/g, String(Number(start) + i)) : undefined;
@@ -508,7 +513,7 @@ let WeatherCard = class WeatherCard extends s$1 {
                     this.hass.states[tooltipEntity] ? this.hass.states[tooltipEntity].state : "Config Error" : ""}</div>`;
                 htmlDays.push($ `
           <div class="day-horiz fcasttooltip">
-            <span class="dayname">${forecastDate ? forecastDate.toLocaleDateString(this._config.locale, { weekday: 'short' }) :
+            <span class="dayname">${forecastDate ? forecastDate.toLocaleDateString(this.locale, { weekday: 'short' }) :
                     "---"}</span>
             <br>${htmlIcon}
             ${minMax}
@@ -533,7 +538,7 @@ let WeatherCard = class WeatherCard extends s$1 {
                 if (!iconEntity || this.hass.states[iconEntity] === undefined || this.hass.states[iconEntity].state === 'unknown') { // Stop adding forecast days as soon as an undefined entity is encountered
                     break;
                 }
-                const url = new URL(('icons/' + (this._config.static_icons ? 'static' : 'animated') + '/' + (this.hass.states[iconEntity] !== undefined ? this._weatherIcon(this.hass.states[iconEntity].state) : 'unknown') + '.svg').replace("-night", "-day"), import.meta.url);
+                const url = new URL(('icons/' + (this._config.option_static_icons ? 'static' : 'animated') + '/' + (this.hass.states[iconEntity] !== undefined ? this._weatherIcon(this.hass.states[iconEntity].state) : 'unknown') + '.svg').replace("-night", "-day"), import.meta.url);
                 const htmlIcon = $ `<i class="icon" style="background: none, url(${url.href}) no-repeat; background-size: contain;"></i><br>`;
                 start = this._config['entity_forecast_high_temp_1'] ? this._config['entity_forecast_high_temp_1'].match(/(\d+)(?!.*\d)/g) : false;
                 const maxEntity = start && this._config['entity_forecast_high_temp_1'] ? this._config['entity_forecast_high_temp_1'].replace(/(\d+)(?!.*\d)/g, String(Number(start) + i)) : undefined;
@@ -593,7 +598,7 @@ let WeatherCard = class WeatherCard extends s$1 {
           <div class="day-vert fcasttooltip">
             <div class="day-vert-top">
               <div class="day-vert-dayicon">
-                <span class="dayname">${forecastDate ? forecastDate.toLocaleDateString(this._config.locale, { weekday: 'short' }) : "---"}</span>
+                <span class="dayname">${forecastDate ? forecastDate.toLocaleDateString(this.locale, { weekday: 'short' }) : "---"}</span>
                 <br>${htmlIcon}
               </div>
               <div class="day-vert-values">
@@ -631,8 +636,8 @@ let WeatherCard = class WeatherCard extends s$1 {
                 case 'title':
                     sections.push(this._renderTitleSection());
                     break;
-                case 'main':
-                    sections.push(this._renderMainSection());
+                case 'overview':
+                    sections.push(this._renderOverviewSection());
                     break;
                 case 'extended':
                     sections.push(this._renderExtendedSection());
@@ -717,6 +722,8 @@ let WeatherCard = class WeatherCard extends s$1 {
             case 'sun_following': return this.slotSunFollowing;
             case 'custom1': return this.slotCustom1;
             case 'custom2': return this.slotCustom2;
+            case 'custom3': return this.slotCustom3;
+            case 'custom4': return this.slotCustom4;
             case 'empty': return this.slotEmpty;
             case 'remove': return this.slotRemove;
         }
@@ -825,8 +832,7 @@ let WeatherCard = class WeatherCard extends s$1 {
     }
     get slotPressure() {
         const pressure = this.currentPressure;
-        const units = pressure !== "---" ? $ `<div class="slot-text unit">${this._config.pressure_units ? this._config.pressure_units : this.getUOM('air_pressure')}
-</div>` : $ ``;
+        const units = pressure !== "---" ? $ `<div class="slot-text unit">${this._config.pressure_units ? this._config.pressure_units : this.getUOM('air_pressure')}</div>` : $ ``;
         return $ `
       <li>
         <div class="slot">
@@ -839,8 +845,8 @@ let WeatherCard = class WeatherCard extends s$1 {
     `;
     }
     get slotDaytimeHigh() {
-        const digits = this._config.show_decimals_today === true ? 1 : 0;
-        const temp = this._config.entity_daytime_high ? (Number(this.hass.states[this._config.entity_daytime_high].state)).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
+        const temp = this._config.entity_daytime_high ? (Number(this.hass.states[this._config.entity_daytime_high].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
         const units = temp !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
         return $ `
       <li>
@@ -855,8 +861,8 @@ let WeatherCard = class WeatherCard extends s$1 {
     `;
     }
     get slotDaytimeLow() {
-        const digits = this._config.show_decimals_today === true ? 1 : 0;
-        const temp = this._config.entity_daytime_low ? (Number(this.hass.states[this._config.entity_daytime_low].state)).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
+        const temp = this._config.entity_daytime_low ? (Number(this.hass.states[this._config.entity_daytime_low].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
         const units = temp !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
         return $ `
       <li>
@@ -871,8 +877,9 @@ let WeatherCard = class WeatherCard extends s$1 {
     `;
     }
     get slotTempNext() {
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
         const icon = this._config.entity_temp_next_label ? this.hass.states[this._config.entity_temp_next_label].state.includes("Min") ? "mdi:thermometer-low" : "mdi:thermometer-high" : "mdi:help-box";
-        const temp = this._config.entity_temp_next ? this.hass.states[this._config.entity_temp_next].state : "---";
+        const temp = this._config.entity_temp_next ? (Number(this.hass.states[this._config.entity_temp_next].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
         const label = this._config.entity_temp_next_label ? this.hass.states[this._config.entity_temp_next_label].state : "";
         const units = temp !== "---" ? $ `<div class="slot-text unitc">${this.getUOM('temperature')}</div>` : $ ``;
         return $ `
@@ -888,8 +895,9 @@ let WeatherCard = class WeatherCard extends s$1 {
     `;
     }
     get slotTempFollowing() {
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
         const icon = this._config.entity_temp_following_label ? this.hass.states[this._config.entity_temp_following_label].state.includes("Min") ? "mdi:thermometer-low" : "mdi:thermometer-high" : "mdi:help-box";
-        const temp = this._config.entity_temp_following ? this.hass.states[this._config.entity_temp_following].state : "---";
+        const temp = this._config.entity_temp_following ? (Number(this.hass.states[this._config.entity_temp_following].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
         const label = this._config.entity_temp_following_label ? this.hass.states[this._config.entity_temp_following_label].state : "";
         const units = temp !== "---" ? $ `<div class="slot-text unitc">${this.getUOM('temperature')}</div>` : $ ``;
         return $ `
@@ -1009,6 +1017,32 @@ let WeatherCard = class WeatherCard extends s$1 {
       </li>
     `;
     }
+    get slotCustom3() {
+        var icon = this._config.custom3_icon ? this._config.custom3_icon : 'mdi:help-box';
+        var value = this._config.custom3_value ? this.hass.states[this._config.custom3_value].state : 'unknown';
+        var unit = this._config.custom3_units ? this._config.custom3_units : '';
+        return $ `
+      <li>
+        <div class="slot-icon">
+          <ha-icon icon=${icon}></ha-icon>
+        </div>
+        <div class="slot-text custom-3-text">${value}</div><div class="slot-text unit">${unit}</div>
+      </li>
+    `;
+    }
+    get slotCustom4() {
+        var icon = this._config.custom4_icon ? this._config.custom4_icon : 'mdi:help-box';
+        var value = this._config.custom4_value ? this.hass.states[this._config.custom4_value].state : 'unknown';
+        var unit = this._config.custom4_units ? this._config.custom4_units : '';
+        return $ `
+      <li>
+        <div class="slot-icon">
+          <ha-icon icon=${icon}></ha-icon>
+        </div>
+        <div class="slot-text custom-4-text">${value}</div><div class="slot-text unit">${unit}</div>
+      </li>
+    `;
+    }
     // getters that return the value to be shown
     get currentConditions() {
         const entity = this._config.entity_current_conditions;
@@ -1021,7 +1055,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         return entity && this.hass.states[entity]
             ? this._config.show_decimals !== true
                 ? String(Math.round(Number(this.hass.states[entity].state)))
-                : this.hass.states[entity].state
+                : Number(this.hass.states[entity].state).toLocaleString(this.locale)
             : '---';
     }
     get currentApparentTemperature() {
@@ -1029,29 +1063,29 @@ let WeatherCard = class WeatherCard extends s$1 {
         return entity && this.hass.states[entity]
             ? this._config.show_decimals !== true
                 ? String(Math.round(Number(this.hass.states[entity].state)))
-                : this.hass.states[entity].state
+                : Number(this.hass.states[entity].state).toLocaleString(this.locale)
             : '---';
     }
     get currentHumidity() {
         const entity = this._config.entity_humidity;
         return entity && this.hass.states[entity]
-            ? (Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? (Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     get currentRainfall() {
         const entity = this._config.entity_rainfall;
         return entity && this.hass.states[entity]
-            ? (Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? (Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     get currentPressure() {
         const entity = this._config.entity_pressure;
-        var places = this._config.show_decimals_pressure ? Math.max(Math.min(this._config.show_decimals_pressure, 3), 0) : 0;
+        var places = this._config.option_pressure_decimals ? Math.max(Math.min(this._config.option_pressure_decimals, 3), 0) : 0;
         return entity && this.hass.states[entity]
-            ? (Number(this.hass.states[entity].state)).toLocaleString(undefined, { minimumFractionDigits: places, maximumFractionDigits: places }) : '---';
+            ? (Number(this.hass.states[entity].state)).toLocaleString(this.locale, { minimumFractionDigits: places, maximumFractionDigits: places }) : '---';
     }
     get currentVisibility() {
         const entity = this._config.entity_visibility;
         return entity && this.hass.states[entity]
-            ? (Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? (Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     get currentWindBearing() {
         const entity = this._config.entity_wind_bearing;
@@ -1061,22 +1095,22 @@ let WeatherCard = class WeatherCard extends s$1 {
     get currentWindSpeed() {
         const entity = this._config.entity_wind_speed;
         return entity && this.hass.states[entity]
-            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     get currentWindGust() {
         const entity = this._config.entity_wind_gust;
         return entity && this.hass.states[entity]
-            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     get currentWindSpeedKt() {
         const entity = this._config.entity_wind_speed_kt;
         return entity && this.hass.states[entity]
-            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     get currentWindGustKt() {
         const entity = this._config.entity_wind_gust_kt;
         return entity && this.hass.states[entity]
-            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString() : '---';
+            ? Math.round(Number(this.hass.states[entity].state)).toLocaleString(this.locale) : '---';
     }
     // windDirections - returns set of possible wind directions by specified language
     get windDirections() {
@@ -1087,7 +1121,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         const windDirections_he = ['צפון', 'צ-צ-מז', 'צפון מזרח', 'מז-צ-מז', 'מזרח', 'מז-ד-מז', 'דרום מזרח', 'ד-ד-מז', 'דרום', 'ד-ד-מע', 'דרום מערב', 'מע-ד-מע', 'מערב', 'מע-צ-מע', 'צפון מערב', 'צ-צ-מע', 'צפון'];
         const windDirections_da = ['N', 'NNØ', 'NØ', 'ØNØ', 'Ø', 'ØSØ', 'SØ', 'SSØ', 'S', 'SSV', 'SV', 'VSV', 'V', 'VNV', 'NV', 'NNV', 'N'];
         const windDirections_ru = ['С', 'ССВ', 'СВ', 'ВСВ', 'В', 'ВЮВ', 'ЮВ', 'ЮЮВ', 'Ю', 'ЮЮЗ', 'ЮЗ', 'ЗЮЗ', 'З', 'ЗСЗ', 'СЗ', 'ССЗ', 'С'];
-        switch (this._config.locale) {
+        switch (this.locale) {
             case "it":
             case "fr":
                 return windDirections_fr;
@@ -1232,19 +1266,25 @@ let WeatherCard = class WeatherCard extends s$1 {
     get sunSet() {
         var nextSunSet;
         var nextSunRise;
-        if (this.is12Hour) {
-            nextSunSet = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_setting).toLocaleTimeString(this._config.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" am", "am").replace(" pm", "pm") : "";
-            nextSunRise = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_rising).toLocaleTimeString(this._config.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" am", "am").replace(" pm", "pm") : "";
-        }
-        else {
-            nextSunSet = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_setting).toLocaleTimeString(this._config.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) : "";
-            nextSunRise = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_rising).toLocaleTimeString(this._config.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) : "";
+        switch (this.timeFormat) {
+            case '12hour':
+                nextSunSet = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_setting).toLocaleTimeString(this.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" am", "am").replace(" pm", "pm") : "";
+                nextSunRise = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_rising).toLocaleTimeString(this.locale, { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" am", "am").replace(" pm", "pm") : "";
+                break;
+            case '24hour':
+                nextSunSet = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_setting).toLocaleTimeString(this.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) : "";
+                nextSunRise = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_rising).toLocaleTimeString(this.locale, { hour: '2-digit', minute: '2-digit', hour12: false }) : "";
+                break;
+            case 'system':
+                nextSunSet = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_setting).toLocaleTimeString(navigator.language, { timeStyle: 'short' }).replace(" am", "am").replace(" pm", "pm") : "";
+                nextSunRise = this._config.entity_sun ? new Date(this.hass.states[this._config.entity_sun].attributes.next_rising).toLocaleTimeString(navigator.language, { timeStyle: 'short' }).replace(" am", "am").replace(" pm", "pm") : "";
+                break;
         }
         var nextDate = new Date();
         nextDate.setDate(nextDate.getDate() + 1);
         if (this._config.entity_sun) {
             if (this.hass.states[this._config.entity_sun].state == "above_horizon") {
-                nextSunRise = nextDate.toLocaleDateString(this._config.locale, { weekday: 'short' }) + " " + nextSunRise;
+                nextSunRise = nextDate.toLocaleDateString(this.locale, { weekday: 'short' }) + " " + nextSunRise;
                 return {
                     'next': $ `
             <li>
@@ -1268,8 +1308,8 @@ let WeatherCard = class WeatherCard extends s$1 {
             }
             else {
                 if (new Date().getDate() != new Date(this.hass.states[this._config.entity_sun].attributes.next_rising).getDate()) {
-                    nextSunRise = nextDate.toLocaleDateString(this._config.locale, { weekday: 'short' }) + " " + nextSunRise;
-                    nextSunSet = nextDate.toLocaleDateString(this._config.locale, { weekday: 'short' }) + " " + nextSunSet;
+                    nextSunRise = nextDate.toLocaleDateString(this.locale, { weekday: 'short' }) + " " + nextSunRise;
+                    nextSunSet = nextDate.toLocaleDateString(this.locale, { weekday: 'short' }) + " " + nextSunSet;
                 }
                 return {
                     'next': $ `
@@ -1305,14 +1345,8 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     // is12Hour - returns true if 12 hour clock or false if 24
-    get is12Hour() {
-        var hourFormat = this._config.time_format ? this._config.time_format : 12;
-        switch (hourFormat) {
-            case 24:
-                return false;
-            default:
-                return true;
-        }
+    get timeFormat() {
+        return this._config.option_time_format ? this._config.option_time_format : 'system';
     }
     // get the icon that matches the current conditions
     _weatherIcon(conditions) {
@@ -1384,15 +1418,15 @@ let WeatherCard = class WeatherCard extends s$1 {
         return this._config.entity_sun && this.hass.states[this._config.entity_sun] !== undefined ? transformDayNight[this.hass.states[this._config.entity_sun].state] : 'day';
     }
     get iconStyle() {
-        return (this._config.old_icon === "hybrid") ? `hybrid` : (this._config.old_icon === "false") ? `false` : `true`;
+        return (this._config.option_icon_set) ? this._config.option_icon_set : `old`;
     }
     get iconSunny() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `${this.dayOrNight}` : (iconStyle === "hybrid") ? `sunny-${this.dayOrNight}` : `sunny-${this.dayOrNight}`;
+        return (iconStyle === "true") ? `sunny-${this.dayOrNight}` : (iconStyle === "hybrid") ? `sunny-${this.dayOrNight}` : `sunny-${this.dayOrNight}`;
     }
     get iconClear() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `${this.dayOrNight}` : (iconStyle === "hybrid") ? `sunny-${this.dayOrNight}` : `clear-${this.dayOrNight}`;
+        return (iconStyle === "true") ? `clear-${this.dayOrNight}` : (iconStyle === "hybrid") ? `sunny-${this.dayOrNight}` : `clear-${this.dayOrNight}`;
     }
     get iconMostlySunny() {
         const iconStyle = this.iconStyle;
@@ -1494,8 +1528,17 @@ let WeatherCard = class WeatherCard extends s$1 {
         const iconStyle = this.iconStyle;
         return (iconStyle === "true") ? `cloudy-${this.dayOrNight}-3` : (iconStyle === "hybrid") ? `cloudy-${this.dayOrNight}-3` : `cloudy-${this.dayOrNight}-3`;
     }
+    get locale() {
+        try {
+            Intl.NumberFormat(this._config.option_locale);
+            return this._config.option_locale;
+        }
+        catch (e) {
+            return undefined;
+        }
+    }
     get localeTextfeelsLike() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "Percepito";
             case 'fr': return "Ressenti";
             case 'de': return "Gefühlt";
@@ -1509,7 +1552,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     get localeTextmaxToday() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "Max oggi";
             case 'fr': return "Max aujourd'hui";
             case 'de': return "Max heute";
@@ -1523,7 +1566,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     get localeTextminToday() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "Min oggi";
             case 'fr': return "Min aujourd'hui";
             case 'de': return "Min heute";
@@ -1537,7 +1580,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     get localeTextposToday() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "Previsione";
             case 'fr': return "Prévoir";
             case 'de': return "Vorhersage";
@@ -1551,7 +1594,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     get localeTextposTomorrow() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "Prev per domani";
             case 'fr': return "Prév demain";
             case 'de': return "Prog morgen";
@@ -1565,7 +1608,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     get localeTextuvRating() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "UV";
             case 'fr': return "UV";
             case 'de': return "UV";
@@ -1579,7 +1622,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
     }
     get localeTextfireDanger() {
-        switch (this._config.locale) {
+        switch (this.locale) {
             case 'it': return "Fuoco";
             case 'fr': return "Feu";
             case 'de': return "Feuer";
@@ -1690,7 +1733,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         font-weight: 300;
         color: var(--primary-text-color);
       }
-      .main-top {
+      .overview-top {
         display: flex;
         justify-content: space-between;
         flex-wrap: nowrap;
@@ -2007,6 +2050,7 @@ WeatherCard = __decorate([
 ], WeatherCard);
 
 // Material Design Icons v6.7.96
+var mdiApplicationEditOutline = "M11 20V22H3C1.9 22 1 21.1 1 20V4C1 2.9 1.9 2 3 2H21C22.1 2 23 2.9 23 4V12.1L22.8 11.9C22.3 11.4 21.7 11.1 21 11.1V6H3V20H11M21.4 13.3L22.7 14.6C22.9 14.8 22.9 15.2 22.7 15.4L21.7 16.4L19.6 14.3L20.6 13.3C20.7 13.2 20.8 13.1 21 13.1C21.2 13.1 21.3 13.2 21.4 13.3M21.1 16.9L15.1 23H13V20.9L19.1 14.8L21.1 16.9Z";
 var mdiArrowDown = "M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z";
 var mdiArrowUp = "M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z";
 var mdiPencil = "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
@@ -2016,6 +2060,8 @@ var mdiPencil = "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */function e$1(e){return class extends e{createRenderRoot(){const e=this.constructor,{registry:s,elementDefinitions:n,shadowRootOptions:o}=e;n&&!s&&(e.registry=new CustomElementRegistry,Object.entries(n).forEach((([t,s])=>e.registry.define(t,s))));const i=this.renderOptions.creationScope=this.attachShadow({...o,customElements:e.registry});return i$5(i,this.constructor.elementStyles),i}}}
+
+const sectionNames = ['title', 'overview', 'extended', 'slots', 'daily_forecast'];
 
 /**
  * @license
@@ -10441,8 +10487,32 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
     setConfig(config) {
         console.info(`editor setConfig`);
         this._config = config;
+        let changed = false;
         if (this._section_order === null) {
-            this._config = Object.assign(Object.assign({}, this._config), { ['section_order']: ['title', 'main', 'extended', 'slots', 'daily_forecast'] });
+            this._config = Object.assign(Object.assign({}, this._config), { ['section_order']: sectionNames });
+            changed = true;
+        }
+        else {
+            // check for extra entries
+            this._config.section_order.forEach((section) => {
+                var _a, _b;
+                if (!(sectionNames.includes(section))) {
+                    const idx = (_a = this._config) === null || _a === void 0 ? void 0 : _a.section_order.indexOf(section);
+                    if (idx !== undefined && idx !== -1) {
+                        (_b = this._config) === null || _b === void 0 ? void 0 : _b.section_order.splice(idx, 1);
+                    }
+                    changed = true;
+                }
+            });
+            // check for missing entries
+            sectionNames.forEach((section) => {
+                if (this._config && !(this._config.section_order.includes(section))) {
+                    this._config.section_order.push(section);
+                    changed = true;
+                }
+            });
+        }
+        if (changed) {
             ne(this, 'config-changed', { config: this._config });
         }
         this.loadCardHelpers();
@@ -10453,7 +10523,33 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
             return;
         }
         let tmpConfig = Object.assign({}, this._config);
-        const keysOfProps = ["type", "card_config_version", "section_order", "show_section_title", "show_section_main", "show_section_extended", "show_section_slots", "show_section_daily_forecast", "text_card_title", "entity_update_time", "text_update_time_prefix", "entity_temperature", "entity_apparent_temp", "entity_current_conditions", "entity_current_text", "show_decimals", "show_separator", "entity_daily_summary", "extended_use_attr", "extended_name_attr", "slot_l1", "slot_l2", "slot_l3", "slot_l4", "slot_l5", "slot_l6", "slot_r1", "slot_r2", "slot_r3", "slot_r4", "slot_r5", "slot_r6", "entity_humidity", "entity_pressure", "entity_visibility", "entity_wind_bearing", "entity_wind_speed", "entity_wind_gust", "entity_wind_speed_kt", "entity_wind_gust_kt", "entity_temp_next", "entity_temp_next_label", "entity_temp_following", "entity_temp_following_label", "entity_daytime_high", "entity_daytime_low", "entity_fire_danger", "entity_fire_danger_summary", "entity_pop", "entity_possible_today", "entity_sun", "entity_uv_alert_summary", "entity_rainfall", "entity_todays_fire_danger", "entity_todays_uv_forecast", "custom1_value", "custom1_icon", "custom1_units", "custom2_value", "custom2_icon", "custom2_units", "entity_forecast_icon_1", "entity_pop_1", "entity_pos_1", "entity_summary_1", "entity_forecast_low_temp_1", "entity_forecast_high_temp_1", "entity_extended_1", "daily_forecast_layout", "daily_forecast_days", "daily_extended_forecast_days", "daily_extended_use_attr", "daily_extended_name_attr", "locale", "old_daily_format", "show_beaufort", "static_icons", "how_decimals_today", "index", "view_index"];
+        // Rename options
+        if (tmpConfig.old_icon) {
+            tmpConfig['option_icon_set'] = tmpConfig.old_icon === 'false' ? 'new' : tmpConfig.old_icon === 'hybrid' ? 'hybrid' : 'old';
+            delete tmpConfig['old_icon'];
+        }
+        if (tmpConfig.static_icons) {
+            tmpConfig['option_static_icons'] = tmpConfig.static_icons;
+            delete tmpConfig['static_icons'];
+        }
+        if (tmpConfig.time_format) {
+            tmpConfig['option_time_format'] = tmpConfig.time_format === '12' ? '12hour' : '24hour';
+            delete tmpConfig['time_format'];
+        }
+        if (tmpConfig.locale) {
+            tmpConfig['option_locale'] = tmpConfig.locale;
+            delete tmpConfig['locale'];
+        }
+        if (tmpConfig.option_today_decimals) {
+            tmpConfig['option_today_decimals'] = tmpConfig.option_today_decimals;
+            delete tmpConfig['option_today_decimals'];
+        }
+        if (tmpConfig.show_decimals_pressure) {
+            tmpConfig['option_pressure_decimals'] = tmpConfig.show_decimals_pressure;
+            delete tmpConfig['show_decimals_pressure'];
+        }
+        // Remove unused entries
+        const keysOfProps = ["type", "card_config_version", "section_order", "show_section_title", "show_section_main", "show_section_extended", "show_section_slots", "show_section_daily_forecast", "text_card_title", "entity_update_time", "text_update_time_prefix", "entity_temperature", "entity_apparent_temp", "entity_current_conditions", "entity_current_text", "show_decimals", "show_separator", "entity_daily_summary", "extended_use_attr", "extended_name_attr", "slot_l1", "slot_l2", "slot_l3", "slot_l4", "slot_l5", "slot_l6", "slot_r1", "slot_r2", "slot_r3", "slot_r4", "slot_r5", "slot_r6", "entity_humidity", "entity_pressure", "entity_visibility", "entity_wind_bearing", "entity_wind_speed", "entity_wind_gust", "entity_wind_speed_kt", "entity_wind_gust_kt", "entity_temp_next", "entity_temp_next_label", "entity_temp_following", "entity_temp_following_label", "entity_daytime_high", "entity_daytime_low", "entity_fire_danger", "entity_fire_danger_summary", "entity_pop", "entity_possible_today", "entity_sun", "entity_uv_alert_summary", "entity_rainfall", "entity_todays_fire_danger", "entity_todays_uv_forecast", "custom1_value", "custom1_icon", "custom1_units", "custom2_value", "custom2_icon", "custom2_units", "custom3_value", "custom3_icon", "custom3_units", "custom4_value", "custom4_icon", "custom4_units", "entity_forecast_icon_1", "entity_pop_1", "entity_pos_1", "entity_summary_1", "entity_forecast_low_temp_1", "entity_forecast_high_temp_1", "entity_extended_1", "daily_forecast_layout", "daily_forecast_days", "daily_extended_forecast_days", "daily_extended_use_attr", "daily_extended_name_attr", "option_today_decimals", "option_pressure_decimals", "option_locale", "option_static_icons", "option_icon_set", "option_time_format", "show_decimals_today", "old_daily_format", "show_beaufort", "index", "view_index"];
         for (const element in this._config) {
             if (!keysOfProps.includes(element)) {
                 console.info(`removing ${element}`);
@@ -10686,6 +10782,30 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom2_units) || '';
     }
+    get _custom3_value() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom3_value) || '';
+    }
+    get _custom3_icon() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom3_icon) || '';
+    }
+    get _custom3_units() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom3_units) || '';
+    }
+    get _custom4_value() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom4_value) || '';
+    }
+    get _custom4_icon() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom4_icon) || '';
+    }
+    get _custom4_units() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.custom4_units) || '';
+    }
     get _daily_forecast_layout() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.daily_forecast_layout) || '';
@@ -10733,6 +10853,30 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
     get _daily_extended_name_attr() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.daily_extended_name_attr) || '';
+    }
+    get _option_today_decimals() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.option_today_decimals) === true; // default off
+    }
+    get _option_pressure_decimals() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.option_pressure_decimals) || null;
+    }
+    get _option_static_icons() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.option_static_icons) === true; // default off
+    }
+    get _option_icon_set() {
+        var _a, _b;
+        return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.option_icon_set) !== null && _b !== void 0 ? _b : null;
+    }
+    get _option_time_format() {
+        var _a, _b;
+        return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.option_time_format) !== null && _b !== void 0 ? _b : null;
+    }
+    get _option_locale() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.option_locale) || '';
     }
     get _optional_entities() {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -10810,114 +10954,192 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
                 case 'custom2':
                     entities.add('custom2');
                     break;
+                case 'custom3':
+                    entities.add('custom3');
+                    break;
+                case 'custom4':
+                    entities.add('custom4');
+                    break;
             }
         }
         const entity_daytime_high = entities.has("entity_daytime_high") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_daytime_high'} .value=${this._entity_daytime_high}
-  name="entity_daytime_high" label="Entity Daytime High (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_daytime_high'} .value=${this._entity_daytime_high}
+          name="entity_daytime_high" label="Entity Daytime High (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_daytime_low = entities.has("entity_daytime_low") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_daytime_low'} .value=${this._entity_daytime_low}
-  name="entity_daytime_low" label="Entity Daytime Low (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_daytime_low'} .value=${this._entity_daytime_low}
+          name="entity_daytime_low" label="Entity Daytime Low (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_temp_next = entities.has("entity_temp_next") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_next'} .value=${this._entity_temp_next}
-  name="entity_temp_next" label="Entity Temp Next (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_next'} .value=${this._entity_temp_next}
+          name="entity_temp_next" label="Entity Temp Next (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_temp_next_label = entities.has("entity_temp_next_label") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_next_label'} .value=${this._entity_temp_next_label}
-  name="entity_temp_next_label" label="Entity Temp Next Label (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_next_label'} .value=${this._entity_temp_next_label}
+          name="entity_temp_next_label" label="Entity Temp Next Label (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_temp_following = entities.has("entity_temp_following") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_following'} .value=${this._entity_temp_following}
-  name="entity_temp_following" label="Entity Temp Following (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_following'} .value=${this._entity_temp_following}
+          name="entity_temp_following" label="Entity Temp Following (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_temp_following_label = entities.has("entity_temp_following_label") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_following_label'}
-  .value=${this._entity_temp_following_label} name="entity_temp_following_label"
-  label="Entity Temp Following Label (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
-</ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_temp_following_label'} .value=${this._entity_temp_following_label} name="entity_temp_following_label"
+          label="Entity Temp Following Label (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_wind_bearing = entities.has("entity_wind_bearing") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_bearing'} .value=${this._entity_wind_bearing}
-  name="entity_wind_bearing" label="Entity Wind Bearing (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_bearing'} .value=${this._entity_wind_bearing}
+          name="entity_wind_bearing" label="Entity Wind Bearing (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_wind_speed = entities.has("entity_wind_speed") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_speed'} .value=${this._entity_wind_speed}
-  name="entity_wind_speed" label="Entity Wind Speed (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_speed'} .value=${this._entity_wind_speed}
+          name="entity_wind_speed" label="Entity Wind Speed (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_wind_gust = entities.has("entity_wind_gust") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_gust'} .value=${this._entity_wind_gust}
-  name="entity_wind_gust" label="Entity Wind Gust (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_gust'} .value=${this._entity_wind_gust}
+          name="entity_wind_gust" label="Entity Wind Gust (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_wind_speed_kt = entities.has("entity_wind_speed_kt") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_speed_kt'} .value=${this._entity_wind_speed_kt}
-  name="entity_wind_speed_kt" label="Entity Wind Speed Kt (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_speed_kt'} .value=${this._entity_wind_speed_kt}
+          name="entity_wind_speed_kt" label="Entity Wind Speed Kt (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_wind_gust_kt = entities.has("entity_wind_gust_kt") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_gust_kt'} .value=${this._entity_wind_gust_kt}
-  name="entity_wind_gust_kt" label="Entity Wind Gust Kt (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_wind_gust_kt'} .value=${this._entity_wind_gust_kt}
+          name="entity_wind_gust_kt" label="Entity Wind Gust Kt (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_visibility = entities.has("entity_visibility") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_visibility'} .value=${this._entity_visibility}
-  name="entity_visibility" label="Entity Visibility (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_visibility'} .value=${this._entity_visibility}
+          name="entity_visibility" label="Entity Visibility (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_sun = entities.has("entity_sun") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_sun'} .value=${this._entity_sun} name="entity_sun"
-  label="Entity Sun (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_sun'} .value=${this._entity_sun} name="entity_sun"
+          label="Entity Sun (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_pop = entities.has("entity_pop") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_pop'} .value=${this._entity_pop} name="entity_pop"
-  label="Chance or Rain (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_pop'} .value=${this._entity_pop} name="entity_pop"
+          label="Chance or Rain (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_possible_today = entities.has("entity_possible_today") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_possible_today'} .value=${this._entity_possible_today}
-  name="entity_possible_today" label="Possible Rain Today (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_possible_today'} .value=${this._entity_possible_today}
+          name="entity_possible_today" label="Possible Rain Today (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_possible_tomorrow = entities.has("entity_possible_tomorrow") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_possible_tomorrow'} .value=${this._entity_possible_tomorrow}
-  name="entity_possible_tomorrow" label="Possible Rain Tomorrow (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_possible_tomorrow'} .value=${this._entity_possible_tomorrow}
+          name="entity_possible_tomorrow" label="Possible Rain Tomorrow (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_humidity = entities.has("entity_humidity") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_humidity'} .value=${this._entity_humidity}
-  name="entity_humidity" label="Humidity (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
-</ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_humidity'} .value=${this._entity_humidity}
+          name="entity_humidity" label="Humidity (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_pressure = entities.has("entity_pressure") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_pressure'} .value=${this._entity_pressure}
-  name="entity_pressure" label="Atmospheric Pressure (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_pressure'} .value=${this._entity_pressure}
+          name="entity_pressure" label="Atmospheric Pressure (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_uv_alert_summary = entities.has("entity_uv_alert_summary") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_uv_alert_summary'} .value=${this._entity_uv_alert_summary}
-  name="entity_uv_alert_summary" label="UV Alert Summary (optional)" allow-custom-entity
-  @value-changed=${this._valueChangedPicker}>
-</ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_uv_alert_summary'} .value=${this._entity_uv_alert_summary}
+          name="entity_uv_alert_summary" label="UV Alert Summary (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_fire_danger_summary = entities.has("entity_fire_danger_summary") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_fire_danger_summary'}
-  .value=${this._entity_fire_danger_summary} name="entity_fire_danger_summary" label="Fire Danger Summary (optional)"
-  allow-custom-entity @value-changed=${this._valueChangedPicker}></ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_fire_danger_summary'} .value=${this._entity_fire_danger_summary}
+          name="entity_fire_danger_summary" label="Fire Danger Summary (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_rainfall = entities.has("entity_rainfall") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'entity_rainfall'} .value=${this._entity_rainfall}
-  name="entity_rainfall" label="Todays Rain (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
-</ha-entity-picker>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_rainfall'} .value=${this._entity_rainfall}
+          name="entity_rainfall" label="Todays Rain (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
         const entity_custom1 = entities.has("custom1") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'custom1_value'} .value=${this._custom1_value} name="custom1_value"
-  label="Custom 1 Value (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
-</ha-entity-picker>
-<div class="side-by-side">
-  <ha-icon-picker .hass=${this.hass} .configValue=${'custom1_icon'} .value=${this._custom1_icon} name="custom1_icon"
-    label="Custom 1 Icon (optional)" @value-changed=${this._valueChanged}></ha-icon-picker>
-  <mwc-textfield label="Custom 1 Units (optional)" .value=${this._custom1_units} .configValue=${'custom1_units'}
-    @input=${this._valueChanged}>
-  </mwc-textfield>
-</div>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'custom1_value'} .value=${this._custom1_value} name="custom1_value"
+          label="Custom 1 Value (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+        <div class="side-by-side">
+          <ha-icon-picker .hass=${this.hass} .configValue=${'custom1_icon'} .value=${this._custom1_icon} name="custom1_icon"
+            label="Custom 1 Icon (optional)" @value-changed=${this._valueChanged}>
+          </ha-icon-picker>
+          <mwc-textfield label="Custom 1 Units (optional)" .value=${this._custom1_units} .configValue=${'custom1_units'} @input=${this._valueChanged}>
+          </mwc-textfield>
+        </div>
+      ` : '';
         const entity_custom2 = entities.has("custom2") ?
-            $ `<ha-entity-picker .hass=${this.hass} .configValue=${'custom2_value'} .value=${this._custom2_value} name="custom2_value"
-  label="Custom 2 Value (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
-</ha-entity-picker>
-<div class="side-by-side">
-  <ha-icon-picker .hass=${this.hass} .configValue=${'custom2_icon'} .value=${this._custom2_icon} name="custom2_icon"
-    label="Custom 2 Icon (optional)" @value-changed=${this._valueChanged}></ha-icon-picker>
-  <mwc-textfield label="Custom 2 Units (optional)" .value=${this._custom2_units} .configValue=${'custom2_units'}
-    @input=${this._valueChanged}>
-  </mwc-textfield>
-</div>` : '';
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'custom2_value'} .value=${this._custom2_value} name="custom2_value"
+          label="Custom 2 Value (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+        <div class="side-by-side">
+          <ha-icon-picker .hass=${this.hass} .configValue=${'custom2_icon'} .value=${this._custom2_icon} name="custom2_icon"
+            label="Custom 2 Icon (optional)" @value-changed=${this._valueChanged}>
+          </ha-icon-picker>
+          <mwc-textfield label="Custom 2 Units (optional)" .value=${this._custom2_units} .configValue=${'custom2_units'} @input=${this._valueChanged}>
+          </mwc-textfield>
+        </div>
+      ` : '';
+        const entity_custom3 = entities.has("custom3") ?
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'custom3_value'} .value=${this._custom3_value} name="custom3_value"
+          label="Custom 3 Value (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+        <div class="side-by-side">
+          <ha-icon-picker .hass=${this.hass} .configValue=${'custom3_icon'} .value=${this._custom3_icon} name="custom3_icon"
+            label="Custom 3 Icon (optional)" @value-changed=${this._valueChanged}>
+          </ha-icon-picker>
+          <mwc-textfield label="Custom 3 Units (optional)" .value=${this._custom3_units} .configValue=${'custom3_units'} @input=${this._valueChanged}>
+          </mwc-textfield>
+        </div>
+      ` : '';
+        const entity_custom4 = entities.has("custom4") ?
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'custom4_value'} .value=${this._custom4_value} name="custom4_value"
+          label="Custom 4 Value (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+        <div class="side-by-side">
+          <ha-icon-picker .hass=${this.hass} .configValue=${'custom4_icon'} .value=${this._custom4_icon} name="custom4_icon"
+            label="Custom 4 Icon (optional)" @value-changed=${this._valueChanged}>
+          </ha-icon-picker>
+          <mwc-textfield label="Custom 4 Units (optional)" .value=${this._custom4_units} .configValue=${'custom4_units'} @input=${this._valueChanged}>
+          </mwc-textfield>
+        </div>
+      ` : '';
         return $ `
       ${entity_daytime_high}
       ${entity_daytime_low}
@@ -10941,7 +11163,9 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       ${entity_fire_danger_summary}
       ${entity_rainfall}
       ${entity_custom1}
-      ${entity_custom2}`;
+      ${entity_custom2}
+      ${entity_custom3}
+      ${entity_custom4}`;
     }
     get _show_warning() {
         var _a;
@@ -11031,7 +11255,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       </mwc-textfield>
     `;
     }
-    _sectionMainEditor() {
+    _sectionOverviewEditor() {
         return $ `
       <ha-entity-picker .hass=${this.hass} .configValue=${'entity_temperature'} .value=${this._entity_temperature}
         name="entity_temperature" label="Entity Current Temperature (required)" allow-custom-entity
@@ -11049,6 +11273,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         name="entity_current_text" label="Entity Current Text (required)" allow-custom-entity
         @value-changed=${this._valueChangedPicker}>
       </ha-entity-picker>
+    `;
+    }
+    _optionOverviewEditor() {
+        return $ `
       <div class="side-by-side">
         <div>
           <mwc-formfield .label=${'Show temperature decimals'}>
@@ -11122,7 +11350,9 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       <mwc-list-item value="uv_summary">Today's UV forecast</mwc-list-item>
       <mwc-list-item value="fire_summary">Today's fire danger</mwc-list-item>
       <mwc-list-item value="custom1">Custom entity 1</mwc-list-item>
-      <mwc-list-item value="custom2">Custom entity 1</mwc-list-item>
+      <mwc-list-item value="custom2">Custom entity 2</mwc-list-item>
+      <mwc-list-item value="custom3">Custom entity 3</mwc-list-item>
+      <mwc-list-item value="custom4">Custom entity 4</mwc-list-item>
       <mwc-list-item value="empty">Blank slot</mwc-list-item>
       <mwc-list-item value="remove">Remove slot</mwc-list-item>`;
         return $ `
@@ -11189,46 +11419,32 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       ${this._optional_entities}
     `;
     }
-    _sectionDailyForecastEditor() {
-        if (this._daily_extended_use_attr === true) {
-            this.hass !== undefined ? this.hass.states[this._entity_extended_1].attributes : [];
-        }
+    _optionSlotsEditor() {
         return $ `
       <div class="side-by-side">
-        <ha-select label="Daily Forecast Layout (optional)" .configValue=${'daily_forecast_layout'}
-          .value=${this._daily_forecast_layout} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChanged}>
-          <mwc-list-item></mwc-list-item>
-          <mwc-list-item value="horizontal">horizontal</mwc-list-item>
-          <mwc-list-item value="vertical">vertical</mwc-list-item>
-        </ha-select>
-        <div></div>
-      </div>
-      <div class="side-by-side">
-        <ha-select label="Daily Forecast Days (optional)" .configValue=${'daily_forecast_days'}
-          .value=${this._daily_forecast_days ? this._daily_forecast_days.toString() : null} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChangedNumber}>
-          <mwc-list-item></mwc-list-item>
-          <mwc-list-item value="1">1</mwc-list-item>
-          <mwc-list-item value="2">2</mwc-list-item>
-          <mwc-list-item value="3">3</mwc-list-item>
-          <mwc-list-item value="4">4</mwc-list-item>
-          <mwc-list-item value="5">5</mwc-list-item>
-          ${this._daily_forecast_layout === 'vertical' ? $ `<mwc-list-item value="6">6</mwc-list-item>
-          <mwc-list-item value="7">7</mwc-list-item>` : $ ``}
-        </ha-select>
-        ${this._daily_forecast_layout === 'vertical' ? $ `<ha-select label="Daily Extended Days (optional)"
-          .configValue=${'daily_extended_forecast_days'} .value=${this._daily_extended_forecast_days !== null ?
-            this._daily_extended_forecast_days.toString() : null} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChangedNumber}>
+        <div>
+          <mwc-formfield .label=${'Todays Temperature Decimals'}>
+            <mwc-switch .checked=${this._option_today_decimals !== false} .configValue=${'option_today_decimals'}
+              @change=${this._valueChanged}>
+            </mwc-switch>
+          </mwc-formfield>
+        </div>
+        <ha-select label="Pressure Decimals (optional)" .configValue=${'option_pressure_decimals'}
+          .value=${this._option_pressure_decimals ? this._option_pressure_decimals.toString() : null} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChangedNumber}>
           <mwc-list-item></mwc-list-item>
           <mwc-list-item value="0">0</mwc-list-item>
           <mwc-list-item value="1">1</mwc-list-item>
           <mwc-list-item value="2">2</mwc-list-item>
           <mwc-list-item value="3">3</mwc-list-item>
-          <mwc-list-item value="4">4</mwc-list-item>
-          <mwc-list-item value="5">5</mwc-list-item>
-          <mwc-list-item value="6">6</mwc-list-item>
-          <mwc-list-item value="7">7</mwc-list-item>
-        </ha-select>` : $ `<div></div>`}
+        </ha-select>
       </div>
+    `;
+    }
+    _sectionDailyForecastEditor() {
+        if (this._daily_extended_use_attr === true) {
+            this.hass !== undefined ? this.hass.states[this._entity_extended_1].attributes : [];
+        }
+        return $ `
       <ha-entity-picker .hass=${this.hass} .configValue=${'entity_forecast_icon_1'} .value=${this._entity_forecast_icon_1}
         name="entity_forecast_icon_1" label="Entity Forecast Icon 1 (optional)" allow-custom-entity
         @value-changed=${this._valueChangedPicker}>
@@ -11272,10 +11488,74 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       </div>` : ``}
     `;
     }
-    _sectionMiscellaneousEditor() {
+    _optionDailyForecastEditor() {
         return $ `
-      <div class="side-by-side">This will have the random settings that may affect multiple sections (ie. locale, time_format
-        etc).</div>
+      <div class="side-by-side">
+        <ha-select label="Daily Forecast Layout (optional)" .configValue=${'daily_forecast_layout'}
+          .value=${this._daily_forecast_layout} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChanged}>
+          <mwc-list-item></mwc-list-item>
+          <mwc-list-item value="horizontal">horizontal</mwc-list-item>
+          <mwc-list-item value="vertical">vertical</mwc-list-item>
+        </ha-select>
+        <div></div>
+      </div>
+      <div class="side-by-side">
+        <ha-select label="Daily Forecast Days (optional)" .configValue=${'daily_forecast_days'}
+          .value=${this._daily_forecast_days ? this._daily_forecast_days.toString() : null} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChangedNumber}>
+          <mwc-list-item></mwc-list-item>
+          <mwc-list-item value="1">1</mwc-list-item>
+          <mwc-list-item value="2">2</mwc-list-item>
+          <mwc-list-item value="3">3</mwc-list-item>
+          <mwc-list-item value="4">4</mwc-list-item>
+          <mwc-list-item value="5">5</mwc-list-item>
+          ${this._daily_forecast_layout === 'vertical' ? $ `<mwc-list-item value="6">6</mwc-list-item>
+          <mwc-list-item value="7">7</mwc-list-item>` : $ ``}
+        </ha-select>
+        ${this._daily_forecast_layout === 'vertical' ? $ `<ha-select label="Daily Extended Days (optional)"
+          .configValue=${'daily_extended_forecast_days'} .value=${this._daily_extended_forecast_days !== null ?
+            this._daily_extended_forecast_days.toString() : null} @closed=${(ev) => ev.stopPropagation()} @selected=${this._valueChangedNumber}>
+          <mwc-list-item></mwc-list-item>
+          <mwc-list-item value="0">0</mwc-list-item>
+          <mwc-list-item value="1">1</mwc-list-item>
+          <mwc-list-item value="2">2</mwc-list-item>
+          <mwc-list-item value="3">3</mwc-list-item>
+          <mwc-list-item value="4">4</mwc-list-item>
+          <mwc-list-item value="5">5</mwc-list-item>
+          <mwc-list-item value="6">6</mwc-list-item>
+          <mwc-list-item value="7">7</mwc-list-item>
+        </ha-select>` : $ `<div></div>`}
+      </div>
+    `;
+    }
+    _optionGlobalOptionsEditor() {
+        return $ `
+      <div class="side-by-side">
+        <div>
+          <mwc-formfield .label=${'Show static Icons'}>
+            <mwc-switch .checked=${this._option_static_icons !== false} .configValue=${'option_static_icons'}
+              @change=${this._valueChanged}>
+            </mwc-switch>
+          </mwc-formfield>
+        </div>
+        <ha-select label="Icon Set (optional)" .configValue=${'option_icon_set'} .value=${this._option_icon_set} @closed=${(ev) => ev.stopPropagation()}
+          @selected=${this._valueChanged}>
+          <mwc-list-item></mwc-list-item>
+          <mwc-list-item value="new">New</mwc-list-item>
+          <mwc-list-item value="hybrid">Hybrid</mwc-list-item>
+          <mwc-list-item value="old">Old</mwc-list-item>
+        </ha-select>
+      </div>
+      <div class="side-by-side">
+        <ha-select label="Time Format (optional)" .configValue=${'option_time_format'} .value=${this._option_time_format} @closed=${(ev) => ev.stopPropagation()}
+          @selected=${this._valueChanged}>
+          <mwc-list-item></mwc-list-item>
+          <mwc-list-item value="system">System</mwc-list-item>
+          <mwc-list-item value="12hour">12 hour</mwc-list-item>
+          <mwc-list-item value="24hour">24 hour</mwc-list-item>
+        </ha-select>
+        <mwc-textfield label="Locale (optional)" .value=${this._option_locale} .configValue=${'option_locale'} @input=${this._valueChanged}>
+        </mwc-textfield>
+      </div>
     `;
     }
     _renderSubElementEditor() {
@@ -11294,8 +11574,11 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
             case 'section_title':
                 subel.push(this._sectionTitleEditor());
                 break;
-            case 'section_main':
-                subel.push(this._sectionMainEditor());
+            case 'section_overview':
+                subel.push(this._sectionOverviewEditor());
+                break;
+            case 'option_overview':
+                subel.push(this._optionOverviewEditor());
                 break;
             case 'section_extended':
                 subel.push(this._sectionExtendedEditor());
@@ -11303,11 +11586,17 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
             case 'section_slots':
                 subel.push(this._sectionSlotsEditor());
                 break;
+            case 'option_slots':
+                subel.push(this._optionSlotsEditor());
+                break;
             case 'section_daily_forecast':
                 subel.push(this._sectionDailyForecastEditor());
                 break;
-            case 'section_miscellaneous':
-                subel.push(this._sectionMiscellaneousEditor());
+            case 'option_daily_forecast':
+                subel.push(this._optionDailyForecastEditor());
+                break;
+            case 'option_global_options':
+                subel.push(this._optionGlobalOptionsEditor());
                 break;
         }
         return $ `${subel}`;
@@ -11319,9 +11608,9 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_title) === true; // default off
     }
-    get _show_section_main() {
+    get _show_section_overview() {
         var _a;
-        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_main) !== false; //default on
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.show_section_overview) !== false; //default on
     }
     get _show_section_extended() {
         var _a;
@@ -11339,8 +11628,8 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         switch (block) {
             case 'title':
                 return $ `
-          <div class="main-flex edit-title-section">
-            <mwc-formfield .label=${`Title Section - ${this._show_section_title ? 'Visible' : 'Hidden'}`}>
+          <div class="section-flex edit-title-section">
+            <mwc-formfield .label=${`Title Section`}>
               <mwc-switch .checked=${this._show_section_title !== false} .configValue=${'show_section_title'}
                 @change=${this._valueChanged}>
               </mwc-switch>
@@ -11350,33 +11639,36 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
               </ha-icon-button>
               <ha-icon-button class="up-icon" .value=${'title'} .path=${mdiArrowUp} .disabled=${first} @click="${this._moveUp}">
               </ha-icon-button>
-              <ha-icon-button class="edit-icon" .value=${'section_title'} .path=${mdiPencil} @click="${this._editSection}">
+              <ha-icon-button class="edit-icon" .value=${'section_title'} .path=${mdiPencil} @click="${this._editSubmenu}">
               </ha-icon-button>
+              <div class="no-icon"></div>
             </div>
           </div>
         `;
-            case 'main':
+            case 'overview':
                 return $ `
-          <div class="main-flex edit-main-section">
-            <mwc-formfield .label=${`Main Section - ${this._show_section_main ? 'Visible' : 'Hidden'}`}>
-              <mwc-switch .checked=${this._show_section_main !== false} .configValue=${'show_section_main'}
+          <div class="section-flex edit-overview-section">
+            <mwc-formfield .label=${`Overview Section`}>
+              <mwc-switch .checked=${this._show_section_overview !== false} .configValue=${'show_section_overview'}
                 @change=${this._valueChanged}>
               </mwc-switch>
             </mwc-formfield>
             <div>
-              <ha-icon-button class="down-icon" .value=${'main'} .path=${mdiArrowDown} .disabled=${last} @click="${this._moveDown}">
+              <ha-icon-button class="down-icon" .value=${'overview'} .path=${mdiArrowDown} .disabled=${last} @click="${this._moveDown}">
               </ha-icon-button>
-              <ha-icon-button class="up-icon" .value=${'main'} .path=${mdiArrowUp} .disabled=${first} @click="${this._moveUp}">
+              <ha-icon-button class="up-icon" .value=${'overview'} .path=${mdiArrowUp} .disabled=${first} @click="${this._moveUp}">
               </ha-icon-button>
-              <ha-icon-button class="edit-icon" .value=${'section_main'} .path=${mdiPencil} @click="${this._editSection}">
+              <ha-icon-button class="edit-icon" .value=${'section_overview'} .path=${mdiPencil} @click="${this._editSubmenu}">
+              </ha-icon-button>
+              <ha-icon-button class="option-icon" .value=${'option_overview'} .path=${mdiApplicationEditOutline} @click="${this._editSubmenu}">
               </ha-icon-button>
             </div>
           </div>
         `;
             case 'extended':
                 return $ `
-          <div class="main-flex edit-extended-section">
-            <mwc-formfield .label=${`Extended Section - ${this._show_section_extended ? 'Visible' : 'Hidden'}`}>
+          <div class="section-flex edit-extended-section">
+            <mwc-formfield .label=${`Extended Section`}>
               <mwc-switch .checked=${this._show_section_extended !== false} .configValue=${'show_section_extended'}
                 @change=${this._valueChanged}>
               </mwc-switch>
@@ -11386,15 +11678,16 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
               </ha-icon-button>
               <ha-icon-button class="up-icon" .value=${'extended'} .path=${mdiArrowUp} .disabled=${first} @click="${this._moveUp}">
               </ha-icon-button>
-              <ha-icon-button class="edit-icon" .value=${'section_extended'} .path=${mdiPencil} @click="${this._editSection}">
+              <ha-icon-button class="edit-icon" .value=${'section_extended'} .path=${mdiPencil} @click="${this._editSubmenu}">
               </ha-icon-button>
+              <div class="no-icon"></div>
             </div>
           </div>
         `;
             case 'slots':
                 return $ `
-          <div class="main-flex edit-slots-section">
-            <mwc-formfield .label=${`Slots Section - ${this._show_section_slots ? 'Visible' : 'Hidden'}`}>
+          <div class="section-flex edit-slots-section">
+            <mwc-formfield .label=${`Slots Section`}>
               <mwc-switch .checked=${this._show_section_slots !== false} .configValue=${'show_section_slots'}
                 @change=${this._valueChanged}>
               </mwc-switch>
@@ -11404,15 +11697,17 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
               </ha-icon-button>
               <ha-icon-button class="up-icon" .value=${'slots'} .path=${mdiArrowUp} .disabled=${first} @click="${this._moveUp}">
               </ha-icon-button>
-              <ha-icon-button class="edit-icon" .value=${'section_slots'} .path=${mdiPencil} @click="${this._editSection}">
+              <ha-icon-button class="edit-icon" .value=${'section_slots'} .path=${mdiPencil} @click="${this._editSubmenu}">
+              </ha-icon-button>
+              <ha-icon-button class="options-icon" .value=${'option_slots'} .path=${mdiApplicationEditOutline} @click="${this._editSubmenu}">
               </ha-icon-button>
             </div>
           </div>
         `;
             case 'daily_forecast':
                 return $ `
-          <div class="main-flex edit-daily-forecast-section">
-            <mwc-formfield .label=${`Daily Forecast Section - ${this._show_section_daily_forecast ? 'Visible' : 'Hidden'}`}>
+          <div class="section-flex edit-daily-forecast-section">
+            <mwc-formfield .label=${`Daily Forecast Section`}>
               <mwc-switch .checked=${this._show_section_daily_forecast !== false} .configValue=${'show_section_daily_forecast'}
                 @change=${this._valueChanged}>
               </mwc-switch>
@@ -11422,19 +11717,22 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
               </ha-icon-button>
               <ha-icon-button class="up-icon" .value=${'daily_forecast'} .path=${mdiArrowUp} .disabled=${first} @click="${this._moveUp}">
               </ha-icon-button>
-              <ha-icon-button class="edit-icon" .value=${'section_daily_forecast'} .path=${mdiPencil} @click="${this._editSection}">
+              <ha-icon-button class="edit-icon" .value=${'section_daily_forecast'} .path=${mdiPencil} @click="${this._editSubmenu}">
+              </ha-icon-button>
+              <ha-icon-button class="options-icon" .value=${'option_daily_forecast'} .path=${mdiApplicationEditOutline} @click="${this._editSubmenu}">
               </ha-icon-button>
             </div>
           </div>
         `;
-            case 'miscellaneous':
+            case 'global_options':
                 return $ `
-          <div class="main-flex">
-            <mwc-formfield class="no-switch" .label=${`Miscellaneous`}>
+          <div class="section-flex">
+            <mwc-formfield class="no-switch" .label=${`Global Options`}>
             </mwc-formfield>
             <div>
-              <ha-icon-button class="edit-icon" .value=${'section_miscellaneous'} .path=${mdiPencil}
-                @click="${this._editSection}">
+              <div class="no-icon"></div>
+              <ha-icon-button class="edit-icon" .value=${'option_global_options'} .path=${mdiApplicationEditOutline}
+                @click="${this._editSubmenu}">
               </ha-icon-button>
             </div>
           </div>
@@ -11453,7 +11751,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         slots.forEach((slot, index) => {
             htmlConfig.push(this.getConfigBlock(slot, index === 0, index + 1 === slots.length));
         });
-        htmlConfig.push(this.getConfigBlock('miscellaneous', false, false));
+        htmlConfig.push(this.getConfigBlock('global_options', false, false));
         return $ `${htmlConfig}`;
     }
     _initialize() {
@@ -11486,7 +11784,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         }
         ne(this, 'config-changed', { config: this._config });
     }
-    _editSection(ev) {
+    _editSubmenu(ev) {
         if (ev.currentTarget) {
             const target = ev.currentTarget;
             this._subElementEditor = target.value;
@@ -11586,6 +11884,10 @@ WeatherCardEditor.styles = r$4 `
     mwc-formfield {
       height: 56px;
     }
+    .no-icon {
+      display: inline-flex;
+      width: var(--mds-icon-button-size, 48px);
+    }
     /* .option {
       cursor: pointer;
     } */
@@ -11608,7 +11910,7 @@ WeatherCardEditor.styles = r$4 `
       padding-left: 16px;
       background: var(--secondary-background-color);
     } */
-    .main-flex {
+    .section-flex {
       display: flex;
       justify-content: space-between;
       align-items: center;
