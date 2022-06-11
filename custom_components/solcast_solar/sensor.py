@@ -17,7 +17,7 @@ from homeassistant.const import ENERGY_KILO_WATT_HOUR
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import StateType
+#from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )

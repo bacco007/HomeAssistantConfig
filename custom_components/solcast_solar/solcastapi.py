@@ -1,6 +1,6 @@
 """Solcast API."""
 from __future__ import annotations
-from calendar import month
+#from calendar import month
 
 import json
 import logging
@@ -311,7 +311,7 @@ class SolcastApi:
                     return
 
                 for x in ae['estimated_actuals']:
-                    z = parse_datetime(x['period_end']).astimezone() + timedelta(minutes=-30)
+                    z = parse_datetime(x['period_end']).astimezone() - timedelta(minutes=30)
                     if z.date() == today:
                         _data.append({"period_end": z,"pv_estimate": x["pv_estimate"]*0.5})
 
@@ -321,17 +321,9 @@ class SolcastApi:
                     return
 
                 for x in af['forecasts']:
-                    z = parse_datetime(x['period_end']).astimezone() + timedelta(minutes=-30)
+                    z = parse_datetime(x['period_end']).astimezone() - timedelta(minutes=30)
                     _data.append({"period_end": z,"pv_estimate": x["pv_estimate"]*0.5})
                 
-                # for x in ae['estimated_actuals']:
-                #     if x['period_end'].date() == today:
-                #         _data.append({"period_end": x['period_end'],"pv_estimate": x["pv_estimate"]*0.5})
-
-                # for x in af['forecasts']:
-                #     _data.append({"period_end": x['period_end'],"pv_estimate": x["pv_estimate"]*0.5})
-
-
                 _data = sorted(_data, key=itemgetter("period_end"))
 
                 if not (len(_data) % 2) == 0:
@@ -421,28 +413,15 @@ class SolcastApi:
             d = v['period_end'].isoformat()
             if v['pv_estimate'] == 0.0:
                 if lastv > 0.0:
-                    #add this one so the last one is zero in the graph
-                    
-                    if d in wh_hours:
-                        wh_hours[d] += v['pv_estimate'] * 1000
-                    else:
-                        wh_hours[d] = v['pv_estimate'] * 1000
+                    wh_hours[d] = v['pv_estimate'] * 1000
                 lastk = d
                 lastv = v['pv_estimate']
             else:
                 if lastv == 0.0:
                     #add the last one
-                    d = lastk
-                    if d in wh_hours:
-                        wh_hours[d] += lastv * 1000
-                    else:
-                        wh_hours[d] = lastv * 1000
+                    wh_hours[lastk] = lastv * 1000
 
-                # d = v['period_end'].isoformat()
-                if d in wh_hours:
-                    wh_hours[d] += v['pv_estimate'] * 1000
-                else:
-                    wh_hours[d] = v['pv_estimate'] * 1000
+                wh_hours[d] = v['pv_estimate'] * 1000
                 
                 lastk = d
                 lastv = v['pv_estimate']

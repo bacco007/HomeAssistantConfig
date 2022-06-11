@@ -93,9 +93,15 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                     await self.solcast.force_api_poll()
                 else:
                     _hournow = dt_util.now().hour
-                    _LOGGER.debug(_hournow, self._starthour,  self._finishhour)
-                    if _hournow == 0 or (_hournow > self._starthour and _hournow < self._finishhour):
+                    #_LOGGER.debug(_hournow, self._starthour,  self._finishhour)
+                    #if _hournow == 0 or (_hournow > self._starthour and _hournow < self._finishhour):
+                    if _hournow == 0 or _hournow == self._starthour or _hournow == self._finishhour:
                         await self.solcast.force_api_poll()
+                    elif (_hournow > self._starthour and _hournow < self._finishhour):
+                        if len(self.solcast._sites) < 2:
+                            await self.solcast.force_api_poll()
+                        elif _hournow % 2 == 0: 
+                            await self.solcast.force_api_poll()
             else:
                 _LOGGER.debug("Solcast - API poll called, but did not happen as the last update is less than an hour old")
             
