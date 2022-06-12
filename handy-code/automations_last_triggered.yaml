@@ -1,0 +1,11 @@
+        {% for state in (states.automation
+          |selectattr('attributes.last_triggered', 'defined')
+          | rejectattr('attributes.last_triggered', 'in', ['None', 'none', 'unknown'])
+          | selectattr('attributes.last_triggered')
+          | selectattr('state', 'ne', 'unavailable')
+          | sort(attribute='attributes.last_triggered', reverse=true)) [0:40] -%}
+          {% if state.attributes.last_triggered and (now() - state.attributes.last_triggered).total_seconds() < 43200 %}
+            {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M', true)) -%}
+            {{t}} &nbsp;&nbsp; _{{state.name}}_
+          {% endif -%}
+        {% endfor %}
