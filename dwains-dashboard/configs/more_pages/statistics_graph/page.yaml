@@ -1,0 +1,118 @@
+cards:
+- card:
+    cards:
+    - entities:
+      - input_select.statistics_chart_entity
+      - input_select.statistics_chart_range
+      type: entities
+    - card:
+        cards:
+        - entities:
+          - entity: input_datetime.statistics_chart_date
+          type: entities
+        - entities:
+          - entity: script.statistics_chart_date_browse
+            icon: mdi:chevron-left
+            tap_action:
+              action: call-service
+              data:
+                direction: -1
+              service: script.statistics_chart_date_browse
+          - entity: script.statistics_chart_date_browse
+            icon: mdi:chevron-down
+            tap_action:
+              action: call-service
+              data:
+                direction: 0
+              service: script.statistics_chart_date_browse
+          - entity: script.statistics_chart_date_browse
+            icon: mdi:chevron-right
+            tap_action:
+              action: call-service
+              data:
+                direction: 1
+              service: script.statistics_chart_date_browse
+          show_name: false
+          show_state: false
+          type: glance
+        type: horizontal-stack
+      card_mod:
+        style:
+          hui-horizontal-stack-card: "ha-card {\n  height: 100%;\n}\n"
+          hui-horizontal-stack-card$: "hui-entities-card {\n  width: 100%;\n  flex:\
+            \ auto !important;\n}\nhui-glance-card {\n  width: 200px;\n  flex: auto\
+            \ !important;\n  --glance-column-width: 100px;\n}\n"
+          hui-horizontal-stack-card$hui-entities-card$hui-input-datetime-entity-row$hui-generic-entity-row:
+            ha-date-input$: "ha-textfield, :host {\n  width: 100%;\n}\n"
+          hui-horizontal-stack-card$hui-entities-card$hui-input-datetime-entity-row$hui-generic-entity-row$: "div,\
+            \ state-badge {\n  display: none;\n}\n"
+          hui-horizontal-stack-card$hui-glance-card$: "div.entity {\n  background:\
+            \ var(--mdc-select-fill-color, whitesmoke);\n}\n"
+          hui-horizontal-stack-card$hui-glance-card$div.entity:
+            $: "state-badge {\n  color: var(--primary-text-color);\n}\n"
+      type: custom:mod-card
+    type: vertical-stack
+  card_mod:
+    style:
+      hui-vertical-stack-card$hui-entities-card:
+        $hui-input-select-entity-row:
+          $hui-generic-entity-row$: "state-badge {\n  color: red;\n  display: none;\n\
+            }\n"
+  type: custom:mod-card
+- card:
+    all_series_config:
+      float_precision: 2
+      group_by:
+        duration: ${1 + grouping}
+        fill: last
+        func: diff
+        start_with_last: true
+      show:
+        legend_value: false
+      statistics:
+        align: end
+        period: ${period}
+        type: sum
+      time_delta: +0d
+      type: column
+    apex_config:
+      chart:
+        toolbar:
+          show: false
+          tools:
+            pan: true
+            reset: true
+            zoom: true
+            zoomin: true
+            zoomout: true
+        zoom:
+          enabled: true
+    graph_span: ${span + period}
+    header:
+      colorize_states: true
+      show: true
+      show_states: false
+      title: Statistics
+    series:
+    - entity: ${entity}
+    span:
+      offset: ${offset}
+    stacked: false
+    type: custom:apexcharts-card
+    yaxis:
+    - decimals: 2
+      min: 0
+  entities:
+  - input_select.statistics_chart_entity
+  - sensor.statistics_chart_offset
+  - sensor.statistics_chart_span
+  - sensor.statistics_chart_period
+  - sensor.statistics_chart_grouping
+  type: custom:config-template-card
+  variables:
+    entity: states['input_select.statistics_chart_entity'].state
+    grouping: states['sensor.statistics_chart_grouping'].state
+    offset: states['sensor.statistics_chart_offset'].state
+    period: states['sensor.statistics_chart_period'].state
+    span: states['sensor.statistics_chart_span'].state
+type: vertical-stack

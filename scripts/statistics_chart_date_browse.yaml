@@ -1,0 +1,43 @@
+---
+icon: mdi:arrow-right-bold-outline
+sequence:
+  - service: input_datetime.set_datetime
+    entity_id: input_datetime.statistics_chart_date
+    data:
+      datetime: |
+        {% set range = states('input_select.statistics_chart_range') %}
+        {% set date = states('input_datetime.statistics_chart_date')|as_datetime %}
+        {% set direction = direction %}
+        {% if range == 'day' %}
+          {% if direction > 0 %}
+            {% set target = date + timedelta(days=1) %}
+          {% else %}
+            {% set target = date - timedelta(days=1) %}
+          {% endif %}
+        {% elif range == 'week' -%}
+          {% if direction > 0 %}
+            {% set target = date + timedelta(days=7) %}
+          {% else %}
+            {% set target = date - timedelta(days=7) %}
+          {% endif %}
+        {% elif range == 'month' -%}
+          {% if direction > 0 %}
+            {% set month=((date.month) % 12) + 1 %}
+            {% set year=date.year+iif(date.month==12,1,0) %}
+            {% set target=strptime(year|string + '-' + month|string + '-01', '%Y-%m-%d') -%}
+          {% else %}
+            {% set month=((date.month - 2) % 12) + 1 %}
+            {% set year=date.year+iif(date.month==1,-1,0) %}
+            {% set target=strptime(year|string + '-' + month|string + '-01', '%Y-%m-%d') -%}
+          {% endif %}
+        {% elif range=='year' -%}
+          {% if direction > 0 %}
+            {% set target=strptime((date.year|int + 1)|string + '-01-01', '%Y-%m-%d') -%}
+          {% else %}
+            {% set target=strptime((date.year|int - 1)|string + '-01-01', '%Y-%m-%d') -%}
+          {% endif %}
+        {% endif -%}
+        {% if direction == 0 %}
+            {% set target = states('sensor.date') %}
+        {% endif -%}
+        {{ target }}

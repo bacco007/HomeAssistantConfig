@@ -1,0 +1,8 @@
+---
+statistics_chart_range:
+  initial: month
+  options:
+    - day
+    - week
+    - month
+    - year

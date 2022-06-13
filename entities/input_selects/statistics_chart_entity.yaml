@@ -1,0 +1,7 @@
+---
+statistics_chart_entity:
+  initial: sensor.sungrowsolar_solar_production_kwh
+  options:
+    - sensor.sungrowsolar_solar_production_kwh
+    - sensor.sungrowsolar_returned_to_grid_kwh
+    - sensor.sungrowsolar_grid_consumption_kwh
