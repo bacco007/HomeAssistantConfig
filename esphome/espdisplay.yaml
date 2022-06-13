@@ -135,7 +135,7 @@ binary_sensor:
             - logger.log: "Automatic deep sleep disabled"
             - deep_sleep.prevent: deep_sleep_1
 
-≈
+text_sensor:
   - platform: homeassistant
     id: current_page_select
     entity_id: input_select.epaper_page
@@ -270,7 +270,6 @@ sensor:
     lambda: |-
       int y = (1-(4.1-id(batt_volt).voltage->state)/(4.1-3.3))*100;
       if (y < 100) {return y;} else {return 100;};
-
   - platform: wifi_signal
     id: sensor_wifi_signal
     name: "${esp_name} WiFi"
@@ -296,7 +295,6 @@ sensor:
       } else {
         return NAN;
       }
-
   - platform: homeassistant
     id: temp_now
     internal: true
@@ -350,7 +348,6 @@ sensor:
                 (minutes ? to_string(minutes) + "m " : "") +
                 (to_string(seconds) + "s")
               ).c_str();
-
   # weather
   - platform: homeassistant
     entity_id: sensor.east_tamworth_rain_amount_max_0
@@ -415,7 +412,6 @@ font:
     size: 72
     glyphs: |-
       !"%()+=,-_.:°/|0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz'
-
   # https://pictogrammers.github.io/@mdi/font/5.3.45/
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons_small
@@ -563,7 +559,6 @@ script:
       - component.update: t5_display
       - lambda: |-
           id(updates_since_refresh)++;
-
   - id: update_page_in_ha
     then:
       - homeassistant.service:
@@ -574,7 +569,6 @@ script:
           variables:
             selected_page: |-
               return id(current_page_select).state.c_str();
-
   - id: enter_sleep
     then:
       - if:
@@ -607,14 +601,12 @@ display:
       - id: page_sleep
         lambda: |-
           it.printf(10, 40, id(font_value), TextAlign::TOP_LEFT, "ZZZ zzz...");
-
       - id: page_1
         lambda: |-
           #define xres 960
           #define yres 540
           #define x_pad 10 // border padding
           #define y_pad 10 // border padding
-
           #define y1 0
           #define y2 285
           #define y3 425
@@ -622,18 +614,14 @@ display:
           #define x1 x_pad // x position 1st column name
           #define x2 ((xres/3) * 1) // x position 2nd column name
           #define x3 ((xres/3) * 2) // x position 3rd column name
-
           it.printf(x_pad, y_pad+30, id(font_value), TextAlign::TOP_LEFT, "Nothing Here Yet");
           it.printf(x_pad,y_pad+100, id(font_footer), TextAlign::TOP_LEFT, "Nothing Here Yet");             
-
           // sunrise
           it.printf(xres-275, y_pad+210, id(font_icons_smaller), TextAlign::CENTER_RIGHT, "\U000F059C");
           it.printf(xres-275, y_pad+210, id(font_footer), TextAlign::CENTER_LEFT, "%s", id(sunrise).state.c_str());
-
           // sunset
           it.printf(xres-100, y_pad+210, id(font_icons_smaller), TextAlign::CENTER_RIGHT, "\U000F059B");
           it.printf(xres-100, y_pad+210, id(font_footer), TextAlign::CENTER_LEFT, "%s", id(sunset).state.c_str());
-
           // weather - icon
           if (id(fc_weather).has_state()) {
             std::map<std::string, std::string> weather_map { 
@@ -655,31 +643,24 @@ display:
             };   
             it.printf(xres-180, y1+80, id(weather_font), COLOR_ON, TextAlign::CENTER, weather_map[id(fc_weather).state.c_str()].c_str());
           };
-
           it.print(x1, y2, id(font_name), TextAlign::BASELINE_LEFT, "Temp High");
           it.print(x2, y2, id(font_name), TextAlign::BASELINE_LEFT, "Office");
           it.print(x3, y2, id(font_name), TextAlign::BASELINE_LEFT, "Seb's bedroom");
-
           it.printf(x1, y2+val_pad, id(font_icons_small), TextAlign::BASELINE_LEFT, "\U000F10C2");
           it.printf(x1 + 85, y2+val_pad, id(font_value), TextAlign::BASELINE_LEFT, "%.1f °C", id(temp_max).state);
-
           it.print(x1, y3, id(font_name), TextAlign::BASELINE_LEFT, "Temp Low");
           it.print(x2, y3, id(font_name), TextAlign::BASELINE_LEFT, "Bathroom");
           it.print(x3, y3, id(font_name), TextAlign::BASELINE_LEFT, "Reu's bedroom");
-
           it.printf(x1, y3+val_pad, id(font_icons_small), TextAlign::BASELINE_LEFT, "\U000F10C3");
           it.printf(x1 + 85, y3+val_pad, id(font_value), TextAlign::BASELINE_LEFT, "%.1f °C", id(temp_min).state);
-
           // Footer
           //it.line(0, yres-30, xres, yres-30);
           it.strftime(x_pad, yres-y_pad/2, id(font_footer), COLOR_ON, TextAlign::BASELINE_LEFT, "%A %d %b %Y", id(ntp).now());
           it.strftime(xres/2, yres-y_pad/2, id(font_footer), COLOR_ON, TextAlign::BASELINE_CENTER, "Updated %H:%M", id(ntp).now());
           it.printf(xres-x_pad, yres-y_pad/2, id(font_footer), COLOR_ON, TextAlign::BASELINE_RIGHT, "%.2fV/%.0f%%", id(batt_volt).voltage->state, id(batt).state);
-
       - id: page_2
         lambda: |-
           it.printf(20, 5, id(font_name), "Testing");
-
       - id: page_3
         lambda: |-
           #define ICON_temp_high        "\U000F10C2"
@@ -717,7 +698,6 @@ display:
           // moon phase
           auto moonIcon = moonToIcon(id(moon).state);
           it.printf(xRes - pad/2, pad, id(font_icons_small), TextAlign::TOP_RIGHT, moonIcon.c_str());
-
           // === LEFT - media ===
           y = 150;
           auto playing = id(media_playing_status).state == "playing";
@@ -730,7 +710,6 @@ display:
           } else {
             it.printf(77, y - 5, id(font_big), TextAlign::BASELINE_LEFT, "-");
           }
-
           y = 135;
           // current temperature
           if (!isnan(id(temp_now).state)) {
@@ -746,7 +725,6 @@ display:
           // current condition icon
           auto conditionIcon = conditionToIcon(id(fc_weather).state, dayTime);
           it.printf(xRes - pad, y, id(font_icons), TextAlign::CENTER_RIGHT, conditionIcon.c_str());
-
           // === RIGHT - Forecast ===
           // Day of week
           y = 240;
@@ -824,7 +802,6 @@ display:
               it.printf(xCenter + weatherCol*3 + 3, y-prec3size-pad/2, id(font_name), TextAlign::BASELINE_CENTER, ". . .");
             }
           }
-
 deep_sleep:
   run_duration: ${run_time}
   sleep_duration: ${sleep_time}
