@@ -362,7 +362,7 @@ let WeatherCard = class WeatherCard extends s$1 {
     `;
         const apparentTemp = $ `
       <div class="apparent-temp">
-        <div class="apparent">${this.localeTextfeelsLike} <span
+        <div class="apparent">${this.localeTextFeelsLike} <span
             id="apparent-temp-text">${this.currentApparentTemperature}</span>
         </div>
         <div class="apparentc"> ${this.getUOM('temperature')}</div>
@@ -419,10 +419,10 @@ let WeatherCard = class WeatherCard extends s$1 {
       <div>
         <ul class="variations-ugly">
           <li>
-            <ul class="slot-list">${this.slotL1}${this.slotL2}${this.slotL3}${this.slotL4}${this.slotL5}${this.slotL6}</ul>
+            <ul class="slot-list">${this.slotL1}${this.slotL2}${this.slotL3}${this.slotL4}${this.slotL5}${this.slotL6}${this.slotL7}${this.slotL8}</ul>
           </li>
           <li>
-            <ul class="slot-list">${this.slotR1}${this.slotR2}${this.slotR3}${this.slotR4}${this.slotR5}${this.slotR6}</ul>
+            <ul class="slot-list">${this.slotR1}${this.slotR2}${this.slotR3}${this.slotR4}${this.slotR5}${this.slotR6}${this.slotR7}${this.slotR8}</ul>
           </li>
         </ul>
       </div>
@@ -431,12 +431,12 @@ let WeatherCard = class WeatherCard extends s$1 {
         <ul class="variations">
           <li class="slot-list-item-1">
             <ul class="slot-list">
-              ${this.slotL1}${this.slotL2}${this.slotL3}${this.slotL4}${this.slotL5}${this.slotL6}
+              ${this.slotL1}${this.slotL2}${this.slotL3}${this.slotL4}${this.slotL5}${this.slotL6}${this.slotL7}${this.slotL8}
             </ul>
           </li>
           <li>
             <ul class="slot-list">
-              ${this.slotR1}${this.slotR2}${this.slotR3}${this.slotR4}${this.slotR5}${this.slotR6}
+              ${this.slotR1}${this.slotR2}${this.slotR3}${this.slotR4}${this.slotR5}${this.slotR6}${this.slotR7}${this.slotR8}
             </ul>
           </li>
         </ul>
@@ -681,6 +681,12 @@ let WeatherCard = class WeatherCard extends s$1 {
     get slotL6() {
         return this.slotValue('l6', this._config.slot_l6);
     }
+    get slotL7() {
+        return this.slotValue('l7', this._config.slot_l7);
+    }
+    get slotL8() {
+        return this.slotValue('l8', this._config.slot_l8);
+    }
     get slotR1() {
         return this.slotValue('r1', this._config.slot_r1);
     }
@@ -699,20 +705,30 @@ let WeatherCard = class WeatherCard extends s$1 {
     get slotR6() {
         return this.slotValue('r6', this._config.slot_r6);
     }
+    get slotR7() {
+        return this.slotValue('r7', this._config.slot_r7);
+    }
+    get slotR8() {
+        return this.slotValue('r8', this._config.slot_r8);
+    }
     // slots - calculates the specific slot value
     slotValue(slot, value) {
         switch (value) {
-            case 'pop': return this.slotPopForecast;
+            case 'pop': return this.slotPop;
             case 'popforecast': return this.slotPopForecast;
             case 'possible_today': return this.slotPossibleToday;
             case 'possible_tomorrow': return this.slotPossibleTomorrow;
             case 'rainfall': return this.slotRainfall;
             case 'humidity': return this.slotHumidity;
             case 'pressure': return this.slotPressure;
-            case 'daytime_high': return this.slotDaytimeHigh;
-            case 'daytime_low': return this.slotDaytimeLow;
+            case 'observed_max': return this.slotObservedMax;
+            case 'observed_min': return this.slotObservedMin;
+            case 'forecast_max': return this.slotForecastMax;
+            case 'forecast_min': return this.slotForecastMin;
             case 'temp_next': return this.slotTempNext;
             case 'temp_following': return this.slotTempFollowing;
+            case 'temp_maximums': return this.slotTempMaximums;
+            case 'temp_minimums': return this.slotTempMinimums;
             case 'uv_summary': return this.slotUvSummary;
             case 'fire_summary': return this.slotFireSummary;
             case 'wind': return this.slotWind;
@@ -729,18 +745,22 @@ let WeatherCard = class WeatherCard extends s$1 {
         }
         // If no value can be matched pass back a default for the slot
         switch (slot) {
-            case 'l1': return this.slotDaytimeHigh;
-            case 'l2': return this.slotDaytimeLow;
+            case 'l1': return this.slotForecastMax;
+            case 'l2': return this.slotForecastMin;
             case 'l3': return this.slotWind;
             case 'l4': return this.slotPressure;
             case 'l5': return this.slotSunNext;
             case 'l6': return this.slotRemove;
+            case 'l7': return this.slotRemove;
+            case 'l8': return this.slotRemove;
             case 'r1': return this.slotPopForecast;
             case 'r2': return this.slotHumidity;
             case 'r3': return this.slotUvSummary;
             case 'r4': return this.slotFireSummary;
             case 'r5': return this.slotSunFollowing;
             case 'r6': return this.slotRemove;
+            case 'r7': return this.slotRemove;
+            case 'r8': return this.slotRemove;
         }
         return this.slotEmpty;
     }
@@ -777,6 +797,20 @@ let WeatherCard = class WeatherCard extends s$1 {
       </li>
     `;
     }
+    get slotPop() {
+        const pop = this._config.entity_pop ? Math.round(Number(this.hass.states[this._config.entity_pop].state)) : "---";
+        const pop_units = pop !== "---" ? $ `<div class="slot-text unit">%</div>` : $ ``;
+        return $ `
+      <li>
+        <div class="slot">
+          <div class="slot-icon">
+            <ha-icon icon="mdi:weather-rainy"></ha-icon>
+          </div>
+          <div class="slot-text pop-text">${pop}</div>${pop_units}<div class="slot-text"></div>
+        </div>
+      </li>
+    `;
+    }
     get slotPossibleToday() {
         const pos = this._config.entity_possible_today ? this.hass.states[this._config.entity_possible_today].state : "---";
         const units = pos !== "---" ? $ `<div class="slot-text unit">${this.getUOM('precipitation')}</div>` : $ ``;
@@ -785,7 +819,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         <div class="slot">
           <div class="slot-icon">
             <ha-icon icon="mdi:weather-rainy"></ha-icon>
-          </div>${this.localeTextposToday}&nbsp;<div class="slot-text possible_today-text">${pos}</div>${units}
+          </div>${this.localeTextPosToday}&nbsp;<div class="slot-text possible_today-text">${pos}</div>${units}
         </div>
       </li>
     `;
@@ -798,7 +832,7 @@ let WeatherCard = class WeatherCard extends s$1 {
         <div class="slot">
           <div class="slot-icon">
             <ha-icon icon="mdi:weather-rainy"></ha-icon>
-          </div>${this.localeTextposTomorrow}&nbsp;<div class="slot-text possible_tomorrow-text">${pos}</div>${units}
+          </div>${this.localeTextPosTomorrow}&nbsp;<div class="slot-text possible_tomorrow-text">${pos}</div>${units}
         </div>
       </li>
     `;
@@ -844,9 +878,9 @@ let WeatherCard = class WeatherCard extends s$1 {
       </li>
     `;
     }
-    get slotDaytimeHigh() {
+    get slotObservedMax() {
         const digits = this._config.option_today_decimals === true ? 1 : 0;
-        const temp = this._config.entity_daytime_high ? (Number(this.hass.states[this._config.entity_daytime_high].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const temp = this._config.entity_observed_max ? (Number(this.hass.states[this._config.entity_observed_max].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
         const units = temp !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
         return $ `
       <li>
@@ -854,15 +888,15 @@ let WeatherCard = class WeatherCard extends s$1 {
           <div class="slot-icon">
             <ha-icon icon="mdi:thermometer-high"></ha-icon>
           </div>
-          <div class="slot-text">${this.localeTextmaxToday}&nbsp;</div>
-          <div class="slot-text daytime-high-text">${temp}</div>${units}
+          <div class="slot-text">${this.localeTextObservedMax}&nbsp;</div>
+          <div class="slot-text observed-max-text">${temp}</div>${units}
         </div>
       </li>
     `;
     }
-    get slotDaytimeLow() {
+    get slotObservedMin() {
         const digits = this._config.option_today_decimals === true ? 1 : 0;
-        const temp = this._config.entity_daytime_low ? (Number(this.hass.states[this._config.entity_daytime_low].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const temp = this._config.entity_observed_min ? (Number(this.hass.states[this._config.entity_observed_min].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
         const units = temp !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
         return $ `
       <li>
@@ -870,8 +904,40 @@ let WeatherCard = class WeatherCard extends s$1 {
           <div class="slot-icon">
             <ha-icon icon="mdi:thermometer-low"></ha-icon>
           </div>
-          <div class="slot-text">${this.localeTextminToday}&nbsp;</div>
-          <div class="slot-text daytime-low-text">${temp}</div>${units}
+          <div class="slot-text">${this.localeTextObservedMin}&nbsp;</div>
+          <div class="slot-text observed-min-text">${temp}</div>${units}
+        </div>
+      </li>
+    `;
+    }
+    get slotForecastMax() {
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
+        const temp = this._config.entity_forecast_max ? (Number(this.hass.states[this._config.entity_forecast_max].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const units = temp !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
+        return $ `
+      <li>
+        <div class="slot">
+          <div class="slot-icon">
+            <ha-icon icon="mdi:thermometer-high"></ha-icon>
+          </div>
+          <div class="slot-text">${this.localeTextForecastMax}&nbsp;</div>
+          <div class="slot-text forecast-max-text">${temp}</div>${units}
+        </div>
+      </li>
+    `;
+    }
+    get slotForecastMin() {
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
+        const temp = this._config.entity_forecast_min ? (Number(this.hass.states[this._config.entity_forecast_min].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const units = temp !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
+        return $ `
+      <li>
+        <div class="slot">
+          <div class="slot-icon">
+            <ha-icon icon="mdi:thermometer-low"></ha-icon>
+          </div>
+          <div class="slot-text">${this.localeTextForecastMin}&nbsp;</div>
+          <div class="slot-text forecast-min-text">${temp}</div>${units}
         </div>
       </li>
     `;
@@ -912,6 +978,46 @@ let WeatherCard = class WeatherCard extends s$1 {
       </li>
     `;
     }
+    get slotTempMaximums() {
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
+        const temp_obs = this._config.entity_observed_max ? (Number(this.hass.states[this._config.entity_observed_max].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const temp_for = this._config.entity_forecast_max ? (Number(this.hass.states[this._config.entity_forecast_max].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const units = temp_obs !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
+        return $ `
+      <li>
+        <div class="slot">
+          <div class="slot-icon">
+            <ha-icon icon="mdi:thermometer-high"></ha-icon>
+          </div>
+          <div class="slot-text">${this.localeTextObsMax}&nbsp;</div>
+          <div class="slot-text observed-max-text">${temp_obs}</div>${units}
+          <div class="slot-text">&nbsp;(${this.localeTextFore}&nbsp;</div>
+          <div class="slot-text forecast-max-text">${temp_for}</div>${units}
+          <div class="slot-text">)</div>
+        </div>
+      </li>
+    `;
+    }
+    get slotTempMinimums() {
+        const digits = this._config.option_today_decimals === true ? 1 : 0;
+        const temp_obs = this._config.entity_observed_min ? (Number(this.hass.states[this._config.entity_observed_min].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const temp_for = this._config.entity_forecast_min ? (Number(this.hass.states[this._config.entity_forecast_min].state)).toLocaleString(this.locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "---";
+        const units = temp_obs !== "---" ? $ `<div class="unitc">${this.getUOM('temperature')}</div>` : $ ``;
+        return $ `
+      <li>
+        <div class="slot">
+          <div class="slot-icon">
+            <ha-icon icon="mdi:thermometer-low"></ha-icon>
+          </div>
+          <div class="slot-text">${this.localeTextObsMin}&nbsp;</div>
+          <div class="slot-text observed-min-text">${temp_obs}</div>${units}
+          <div class="slot-text">&nbsp;(${this.localeTextFore}&nbsp;</div>
+          <div class="slot-text forecast-min-text">${temp_for}</div>${units}
+          <div class="slot-text">)</div>
+        </div>
+      </li>
+    `;
+    }
     get slotUvSummary() {
         const uv = this._config.entity_uv_alert_summary ? this.hass.states[this._config.entity_uv_alert_summary].state !== "unknown" ? this.hass.states[this._config.entity_uv_alert_summary].state : "n/a" : "---";
         return $ `
@@ -920,7 +1026,7 @@ let WeatherCard = class WeatherCard extends s$1 {
           <div class="slot-icon">
             <ha-icon icon="mdi:weather-sunny"></ha-icon>
           </div>
-          <div class="slot-text daytime-uv-text">${this.localeTextuvRating} ${uv}</div>
+          <div class="slot-text daytime-uv-text">${this.localeTextUVRating} ${uv}</div>
         </div>
       </li>
     `;
@@ -933,7 +1039,7 @@ let WeatherCard = class WeatherCard extends s$1 {
           <div class="slot-icon">
             <ha-icon icon="mdi:fire"></ha-icon>
           </div>
-          <div class="slot-text fire-danger-text">${this.localeTextfireDanger} ${fire}</div>
+          <div class="slot-text fire-danger-text">${this.localeTextFireDanger} ${fire}</div>
         </div>
       </li>`;
     }
@@ -1418,115 +1524,115 @@ let WeatherCard = class WeatherCard extends s$1 {
         return this._config.entity_sun && this.hass.states[this._config.entity_sun] !== undefined ? transformDayNight[this.hass.states[this._config.entity_sun].state] : 'day';
     }
     get iconStyle() {
-        return (this._config.option_icon_set) ? this._config.option_icon_set : `old`;
+        return (this._config.option_icon_set) ? this._config.option_icon_set : 'old';
     }
     get iconSunny() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `${this.dayOrNight}` : (iconStyle === "hybrid") ? `sunny-${this.dayOrNight}` : `sunny-${this.dayOrNight}`;
+        return (iconStyle === 'old') ? `${this.dayOrNight}` : (iconStyle === 'hybrid') ? `sunny-${this.dayOrNight}` : `sunny-${this.dayOrNight}`;
     }
     get iconClear() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `${this.dayOrNight}` : (iconStyle === "hybrid") ? `sunny-${this.dayOrNight}` : `clear-${this.dayOrNight}`;
+        return (iconStyle === 'old') ? `${this.dayOrNight}` : (iconStyle === 'hybrid') ? `sunny-${this.dayOrNight}` : `clear-${this.dayOrNight}`;
     }
     get iconMostlySunny() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `fair-${this.dayOrNight}` : (iconStyle === "hybrid") ? `fair-${this.dayOrNight}` : `fair-${this.dayOrNight}`;
+        return (iconStyle === 'old') ? `fair-${this.dayOrNight}` : (iconStyle === 'hybrid') ? `fair-${this.dayOrNight}` : `fair-${this.dayOrNight}`;
     }
     get iconPartlyCloudy() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-${this.dayOrNight}-3` : (iconStyle === "hybrid") ? `cloudy-${this.dayOrNight}-3` : `partly-cloudy-${this.dayOrNight}`;
+        return (iconStyle === 'old') ? `cloudy-${this.dayOrNight}-3` : (iconStyle === 'hybrid') ? `cloudy-${this.dayOrNight}-3` : `partly-cloudy-${this.dayOrNight}`;
     }
     get iconCloudy() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-original` : (iconStyle === "hybrid") ? `cloudy-original` : `cloudy`;
+        return (iconStyle === 'old') ? `cloudy-original` : (iconStyle === 'hybrid') ? `cloudy-original` : `cloudy`;
     }
     get iconHazy() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-${this.dayOrNight}-1` : (iconStyle === "hybrid") ? `haze` : `haze`;
+        return (iconStyle === 'old') ? `cloudy-${this.dayOrNight}-1` : (iconStyle === 'hybrid') ? `haze` : `haze`;
     }
     get iconFrost() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-${this.dayOrNight}-1` : (iconStyle === "hybrid") ? `cloudy-${this.dayOrNight}-1` : `cloudy-${this.dayOrNight}-1`;
+        return (iconStyle === 'old') ? `cloudy-${this.dayOrNight}-1` : (iconStyle === 'hybrid') ? `cloudy-${this.dayOrNight}-1` : `cloudy-${this.dayOrNight}-1`;
     }
     get iconLightRain() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-1` : (iconStyle === "hybrid") ? `rainy-1-${this.dayOrNight}` : `rainy-1-${this.dayOrNight}`;
+        return (iconStyle === 'old') ? `rainy-1` : (iconStyle === 'hybrid') ? `rainy-1-${this.dayOrNight}` : `rainy-1-${this.dayOrNight}`;
     }
     get iconWindy() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-original` : (iconStyle === "hybrid") ? `wind` : `wind`;
+        return (iconStyle === 'old') ? `cloudy-original` : (iconStyle === 'hybrid') ? `wind` : `wind`;
     }
     get iconFog() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-original` : (iconStyle === "hybrid") ? `fog` : `fog`;
+        return (iconStyle === 'old') ? `cloudy-original` : (iconStyle === 'hybrid') ? `fog` : `fog`;
     }
     get iconShowers() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-1` : (iconStyle === "hybrid") ? `rainy-1-${this.dayOrNight}` : `rainy-1-${this.dayOrNight}`;
+        return (iconStyle === 'old') ? `rainy-1` : (iconStyle === 'hybrid') ? `rainy-1-${this.dayOrNight}` : `rainy-1-${this.dayOrNight}`;
     }
     get iconRain() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-5` : (iconStyle === "hybrid") ? `rainy-5` : `rain`;
+        return (iconStyle === 'old') ? `rainy-5` : (iconStyle === 'hybrid') ? `rainy-5` : `rain`;
     }
     get iconDust() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-${this.dayOrNight}-1` : (iconStyle === "hybrid") ? `haze` : `haze`;
+        return (iconStyle === 'old') ? `cloudy-${this.dayOrNight}-1` : (iconStyle === 'hybrid') ? `haze` : `haze`;
     }
     get iconSnow() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `snowy-6` : (iconStyle === "hybrid") ? `snowy-6` : `snow`;
+        return (iconStyle === 'old') ? `snowy-6` : (iconStyle === 'hybrid') ? `snowy-6` : `snow`;
     }
     get iconSnowRain() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `snowy-6` : (iconStyle === "hybrid") ? `rain-and-snow-mix` : `rain-and-snow-mix`;
+        return (iconStyle === 'old') ? `snowy-6` : (iconStyle === 'hybrid') ? `rain-and-snow-mix` : `rain-and-snow-mix`;
     }
     get iconStorm() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `scattered-thunderstorms` : (iconStyle === "hybrid") ? `scattered-thunderstorms` : `scattered-thunderstorms`;
+        return (iconStyle === 'old') ? `scattered-thunderstorms` : (iconStyle === 'hybrid') ? `scattered-thunderstorms` : `scattered-thunderstorms`;
     }
     get iconLightShowers() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-2` : (iconStyle === "hybrid") ? `rainy-2` : `rainy-2`;
+        return (iconStyle === 'old') ? `rainy-2` : (iconStyle === 'hybrid') ? `rainy-2` : `rainy-2`;
     }
     get iconHeavyShowers() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-6` : (iconStyle === "hybrid") ? `rainy-6` : `rainy-6`;
+        return (iconStyle === 'old') ? `rainy-6` : (iconStyle === 'hybrid') ? `rainy-6` : `rainy-6`;
     }
     get iconCyclone() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `tornado` : (iconStyle === "hybrid") ? `tornado` : `tornado`;
+        return (iconStyle === 'old') ? `tornado` : (iconStyle === 'hybrid') ? `tornado` : `tornado`;
     }
     get iconClearDay() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `day` : (iconStyle === "hybrid") ? `day` : `clear-day`;
+        return (iconStyle === 'old') ? `day` : (iconStyle === 'hybrid') ? `day` : `clear-day`;
     }
     get iconClearNight() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `night` : (iconStyle === "hybrid") ? `night` : `clear-night`;
+        return (iconStyle === 'old') ? `night` : (iconStyle === 'hybrid') ? `night` : `clear-night`;
     }
     get iconSleet() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-2` : (iconStyle === "hybrid") ? `rain-and-sleet-mix` : `rain-and-sleet-mix`;
+        return (iconStyle === 'old') ? `rainy-2` : (iconStyle === 'hybrid') ? `rain-and-sleet-mix` : `rain-and-sleet-mix`;
     }
     get iconPartlyCloudyDay() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-day-3` : (iconStyle === "hybrid") ? `cloudy-day-3` : `partly-cloudy-day`;
+        return (iconStyle === 'old') ? `cloudy-day-3` : (iconStyle === 'hybrid') ? `cloudy-day-3` : `partly-cloudy-day`;
     }
     get iconPartlyCloudyNight() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-night-3` : (iconStyle === "hybrid") ? `cloudy-night-3` : `partly-cloudy-night`;
+        return (iconStyle === 'old') ? `cloudy-night-3` : (iconStyle === 'hybrid') ? `cloudy-night-3` : `partly-cloudy-night`;
     }
     get iconHail() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `rainy-7` : (iconStyle === "hybrid") ? `rainy-7` : `rainy-7`;
+        return (iconStyle === 'old') ? `rainy-7` : (iconStyle === 'hybrid') ? `rainy-7` : `rainy-7`;
     }
     get iconLightning() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `thunder` : (iconStyle === "hybrid") ? `thunder` : `thunder`;
+        return (iconStyle === 'old') ? `thunder` : (iconStyle === 'hybrid') ? `thunder` : `thunder`;
     }
     get iconWindyVariant() {
         const iconStyle = this.iconStyle;
-        return (iconStyle === "true") ? `cloudy-${this.dayOrNight}-3` : (iconStyle === "hybrid") ? `cloudy-${this.dayOrNight}-3` : `cloudy-${this.dayOrNight}-3`;
+        return (iconStyle === 'old') ? `cloudy-${this.dayOrNight}-3` : (iconStyle === 'hybrid') ? `cloudy-${this.dayOrNight}-3` : `cloudy-${this.dayOrNight}-3`;
     }
     get locale() {
         try {
@@ -1537,7 +1643,7 @@ let WeatherCard = class WeatherCard extends s$1 {
             return undefined;
         }
     }
-    get localeTextfeelsLike() {
+    get localeTextFeelsLike() {
         switch (this.locale) {
             case 'it': return "Percepito";
             case 'fr': return "Ressenti";
@@ -1551,7 +1657,27 @@ let WeatherCard = class WeatherCard extends s$1 {
             default: return "Feels like";
         }
     }
-    get localeTextmaxToday() {
+    get localeTextObservedMax() {
+        switch (this.locale) {
+            default: return "Observed Max";
+        }
+    }
+    get localeTextObservedMin() {
+        switch (this.locale) {
+            default: return "Observed Min";
+        }
+    }
+    get localeTextObsMax() {
+        switch (this.locale) {
+            default: return "Obs Max";
+        }
+    }
+    get localeTextObsMin() {
+        switch (this.locale) {
+            default: return "Obs Min";
+        }
+    }
+    get localeTextForecastMax() {
         switch (this.locale) {
             case 'it': return "Max oggi";
             case 'fr': return "Max aujourd'hui";
@@ -1562,10 +1688,10 @@ let WeatherCard = class WeatherCard extends s$1 {
             case 'da': return "Højeste i dag";
             case 'ru': return "Макс сегодня";
             case 'ua': return "Макс сьогодні";
-            default: return "Today's High";
+            default: return "Forecast Max";
         }
     }
-    get localeTextminToday() {
+    get localeTextForecastMin() {
         switch (this.locale) {
             case 'it': return "Min oggi";
             case 'fr': return "Min aujourd'hui";
@@ -1576,10 +1702,10 @@ let WeatherCard = class WeatherCard extends s$1 {
             case 'da': return "Laveste i dag";
             case 'ru': return "мин сегодня";
             case 'ua': return "Мін сьогодні";
-            default: return "Today's Low";
+            default: return "Forecast Min";
         }
     }
-    get localeTextposToday() {
+    get localeTextPosToday() {
         switch (this.locale) {
             case 'it': return "Previsione";
             case 'fr': return "Prévoir";
@@ -1593,7 +1719,7 @@ let WeatherCard = class WeatherCard extends s$1 {
             default: return "Forecast";
         }
     }
-    get localeTextposTomorrow() {
+    get localeTextPosTomorrow() {
         switch (this.locale) {
             case 'it': return "Prev per domani";
             case 'fr': return "Prév demain";
@@ -1607,7 +1733,21 @@ let WeatherCard = class WeatherCard extends s$1 {
             default: return "Fore Tom";
         }
     }
-    get localeTextuvRating() {
+    get localeTextFore() {
+        switch (this.locale) {
+            case 'it': return "Prev";
+            case 'fr': return "Prév";
+            case 'de': return "Prog";
+            case 'nl': return "Prog";
+            case 'pl': return "Prog";
+            case 'he': return "תַחֲזִית";
+            case 'da': return "Prog";
+            case 'ru': return "Прогноз";
+            case 'ua': return "Прогноз";
+            default: return "Fore";
+        }
+    }
+    get localeTextUVRating() {
         switch (this.locale) {
             case 'it': return "UV";
             case 'fr': return "UV";
@@ -1621,7 +1761,7 @@ let WeatherCard = class WeatherCard extends s$1 {
             default: return "UV";
         }
     }
-    get localeTextfireDanger() {
+    get localeTextFireDanger() {
         switch (this.locale) {
             case 'it': return "Fuoco";
             case 'fr': return "Feu";
@@ -10548,15 +10688,30 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
             tmpConfig['option_pressure_decimals'] = tmpConfig.show_decimals_pressure;
             delete tmpConfig['show_decimals_pressure'];
         }
+        if (tmpConfig.entity_daytime_high) {
+            tmpConfig['Entity_forecast_max'] = tmpConfig.entity_daytime_high;
+            delete tmpConfig['entity_daytime_high'];
+        }
+        if (tmpConfig.entity_daytime_low) {
+            tmpConfig['entity_forecast_min'] = tmpConfig.entity_daytime_low;
+            delete tmpConfig['entity_daytime_low'];
+        }
+        // Remane slot entries
+        for (const slot of ['slot_l1, slot_l2, slot_l3, slot_l4, slot_l5, slot_l6, slot_l7, slot_l8, slot_r1, slot_r2, slot_r3, slot_r4, slot_r5, slot_r6, slot_r7, slot_r8']) {
+            if (tmpConfig[slot] === 'daytime_high')
+                tmpConfig[slot] = 'forecast_max';
+            if (tmpConfig[slot] === 'daytime_low')
+                tmpConfig[slot] = 'forecast_min';
+        }
         // Remove unused entries
-        const keysOfProps = ["type", "card_config_version", "section_order", "show_section_title", "show_section_main", "show_section_extended", "show_section_slots", "show_section_daily_forecast", "text_card_title", "entity_update_time", "text_update_time_prefix", "entity_temperature", "entity_apparent_temp", "entity_current_conditions", "entity_current_text", "show_decimals", "show_separator", "entity_daily_summary", "extended_use_attr", "extended_name_attr", "slot_l1", "slot_l2", "slot_l3", "slot_l4", "slot_l5", "slot_l6", "slot_r1", "slot_r2", "slot_r3", "slot_r4", "slot_r5", "slot_r6", "entity_humidity", "entity_pressure", "entity_visibility", "entity_wind_bearing", "entity_wind_speed", "entity_wind_gust", "entity_wind_speed_kt", "entity_wind_gust_kt", "entity_temp_next", "entity_temp_next_label", "entity_temp_following", "entity_temp_following_label", "entity_daytime_high", "entity_daytime_low", "entity_fire_danger", "entity_fire_danger_summary", "entity_pop", "entity_possible_today", "entity_sun", "entity_uv_alert_summary", "entity_rainfall", "entity_todays_fire_danger", "entity_todays_uv_forecast", "custom1_value", "custom1_icon", "custom1_units", "custom2_value", "custom2_icon", "custom2_units", "custom3_value", "custom3_icon", "custom3_units", "custom4_value", "custom4_icon", "custom4_units", "entity_forecast_icon_1", "entity_pop_1", "entity_pos_1", "entity_summary_1", "entity_forecast_low_temp_1", "entity_forecast_high_temp_1", "entity_extended_1", "daily_forecast_layout", "daily_forecast_days", "daily_extended_forecast_days", "daily_extended_use_attr", "daily_extended_name_attr", "option_today_decimals", "option_pressure_decimals", "option_locale", "option_static_icons", "option_icon_set", "option_time_format", "show_decimals_today", "old_daily_format", "show_beaufort", "index", "view_index"];
+        const keysOfProps = ["type", "card_config_version", "section_order", "show_section_title", "show_section_main", "show_section_extended", "show_section_slots", "show_section_daily_forecast", "text_card_title", "entity_update_time", "text_update_time_prefix", "entity_temperature", "entity_apparent_temp", "entity_current_conditions", "entity_current_text", "show_decimals", "show_separator", "entity_daily_summary", "extended_use_attr", "extended_name_attr", "slot_l1", "slot_l2", "slot_l3", "slot_l4", "slot_l5", "slot_l6", "slot_r1", "slot_r2", "slot_r3", "slot_r4", "slot_r5", "slot_r6", "entity_humidity", "entity_pressure", "entity_visibility", "entity_wind_bearing", "entity_wind_speed", "entity_wind_gust", "entity_wind_speed_kt", "entity_wind_gust_kt", "entity_temp_next", "entity_temp_next_label", "entity_temp_following", "entity_temp_following_label", "entity_forecast_max", "entity_forecast_min", "entity_observed_max", "entity_observed_min", "entity_fire_danger", "entity_fire_danger_summary", "entity_pop", "entity_possible_today", "entity_sun", "entity_uv_alert_summary", "entity_rainfall", "entity_todays_fire_danger", "entity_todays_uv_forecast", "custom1_value", "custom1_icon", "custom1_units", "custom2_value", "custom2_icon", "custom2_units", "custom3_value", "custom3_icon", "custom3_units", "custom4_value", "custom4_icon", "custom4_units", "entity_forecast_icon_1", "entity_pop_1", "entity_pos_1", "entity_summary_1", "entity_forecast_low_temp_1", "entity_forecast_high_temp_1", "entity_extended_1", "daily_forecast_layout", "daily_forecast_days", "daily_extended_forecast_days", "daily_extended_use_attr", "daily_extended_name_attr", "option_today_decimals", "option_pressure_decimals", "option_locale", "option_static_icons", "option_icon_set", "option_time_format", "show_decimals_today", "old_daily_format", "show_beaufort", "index", "view_index"];
         for (const element in this._config) {
             if (!keysOfProps.includes(element)) {
                 console.info(`removing ${element}`);
                 delete tmpConfig[element];
             }
         }
-        tmpConfig = Object.assign(Object.assign({}, tmpConfig), { card_config_version: 2 });
+        tmpConfig = Object.assign(Object.assign({}, tmpConfig), { card_config_version: 3 });
         this._config = tmpConfig;
         ne(this, 'config-changed', { config: this._config });
     }
@@ -10650,6 +10805,14 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_l6) || '';
     }
+    get _slot_l7() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_l7) || '';
+    }
+    get _slot_l8() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_l8) || '';
+    }
     get _slot_r1() {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_r1) || '';
@@ -10674,13 +10837,29 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         var _a;
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_r6) || '';
     }
-    get _entity_daytime_high() {
+    get _slot_r7() {
         var _a;
-        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_daytime_high) || '';
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_r7) || '';
     }
-    get _entity_daytime_low() {
+    get _slot_r8() {
         var _a;
-        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_daytime_low) || '';
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_r8) || '';
+    }
+    get _entity_observed_max() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_observed_max) || '';
+    }
+    get _entity_observed_min() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_observed_min) || '';
+    }
+    get _entity_forecast_max() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_forecast_max) || '';
+    }
+    get _entity_forecast_min() {
+        var _a;
+        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity_forecast_min) || '';
     }
     get _entity_temp_next() {
         var _a;
@@ -10879,34 +11058,50 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.option_locale) || '';
     }
     get _optional_entities() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         const entities = new Set();
         for (const slot of [
-            ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_l1) || 'daytime_high',
-            ((_b = this._config) === null || _b === void 0 ? void 0 : _b.slot_l2) || 'daytime_low',
+            ((_a = this._config) === null || _a === void 0 ? void 0 : _a.slot_l1) || 'forecast_max',
+            ((_b = this._config) === null || _b === void 0 ? void 0 : _b.slot_l2) || 'forecast_min',
             ((_c = this._config) === null || _c === void 0 ? void 0 : _c.slot_l3) || 'wind',
             ((_d = this._config) === null || _d === void 0 ? void 0 : _d.slot_l4) || 'pressure',
             ((_e = this._config) === null || _e === void 0 ? void 0 : _e.slot_l5) || 'sun_next',
-            ((_f = this._config) === null || _f === void 0 ? void 0 : _f.slot_l6) || 'sun_next',
-            ((_g = this._config) === null || _g === void 0 ? void 0 : _g.slot_r1) || 'pop',
-            ((_h = this._config) === null || _h === void 0 ? void 0 : _h.slot_r2) || 'humidity',
-            ((_j = this._config) === null || _j === void 0 ? void 0 : _j.slot_r3) || 'uv_summary',
-            ((_k = this._config) === null || _k === void 0 ? void 0 : _k.slot_r4) || 'fire_summary',
-            ((_l = this._config) === null || _l === void 0 ? void 0 : _l.slot_r5) || 'sun_following',
-            ((_m = this._config) === null || _m === void 0 ? void 0 : _m.slot_r6) || 'sun_next',
+            ((_f = this._config) === null || _f === void 0 ? void 0 : _f.slot_l6) || 'remove',
+            ((_g = this._config) === null || _g === void 0 ? void 0 : _g.slot_l7) || 'remove',
+            ((_h = this._config) === null || _h === void 0 ? void 0 : _h.slot_l8) || 'remove',
+            ((_j = this._config) === null || _j === void 0 ? void 0 : _j.slot_r1) || 'pop',
+            ((_k = this._config) === null || _k === void 0 ? void 0 : _k.slot_r2) || 'humidity',
+            ((_l = this._config) === null || _l === void 0 ? void 0 : _l.slot_r3) || 'uv_summary',
+            ((_m = this._config) === null || _m === void 0 ? void 0 : _m.slot_r4) || 'fire_summary',
+            ((_o = this._config) === null || _o === void 0 ? void 0 : _o.slot_r5) || 'sun_following',
+            ((_p = this._config) === null || _p === void 0 ? void 0 : _p.slot_r6) || 'remove',
+            ((_q = this._config) === null || _q === void 0 ? void 0 : _q.slot_r7) || 'remove',
+            ((_r = this._config) === null || _r === void 0 ? void 0 : _r.slot_r8) || 'remove',
         ]) {
             switch (slot) {
-                case 'daytime_high':
-                    entities.add('entity_daytime_high');
+                case 'observed_max':
+                    entities.add('entity_observed_max');
                     break;
-                case 'daytime_low':
-                    entities.add('entity_daytime_low');
+                case 'observed_min':
+                    entities.add('entity_observed_min');
+                    break;
+                case 'forecast_max':
+                    entities.add('entity_forecast_max');
+                    break;
+                case 'forecast_min':
+                    entities.add('entity_forecast_min');
                     break;
                 case 'temp_next':
                     entities.add('entity_temp_next').add('entity_temp_next_label');
                     break;
                 case 'temp_following':
                     entities.add('entity_temp_following').add('entity_temp_following_label');
+                    break;
+                case 'temp_maximums':
+                    entities.add('entity_forecast_max').add('entity_observed_max');
+                    break;
+                case 'temp_minimums':
+                    entities.add('entity_forecast_min').add('entity_observed_min');
                     break;
                 case 'wind':
                     entities.add('entity_wind_bearing').add('entity_wind_speed').add('entity_wind_gust');
@@ -10924,6 +11119,8 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
                     entities.add('entity_sun');
                     break;
                 case 'pop':
+                    entities.add('entity_pop');
+                    break;
                 case 'popforecast':
                     entities.add('entity_pop').add('entity_possible_today');
                     break;
@@ -10962,16 +11159,28 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
                     break;
             }
         }
-        const entity_daytime_high = entities.has("entity_daytime_high") ?
+        const entity_observed_max = entities.has("entity_observed_max") ?
             $ `
-        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_daytime_high'} .value=${this._entity_daytime_high}
-          name="entity_daytime_high" label="Entity Daytime High (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_observed_max'} .value=${this._entity_observed_max}
+          name="entity_observed_max" label="Entity Observed Max (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
         </ha-entity-picker>
       ` : '';
-        const entity_daytime_low = entities.has("entity_daytime_low") ?
+        const entity_observed_min = entities.has("entity_observed_min") ?
             $ `
-        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_daytime_low'} .value=${this._entity_daytime_low}
-          name="entity_daytime_low" label="Entity Daytime Low (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_observed_min'} .value=${this._entity_observed_min}
+          name="entity_observed_min" label="Entity Observed Min (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
+        const entity_forecast_max = entities.has("entity_forecast_max") ?
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_forecast_max'} .value=${this._entity_forecast_max}
+          name="entity_forecast_max" label="Entity Forecast Max (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
+        </ha-entity-picker>
+      ` : '';
+        const entity_forecast_min = entities.has("entity_forecast_min") ?
+            $ `
+        <ha-entity-picker .hass=${this.hass} .configValue=${'entity_forecast_min'} .value=${this._entity_forecast_min}
+          name="entity_forecast_min" label="Entity Forecast Min (optional)" allow-custom-entity @value-changed=${this._valueChangedPicker}>
         </ha-entity-picker>
       ` : '';
         const entity_temp_next = entities.has("entity_temp_next") ?
@@ -11141,8 +11350,10 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
         </div>
       ` : '';
         return $ `
-      ${entity_daytime_high}
-      ${entity_daytime_low}
+      ${entity_observed_max}
+      ${entity_observed_min}
+      ${entity_forecast_max}
+      ${entity_forecast_min}
       ${entity_temp_next}
       ${entity_temp_next_label}
       ${entity_temp_following}
@@ -11178,7 +11389,7 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
     async firstUpdated() {
         if (this._config && this.hass) {
             console.info(`Card Config Version=${this._config.card_config_version || 'no version'}`);
-            if (this._config.card_config_version !== 2) {
+            if (this._config.card_config_version !== 3) {
                 this._configCleanup();
             }
         }
@@ -11337,14 +11548,18 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
       <mwc-list-item value="wind">Current wind conditions</mwc-list-item>
       <mwc-list-item value="wind_kt">Current wind conditions kts</mwc-list-item>
       <mwc-list-item value="visibility">Current visibility</mwc-list-item>
-      <mwc-list-item value="daytime_high">Today's forecast high</mwc-list-item>
-      <mwc-list-item value="daytime_low">Today's forecast low</mwc-list-item>
+      <mwc-list-item value="observed_max">Today's Observed max</mwc-list-item>
+      <mwc-list-item value="observed_min">Today's Observed min</mwc-list-item>
+      <mwc-list-item value="forecast_max">Today's Forecast max</mwc-list-item>
+      <mwc-list-item value="forecast_min">Today's Forecast min</mwc-list-item>
       <mwc-list-item value="temp_next">Next temp min/max</mwc-list-item>
       <mwc-list-item value="temp_following">Following temp min/max</mwc-list-item>
+      <mwc-list-item value="temp_maximums">Observed/forecast max</mwc-list-item>
+      <mwc-list-item value="temp_minimums">Observed/forecast min</mwc-list-item>
       <mwc-list-item value="sun_next">Next sun rise/set time</mwc-list-item>
       <mwc-list-item value="sun_following">Following sun rise/set time</mwc-list-item>
-      <mwc-list-item value="pop">pop</mwc-list-item>
-      <mwc-list-item value="popforecast">popforecast</mwc-list-item>
+      <mwc-list-item value="pop">Chance of rain</mwc-list-item>
+      <mwc-list-item value="popforecast">Rainfall forecast</mwc-list-item>
       <mwc-list-item value="possible_today">Today's forecast rainfall</mwc-list-item>
       <mwc-list-item value="possible_tomorrow">Tomorrow's forecast rainfall</mwc-list-item>
       <mwc-list-item value="uv_summary">Today's UV forecast</mwc-list-item>
@@ -11412,6 +11627,26 @@ let WeatherCardEditor = class WeatherCardEditor extends e$1(s$1) {
           ${slotValues}
         </ha-select>
         <ha-select label="Slot Right 6 (optional)" .configValue=${'slot_r6'} .value=${this._slot_r6}
+          @selected=${this._valueChanged} @closed=${(ev) => ev.stopPropagation()}>
+          ${slotValues}
+        </ha-select>
+      </div>
+      <div class="side-by-side">
+        <ha-select label="Slot Left 7 (optional)" .configValue=${'slot_l7'} .value=${this._slot_l7}
+          @selected=${this._valueChanged} @closed=${(ev) => ev.stopPropagation()}>
+          ${slotValues}
+        </ha-select>
+        <ha-select label="Slot Right 7 (optional)" .configValue=${'slot_r7'} .value=${this._slot_r7}
+          @selected=${this._valueChanged} @closed=${(ev) => ev.stopPropagation()}>
+          ${slotValues}
+        </ha-select>
+      </div>
+      <div class="side-by-side">
+        <ha-select label="Slot Left 8 (optional)" .configValue=${'slot_l8'} .value=${this._slot_l8}
+          @selected=${this._valueChanged} @closed=${(ev) => ev.stopPropagation()}>
+          ${slotValues}
+        </ha-select>
+        <ha-select label="Slot Right 8 (optional)" .configValue=${'slot_r8'} .value=${this._slot_r8}
           @selected=${this._valueChanged} @closed=${(ev) => ev.stopPropagation()}>
           ${slotValues}
         </ha-select>
