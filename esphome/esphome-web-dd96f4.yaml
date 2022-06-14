@@ -1,8 +1,14 @@
 substitutions:
   esp_name: "waveshare-eink"
-  ip_address: 192.168.1.108
+  ip_address: 192.168.1.201
   ip_gw: 192.168.1.1
   ip_netmask: 255.255.255.0
+  gpio_spi_clk_pin: GPIO13
+  gpio_spi_mosi_pin: GPIO14
+  gpio_cs_pin: GPIO15
+  gpio_dc_pin: GPIO27
+  gpio_reset_pin: GPIO26
+  gpio_busy_pin: GPIO25
   
 esphome:
   name: "waveshare-eink"
@@ -35,11 +41,17 @@ captive_portal:
 web_server:
   port: 80
   include_internal: true
-  
+
 time:
   - platform: homeassistant
-    id: ntp
     timezone: Australia/Sydney  
+    id: current_time
+    on_time_sync:
+      - component.update: uptime_timestamp
+    
+switch:
+  - platform: restart
+    name: "${esp_name} Restart"    
     
 text_sensor:
   - platform: wifi_info
@@ -62,31 +74,58 @@ text_sensor:
   - platform: template
     name: "${esp_name} Uptime"
     id: uptime_human
-    icon: mdi:clock-start
+    icon: mdi:clock-start    
 
   - platform: version
     name: "${esp_name} ESPHome Version"
     entity_category: diagnostic
     
+sensor:
+  - platform: uptime
+    name: "${esp_name} Uptime Sec"
+    id: uptime_sec
+    internal: true
+
+  - platform: template
+    id: uptime_timestamp
+    name: "${esp_name}  Uptime"
+    device_class: "timestamp"
+    accuracy_decimals: 0
+    update_interval: never
+    lambda: |-
+      static float timestamp = (
+        id(current_time).utcnow().timestamp - id(uptime_sec).state
+      );
+      return timestamp;    
+    
 spi:
-  clk_pin: 13
-  mosi_pin: 14
-  
+  clk_pin: $gpio_spi_clk_pin
+  mosi_pin: $gpio_spi_mosi_pin
+  id: epaper_display
     
 font:
   - file: "fonts/GoogleSans-Medium.ttf"
-    id: segoe
-    size: 64
+    id: main_sensor_unit
+    size: 20
     glyphs: |-
       !"%()+=,-_.:°/|0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz'
 
 display:
   - platform: waveshare_epaper
-    cs_pin: 15
-    dc_pin: 27
-    busy_pin: 25
-    reset_pin: 26
-    model: 7.50inv2
-    update_interval: 30s
-    lambda: |
-     it.print(0, 0, id(segoe), "E-Paper is awesome!");  
+    id: epaperdisplay
+    cs_pin: $gpio_cs_pin
+    busy_pin: $gpio_busy_pin
+    reset_pin: $gpio_reset_pin
+    dc_pin: $gpio_dc_pin
+    model: 7.50inV2alt
+    update_interval: 10s
+    reset_duration: 2ms
+    rotation: 0°
+    lambda: |-
+
+      static const char* TAG = "epaperdisplay";
+      ESP_LOGD(TAG, "Writing to e-ink display");
+
+      it.print(775, 17, id(main_sensor_unit), TextAlign::BASELINE_RIGHT, "E-Paper is awesome!");
+      it.print(0, 460, id(main_sensor_unit), "E-Paper is awesome!");
+      
