@@ -1,0 +1,11 @@
+{
+    "domain": "jellyfin",
+    "name": "Jellyfin",
+    "version": "1.1.1",
+    "config_flow": true,
+    "documentation": "https://github.com/koying/jellyfin_ha",
+    "issue_tracker": "https://github.com/koying/jellyfin_ha/issues",
+    "requirements": ["jellyfin-apiclient-python==1.7.2"],
+    "codeowners": ["@koying"],
+    "iot_class": "local_push"
+  }

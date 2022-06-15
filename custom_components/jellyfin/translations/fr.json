@@ -1,0 +1,53 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Le serveur est déjà configuré",
+            "conn_error": "Impossible de se connecter."
+        },
+        "error": {
+            "cannot_connect": "Impossible de se connecter",
+            "unknown": "Erreur inconnue"
+        },
+        "flow_title": "Jellyfin Configuration",
+        "step": {
+            "user": {
+                "data": {
+                    "url": "URL Serveur",
+                    "username": "Utilisateur",
+                    "password": "Mot de passe",
+                    "verify_ssl": "Vérification SSL",
+                    "generate_upcoming": "Générer les données pour la carte Upcoming",
+                    "generate_yamc": "Générer les données pour la carte YAMC"
+                },
+                "description": "Configuration des paramètres de connexion.",
+                "title": "Jellyfin"
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "already_configured": "Le serveur est déjà configuré",
+            "conn_error": "Impossible de se connecter."
+        },
+        "error": {
+            "cannot_connect": "Impossible de se connecter",
+            "unknown": "Erreur inconnue"
+        },
+        "flow_title": "Jellyfin Configuration",
+        "step": {
+            "user": {
+                "data": {
+                    "url": "URL Serveur",
+                    "username": "Utilisateur",
+                    "password": "Mot de passe",
+                    "verify_ssl": "Vérification SSL",
+                    "generate_upcoming": "Générer les données pour la carte Upcoming",
+                    "generate_yamc": "Générer les données pour la carte YAMC"
+                },
+                "description": "Configuration des paramètres de connexion.",
+                "title": "Jellyfin"
+            }
+        }
+    },
+    "title": "Jellyfin"
+}

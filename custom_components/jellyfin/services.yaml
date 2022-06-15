@@ -1,0 +1,84 @@
+trigger_scan:
+  # Description of the service
+  name: Trigger library scan
+  description: "Trigger a scan on Jellyfin"
+  fields:
+    entity_id:
+      name: Entity
+      description: Jellyfin sensor entity.
+      required: true
+      example: "sensor.jellyfin_cloud"
+      selector:
+        entity:
+          integration: jellyfin
+          domain: sensor
+
+search:
+  # Description of the service
+  name: Browse to an item
+  description: "Search for items on a Jellyfin device"
+  fields:
+    entity_id:
+      name: Entity
+      description: Jellyfin sensor entity.
+      required: true
+      example: "sensor.jellyfin_cloud"
+      selector:
+        entity:
+          integration: jellyfin
+          domain: sensor
+    id:
+      name: Search term
+      description: Search terms to look for.
+      required: true
+      example: "bourne"
+      selector:
+        text:
+
+
+browse:
+  # Description of the service
+  name: Browse to an item
+  description: "Display an item info on a Jellyfin device"
+  fields:
+    entity_id:
+      name: Entity
+      description: Jellyfin media player entity.
+      required: true
+      example: "media_player.jellyfin_firefox"
+      selector:
+        entity:
+          integration: jellyfin
+          domain: media_player
+    id:
+      name: Item Id
+      description: Id of the item to browse to.
+      required: true
+      example: "82f6bfdbdb610529c086b3e2bca71ad6"
+      selector:
+        text:
+
+          
+delete:
+  # Description of the service
+  name: Delete an item
+  description: "Delete an item from the Jellyfin library and filesystem"
+  fields:
+    entity_id:
+      name: Entity
+      description: Jellyfin sensor entity.
+      required: true
+      example: "sensor.jellyfin_cloud"
+      selector:
+        entity:
+          integration: jellyfin
+          domain: sensor
+    id:
+      name: Item Id
+      description: Id of the item to browse to.
+      required: true
+      example: "82f6bfdbdb610529c086b3e2bca71ad6"
+      selector:
+        text:
+
+          

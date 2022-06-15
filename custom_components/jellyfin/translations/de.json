@@ -1,0 +1,53 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Der Service ist bereits konfiguriert.",
+            "conn_error": "Verbindung nicht möglich."
+        },
+        "error": {
+            "cannot_connect": "Verbindung nicht möglich",
+            "unknown": "Unbekannter Fehler"
+        },
+        "flow_title": "Jellyfin Konfiguration",
+        "step": {
+            "user": {
+                "data": {
+                    "url": "Host URL",
+                    "username": "Benutzername",
+                    "password": "Passwort",
+                    "verify_ssl": "Verifiziere SSL-Host",
+                    "generate_upcoming": "Generiere Bibliothekskarten für kommende Medien",
+                    "generate_yamc": "Generiere YAMC-Daten"
+                },
+                "description": "Konfiguriere die Verbindungsdetails.",
+                "title": "Jellyfin"
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "already_configured": "Der Service ist bereits konfiguriert.",
+            "conn_error": "Verbindung nicht möglich."
+        },
+        "error": {
+            "cannot_connect": "Verbindung nicht möglich",
+            "unknown": "Unknown Error"
+        },
+        "flow_title": "Jellyfin Konfiguration",
+        "step": {
+            "user": {
+                "data": {
+                    "url": "Host URL",
+                    "username": "Benutzername",
+                    "password": "Passwort",
+                    "verify_ssl": "Verifiziere SSL-Host",
+                    "generate_upcoming": "Generiere Bibliothekskarten für kommende Medien",
+                    "generate_yamc": "Generiere YAMC-Daten"
+                },
+                "description": "Konfiguriere die Verbindungsdetails.",
+                "title": "Jellyfin"
+            }
+        }
+    },
+    "title": "Jellyfin"
+}

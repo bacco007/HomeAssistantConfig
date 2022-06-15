@@ -1,0 +1,53 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Service is already configured",
+            "conn_error": "Unable to connect."
+        },
+        "error": {
+            "cannot_connect": "Unable to connect",
+            "unknown": "Unknown Error"
+        },
+        "flow_title": "Jellyfin Configuration",
+        "step": {
+            "user": {
+                "data": {
+                    "url": "Host URL",
+                    "username": "Username",
+                    "password": "Password",
+                    "verify_ssl": "Verify SSL host",
+                    "generate_upcoming": "Generate Upcoming card data",
+                    "generate_yamc": "Generate YAMC card data"
+                },
+                "description": "Configure the connection details.",
+                "title": "Jellyfin"
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "already_configured": "Service is already configured",
+            "conn_error": "Unable to connect."
+        },
+        "error": {
+            "cannot_connect": "Unable to connect",
+            "unknown": "Unknown Error"
+        },
+        "flow_title": "Jellyfin Configuration",
+        "step": {
+            "user": {
+                "data": {
+                    "url": "Host URL",
+                    "username": "Username",
+                    "password": "Password",
+                    "verify_ssl": "Verify SSL host",
+                    "generate_upcoming": "Generate Upcoming card data",
+                    "generate_yamc": "Generate YAMC card data"
+                },
+                "description": "Configure the connection details.",
+                "title": "Jellyfin"
+            }
+        }
+    },
+    "title": "Jellyfin"
+}
