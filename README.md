@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, June 15th 2022_
+_Stats as at 05:00, Thursday, June 16th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 431     | 2963         | 2033 | 90 |
+| unknown | 433     | 2969         | 2035 | 90 |
 
 Type | Qty
 -- | --
@@ -92,9 +92,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2033
+Sensor | 2035
 Sun | 1
-Switch | 166
+Switch | 167
 Weather | 9
 Zone | 3
 
@@ -266,6 +266,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_text](https://www.home-assistant.io/components/input_text) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
+| [jellyfin](https://www.home-assistant.io/components/jellyfin) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
 | [launch_library](https://www.home-assistant.io/components/launch_library) |
 | [light](https://www.home-assistant.io/components/light) |
@@ -478,6 +479,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
 | [switch.broadlink](https://www.home-assistant.io/components/switch.broadlink) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
+| [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.eufy_security](https://www.home-assistant.io/components/switch.eufy_security) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
