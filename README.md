@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, June 17th 2022_
+_Stats as at 05:00, Saturday, June 18th 2022_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| unknown | 433     | 2975         | 2035 | 90 |
+| unknown | 436     | 2947         | 2024 | 90 |
 
 Type | Qty
 -- | --
@@ -88,11 +88,11 @@ Input Boolean | 1
 Input Datetime | 3
 Input Text | 7
 Light | 5
-Media Player | 22
+Media Player | 23
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2035
+Sensor | 2024
 Sun | 1
 Switch | 167
 Weather | 9
@@ -287,6 +287,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
 | [media_player.dlna_dmr](https://www.home-assistant.io/components/media_player.dlna_dmr) |
+| [media_player.jellyfin](https://www.home-assistant.io/components/media_player.jellyfin) |
 | [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi) |
 | [media_player.plex](https://www.home-assistant.io/components/media_player.plex) |
 | [media_player.samsungtv](https://www.home-assistant.io/components/media_player.samsungtv) |
@@ -394,6 +395,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.ical](https://www.home-assistant.io/components/sensor.ical) |
 | [sensor.integration](https://www.home-assistant.io/components/sensor.integration) |
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
+| [sensor.jellyfin](https://www.home-assistant.io/components/sensor.jellyfin) |
 | [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
 | [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app) |
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
@@ -448,6 +450,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
+| [sensor.watchman](https://www.home-assistant.io/components/sensor.watchman) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
 | [sensor.weatherflow](https://www.home-assistant.io/components/sensor.weatherflow) |
@@ -576,6 +579,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [HomeAssistant Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
 - [Indoor Air Quality UK Index](https://github.com/Limych/ha-iaquk)
+- [Jellyfin](https://github.com/koying/jellyfin_ha)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
 - [NFL](https://github.com/zacs/ha_nfl)
