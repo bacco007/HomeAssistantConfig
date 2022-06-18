@@ -1,4 +1,3 @@
-icon: mdi:football-australian
 name: Upcoming Sport
+icon: mdi:football-australian
 show_in_navbar: false
-sort_order: 34
