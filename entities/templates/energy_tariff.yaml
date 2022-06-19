@@ -1,0 +1,48 @@
+---
+sensor:
+  - name: energy_timeofuse_tariff_type
+    unique_id: energy_timeofuse_tariff_type
+    state: >
+      {#-
+      Australian Essential Energy NSW Peak-shoulder-offpeak sensor defined
+      https://www.essentialenergy.com.au/-/media/Project/EssentialEnergy/Website/Files/Our-Network/TimeofUseBrochure.pdf
+      Peak: 5pm to 8pm Weekdays
+      Shoulder: 7am to 5pm + 8pm to 10pm Weekdays
+      Off-Peak: 10pm to 7am Weekdays, all weekend
+      #}
+      {%- set output = 'Shoulder'%}
+      {%- if (now().isoweekday()<6) and (17 <= now().hour <= 20) %}
+          {%-  set output = 'Peak' %}
+      {%- else %}
+        {%- if ((now().isoweekday()<6) and now().hour>= 22 or now().hour < 7) or (now().isoweekday()>=6) %}
+          {%- set output = 'Off-Peak' %}
+        {%- endif %}
+      {%- endif %}
+      {{output}}
+  - name: energy_timeofuse_tariff
+    unique_id: energy_timeofuse_tariff
+    device_class: monetary
+    state_class: measurement
+    unit_of_measurement: c/kWh
+    state: >
+      {%- if states('sensor.energy_timeofuse_tariff_type') in ("Peak") %}
+        35.56
+      {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Shoulder") %}
+        34.57
+      {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Off-Peak") %}
+        18.66
+      {%- endif %}
+  - name: energy_solar_tariff
+    unique_id: energy_solar_tariff
+    device_class: monetary
+    state_class: measurement
+    unit_of_measurement: c/kWh
+    state: >
+      5.00
+  - name: energy_supply_charge
+    unique_id: energy_supply_charge
+    device_class: monetary
+    state_class: measurement
+    unit_of_measurement: c/Day
+    state: >
+      147.00

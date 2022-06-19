@@ -4,7 +4,7 @@
 logger:
   default: error
   logs:
-    #root: debug
+    # root: debug
     homeassistant: fatal
     homeassistant.core: info
     homeassistant.config: debug
