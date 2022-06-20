@@ -3,31 +3,23 @@
 from __future__ import annotations
 
 import logging
-
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorEntityDescription,
-)
 from typing import Final
-from homeassistant.const import ENERGY_KILO_WATT_HOUR, ENERGY_WATT_HOUR, ATTR_IDENTIFIERS, ATTR_MANUFACTURER, ATTR_MODEL, ATTR_NAME
-from homeassistant.helpers.device_registry import DeviceEntryType
+
+from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
+                                             SensorEntityDescription)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ENERGY_KILO_WATT_HOUR
-from homeassistant.helpers.entity import EntityCategory
+from homeassistant.const import (ATTR_IDENTIFIERS, ATTR_MANUFACTURER,
+                                 ATTR_MODEL, ATTR_NAME, ENERGY_KILO_WATT_HOUR,
+                                 ENERGY_WATT_HOUR)
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.device_registry import DeviceEntryType
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-#from homeassistant.helpers.typing import StateType
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-)
-
-
-from .coordinator import SolcastUpdateCoordinator
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DOMAIN
-
-from .const import ATTR_ENTRY_TYPE #, CONF_RESOURCE_ID
+from .const import ATTR_ENTRY_TYPE
+from .coordinator import SolcastUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -94,7 +86,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "api_counter": SensorEntityDescription(
         key="api_counter",
-        name="API Counter",
+        name="API Remaining",
         icon="mdi:web-check",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -133,12 +125,8 @@ async def async_setup_entry(
             )
         sen = RooftopSensor(coordinator, k,entry)
         entities.append(sen)
-
-    #entity_category=EntityCategory.DIAGNOSTIC,
     
     async_add_entities(entities)
-
-
 
 class SolcastSensor(CoordinatorEntity, SensorEntity):
     """Representation of a Airthings Sensor device."""

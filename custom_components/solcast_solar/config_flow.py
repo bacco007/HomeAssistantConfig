@@ -4,13 +4,12 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
-from homeassistant.const import CONF_NAME, CONF_API_KEY
+from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import DOMAIN #,CONF_RESOURCE_ID
+from .const import DOMAIN
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -32,11 +31,10 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
         """Handle a flow initiated by the user."""
         if user_input is not None:
             return self.async_create_entry(
-                title= "Solcast Solar", #user_input[CONF_NAME],
+                title= "Solcast Solar", 
                 data = {},
                 options={
                     CONF_API_KEY: user_input[CONF_API_KEY],
-                    #CONF_RESOURCE_ID: user_input[CONF_RESOURCE_ID],
                 },
             )
 
@@ -44,11 +42,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    #vol.Required(
-                    #    CONF_NAME, default=self.hass.config.location_name
-                    #): str,
                     vol.Required(CONF_API_KEY, default=""): str,
-                    #vol.Required(CONF_RESOURCE_ID, default=""): str,
                 }
             ),
         )
@@ -76,10 +70,6 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         CONF_API_KEY,
                         default=self.config_entry.options.get(CONF_API_KEY),
                     ): str,
-                    #vol.Required(
-                    #    CONF_RESOURCE_ID,
-                    #    default=self.config_entry.options.get(CONF_RESOURCE_ID),
-                    #): str,
                 }
             ),
         )

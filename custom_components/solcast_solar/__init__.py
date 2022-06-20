@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.device_registry import async_get as device_registry
 
-from .const import DOMAIN, SOLCAST_URL #,CONF_RESOURCE_ID
+from .const import DOMAIN, SOLCAST_URL 
 from .coordinator import SolcastUpdateCoordinator
 from .solcastapi import ConnectionOptions, SolcastApi
 
@@ -68,5 +68,4 @@ async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEnt
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener."""
-    _LOGGER.warn("update_listener called")
     await hass.config_entries.async_reload(entry.entry_id)

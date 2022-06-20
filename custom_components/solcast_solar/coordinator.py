@@ -1,8 +1,6 @@
 """The Airzone integration."""
 from __future__ import annotations
 
-from .solcastapi import SolcastApi
-
 import logging
 import traceback
 from datetime import timedelta
@@ -13,14 +11,12 @@ from homeassistant.const import SUN_EVENT_SUNSET
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_utc_time_change
 from homeassistant.helpers.sun import (get_astral_location,
-                                        get_location_astral_event_next)
+                                       get_location_astral_event_next)
 from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
-                                                        UpdateFailed)
-
-
-
+                                                      UpdateFailed)
 
 from .const import DOMAIN
+from .solcastapi import SolcastApi
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +36,6 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=DOMAIN,
-            #update_interval = timedelta(minutes=1)
         )
 
 
@@ -57,11 +52,11 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         try:
             await self.solcast.reset_api_counter()
         except Exception as error:
-            _LOGGER.warn("Solcast - Error resetting API counter")
+            _LOGGER.error("Solcast - Error resetting API counter")
 
     async def setup(self):
         await self.setup_auto_fetch()
-        async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=0, local=False)
+        async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
 
     async def setup_auto_fetch(self):
         try:
@@ -73,35 +68,43 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             
             self._finishhour= next_setting.astimezone().hour # already one hour ahead
             
-            self._auto_fetch_tracker = async_track_utc_time_change(self._hass, self.update_forecast, minute=0, second=0, local=True)
+            self._auto_fetch_tracker = async_track_utc_time_change(self._hass, self.update_forecast, minute=0, second=10, local=True)
 
             _LOGGER.debug("Solcast - API will only connect between the hours %s and %s and at midnight",self._starthour,self._finishhour)
 
         except Exception:
-            _LOGGER.error("setup_auto_fetch: %s", traceback.format_exc())
+            _LOGGER.error("Solcast - setup_auto_fetch: %s", traceback.format_exc())
 
     async def update_forecast(self,*args):
         """Update forecast state."""
 
         try:
-            last_update = self.solcast.get_last_updated_datetime() + timedelta(seconds=3500)
-            date_now = dt_util.now() #.replace(hour=0, minute=0, second=0, microsecond=0)
+            last_update = self.solcast.get_last_updated_datetime() 
+            date_now = dt_util.now() - timedelta(seconds=3500)
             if last_update < date_now:
-                #
+                #been a long time since last update so update it
                 date_now = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
                 if last_update < date_now:
-                    await self.solcast.force_api_poll()
+                    #more than a day since uopdate
+                    await self.solcast.force_api_poll(True)
                 else:
+                    #sometime today.. 
                     _hournow = dt_util.now().hour
-                    #_LOGGER.debug(_hournow, self._starthour,  self._finishhour)
-                    #if _hournow == 0 or (_hournow > self._starthour and _hournow < self._finishhour):
                     if _hournow == 0 or _hournow == self._starthour or _hournow == self._finishhour:
-                        await self.solcast.force_api_poll()
+                        #if midnight, or sunrise hour or sunset set run it
+                        if  _hournow == self._finishhour:
+                            await self.solcast.force_api_poll(True)
+                        else:
+                            await self.solcast.force_api_poll(False)
                     elif (_hournow > self._starthour and _hournow < self._finishhour):
-                        if len(self.solcast._sites) < 2:
-                            await self.solcast.force_api_poll()
-                        elif _hournow % 2 == 0: 
-                            await self.solcast.force_api_poll()
+                        #else its between sun rise and set
+                        if self.solcast._sites:
+                            #if we have sites to even poll
+                            # if _hournow % 2 == 0: 
+                            #     await self.solcast.force_api_poll(True) #also do the actual past values
+                            # else:
+                            await self.solcast.force_api_poll(False) #just update forecast values
+                                
             else:
                 _LOGGER.debug("Solcast - API poll called, but did not happen as the last update is less than an hour old")
             

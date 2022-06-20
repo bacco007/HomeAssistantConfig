@@ -5,10 +5,10 @@ from typing import Any
 
 from homeassistant.components.diagnostics.util import async_redact_data
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN #, CONF_RESOURCE_ID
-from homeassistant.const import CONF_NAME, CONF_API_KEY
+from .const import DOMAIN
 from .coordinator import SolcastUpdateCoordinator
 
 TO_REDACT = [

@@ -1,10 +1,8 @@
 """Solcast API."""
 from __future__ import annotations
-#from calendar import month
 
 import json
 import logging
-#from threading import local
 import traceback
 from dataclasses import dataclass
 from datetime import datetime as dt
@@ -16,7 +14,6 @@ from typing import Any, cast
 from aiohttp import ClientConnectionError, ClientSession
 from aiohttp.client_reqrep import ClientResponse
 from isodate import parse_datetime
-#from pytz import HOUR, utc
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,24 +64,30 @@ class SolcastApi:
         """Request data via the Solcast API."""
         
         try:
-            params = {"format": "json", "api_key": self.options.api_key}
+            sp = self.options.api_key.split(",")
+            for spl in sp:
+                #params = {"format": "json", "api_key": self.options.api_key}
+                params = {"format": "json", "api_key": spl.strip()}
 
-            resp: ClientResponse = await self.aiohttp_session.get(
-                url=f"{self.options.host}/rooftop_sites", params=params, ssl=False
-            )
-
-            resp_json = await resp.json(content_type=None)
-            status = resp.status
-
-            if status == 200:
-                #self._api_used = self._api_used + 1
-                d = cast(dict, resp_json)
-                self._sites = d["sites"]
-            else:
-                _LOGGER.error(
-                    f"Solcast Error {status} - Gathering rooftop sites data."
+                resp: ClientResponse = await self.aiohttp_session.get(
+                    url=f"{self.options.host}/rooftop_sites", params=params, ssl=False
                 )
-                raise Exception(f"HTTP error: Solcast Error gathering rooftop sites data.")
+
+                resp_json = await resp.json(content_type=None)
+                status = resp.status
+
+                if status == 200:
+                    #self._api_used = self._api_used + 1
+                    d = cast(dict, resp_json)
+                    for i in d['sites']:
+                        i['apikey'] = spl.strip()
+
+                    self._sites = self._sites + d['sites']
+                else:
+                    _LOGGER.error(
+                        f"Solcast Error {status} - Gathering rooftop sites data."
+                    )
+                    raise Exception(f"HTTP error: Solcast Error gathering rooftop sites data.")
         except ConnectionRefusedError as err:
             _LOGGER.error("Solcast Error.. %s",err)
         except ClientConnectionError as e:
@@ -102,15 +105,29 @@ class SolcastApi:
                     self._api_used = self._data["api_used"]
             else:
                 #no file to load
-                await self.http_data()
+                await self.http_data(True)
 
     async def force_api_poll(self, *args):
-        await self.http_data()
+        if args:
+            await self.http_data(args[0])
+        else:
+            await self.http_data()
 
     def get_api_used_count(self) -> int:
         """Return API polling count for this UTC 24hr period"""
         try:
-            return self._api_used
+            sites = len(self._sites)
+            polls = self._api_used
+            if sites==1:
+                #only one site
+                return 50 - int(self._api_used)
+            elif sites%2 == 0:
+                #even number of sites
+                return 50 - int((polls / sites) * 2)
+            else:
+                #odd number of sites.. max 2 sites per api_key.. so max polls for 2 sites
+                return 50 - int((polls - (polls / sites)))
+
         except Exception:
             return -1
 
@@ -128,7 +145,7 @@ class SolcastApi:
         """Return a rooftop sites total kw for today"""
         #g = [d for d in self._sites if d['resource_id'] == rooftopid]   
         try:
-            return self._data["siteinfo"][rooftopid]
+            return self._data["siteinfo"][rooftopid]['tally']
         except Exception:
             return 0
 
@@ -286,44 +303,101 @@ class SolcastApi:
         try:
             return self._data["energy"]
         except Exception as e:
-            _LOGGER.error(e)
+            _LOGGER.error(f"Solcast - get_energy_data: {e}")
             return None
 
-    async def http_data(self):
+    async def http_data(self, dopast = False):
         """Request data via the Solcast API."""
         
         try:
             
             today = dt.now().date()
+            lastday = dt.now().date() + timedelta(days=7)
 
             _olddata = self._data
 
+            #if dopast:
             self._data = []
 
             _s = {}
 
+            _LOGGER.debug(f"Solcast polling for data")
+            _LOGGER.debug(f"Solcast including past actual data? - {dopast}")
+
             for site in self._sites:
+                _LOGGER.debug(f"Solcast api polling for rooftop {site['resource_id']}")
+                # _LOGGER.debug(f" getting site: {site['resource_id']}")
                 _data = []
-                
-                ae = await self.fetch_data("estimated_actuals", 28, site['resource_id'])
-                if not type(ae) is dict:
-                    self._data = _olddata
-                    return
 
-                for x in ae['estimated_actuals']:
-                    z = parse_datetime(x['period_end']).astimezone() - timedelta(minutes=30)
-                    if z.date() == today:
-                        _data.append({"period_end": z,"pv_estimate": x["pv_estimate"]*0.5})
+                ae = None
+                if dopast:
+                    ae = await self.fetch_data("estimated_actuals", 28, site=site['resource_id'],  apikey=site['apikey'])
+                    if not type(ae) is dict:
+                        self._data = _olddata
+                        return
 
-                af = await self.fetch_data("forecasts", 168, site['resource_id'])
+                    for x in ae['estimated_actuals']:
+                        z = parse_datetime(x['period_end']).astimezone() - timedelta(minutes=30)
+                        if z.date() == today:
+                            _data.append({"period_end": z,"pv_estimate": x["pv_estimate"]*0.5})
+
+                    _data = sorted(_data, key=itemgetter("period_end"))
+                    #_s.update({site['resource_id']:{'estimated_actuals': _data}})
+
+                af = await self.fetch_data("forecasts", 168, site=site['resource_id'], apikey=site['apikey'])
                 if not type(af) is dict:
                     self._data = _olddata
                     return
 
+                _data2 = []
                 for x in af['forecasts']:
                     z = parse_datetime(x['period_end']).astimezone() - timedelta(minutes=30)
-                    _data.append({"period_end": z,"pv_estimate": x["pv_estimate"]*0.5})
+                    if z.date() < lastday:
+                        _data2.append({"period_end": z,"pv_estimate": x["pv_estimate"]*0.5})
+
+                # _data2 = sorted(_data2, key=itemgetter("period_end"))
+                # _s.update({site['resource_id']:{'forecasts': _data2}})
                 
+                if dopast:
+                    _data = _data + _data2
+                else:
+                    #_LOGGER.debug("not doing past data so fill ion the blanks")
+                    _data = _olddata['siteinfo'][site['resource_id']]['forecasts']
+                    for item in _data2:
+                        found_data = [d for d in _data if d['period_end'] == item['period_end']]
+                        if len(found_data) > 0:
+                            #_LOGGER.warn(f"found this to update {found_data[0]}")
+                            found_data[0].update({"period_end": item['period_end'],"pv_estimate": item['pv_estimate']})
+                        else:
+                            #_LOGGER.warn(f"did not found update so adding to list")
+                            _data.append({"period_end": item['period_end'],"pv_estimate": item['pv_estimate']})
+
+                _data = sorted(_data, key=itemgetter("period_end"))
+                _s.update({site['resource_id']:{'forecasts': _data}})
+
+                # _LOGGER.debug("OK up to here now.. should be midnight today")
+                # _LOGGER.debug(_data[0])
+
+                for n in range(len(_data)-1):
+                    _sec = _data[n+1]["period_end"] - _data[n]["period_end"]
+                    if _sec.seconds > 1800:  #more than 30min then we are missing data
+                        #_LOGGER.warn(f"Solcast missing forecast interval item from {_data[n]['period_end']} to {_data[n+1]['period_end']}")
+                        findme = _data[n]["period_end"] + timedelta(minutes=30)
+                        if site['resource_id'] in _olddata:
+                            if 'forecasts' in _olddata[site['resource_id']] :
+                                
+                                inset_data = [d for d in _olddata[site['resource_id']]["forecasts"] if d['period_end'] == findme.isoformat()]
+                                if len(inset_data) > 0:
+                                    z = parse_datetime(inset_data[0]['period_end']).astimezone() 
+                                    #_LOGGER.debug("adding missing solcast item {inset_data}")
+                                    _data.append({"period_end": z,"pv_estimate": inset_data[0]["pv_estimate"]})
+                                else:
+                                    #_LOGGER.debug("IS old data to fill in the missing data but didnt find any match so adding empty item as 0 value")
+                                    _data.append({"period_end": findme.astimezone(),"pv_estimate": 0})
+                        else:
+                            #_LOGGER.debug("No old data to fill in the missing data so adding empty item as 0 value")
+                            _data.append({"period_end": findme.astimezone(),"pv_estimate": 0})
+
                 _data = sorted(_data, key=itemgetter("period_end"))
 
                 if not (len(_data) % 2) == 0:
@@ -334,10 +408,26 @@ class SolcastApi:
                     if x['period_end'].date() == today:
                         tally_today += x["pv_estimate"]
 
+                _s[site['resource_id']]['tally'] = round(tally_today,2)
+
+                # _LOGGER.debug("next data check.. should be midnight today")
+                # _LOGGER.debug(_data[0])
+
                 _d = []
                 it = iter(_data)
                 for x in it:
-                    _d.append({"period_end": x['period_end'],"pv_estimate": (x["pv_estimate"] + next(it)["pv_estimate"])})
+                    a = x
+                    b = next(it)
+                    # if not a['period_end'].hour == b['period_end'].hour:
+                    #     #_LOGGER.error(f"not same hour for {a} and {b}")
+                    #     _LOGGER.warn(f"solcast - api error.. dam it! still missing data from solcast api between hours {a} and {b}")
+                    if a['period_end'].minute == 0:
+                        _d.append({"period_end": a['period_end'],"pv_estimate": (a["pv_estimate"] + b["pv_estimate"])})
+                    else:
+                        #_LOGGER.warn("hmm this should not have data at the 30min mark.. should be on the hour values")
+                        _t = a['period_end'].replace(minute=0)
+                        _d.append({"period_end": _t,"pv_estimate": (a["pv_estimate"] + b["pv_estimate"])})
+
 
                 if len(self._data) == 0:
                     self._data = _d
@@ -346,19 +436,19 @@ class SolcastApi:
                         p = self._data[number]
                         p["pv_estimate"] = float(p["pv_estimate"]) + float(_d[number]["pv_estimate"])
 
-                _s[site['resource_id']] = round(tally_today,2)
-                
-            
+            if self._data == []:
+                self._data = _olddata
+                self._data['api_used'] = self._api_used
+            else:
+                #self._data = sorted(self._data, key=itemgetter("period_end"))
+                self._data = dict({"forecasts": self._data})
 
-            self._data = sorted(self._data, key=itemgetter("period_end"))
-            self._data = dict({"forecasts": self._data})
+                self._data["energy"] = {"wh_hours": self.makeenergydict()}
 
-            self._data["energy"] = {"wh_hours": self.makeenergydict()}
+                self._data["siteinfo"] = _s
 
-            self._data["siteinfo"] = _s
-
-            self._data["last_updated"] = dt.now(timezone.utc).isoformat()
-            self._data['api_used'] = self._api_used
+                self._data["last_updated"] = dt.now(timezone.utc).replace(second=0 ,microsecond=0).isoformat()
+                self._data['api_used'] = self._api_used
 
             with open(self._filename, 'w') as f:
                 json.dump(self._data, f, ensure_ascii=False, cls=DateTimeEncoder)
@@ -367,11 +457,11 @@ class SolcastApi:
         except Exception as e:
             _LOGGER.error("Solcast http_data error: %s", traceback.format_exc())
 
-    async def fetch_data(self, path= "error", hours=50, site = "") -> dict[str, Any]:
+    async def fetch_data(self, path= "error", hours=50, site="", apikey="") -> dict[str, Any]:
         """fetch data via the Solcast API."""
         
         try:
-            params = {"format": "json", "api_key": self.options.api_key, "hours": hours}
+            params = {"format": "json", "api_key": apikey, "hours": hours}
 
             resp: ClientResponse = await self.aiohttp_session.get(
                 url=f"{self.options.host}/rooftop_sites/{site}/{path}", params=params, ssl=False
@@ -383,15 +473,15 @@ class SolcastApi:
             if status == 429:
                 _LOGGER.warning("Exceeded Solcast API allowed polling limit")
                 self._api_used = 50
-                raise Exception(f"HTTP error: Exceeded Solcast API allowed polling limit")
+                #raise Exception(f"HTTP error: Exceeded Solcast API allowed polling limit")
             elif status == 400:
                 _LOGGER.error(
                     "The rooftop site missing capacity, please specify capacity or provide historic data for tuning."
                 )
-                raise Exception(f"HTTP error: The rooftop site missing capacity, please specify capacity or provide historic data for tuning.")
+                #raise Exception(f"HTTP error: The rooftop site missing capacity, please specify capacity or provide historic data for tuning.")
             elif status == 404:
                 _LOGGER.error("The rooftop site cannot be found or is not accessible.")
-                raise Exception(f"HTTP error: The rooftop site cannot be found or is not accessible.")
+                #raise Exception(f"HTTP error: The rooftop site cannot be found or is not accessible.")
             elif status == 200:
                 self._api_used = self._api_used + 1
                 d = cast(dict, resp_json)
@@ -403,6 +493,8 @@ class SolcastApi:
             _LOGGER.error('Solcast Connection Error', str(e))
         except Exception as e:
             _LOGGER.error("Solcast fetch_data error: %s", traceback.format_exc())
+
+        return None
 
     def makeenergydict(self) -> dict:
         wh_hours = {}
