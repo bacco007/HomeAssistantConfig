@@ -142,7 +142,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
 
         self.entity_description = entity_description
-        self._id = entity_description.key
+        #self._id = f"solcast_{entity_description.key}"
 
         ATTRIBUTION: Final = "Data provided by Solcast Solar"
         _attr_attribution = ATTRIBUTION
@@ -154,7 +154,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "Solcast Forecast", #entry.title,
+            ATTR_NAME: "Solcast API Forecast", #entry.title,
             ATTR_MANUFACTURER: "Solcast Solar",
             ATTR_MODEL: "Solcast API",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
@@ -168,12 +168,18 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the device."""
-        return f" {self.entity_description.name}"
+        return f"Solcast {self.entity_description.name}"
+
+    @property
+    def friendly_name(self):
+        """Return the name of the device."""
+        return self.entity_description.name
+
 
     @property
     def unique_id(self):
         """Return the unique ID of the binary sensor."""
-        return self._unique_id
+        return f"solcast_{self._unique_id}"
 
     @property
     def extra_state_attributes(self):
@@ -211,7 +217,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
 
         self.entity_description = entity_description
-        self._id = entity_description.key
+        #self._id = f"solcast_{entity_description.key}"
 
         ATTRIBUTION: Final = "Data provided by Solcast Solar"
         _attr_attribution = ATTRIBUTION
@@ -223,7 +229,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "Solcast Forecast", #entry.title,
+            ATTR_NAME: "Solcast API Forecast", #entry.title,
             ATTR_MANUFACTURER: "Solcast Solar",
             ATTR_MODEL: "Solcast API",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
@@ -237,12 +243,17 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the device."""
-        return f" {self.entity_description.name}"
+        return f"Solcast {self.entity_description.name}"
+
+    @property
+    def friendly_name(self):
+        """Return the name of the device."""
+        return self.entity_description.name
 
     @property
     def unique_id(self):
         """Return the unique ID of the binary sensor."""
-        return self._unique_id
+        return f"solcast_{self._unique_id}"
 
     @property
     def extra_state_attributes(self):
