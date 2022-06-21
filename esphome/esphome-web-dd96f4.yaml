@@ -13,7 +13,7 @@ substitutions:
 esphome:
   name: "waveshare-eink"
   platform: ESP32
-  board: esp32dev
+  board: nodemcu-32s
 
 # Enable logging
 logger:
@@ -98,11 +98,7 @@ sensor:
       );
       return timestamp;    
     
-spi:
-  clk_pin: $gpio_spi_clk_pin
-  mosi_pin: $gpio_spi_mosi_pin
-  id: epaper_display
-    
+
 font:
   - file: "fonts/GoogleSans-Medium.ttf"
     id: main_sensor_unit
@@ -110,22 +106,21 @@ font:
     glyphs: |-
       !"%()+=,-_.:°/|0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz'
 
+spi:
+  clk_pin: 13
+  mosi_pin: 14
+
 display:
   - platform: waveshare_epaper
-    id: epaperdisplay
-    cs_pin: $gpio_cs_pin
-    busy_pin: $gpio_busy_pin
-    reset_pin: $gpio_reset_pin
-    dc_pin: $gpio_dc_pin
+    id: disp
+    cs_pin: 15
+    dc_pin: 27
+    busy_pin: 25
+    reset_pin: 26
     model: 7.50inV2alt
-    update_interval: 10s
+    update_interval: 30s
     reset_duration: 2ms
-    rotation: 0°
     lambda: |-
-
-      static const char* TAG = "epaperdisplay";
-      ESP_LOGD(TAG, "Writing to e-ink display");
-
-      it.print(775, 17, id(main_sensor_unit), TextAlign::BASELINE_RIGHT, "E-Paper is awesome!");
-      it.print(0, 460, id(main_sensor_unit), "E-Paper is awesome!");
+      it.fill(COLOR_OFF);
+      it.print(0,0,id(main_sensor_unit), "Hello, World!");
       
