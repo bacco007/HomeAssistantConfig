@@ -23,26 +23,26 @@ sensor:
     unique_id: energy_timeofuse_tariff
     device_class: monetary
     state_class: measurement
-    unit_of_measurement: c/kWh
+    unit_of_measurement: $/kWh
     state: >
       {%- if states('sensor.energy_timeofuse_tariff_type') in ("Peak") %}
-        35.56
+        0.3556
       {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Shoulder") %}
-        34.57
+        0.3457
       {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Off-Peak") %}
-        18.66
+        0.1866
       {%- endif %}
   - name: energy_solar_tariff
     unique_id: energy_solar_tariff
     device_class: monetary
     state_class: measurement
-    unit_of_measurement: c/kWh
+    unit_of_measurement: $/kWh
     state: >
-      5.00
+      0.500
   - name: energy_supply_charge
     unique_id: energy_supply_charge
     device_class: monetary
     state_class: measurement
-    unit_of_measurement: c/Day
+    unit_of_measurement: $/Day
     state: >
-      147.00
+      1.4700
