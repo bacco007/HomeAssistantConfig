@@ -7,6 +7,10 @@ from datetime import timedelta
 
 import async_timeout
 import homeassistant.util.dt as dt_util
+from homeassistant.components.recorder import get_instance, history
+from contextlib import suppress
+from homeassistant.exceptions import HomeAssistantError
+
 from homeassistant.const import SUN_EVENT_SUNSET
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_utc_time_change
@@ -31,6 +35,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         self._auto_fetch_tracker = None
         self._starthour = 6
         self._finishhour = 19
+        self._previousenergy = None
 
         super().__init__(
             hass,
@@ -51,10 +56,13 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def reset_api_counter(self, *args):
         try:
             await self.solcast.reset_api_counter()
+            await get_instance(self._hass).async_add_executor_job(self.gethistory)
         except Exception as error:
             _LOGGER.error("Solcast - Error resetting API counter")
 
     async def setup(self):
+        await get_instance(self._hass).async_add_executor_job(self.gethistory)
+
         await self.setup_auto_fetch()
         async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
 
@@ -165,5 +173,32 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     def get_site_extra_attributes(self, key=""):
         return self.solcast.get_rooftop_site_extra_data(key)
+        
+    def gethistory(self):
+        try:
+            start_date = dt_util.now().astimezone().replace(hour=0,minute=0,second=0,microsecond=0) - timedelta(days=7)
+            end_date = dt_util.now().astimezone().replace(hour=23,minute=59,second=59,microsecond=0) - timedelta(days=1)
+
+            lower_entity_id = "sensor.solcast_forecast_this_hour"
+            history_list = history.state_changes_during_period(
+                self._hass,
+                dt_util.as_utc(start_date),
+                end_time=dt_util.as_utc(end_date),
+                entity_id=lower_entity_id,
+                no_attributes=True,
+                descending=True,
+            )
+
+            d={}
+            for state in history_list.get(lower_entity_id, []):
+                # filter out all None, NaN and "unknown" states
+                # only keep real values
+                with suppress(ValueError):
+                    d[state.last_updated.replace(minute=0,second=0,microsecond=0).isoformat()] = float(state.state)
+            
+            self._previousenergy = d
+        except Exception:
+            _LOGGER.error("Solcast - testhistory: %s", traceback.format_exc())
+        
 
 

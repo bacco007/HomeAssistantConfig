@@ -12,6 +12,7 @@ from os.path import exists as file_exists
 from typing import Any, cast
 
 from aiohttp import ClientConnectionError, ClientSession
+import async_timeout
 from aiohttp.client_reqrep import ClientResponse
 from isodate import parse_datetime
 
@@ -68,13 +69,13 @@ class SolcastApi:
             for spl in sp:
                 #params = {"format": "json", "api_key": self.options.api_key}
                 params = {"format": "json", "api_key": spl.strip()}
-
-                resp: ClientResponse = await self.aiohttp_session.get(
-                    url=f"{self.options.host}/rooftop_sites", params=params, ssl=False
-                )
-
-                resp_json = await resp.json(content_type=None)
-                status = resp.status
+                async with async_timeout.timeout(10):
+                    resp: ClientResponse = await self.aiohttp_session.get(
+                        url=f"{self.options.host}/rooftop_sites", params=params, ssl=False
+                    )
+    
+                    resp_json = await resp.json(content_type=None)
+                    status = resp.status
 
                 if status == 200:
                     #self._api_used = self._api_used + 1
@@ -92,6 +93,8 @@ class SolcastApi:
             _LOGGER.error("Solcast Error.. %s",err)
         except ClientConnectionError as e:
             _LOGGER.error('Solcast Connection Error', str(e))
+        except asyncio.TimeoutError:
+            _LOGGER.error("Solcast Connection Error - Timed out connection to solcast server")
         except Exception as e:
             _LOGGER.error("Solcast http_data error: %s", traceback.format_exc())
 
@@ -462,13 +465,14 @@ class SolcastApi:
         
         try:
             params = {"format": "json", "api_key": apikey, "hours": hours}
-
-            resp: ClientResponse = await self.aiohttp_session.get(
-                url=f"{self.options.host}/rooftop_sites/{site}/{path}", params=params, ssl=False
-            )
-
-            resp_json = await resp.json(content_type=None)
-            status = resp.status
+            
+            async with async_timeout.timeout(20):
+                resp: ClientResponse = await self.aiohttp_session.get(
+                    url=f"{self.options.host}/rooftop_sites/{site}/{path}", params=params, ssl=False
+                )
+    
+                resp_json = await resp.json(content_type=None)
+                status = resp.status
 
             if status == 429:
                 _LOGGER.warning("Exceeded Solcast API allowed polling limit")
@@ -491,6 +495,8 @@ class SolcastApi:
             _LOGGER.error("Solcast Error.. %s",err)
         except ClientConnectionError as e:
             _LOGGER.error('Solcast Connection Error', str(e))
+        except asyncio.TimeoutError:
+            _LOGGER.error("Solcast Connection Error - Timed out connection to solcast server")
         except Exception as e:
             _LOGGER.error("Solcast fetch_data error: %s", traceback.format_exc())
 
