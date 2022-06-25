@@ -15,6 +15,10 @@ logger:
     slixmpp.basexmpp: error
     slixmpp.stringprep: fatal
     aioharmony.harmonyclient: fatal
+    pychromecast.socket_client: fatal
+    custom_components.monitor_docker: fatal
+    custom_components.monitor_docker.helpers: fatal
+    custom_components.ical: debug
 
   filters:
     homeassistant:

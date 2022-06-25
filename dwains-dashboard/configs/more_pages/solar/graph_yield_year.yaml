@@ -57,19 +57,19 @@ series:
           res.push([new Date(key).getTime(), value]);
       }
       return res.sort((a, b) => { return a[0] - b[0] });
-  - entity: sensor.archive_solar_yield_365day_avg
-    name: 7d Avg
-    type: area
-    # extend_to_end: false
-    stroke_width: 2
-    unit: "kWh"
-    data_generator: |
-      let res = [];
-      for (const [key, value] of
-          Object.entries(entity.attributes)) {
-          res.push([new Date(key).getTime(), value]);
-      }
-      return res.sort((a, b) => { return a[0] - b[0] });
+  # - entity: sensor.archive_solar_yield_365day_avg
+  #   name: 7d Avg
+  #   type: area
+  #   # extend_to_end: false
+  #   stroke_width: 2
+  #   unit: "kWh"
+  #   data_generator: |
+  #     let res = [];
+  #     for (const [key, value] of
+  #         Object.entries(entity.attributes)) {
+  #         res.push([new Date(key).getTime(), value]);
+  #     }
+  #     return res.sort((a, b) => { return a[0] - b[0] });
 graph_span: 365days
 span:
   end: day
