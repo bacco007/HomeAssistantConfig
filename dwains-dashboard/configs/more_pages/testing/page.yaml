@@ -6,5 +6,69 @@ cards:
       card_subtitle: Testing 345
       card_title: Testing 123
   type: vertical-stack
+- card:
+    apex_config:
+      chart:
+        height: 300
+        toolbar:
+          show: true
+          tools:
+            reset: true
+        type: area
+        zoom:
+          autoScaleYaxis: true
+          enabled: true
+          type: x
+      dataLabels:
+        enabled: false
+      fill:
+        gradient:
+          inverseColors: false
+          opacityFrom: 0.45
+          opacityTo: 0.05
+          shadeIntensity: 1
+          stops:
+          - 20
+          - 100
+          - 100
+          - 100
+        type: gradient
+      legend:
+        show: false
+      stroke:
+        curve: smooth
+        show: true
+        width: 2.5
+      xaxis:
+        labels:
+          datetimeFormatter:
+            day: ddd
+            month: ddd
+        type: datetime
+    graph_span: 7d
+    header:
+      colorize_states: true
+      show: true
+      show_states: true
+      title: Current Price (${market})
+    series:
+    - attribute: price
+      curve: smooth
+      entity: ${graph_entity}
+      extend_to: now
+      group_by:
+        duration: 30m
+        func: avg
+      type: area
+      unit: $/MW
+    span:
+      end: day
+    type: custom:apexcharts-card
+  entities:
+  - sensor.opennem_graph_market
+  type: custom:config-template-card
+  variables:
+    graph_entity: states['sensor.opennem_graph_market'].attributes.graph_entity
+    market: states['sensor.opennem_graph_market'].state
 item_classes: col-xs-12 col-sm-12 col-sm-12 col-xl-12
 type: custom:dwains-flexbox-card

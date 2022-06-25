@@ -39,7 +39,7 @@ apex_config:
 all_series_config:
   stroke_width: 2
   type: area
-  # extend_to_end: false
+  extend_to_end: now
   float_precision: 2
   unit: "MW"
   curve: smooth

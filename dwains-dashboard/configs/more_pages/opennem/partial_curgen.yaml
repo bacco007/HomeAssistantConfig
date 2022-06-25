@@ -64,10 +64,10 @@ cards:
               attribute: gas_ccgt
               color: rgb(253,180,98)
               name: Gas (Combined Cycle Power Plant)
-            # - entity: sensor.opennem_nsw
-            #   attribute: gas_ocgt
-            #   color: rgb(255,205,150)
-            #   name: Gas (Open Cycle Gas Turbines)
+            - entity: sensor.opennem_nsw
+              attribute: gas_ocgt
+              color: rgb(255,205,150)
+              name: Gas (Open Cycle Gas Turbines)
             - entity: sensor.opennem_nsw
               attribute: hydro
               color: rgb(69,130,180)
@@ -95,4 +95,4 @@ cards:
             - entity: sensor.opennem_nsw
               attribute: exports
               color: rgb(151,122,177)
-              name: Imports
+              name: Exports

@@ -4,19 +4,20 @@ card:
   type: custom:dwains-flexbox-card
 filter:
   include:
-  - entity_id: sensor.anniversary*
-    options:
-      icon: fas:birthday-cake
-      primary: '{% set a = entity %} {{ state_attr(a, ''friendly_name'') }}
+    - entity_id: sensor.anniversary*
+      options:
+        icon: fas:birthday-cake
+        primary: "{% set a = entity %} {{ state_attr(a, 'friendly_name') }}
 
-        '
-      secondary: '{% set a = entity %} {% set state = states(a) %} {% set year = state_attr(a,
-        ''years_at_next_anniversary'') %} {% set date = as_timestamp(state_attr(a,
-        ''date'')) | timestamp_custom(''%d/%m/%Y'') %} {{ state }} days - {{ year
-        }} years old ({{date}})
+          "
+        secondary:
+          "{% set a = entity %} {% set state = states(a) %} {% set year = state_attr(a,
+          'years_at_next_anniversary') %} {% set date = as_timestamp(state_attr(a,
+          'date')) | timestamp_custom('%d/%m/%Y') %} {{ state }} days - {{ year
+          }} years old ({{date}})
 
-        '
-      type: custom:mushroom-template-card
+          "
+        type: custom:mushroom-template-card
 sort:
   method: state
   numeric: true

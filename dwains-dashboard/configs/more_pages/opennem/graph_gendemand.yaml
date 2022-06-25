@@ -1,67 +1,73 @@
-type: custom:apexcharts-card
-graph_span: 7d
-span:
-  end: day
-header:
-  show: true
-  title: "Generation vs Demand"
-  show_states: true
-  colorize_states: true
-experimental:
-  color_threshold: true
-apex_config:
-  chart:
-    {
-      type: "area",
-      height: 300,
-      toolbar: { show: true, tools: { reset: true } },
-      zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-    }
-  stroke: { show: true, width: 1, curve: smooth }
-  legend: { show: false }
-  dataLabels: { enabled: false }
-  fill:
-    {
-      type: "gradient",
-      gradient:
-        {
-          shadeIntensity: 1,
-          inverseColors: false,
-          opacityFrom: 0.45,
-          opacityTo: 0.05,
-          stops: [20, 100, 100, 100],
-        },
-    }
-  xaxis:
-    {
-      type: "datetime",
-      labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-    }
+type: custom:config-template-card
+entities:
+  - sensor.opennem_graph_market
+variables:
+  graph_entity: states['sensor.opennem_graph_market'].attributes.graph_entity
+card:
+  type: custom:apexcharts-card
+  graph_span: 7d
+  span:
+    end: day
+  header:
+    show: true
+    title: "Generation vs Demand"
+    show_states: true
+    colorize_states: true
+  experimental:
+    color_threshold: true
+  apex_config:
+    chart:
+      {
+        type: "area",
+        height: 300,
+        toolbar: { show: true, tools: { reset: true } },
+        zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+      }
+    stroke: { show: true, width: 1, curve: smooth }
+    legend: { show: false }
+    dataLabels: { enabled: false }
+    fill:
+      {
+        type: "gradient",
+        gradient:
+          {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [20, 100, 100, 100],
+          },
+      }
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
 
-series:
-  - entity: sensor.opennem_nsw
-    attribute: genvsdemand
-    type: area
-    name: Demand
-    # extend_to_end: false
-    curve: smooth
-    color: black
-    group_by:
-      func: avg
-      duration: 30m
-    color_threshold:
-      - value: -3000
-        color: "#23A76A"
-        opacity: 0.7
-      - value: -500
-        color: "#56BF8D"
-        opacity: 0.7
-      - value: 0
-        color: "#FFE8AB"
-        opacity: 0.7
-      - value: 500
-        color: "#FF8D95"
-        opacity: 0.7
-      - value: 1000
-        color: "#FD305F"
-        opacity: 0.7
+  series:
+    - entity: ${graph_entity}
+      attribute: genvsdemand
+      type: area
+      name: Demand
+      # extend_to_end: false
+      curve: smooth
+      color: black
+      group_by:
+        func: avg
+        duration: 30m
+      color_threshold:
+        - value: -3000
+          color: "#23A76A"
+          opacity: 0.7
+        - value: -500
+          color: "#56BF8D"
+          opacity: 0.7
+        - value: 0
+          color: "#FFE8AB"
+          opacity: 0.7
+        - value: 500
+          color: "#FF8D95"
+          opacity: 0.7
+        - value: 1000
+          color: "#FD305F"
+          opacity: 0.7

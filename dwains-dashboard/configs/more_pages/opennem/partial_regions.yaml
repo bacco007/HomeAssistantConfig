@@ -45,3 +45,5 @@ cards:
         name: Victoria
       - entity: sensor.opennem_wa
         name: Western Australia
+      - entity: input_select.opennem_graph_entity
+        name: Change Region to Graph

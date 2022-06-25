@@ -1,80 +1,22 @@
 # dwains_theme
 ---
-- type: custom:dwains-flexbox-card
-  item_classes: "col-xs-12"
-  cards:
-    - type: vertical-stack
-      item_classes: "col-xs-12 col-sm-4"
-      cards:
-        - type: vertical-stack
-          cards:
-            - !include partial_regions.yaml
-            - !include partial_curgen.yaml
+type: custom:dwains-flexbox-card
+item_classes: "col-xs-12"
+cards:
+  - type: vertical-stack
+    item_classes: "col-xs-12 col-sm-4"
+    cards:
+      - type: vertical-stack
+        cards:
+          - !include partial_regions.yaml
+          - !include partial_curgen.yaml
 
-    - type: vertical-stack
-      item_classes: "col-xs-12 col-sm-8"
-      cards:
-        - !include graph_currentprice.yaml
-        - !include graph_gentype.yaml
-        # - !include graph_gentype2.yaml
-        - !include graph_gendemand.yaml
-        - !include graph_allregions_demand.yaml
-        - !include graph_allregions_generation.yaml
-        - type: custom:apexcharts-card
-          graph_span: 1d
-          span:
-            end: day
-          header:
-            show: true
-            title: Rooftop Solar
-          apex_config:
-            chart:
-              {
-                type: "area",
-                height: 500,
-                toolbar: { show: true, tools: { reset: true } },
-                zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-              }
-            stroke: { show: true, curve: smooth }
-            legend: { show: true }
-            dataLabels: { enabled: false }
-            fill:
-              {
-                type: "gradient",
-                gradient:
-                  {
-                    shadeIntensity: 1,
-                    inverseColors: false,
-                    opacityFrom: 0.45,
-                    opacityTo: 0.05,
-                    stops: [20, 100, 100, 100],
-                  },
-              }
-            xaxis:
-              {
-                type: "datetime",
-                labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-              }
-          all_series_config:
-            stroke_width: 2
-            type: area
-            extend_to_end: false
-            float_precision: 2
-            unit: "MW"
-            curve: smooth
-            group_by:
-              func: last
-              duration: 10m
-          series:
-            - entity: sensor.opennem_nsw
-              attribute: price
-            - entity: sensor.opennem_qld
-              attribute: price
-            - entity: sensor.opennem_sa
-              attribute: price
-            - entity: sensor.opennem_tas
-              attribute: price
-            - entity: sensor.opennem_vic
-              attribute: price
-            - entity: sensor.opennem_wa
-              attribute: price
+  - type: vertical-stack
+    item_classes: "col-xs-12 col-sm-8"
+    cards:
+      - !include graph_currentprice.yaml
+      - !include graph_gentype.yaml
+      - !include graph_gentype2.yaml
+      - !include graph_gendemand.yaml
+      - !include graph_allregions_demand.yaml
+      - !include graph_allregions_generation.yaml
