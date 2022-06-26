@@ -74,7 +74,7 @@ card:
       name: Temp
       type: line
       # color: "da1e28"
-      # extend_to_end: false
+      extend_to: now
       stroke_width: 4
       unit: "°C"
       group_by:
@@ -84,7 +84,7 @@ card:
       type: line
       color: "#121619"
       name: Change
-      # extend_to_end: false
+      extend_to: now
       stroke_width: 2
       group_by:
         func: delta
@@ -92,7 +92,7 @@ card:
     - entity: sensor.tempest_st_00056115_humidity
       name: Humidity
       type: line
-      # extend_to_end: false
+      extend_to: now
       stroke_width: 1.5
       unit: "%"
       group_by:
@@ -102,7 +102,7 @@ card:
       type: line
       name: Yesterday
       stroke_width: 1.8
-      # extend_to_end: false
+      extend_to: now
       unit: "°C"
       curve: smooth
       offset: -1d
@@ -113,7 +113,7 @@ card:
       type: line
       name: Feels Like
       stroke_width: 2
-      # extend_to_end: false
+      extend_to: now
       unit: "°C"
       curve: smooth
       group_by:

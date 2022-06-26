@@ -4,88 +4,99 @@ base:
     haptic: success
   show_icon: false
   show_state: true
-  state_display: '[[[ if (variables.state === true) return variables.translate_unknown;
+  state_display:
+    "[[[ if (variables.state === true) return variables.translate_unknown;
     ]]]
 
-    '
+    "
   styles:
     card:
-    - -webkit-tap-highlight-color: rgba(0,0,0,0)
-    - transition: none
-    - padding: 11.5px 10.5px 10.5px 11.5px
-    - --mdc-ripple-color: "[[[\n  return variables.state_on\n    ? 'rgb(0, 0, 0)'\n\
-        \    : 'rgba(255, 255, 255, 0.3)';\n]]]\n"
-    - color: "[[[\n  return variables.state_on\n    ? 'rgba(5, 5, 5)'\n    : 'var(--primary-text-color)';\n\
-        ]]]\n"
-    - background-color: "[[[\n  return variables.state_on\n    ? 'rgba(255, 255, 255,\
-        \ 0.8)'\n    : 'rgba(115, 115, 115, 0.2)';\n]]]\n"
+      - -webkit-tap-highlight-color: rgba(0,0,0,0)
+      - transition: none
+      - padding: 11.5px 10.5px 10.5px 11.5px
+      - --mdc-ripple-color:
+          "[[[\n  return variables.state_on\n    ? 'rgb(0, 0, 0)'\n\
+          \    : 'rgba(255, 255, 255, 0.3)';\n]]]\n"
+      - color:
+          "[[[\n  return variables.state_on\n    ? 'rgba(5, 5, 5)'\n    : 'var(--primary-text-color)';\n\
+          ]]]\n"
+      - background-color:
+          "[[[\n  return variables.state_on\n    ? 'rgba(255, 255, 255,\
+          \ 0.8)'\n    : 'rgba(115, 115, 115, 0.2)';\n]]]\n"
     grid:
-    - grid-template-areas: '"icon  circle"
+      - grid-template-areas: '"icon  circle"
 
-        "n     n"
+          "n     n"
 
-        "s     s"
+          "s     s"
 
-        '
-    - grid-template-columns: repeat(2, 1fr)
-    - grid-template-rows: auto repeat(2, min-content)
-    - align-items: start
+          '
+      - grid-template-columns: repeat(2, 1fr)
+      - grid-template-rows: auto repeat(2, min-content)
+      - align-items: start
     name:
-    - justify-self: start
-    - margin-bottom: -2px
+      - justify-self: start
+      - margin-bottom: -2px
     state:
-    - justify-self: start
+      - justify-self: start
   tap_action:
     action: toggle
     haptic: medium
   template:
-  - settings
-  - tilt
-  - extra_styles
+    - settings
+    - tilt
+    - extra_styles
   variables:
-    climate_hvac_on: '[[[ return entity.attributes.hvac_action === undefined || [''heating''].indexOf(entity.attributes.hvac_action)
+    climate_hvac_on:
+      "[[[ return entity.attributes.hvac_action === undefined || ['heating'].indexOf(entity.attributes.hvac_action)
       !== -1; ]]]
 
-      '
-    climate_on: '[[[ return entity === undefined || [''on'',''heat'', ''cool'', ''dry'',
-      ''heat_cool'', ''fan_only''].indexOf(entity.state) !== -1; ]]]
+      "
+    climate_on: "[[[ return entity === undefined || ['on','heat', 'cool', 'dry',
+      'heat_cool', 'fan_only'].indexOf(entity.state) !== -1; ]]]
 
-      '
-    entity_id: '[[[ return entity === undefined || entity.entity_id; ]]]
+      "
+    entity_id: "[[[ return entity === undefined || entity.entity_id; ]]]
 
-      '
-    entity_picture: '[[[ return entity === undefined || entity.attributes.entity_picture;
+      "
+    entity_picture:
+      "[[[ return entity === undefined || entity.attributes.entity_picture;
       ]]]
 
-      '
-    media_off: '[[[ return entity === undefined || [''off'',  ''idle'', ''standby'',
-      ''unknown'', ''unavailable''].indexOf(entity.state) !== -1; ]]]
+      "
+    media_off: "[[[ return entity === undefined || ['off',  'idle', 'standby',
+      'unknown', 'unavailable'].indexOf(entity.state) !== -1; ]]]
 
-      '
-    media_on: '[[[ return entity === undefined || [''playing'', ''paused''].indexOf(entity.state)
+      "
+    media_on:
+      "[[[ return entity === undefined || ['playing', 'paused'].indexOf(entity.state)
       !== -1; ]]]
 
-      '
-    state: '[[[ return entity === undefined || entity.state; ]]]
+      "
+    state: "[[[ return entity === undefined || entity.state; ]]]
 
-      '
-    state_on: '[[[ return [''on'', ''home'', ''cool'', ''fan_only'', ''playing''].indexOf(entity
+      "
+    state_on:
+      "[[[ return ['on', 'home', 'cool', 'fan_only', 'playing'].indexOf(entity
       === undefined || entity.state) !== -1; ]]]
 
-      '
-    tilt_options: "[[[\n  let options = {\n    max: 5,\n    scale: 1.06,\n    glare:\
+      "
+    tilt_options:
+      "[[[\n  let options = {\n    max: 5,\n    scale: 1.06,\n    glare:\
       \ true,\n    'max-glare': 0.15,\n    perspective: 800,\n    speed: 800,\n  \
       \  parallax: '25px'\n  }\n  if (this._config.template.includes('conditional_media'))\
       \ {\n    options.scale = options.scale % parseInt(options.scale) / 2 + parseInt(options.scale);\n\
       \    options.perspective = options.perspective * 2;\n    return options;\n \
       \ }\n  return options;\n]]]\n"
-    timeout: '[[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed);
+    timeout:
+      "[[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed);
       ]]]
 
-      '
+      "
 base_info:
   custom_fields:
-    circle: "[[[\n  if (entity) {\n    let time = c => {\n      let s = (c/1e3), m\
+    circle:
+      "[[[\n  if (entity) {\n    let time = c => {\n      let s = (c/1e3), m\
       \ = (c/6e4), h = (c/36e5), d = (c/864e5);\n      return s < 60 ? parseInt(s)\
       \ + 's' : m < 60 ? parseInt(m) + 'm' : h < 24 ? parseInt(h) + 'h' : parseInt(d)\
       \ + 'd';\n    },\n    last_changed = states[variables.retain] == null || states[variables.retain].state\
@@ -98,32 +109,37 @@ base_info:
       1.5\" fill=\"${fill}\" />\n        <text x=\"50%\" y=\"54%\" fill=\"#8d8e90\"\
       \ font-size=\"14\" text-anchor=\"middle\" alignment-baseline=\"middle\" dominant-baseline=\"\
       middle\">${last_changed}</text>\n      </svg>\n    `;\n  }\n]]]\n"
-    icon: "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
+    icon:
+      "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
       \ width=\"100%\">`\n    : null;\n]]]\n"
   template:
-  - base
-  - circle
+    - base
+    - circle
   triggers_update: sensor.time
-base_media: 
+base_media:
   hold_action:
     action: more-info
   styles:
     card:
-    - color: "[[[\n  return variables.media_on && variables.entity_picture === undefined\n\
-        \    ? 'rgba(5, 5, 5)'\n    : variables.media_off\n      ? 'var(--primary-text-color)'\n\
-        \      : 'var(--primary-text-color)';\n]]]\n"
-    - text-shadow: "[[[\n  return variables.media_off || variables.entity_picture\
-        \ === undefined\n    ? 'none'\n    : '1px 1px 5px rgba(18, 22, 23, 0.9)';\n\
-        ]]]\n"
+      - color:
+          "[[[\n  return variables.media_on && variables.entity_picture === undefined\n\
+          \    ? 'rgba(5, 5, 5)'\n    : variables.media_off\n      ? 'var(--primary-text-color)'\n\
+          \      : 'var(--primary-text-color)';\n]]]\n"
+      - text-shadow:
+          "[[[\n  return variables.media_off || variables.entity_picture\
+          \ === undefined\n    ? 'none'\n    : '1px 1px 5px rgba(18, 22, 23, 0.9)';\n\
+          ]]]\n"
   tap_action:
-    action: "[[[\n  return variables.media_on\n    ? 'call-service'\n    : 'none';\n\
+    action:
+      "[[[\n  return variables.media_on\n    ? 'call-service'\n    : 'none';\n\
       ]]]\n"
     service: media_player.media_play_pause
     service_data:
       entity_id: "[[[\n  return variables.entity_id;\n]]]\n"
 circle:
   custom_fields:
-    circle: "[[[\n  if (variables.state_on && entity.attributes.brightness !== undefined)\
+    circle:
+      "[[[\n  if (variables.state_on && entity.attributes.brightness !== undefined)\
       \ {\n    let input = variables.circle_input,\n      radius = 20.5,\n      circumference\
       \ = radius * 2 * Math.PI;\n    return `\n      <svg viewBox=\"0 0 50 50\">\n\
       \        <style>\n          circle {\n            transform: rotate(-90deg);\n\
@@ -138,14 +154,15 @@ circle:
   styles:
     custom_fields:
       circle:
-      - display: initial
-      - width: 50px
-      - margin: -4px -4px 0 0
-      - justify-self: end
-      - opacity: 1
+        - display: initial
+        - width: 50px
+        - margin: -4px -4px 0 0
+        - justify-self: end
+        - opacity: 1
 climate:
   custom_fields:
-    circle: "[[[ if ((variables.climate_on && entity.attributes.temperature) || (entity.attributes.hvac_action\
+    circle:
+      "[[[ if ((variables.climate_on && entity.attributes.temperature) || (entity.attributes.hvac_action\
       \ === 'heating' && entity.attributes.temperature)) { const temperature = entity.attributes.temperature;\
       \  const stroke_color = '#b2b2b2'; const fill_color = 'none';  const radius\
       \ = 25;  return `<svg viewBox=\"0 0 60 60\"><circle cx=\"30\" cy=\"30\" r=\"\
@@ -154,7 +171,8 @@ climate:
       \ x=\"50%\" y=\"54%\" fill=\"#8d8e90\" font-size=\"17\" text-anchor=\"middle\"\
       \ alignment-baseline=\"middle\">${temperature}<tspan font-size=\"15\">\xB0</tspan></text></svg>`;\
       \ } ]]]\n"
-    icon: "[[[ {  const temperature = entity.attributes.current_temperature;  const\
+    icon:
+      "[[[ {  const temperature = entity.attributes.current_temperature;  const\
       \ stroke_color = '#b2b2b2';  const fill_color = entity.attributes.hvac_action\
       \ === 'heating' || variables.climate_on ? '#00ba32' : '#FFFFFF08'; const text_color\
       \ = entity.attributes.hvac_action === 'heating' || variables.climate_on ? '#FFFFFF'\
@@ -170,47 +188,50 @@ climate:
   show_name: true
   show_state: true
   state:
-  - operator: template
-    styles:
-      card:
-      - background-color: rgba(255, 255, 255, 0.8)
-      name:
-      - color: rgba(5, 5, 5)
-      state:
-      - color: rgba(5, 5, 5)
-    value: '[[[ return  variables.climate_on  || (states[entity.entity_id].attributes.hvac_action
-      == ''heating'')  ]]]
+    - operator: template
+      styles:
+        card:
+          - background-color: rgba(255, 255, 255, 0.8)
+        name:
+          - color: rgba(5, 5, 5)
+        state:
+          - color: rgba(5, 5, 5)
+      value:
+        "[[[ return  variables.climate_on  || (states[entity.entity_id].attributes.hvac_action
+        == 'heating')  ]]]
 
-      '
-  - operator: template
-    styles:
-      card:
-      - background-color: rgba(227, 56, 18, 0.4)
-    value: '[[[ return (states[entity.entity_id].state == ''Full Power'') ]]]
+        "
+    - operator: template
+      styles:
+        card:
+          - background-color: rgba(227, 56, 18, 0.4)
+      value: "[[[ return (states[entity.entity_id].state == 'Full Power') ]]]
 
-      '
-  state_display: '[[[ if (entity.attributes.hvac_action === ''heating'' && entity.state
-    === ''auto'') { return variables.translate_heating; } if (entity.attributes.hvac_action
-    === ''idle'' && entity.state === ''auto'') { return variables.translate_idle;
+        "
+  state_display:
+    "[[[ if (entity.attributes.hvac_action === 'heating' && entity.state
+    === 'auto') { return variables.translate_heating; } if (entity.attributes.hvac_action
+    === 'idle' && entity.state === 'auto') { return variables.translate_idle;
     } ]]]
 
-    '
+    "
   styles:
     custom_fields:
       circle:
-      - width: 60px
-      - justify-self: end
-      - margin-right: 3px
-      - margin-top: -5px
+        - width: 60px
+        - justify-self: end
+        - margin-right: 3px
+        - margin-top: -5px
       icon:
-      - width: 60px
-      - margin-left: 3px
-      - margin-top: -5px
+        - width: 60px
+        - margin-left: 3px
+        - margin-top: -5px
   template:
-  - base
+    - base
 climate_hvac:
   custom_fields:
-    circle: "[[[ if (variables.climate_hvac_on && entity.attributes.temperature) {\
+    circle:
+      "[[[ if (variables.climate_hvac_on && entity.attributes.temperature) {\
       \ const temperature = entity.attributes.temperature;  const stroke_color = '#b2b2b2';\
       \ const fill_color = 'none';  const radius = 25;  return `<svg viewBox=\"0 0\
       \ 60 60\"><circle cx=\"30\" cy=\"30\" r=\"${radius}\" stroke=\"${stroke_color}\"\
@@ -218,7 +239,8 @@ climate_hvac:
       \ transform-origin: 50% 50%;\"/>  <text x=\"50%\" y=\"54%\" fill=\"#8d8e90\"\
       \ font-size=\"17\" text-anchor=\"middle\" alignment-baseline=\"middle\">${temperature}<tspan\
       \ font-size=\"15\">\xB0</tspan></text></svg>`; } ]]]\n"
-    icon: "[[[ {  const temperature = entity.attributes.current_temperature;  const\
+    icon:
+      "[[[ {  const temperature = entity.attributes.current_temperature;  const\
       \ stroke_color = '#b2b2b2';  const fill_color = variables.climate_hvac_on ?\
       \ '#00ba32' : '#FFFFFF08'; const text_color = variables.climate_hvac_on ? '#FFFFFF'\
       \ : '#8d8e90'; const radius = 28;  return `<svg viewBox=\"0 0 60 60\"><circle\
@@ -233,43 +255,45 @@ climate_hvac:
   show_name: true
   show_state: true
   state:
-  - operator: template
-    styles:
-      card:
-      - background-color: rgba(255, 255, 255, 0.8)
-      name:
-      - color: rgba(5, 5, 5)
-      state:
-      - color: rgba(5, 5, 5)
-    value: '[[[ return variables.climate_hvac_on ]]]
+    - operator: template
+      styles:
+        card:
+          - background-color: rgba(255, 255, 255, 0.8)
+        name:
+          - color: rgba(5, 5, 5)
+        state:
+          - color: rgba(5, 5, 5)
+      value: "[[[ return variables.climate_hvac_on ]]]
 
-      '
-  state_display: '[[[ if (entity.attributes.hvac_action === ''heating'') { return
-    variables.translate_heating; } if (entity.attributes.hvac_action === ''idle'')
+        "
+  state_display: "[[[ if (entity.attributes.hvac_action === 'heating') { return
+    variables.translate_heating; } if (entity.attributes.hvac_action === 'idle')
     { return variables.translate_idle; } ]]]
 
-    '
+    "
   styles:
     custom_fields:
       circle:
-      - width: 60px
-      - justify-self: end
-      - margin-right: 3px
-      - margin-top: -5px
+        - width: 60px
+        - justify-self: end
+        - margin-right: 3px
+        - margin-top: -5px
       icon:
-      - width: 60px
-      - margin-left: 3px
-      - margin-top: -5px
+        - width: 60px
+        - margin-left: 3px
+        - margin-top: -5px
   template:
-  - base
+    - base
 conditional_media:
   custom_fields:
-    blur_overlay: "[[[\n  setTimeout(() => {\n    let elt = this.shadowRoot,\n   \
+    blur_overlay:
+      "[[[\n  setTimeout(() => {\n    let elt = this.shadowRoot,\n   \
       \   card = elt.getElementById('card'),\n      container = elt.getElementById('container'),\n\
       \      blur_overlay = elt.getElementById('blur_overlay');\n\n    if (elt &&\
       \ card && container && blur_overlay) {\n      card.insertBefore(blur_overlay,\
       \ container);\n    }\n  }, 0);\n  return ' ';\n]]]\n"
-  state_display: "[[[\n  if (entity) {\n    let elt = this.shadowRoot,\n      await\
+  state_display:
+    "[[[\n  if (entity) {\n    let elt = this.shadowRoot,\n      await\
     \ = setTimeout(marquee,0),\n      data = entity.attributes.data,\n      artist\
     \ = entity.attributes.media_artist,\n      title = entity.attributes.media_title;\n\
     \n      if (data !== undefined) {\n        var number = data[variables.i].number\
@@ -296,58 +320,66 @@ conditional_media:
     \ return output;\n  }\n  return variables.translate_unknown;\n]]]\n"
   styles:
     card:
-    - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
-    - background-image: "[[[\n  if (entity) {\n    return entity.attributes.data !==\
-        \ undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
-        ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
-        ${variables.entity_picture}\")`;\n  }\n]]]\n"
-    - color: "[[[\n  return variables.media_off || variables.entity_picture === undefined\n\
-        \    ? 'var(--primary-text-color)'\n    : 'rgba(5, 5, 5, 1.5)'\n]]]     \n"
-    - text-shadow: "[[[\n  return entity === undefined\n    ? 'none'\n    : '1px 1px\
-        \ 5px rgba(18, 22, 23, 0.9)';\n]]]\n"
-    custom_fields:
-      blur_overlay:
-      - display: block
-      - position: absolute
-      - width: 103.1%
-      - height: 103.1%
-      - filter: var(--blur-intensity)
-      - clip-path: 'inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--ha-card-border-radius,
-          4px) / 2) calc(var(--ha-card-border-radius, 4px) / 2))
-
-          '
-      - background: center center/cover no-repeat
-      - background-image: "[[[\n  if (entity) {\n    return entity.attributes.data\
-          \ !== undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
+      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
+      - background-image:
+          "[[[\n  if (entity) {\n    return entity.attributes.data !==\
+          \ undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
           ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
           ${variables.entity_picture}\")`;\n  }\n]]]\n"
-      - left: -1.5%
-      - bottom: -1.6%
+      - color:
+          "[[[\n  return variables.media_off || variables.entity_picture === undefined\n\
+          \    ? 'var(--primary-text-color)'\n    : 'rgba(5, 5, 5, 1.5)'\n]]]     \n"
+      - text-shadow:
+          "[[[\n  return entity === undefined\n    ? 'none'\n    : '1px 1px\
+          \ 5px rgba(18, 22, 23, 0.9)';\n]]]\n"
+    custom_fields:
+      blur_overlay:
+        - display: block
+        - position: absolute
+        - width: 103.1%
+        - height: 103.1%
+        - filter: var(--blur-intensity)
+        - clip-path:
+            "inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--ha-card-border-radius,
+            4px) / 2) calc(var(--ha-card-border-radius, 4px) / 2))
+
+            "
+        - background: center center/cover no-repeat
+        - background-image:
+            "[[[\n  if (entity) {\n    return entity.attributes.data\
+            \ !== undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
+            ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
+            ${variables.entity_picture}\")`;\n  }\n]]]\n"
+        - left: -1.5%
+        - bottom: -1.6%
       icon:
-      - width: 30px
-      - fill: "[[[\n  return entity && variables.media_on\n    ? 'rgba(255, 255, 255,\
-          \ 0.8)'\n    : '#9da0a2';\n]]]\n"
+        - width: 30px
+        - fill:
+            "[[[\n  return entity && variables.media_on\n    ? 'rgba(255, 255, 255,\
+            \ 0.8)'\n    : '#9da0a2';\n]]]\n"
     name:
-    - width: 100%
+      - width: 100%
     state:
-    - max-width: unset
-    - overflow: visible
+      - max-width: unset
+      - overflow: visible
   tap_action:
     action: call-service
     service: media_player.media_play_pause
     service_data:
-      entity_id: '[[[ return variables.entity_id; ]]]
+      entity_id: "[[[ return variables.entity_id; ]]]
 
-        '
+        "
   template:
-  - base
-  - icon_play_pause
+    - base
+    - icon_play_pause
   variables:
-    i: "[[[\n  if (entity) {\n    let data = entity.attributes.data;\n    return data\
+    i:
+      "[[[\n  if (entity) {\n    let data = entity.attributes.data;\n    return data\
       \ === undefined || Math.floor(Math.random() * (data.length - 1)) + 1;\n  }\n\
       ]]]\n"
 extra_styles:
-  extra_styles: "[[[\n  if (entity) {\n    let hs = entity.attributes.hs_color ===\
+  extra_styles:
+    "[[[\n  if (entity) {\n    let hs = entity.attributes.hs_color ===\
     \ undefined,\n      h = hs || entity.attributes.hs_color[0],\n      s = hs ||\
     \ entity.attributes.hs_color[1],\n      l_min = 28,\n      l_max = 48,\n     \
     \ l_calc = entity.attributes.brightness / 2.54 * (l_max - l_min) / 100 + l_min;\n\
@@ -383,7 +415,7 @@ graph:
     graph:
       card:
         entities:
-        - '[[[ return entity.entity_id ]]]'
+          - "[[[ return entity.entity_id ]]]"
         font_size: 75
         line_color: blue
         line_width: 4
@@ -391,21 +423,23 @@ graph:
           icon: false
           name: false
           state: false
-        style: "ha-card {\n  --ha-card-background: \"rgba(0, 0, 0, 0.3)\";\n  box-shadow:\
+        style:
+          "ha-card {\n  --ha-card-background: \"rgba(0, 0, 0, 0.3)\";\n  box-shadow:\
           \ none;\n  color: var(--primary-color);\n}\n"
         type: custom:mini-graph-card
   styles:
     custom_fields:
       graph:
-      - bottom: 0px
-      - left: 0%
-      - width: 100%
-      - position: absolute
+        - bottom: 0px
+        - left: 0%
+        - width: 100%
+        - position: absolute
   template:
-  - base
+    - base
 icon_apple_tv:
   custom_fields:
-    icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5\
+    icon:
+      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5\
       \ 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6\
       \ 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2\
       \ 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8\
@@ -419,11 +453,12 @@ icon_apple_tv:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 3px
+        - width: 55px
+        - margin-left: 3px
 icon_away:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
+    icon:
+      "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
       \ viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes on {\n         \
       \ 10%,\n          20%,\n          100% {\n            transform: rotateZ(0deg);\n\
       \          }\n          30%,\n          50%,\n          70% {\n            transform:\
@@ -454,18 +489,19 @@ icon_away:
       \   </svg>\n  `;\n]]]\n"
   styles:
     card:
-    - transition: all 0.3s ease-out
+      - transition: all 0.3s ease-out
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 1px
-      - margin-top: -1px
-      - fill: '[[[ return variables.state_on ? ''#516d82'' : ''#9da0a2''; ]]]
+        - width: 55px
+        - margin-left: 1px
+        - margin-top: -1px
+        - fill: "[[[ return variables.state_on ? '#516d82' : '#9da0a2'; ]]]
 
-          '
+            "
 icon_bathroom:
   custom_fields:
-    icon: "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000)\
+    icon:
+      "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000)\
       \ {\n    state = 'on';\n  } \n  if (variables.state === 'off' && variables.timeout\
       \ < 2000) {\n    state = 'off';\n  }\n  if (variables.state_on && variables.timeout\
       \ > 2000) {\n    state = 'on_timeout';\n  }\n  return `\n    <svg viewBox=\"\
@@ -497,11 +533,12 @@ icon_bathroom:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -2px
+        - width: 55px
+        - margin-left: -2px
 icon_climate:
   custom_fields:
-    icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3\
+    icon:
+      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3\
       \ 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6\
       \ 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2\
       \ 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
@@ -521,16 +558,18 @@ icon_climate:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -3px
-      - margin-top: 1px
-      - fill: '[[[ return variables.state === ''cool'' || variables.state === ''fan_only''
-          ? ''#5daeea'' : ''#9da0a2''; ]]]
+        - width: 55px
+        - margin-left: -3px
+        - margin-top: 1px
+        - fill:
+            "[[[ return variables.state === 'cool' || variables.state === 'fan_only'
+            ? '#5daeea' : '#9da0a2'; ]]]
 
-          '
+            "
 icon_closet:
   custom_fields:
-    icon: "[[[\n  let room = `d=\"M11.4,1.4h27.2v43.1H11.4V1.4z\" fill=\"#bcbcbc\"\
+    icon:
+      "[[[\n  let room = `d=\"M11.4,1.4h27.2v43.1H11.4V1.4z\" fill=\"#bcbcbc\"\
       `,\n    door = `d=\"M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1\
       \ 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z\"`;\n\n\
       \  if (variables.state_on && variables.timeout < 2000) {\n    return `\n   \
@@ -567,12 +606,13 @@ icon_closet:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -6px
-      - margin-top: -1px
+        - width: 55px
+        - margin-left: -6px
+        - margin-top: -1px
 icon_fan:
   custom_fields:
-    icon: "[[[\n  let path = `\n    <circle cx=\"25\" cy=\"25\" r=\"6.6\"/>\n    <path\
+    icon:
+      "[[[\n  let path = `\n    <circle cx=\"25\" cy=\"25\" r=\"6.6\"/>\n    <path\
       \ d=\"M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9\
       \ 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9\
       \ 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7\
@@ -606,12 +646,13 @@ icon_fan:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 1px
-      - margin-top: 1px
+        - width: 55px
+        - margin-left: 1px
+        - margin-top: 1px
 icon_home:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
+    icon:
+      "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
       \ viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes on {\n         \
       \ from,\n          20%,\n          40%,\n          60%,\n          80%,\n  \
       \        to {\n            animation-timing-function: cubic-bezier(0.215, 0.61,\
@@ -633,18 +674,19 @@ icon_home:
       \ 9.8 7.3 25 7.3 25z\"/>\n    </svg>\n  `;\n]]]\n"
   styles:
     card:
-    - transition: all 0.3s ease-out
+      - transition: all 0.3s ease-out
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 1px
-      - margin-top: -1px
-      - fill: '[[[ return variables.state_on ? ''#c7983e'' : ''#9da0a2''; ]]]
+        - width: 55px
+        - margin-left: 1px
+        - margin-top: -1px
+        - fill: "[[[ return variables.state_on ? '#c7983e' : '#9da0a2'; ]]]
 
-          '
+            "
 icon_hue:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
+    icon:
+      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
       \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
       \    @keyframes on {\n          0% {\n            transform: scale(0.85);\n\
       \          }\n          20% {\n            transform: scale(1.1);\n        \
@@ -666,11 +708,12 @@ icon_hue:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -4px
+        - width: 55px
+        - margin-left: -4px
 icon_imac:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
+    icon:
+      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
       \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
       \    @keyframes on {\n          from {\n            opacity: 0.5;\n        \
       \    transform: scale(0.6);\n          }\n          100% {\n            opacity:\
@@ -683,14 +726,15 @@ icon_imac:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 5px
-      - fill: '[[[ return variables.state_on ? ''#72757c'' : ''#9da0a2''; ]]]
+        - width: 55px
+        - margin-left: 5px
+        - fill: "[[[ return variables.state_on ? '#72757c' : '#9da0a2'; ]]]
 
-          '
+            "
 icon_lamp:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
+    icon:
+      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
       \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
       \    @keyframes on {\n          0% {\n            transform: scale(0.85);\n\
       \          }\n          20% {\n            transform: scale(1.1);\n        \
@@ -708,12 +752,13 @@ icon_lamp:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -6px
-      - margin-top: 1px
+        - width: 55px
+        - margin-left: -6px
+        - margin-top: 1px
 icon_monitors:
   custom_fields:
-    icon: "[[[\n  let style = `\n    <style>\n      @keyframes cone {\n        35%\
+    icon:
+      "[[[\n  let style = `\n    <style>\n      @keyframes cone {\n        35%\
       \ {\n          transform: scale(0.8);\n          animation-timing-function:\
       \ cubic-bezier(0, 0.55, 0.45, 1);\n        }\n        36% {\n          transform:\
       \ translateY(0%);\n        }\n        49% {\n          transform: scale(1.25);\n\
@@ -754,26 +799,27 @@ icon_monitors:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -2px
+        - width: 55px
+        - margin-left: -2px
 icon_name:
-  color: '#9da0a2'
+  color: "#9da0a2"
   size: 1.4em
   styles:
     card:
-    - padding: 3.35em 1.4em 3.35em 1.2em
-    - font-size: 1.06em
-    - font-weight: 500
-    - letter-spacing: 0.015em
-    - background: '#FFFFFF10'
+      - padding: 3.35em 1.4em 3.35em 1.2em
+      - font-size: 1.06em
+      - font-weight: 500
+      - letter-spacing: 0.015em
+      - background: "#FFFFFF10"
     grid:
-    - grid-template-areas: '"i n"'
-    - grid-column-gap: 0.3em
+      - grid-template-areas: '"i n"'
+      - grid-column-gap: 0.3em
     img_cell:
-    - overflow: visible
+      - overflow: visible
 icon_nest_mini:
   custom_fields:
-    icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M49.7 25c0 13.6-11.1 24.7-24.8\
+    icon:
+      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M49.7 25c0 13.6-11.1 24.7-24.8\
       \ 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25 .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22\
       \ 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9 2.3-2.2h0zm10.8\
       \ 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3\
@@ -783,23 +829,24 @@ icon_nest_mini:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 2px
+        - width: 55px
+        - margin-left: 2px
 icon_only:
-  color: '#9da0a2'
+  color: "#9da0a2"
   show_name: false
   styles:
     card:
-    - padding: 1.95em 0
-    - background: '#FFFFFF10'
+      - padding: 1.95em 0
+      - background: "#FFFFFF10"
     icon:
-    - width: 100%
+      - width: 100%
     img_cell:
-    - width: 55px
-    - height: 55px
+      - width: 55px
+      - height: 55px
 icon_play_pause:
   custom_fields:
-    play_pause: "[[[\n  let style = `\n    <style>\n      .scale-up {\n        animation:\
+    play_pause:
+      "[[[\n  let style = `\n    <style>\n      .scale-up {\n        animation:\
       \ scale-up 1s forwards;\n        cubic-bezier(.05, .5, .3, 1);\n        transform-origin:\
       \ center center;\n      }\n      @keyframes scale-up {\n        0% {\n     \
       \     opacity: 0;\n          transform: scale(0);\n        }\n        20% {\n\
@@ -815,32 +862,35 @@ icon_play_pause:
   styles:
     custom_fields:
       play_pause:
-      - top: 0
-      - right: 0
-      - bottom: 0
-      - left: 0
-      - margin: auto
-      - width: 25px
-      - height: 25px
-      - position: absolute
-      - fill: '#dedede'
-      - overflow: visible
-      - filter: "[[[\n  return entity && variables.entity_picture\n    ? 'drop-shadow(0\
-          \ 0 1.3vw rgba(0,0,0,0.7))'\n    : 'none';\n]]]\n"
+        - top: 0
+        - right: 0
+        - bottom: 0
+        - left: 0
+        - margin: auto
+        - width: 25px
+        - height: 25px
+        - position: absolute
+        - fill: "#dedede"
+        - overflow: visible
+        - filter:
+            "[[[\n  return entity && variables.entity_picture\n    ? 'drop-shadow(0\
+            \ 0 1.3vw rgba(0,0,0,0.7))'\n    : 'none';\n]]]\n"
 icon_plex:
   custom_fields:
-    icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M7.7.3h34.6c4.1 0 7.4 3.3 7.4\
+    icon:
+      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M7.7.3h34.6c4.1 0 7.4 3.3 7.4\
       \ 7.4v34.6c0 4.1-3.3 7.4-7.4 7.4H7.7c-4.1 0-7.4-3.3-7.4-7.4V7.7C.3 3.6 3.6.3\
       \ 7.7.3z\" fill=\"#282a2d\"/>\n  <path d=\"M25,7.1H14.6L25,25L14.6,42.9H25L35.4,25L25,7.1z\"\
       \ fill=\"#e5a00d\"/>\n</svg>\n"
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 3px
+        - width: 55px
+        - margin-left: 3px
 icon_plug:
   custom_fields:
-    icon: "[[[ if (entity.state === 'on') return '<svg id=\"el0k5alfrd2e1\" xmlns=\"\
+    icon:
+      "[[[ if (entity.state === 'on') return '<svg id=\"el0k5alfrd2e1\" xmlns=\"\
       http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"\
       0 0 24 24\" shape-rendering=\"geometricPrecision\" text-rendering=\"geometricPrecision\"\
       ><style><![CDATA[#el0k5alfrd2e3 {animation: el0k5alfrd2e3_c_o 1000ms linear\
@@ -863,10 +913,11 @@ icon_plug:
   styles:
     custom_fields:
       icon:
-      - width: 55px
+        - width: 55px
 icon_ps5:
   custom_fields:
-    icon: "[[[\n  if (variables.state_on && variables.timeout < 2000) {\n    return\
+    icon:
+      "[[[\n  if (variables.state_on && variables.timeout < 2000) {\n    return\
       \ `\n      <svg viewBox=\"0 0 50 50\">\n        <style>\n        @keyframes\
       \ on {\n          50% {\n            transform: translateY(0);\n          }\n\
       \          100% {\n            transform: translateY(-45%);\n          }\n \
@@ -907,12 +958,13 @@ icon_ps5:
   styles:
     custom_fields:
       icon:
-      - width: 60px
-      - margin-left: 3px
-      - margin-top: -5px
+        - width: 60px
+        - margin-left: 3px
+        - margin-top: -5px
 icon_shade:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
+    icon:
+      "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on'\
       \ : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n    \
       \    @keyframes on {\n          0% {\n            transform: scale(0.85);\n\
       \          }\n          20% {\n            transform: scale(1.1);\n        \
@@ -930,12 +982,13 @@ icon_shade:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -4px
-      - margin-top: -1px
+        - width: 55px
+        - margin-left: -4px
+        - margin-top: -1px
 icon_spot:
   custom_fields:
-    icon: "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000)\
+    icon:
+      "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000)\
       \ {\n    state = 'on';\n  } \n  if (variables.state === 'off' && variables.timeout\
       \ < 2000) {\n    state = 'off';\n  }\n  if (variables.state_on && variables.timeout\
       \ > 2000) {\n    state = 'on_timeout';\n  }\n  return `\n    <svg viewBox=\"\
@@ -971,11 +1024,12 @@ icon_spot:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: -3px
+        - width: 55px
+        - margin-left: -3px
 icon_spotify:
   custom_fields:
-    icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25 .3C11.4.3.3 11.4.3 25S11.4\
+    icon:
+      "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25 .3C11.4.3.3 11.4.3 25S11.4\
       \ 49.7 25 49.7 49.7 38.6 49.7 25 38.6.3 25 .3zm11.3 35.6c-.4.7-1.4 1-2.1.5-5.8-3.5-13.1-4.3-21.7-2.4-.8.2-1.7-.3-1.8-1.2-.2-.8.3-1.7\
       \ 1.2-1.8 9.4-2.2 17.5-1.2 24 2.8.6.5.9 1.4.4 2.1zm3.1-6.7c-.6.9-1.7 1.2-2.6.6-6.6-4.1-16.8-5.3-24.6-2.9a1.96\
       \ 1.96 0 0 1-2.4-1.3 1.96 1.96 0 0 1 1.3-2.4c9-2.7 20.1-1.4 27.7 3.3.8.6 1.1\
@@ -984,11 +1038,12 @@ icon_spotify:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 2px
+        - width: 55px
+        - margin-left: 2px
 icon_strip:
   custom_fields:
-    icon: '[[[ if (entity.state === ''on'') return ''<svg viewBox="0 0 24 24" fill="var(--light-color)">
+    icon:
+      '[[[ if (entity.state === ''on'') return ''<svg viewBox="0 0 24 24" fill="var(--light-color)">
       <style><![CDATA[#icon { animation-name: bouncein; animation-duration: 1000ms;  }
       @keyframes bouncein {0% {opacity: 0;transform: scale3d(0.3, 0.3, 0.3);}  20%
       {transform: scale3d(1.1, 1.1, 1.1);} 40% {transform: scale3d(0.9, 0.9, 0.9);}
@@ -1025,10 +1080,11 @@ icon_strip:
   styles:
     custom_fields:
       icon:
-      - width: 55px
+        - width: 55px
 icon_strip_alternate:
   custom_fields:
-    icon: '[[[ if (entity.state === ''on'') return ''<svg id="e8ljwnv7m62d1" xmlns="http://www.w3.org/2000/svg"
+    icon:
+      '[[[ if (entity.state === ''on'') return ''<svg id="e8ljwnv7m62d1" xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" shape-rendering="geometricPrecision"
       text-rendering="geometricPrecision"><style><![CDATA[#e8ljwnv7m62d2 { animation-name:
       e8ljwnv7m62d2__tt, e8ljwnv7m62d2_c_o; animation-duration: 1000ms; animation-fill-mode:
@@ -1058,10 +1114,11 @@ icon_strip_alternate:
   styles:
     custom_fields:
       icon:
-      - width: 55px
+        - width: 55px
 icon_thermometer:
   custom_fields:
-    icon: "[[[ { const fill_color = entity.state >= '30' ? '#FF0000' : entity.state\
+    icon:
+      "[[[ { const fill_color = entity.state >= '30' ? '#FF0000' : entity.state\
       \ >= '25' ? '#FF3700' : entity.state >= '20' ? '#FF8000' :  entity.state >=\
       \ '15' ? '#FFFF00' : entity.state >= '10' ? '#00FF7B' : entity.state >= '5'\
       \ ? '#00C8FF' : entity.state >= '0' ? '#006EFF' : entity.state >= '-5' ? '#0037FF'\
@@ -1085,10 +1142,11 @@ icon_thermometer:
   styles:
     custom_fields:
       icon:
-      - width: 55px
+        - width: 55px
 icon_tv:
   custom_fields:
-    icon: "[[[\n  let style = `\n    <style>\n      @keyframes on {\n        from\
+    icon:
+      "[[[\n  let style = `\n    <style>\n      @keyframes on {\n        from\
       \ {\n          transform: scaleY(0);\n        }\n        to {\n          transform:\
       \ scaleY(1);\n        }\n      }\n      .on {\n        animation: on 1s;\n \
       \       transform-origin: -100% 46%;\n        animation-fill-mode: forwards;\n\
@@ -1118,13 +1176,14 @@ icon_tv:
   styles:
     custom_fields:
       icon:
-      - width: 55px
-      - margin-top: -1px
-      - margin-left: 5px
-      - fill: "[[[\n  return variables.state_on ? '#616161' : '#9da0a2';\n]]]\n"
+        - width: 55px
+        - margin-top: -1px
+        - margin-left: 5px
+        - fill: "[[[\n  return variables.state_on ? '#616161' : '#9da0a2';\n]]]\n"
 icon_vacuum:
   custom_fields:
-    icon: '[[[ if (entity.state === ''cleaning'') return ''<svg id="egx3seajtt481"
+    icon:
+      '[[[ if (entity.state === ''cleaning'') return ''<svg id="egx3seajtt481"
       xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 24 24" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><style><![CDATA[#egx3seajtt484
       {animation: egx3seajtt484_c_o 1000ms linear infinite normal forwards}@keyframes
@@ -1161,10 +1220,11 @@ icon_vacuum:
   styles:
     custom_fields:
       icon:
-      - width: 55px
+        - width: 55px
 icon_window:
   custom_fields:
-    icon: "[[[ if (variables.state_on && variables.timeout < 2000) { return '<svg\
+    icon:
+      "[[[ if (variables.state_on && variables.timeout < 2000) { return '<svg\
       \ viewBox=\"0 0 721 668\" fill=\"none\"> <style><![CDATA[#left-closed {animation:\
       \ opened-left 2s both;transform-origin: left;transform-box: fill-box;} #right-closed\
       \ {animation: opened-right 2s both;transform-origin: right;transform-box: fill-box;}\
@@ -1225,12 +1285,13 @@ icon_window:
   styles:
     custom_fields:
       icon:
-      - width: 61px
-      - margin-left: -6px
-      - margin-top: -1px
+        - width: 61px
+        - margin-left: -6px
+        - margin-top: -1px
 icon_xbox:
   custom_fields:
-    icon: "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
+    icon:
+      "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg\
       \ viewBox=\"0 0 16 16\">\n      <style>              \n        .on {\n     \
       \     stroke-dasharray: 1000;\n          stroke-dashoffset: 1000;\n        \
       \  animation: dash 2s;\n        }\n        \n        @keyframes dash {\n   \
@@ -1251,25 +1312,26 @@ icon_xbox:
       \ 12.246 0 0 1-.654-.319Z\"/>\n    </svg>\n  `;\n]]]      \n"
   styles:
     card:
-    - transition: all 0.3s ease-out
+      - transition: all 0.3s ease-out
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 1px
-      - margin-top: -1px
-      - fill: '[[[ return variables.state_on ? ''#0e7a0d'' : ''#9da0a2''; ]]]
+        - width: 55px
+        - margin-left: 1px
+        - margin-top: -1px
+        - fill: "[[[ return variables.state_on ? '#0e7a0d' : '#9da0a2'; ]]]
 
-          '
+            "
 light:
   template:
-  - base
-  - circle
-  - loader
+    - base
+    - circle
+    - loader
   variables:
-    circle_input: '[[[ return entity === undefined || Math.round(entity.attributes.brightness
+    circle_input:
+      "[[[ return entity === undefined || Math.round(entity.attributes.brightness
       / 2.54); ]]]
 
-      '
+      "
 loader:
   custom_fields:
     loader: '<img src="/local/loader.svg" width="100%">
@@ -1278,24 +1340,26 @@ loader:
   styles:
     custom_fields:
       loader:
-      - display: none
-      - top: -7.5px
-      - right: -5px
-      - width: 50px
-      - position: absolute
-      - opacity: 0.5
-      - filter: '[[[ return variables.state_on ? ''none'' : ''invert(1)''; ]]]
+        - display: none
+        - top: -7.5px
+        - right: -5px
+        - width: 50px
+        - position: absolute
+        - opacity: 0.5
+        - filter: "[[[ return variables.state_on ? 'none' : 'invert(1)'; ]]]
 
-          '
+            "
   tap_action:
-    loader: "[[[\n  if (entity) {\n    let elt = this.shadowRoot,\n      loader =\
+    loader:
+      "[[[\n  if (entity) {\n    let elt = this.shadowRoot,\n      loader =\
       \ (id, style, timeout) => {\n        elt.getElementById(id) && (elt.getElementById(id).style.display\
       \ = style,\n          window.setTimeout(() => {\n            elt.getElementById('loader').style.display\
       \ = 'none'\n          }, 20000))\n      };\n    loader('circle', 'none', 'initial'),\n\
       \    loader('loader', 'initial', 'none');\n  }\n]]]\n"
 lock:
   custom_fields:
-    circle: "[[[\n  if (entity && variables.trigger) {\n    let state = variables.trigger.state\
+    circle:
+      "[[[\n  if (entity && variables.trigger) {\n    let state = variables.trigger.state\
       \ === 'on' ? 'locked' : null;\n    if (variables.lock === 'locked') {\n    \
       \  return `\n        <svg viewBox=\"0 0 50 50\">\n          <style>\n      \
       \      @keyframes locked {\n              from,\n              to {\n      \
@@ -1311,14 +1375,15 @@ lock:
   styles:
     custom_fields:
       circle:
-      - width: 45px
-      - fill: var(--state-icon-color)
-      - margin: 1px 2px 0 0
-      - justify-self: end
-      - opacity: 1
-      - display: grid
+        - width: 45px
+        - fill: var(--state-icon-color)
+        - margin: 1px 2px 0 0
+        - justify-self: end
+        - opacity: 1
+        - display: grid
   tap_action:
-    loader: "[[[\n  let elt = this.shadowRoot;\n  if (variables.state_on && variables.lock\
+    loader:
+      "[[[\n  let elt = this.shadowRoot;\n  if (variables.state_on && variables.lock\
       \ === 'locked') {\n    elt.getElementById('lock').classList.add('locked');\n\
       \    window.setTimeout(() => {\n      elt.getElementById('lock').classList.remove('locked');\n\
       \    }, 1100);\n  } else {\n\n    // duplicate of \"loader\" template\n    let\
@@ -1329,25 +1394,28 @@ lock:
 media:
   styles:
     card:
-    - color: "[[[\n  return variables.media_off || variables.entity_picture === undefined\n\
-        \    ? 'var(--primary-text-color)'\n    : 'rgba(5, 5, 5)'\n]]]     \n"
-    - background-color: none
-    - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
-    - background-image: "[[[\n  if (entity) {\n    return entity.attributes.data !==\
-        \ undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
-        ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
-        ${variables.entity_picture}\")`;\n  }\n]]]            \n"
+      - color:
+          "[[[\n  return variables.media_off || variables.entity_picture === undefined\n\
+          \    ? 'var(--primary-text-color)'\n    : 'rgba(5, 5, 5)'\n]]]     \n"
+      - background-color: none
+      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
+      - background-image:
+          "[[[\n  if (entity) {\n    return entity.attributes.data !==\
+          \ undefined\n      ? `url(\"${entity.attributes.data[variables.i].fanart}\"\
+          ), url(\"${entity.attributes.data[variables.i].poster}\")`\n      : `url(\"\
+          ${variables.entity_picture}\")`;\n  }\n]]]            \n"
     custom_fields:
       icon:
-      - width: 55px
-      - margin-left: 2px
-      - fill: '#9da0a2'
+        - width: 55px
+        - margin-left: 2px
+        - fill: "#9da0a2"
   template:
-  - base
-  - base_media
+    - base
+    - base_media
 person:
   custom_fields:
-    circle: "[[[\n  if (entity) {\n    let time = c => {\n      let s = (c/1e3), m\
+    circle:
+      "[[[\n  if (entity) {\n    let time = c => {\n      let s = (c/1e3), m\
       \ = (c/6e4), h = (c/36e5), d = (c/864e5);\n      return s < 60 ? parseInt(s)\
       \ + 's' : m < 60 ? parseInt(m) + 'm' : h < 24 ? parseInt(h) + 'h' : parseInt(d)\
       \ + 'd';\n    },\n    last_changed = states[variables.retain] == null || states[variables.retain].state\
@@ -1361,28 +1429,30 @@ person:
       \ fill=\"#8d8e90\" font-size=\"14\" text-anchor=\"middle\" alignment-baseline=\"\
       middle\" dominant-baseline=\"middle\">${last_changed}</text>\n      </svg>\n\
       \    `;\n  }\n]]]\n"
-    icon: "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
+    icon:
+      "[[[\n  return entity && variables.entity_picture\n    ? `<img src=\"${variables.entity_picture}\"\
       \ width=\"100%\">`\n    : null;\n]]]\n"
   styles:
     custom_fields:
       icon:
-      - clip-path: circle()
-      - width: 58px
-      - margin: -1px 0 3px 2px
-      - pointer-events: none
-      - display: grid
+        - clip-path: circle()
+        - width: 58px
+        - margin: -1px 0 3px 2px
+        - pointer-events: none
+        - display: grid
   template:
-  - base
-  - circle
+    - base
+    - circle
   triggers_update: sensor.time
 settings:
   variables:
-    translate_heating: Heizen
-    translate_idle: "Unt\xE4tig"
-    translate_unknown: Unbekannt
+    translate_heating: Heating
+    translate_idle: "Not in Use"
+    translate_unknown: Unknown
 tilt:
   custom_fields:
-    tilt: "[[[\n  try {\n    setTimeout(() => {\n      let elt = this.shadowRoot,\n\
+    tilt:
+      "[[[\n  try {\n    setTimeout(() => {\n      let elt = this.shadowRoot,\n\
       \        card = elt.getElementById('card'),\n        ignore = window.navigator.userAgent;\n\
       \      if (elt && card && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)\
       \ && !ignore.match(/iPad/i)) {\n        VanillaTilt.init(card, variables.tilt_options);\n\

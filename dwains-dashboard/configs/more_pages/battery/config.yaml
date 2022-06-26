@@ -1,0 +1,3 @@
+name: Battery
+icon: mdi:battery-alert
+show_in_navbar: false

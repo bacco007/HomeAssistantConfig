@@ -1,0 +1,11 @@
+---
+resource: https://solar-flux-api.fly.dev/solar-flux.json
+scan_interval: 60
+sensor:
+  - name: Solar Flux Short
+    value_template: "{{ value_json.flux_short * 1000000000 }}"
+    unit_of_measurement: "nW/m2"
+
+  - name: Solar Flux Long
+    value_template: "{{ value_json.flux_long * 1000000000 }}"
+    unit_of_measurement: "nW/m2"

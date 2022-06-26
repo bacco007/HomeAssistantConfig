@@ -192,3 +192,4 @@
         - !include graph_nswaqi.yaml
         - !include graph_waqi.yaml
         - !include graph_uvindex.yaml
+        - !include graph_solarflux.yaml
