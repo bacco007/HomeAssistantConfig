@@ -29,7 +29,7 @@ class LogoOption(Enum):
 
 CUSTOM_IMAGE_BASE_URL = f"/api/{DOMAIN}/custom"
 STATIC_IMAGE_BASE_URL = f"/api/{DOMAIN}/static"
-CHAR_REPLACE = {" ": "", "+": "plus", "_": "", ".": ""}
+CHAR_REPLACE = {" ": "", "+": "plus", "_": "", ".": "", ":": ""}
 
 LOGO_OPTIONS_MAPPING = {
     LogoOption.Disabled: "none",
