@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 import logging
-from typing import Final, Union
+from typing import Final
 
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
@@ -103,7 +103,7 @@ class SymbolDefinition:
     symbol: str
     target_currency: str
 
-    def __init__(self, symbol: str, target_currency: Union[str, None] = None) -> None:
+    def __init__(self, symbol: str, target_currency: str | None = None) -> None:
         """Create a new symbol definition."""
         self.symbol = symbol
         self.target_currency = target_currency
@@ -125,7 +125,7 @@ class SymbolDefinition:
         return hash((self.symbol, self.target_currency))
 
 
-def parse_scan_interval(scan_interval: Union[timedelta, str]) -> timedelta:
+def parse_scan_interval(scan_interval: timedelta | str) -> timedelta:
     """Parse and validate scan_interval."""
     if isinstance(scan_interval, str):
         if isinstance(scan_interval, str):

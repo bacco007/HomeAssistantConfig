@@ -6,12 +6,16 @@ https://github.com/iprak/yahoofinance
 
 from __future__ import annotations
 
-import datetime
+from datetime import date, datetime
 import logging
 from timeit import default_timer as timer
-from typing import Union
 
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import (
+    DOMAIN as SENSOR_DOMAIN,
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+)
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.typing import StateType
@@ -63,6 +67,8 @@ async def async_setup_platform(hass, _config, async_add_entities, _discovery_inf
     domain_config = hass.data[DOMAIN][HASS_DATA_CONFIG]
     symbol_definitions: list[SymbolDefinition] = domain_config[CONF_SYMBOLS]
 
+    # We don't know the currency of a symbol so can't added conversion symbols upfront
+
     sensors = [
         YahooFinanceSensor(hass, coordinator, symbol, domain_config)
         for symbol in symbol_definitions
@@ -72,7 +78,7 @@ async def async_setup_platform(hass, _config, async_add_entities, _discovery_inf
     _LOGGER.info("Entities added for %s", [item.symbol for item in symbol_definitions])
 
 
-class YahooFinanceSensor(CoordinatorEntity):
+class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     """Represents a Yahoo finance entity."""
 
     _currency = DEFAULT_CURRENCY
@@ -82,6 +88,10 @@ class YahooFinanceSensor(CoordinatorEntity):
     _target_currency = None
     _original_currency = None
     _last_available_timer = None
+    _waiting_on_converstion = False
+
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_device_class = SensorDeviceClass.MONETARY
 
     def __init__(
         self,
@@ -133,6 +143,27 @@ class YahooFinanceSensor(CoordinatorEntity):
             self._target_currency,
         )
 
+    @staticmethod
+    def safe_convert(value: float | None, conversion: float | None) -> float | None:
+        """Return the converted value. The original value is returned if there is no conversion."""
+        if value is None:
+            return None
+        if conversion is None:
+            return value
+        return value * conversion
+
+    @staticmethod
+    def parse_dividend_date(dividend_date_timestamp) -> str | None:
+        """Parse dividendDate JSON element."""
+
+        dividend_date_timestamp = convert_to_float(dividend_date_timestamp)
+        if dividend_date_timestamp is None:
+            return None
+
+        dividend_date = datetime.utcfromtimestamp(dividend_date_timestamp)
+        dividend_date_date = dividend_date.date()
+        return dividend_date_date.isoformat()
+
     @property
     def unique_id(self) -> str:
         """Return a unique ID."""
@@ -147,13 +178,15 @@ class YahooFinanceSensor(CoordinatorEntity):
         return self._symbol
 
     @property
-    def state(self) -> StateType:
-        """Return the state of the sensor."""
+    def native_value(self) -> StateType | date | datetime:
+        """Return the value reported by the sensor."""
         return self._round(self._market_price)
 
     @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity, if any."""
+    def native_unit_of_measurement(self) -> str | None:
+        """Return the unit of measurement of the sensor, if any."""
+        if self._target_currency:
+            return self._target_currency
         return self._currency
 
     @property
@@ -161,7 +194,7 @@ class YahooFinanceSensor(CoordinatorEntity):
         """Return the icon to use in the frontend, if any."""
         return self._icon
 
-    def _round(self, value: Union[float, None]) -> Union[float, int, None]:
+    def _round(self, value: float | None) -> float | int | None:
         """Return formatted value based on decimal_places."""
         if value is None:
             return None
@@ -173,8 +206,9 @@ class YahooFinanceSensor(CoordinatorEntity):
 
         return round(value, self._decimal_places)
 
-    def _get_target_currency_conversion(self) -> Union[float, None]:
+    def _get_target_currency_conversion(self) -> float | None:
         value = None
+        self._waiting_on_converstion = False
 
         if self._target_currency and self._original_currency:
             if self._target_currency == self._original_currency:
@@ -193,37 +227,15 @@ class YahooFinanceSensor(CoordinatorEntity):
                     value = symbol_data[DATA_REGULAR_MARKET_PRICE]
                     _LOGGER.debug("%s %s is %s", self._symbol, conversion_symbol, value)
                 else:
-                    _LOGGER.debug(
-                        "%s No data found for %s",
+                    _LOGGER.info(
+                        "%s No data found for %s, symbol added to coordinator",
                         self._symbol,
                         conversion_symbol,
                     )
+                    self._waiting_on_converstion = True
                     self.coordinator.add_symbol(conversion_symbol)
 
         return value
-
-    @staticmethod
-    def safe_convert(
-        value: Union[float, None], conversion: Union[float, None]
-    ) -> Union[float, None]:
-        """Return the converted value. The original value is returned if there is no conversion."""
-        if value is None:
-            return None
-        if conversion is None:
-            return value
-        return value * conversion
-
-    @staticmethod
-    def parse_dividend_date(dividend_date_timestamp) -> str | None:
-        """Parse dividendDate JSON element."""
-
-        dividend_date_timestamp = convert_to_float(dividend_date_timestamp)
-        if dividend_date_timestamp is None:
-            return None
-
-        dividend_date = datetime.datetime.utcfromtimestamp(dividend_date_timestamp)
-        dividend_date_date = dividend_date.date()
-        return dividend_date_date.isoformat()
 
     def _update_original_currency(self, symbol_data) -> bool:
         """Update the original currency."""
@@ -338,7 +350,7 @@ class YahooFinanceSensor(CoordinatorEntity):
             lower_currency
         )
 
-    def _calc_trending_state(self) -> Union[str, None]:
+    def _calc_trending_state(self) -> str | None:
         """Return the trending state for the symbol."""
         if self._market_price is None or self._previous_close is None:
             return None
@@ -364,4 +376,9 @@ class YahooFinanceSensor(CoordinatorEntity):
             self._update_properties()
             self._last_available_timer = current_timer
 
-        return self.coordinator.last_update_success
+        return_value = (
+            self.coordinator.last_update_success and not self._waiting_on_converstion
+        )
+
+        _LOGGER.info("%s available=%s", self._symbol, return_value)
+        return return_value
