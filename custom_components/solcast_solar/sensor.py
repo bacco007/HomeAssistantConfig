@@ -224,7 +224,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
 
         self._attributes = {}
         self._attr_extra_state_attributes = {}
-
+        
         self._sensor_data = coordinator.get_site_value(entity_description.key)
         
         self._attr_device_info = {

@@ -12,6 +12,7 @@ from os.path import exists as file_exists
 from typing import Any, cast
 
 from aiohttp import ClientConnectionError, ClientSession
+import asyncio
 import async_timeout
 from aiohttp.client_reqrep import ClientResponse
 from isodate import parse_datetime

@@ -56,15 +56,21 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def reset_api_counter(self, *args):
         try:
             await self.solcast.reset_api_counter()
-            await get_instance(self._hass).async_add_executor_job(self.gethistory)
         except Exception as error:
             _LOGGER.error("Solcast - Error resetting API counter")
+            
+    async def reset_past_data(self, *args):
+        try:
+            await get_instance(self._hass).async_add_executor_job(self.gethistory)
+        except Exception as error:
+            _LOGGER.error("Solcast - Error resetting past data")
 
     async def setup(self):
         await get_instance(self._hass).async_add_executor_job(self.gethistory)
 
         await self.setup_auto_fetch()
         async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
+        async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=0, second=15, local=True)
 
     async def setup_auto_fetch(self):
         try:
