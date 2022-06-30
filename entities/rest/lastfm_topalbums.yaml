@@ -1,0 +1,10 @@
+---
+resource: !secret lastfm_user_topalbums
+sensor:
+  name: lastfm_user_topalbums
+  value_template: >
+    {{ value_json.topalbums.album[0].artist.name}} - {{ value_json.topalbums.album[0].name }}
+  json_attributes_path: $.topalbums
+  json_attributes:
+    - album
+scan_interval: 10

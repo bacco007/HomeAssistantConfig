@@ -1,0 +1,26 @@
+columns:
+- add_link: url
+  field: name
+  style:
+  - display: block
+  - padding: 16px 0 0
+  title: artist
+- field: playcount
+  postfix: ' PLAYS'
+  style:
+  - display: block
+  - font-size: var(--h6-font-size)
+  - padding: 0
+  - opacity: 0.5
+  - text-transform: uppercase
+  title: Plays
+entity: sensor.lastfm_user_topartists
+feed_attribute: artist
+row_limit: 5
+style: 'table tbody:first-child { display: none; } tbody tr:first-child { display:
+  none; } tbody tr:nth-child(odd), tbody tr:nth-child(even) { background: none; }
+  ha-card .name a { font-size: var(--h3-font-size); font-weight: var(--h3-font-weight)
+  !important; } .card-header {padding-bottom: 0; margin: 0}
+
+  '
+type: custom:list-card

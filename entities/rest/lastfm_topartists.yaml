@@ -1,0 +1,10 @@
+---
+resource: !secret lastfm_user_topartists
+sensor:
+  name: lastfm_user_topartists
+  value_template: >
+    {{ value_json.topartists.artist[0].name}}
+  json_attributes_path: $.topartists
+  json_attributes:
+    - artist
+scan_interval: 10

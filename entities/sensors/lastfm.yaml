@@ -1,0 +1,6 @@
+---
+# https://www.home-assistant.io/integrations/lastfm/
+platform: lastfm
+api_key: !secret lastfm_apikey
+users:
+  - tbsmarthome
