@@ -37,8 +37,10 @@ base:
     name:
       - justify-self: start
       - margin-bottom: -2px
+      - font-size: 1.5em
     state:
       - justify-self: start
+      - font-size: 1.2em
   tap_action:
     action: toggle
     haptic: medium
@@ -340,7 +342,7 @@ conditional_media:
         - height: 103.1%
         - filter: var(--blur-intensity)
         - clip-path:
-            "inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--ha-card-border-radius,
+            "inset(64.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--ha-card-border-radius,
             4px) / 2) calc(var(--ha-card-border-radius, 4px) / 2))
 
             "

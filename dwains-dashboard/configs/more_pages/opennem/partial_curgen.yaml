@@ -38,13 +38,28 @@ cards:
         - entity: sensor.opennem_nsw
           name: New South Wales
         - type: custom:bar-card
-          positions:
-            title: inside
-            value: inside
-            icon: off
-            indicator: inside
           entity_row: true
+          height: 4
           min: 0
+          positions:
+            icon: "off"
+            indicator: "off"
+            name: inside
+            value: inside
+          style: |-
+            bar-card-row {
+              height: 12px;
+              padding-top: 36px;
+            }
+            bar-card-background {
+              background: var(--primary-background-color);
+            }
+            bar-card-contentbar {
+              margin-top: -16px;
+            }
+            bar-card-name, bar-card-value {
+              margin: 0;
+            }
           max: "${vars[0]}"
           color: rgb(26,204,147,0.33)
           entities:

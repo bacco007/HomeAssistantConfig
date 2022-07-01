@@ -1,51 +1,81 @@
-card:
-  items_classes: col-xs-12 col-sm-6 col-md-3 col-lg-4
-  padding: true
-  type: custom:dwains-flexbox-card
-filter:
-  include:
-  - attributes:
-      device_class: battery
-    domain: sensor
-    options:
-      icon: "{% set battery_level = (states(entity) | int / 10) | round(0) | int *\
-        \ 10 %}\n{% if battery_level == 100 %}\n  mdi:battery\n{% elif battery_level\
-        \ > 0 %}\n  mdi:battery-{{ battery_level }}\n{% else %}\n  mdi:battery-alert-variant-outline\n\
-        {% endif %}\n\n"
-      icon_color: "{% set battery_level = states(entity) | int %}\n{% if battery_level\
-        \ > 90 %} \n  green\n{% elif battery_level > 60 %}\n  light-green\n{% elif\
-        \ battery_level > 50 %}\n  lime\n{% elif battery_level > 40 %}\n  yellow\n\
-        {% elif battery_level > 30 %}\n  amber\n{% elif battery_level > 20 %}\n  orange\n\
-        {% elif battery_level > 10 %}\n  deep-orange\n{% else %}\n  red\n{% endif\
-        \ %} "
-      layout: horizontal
-      primary: '{{ states(entity) }}%'
-      secondary: '{{ state_attr(entity, ''friendly_name'') | title }}'
-      tap_action:
-        action: none
-      type: custom:mushroom-template-card
-    state: <=100
-  - entity_id: sensor.*battery*
-    options:
-      icon: "{% set battery_level = (states(entity) | int / 10) | round(0) | int *\
-        \ 10 %}\n{% if battery_level == 100 %}\n  mdi:battery\n{% elif battery_level\
-        \ > 0 %}\n  mdi:battery-{{ battery_level }}\n{% else %}\n  mdi:battery-alert-variant-outline\n\
-        {% endif %}\n\n"
-      icon_color: "{% set battery_level = states(entity) | int %}\n{% if battery_level\
-        \ > 90 %} \n  green\n{% elif battery_level > 60 %}\n  light-green\n{% elif\
-        \ battery_level > 50 %}\n  lime\n{% elif battery_level > 40 %}\n  yellow\n\
-        {% elif battery_level > 30 %}\n  amber\n{% elif battery_level > 20 %}\n  orange\n\
-        {% elif battery_level > 10 %}\n  deep-orange\n{% else %}\n  red\n{% endif\
-        \ %} "
-      layout: horizontal
-      primary: '{{ states(entity) }}%'
-      secondary: '{{ state_attr(entity, ''friendly_name'') | title }}'
-      tap_action:
-        action: none
-      type: custom:mushroom-template-card
-    state: <=100
-sort:
-  method: state
-  numeric: true
-  reverse: true
-type: custom:auto-entities
+cards:
+  - card:
+      style: |
+        ha-card {
+          background-color: var(--dwains-theme-primary);
+          box-shadow: none;
+        }
+        .card-header {
+          padding: 5px 16px 10px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+      title: Battery Levels
+      type: entities
+    filter:
+      include:
+        - entity_id: sensor.*battery*
+          options:
+            entity_row: true
+            height: 4
+            max: 100
+            min: 0
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            style: |-
+              bar-card-row {
+                height: 12px;
+                padding-top: 36px;
+              }
+              bar-card-background {
+                background: var(--primary-background-color);
+              }
+              bar-card-contentbar {
+                margin-top: -16px;
+              }
+              bar-card-name, bar-card-value {
+                margin: 0;
+              }
+            type: custom:bar-card
+          state: <=100
+          unit_of_measurement: '%'
+        - attributes:
+            device_class: battery
+          domain: sensor
+          options:
+            entity_row: true
+            height: 4
+            max: 100
+            min: 0
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            style: |-
+              bar-card-row {
+                height: 12px;
+                padding-top: 36px;
+              }
+              bar-card-background {
+                background: var(--primary-background-color);
+              }
+              bar-card-contentbar {
+                margin-top: -16px;
+              }
+              bar-card-name, bar-card-value {
+                margin: 0;
+              }
+            type: custom:bar-card
+          state: <=100
+    sort:
+      method: state
+      numeric: true
+      reverse: true
+    type: custom:auto-entities
+items_classes: col-xs-12 col-sm-4 col-sm-4 col-xl-4
+padding: true
+type: custom:dwains-flexbox-card

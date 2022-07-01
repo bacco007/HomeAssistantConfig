@@ -1,11 +1,9 @@
 cards:
-- cards:
-  - template: card_pool
-    type: custom:button-card
-    variables:
-      card_subtitle: Testing 345
-      card_title: Testing 123
-  type: vertical-stack
+- template: card_pool
+  type: custom:button-card
+  variables:
+    card_subtitle: Testing 345
+    card_title: Testing 123
 - card:
     apex_config:
       chart:
@@ -70,5 +68,4 @@ cards:
   variables:
     graph_entity: states['sensor.opennem_graph_market'].attributes.graph_entity
     market: states['sensor.opennem_graph_market'].state
-item_classes: col-xs-12 col-sm-12 col-sm-12 col-xl-12
-type: custom:dwains-flexbox-card
+type: vertical-stack

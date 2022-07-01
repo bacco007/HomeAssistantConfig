@@ -1,26 +1,226 @@
-columns:
-- add_link: url
-  field: name
-  style:
-  - display: block
-  - padding: 16px 0 0
-  title: artist
-- field: playcount
-  postfix: ' PLAYS'
-  style:
-  - display: block
-  - font-size: var(--h6-font-size)
-  - padding: 0
-  - opacity: 0.5
-  - text-transform: uppercase
-  title: Plays
-entity: sensor.lastfm_user_topartists
-feed_attribute: artist
-row_limit: 5
-style: 'table tbody:first-child { display: none; } tbody tr:first-child { display:
-  none; } tbody tr:nth-child(odd), tbody tr:nth-child(even) { background: none; }
-  ha-card .name a { font-size: var(--h3-font-size); font-weight: var(--h3-font-weight)
-  !important; } .card-header {padding-bottom: 0; margin: 0}
+type: custom:dwains-flexbox-card
+items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+# padding: true
+cards:
+  # Artists
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: large_tile_card
+        entity: sensor.lastfm_user_topartists
+        name: Top Artist
+        state_display: "[[[ return entity.attributes.artist[0].artist ]]]"
+        label: >-
+          [[[ return entity.attributes.artist[0].playcount + ' PLAYS' ]]]
+        show_state: true
+        color: black
+        icon: "mdi:account-music"
+        styles:
+          state:
+            - white-space: normal
+            - text-align: left
+            - line-height: 1.1
+            - padding: 4px 0
+          card:
+            - background-image: |
+                [[[ return "linear-gradient(to bottom, rgba(0,0,0,.66) 0%, rgba(0,0,0,0) 100%), url('" +
+                  entity.attributes.artist[0].image[3]['#text'] + "')" ]]]
+        tap_action:
+          action: none
 
-  '
-type: custom:list-card
+      - type: "custom:list-card"
+        entity: sensor.lastfm_user_topartists
+        feed_attribute: artist
+        row_limit: 5
+        columns:
+          - field: name
+            title: artist
+            add_link: url
+            style:
+              - display: block
+              - padding: 16px 0 0
+          - field: playcount
+            title: Plays
+            postfix: " PLAYS"
+            style:
+              - display: block
+              - font-size: var(--h6-font-size)
+              - padding: 0
+              - opacity: 0.5
+              - text-transform: uppercase
+        style: >
+          table tbody:first-child { display: none; } tbody
+          tr:first-child { display: none; }
+          tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+          background: none; }
+          ha-card .name a { font-size: var(--h3-font-size); font-weight:
+          var(--h3-font-weight) !important; }
+          .card-header {padding-bottom: 0; margin: 0}
+  # Albums
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: large_tile_card
+        entity: sensor.lastfm_user_topalbums
+        name: Top Album
+        label: >-
+          [[[ return "by " + entity.attributes.album[0].artist.name +
+          "<br/>" + entity.attributes.album[0].playcount + " Plays" ]]]
+        show_state: true
+        color: black
+        icon: "mdi:music-box"
+        styles:
+          state:
+            - white-space: normal
+            - text-align: left
+            - line-height: 1.1
+            - padding: 4px 0
+          card:
+            - background-image: >
+                [[[ return "linear-gradient(to bottom, rgba(0,0,0,.66) 0%, rgba(0,0,0,0) 100%), url('" +
+                entity.attributes.album[0].image[3]["#text"] + "')" ]]]
+        tap_action:
+          action: none
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        cards:
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_long_state
+            entity: sensor.lastfm_user_topalbums
+            show_name: false
+            color: black
+            icon: "mdi:numeric-2-box-multiple"
+            state_display: "[[[ return entity.attributes.album[1].name ]]]"
+            label: >-
+              [[[ return entity.attributes.album[1].artist.name +
+              "<br/>" + entity.attributes.album[1].playcount + " Plays"
+              ]]]
+            styles:
+              card:
+                - background-image: >
+                    [[[ return "linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.33) 100%), url('" +
+                    entity.attributes.album[1].image[3]['#text'] + "')"
+                    ]]]
+                - background-size: cover
+
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_long_state
+            entity: sensor.lastfm_user_topalbums
+            show_name: false
+            color: black
+            icon: "mdi:numeric-3-box-multiple"
+            state_display: "[[[ return entity.attributes.album[2].name ]]]"
+            label: >-
+              [[[ return entity.attributes.album[2].artist.name +
+              "<br/>" + entity.attributes.album[2].playcount + " Plays"
+              ]]]
+            styles:
+              card:
+                - background-image: >
+                    [[[ return "linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.33) 100%), url('" +
+                    entity.attributes.album[2].image[3]['#text'] + "')"
+                    ]]]
+                - background-size: cover
+
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_long_state
+            entity: sensor.lastfm_user_topalbums
+            show_name: false
+            color: black
+            icon: "mdi:numeric-4-box-multiple"
+            state_display: "[[[ return entity.attributes.album[3].name ]]]"
+            label: >-
+              [[[ return entity.attributes.album[3].artist.name +
+              "<br/>" + entity.attributes.album[3].playcount + " Plays"
+              ]]]
+            styles:
+              card:
+                - background-image: >
+                    [[[ return "linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.33) 100%), url('" +
+                    entity.attributes.album[3].image[3]['#text'] + "')"
+                    ]]]
+                - background-size: cover
+
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_long_state
+            entity: sensor.lastfm_user_topalbums
+            show_name: false
+            color: black
+            icon: "mdi:numeric-5-box-multiple"
+            state_display: "[[[ return entity.attributes.album[4].name ]]]"
+            label: >-
+              [[[ return entity.attributes.album[4].artist.name +
+              "<br/>" + entity.attributes.album[4].playcount + " Plays"
+              ]]]
+            styles:
+              card:
+                - background-image: >
+                    [[[ return "linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.33) 100%), url('" +
+                    entity.attributes.album[4].image[3]['#text'] + "')"
+                    ]]]
+                - background-size: cover
+
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_long_state
+            entity: sensor.lastfm_user_topalbums
+            show_name: false
+            color: black
+            icon: "mdi:numeric-6-box-multiple"
+            state_display: "[[[ return entity.attributes.album[5].name ]]]"
+            label: >-
+              [[[ return entity.attributes.album[5].artist.name +
+              "<br/>" + entity.attributes.album[5].playcount + " Plays"
+              ]]]
+            styles:
+              card:
+                - background-image: >
+                    [[[ return "linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.33) 100%), url('" +
+                    entity.attributes.album[5].image[3]['#text'] + "')"
+                    ]]]
+                - background-size: cover
+        layout:
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(144px, 1fr) [col-end])"
+          grid-template-rows: auto
+          margin: 0
+  # Top Tracks
+  - type: vertical-stack
+    cards:
+      - type: "custom:list-card"
+        entity: sensor.lastfm_user_toptracks
+        feed_attribute: track
+        title: Top Tracks
+        row_limit: 10
+        columns:
+          - field: name
+            title: track
+            add_link: url
+            style:
+              - display: block
+              - padding: 16px 0 0
+          - field: playcount
+            title: Plays
+            postfix: " PLAYS"
+            style:
+              - display: block
+              - font-size: var(--h6-font-size)
+              - padding: 0
+              - opacity: 0.5
+              - text-transform: uppercase
+        style: >
+          table tbody:first-child { display: none; }  tbody
+          tr:nth-child(odd), tbody tr:nth-child(even) { background:
+          none; }
+          ha-card .name a { font-size: var(--h3-font-size); font-weight:
+          var(--h3-font-weight) !important; }
+          .card-header {padding-bottom: 0; margin: 0}
