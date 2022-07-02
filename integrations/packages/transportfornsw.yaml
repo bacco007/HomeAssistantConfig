@@ -13,6 +13,16 @@ sensor:
     stop_id: !secret tfnsw_stopid2
     api_key: !secret tfnsw_apikey
     route: "431"
+  - platform: transport_nsw
+    name: tfnsw_train_totamworth
+    stop_id: 234012
+    api_key: !secret tfnsw_apikey
+    route: 223
+  - platform: transport_nsw
+    name: tfnsw_train_tosydney
+    stop_id: 234012
+    api_key: !secret tfnsw_apikey
+    route: 224
   - platform: template
     sensors:
       busmonitor_home:
@@ -41,3 +51,29 @@ sensor:
               {{ states.sensor.bus_stop_work.attributes.route }} - {{ states.sensor.bus_stop_work.attributes.due }} m
             {% endif %}
           {% endif %}
+      trainmonitor_totamworth:
+        friendly_name: "Train to Tamworth"
+        icon_template: mdi:train
+        value_template: >-
+          {%- if is_state_attr('sensor.tfnsw_train_totamworth', 'due', 'n/a') %}
+            No schedule found
+          {%- else %}
+            {%- if (states.sensor.tfnsw_train_totamworth.attributes.due > 60) %}
+              {{ states.sensor.tfnsw_train_totamworth.attributes.route }} - {{ (states.sensor.tfnsw_train_totamworth.attributes.due/60)|round }} hr
+            {%- else %}
+              {{ states.sensor.tfnsw_train_totamworth.attributes.route }} - {{ states.sensor.tfnsw_train_totamworth.attributes.due }} m
+            {%- endif %}
+          {%- endif %}
+      trainmonitor_tosydney:
+        friendly_name: "Train to Sydney"
+        icon_template: mdi:train
+        value_template: >-
+          {%- if is_state_attr('sensor.tfnsw_train_tosydney', 'due', 'n/a') %}
+            No schedule found
+          {%- else %}
+            {%- if (states.sensor.tfnsw_train_tosydney.attributes.due > 60) %}
+              {{ states.sensor.tfnsw_train_tosydney.attributes.route }} - {{ (states.sensor.tfnsw_train_tosydney.attributes.due/60)|round }} hr
+            {%- else %}
+              {{ states.sensor.tfnsw_train_tosydney.attributes.route }} - {{ states.sensor.tfnsw_train_tosydney.attributes.due }} m
+            {%- endif %}
+          {%- endif %}
