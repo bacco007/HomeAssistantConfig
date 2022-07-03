@@ -52,17 +52,17 @@ live_tile_card:
       - aspect-ratio: "[[[ return variables.aspect_ratio ]]]"
       - padding: 0
     name:
-      - font-size: var(--body-font-size)
+      - font-size: 1rem
       - padding: 4px 4px 12px 12px
       - white-space: normal
       - text-align: left
       - justify-self: start
       - align-self: end
     state:
-      - font-size: var(--h3-font-size)
+      - font-size: 2rem
       - justify-self: start
       - padding: 2px 0 2px 12px
-      - font-weight: var(--h3-font-weight)
+      - font-weight: 100
       - align-self: start
       - text-overflow: clip
     img_cell:
@@ -71,7 +71,7 @@ live_tile_card:
       - padding: 4px 8px 8px 8px
       - height: 28px
     label:
-      - font-size: var(--body-font-size)
+      - font-size: 1rem
       - justify-self: start
       - padding: 0px 12px
       - align-self: start
@@ -103,8 +103,8 @@ live_tile:
       - padding: 8px 0 0 0
     state:
       - color: var(--primary-text-color)
-      - font-size: var(--h2-font-size)
-      - font-weight: var(--h2-font-weight)
+      - font-size: 2.25rem
+      - font-weight: 100
       - align-self: center
       - justify-self: start
       - padding: 4px 0px 2px 8px
@@ -141,8 +141,8 @@ live_tile_mini:
       - height: 24px
       - padding: 0 0 8px 0
     state:
-      - font-size: var(--h4-font-size)
-      - font-weight: var(--h2-font-weight)
+      - font-size: 1.5rem
+      - font-weight: 100
       - padding: 0 0 4px 4px
 
 # Live Tile with Unit
@@ -161,8 +161,8 @@ live_tile_with_unit:
       - padding: 4px 0 0 8px
     custom_fields:
       unit:
-        - font-size: var(--h6-font-size)
-        - font-weight: var(--h6-font-weight)
+        - font-size: 0.7rem
+        - font-weight: 400
         - text-transform: uppercase
         - place-self: start start
         - padding: 0 0 0 8px
@@ -214,8 +214,8 @@ live_tile_with_picture:
       - place-self: end end
       - z-index: 1
       - padding: 4px 12px 12px 4px
-      - font-size: var(--body-font-size)
-      - font-weight: var(--body-font-weight)
+      - font-size: 1rem
+      - font-weight: normal
       - opacity: .667
     custom_fields:
       picture:
@@ -267,7 +267,7 @@ live_tile_with_state_countdown:
 live_tile_with_long_state:
   styles:
     state:
-      - font-size: var(--h4-font-size)
+      - font-size: 1.5rem
       - font-weight: 100
       - padding: 6px 12px 2px 12px
       - white-space: normal
@@ -279,7 +279,7 @@ live_tile_with_long_state:
 live_tile_with_longer_state:
   styles:
     state:
-      - font-size: var(--h5-font-size)
+      - font-size: 1.15rem
       - font-weight: 400
       - padding: 8px 12px 2px 12px
       - white-space: normal
@@ -402,8 +402,8 @@ large_tile_card:
       - padding: 0
       - align-self: start
     state:
-      - font-size: var(--h1-font-size)
-      - font-weight: var(--h1-font-weight)
+      - font-size: 2.85rem
+      - font-weight: 100
       - padding: 0
     label:
       - padding: 0
@@ -493,7 +493,7 @@ hue_scene_card:
     name:
       - text-align: left
       - place-self: flex-start
-      - font-size: var(--body-font-size)
+      - font-size: 1rem
       - padding: 8px 12px
       - white-space: normal
       - overflow: visible
@@ -509,6 +509,6 @@ hue_scene_card_mini:
   template: hue_scene_card
   styles:
     name:
-      - font-size: var(--h6-font-size)
+      - font-size: 0.7rem
       - font-weight: 500
       - text-transform: uppercase

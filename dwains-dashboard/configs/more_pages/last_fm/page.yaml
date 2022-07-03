@@ -1,6 +1,12 @@
-type: custom:dwains-flexbox-card
-items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
-# padding: true
+type: custom:layout-card
+layout_type: custom:grid-layout
+layout:
+  grid-template-columns: "repeat(auto-fill, [col-start] minmax(400px, 1fr) [col-end])"
+  grid-template-rows: auto
+  grid-column-gap: 32px
+  margin: -1px
+view_layout:
+  grid-column: 1/-1
 cards:
   # Artists
   - type: vertical-stack
@@ -53,8 +59,8 @@ cards:
           tr:first-child { display: none; }
           tbody tr:nth-child(odd), tbody tr:nth-child(even) {
           background: none; }
-          ha-card .name a { font-size: var(--h3-font-size); font-weight:
-          var(--h3-font-weight) !important; }
+          ha-card .name a { font-size: 2rem; font-weight:
+          100 !important; }
           .card-header {padding-bottom: 0; margin: 0}
   # Albums
   - type: vertical-stack
@@ -221,6 +227,6 @@ cards:
           table tbody:first-child { display: none; }  tbody
           tr:nth-child(odd), tbody tr:nth-child(even) { background:
           none; }
-          ha-card .name a { font-size: var(--h3-font-size); font-weight:
-          var(--h3-font-weight) !important; }
+          ha-card .name a { font-size: 2rem; font-weight:
+          100 !important; }
           .card-header {padding-bottom: 0; margin: 0}
