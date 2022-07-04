@@ -1,7 +1,7 @@
 type: custom:layout-card
 layout_type: custom:grid-layout
 layout:
-  grid-template-columns: "repeat(auto-fill, [col-start] minmax(400px, 1fr) [col-end])"
+  grid-template-columns: "repeat(auto-fill, [col-start] minmax(420px, 1fr) [col-end])"
   grid-template-rows: auto
   grid-column-gap: 32px
   margin: -1px
@@ -37,7 +37,7 @@ cards:
       - type: "custom:list-card"
         entity: sensor.lastfm_user_topartists
         feed_attribute: artist
-        row_limit: 5
+        row_limit: 10
         columns:
           - field: name
             title: artist

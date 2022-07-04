@@ -4,7 +4,7 @@ type: custom:dwains-flexbox-card
 item_classes: "col-xs-12"
 cards:
   - type: vertical-stack
-    item_classes: "col-xs-12 col-sm-4"
+    item_classes: "col-xs-12 col-sm-3"
     cards:
       - type: vertical-stack
         cards:
@@ -12,7 +12,7 @@ cards:
           - !include partial_curgen.yaml
 
   - type: vertical-stack
-    item_classes: "col-xs-12 col-sm-8"
+    item_classes: "col-xs-12 col-sm-9"
     cards:
       - !include graph_currentprice.yaml
       - !include graph_gentype.yaml
