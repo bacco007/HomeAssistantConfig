@@ -1,0 +1,8 @@
+{
+  "state": {
+    "uptimekuma__monitor_status": {
+      "up": "Up",
+      "down": "Down"
+    }
+  }
+}
