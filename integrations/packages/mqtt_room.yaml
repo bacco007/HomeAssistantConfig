@@ -1,0 +1,26 @@
+---
+sensor:
+  - platform: mqtt_room
+    device_id: apple:macbookair10-1
+    name: tbMacbookAir (BLE)
+    state_topic: "espresense/rooms"
+    timeout: 60
+    away_timeout: 120
+  - platform: mqtt_room
+    device_id: apple:iphone14-2
+    name: tbiPhone13Pro (BLE)
+    state_topic: "espresense/rooms"
+    timeout: 60
+    away_timeout: 120
+  - platform: mqtt_room
+    device_id: apple:watch6-8
+    name: tbAppleWatch (BLE)
+    state_topic: "espresense/rooms"
+    timeout: 60
+    away_timeout: 120
+  - platform: mqtt_room
+    device_id: apple:ipad8-11
+    name: tbiPadPro (BLE)
+    state_topic: "espresense/rooms"
+    timeout: 60
+    away_timeout: 120
