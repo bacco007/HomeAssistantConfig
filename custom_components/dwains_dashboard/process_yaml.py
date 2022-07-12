@@ -115,25 +115,21 @@ def process_yaml(hass, config_entry):
                                 "icon": "mdi:puzzle"
                             })
                             yaml.safe_dump(page_config, f, default_flow_style=False)
-                            try:
-                                dwains_dashboard_more_pages[subdir] = {
-                                    "name": subdir,
-                                    "icon": "mdi:puzzle",
-                                    "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
-                                }
-                            except TypeError:
-                                pass
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": subdir,
+                                "icon": "mdi:puzzle",
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
+                            }
                     else:
                         with open(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml")) as f:
                             filecontent = yaml.safe_load(f)
-                            try:
+                            if "name" in filecontent and "icon" in filecontent:
                                 dwains_dashboard_more_pages[subdir] = {
                                     "name": filecontent["name"],
                                     "icon": filecontent["icon"],
                                     "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
                                 }
-                            except TypeError:
-                                pass
+        
         hass.bus.async_fire("dwains_dashboard_reload")
 
     async def handle_reload(call):
@@ -160,24 +156,18 @@ def reload_configuration(hass):
                                 "icon": "mdi:puzzle"
                             })
                             yaml.safe_dump(page_config, f, default_flow_style=False)
-                            try:
-                                dwains_dashboard_more_pages[subdir] = {
-                                    "name": subdir,
-                                    "icon": "mdi:puzzle",
-                                    "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
-                                }
-                            except TypeError:
-                                pass
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": subdir,
+                                "icon": "mdi:puzzle",
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
+                            }
                     else:
                         with open(hass.config.path("dwains-dashboard/configs/more_pages/"+subdir+"/config.yaml")) as f:
                             filecontent = yaml.safe_load(f)
-                            try:
-                                dwains_dashboard_more_pages[subdir] = {
-                                    "name": filecontent["name"],
-                                    "icon": filecontent["icon"],
-                                    "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
-                                }
-                            except TypeError:
-                                pass
+                            dwains_dashboard_more_pages[subdir] = {
+                                "name": filecontent["name"],
+                                "icon": filecontent["icon"],
+                                "path": "dwains-dashboard/configs/more_pages/"+subdir+"/page.yaml",
+                            }
 
     hass.bus.async_fire("dwains_dashboard_reload")

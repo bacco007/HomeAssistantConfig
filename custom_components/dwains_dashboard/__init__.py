@@ -448,6 +448,7 @@ async def ws_handle_edit_area_bool_value(
         vol.Optional("v2Mode"): bool,
         vol.Optional("weatherEntity"): str,
         vol.Optional("alarmEntity"): str,
+
     }
 )
 @websocket_api.async_response
@@ -1075,6 +1076,7 @@ async def ws_handle_edit_entities_bool_value(
         vol.Optional("colSpanLg"): str,
         vol.Optional("rowSpanXl"): str,
         vol.Optional("colSpanXl"): str,
+
     }
 )
 @websocket_api.async_response
