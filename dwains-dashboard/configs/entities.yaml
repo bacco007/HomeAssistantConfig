@@ -17,18 +17,18 @@ light.lamp:
 light.zha_office_light:
   sort_order: 6
 media_player.apple_tv_bedroom:
-  col_span: '2'
-  col_span_lg: '1'
-  col_span_xl: '1'
+  col_span: "2"
+  col_span_lg: "1"
+  col_span_xl: "1"
   custom_card: true
   custom_popup: false
   disabled: false
   excluded: false
-  friendly_name: ''
+  friendly_name: ""
   hidden: false
-  row_span: '1'
-  row_span_lg: '1'
-  row_span_xl: '1'
+  row_span: "1"
+  row_span_lg: "1"
+  row_span_xl: "1"
 media_player.homepod_mini_bedroom:
   custom_card: true
 media_player.m7_smart_monitor:
@@ -86,35 +86,35 @@ sensor.sengled_e11_g23_6d375003_smartenergy_metering_summation_delivered:
 sensor.tamworth_airport_humidity:
   sort_order: 2
 sensor.tamworth_airport_temp:
-  col_span: '1'
-  col_span_lg: '1'
-  col_span_xl: '1'
+  col_span: "1"
+  col_span_lg: "1"
+  col_span_xl: "1"
   custom_card: false
   custom_popup: false
   disabled: false
   friendly_name: Temperature
   hidden: false
-  row_span: '1'
-  row_span_lg: '1'
-  row_span_xl: '1'
+  row_span: "1"
+  row_span_lg: "1"
+  row_span_xl: "1"
   sort_order: 1
 sensor.tamworth_airport_temp_feels_like:
   sort_order: 3
 sensor.tempest_st_00056115_rain_today:
   favorite: true
 sensor.weatherflow_precipitation_today:
-  col_span: '1'
-  col_span_lg: '1'
-  col_span_xl: '1'
+  col_span: "1"
+  col_span_lg: "1"
+  col_span_xl: "1"
   custom_card: false
   custom_popup: false
   disabled: false
   favorite: false
   friendly_name: Rainfall - Home
   hidden: false
-  row_span: '1'
-  row_span_lg: '1'
-  row_span_xl: '1'
+  row_span: "1"
+  row_span_lg: "1"
+  row_span_xl: "1"
 sensor.zha_lounge_weather_humidity:
   sort_order: 3
 sensor.zha_lounge_weather_power:
@@ -132,17 +132,17 @@ sensor.zha_office_power:
 sensor.zha_office_pressure:
   sort_order: 2
 sensor.zha_office_temperature:
-  col_span: '1'
-  col_span_lg: '1'
-  col_span_xl: '1'
+  col_span: "1"
+  col_span_lg: "1"
+  col_span_xl: "1"
   custom_card: false
   custom_popup: false
   disabled: false
-  friendly_name: ''
+  friendly_name: ""
   hidden: false
-  row_span: '1'
-  row_span_lg: '1'
-  row_span_xl: '1'
+  row_span: "1"
+  row_span_lg: "1"
+  row_span_xl: "1"
   sort_order: 1
 switch.sonos_office_sonos_crossfade:
   sort_order: 27

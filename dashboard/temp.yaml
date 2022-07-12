@@ -1,0 +1,148 @@
+---
+title: Summary
+icon: "mdi:home-circle"
+path: "summary"
+theme: "Metro Red"
+
+type: "custom:grid-layout"
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 8px 1fr 8px
+  grid-template-areas: |
+    ". cc ." ". . ."
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    "(min-width: 1544px)":
+      grid-template-columns: auto 1440px auto
+      grid-template-areas: |
+        ". cc ." ". . ."
+    "(min-width: 1200px)":
+      grid-template-columns: 0 auto 0
+      grid-template-areas: |
+        ". cc ."
+      grid-column-gap: 32px
+
+cards:
+  - type: "custom:layout-card"
+    layout_type: "custom:grid-layout"
+
+    layout:
+      grid-template-columns: >-
+        calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
+        25% - 24px )
+      grid-column-gap: 32px
+      grid-template-areas: |
+        "h h h h"
+        "c1 fp fp c2"
+      mediaquery:
+        "(max-width: 512px)":
+          grid-template-columns: 1fr
+          grid-template-areas: |
+            "h"
+            "fp"
+            "c1"
+            "c2"
+          margin: 0
+        "(max-width: 800px)":
+          grid-template-columns: 1fr 1fr
+          grid-template-areas: |
+            "h h"
+            "fp fp"
+            "c1 c2"
+          margin: 0
+        "(max-width: 1128px)":
+          grid-template-columns: 1fr 1fr 1fr
+          grid-template-areas: |
+            "h h h"
+            "c1 fp fp"
+            "c2 none none"
+          margin: 0
+      margin: 0
+
+    view_layout:
+      grid-area: cc
+
+    cards:
+      # [Header] Greetings
+
+      - type: custom:state-switch
+        entity: user
+        default: default
+        view_layout:
+          grid-area: h
+        states:
+          Maddy:
+            type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: -16px 0 0 0
+
+          default:
+            type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              grid-template-columns: auto min-content
+              grid-template-rows: auto
+              margin: -1px -1px -16px -1px
+              padding: 0
+            view_layout:
+              grid-area: h
+            cards:
+              - type: markdown
+                content: >
+                  # {% if now() > today_at('18:00') %}Good evening{% elif
+                  now() > today_at('12:00') %}Good afternoon{% elif now() >
+                  today_at('5:00') %}Good morning{% else %}Good night{%
+                  endif %}, {{ user }}.
+                style:
+                  .: |
+                    ha-card {
+                      background: none;
+                      margin-bottom: -16px;
+                    }
+                  ha-markdown$: |
+                    h1 {
+                      font-size: var(--title-font-size);
+                      font-weight: 500;
+                      line-height: 1.1;
+                      margin-left: -2px;
+                      margin-block-end: -8px;
+                      margin-top: -12px !important;
+                    }
+
+              - type: "custom:layout-card"
+                layout_type: "custom:horizontal-layout"
+                cards:
+                  - type: "custom:mushroom-person-card"
+                    entity: person.thomas_baxter
+                    style: "ha-card {background: none;}"
+                    use_entity_picture: true
+                    view_layout: null
+                layout:
+                  width: 160
+                  margin: -1
+                view_layout:
+                  place-self: center
+                  show:
+                    mediaquery: "(min-width: 800px)"
+
+              - type: "custom:layout-card"
+                layout_type: "custom:horizontal-layout"
+                cards:
+                  - type: "custom:mushroom-person-card"
+                    entity: person.thomas_baxter
+                    use_entity_picture: true
+                    hide_state: true
+                    hide_name: true
+                    style: |
+                      ha-card {background: none;
+                        margin-top: 16px;
+                        transform: scale(1.5) translate(-8px);
+                      }
+                layout:
+                  width: 72
+                view_layout:
+                  place-self: start
+                  show:
+                    mediaquery: "(max-width: 799.99px)"
