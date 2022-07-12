@@ -6,7 +6,7 @@ DOMAIN = "holidays"
 CALENDAR_PLATFORM = "calendar"
 ATTRIBUTION = "Data from this is provided by holidays."
 
-VERSION = 2
+CONFIG_VERSION = 3
 
 ATTR_NEXT_DATE = "next_date"
 ATTR_NEXT_HOLIDAY = "next_holiday"

@@ -1,0 +1,72 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Feriados (1/2)",
+                "description": "Insira o nome da entidade e configure os parâmetros. Mais informações em https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Nome fantasia",
+                    "icon_normal": "Ícone (mdi:calendar-blank) - opcional",
+                    "icon_tomorrow": "Coleção de ícones amanhã (mdi:calendar-arrow-right) - opcional",
+                    "icon_today": "Coleção de ícones hoje (mdi:calendar-check) - opcional",
+                    "country": "País",
+                    "observed": "Observado (opcional)"
+                }
+            },
+            "subdiv": {
+                "title": "Feriados - (1½/2)",
+                "description": "Mais informações em https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Feriados - subdivisão"
+                }
+            },
+            "pop": {
+                "title": "Feriados - (2/2)",
+                "description": "Mais informações en https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignorar feriados (lista) - opcional"
+                }
+            }
+        },
+        "error": {
+            "value": "Valor inválido. Por favor, verifique sua entrada!",
+            "icon": "Os ícones devem ser especificados no formato 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Apenas uma única configuração de Feriados é permitida."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Feriados (1/2)",
+                "description": "Insira o nome da entidade e configure os parâmetros. Mais informações em https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Ícone (mdi:calendar-blank) - opcional",
+                    "icon_tomorrow": "Coleção de ícones amanhã (mdi:calendar-arrow-right) - opcional",
+                    "icon_today": "Coleção de ícones hoje (mdi:calendar-check) - opcional",
+                    "country": "País",
+                    "observed": "Observado (opcional)"
+                }
+            },
+            "subdiv": {
+                "title": "Feriados - (1½/2)",
+                "description": "Mais informações em https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Feriados - subdivisão"
+                }
+            },
+            "pop": {
+                "title": "Feriados - (2/2)",
+                "description": "Mais informações em https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ignorar feriados (lista) - opcional"
+                }
+            }
+        },
+        "error": {
+            "value": "Valor inválido. Por favor, verifique sua entrada!",
+            "icon": "Os ícones devem ser especificados no formato 'prefix:name'."
+        }
+    }
+}

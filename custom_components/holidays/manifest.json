@@ -1,10 +1,11 @@
 {
   "domain": "holidays",
   "name": "Holidays",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "documentation": "https://github.com/bruxy70/Holidays/",
   "issue_tracker": "https://github.com/bruxy70/Holidays/issues",
   "iot_class": "calculated",
+  "integration_type": "helper",
   "dependencies": [],
   "config_flow": true,
   "codeowners": [
@@ -12,6 +13,6 @@
   ],
   "requirements": [
     "python-dateutil>=2.8.2",
-    "holidays>=0.13"
+    "holidays>=0.14.2"
   ]
 }
