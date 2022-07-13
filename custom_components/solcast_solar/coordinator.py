@@ -11,7 +11,7 @@ from homeassistant.components.recorder import get_instance, history
 from contextlib import suppress
 from homeassistant.exceptions import HomeAssistantError
 
-from homeassistant.const import SUN_EVENT_SUNSET
+from homeassistant.const import SUN_EVENT_SUNSET, MAJOR_VERSION, MINOR_VERSION
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_utc_time_change
 from homeassistant.helpers.sun import (get_astral_location,
@@ -36,6 +36,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         self._starthour = 6
         self._finishhour = 19
         self._previousenergy = None
+
+        self._v = f"{MAJOR_VERSION}.{MINOR_VERSION}"
 
         super().__init__(
             hass,
@@ -123,8 +125,13 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 _LOGGER.debug("Solcast - API poll called, but did not happen as the last update is less than an hour old")
             
             #self.async_set_updated_data(True)
-            for update_callback in self._listeners:
-                update_callback()
+            #self.async_update_listeners()
+
+            if "2022.7" in self._v:
+                self.async_update_listeners()
+            else:
+                for update_callback in self._listeners:
+                    update_callback()
 
         except Exception:
             _LOGGER.error("update_forecast: %s", traceback.format_exc())
@@ -132,7 +139,14 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def service_event_update(self, *args):
         _LOGGER.debug("Solcast - Event called to force an update of data from Solcast API")
         await self.solcast.force_api_poll()
-        for update_callback in self._listeners:
+        #self.async_set_updated_data(True)
+        #self.async_update_listeners()
+        #for update_callback in self._listeners:
+        #        update_callback()
+        if "2022.7" in self._v:
+            self.async_update_listeners()
+        else:
+            for update_callback in self._listeners:
                 update_callback()
 
     def get_energy_tab_data(self):
