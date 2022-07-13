@@ -4,6 +4,14 @@ icon: "mdi:home-circle"
 path: "summary"
 theme: "Metro Red"
 
+# Most of the layouts are based on CSS Grids using layout-card.
+# The cards are first set inside a layout card for margins
+# and then inside another layout card for the columns for the top half,
+# while the bottom half is a layout-card in masonry layout.
+
+# Learn more about CSS Grids:
+# https://css-tricks.com/snippets/css/complete-guide-grid/
+
 type: "custom:grid-layout"
 layout:
   grid-template-rows: auto 32px
@@ -14,9 +22,14 @@ layout:
   card_margin: 0
   mediaquery:
     "(min-width: 1544px)":
-      grid-template-columns: auto 1440px auto
+      # grid-template-columns: auto 1440px auto
+      # grid-template-areas: |
+      #   ". cc ." ". . ."
+
+      grid-template-columns: 0 auto 0
       grid-template-areas: |
-        ". cc ." ". . ."
+        ". cc ."
+      grid-column-gap: 32px
     "(min-width: 1200px)":
       grid-template-columns: 0 auto 0
       grid-template-areas: |
@@ -110,7 +123,6 @@ cards:
                       margin-block-end: -8px;
                       margin-top: -12px !important;
                     }
-
               - type: "custom:layout-card"
                 layout_type: "custom:horizontal-layout"
                 cards:
@@ -120,7 +132,7 @@ cards:
                     use_entity_picture: true
                     view_layout: null
                 layout:
-                  width: 160
+                  width: 240
                   margin: -1
                 view_layout:
                   place-self: center
@@ -146,3 +158,75 @@ cards:
                   place-self: start
                   show:
                     mediaquery: "(max-width: 799.99px)"
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: 0
+          card_margin: 1px
+        view_layout:
+          grid-area: c1
+        cards:
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+              padding: 0
+            cards:
+              - type: "custom:button-card"
+                template: header_card
+                variables:
+                  name: ENERGY
+                  label: More
+                  link: /ui-dashboard/energy
+                view_layout:
+                  grid-column: 1/-1
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: 0
+          padding: 0
+          card_margin: 1px
+        view_layout:
+          grid-area: c2
+          show:
+            mediaquery: "(min-width: 1128.1px), (max-width: 800px)"
+        cards:
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            cards: &summary-column-network-cards
+              - type: "custom:button-card"
+                template: header_card
+                variables:
+                  name: NETWORK
+                  label: More
+                  link: /ui-dashboard/1
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.uptimekuma_accessibility_home
+                name: WAN
+                state:
+                  - value: "off"
+                    styles:
+                      card:
+                        - background: var(--primary-color)
+                  - value: "on"
+                    styles:
+                      card:
+                        - background: var(--ha-card-background)
+                        - color: var(--primary-text-color)
+                variables:
+                  aspect_ratio: "[[[ return Math.round(this.offsetWidth / 112) ]]]"
+                view_layout:
+                  grid-column: 1/-2

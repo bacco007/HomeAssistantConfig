@@ -1,0 +1,36 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: entities
+    title: HA Snapshots
+    style: |
+      ha-card {
+        # padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.backup_state
+      - entity: binary_sensor.backups_stale
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      |Snapshot Name|Date|State|Size|
+      |---|---|---|---|
+      {% for addon in state_attr('sensor.backup_state', 'backups') %}|{{ addon.name }}|{{ as_timestamp(addon.date) | timestamp_custom('%a %b %d') }}|{{ addon.state }}|{{addon.size}}|
+      {% endfor %}

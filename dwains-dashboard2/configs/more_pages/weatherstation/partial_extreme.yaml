@@ -1,0 +1,146 @@
+---
+type: entities
+title: Extremes
+style: |
+  .card-header {
+    padding: 5px 16px; 
+    font-size: 18px;
+    font-weight: 700 !important;
+  }
+  .card-content div {
+      margin: 0 !important;
+  }
+  #states {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .secondary {
+    color: darkgray !important;
+    margin-left: 2px !important;
+  }
+
+entities:
+  - entity: sensor.weather_home_rain_last7days
+    name: Rainfall (Last 7 Days)
+    type: custom:multiple-entity-row
+    show_state: false
+    secondary_info:
+      attribute: countstring
+      name:
+    entities:
+      - attribute: average
+        name: Avg
+        styles:
+          font-size: 12px
+      - attribute: highest
+        name: Max
+        styles:
+          font-size: 12px
+      - entity: sensor.weather_home_rain_last7days
+        name: Total
+        unit: false
+        styles:
+          font-size: 12px
+  - entity: sensor.weather_home_rain_prior7days
+    name: Rainfall (Prior 7 Days)
+    type: custom:multiple-entity-row
+    show_state: false
+    secondary_info:
+      attribute: countstring
+      name:
+    entities:
+      - attribute: average
+        name: Avg
+        styles:
+          font-size: 12px
+      - attribute: highest
+        name: Max
+        styles:
+          font-size: 12px
+      - entity: sensor.weather_home_rain_prior7days
+        name: Total
+        unit: false
+        styles:
+          font-size: 12px
+  - entity: sensor.weather_home_rain_last30days
+    name: Rainfall (Last 30 Days)
+    type: custom:multiple-entity-row
+    show_state: false
+    secondary_info:
+      attribute: countstring
+      name:
+    entities:
+      - attribute: average
+        name: Avg
+        styles:
+          font-size: 12px
+      - attribute: highest
+        name: Max
+        styles:
+          font-size: 12px
+      - entity: sensor.weather_home_rain_last30days
+        name: Total
+        unit: false
+        styles:
+          font-size: 12px
+  - entity: sensor.weather_home_totalrain_lastyr
+    name: Rainfall (Last 365 Days)
+    type: custom:multiple-entity-row
+    show_state: false
+    secondary_info:
+      attribute: countstring
+      name:
+    entities:
+      - attribute: average
+        name: Avg
+        styles:
+          font-size: 12px
+      - attribute: highest
+        name: Max
+        styles:
+          font-size: 12px
+      - entity: sensor.weather_home_totalrain_lastyr
+        name: Total
+        styles:
+          font-size: 12px
+  - type: section
+  - entity: sensor.weather_home_tempmax_lastyr
+    name: Max Temp (Last 365 Days)
+    type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - attribute: max
+        name: Max
+        styles:
+          font-size: 12px
+      - attribute: min
+        name: Min
+        styles:
+          font-size: 12px
+      - attribute: avg
+        name: Avg
+        styles:
+          font-size: 12px
+    secondary_info:
+      attribute: datestring
+      name:
+  - entity: sensor.weather_bom_tempmin_lastyr
+    name: Min Temp (Last 365 Days)
+    type: custom:multiple-entity-row
+    show_state: false
+    entities:
+      - attribute: max
+        name: Max
+        styles:
+          font-size: 12px
+      - attribute: min
+        name: Min
+        styles:
+          font-size: 12px
+      - attribute: avg
+        name: Avg
+        styles:
+          font-size: 12px
+    secondary_info:
+      attribute: datestring
+      name:

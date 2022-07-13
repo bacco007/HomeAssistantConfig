@@ -1,0 +1,293 @@
+#dwains_theme
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-md-6 col-lg-6 col-xl-6"
+  cards:
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        title: "ASX - All Ords"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.yahoofinance_aord
+          name: ASX - All Ords
+          type: area
+          # extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1h
+    - type: custom:apexcharts-card
+      graph_span: 7d
+      header:
+        show: true
+        title: "ASX - ASX200"
+      span:
+        end: day
+      apex_config:
+        chart: { type: "area", height: 200 }
+        stroke: { show: true, curve: smooth, dashArray: 0 }
+        legend: { show: false }
+        dataLabels: { enabled: false }
+        xaxis:
+          {
+            type: "datetime",
+            labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+          }
+        yaxis:
+          - seriesName: "vax"
+            decimalsInFloat: 0
+            logarithmic: false
+        fill:
+          {
+            type: "gradient",
+            gradient:
+              {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100, 100, 100],
+              },
+          }
+      series:
+        - entity: sensor.yahoofinance_axjo
+          name: ASX - ASX200
+          type: area
+          # extend_to_end: false
+          stroke_width: 3
+          group_by:
+            func: last
+            duration: 1h
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-6 col-sm-6 col-xl-6"
+  cards:
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: ASX
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css: !include ../../1_Templates/style_flextable.yaml
+          entities:
+            include:
+              - sensor.yahoofinance_*ax*
+            exclude: sensor.yahoofinance_axjo
+          columns:
+            - name: Name
+              data: friendly_name
+              modify: x.replace(" FPO", "")
+              align: center
+            - name: Sym
+              data: symbol
+              modify: x.replace(".AX", "")
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: PrevCl
+              attr: regularMarketPreviousClose
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Overseas
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css: !include ../../1_Templates/style_flextable.yaml
+          entities:
+            include:
+              - sensor.yahoofinance_aapl
+              - sensor.yahoofinance_amzn
+              - sensor.yahoofinance_goog
+              - sensor.yahoofinance_manu
+              - sensor.yahoofinance_nflx
+              - sensor.yahoofinance_tsla
+              - sensor.yahoofinance_fwona
+              - sensor.yahoofinance_fwonk
+          columns:
+            - name: Name
+              data: friendly_name
+              modify: x.replace(" FPO", "")
+              align: center
+            - name: Sym
+              data: symbol
+              modify: x.replace(".AX", "")
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+              prefix: "$"
+            - name: PrevCl
+              attr: regularMarketPreviousClose
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(2)
+              prefix: "$"
+
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Exchange Rates
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css: !include ../../1_Templates/style_flextable.yaml
+          entities:
+            include:
+              - sensor.yahoofinance_*_x
+          columns:
+            - name: Name
+              data: friendly_name
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: PrevCl
+              attr: regularMarketPreviousClose
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(3)
+
+    - type: custom:stack-in-card
+      cards:
+        - type: custom:flex-table-card
+          title: Markets
+          style: |
+            ha-card {
+              background-color: var(--dwains-theme-primary);
+              padding-bottom: 10px;
+            }
+            .card-header {
+              padding: 5px 16px;
+              font-size: 18px;
+              font-weight: 700 !important;
+            }
+            # font-family: { var(--primary-font-family);}
+            # font-weight: {400 !important;}
+          sort_by: friendly_name
+          clickable: true
+          css: !include ../../1_Templates/style_flextable.yaml
+          entities:
+            include:
+              - sensor.yahoofinance_aord
+              - sensor.yahoofinance_axjo
+              - sensor.yahoofinance_dji
+              - sensor.yahoofinance_ftse
+              - sensor.yahoofinance_ixic
+          columns:
+            - name: Name
+              data: friendly_name
+              align: center
+            - name: 50dAvg
+              attr: fiftyDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: 200dAvg
+              attr: twoHundredDayAverage
+              align: right
+              modify: parseFloat(x).toFixed(3)
+            - name: PrevCl
+              attr: regularMarketPreviousClose
+              align: right
+              modify: parseFloat(x).toFixed(2)
+            - name: Current
+              data: state
+              align: right
+              modify: parseFloat(x).toFixed(2)

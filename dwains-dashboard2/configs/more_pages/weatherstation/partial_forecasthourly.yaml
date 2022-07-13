@@ -1,0 +1,33 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      ### Hourly Forecast
+
+      {%- set mapper =
+          {'clear-day': 'sunny',
+            'clear-night': 'night',
+            'sunny': 'sunny',
+            'rain': 'rainy',
+            'snow': 'snowy',
+            'sleet': 'snowy-rainy',
+            'wind': 'windy',
+            'fog': 'fog',
+            'cloudy': 'cloudy',
+            'partlycloudy': 'partly-cloudy',
+            'partly-cloudy-day': 'partly-cloudy',
+            'partly-cloudy-night': 'night-partly-cloudy',
+            'hail': 'hail',
+            'thunderstorm': 'lightning',
+            'lightning': 'lightning',
+            'rainy': 'rainy',
+            'tornado': 'hurricane'} %}
+
+      |Time|Temp||Condition|Chance|Amount|Humidity|
+      |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+      {%- for row in state_attr("sensor.hub_hb_00045437_weather", "hourly_forecast") %}
+        {%- set weather = mapper[row.condition] if row.condition in mapper else 'sunny-alert' %}
+      |{{as_timestamp(row.datetime) | timestamp_custom('%a %H:%M')}}|{{row.temperature|int}}°C ({{row.feels_like|int}}°C)|<ha-icon icon="mdi:weather-{{weather}}"></ha-icon>|{{row.conditions}}|{{row.precipitation_probability}}%|{{row.precipitation|round(1)}} mm|{{row.humidity}}%|
+      {%- endfor %}

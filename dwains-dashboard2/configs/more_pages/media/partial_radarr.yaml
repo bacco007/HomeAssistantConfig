@@ -1,0 +1,22 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: entities
+    title: Radarr
+    style: !include ../../1_Templates/style_entities.yaml
+    entities:
+      - entity: sensor.radarr_status
+        name: Radarr Version
+      - entity: sensor.radarr_movies
+        name: Tracked Movies
+      - entity: sensor.radarr_upcoming
+        name: Upcoming Movies
+
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      |Date|Detail|
+      |:---:|:---|
+      {% for item in state_attr('sensor.radarr_upcoming_media', 'data') %}{% if item.airdate | default('', true) %}{% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}|{{ airdate }}|{{item.title}}|
+      {% endif %}{% endfor %}

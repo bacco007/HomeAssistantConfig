@@ -1,0 +1,42 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: entities
+    title: Lightning (Blitzortung)
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.blitzortung_lightning_counter
+        name: Lightning Counter
+      - entity: sensor.lightning_distance_lasthour
+        name: Lightning Distance
+        type: custom:multiple-entity-row
+        icon: mdi:flash-circle
+        show_state: false
+        entities:
+          - attribute: count
+            name: Num
+          - attribute: min_value
+            name: Near
+          - attribute: max_value
+            name: Far

@@ -1,0 +1,107 @@
+---
+type: custom:config-template-card
+entities:
+  - sensor.sunrise
+  - sensor.sunset
+card:
+  type: custom:apexcharts-card
+  graph_span: 24h
+  header:
+    show: true
+    show_states: true
+    colorize_states: true
+    title: "Solar Production"
+  span:
+    start: day
+  now:
+    show: true
+    label: now
+  all_series_config:
+    stroke_width: 2
+    type: line
+    curve: smooth
+    # extend_to_end: false
+    unit: kW
+  color_list:
+    - rgb(35, 155, 86)
+    - rgb(229, 152, 102)
+    - rgb(241, 148, 138)
+    - rgb(208, 236, 231)
+    - rgb(232, 246, 243)
+  apex_config:
+    annotations:
+      xaxis:
+        - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+          label:
+            text: ☼
+            borderWidth: 0
+            style:
+              background: "#0000"
+        - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+          label:
+            text: ☾
+            borderWidth: 0
+            style:
+              background: "#0000"
+    tooltip:
+      x:
+        format: "ddd dd MMM - HH:mm"
+    legend:
+      show: false
+    grid:
+      borderColor: "#7B7B7B"
+    chart:
+      height: 450
+      foreColor: "#7B7B7B"
+      zoom:
+        type: x
+        enabled: true
+        autoScaleYaxis: true
+      toolbar:
+        show: true
+        autoSelected: zoom
+        tools:
+          zoom: true
+          zoomin: false
+          zoomout: false
+          pan: false
+          reset: true
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
+    yaxis:
+      - seriesName: "kW"
+        decimalsInFloat: 0
+        # max: 5
+        title:
+          text: "kW"
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
+  series:
+    - entity: sensor.sungrowsolar_solar_production
+      name: Solar Generation
+      stroke_width: 3
+      group_by:
+        func: max
+        duration: 5min
+    - entity: sensor.sungrowsolar_load_power
+      name: House Consumption
+      group_by:
+        func: max
+        duration: 5min
+    - entity: sensor.sungrowsolar_export_to_grid
+      name: Grid
+      group_by:
+        func: max
+        duration: 5min
+    - entity: sensor.solcast_forecast_average_30min
+      name: Forecast
+      fill_raw: last
+    - entity: sensor.solcast_forecast
+      show:
+        in_header: false
+      data_generator: |
+        return entity.attributes.forecasts.map((entry) => {
+          return [new Date(entry.period_end), entry.pv_estimate];
+        });

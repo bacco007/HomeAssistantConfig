@@ -1,0 +1,158 @@
+# dwains_theme
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-4 col-sm-4 col-xl-4"
+  # padding: true
+  cards:
+    - type: entities
+      title: Transmission (BitTorrent)
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.tbsh1_monitordocker_transmission
+          name: Docker Container
+          icon: mdi:docker
+        - entity: switch.tbsh1_monitordocker_transmission
+          name: Docker Container Status
+          icon: mdi:docker
+        - type: divider
+        - entity: sensor.transmission_status
+          icon: mdi:transfer-down
+        - type: divider
+        - name: "Torrents - Total"
+          icon: "mdi:transfer-down"
+          entity: "sensor.transmission_total_torrents"
+        - name: "Torrents - Active"
+          icon: "mdi:transfer-down"
+          entity: "sensor.transmission_active_torrents"
+        - name: "Torrents - Completed"
+          icon: "mdi:transfer-down"
+          entity: "sensor.transmission_completed_torrents"
+        - name: "Torrents - Paused"
+          icon: "mdi:transfer-down"
+          entity: "sensor.transmission_paused_torrents"
+        - name: "Torrents - Started"
+          icon: "mdi:transfer-down"
+          entity: "sensor.transmission_started_torrents"
+        - name: "Speed - Download"
+          icon: "mdi:transfer-down"
+          entity: "sensor.transmission_down_speed"
+        - name: "Speed - Upload"
+          icon: "mdi:transfer-up"
+          entity: "sensor.transmission_up_speed"
+    - type: entities
+      title: SABnzbd (NZB)
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.tbsh1_monitordocker_sabnzbd
+          name: Docker Container
+          icon: mdi:docker
+        - entity: switch.tbsh1_monitordocker_sabnzbd
+          name: Docker Container Status
+          icon: mdi:docker
+        - type: divider
+        - entity: sensor.sabnzbd_status
+          icon: mdi:transfer-down
+        - type: divider
+        - name: "Speed"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_speed"
+        - name: "Queue"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_queue"
+        - name: "Queue - to Download"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_queue_count"
+        - name: "Queue - Size"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_left"
+        - name: "Downloads - Total"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_total"
+        - name: "Downloads - Daily"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_daily_total"
+        - name: "Downloads - Weekly"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_weekly_total"
+        - name: "Downloads - Monthly"
+          icon: "mdi:transfer-down"
+          entity: "sensor.sabnzbd_monthly_total"
+    - type: entities
+      title: jDownloader
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+      entities:
+        - entity: sensor.tbsh1_monitordocker_jdownloader
+          name: Docker Container
+          icon: mdi:docker
+        - entity: switch.tbsh1_monitordocker_jdownloader
+          name: Docker Container Status
+          icon: mdi:docker
+        - type: divider
+        - sensor.jdownloaders_online
+        - type: divider
+        - binary_sensor.jdownloader_tbsmarthome_update_available
+        - sensor.jdownloader_tbsmarthome_download_speed
+        - sensor.jdownloader_tbsmarthome_links
+        - sensor.jdownloader_tbsmarthome_packages
+        - sensor.jdownloader_tbsmarthome_status
+        - switch.jdownloader_tbsmarthome_limit
+        - switch.jdownloader_tbsmarthome_pause

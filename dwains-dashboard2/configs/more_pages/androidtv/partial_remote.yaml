@@ -1,0 +1,153 @@
+---
+type: grid
+columns: 3
+square: false
+cards:
+  # Row 1
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:power
+    name: ON
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: MENU
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:arrow-up-bold
+    name: UP
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: UP
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:power-off
+    name: OFF
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: SLEEP
+  # Row 2
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:arrow-left-bold
+    name: LEFT
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: LEFT
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:camera-control
+    name: ENTER
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: ENTER
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:arrow-right-bold
+    name: RIGHT
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: RIGHT
+  # Row 3
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:undo-variant
+    name: BACK
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: BACK
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:arrow-down-bold
+    name: DOWN
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: DOWN
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:home-circle
+    name: HOME
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: HOME
+  # Row 3
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:play
+    name: PLAY
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: "input keyevent 126"
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:pause
+    name: PAUSE
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: "input keyevent 127"
+  - type: custom:button-card
+    entity: media_player.nvidia_shield
+    icon: mdi:stop
+    name: STOP
+    show_name: false
+    aspect_ratio: 4/3
+    tap_action:
+      action: call-service
+      service: androidtv.adb_command
+      service_data:
+        entity_id: media_player.nvidia_shield
+        command: "input keyevent 86"

@@ -1,0 +1,101 @@
+type: "custom:config-template-card"
+entities:
+  - sensor.sunrise
+  - sensor.sunset
+card:
+  type: custom:apexcharts-card
+  header:
+    show: true
+    show_states: true
+    colorize_states: true
+    title: "Tamworth Airport Rainfall"
+  span:
+    start: day
+  graph_span: 1d
+  apex_config:
+    annotations:
+      xaxis:
+        - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+          label:
+            text: ☼
+            borderWidth: 0
+            style:
+              background: "#0000"
+        - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+          label:
+            text: ☾
+            borderWidth: 0
+            style:
+              background: "#0000"
+    chart:
+      {
+        type: "area",
+        height: 300,
+        toolbar: { show: true, tools: { reset: true } },
+        zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+      }
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5] }
+    legend: { show: false }
+    fill:
+      {
+        gradient:
+          {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [20, 100, 100, 100],
+          },
+      }
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
+    yaxis:
+      - seriesName: "Temp"
+        decimalsInFloat: 0
+        title:
+          text: "Rainfall (mm)"
+  series:
+    - entity: sensor.tamworth_airport_rain_since_9am
+      name: Rainfall
+      type: line
+      # color: "da1e28"
+      # extend_to_end: false
+      stroke_width: 4
+      unit: "mm"
+      group_by:
+        func: last
+        duration: 5min
+    - entity: sensor.tamworth_airport_rain_since_9am
+      type: line
+      color: "#121619"
+      name: Change
+      # extend_to_end: false
+      stroke_width: 2
+      group_by:
+        func: delta
+        duration: 30min
+    - entity: sensor.tamworth_airport_rain_since_9am
+      type: line
+      name: Rainfall
+      stroke_width: 1.8
+      # extend_to_end: false
+      unit: "mm"
+      curve: smooth
+      offset: -1d
+      group_by:
+        func: last
+        duration: 5min
+    - entity: sensor.tamworth_airport_rain_since_9am
+      type: line
+      color: "#a7adba"
+      name: Change
+      unit: "mm"
+      # extend_to_end: false
+      stroke_width: 2
+      offset: -1d
+      group_by:
+        func: delta
+        duration: 30min

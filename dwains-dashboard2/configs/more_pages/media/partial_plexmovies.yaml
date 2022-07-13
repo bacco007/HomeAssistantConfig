@@ -1,0 +1,19 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: entities
+    title: Plex - Movies
+    style: !include ../../1_Templates/style_entities.yaml
+    entities:
+      - entity: sensor.plexstats_moviecount
+        name: Library Stats - No. Movies
+        icon: mdi:plex
+
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      |Date|Detail|
+      |:---:|:---|
+      {% for item in state_attr('sensor.plex_recently_added_movies', 'data') %}{% if item.airdate | default('', true) %}{% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}|{{ airdate }}|{{item.title}}|
+      {% endif %}{% endfor %}

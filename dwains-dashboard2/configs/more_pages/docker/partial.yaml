@@ -1,0 +1,137 @@
+# dwains_theme
+
+type: custom:auto-entities
+card:
+  type: custom:easy-layout-card
+  cards:
+    type: custom:config-template-card
+    variables:
+      getEntityId: |
+        entityid => {
+          return entityid.replace("switch", "sensor");
+        }
+    entities:
+      - this.entity_id
+    card:
+      type: entities
+      entities:
+        - type: custom:fold-entity-row
+          head:
+            entity: this.entity_id
+            type: custom:multiple-entity-row
+            show_state: false
+            image: >-
+              "${'/local/systemicons/' +
+              states['this.entity_id'].attributes.friendly_name + '.png'}"
+            entities:
+              - entity: this.entity_id
+                name: Off / On
+                toggle: true
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: status
+                name: Uptime
+                styles:
+                  width: 200px
+                  align: center
+              - icon: mdi:memory
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: cpu_percentage
+                name: CPU
+                unit: "%"
+                styles:
+                  width: 90px
+                  text-align: left
+              - icon: mdi:memory
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: memory
+                name: Memory
+                unit: "MB"
+                styles:
+                  width: 90px
+                  text-align: left
+              - icon: mdi:upload
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: network_speed_up
+                name: Up
+                default: "-"
+                unit: "kB/s"
+                styles:
+                  width: 90px
+                  text-align: left
+              - icon: mdi:download
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: network_speed_down
+                name: Down
+                default: "-"
+                unit: "kB/s"
+                styles:
+                  width: 90px
+                  text-align: left
+              - icon: mdi:upload
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: network_total_up
+                name: Total Up
+                default: "-"
+                unit: "MB"
+                styles:
+                  width: 90px
+                  text-align: left
+              - icon: mdi:download
+              - entity: ${getEntityId('this.entity_id')}
+                attribute: network_total_down
+                name: Total Down
+                default: "-"
+                unit: "MB"
+                styles:
+                  width: 90px
+                  text-align: left
+          entities:
+            - type: custom:apexhcarts-card
+              header:
+                show: true
+                title: CPU (24hrs)
+              graph_span: 24h
+              series:
+                - entity: ${getEntityId('this.entity_id')}
+                  attribute: cpu
+            - entities:
+                - entity: ${getEntityId('this.entity_id') + '_cpu'}
+                - entity: ${getEntityId('this.entity_id') + '_memory'}
+                - entity: ${getEntityId('this.entity_id') + '_network_speed_up'}
+                - entity: ${getEntityId('this.entity_id') + '_network_speed_down'}
+              type: custom:easy-layout-card
+              layout_type: custom:horizontal-layout
+              placeholder: this.entity_id1
+              layout:
+                width: 300
+                max_width: 450
+                max_cols: 4
+              cards:
+                entities:
+                  - entity: this.entity_id1
+                lower_bound: 0
+                hours_to_show: 24
+                points_per_hour: 60
+                line_width: 1
+                line_color: lightgreen
+                type: custom:mini-graph-card
+                show:
+                  average: true
+                  extrema: true
+                  labels: true
+                style: |
+                  ha-card {
+                  border-radius: 10px;
+                  background-color: rgba(0, 0, 0, 0.0);
+                  }
+  layout_type: vertical
+  layout_options:
+    width: 1400
+filter:
+  include:
+    - entity_id: >
+        {{ filter }}
+sort:
+  method: friendly_name
+show_empty: true
+unique: true

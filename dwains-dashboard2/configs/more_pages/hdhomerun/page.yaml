@@ -1,0 +1,101 @@
+cards:
+- cards:
+  - cards:
+    - entity: sensor.hdhomerun_connect_quatro_1251b32b_tuner0
+      name: Tuner 1
+      tap_action:
+        action: none
+      template:
+      - conditional_media
+      - icon_tv
+      type: custom:button-card
+    - entity: sensor.hdhomerun_connect_quatro_1251b32b_tuner1
+      name: Tuner 2
+      tap_action:
+        action: none
+      template:
+      - conditional_media
+      - icon_tv
+      type: custom:button-card
+    - entity: sensor.hdhomerun_connect_quatro_1251b32b_tuner2
+      name: Tuner 3
+      tap_action:
+        action: none
+      template:
+      - conditional_media
+      - icon_tv
+      type: custom:button-card
+    - entity: sensor.hdhomerun_connect_quatro_1251b32b_tuner3
+      name: Tuner 4
+      tap_action:
+        action: none
+      template:
+      - conditional_media
+      - icon_tv
+      type: custom:button-card
+    items_classes: col-xs-12 col-sm-6 col-md-3 col-lg-3
+    type: custom:dwains-flexbox-card
+  - cards:
+    - all_series_config:
+        attribute: NetworkRate
+        extend_to: false
+        group_by:
+          duration: 1m
+          func: last
+        transform: return x / 1000000;
+        type: area
+        unit: Mb/s
+      apex_config:
+        chart:
+          height: 270
+          type: area
+        dataLabels:
+          enabled: false
+        fill:
+          gradient:
+            inverseColors: false
+            opacityFrom: 0.45
+            opacityTo: 0.05
+            shadeIntensity: 1
+            stops:
+            - 20
+            - 100
+            - 100
+            - 100
+          type: gradient
+        legend:
+          show: false
+        stroke:
+          curve: smooth
+          show: true
+          width: 2
+        xaxis:
+          labels:
+            datetimeFormatter:
+              day: ddd
+              month: ddd
+          type: datetime
+      graph_span: 24h
+      header:
+        colorize_states: true
+        show: true
+        show_states: true
+        title: Network Rate
+      series:
+      - entity: sensor.hdhomerun_tuner_0
+        name: Tuner 1
+      - entity: sensor.hdhomerun_tuner_1
+        name: Tuner 2
+      - entity: sensor.hdhomerun_tuner_2
+        name: Tuner 3
+      - entity: sensor.hdhomerun_tuner_3
+        name: Tuner 4
+      span:
+        start: day
+      type: custom:apexcharts-card
+    items_classes: col-xs-12
+    padding: false
+    type: custom:dwains-flexbox-card
+  items_classes: col-xs-12
+  type: custom:dwains-flexbox-card
+type: vertical-stack

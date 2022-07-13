@@ -1,0 +1,56 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:auto-entities
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    card:
+      type: entities
+      title: Temperatures
+      style: |
+        ha-card {
+          padding-bottom: 10px;
+          background-color: var(--dwains-theme-primary)
+        }
+        .card-header {
+          padding: 5px 16px;
+          font-size: 18px;
+          font-weight: 700 !important;
+        }
+        .card-content div {
+            margin: 0 !important;
+        }
+        #states {
+          padding-top: 0px !important;
+          padding-bottom: 0px !important;
+        }
+        .secondary {
+          color: darkgray !important;
+          margin-left: 2px !important;
+        }
+    sort:
+      method: name
+    filter:
+      include:
+        - entity_id: sensor.tempest_st_00056115_*temp*
+        - entity_id: sensor.tempest_st_00056115_delta_t
+        - entity_id: sensor.tempest_st_00056115_dew_point

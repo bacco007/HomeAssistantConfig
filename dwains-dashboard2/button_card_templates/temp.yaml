@@ -1,0 +1,540 @@
+card_pool:
+  variables:
+    card_title: Card Name
+    card_subtitle: Card Subtitle
+    card_select_measure: input_select.ui_test_select_measure
+    opt1_name: Temp
+    opt1_sensor: sensor.tamworth_airport_temp
+    opt1_units: °C
+    opt1_color: red
+    opt2_name: Humid
+    opt2_sensor: sensor.tamworth_airport_humidity
+    opt2_units: "%"
+    opt2_color: green
+  styles:
+    card:
+      - padding: "0px"
+    grid:
+      - grid-template-areas: "'overlay' 'measures measures'"
+      - grid-template-columns: 0
+      - grid-template-rows: "1px min-content"
+    custom_fields:
+      overlay:
+        - height: 1px
+        - background: linear-gradient(180deg, rgba(var(--rgb-card-background-color),0) 45%, rgba(var(--rgb-card-background-color),1) 100%)
+        - opacity: 1
+        - padding: 0
+  custom_fields:
+    overlay: <div></div>
+    measures:
+      card:
+        type: custom:button-card
+        name: "[[[ return variables.card_title ]]]"
+        label: "[[[ return variables.card_subtitle ]]]"
+        show_name: true
+        show_label: true
+        styles:
+          card:
+            - width: 500px
+            - padding: 2%
+            - border-radius: 0px
+            - box-shadow: "none"
+          grid:
+            - grid-template-areas: "'n opt1 . opt2 . opt3 . opt4' 'l opt1 . opt2 . opt3 . opt4' 'graph graph graph graph graph graph graph graph' 'actions actions actions actions actions actions actions actions' 'infos infos infos infos infos infos infos infos'"
+            - grid-template-columns: "1fr 45px 5px 45px 5px 45px 5px 45px"
+            - grid-template-rows: "min-content min-content min-content"
+          name:
+            - font-weight: "bold"
+            - font-size: "15px"
+            - place-self: end left
+          label:
+            - font-size: "12px"
+            - place-self: start
+            - filter: "opacity(40%)"
+        custom_fields:
+          opt1:
+            card:
+              type: custom:button-card
+              template: button_pool_measure
+              name: "[[[ return variables.opt1_name ]]]"
+              label: "[[[ return states[variables.opt1_sensor].state + variables.opt1_units; ]]]"
+              variables:
+                color: "[[[ return variables.opt1_color ]]]"
+                select_value: opt1
+          opt2:
+            card:
+              type: custom:button-card
+              template: button_pool_measure
+              name: "[[[ return variables.opt2_name ]]]"
+              label: "[[[ return states[variables.opt2_sensor].state + variables.opt2_units; ]]]"
+              variables:
+                color: "[[[ return variables.opt2_color ]]]"
+                select_value: opt2
+
+          graph:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.card_select_measure ]]]"
+              show_icon: false
+              state:
+                - name: "[[[ return variables.opt1_name ]]]"
+                  value: opt1
+                - name: "[[[ return variables.opt2_name ]]]"
+                  value: opt2
+              styles:
+                card:
+                  - border-radius: 0px
+                  - box-shadow: "none"
+                  - padding-bottom: 0
+                name:
+                  - font-weight: "normal"
+                  - font-size: "12px"
+                  - place-self: center left
+                grid:
+                  - grid-template-areas: "'n i1 . i2 . i3 ' 'graph graph graph graph graph graph'"
+                  - grid-template-columns: "1fr 61px 6px 61px 6px 61px"
+                  - grid-template-rows: "min-content min-content"
+              custom_fields:
+                i1:
+                  card:
+                    type: custom:button-card
+                    template: button_pool_period
+                    name: Today
+                    variables:
+                      period: Today
+                i2:
+                  card:
+                    type: custom:button-card
+                    template: button_pool_period
+                    name: Last Week
+                    variables:
+                      period: Last Week
+                i3:
+                  card:
+                    type: custom:button-card
+                    template: button_pool_period
+                    name: Something
+                    variables:
+                      period: Today
+                graph:
+                  card:
+                    type: grid
+                    square: false
+                    columns: 1
+                    cards:
+                      - type: conditional
+                        conditions:
+                          - entity: "[[[ return variables.card_select_measure ]]]"
+                            state: "opt1"
+                        card:
+                          type: custom:button-card
+                          template: graph_pool_measure
+                          variables:
+                            entity: "[[[ return variables.opt1_sensor ]]]"
+                            color: "[[[ return variables.opt1_color ]]]"
+                            decimal: 0
+                      - type: conditional
+                        conditions:
+                          - entity: "[[[ return variables.card_select_measure ]]]"
+                            state: "opt2"
+                        card:
+                          type: custom:button-card
+                          template: graph_pool_measure
+                          variables:
+                            entity: "[[[ return variables.opt2_sensor ]]]"
+                            color: "[[[ return variables.opt2_color ]]]"
+                            decimal: 0
+
+          # actions:
+          #   card:
+          #     type: custom:button-card
+          #     styles:
+          #       card:
+          #         - border-radius: 0px
+          #         - box-shadow: "none"
+          #         - padding-top: 0
+          #       grid:
+          #         - grid-template-areas: " 'a1 . a2 . a3'"
+          #         - grid-template-columns: "1fr 10px 1fr 10px 1fr"
+          #         - grid-template-rows: "min-content"
+          #     custom_fields:
+          #       a1:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_action
+          #           entity: switch.piscine_filtration
+          #           name: Filtration
+          #           icon: mdi:engine
+          #           label: "[[[ return states['sensor.pool_pump_duration'].state; ]]]"
+          #           variables:
+          #             schedules: "[[[ return states['sensor.pool_pump_hours'].state; ]]]"
+          #       a2:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_action
+          #           entity: switch.piscine_surpresseur
+          #           name: Robot
+          #           icon: mdi:robot-mower
+          #           label: "[[[ return states['sensor.robot_duration'].state; ]]]"
+          #           variables:
+          #             schedules: "[[[ return states['input_text.robot_hours'].state; ]]]"
+          #       a3:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_action
+          #           entity: switch.piscine_electrolyseur_sel
+          #           name: Electrolyseur
+          #           icon: mdi:electron-framework
+          #           label: "[[[ return states['sensor.electrolyseur_sel_duration'].state; ]]]"
+          #           variables:
+          #             schedules: "-"
+          # infos:
+          #   card:
+          #     type: custom:button-card
+          #     styles:
+          #       card:
+          #         - border-radius: 0px
+          #         - box-shadow: "none"
+          #         - padding-top: 0
+          #       grid:
+          #         - grid-template-areas: " 'i1 . i2 . i3 . i4'"
+          #         - grid-template-columns: "1fr 10px 1fr 10px 1fr 10px 1fr"
+          #         - grid-template-rows: "min-content"
+          #     custom_fields:
+          #       i1:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_info
+          #           name: Lumières
+          #           icon: mdi:lightbulb
+          #       i2:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_info
+          #           name: Mode<br/>filtration
+          #           label: "[[[ return states['input_select.pool_pump'].state; ]]]"
+          #           tap_action:
+          #             action: "fire-dom-event"
+          #             browser_mod:
+          #               command: "popup"
+          #               large: true
+          #               hide_header: true
+          #               card:
+          #                 type: "custom:button-card"
+          #                 template: "popup_pool_pump"
+          #               style:
+          #                 $: |
+          #                   .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+          #                     box-shadow: none;
+          #                     border-radius: 0px;
+          #                     background-color: var(--main-background-color);
+          #                   }
+          #       i3:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_info
+          #           name: Lavage<br/>filtre
+          #           label: Il y a 10 jours
+          #           variables:
+          #             alert: false
+          #       i4:
+          #         card:
+          #           type: custom:button-card
+          #           template: button_pool_info
+          #           name: Lavage<br/>skimmers
+          #           label: Il y a 25 jours
+          #           variables:
+          #             alert: true
+
+graph_pool_measure:
+  variables:
+    entity: ""
+    color: ""
+    decimal: 0
+    curve: "smooth"
+    annotations:
+      min:
+        value: -100
+        text: ""
+      max:
+        value: -100
+        text: ""
+    yaxis:
+      min: auto
+      max: auto
+  styles:
+    card:
+      - padding: 0px
+      - border-radius: 0px
+      - box-shadow: "none"
+    grid:
+      - grid-template-areas: "'graph'"
+      - grid-template-columns: "1fr"
+      - grid-template-rows: "min-content"
+  custom_fields:
+    graph:
+      card:
+        type: custom:apexcharts-card
+        header:
+          show: false
+        graph_span: >
+          [[[
+            switch (states['input_select.ui_test_select_measure_period'].state) {
+              case "Last Week":
+                return "1w";
+                break;
+              case "Today":
+                return "1d";
+                break;
+            }
+          ]]]
+        series:
+          - entity: "[[[ return variables.entity; ]]]"
+            stroke_width: 3
+            color: "[[[ return `var(--label-badge-${variables.color})`; ]]]"
+            fill_raw: last
+            type: area
+        yaxis:
+          - decimals: "[[[ return variables.decimal; ]]]"
+            min: "[[[ return variables.yaxis.min; ]]]"
+            max: "[[[ return variables.yaxis.max; ]]]"
+            apex_config:
+              tickAmount: 5
+              forceNiceScale: true
+              labels:
+                offsetX: -15
+        apex_config:
+          chart:
+            height: 200px
+          grid:
+            padding:
+              left: 0
+              right: 0
+          fill:
+            type: "gradient"
+            gradient:
+              shade: "light"
+              type: "vertical"
+              opacityFrom: 0.7
+              opacityTo: 0.1
+              stops: [0, 100]
+          stroke:
+            curve: "[[[ return variables.curve; ]]]"
+          annotations:
+            position: "front"
+            yaxis:
+              - y: "[[[ return variables.annotations.min.value; ]]]"
+                y2: "[[[ return variables.annotations.max.value; ]]]"
+                opacity: 0.2
+              - y: "[[[ return variables.annotations.max.value; ]]]"
+                strokeDashArray: 0
+                label:
+                  text: "[[[ return variables.annotations.max.text; ]]]"
+                  offsetX: -5
+                  offsetY: -1
+                  style:
+                    fontSize: 8px
+              - y: "[[[ return variables.annotations.min.value; ]]]"
+                strokeDashArray: 0
+                label:
+                  text: "[[[ return variables.annotations.min.text; ]]]"
+                  offsetX: -5
+                  offsetY: -1
+                  style:
+                    fontSize: 8px
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 0px;
+              box-shadow: none;
+              padding: 0;
+              margin: 0;
+            }
+            #state__name, .apexcharts-xaxis-label, .apexcharts-yaxis-label {
+              font-size: 10px !important;
+            }
+
+button_pool_measure:
+  variables:
+    color: "blue"
+    select_value: "Temperature"
+    alert: false
+  show_name: true
+  show_label: true
+  aspect_ratio: 1/1
+  styles:
+    card:
+      - padding: "0px"
+      - box-shadow: none
+      - background-color: var(--primary-background-color)
+      - background-image: >
+          [[[
+              let theme = hass.themes.themes['Dwains Light Theme'];
+              let color_bckg = theme[`label-badge-${variables.color}`].replace('#', '%23');
+              let opacity = `0.35`;
+              return "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 1440 1440'><path fill='"+color_bckg+"' fill-opacity='"+opacity+"' d='m 0,566 48,26.7 C 96,619 192,673 288,699.3 384,726 480,726 576,710 c 96,-16 192,-48 288,-42.7 96,5.7 192,47.7 288,58.7 96,11 192,-11 240,-21.3 l 48,-10.7 v 754 H 1392 1152 864 576 288 48 0 Z'></path></svg>\")";
+          ]]]
+      - background-size: 100%
+    grid:
+      - grid-template-areas: "'n' 'l'"
+      - grid-template-columns: "1fr"
+      - grid-template-rows: "auto auto"
+    name:
+      - font-size: "11px"
+      - place-self: center
+    label:
+      - font-size: "11px"
+      - place-self: center
+      - font-weight: "bold"
+      - color: >
+          [[[
+            return `rgba(var(--label-badge-${variables.color}), 1)`;
+          ]]]
+    custom_fields:
+      notification:
+        - border-radius: "50%"
+        - position: "absolute"
+        - right: "2px"
+        - top: "14px"
+        - height: "12px"
+        - width: "12px"
+        - border: "1px solid var(--card-background-color)"
+        - font-size: "6px"
+        - line-height: "12px"
+        - background-color: >
+            [[[
+              return "rgba(var(--label-badge-red),1)";
+            ]]]
+  custom_fields:
+    notification: >
+      [[[
+        if (variables.alert) {
+          return `<ha-icon icon="mdi:exclamation" style="width: 9px; height: 9px; color: var(--primary-background-color);"></ha-icon>`
+        }
+      ]]]
+  tap_action:
+    action: call-service
+    service: input_select.select_option
+    service_data:
+      entity_id: input_select.ui_test_select_measure
+      option: "[[[ return `${variables.select_value}`; ]]]"
+
+button_pool_period:
+  variables:
+    period: "Semaine"
+  show_name: true
+  styles:
+    card:
+      - padding: "5px 0px"
+      - box-shadow: none
+      - background-color: >
+          [[[
+            if (states['input_select.ui_test_select_measure_period'].state == variables.period) {
+              switch (states['input_select.ui_test_select_measure'].state) {
+                case "opt1":
+                  return "var(--label-badge-${variables.opt1_color})";
+                default:
+                  return "var(--primary-background-color)";
+              }
+            } else {
+              return "var(--primary-background-color)";
+            }
+          ]]]
+    name:
+      - font-size: "10px"
+      - place-self: center
+      - color: >
+          [[[
+            if (states['input_select.ui_test_select_measure_period'].state == variables.period) {
+              return "white";
+            } else {
+              return "var(--primary-text-color)";
+            }
+          ]]]
+  tap_action:
+    action: call-service
+    service: input_select.select_option
+    service_data:
+      entity_id: input_select.ui_test_select_measure_period
+      option: "[[[ return `${variables.period}`; ]]]"
+
+button_pool_action:
+  variables:
+    schedules: "-"
+  show_name: true
+  show_label: true
+  show_icon: true
+  styles:
+    card:
+      - padding: "5px 0px"
+      - box-shadow: none
+      - background-color: var(--primary-background-color)
+    grid:
+      - grid-template-areas: "'n' 'l' 'i' 'schedules'"
+      - grid-template-columns: "1fr"
+      - grid-template-rows: "min-content min-content min-content min-content"
+    name:
+      - font-size: "12px"
+      - place-self: center
+      - font-weight: "bold"
+    label:
+      - font-size: "10px"
+      - place-self: center
+      - filter: "opacity(40%)"
+    custom_fields:
+      schedules:
+        - font-size: "10px"
+        - place-self: center
+        - filter: "opacity(40%)"
+  custom_fields:
+    schedules: "[[[ return `${variables.schedules}`; ]]]"
+
+button_pool_info:
+  variables:
+    alert: false
+  show_name: true
+  show_label: true
+  show_icon: true
+  styles:
+    card:
+      - padding: "5px 10px"
+      - box-shadow: none
+      - background-color: var(--primary-background-color)
+      - height: 55px
+    grid:
+      - grid-template-areas: "'n' 'l' 'i'"
+      - grid-template-columns: "1fr"
+      - grid-template-rows: "min-content min-content"
+    name:
+      - font-size: "10px"
+      - place-self: center
+      - font-weight: "bold"
+    label:
+      - font-size: "10px"
+      - place-self: center
+      - filter: "opacity(40%)"
+      - padding-top: 5px
+    icon:
+      - padding-top: 3px
+    custom_fields:
+      notification:
+        - border-radius: "50%"
+        - position: "absolute"
+        - right: "2px"
+        - top: "2px"
+        - height: "16px"
+        - width: "16px"
+        - border: "2px solid var(--card-background-color)"
+        - font-size: "12px"
+        - line-height: "14px"
+        - background-color: >
+            [[[
+              return "rgba(var(--color-red),1)";
+            ]]]
+  custom_fields:
+    notification: >
+      [[[
+        if (variables.alert) {
+          return `<ha-icon icon="mdi:exclamation" style="width: 12px; height: 12px; color: var(--primary-background-color);"></ha-icon>`
+        }
+      ]]]

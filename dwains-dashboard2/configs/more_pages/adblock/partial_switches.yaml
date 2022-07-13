@@ -1,0 +1,28 @@
+---
+type: entities
+entities:
+  - switch.adguard_filtering
+  - switch.adguard_parental_control
+  - switch.adguard_protection
+  - switch.adguard_query_log
+  - switch.adguard_safe_browsing
+  - switch.adguard_safe_search
+title: Switches
+show_header_toggle: false
+style: |
+  .card-header {
+    padding: 5px 16px;
+    font-size: 18px;
+    font-weight: 700 !important;
+  }
+  .card-content div {
+      margin: 0 !important;
+  }
+  #states {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .secondary {
+    color: darkgray !important;
+    margin-left: 2px !important;
+  }

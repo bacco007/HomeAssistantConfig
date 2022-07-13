@@ -1,0 +1,45 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: entities
+    title: NSW RFS Alerts
+    style: |
+      ha-card {
+        padding-bottom: 10px;
+        background-color: var(--dwains-theme-primary)
+      }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.fires_near_me
+        name: RFS Alerts Near Me
+  - type: conditional
+    conditions:
+      - entity: sensor.fires_near_me
+        state_not: "0"
+    card:
+      type: markdown
+      content: >-
+        {%- for state in states.geo_location %}
+          {%- if state.attributes.source=="nsw_rural_fire_service_feed" %}
+            <ha-icon icon="{{ state.attributes.icon }}"></ha-icon> **{{ state.name }}**
+            {{ state.attributes.category }}, {{ state.attributes.type }} ({{ state.attributes.size }})
+            {{ state.attributes.location }}
+            *Issued: {{ state.attributes.publication_date.strftime("%d/%m/%Y %H:%M") }}*<br/>
+          {%- endif %}
+        {%- endfor %}

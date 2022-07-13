@@ -1,0 +1,120 @@
+---
+# dwains_dashboard
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12 col-sm-12"
+  cards:
+    - entity: media_player.office_sonos
+      name: Sonos - Office
+      type: media-control
+
+- type: custom:dwains-flexbox-card
+  items_classes: "col-xs-12"
+  cards:
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-3"
+      cards:
+        - type: grid
+          rows: 1
+          square: false
+          cards:
+            - entity: media_player.office_sonos
+              hold_action:
+                action: none
+              icon: "mdi:volume-minus"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 50px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: media_player.volume_down
+                service_data:
+                  entity_id: media_player.office_sonos
+              type: "custom:button-card"
+            - entity: media_player.office_sonos
+              hold_action:
+                action: none
+              icon: "mdi:volume-off"
+              show_icon: true
+              show_name: false
+              state:
+                - operator: template
+                  styles:
+                    card:
+                      - icon: "mdi:volume-high"
+                    icon:
+                      - color: red
+                    value: >
+                      return
+                      states['media_player.office_sonos'].attributes.is_volume_muted
+                      === true
+              styles:
+                card:
+                  - height: 50px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: script.sonos_mute
+              type: "custom:button-card"
+            - type: "custom:button-card"
+              entity: media_player.office_sonos
+              hold_action:
+                action: none
+              icon: "mdi:volume-plus"
+              show_icon: true
+              show_name: false
+              styles:
+                card:
+                  - height: 50px
+              tap_action:
+                action: call-service
+                haptic: success
+                service: media_player.volume_up
+                service_data:
+                  entity_id: media_player.office_sonos
+        - type: custom:stack-in-card
+          cards:
+            - type: entities
+              entities:
+                - media_player.office_sonos
+                - input_text.sonos_playlist_playing
+                - entity: number.office_sonos_bass
+                  name: Bass Level
+                - entity: number.office_sonos_treble
+                  name: Treble Level
+                - entity: switch.sonos_office_sonos_crossfade
+                  name: Crossfade
+                - entity: switch.sonos_office_sonos_status_light
+                  name: Status Light
+                - entity: switch.sonos_office_sonos_touch_controls
+                  name: Touch Controls
+              title: Controls
+              style: |
+                ha-card {
+                  padding-bottom: 10px;
+                  background-color: var(--dwains-theme-primary)
+                }
+                .card-header {
+                  padding: 5px 16px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+                .card-content div {
+                    margin: 0 !important;
+                }
+                #states {
+                  padding-top: 0px !important;
+                  padding-bottom: 0px !important;
+                }
+                .secondary {
+                  color: darkgray !important;
+                  margin-left: 2px !important;
+                }
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-9"
+      cards:
+        - !include partial_station_grid.yaml

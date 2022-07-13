@@ -1,3 +1,14 @@
 title: Dashboard
+
 views:
   - !include temp.yaml
+
+button_card_templates: !include_dir_merge_named button-card
+
+swipe_nav:
+  animate: swipe
+  prevent_default: true
+
+background: >-
+  linear-gradient(to bottom, rgba(var(--rgb-primary-color),.2),
+  var(--primary-background-color))

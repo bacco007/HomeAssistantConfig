@@ -1,0 +1,44 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: markdown
+    style: |
+      ha-card { box-shadow: none; }
+      ha-markdown { padding-bottom: 1px !important; }
+    content: >
+      <img width="125" src="https://brands.home-assistant.io/github/logo.png"/><br/>
+      <h3>bacco007/HomeAssistConfig</h3>
+  - type: entities
+    style: |
+      ha-card { box-shadow: none; }
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.github_pushedat
+        name: Last Push
+      - entity: sensor.github_updatedat
+        name: Last Update
+      - type: divider
+      - entity: sensor.github_forks
+        name: Forks
+      - entity: sensor.github_issues
+        name: Issues
+      - entity: sensor.github_stars
+        name: Stars
+      - entity: sensor.github_subscribers
+        name: Subscribers

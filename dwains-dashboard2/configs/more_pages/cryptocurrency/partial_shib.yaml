@@ -1,0 +1,169 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:stack-in-card
+    cards:
+      - type: entities
+        entities:
+          - type: "custom:template-entity-row"
+            entity: sensor.crypto_shib
+            name: "{{ state_attr(config.entity, 'name') }}"
+            secondary: "{{ state_attr(config.entity, 'symbol') }}"
+            image: "{{ state_attr(config.entity, 'logo_url') }}"
+            state: "${{ state_attr(config.entity, 'price') | round(8) }}"
+          - type: "custom:template-entity-row"
+            entity: sensor.crypto_shib
+            name: High
+            icon: "mdi:currency-usd"
+            state: "${{ state_attr(config.entity, 'high') | round (8)}}"
+            secondary: >-
+              {{ as_timestamp(state_attr(config.entity, 'high_timestamp')) |
+              timestamp_custom('%d-%m-%Y %H:%M ') }}
+          - type: "custom:template-entity-row"
+            entity: sensor.crypto_shib
+            name: Crypto Rank
+            icon: "mdi:chart-line"
+            state: "{{ state_attr(config.entity, 'rank') }}"
+            secondary: '${{"{:,}".format(state_attr(config.entity, ''market_cap'')|int)}}'
+      - type: "custom:mini-graph-card"
+        hours_to_show: 3
+        points_per_hour: 60
+        show:
+          icon: false
+          name: false
+        entities:
+          - entity: sensor.crypto_shib
+      - type: entities
+        entities:
+          - entity: sensor.crypto_shib_1_hr
+            name: 1 Hour
+            type: "custom:template-entity-row"
+            state: "${{ states(config.entity) | round(8) }}"
+            secondary: >-
+              {{ state_attr(config.entity, 'price_change_pct')  | multiply(100) |
+              round(4) }}%
+            icon: |
+              {% if states(config.entity) | float > 0 %}
+                mdi:arrow-up-bold
+              {% elif states(config.entity) | float < 0 %}
+                mdi:arrow-down-bold
+              {% else %}
+                mdi:arrow-right-bold
+              {% endif %}
+            card_mod:
+              style: |
+                {% if states(config.entity) | float > 0 %}
+                  :host {
+                    --paper-item-icon-color: green;
+                    color: green
+                  }
+                {% elif states(config.entity) | float < 0 %}
+                  :host {
+                    --paper-item-icon-color: red;
+                    color: red
+                  }
+                {% else %}
+                  :host {
+                    --paper-item-icon-color: black;
+                    color: black
+                  }
+                {% endif %}
+          - entity: sensor.crypto_shib_1_d
+            name: 1 Day
+            type: "custom:template-entity-row"
+            state: "${{ states(config.entity) | round(8) }}"
+            secondary: >-
+              {{ state_attr(config.entity, 'price_change_pct') | multiply(100) |
+              round(4) }}%
+            icon: |
+              {% if states(config.entity) | float > 0 %}
+                mdi:arrow-up-bold
+              {% elif states(config.entity) | float < 0 %}
+                mdi:arrow-down-bold
+              {% else %}
+                mdi:arrow-right-bold
+              {% endif %}
+            card_mod:
+              style: |
+                {% if states(config.entity) | float > 0 %}
+                  :host {
+                    --paper-item-icon-color: green;
+                    color: green
+                  }
+                {% elif states(config.entity) | float < 0 %}
+                  :host {
+                    --paper-item-icon-color: red;
+                    color: red
+                  }
+                {% else %}
+                  :host {
+                    --paper-item-icon-color: black;
+                    color: black
+                  }
+                {% endif %}
+          - entity: sensor.crypto_shib_7_d
+            name: 7 Days
+            type: "custom:template-entity-row"
+            state: "${{ states(config.entity) | round(8) }}"
+            secondary: >-
+              {{ state_attr(config.entity, 'price_change_pct') | multiply(100) |
+              round(4) }}%
+            icon: |
+              {% if states(config.entity) | float > 0 %}
+                mdi:arrow-up-bold
+              {% elif states(config.entity) | float < 0 %}
+                mdi:arrow-down-bold
+              {% else %}
+                mdi:arrow-right-bold
+              {% endif %}
+            card_mod:
+              style: |
+                {% if states(config.entity) | float > 0 %}
+                  :host {
+                    --paper-item-icon-color: green;
+                    color: green
+                  }
+                {% elif states(config.entity) | float < 0 %}
+                  :host {
+                    --paper-item-icon-color: red;
+                    color: red
+                  }
+                {% else %}
+                  :host {
+                    --paper-item-icon-color: black;
+                    color: black
+                  }
+                {% endif %}
+          - entity: sensor.crypto_shib_30_d
+            name: 30 Days
+            type: "custom:template-entity-row"
+            state: "${{ states(config.entity) | round(8) }}"
+            secondary: >-
+              {{ state_attr(config.entity, 'price_change_pct') | multiply(100) |
+              round(4) }}%
+            icon: |
+              {% if states(config.entity) | float > 0 %}
+                mdi:arrow-up-bold
+              {% elif states(config.entity) | float < 0 %}
+                mdi:arrow-down-bold
+              {% else %}
+                mdi:arrow-right-bold
+              {% endif %}
+            card_mod:
+              style: |
+                {% if states(config.entity) | float > 0 %}
+                  :host {
+                    --paper-item-icon-color: green;
+                    color: green
+                  }
+                {% elif states(config.entity) | float < 0 %}
+                  :host {
+                    --paper-item-icon-color: red;
+                    color: red
+                  }
+                {% else %}
+                  :host {
+                    --paper-item-icon-color: black;
+                    color: black
+                  }
+                {% endif %}

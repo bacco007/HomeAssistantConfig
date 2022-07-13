@@ -1,0 +1,4 @@
+alarm_entity: alarm_control_panel.home
+disable_clock: true
+disable_welcome_message: true
+weather_entity: weather.east_tamworth_hourly

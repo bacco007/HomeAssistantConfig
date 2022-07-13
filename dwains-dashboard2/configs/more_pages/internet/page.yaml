@@ -1,0 +1,228 @@
+# dwains_theme
+---
+- type: custom:dwains-flexbox-card
+  item_classes: "col-xs-12"
+  cards:
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-2"
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: "custom:flex-horseshoe-card"
+              entities:
+                - entity: sensor.speedtest_download
+                  decimals: 2
+                  area: "Download"
+                  unit: "Mbps"
+              show:
+                horseshoe_style: "lineargradient"
+              layout:
+                states:
+                  - id: 0
+                    entity_index: 0
+                    xpos: 50
+                    ypos: 60
+                    styles:
+                      - font-size: 2.5em;
+                      - color: black;
+                areas:
+                  - id: 0
+                    entity_index: 0
+                    xpos: 50
+                    ypos: 35
+                    styles:
+                      - font-size: 1.5em;
+                      - opacity: 0.8;
+              horseshoe_scale:
+                min: 0
+                max: 25
+              color_stops:
+                16: "#E7FAFC"
+                17: "#D0F5FA"
+                18: "#B8F0F8"
+                19: "#A1EBF6"
+                20: "#89E7F4"
+                21: "#72E2F2"
+                22: "#5ADDF0"
+                23: "#43D8EE"
+                24: "#2BD3EC"
+                25: "#14cfea"
+              style: |
+                ha-card {
+                  box-shadow: none;
+                  height: 200px;
+                }
+
+            - type: "custom:flex-horseshoe-card"
+              entities:
+                - entity: sensor.speedtest_upload
+                  decimals: 2
+                  area: "Upload"
+                  unit: "Mbps"
+              show:
+                horseshoe_style: "lineargradient"
+              layout:
+                states:
+                  - id: 0
+                    entity_index: 0
+                    xpos: 50
+                    ypos: 60
+                    styles:
+                      - font-size: 2.5em;
+                      - color: black;
+                areas:
+                  - id: 0
+                    entity_index: 0
+                    xpos: 50
+                    ypos: 35
+                    styles:
+                      - font-size: 1.5em;
+                      - opacity: 0.8;
+              horseshoe_scale:
+                min: 0
+                max: 6
+              color_stops:
+                16: "#E7FAFC"
+                17: "#D0F5FA"
+                18: "#B8F0F8"
+                19: "#A1EBF6"
+                20: "#89E7F4"
+                21: "#72E2F2"
+                22: "#5ADDF0"
+                23: "#43D8EE"
+                24: "#2BD3EC"
+                25: "#14cfea"
+              style: |
+                ha-card {
+                  box-shadow: none;
+                  height: 200px;
+                }
+
+    - type: vertical-stack
+      item_classes: "col-xs-12 col-sm-10"
+      cards:
+        - type: custom:apexcharts-card
+          graph_span: 7d1s
+          header:
+            show: true
+            title: "Internet Performance - Last Week"
+          span:
+            end: hour
+          yaxis:
+            - id: left
+              min: 0
+              apex_config:
+                decimalsInFloat: 0
+                title:
+                  text: "Speed (Mbit/s)"
+            - id: right
+              min: 0
+              apex_config:
+                decimalsInFloat: 1
+                title:
+                  text: "Ping (ms)"
+              opposite: true
+          apex_config:
+            chart: { type: "area", height: 450 }
+            stroke: { show: true, curve: smooth, dashArray: [0, 0, 2] }
+            legend: { show: false }
+            dataLabels: { enabled: false }
+            xaxis:
+              {
+                type: "datetime",
+                labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+              }
+            fill:
+              {
+                type: "gradient",
+                gradient:
+                  {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.45,
+                    opacityTo: 0.05,
+                    stops: [20, 100, 100, 100],
+                  },
+              }
+          all_series_config:
+            type: area
+            # # extend_to_end: false
+            group_by:
+              func: avg
+              duration: 1h
+          series:
+            - entity: sensor.speedtest_download
+              yaxis_id: left
+              name: Download
+              stroke_width: 3
+            - entity: sensor.speedtest_upload
+              yaxis_id: left
+              name: Upload
+              stroke_width: 3
+            - entity: sensor.speedtest_ping
+              yaxis_id: right
+              name: Ping
+              stroke_width: 1.5
+        - type: custom:apexcharts-card
+          header:
+            show: true
+            title: "Internet Performance - Last Year"
+          graph_span: 1year
+          span:
+            end: day
+            offset: +1d
+          yaxis:
+            - id: left
+              min: 0
+              apex_config:
+                decimalsInFloat: 0
+                title:
+                  text: "Speed (Mbit/s)"
+            - id: right
+              min: 0
+              apex_config:
+                decimalsInFloat: 1
+                title:
+                  text: "Ping (ms)"
+              opposite: true
+          apex_config:
+            chart: { type: "area", height: 450 }
+            stroke: { show: true, curve: smooth, dashArray: [0, 0, 2] }
+            legend: { show: false }
+            dataLabels: { enabled: false }
+            fill:
+              {
+                type: "gradient",
+                gradient:
+                  {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.45,
+                    opacityTo: 0.05,
+                    stops: [20, 100, 100, 100],
+                  },
+              }
+          all_series_config:
+            type: area
+            extend_to: now
+            group_by:
+              func: max
+              duration: 1d
+            show:
+              extremas: true
+            data_generator: |
+              let res = [];
+              for (const [key, value] of
+                  Object.entries(entity.attributes)) {
+                  res.push([new Date(key).getTime(), value]);
+              }
+              return res.sort((a, b) => { return a[0] - b[0] });
+          series:
+            - entity: sensor.archive_internet_download_max_365day
+              yaxis_id: left
+              name: Download
+              stroke_width: 3
+            - entity: sensor.archive_internet_upload_max_365day
+              yaxis_id: left
+              name: Upload
+              stroke_width: 3

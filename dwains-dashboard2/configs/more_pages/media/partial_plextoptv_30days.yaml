@@ -1,0 +1,13 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      ### Plex Top TV (Last 30 Days)
+
+      |TV Show|Plays|Duration|Last Play|
+      |---|:---:|:---:|:---:|
+      {% for row in state_attr("sensor.plex_tautulli_toptv_30days", "rows") -%}{% set uptime = row.total_duration | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}{% set hours = ((uptime) / 3600) | int -%}{% set days = (uptime / 86400) | int -%}
+      |{{row.title}}|{{row.total_plays}}|{{'%02d' % hours}}:{{'%02d' % minutes}}|{{ row.last_play|timestamp_custom ('%d/%m/%Y %H:%M') }}|
+      {% endfor -%}

@@ -1,3 +1,4 @@
 name: last.fm
 icon: si:lastdotfm
 show_in_navbar: false
+sort_order: 2

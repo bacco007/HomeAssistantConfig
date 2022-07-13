@@ -1,0 +1,4 @@
+icon: mdi:lan-connect
+name: IoT & SmartHome Network Status
+show_in_navbar: false
+sort_order: 25

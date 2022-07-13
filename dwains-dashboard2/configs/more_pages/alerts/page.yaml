@@ -1,0 +1,26 @@
+---
+# dwains_dashboard
+type: vertical-stack
+cards:
+  - type: custom:dwains-flexbox-card
+    items_classes: "col-xs-12"
+    cards:
+      # Left Column
+      - type: vertical-stack
+        item_classes: "col-xs-12 col-sm-3"
+        cards:
+          - !include partial_lightning.yaml
+          - !include partial_rfs.yaml
+          - !include partial_gdacs.yaml
+      # Right Column
+      - type: vertical-stack
+        item_classes: "col-xs-12 col-sm-9"
+        cards:
+          - type: map
+            default_zoom: 8
+            entities:
+              - zone.home
+            geo_location_sources:
+              - gdacs
+              - nsw_rural_fire_service_feed
+              - blitzortung

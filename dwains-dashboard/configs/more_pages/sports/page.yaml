@@ -96,14 +96,16 @@
         entity_part: sensor.ical_nascar_cup_series_event_
         icon: /local/sportlogos/nascarcup.png
         limit: 5
-        replace: "\uD83C\uDFC1"
+        #replace: "\uD83C\uDFC1"
+        replace: dummytext
     - template: sport_cal
       type: custom:button-card
       variables:
         entity_part: sensor.ical_nascar_xfinity_series_event_
         icon: /local/sportlogos/nascarxfinity.png
         limit: 5
-        replace: "\uD83C\uDFC1"
+        #replace: "\uD83C\uDFC1"
+        replace: dummytext
     - template: sport_cal
       type: custom:button-card
       variables:
@@ -117,7 +119,8 @@
         entity_part: sensor.ical_new_york_yankees_event_
         icon: /local/sportlogos/yankees.png
         limit: 5
-        replace: "\u26BE\uFE0F"
+        #replace: "\u26BE\uFE0F"
+        replace: dummytext
     - template: sport_cal
       type: custom:button-card
       variables:

@@ -1,0 +1,77 @@
+cards:
+- cards:
+  - entity: sensor.untappd_project52
+    icon: si:untappd
+    primary: Beers Drunk
+    secondary: '{% set a = entity %} {{ state_attr(a, ''count'') }} Beers
+
+      '
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project52
+    icon: si:untappd
+    primary: Beers from Target
+    secondary: '{% set a = entity %} {{ state_attr(a, ''target'') }} Beers
+
+      '
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project52
+    icon: si:untappd
+    primary: Average Rating
+    secondary: '{% set a = entity %} {{ state_attr(a, ''rating_average'') }} / 5
+
+      '
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project52
+    icon: si:untappd
+    primary: Maximum Rating
+    secondary: '{% set a = entity %} {{ state_attr(a, ''rating_maximum'') }} / 5
+
+      '
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project52
+    icon: si:untappd
+    primary: Minimum Rating
+    secondary: '{% set a = entity %} {{ state_attr(a, ''rating_minimum'') }} / 5
+
+      '
+    type: custom:mushroom-template-card
+  item_classes: col-xs-12 col-sm-2
+  type: vertical-stack
+- cards:
+  - clickable: false
+    columns:
+    - data: data
+      modify: x.beer_name
+      name: Beer
+    - data: data
+      modify: x.brewery
+      name: Brewery
+    - data: data
+      modify: x.beer_style
+      name: Style
+    - data: data
+      modify: x.rating
+      name: Rating
+    - data: data
+      modify: x.count
+      name: Count
+    - data: data
+      modify: x.first_checkin
+      name: 1st
+    - data: data
+      modify: x.recent_checkin
+      name: Latest
+    css:
+      table+: 'width: 100%; border-spacing: 0; padding: 8px; border-radius: var(--ha-card-border-radius);'
+      tbody td: 'padding: 4px;'
+      tbody tr:nth-child(even): 'background-color: var(--secondary-background-color);'
+      tbody tr:nth-child(odd): 'background-color: var(--paper-card-background-color);'
+      th: 'background-color: var(--dwains-theme-header-background); color: var(--dwains-theme-header-text);
+        padding: 4px;'
+    entities:
+      include: sensor.untappd_project52
+    type: custom:flex-table-card
+  item_classes: col-xs-12 col-sm-10
+  type: vertical-stack
+items_classes: col-xs-12
+type: custom:dwains-flexbox-card

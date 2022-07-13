@@ -1,0 +1,24 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: entities
+    title: Sonarr
+    style: !include ../../1_Templates/style_entities.yaml
+    entities:
+      - entity: sensor.sonarr_shows
+        name: Tracked Shows
+      - entity: sensor.sonarr_queue
+        name: Queued Episodes
+      - entity: sensor.sonarr_upcoming
+        name: Upcoming Episodes
+      - entity: sensor.sonarr_wanted
+        name: Wanted Episodes
+
+  - type: markdown
+    card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |
+      |Date|Time|Detail|
+      |:---:|:---:|:---|
+      {% for item in state_attr('sensor.sonarr_upcoming_media', 'data') %}{% if item.airdate | default('', true) %}{% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}{% set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}|{{ airdate }}|{{airtime}}|{{item.title}}<br/>_({{item.number}}, {{item.episode}})_|
+      {% endif %}{% endfor %}

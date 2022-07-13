@@ -1,0 +1,93 @@
+---
+type: custom:config-template-card
+entities:
+  - sensor.sunrise
+  - sensor.sunset
+card:
+  type: custom:apexcharts-card
+  graph_span: 24h
+  header:
+    show: true
+    show_states: true
+    colorize_states: true
+    title: "Solar Flux"
+  span:
+    start: day
+  apex_config:
+    annotations:
+      xaxis:
+        - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+          label:
+            text: ☼
+            borderWidth: 0
+            style:
+              background: "#0000"
+        - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+          label:
+            text: ☾
+            borderWidth: 0
+            style:
+              background: "#0000"
+    tooltip:
+      x:
+        format: "ddd dd MMM - HH:mm"
+    legend:
+      show: false
+    grid:
+      borderColor: "#7B7B7B"
+    chart:
+      height: 300
+      foreColor: "#7B7B7B"
+      zoom:
+        type: x
+        enabled: true
+        autoScaleYaxis: true
+      toolbar:
+        show: true
+        autoSelected: zoom
+        tools:
+          zoom: true
+          zoomin: false
+          zoomout: false
+          pan: false
+          reset: true
+    xaxis:
+      {
+        type: "datetime",
+        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      }
+    yaxis:
+      - seriesName: "kW"
+        decimalsInFloat: 0
+        min: 0
+        title:
+          text: "nW/m2"
+      # - seriesName: Night time
+      #   opposite: true
+      #   show: false
+    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 5] }
+    # fill:
+    #   {
+    #     type: ["gradient", "gradient", "solid"],
+    #     gradient:
+    #       {
+    #         shadeIntensity: 1,
+    #         inverseColors: false,
+    #         opacityFrom: 0.45,
+    #         opacityTo: 0.05,
+    #         stops: [20, 100, 100, 100],
+    #       },
+    #   }
+  all_series_config:
+    stroke_width: 3
+    type: line
+    curve: smooth
+    extend_to: now
+    group_by:
+      func: last
+      duration: 5min
+  series:
+    - entity: sensor.solar_flux_long
+      name: Long
+    - entity: sensor.solar_flux_short
+      name: Short

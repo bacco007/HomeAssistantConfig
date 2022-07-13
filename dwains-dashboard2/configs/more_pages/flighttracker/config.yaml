@@ -1,0 +1,4 @@
+icon: mdi:airplane
+name: Flight Tracker
+show_in_navbar: false
+sort_order: 7

@@ -1,0 +1,25 @@
+# dwains_theme
+
+type: custom:button-card
+name: {{ name }}
+icon: {{ icon }}
+layout: icon_name
+styles:
+  card:
+    - box-shadow: none
+    - padding: 6px 0 0 0
+    - background: transparent
+    - height: 30px
+    - width: 125px
+  name:
+    - color: var(--dwains-theme-accent)
+    - font-weight: bold
+    - justify-self: start
+    - font-size: 16px
+    - padding-left: 1px
+  icon:
+    - opacity: 0.5
+    - color: var(--dwains-theme-accent)
+tap_action:
+  action: navigate
+  navigation_path: "{{ navpath }}"
