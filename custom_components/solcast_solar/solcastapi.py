@@ -44,6 +44,7 @@ class ConnectionOptions:
 
     api_key: str 
     host: str
+    file_path: str
 
 
 class SolcastApi:
@@ -60,7 +61,7 @@ class SolcastApi:
         self._sites = []
         self._data = dict({'forecasts':[], 'energy': {}, 'api_used':0, 'last_updated': dt.now(timezone.utc).replace(year=2000,month=1,day=1).isoformat()})
         self._api_used = 0
-        self._filename = f'solcast.json'
+        self._filename = options.file_path
 
     async def sites_data(self):
         """Request data via the Solcast API."""

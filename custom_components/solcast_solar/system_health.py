@@ -24,8 +24,8 @@ async def system_health_info(hass: HomeAssistant) -> dict[str, Any]:
     used_requests = coordinator.solcast.get_api_used_count()
 
     return {
-        "Solcast server connection": system_health.async_check_can_reach_url(hass, SOLCAST_URL),
-        "API requests remaining": used_requests,
-        "Rooftop site count": len(coordinator.solcast._sites),
-        "Polling hours": f"{coordinator._starthour} till {coordinator._finishhour} and once at midnight",
+        "can_reach_server": system_health.async_check_can_reach_url(hass, SOLCAST_URL),
+        "remaining_requests": used_requests,
+        "rooftop_site_count": len(coordinator.solcast._sites),
+        "polling_hours": f"{coordinator._starthour} -> {coordinator._finishhour} and once at midnight"
     }

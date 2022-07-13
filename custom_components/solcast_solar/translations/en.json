@@ -23,5 +23,14 @@
                 "description": "These values allow tweaking the Solcast Integration."
             }
         }
+    },
+    "system_health": {
+        "info": {
+            "can_reach_server": "Solcast server connection",
+            "remaining_requests": "API requests remaining",
+            "rooftop_site_count": "Rooftop site count",
+            "polling_hours": "Polling hours"
+        }
     }
 }
+

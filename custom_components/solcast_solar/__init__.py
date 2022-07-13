@@ -25,7 +25,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         options = ConnectionOptions(
             entry.options[CONF_API_KEY],
-            SOLCAST_URL
+            SOLCAST_URL,
+            hass.config.path('solcast.json')
         )
 
         solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options)

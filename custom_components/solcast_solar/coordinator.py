@@ -116,10 +116,10 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                         #else its between sun rise and set
                         if self.solcast._sites:
                             #if we have sites to even poll
-                            # if _hournow % 2 == 0: 
-                            #     await self.solcast.force_api_poll(True) #also do the actual past values
-                            # else:
-                            await self.solcast.force_api_poll(False) #just update forecast values
+                            if _hournow % 3 == 0: 
+                                await self.solcast.force_api_poll(True) #also do the actual past values
+                            else:
+                                await self.solcast.force_api_poll(False) #just update forecast values
                                 
             else:
                 _LOGGER.debug("Solcast - API poll called, but did not happen as the last update is less than an hour old")
