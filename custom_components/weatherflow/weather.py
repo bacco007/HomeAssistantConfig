@@ -5,13 +5,13 @@ import logging
 
 from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
-    ATTR_FORECAST_PRECIPITATION,
+    ATTR_FORECAST_NATIVE_PRECIPITATION,
     ATTR_FORECAST_PRECIPITATION_PROBABILITY,
-    ATTR_FORECAST_TEMP,
-    ATTR_FORECAST_TEMP_LOW,
+    ATTR_FORECAST_NATIVE_TEMP,
+    ATTR_FORECAST_NATIVE_TEMP_LOW,
     ATTR_FORECAST_TIME,
     ATTR_FORECAST_WIND_BEARING,
-    ATTR_FORECAST_WIND_SPEED,
+    ATTR_FORECAST_NATIVE_WIND_SPEED,
     Forecast,
     WeatherEntity,
     WeatherEntityDescription,
@@ -128,12 +128,12 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
         return format_condition(getattr(self.forecast_coordinator.data, "icon"))
 
     @property
-    def temperature(self):
+    def native_temperature(self):
         """Return the temperature."""
         return getattr(self.coordinator.data, "air_temperature")
 
     @property
-    def temperature_unit(self):
+    def native_temperature_unit(self):
         """Return the unit of measurement."""
         return TEMP_CELSIUS
 
@@ -143,12 +143,12 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
         return getattr(self.coordinator.data, "relative_humidity")
 
     @property
-    def pressure(self):
+    def native_pressure(self):
         """Return the pressure."""
         return getattr(self.coordinator.data, "sea_level_pressure")
 
     @property
-    def wind_speed(self):
+    def native_wind_speed(self):
         """Return the wind speed."""
         if getattr(self.coordinator.data, "wind_avg") is None:
             return None
@@ -164,7 +164,7 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
         return getattr(self.coordinator.data, "wind_direction")
 
     @property
-    def visibility(self):
+    def native_visibility(self):
         """Return the visibility."""
         return getattr(self.coordinator.data, "visibility")
 
@@ -179,13 +179,13 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
             for item in forecast_data_daily:
                 ha_item = {
                     ATTR_FORECAST_CONDITION: format_condition(item.icon),
-                    ATTR_FORECAST_PRECIPITATION: item.precip,
+                    ATTR_FORECAST_NATIVE_PRECIPITATION: item.precip,
                     ATTR_FORECAST_PRECIPITATION_PROBABILITY: item.precip_probability,
-                    ATTR_FORECAST_TEMP: item.air_temp_high,
-                    ATTR_FORECAST_TEMP_LOW: item.air_temp_low,
+                    ATTR_FORECAST_NATIVE_TEMP: item.air_temp_high,
+                    ATTR_FORECAST_NATIVE_TEMP_LOW: item.air_temp_low,
                     ATTR_FORECAST_TIME: item.utc_time,
                     ATTR_FORECAST_WIND_BEARING: item.wind_direction,
-                    ATTR_FORECAST_WIND_SPEED: item.wind_avg,
+                    ATTR_FORECAST_NATIVE_WIND_SPEED: item.wind_avg,
                 }
                 ha_forecast_day.append(ha_item)
             return ha_forecast_day
@@ -198,13 +198,13 @@ class WeatherFlowWeatherEntity(WeatherFlowEntity, WeatherEntity):
             ha_forecast_hour.append(
                 {
                     ATTR_FORECAST_TIME: item.utc_time,
-                    ATTR_FORECAST_TEMP: item.air_temperature,
-                    ATTR_FORECAST_PRECIPITATION: item.precip,
+                    ATTR_FORECAST_NATIVE_TEMP: item.air_temperature,
+                    ATTR_FORECAST_NATIVE_PRECIPITATION: item.precip,
                     ATTR_FORECAST_PRECIPITATION_PROBABILITY: item.precip_probability,
                     ATTR_FORECAST_CONDITION: format_condition(item.icon),
-                    ATTR_FORECAST_WIND_SPEED: item.wind_avg,
-                    ATTR_FORECAST_WIND_GUST: item.wind_gust,
+                    ATTR_FORECAST_NATIVE_WIND_SPEED: item.wind_avg,
                     ATTR_FORECAST_WIND_BEARING: item.wind_direction,
+                    ATTR_FORECAST_WIND_GUST: item.wind_gust,
                     ATTR_FORECAST_FEELS_LIKE: item.feels_like,
                     ATTR_FORECAST_UV: item.uv,
                 }
