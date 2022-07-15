@@ -1,0 +1,407 @@
+substitutions:
+  esp_name: "waveshare_75_eink"
+  ip_address: 192.168.1.105
+  ip_gw: 192.168.1.1
+  ip_netmask: 255.255.255.0
+
+esphome:
+  name: ${esp_name}
+  comment: ${esp_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/atomicmike/esphome.git
+      ref: waveshare-color-2022.6
+    components: [waveshare_epaper]
+
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: ${ip_address}
+    gateway: ${ip_gw}
+    subnet: ${ip_netmask}
+  ap:
+    ssid: ${esp_name} Fallback"
+    password: !secret ap_password
+
+captive_portal:
+
+web_server:
+  port: 80
+  include_internal: true
+
+time:
+  - platform: homeassistant
+    id: ntp
+    on_time_sync:
+      - then:
+        - component.update: sunrise
+        - component.update: sunset
+
+sun:
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude 
+
+switch:
+  - platform: restart
+    name: "${esp_name} Restart"
+    id: restartesp
+
+  - platform: gpio
+    id: statusLED
+    name: "${esp_name} Status LED"
+    pin:
+      number: GPIO2
+      mode: OUTPUT
+    restore_mode: ALWAYS_OFF
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "${esp_name} IP Address"
+      id: ip_address
+      icon: "mdi:server-network"
+      entity_category: diagnostic
+    ssid:
+      name: "${esp_name} Connected SSID"
+      id: ssid
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    bssid:
+      name: "${esp_name} Connected BSSID"
+      id: bssid
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    mac_address:
+      name: "${esp_name} WiFi Mac Address"
+      id: macaddress
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    scan_results:
+      name: "${esp_name} Latest Scan Results"
+      id: wifiscanresults
+      icon: mdi:wifi
+      entity_category: diagnostic
+
+  - platform: template
+    name: "${esp_name} Uptime"
+    id: uptime_human
+    icon: mdi:clock-start
+
+  - platform: version
+    name: "${esp_name} ESPHome Version"
+    entity_category: diagnostic
+    hide_timestamp: true
+    
+  - platform: sun
+    id: sunrise
+    name: Sun Next Sunrise
+    type: sunrise
+    format: "%H:%M"
+    internal: true
+    update_interval: never
+  
+  - platform: sun
+    id: sunset
+    name: Sun Next Sunset
+    type: sunset
+    format: "%H:%M"    
+    internal: true
+    update_interval: never    
+    
+  # media
+  - platform: homeassistant
+    entity_id: media_player.office_sonos
+    attribute: media_title
+    id: sonos_title
+    on_value: # Redraw every time data changes
+      - component.update: "${esp_name}_display"
+  - platform: homeassistant
+    entity_id: media_player.office_sonos
+    attribute: media_artist
+    id: sonos_artist
+
+  - platform: homeassistant
+    id: apple_tv_title
+    entity_id: media_player.apple_tv_bedroom
+    attribute: media_title
+  - platform: homeassistant
+    id: apple_tv_artist
+    entity_id: media_player.apple_tv_bedroom
+    attribute: media_artist
+
+sensor:
+  - platform: wifi_signal
+    id: sensor_wifi_signal
+    name: "${esp_name} WiFi"
+    update_interval: 60s
+    on_value:
+      - component.update: sensor_wifi_signal_percentage
+
+  - platform: template
+    id: sensor_wifi_signal_percentage
+    name: "${esp_name} Wi-Fi Signal Percentage"
+    icon: "mdi:wifi"
+    unit_of_measurement: "%"
+    update_interval: never
+    lambda: |-
+      if (id(sensor_wifi_signal).state) {
+        if (id(sensor_wifi_signal).state <= -100 ) {
+          return 0;
+        } else if (id(sensor_wifi_signal).state >= -50) {
+          return 100;
+        } else {
+          return 2 * (id(sensor_wifi_signal).state + 100);
+        }
+      } else {
+        return NAN;
+      }
+  - platform: homeassistant
+    id: temperature
+    entity_id: sensor.tempest_st_00056115_temperature
+    on_value: # Redraw every time data changes
+      - component.update: "${esp_name}_display"
+
+  - platform: homeassistant
+    id: max_temp
+    entity_id: sensor.tempest_st_00056115_temperature
+    attribute: max_day
+
+  - platform: homeassistant
+    id: min_temp
+    entity_id: sensor.tempest_st_00056115_temperature
+    attribute: min_day
+
+  - platform: homeassistant
+    id: rainfall
+    entity_id: sensor.tempest_st_00056115_rain_today
+
+  - platform: uptime
+    name: Uptime Sensor
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? to_string(days) + "d " : "") +
+                (hours ? to_string(hours) + "h " : "") +
+                (minutes ? to_string(minutes) + "m " : "") +
+                (to_string(seconds) + "s")
+              ).c_str();
+
+font:
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 700
+    id: din_big
+    size: 30
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 700
+    id: din_med
+    size: 20
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 500
+    id: text_20
+    size: 20
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 500
+    id: text_current_temp
+    size: 35
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"    
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 700
+    id: text_25_bold
+    size: 15
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 600
+    id: text_footer
+    size: 20
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
+  - file:
+      type: gfonts
+      family: Red Hat Text
+      weight: 700
+    id: din_small_bold
+    size: 5
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
+
+  # https://pictogrammers.github.io/@mdi/font/5.3.45/
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_icons
+    size: 40
+    glyphs:
+      - "\U000F0384" # MusicBox
+      - "\U000F0502" # TVbox
+      - "\U000F0510" # temp
+      - "\U000F059D" # wind
+      - "\U000F059B" # sunset
+      - "\U000F059C" # sunrise
+      - "\U000F0E02" # Thermo Down
+      - "\U000F0E03" # Thermo Up
+      - "\U000F050F" # Temp
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_icons_temp
+    size: 50
+    glyphs:
+      - "\U000F050F" # Temp      
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_wifi
+    size: 20
+    glyphs:
+      - "\U000F091F"
+      - "\U000F0922"
+      - "\U000F0925"
+      - "\U000F0928"
+      - "\U000F092B"
+
+color:
+  - id: COLOR_RED
+    red: 100%
+    green: 0%
+    blue: 0%
+    white: 0%
+spi:
+  clk_pin: GPIO13
+  mosi_pin: GPIO14
+
+display:
+  - platform: waveshare_epaper
+    cs_pin: GPIO15
+    dc_pin: GPIO27
+    busy_pin: GPIO25
+    reset_pin: GPIO26
+    model: 7.50inv2b
+    id: "${esp_name}_display"
+    update_interval: never
+    # reset_duration: 2ms
+    lambda: |-
+    
+      int xres = it.get_width(); 
+      int yres = it.get_height();
+      #define x_pad 10 // border padding
+      #define y_pad 10 // border padding
+      
+      #define y1 y_pad
+      #define y2 ((yres-10)/4 * 1)
+      #define y3 ((yres-10)/4 * 2)
+      #define y4 ((yres-10)/4 * 3)
+      #define val_pad 60 // padding before value
+      #define x1 x_pad // x position 1st column name
+      #define x2 ((xres/4) * 1) // x position 2nd column name
+      #define x3 ((xres/4) * 2) // x position 3rd column name
+      #define x4 ((xres/4) * 3) // x position 3rd column name
+    
+      it.fill(COLOR_OFF);
+      it.printf(20, 5, id(din_big), COLOR_RED, "Heading");
+      it.rectangle(2, 2, xres-4, yres-4);
+
+      //it.printf(x1, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0384");
+      //it.printf(x1, y2+20, id(text_25_bold), "%s", id(sonos_title).state.c_str());
+      //it.printf(x1, y2+30, id(text_20), "%s", id(sonos_artist).state.c_str());  
+
+      //it.printf(70, 212, id(font_icons), TextAlign::CENTER_RIGHT, ICON_tv);
+      //it.printf(70, 188, id(text_25_bold), "%s", id(apple_tv_title).state.c_str());
+      //it.printf(70, 212, id(text_20), "%s", id(apple_tv_artist).state.c_str());    
+
+      it.print(x1, y2, id(din_med), COLOR_RED, TextAlign::BASELINE_LEFT, "Current Temp");
+      it.printf(x1, y2+65, id(font_icons_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "\U000F050F");
+      it.printf(x1+45, y2+55, id(text_current_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "%.1f°C", id(temperature).state); 
+      it.print(x2, y2, id(din_med), TextAlign::BASELINE_LEFT, "Temp Today");
+      it.printf(x2, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E03"); 
+      it.printf(x2+45, y2+32, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(max_temp).state);  
+      it.printf(x2, y2+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E02"); 
+      it.printf(x2+45, y2+72, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(min_temp).state);         
+      it.print(x3, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
+      it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");        
+      
+      it.print(x1, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
+      it.print(x2, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
+      it.print(x3, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
+      it.print(x4, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
+      
+      it.print(x1, y4, id(din_med), TextAlign::BASELINE_LEFT, "Sun");
+      it.printf(x1, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059C"); 
+      it.printf(x1+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunrise).state.c_str());  
+      it.printf(x1, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059B"); 
+      it.printf(x1+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunset).state.c_str());        
+      it.print(x2, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
+      it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510"); 
+      it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(min_temp).state);  
+      it.print(x3, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");     
+      it.printf(x3, y4 + 40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510"); 
+      it.printf(x3+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(max_temp).state);  
+
+      // Footer
+      it.filled_rectangle(0, yres-30, xres, yres);
+      it.strftime(x_pad, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_LEFT, "%A %d %b %Y", id(ntp).now());
+      it.strftime(xres/2, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_CENTER, "Updated %H:%M", id(ntp).now());
+      
+      int wifi_x_a = xres-x_pad;
+      int wifi_y_a = yres-y_pad+2;
+
+      // WiFi Signal Strength
+
+      if (id(sensor_wifi_signal).has_state()) {
+        if (id(sensor_wifi_signal).state >= -50) {
+          //Excellent
+          it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤨");
+          ESP_LOGI("WiFi", "Excellent");
+        } else if (id(sensor_wifi_signal).state >= -60) {
+          //Good
+          it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤥");
+          ESP_LOGI("WiFi", "Good");
+        } else if (id(sensor_wifi_signal).state >= -67) {
+          //Fair
+          it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤢");
+          ESP_LOGI("WiFi", "Fair");
+        } else if (id(sensor_wifi_signal).state >= -70) {
+          //Weak
+          it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤟");
+          ESP_LOGI("WiFi", "Weak");
+        } else {
+          //Unlikely working signal
+          it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤫");
+          ESP_LOGI("WiFi", "Unlikely");
+        }
+      }            

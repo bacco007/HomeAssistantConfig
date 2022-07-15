@@ -12,6 +12,13 @@ esp32:
   framework:
     type: arduino
 
+external_components:
+  - source:
+      type: git
+      url: https://github.com/atomicmike/esphome.git
+      ref: waveshare-color-2022.6
+    components: [waveshare_epaper]
+
 logger:
 
 # Enable Home Assistant API
@@ -40,15 +47,15 @@ web_server:
 
 time:
   - platform: homeassistant
-    timezone: Australia/Sydney  
+    timezone: Australia/Sydney
     id: current_time
     on_time_sync:
       - component.update: uptime_timestamp
-    
+
 switch:
   - platform: restart
-    name: "${esp_name} Restart"    
-    
+    name: "${esp_name} Restart"
+
 text_sensor:
   - platform: wifi_info
     ip_address:
@@ -70,12 +77,12 @@ text_sensor:
   - platform: template
     name: "${esp_name} Uptime"
     id: uptime_human
-    icon: mdi:clock-start    
+    icon: mdi:clock-start
 
   - platform: version
     name: "${esp_name} ESPHome Version"
     entity_category: diagnostic
-    
+
 sensor:
   - platform: uptime
     name: "${esp_name} Uptime Sec"
@@ -86,7 +93,6 @@ sensor:
     name: "${esp_name} WiFi Signal"
     id: wifisignal
     update_interval: 60s
-  
 
   - platform: template
     id: uptime_timestamp
@@ -98,13 +104,32 @@ sensor:
       static float timestamp = (
         id(current_time).utcnow().timestamp - id(uptime_sec).state
       );
-      return timestamp;    
-    
+      return timestamp;
+
 font:
   - file: "fonts/GoogleSans-Medium.ttf"
     id: main_sensor_unit
     size: 35
+  - file: "fonts/GoogleSans-Bold.ttf"
+    id: font_small_bold
+    size: 18
 
+color:
+  - id: color_black
+    red: 0%
+    green: 0%
+    blue: 0%
+    white: 50%
+  - id: color_white
+    red: 0%
+    green: 0%
+    blue: 0%
+    white: 0%
+  - id: color_red
+    red: 100%
+    green: 0%
+    blue: 0%
+    white: 0%
 spi:
   clk_pin: GPIO13
   mosi_pin: GPIO14
@@ -115,10 +140,12 @@ display:
     dc_pin: GPIO27
     busy_pin: GPIO25
     reset_pin: GPIO26
-    model: 7.50in-bV2
-    update_interval: 10s
+    model: 7.50inV2
+    update_interval: 1min
     reset_duration: 2ms
     rotation: 90°
     lambda: |-
+      it.fill(color_black);
       it.print(10,10,id(main_sensor_unit), "Hello, World!");
-      
+      it.print(150, 536, id(font_small_bold), color_white, TextAlign::TOP_CENTER, "TO MANHATTAN");
+      it.print(330, 536, id(font_small_bold), color_white, TextAlign::TOP_CENTER, "TO CANARSIE");

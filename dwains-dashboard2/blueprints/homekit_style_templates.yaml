@@ -1,9 +1,0 @@
-blueprint:
-  custom_cards:
-  - button-card
-  description: Homekit Style Templates for Custom Button Cards by Bourner
-  name: Homekit Style Templates
-  type: templates
-  version: '1.0'
-card:
-  type: custom:button-card
