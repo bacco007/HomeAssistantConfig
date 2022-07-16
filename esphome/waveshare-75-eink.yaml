@@ -7,6 +7,17 @@ substitutions:
 esphome:
   name: ${esp_name}
   comment: ${esp_name}
+  includes:
+    - common.h
+  on_boot:
+    priority: -100
+    then:
+      - wait_until:
+          sensor.in_range:
+            id: temperature
+            above: -100
+      - delay: 2s
+      - component.update: "${esp_name}_display"
 
 esp32:
   board: esp32dev
@@ -57,6 +68,34 @@ time:
 sun:
   latitude: !secret home_latitude
   longitude: !secret home_longitude 
+
+globals:
+  - id: updates_since_refresh
+    restore_value: yes
+    initial_value: "0"
+    type: int
+
+# script:
+#   - id: refresh_display
+#     then:
+#       - component.update: "${esp_name}_display"
+#       - lambda: id(updates_since_refresh) = 0;
+
+#   - id: updates
+#     then:
+#       - if: 
+#           condition:
+#             lambda: return id(updates_since_refresh) >= 2;
+#           then:
+#             - script.execute: refresh_display
+
+button:
+  - platform: template
+    name: "${esp_name} Refresh"
+    icon: "mdi:update"
+    on_press:
+      then:
+      - component.update: "${esp_name}_display"
 
 switch:
   - platform: restart
@@ -124,28 +163,80 @@ text_sensor:
     format: "%H:%M"    
     internal: true
     update_interval: never    
+
+  - platform: homeassistant
+    entity_id: sun.sun
+    id: hasun
+    internal: true
+  - platform: homeassistant
+    entity_id: sensor.moon
+    id: moon
+    internal: true
     
   # media
   - platform: homeassistant
-    entity_id: media_player.office_sonos
-    attribute: media_title
-    id: sonos_title
+    entity_id: sensor.e_ink_display_data
+    attribute: media_playing_status
+    id: media_status
     on_value: # Redraw every time data changes
       - component.update: "${esp_name}_display"
+      # - lambda: |-
+      #     id(updates_since_refresh)++;
   - platform: homeassistant
-    entity_id: media_player.office_sonos
-    attribute: media_artist
-    id: sonos_artist
+    entity_id: sensor.e_ink_display_data
+    attribute: media_playing_title
+    id: media_title
+    on_value: # Redraw every time data changes
+      - component.update: "${esp_name}_display"
+      # - lambda: |-
+      #     id(updates_since_refresh)++;
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: media_playing_artist
+    id: media_artist
 
   - platform: homeassistant
-    id: apple_tv_title
-    entity_id: media_player.apple_tv_bedroom
-    attribute: media_title
+    id: condition
+    entity_id: sensor.e_ink_display_data
+    attribute: current_weather_condition
+    on_value: # Redraw every time data changes
+      - component.update: "${esp_name}_display"
+      # - lambda: |-
+      #     id(updates_since_refresh)++;    
+          
   - platform: homeassistant
-    id: apple_tv_artist
-    entity_id: media_player.apple_tv_bedroom
-    attribute: media_artist
-
+    entity_id: sensor.e_ink_display_data
+    attribute: forecast_day1
+    id: forecast1  
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: forecast_day2
+    id: forecast2  
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: forecast_day3
+    id: forecast3  
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: forecast_day4
+    id: forecast4  
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: forecast_day5
+    id: forecast5  
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: forecast_day6
+    id: forecast6  
+  - platform: homeassistant
+    entity_id: sensor.e_ink_display_data
+    attribute: greeting
+    id: greeting
+    on_value: # Redraw every time data changes
+      - component.update: "${esp_name}_display"
+      # - lambda: |-
+      #     id(updates_since_refresh)++;
+    
 sensor:
   - platform: wifi_signal
     id: sensor_wifi_signal
@@ -172,26 +263,7 @@ sensor:
       } else {
         return NAN;
       }
-  - platform: homeassistant
-    id: temperature
-    entity_id: sensor.tempest_st_00056115_temperature
-    on_value: # Redraw every time data changes
-      - component.update: "${esp_name}_display"
-
-  - platform: homeassistant
-    id: max_temp
-    entity_id: sensor.tempest_st_00056115_temperature
-    attribute: max_day
-
-  - platform: homeassistant
-    id: min_temp
-    entity_id: sensor.tempest_st_00056115_temperature
-    attribute: min_day
-
-  - platform: homeassistant
-    id: rainfall
-    entity_id: sensor.tempest_st_00056115_rain_today
-
+      
   - platform: uptime
     name: Uptime Sensor
     id: uptime_sensor
@@ -214,59 +286,126 @@ sensor:
                 (minutes ? to_string(minutes) + "m " : "") +
                 (to_string(seconds) + "s")
               ).c_str();
+  
+  ## Data from Home Assistant      
+  - platform: homeassistant
+    id: temperature
+    entity_id: sensor.e_ink_display_data
+    attribute: home_temperature
+    on_value: # Redraw every time data changes
+      - component.update: "${esp_name}_display"
+      # - lambda: |-
+      #     id(updates_since_refresh)++;
+
+  - platform: homeassistant
+    id: max_temp
+    entity_id: sensor.e_ink_display_data
+    attribute: home_temperature_max
+
+  - platform: homeassistant
+    id: min_temp
+    entity_id: sensor.e_ink_display_data
+    attribute: home_temperature_min
+
+  - platform: homeassistant
+    id: rainfall
+    entity_id: sensor.e_ink_display_data
+    attribute: home_rainfall_today
+
+  - platform: homeassistant
+    id: rainfall_week
+    entity_id: sensor.e_ink_display_data
+    attribute: home_rainfall_week
+
+  - platform: homeassistant
+    id: rainfall_month
+    entity_id: sensor.e_ink_display_data
+    attribute: home_rainfall_month
+
+  - platform: homeassistant
+    id: rainfall_year
+    entity_id: sensor.e_ink_display_data
+    attribute: home_rainfall_year
 
 font:
   - file:
       type: gfonts
-      family: Red Hat Text
+      family: Red Hat Display
       weight: 700
     id: din_big
     size: 30
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
   - file:
       type: gfonts
-      family: Red Hat Text
-      weight: 700
+      family: Red Hat Display
+      weight: 900
     id: din_med
     size: 20
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
   - file:
       type: gfonts
-      family: Red Hat Text
-      weight: 500
+      family: Red Hat Display
+      weight: 700
     id: text_20
     size: 20
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
   - file:
       type: gfonts
-      family: Red Hat Text
-      weight: 500
+      family: Red Hat Display
+      weight: 700
+    id: text_forecast
+    size: 20
+    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"    
+  - file:
+      type: gfonts
+      family: Red Hat Display
+      weight: 700
     id: text_current_temp
     size: 35
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"    
   - file:
       type: gfonts
-      family: Red Hat Text
+      family: Red Hat Display
       weight: 700
     id: text_25_bold
     size: 15
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
   - file:
       type: gfonts
-      family: Red Hat Text
-      weight: 600
+      family: Red Hat Display
+      weight: 800
     id: text_footer
     size: 20
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
   - file:
       type: gfonts
-      family: Red Hat Text
+      family: Red Hat Display
       weight: 700
     id: din_small_bold
     size: 5
     glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
 
   # https://pictogrammers.github.io/@mdi/font/5.3.45/
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: font_icons_large
+    size: 75
+    glyphs:
+      - "\U000F0594" # clear-night
+      - "\U000F0590" # cloudy
+      - "\U000F0591" # fog
+      - "\U000F0592" # hail
+      - "\U000F0593" # lightning
+      - "\U000F067E" # lightning-rainy
+      - "\U000F0F31" # night-partly-cloudy
+      - "\U000F0595" # partly-cloudy
+      - "\U000F0596" # pouring
+      - "\U000F0597" # rainy
+      - "\U000F0F36" # snowy
+      - "\U000F067F" # snowy-rainy
+      - "\U000F0599" # sunny
+      - "\U000F059D" # windy
+      - "\U000F059E" # windy-variant
+      - "\U000F0F38" # exCentereptional
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons
     size: 40
@@ -280,6 +419,10 @@ font:
       - "\U000F0E02" # Thermo Down
       - "\U000F0E03" # Thermo Up
       - "\U000F050F" # Temp
+      - "\U000F04DB" # stop
+      - "\U000F040A" # play
+      - "\U000F03E4" # pause   
+      - "\U000F0597" # rainy   
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons_temp
     size: 50
@@ -313,8 +456,8 @@ display:
     reset_pin: GPIO26
     model: 7.50inv2b
     id: "${esp_name}_display"
-    update_interval: never
-    # reset_duration: 2ms
+    update_interval: 5min
+    #reset_duration: 2ms
     lambda: |-
     
       int xres = it.get_width(); 
@@ -331,21 +474,31 @@ display:
       #define x2 ((xres/4) * 1) // x position 2nd column name
       #define x3 ((xres/4) * 2) // x position 3rd column name
       #define x4 ((xres/4) * 3) // x position 3rd column name
+      
+      int wifi_x_a = xres-x_pad;
+      int wifi_y_a = yres-y_pad+2;
     
       it.fill(COLOR_OFF);
-      it.printf(20, 5, id(din_big), COLOR_RED, "Heading");
+      it.printf(20, 5, id(din_big), COLOR_RED, id(greeting).state.c_str());
       it.rectangle(2, 2, xres-4, yres-4);
+      
+      auto playing = id(media_status).state == "playing";
+      auto paused = id(media_status).state == "paused";
+      auto mediaIcon = playbackStatusToIcon(playing, paused);
+      it.printf(x1, y1+70, id(font_icons), TextAlign::BASELINE_LEFT, mediaIcon.c_str()); 
+      if (playing || paused) {
+        it.printf(x1+45, y1+55, id(din_med), TextAlign::BASELINE_LEFT, "%s", id(media_artist).state.c_str());
+        it.printf(x1+45, y1+75, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(media_title).state.c_str());
+      } else {
+        it.printf(x1+45, y1+65, id(text_20), TextAlign::BASELINE_LEFT, "Nothing Playing");
+      }
 
-      //it.printf(x1, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0384");
-      //it.printf(x1, y2+20, id(text_25_bold), "%s", id(sonos_title).state.c_str());
-      //it.printf(x1, y2+30, id(text_20), "%s", id(sonos_artist).state.c_str());  
-
-      //it.printf(70, 212, id(font_icons), TextAlign::CENTER_RIGHT, ICON_tv);
-      //it.printf(70, 188, id(text_25_bold), "%s", id(apple_tv_title).state.c_str());
-      //it.printf(70, 212, id(text_20), "%s", id(apple_tv_artist).state.c_str());    
+      auto dayTime = id(hasun).state == "above_horizon";
+      auto conditionIcon = conditionToIcon(id(condition).state, dayTime);
+      it.printf(xres - x_pad, 40, id(font_icons_large), TextAlign::CENTER_RIGHT, conditionIcon.c_str());
 
       it.print(x1, y2, id(din_med), COLOR_RED, TextAlign::BASELINE_LEFT, "Current Temp");
-      it.printf(x1, y2+65, id(font_icons_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "\U000F050F");
+      it.printf(x1-5, y2+65, id(font_icons_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "\U000F050F");
       it.printf(x1+45, y2+55, id(text_current_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "%.1f°C", id(temperature).state); 
       it.print(x2, y2, id(din_med), TextAlign::BASELINE_LEFT, "Temp Today");
       it.printf(x2, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E03"); 
@@ -353,12 +506,24 @@ display:
       it.printf(x2, y2+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E02"); 
       it.printf(x2+45, y2+72, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(min_temp).state);         
       it.print(x3, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
-      it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");        
+      it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Rainfall"); 
+      it.printf(x4, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0597");
+      it.printf(x4+45, y2+30, id(text_20), TextAlign::BASELINE_LEFT, "T: %.2fmm", id(rainfall).state);  
+      it.printf(x4+45, y2+50, id(text_20), TextAlign::BASELINE_LEFT, "W: %.2fmm", id(rainfall).state);  
+      it.printf(x4+45, y2+70, id(text_20), TextAlign::BASELINE_LEFT, "M: %.2fmm", id(rainfall).state);  
+      it.printf(x4+45, y2+90, id(text_20), TextAlign::BASELINE_LEFT, "Y: %.2fmm", id(rainfall).state);       
       
       it.print(x1, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
       it.print(x2, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-      it.print(x3, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
-      it.print(x4, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
+      it.print(x3, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading"); 
+      
+      it.print(x4, y3, id(din_med), TextAlign::BASELINE_LEFT, "Forecast");  
+      it.printf(x4+5, y3+25, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast1).state.c_str());  
+      it.printf(x4+5, y3+50, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast2).state.c_str());  
+      it.printf(x4+5, y3+75, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast3).state.c_str());   
+      it.printf(x4+5, y3+100, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast4).state.c_str());   
+      it.printf(x4+5, y3+125, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast5).state.c_str());  
+      it.printf(x4+5, y3+150, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast6).state.c_str());
       
       it.print(x1, y4, id(din_med), TextAlign::BASELINE_LEFT, "Sun");
       it.printf(x1, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059C"); 
@@ -375,13 +540,9 @@ display:
       // Footer
       it.filled_rectangle(0, yres-30, xres, yres);
       it.strftime(x_pad, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_LEFT, "%A %d %b %Y", id(ntp).now());
-      it.strftime(xres/2, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_CENTER, "Updated %H:%M", id(ntp).now());
+      it.strftime(xres/2, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_CENTER, "Last Update %H:%M", id(ntp).now());
       
-      int wifi_x_a = xres-x_pad;
-      int wifi_y_a = yres-y_pad+2;
-
       // WiFi Signal Strength
-
       if (id(sensor_wifi_signal).has_state()) {
         if (id(sensor_wifi_signal).state >= -50) {
           //Excellent

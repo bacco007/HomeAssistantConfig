@@ -70,6 +70,7 @@ std::string conditionToIcon(std::string condition, bool daytime)
   if (condition == "lightning") return ICON_w_lightning;
   if (condition == "lightning-rainy") return ICON_w_lightning_rainy;
   if (condition == "mostly_sunny") return ICON_w_sunny;
+  if (condition == "night") return ICON_w_clear_night;
   if (condition == "partlycloudy" && !daytime) return ICON_w_night_partly_cloudy;
   if (condition == "partlycloudy" && daytime) return ICON_w_partly_cloudy;
   if (condition == "partly_cloudy" && !daytime) return ICON_w_night_partly_cloudy;

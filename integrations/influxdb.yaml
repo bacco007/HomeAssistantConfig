@@ -41,6 +41,7 @@ influxdb:
       - sensor.adsb_fa_feeder
       - sensor.udm_unifios
       - sensor.adsb_aircraft_tracked
+      - sensor.e_ink_display_data
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
