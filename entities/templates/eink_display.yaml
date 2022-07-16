@@ -1,3 +1,4 @@
+---
 trigger:
   platform: time_pattern
   minutes: "/1"
@@ -5,7 +6,7 @@ sensor:
   - name: e-ink Display Data
     unique_id: e_ink_display_data
     icon: ios:display-2
-    availability: True
+    availability: true
     state: "OK"
     attributes:
       greeting: >
