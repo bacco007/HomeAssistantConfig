@@ -335,14 +335,14 @@ live_tile_media_player:
       - grid-template-columns: auto min-content
     state:
       - padding-right: |-
-          [[[ 
+          [[[
             if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
               return "50%"
             } else { return 0 }
           ]]]
     label:
       - padding-right: |-
-          [[[ 
+          [[[
             if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
               return "50%"
             } else { return 0 }
@@ -356,7 +356,7 @@ live_tile_media_player:
     custom_fields:
       picture:
         - background: |-
-            [[[ 
+            [[[
               if (entity.attributes.entity_picture != undefined) {
                 return "url(" + entity.attributes.entity_picture + ")"
               } else if (entity.attributes.entity_picture_local != undefined) {
@@ -368,7 +368,7 @@ live_tile_media_player:
         - position: absolute
         - right: 16px
         - width: |-
-            [[[ 
+            [[[
               if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
                 return "calc( 50% - 32px )"
               } else { return 0 }
