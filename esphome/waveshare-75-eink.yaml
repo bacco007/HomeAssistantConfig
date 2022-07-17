@@ -186,8 +186,8 @@ text_sensor:
     entity_id: sensor.e_ink_display_data
     attribute: media_playing_title
     id: media_title
-    on_value: # Redraw every time data changes
-      - component.update: "${esp_name}_display"
+    # on_value: # Redraw every time data changes
+    #   - component.update: "${esp_name}_display"
       # - lambda: |-
       #     id(updates_since_refresh)++;
   - platform: homeassistant
@@ -457,7 +457,7 @@ display:
     model: 7.50inv2b
     id: "${esp_name}_display"
     update_interval: 5min
-    #reset_duration: 2ms
+    reset_duration: 2ms
     lambda: |-
     
       int xres = it.get_width(); 
@@ -509,9 +509,9 @@ display:
       it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Rainfall"); 
       it.printf(x4, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0597");
       it.printf(x4+45, y2+30, id(text_20), TextAlign::BASELINE_LEFT, "T: %.2fmm", id(rainfall).state);  
-      it.printf(x4+45, y2+50, id(text_20), TextAlign::BASELINE_LEFT, "W: %.2fmm", id(rainfall).state);  
-      it.printf(x4+45, y2+70, id(text_20), TextAlign::BASELINE_LEFT, "M: %.2fmm", id(rainfall).state);  
-      it.printf(x4+45, y2+90, id(text_20), TextAlign::BASELINE_LEFT, "Y: %.2fmm", id(rainfall).state);       
+      it.printf(x4+45, y2+50, id(text_20), TextAlign::BASELINE_LEFT, "W: %.2fmm", id(rainfall_week).state);  
+      it.printf(x4+45, y2+70, id(text_20), TextAlign::BASELINE_LEFT, "M: %.2fmm", id(rainfall_month).state);  
+      it.printf(x4+45, y2+90, id(text_20), TextAlign::BASELINE_LEFT, "Y: %.2fmm", id(rainfall_year).state);       
       
       it.print(x1, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
       it.print(x2, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");

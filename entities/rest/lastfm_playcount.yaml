@@ -1,0 +1,8 @@
+---
+resource: !secret lastfm_user_playcount
+sensor:
+  name: lastfm_user_playcount
+  value_template: >
+    {{ value_json.user.playcount}}
+  unit_of_measurement: Songs
+scan_interval: 10

@@ -306,8 +306,8 @@ live_tile_media_player:
     [[[
       if (entity.attributes.media_content_type != undefined) {
         if (entity.attributes.media_content_type == "music") {
-          if (entity.attributes.media_artist && entity.attributes.media_album_name) {
-            return entity.attributes.media_artist + "<br>" + entity.attributes.media_album_name
+          if (entity.attributes.media_artist) {
+            return entity.attributes.media_artist
             }
         } else if (entity.attributes.media_content_type == "tvshow") {
           if (entity.attributes.media_series_title) { return entity.attributes.media_series_title }
