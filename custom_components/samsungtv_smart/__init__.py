@@ -4,6 +4,7 @@ from __future__ import annotations
 from aiohttp import ClientConnectionError, ClientSession, ClientResponseError
 import asyncio
 import async_timeout
+from collections.abc import Iterable
 import logging
 import os
 from pathlib import Path
@@ -140,11 +141,29 @@ def tv_url(host: str, address: str = "") -> str:
     return f"http://{host}:8001/api/v2/{address}"
 
 
-def is_valid_ha_version():
+def is_min_ha_version(min_ha_major_ver: int, min_ha_minor_ver: int) -> bool:
+    """Check if HA version at least a specific version."""
     return (
-        MAJOR_VERSION > MIN_HA_MAJ_VER or
-        (MAJOR_VERSION == MIN_HA_MAJ_VER and MINOR_VERSION >= MIN_HA_MIN_VER)
+        MAJOR_VERSION > min_ha_major_ver or
+        (MAJOR_VERSION == min_ha_major_ver and MINOR_VERSION >= min_ha_minor_ver)
     )
+
+
+async def async_setup_entity_platforms(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    platforms: Iterable[Platform | str],
+) -> None:
+    """Set up entity platforms using new method from HA version 2022.8."""
+    if is_min_ha_version(2022, 8):
+        await hass.config_entries.async_forward_entry_setups(config_entry, platforms)
+    else:
+        hass.config_entries.async_setup_platforms(config_entry, platforms)
+
+
+def is_valid_ha_version() -> bool:
+    """Check if HA version is valid for this integration."""
+    return is_min_ha_version(MIN_HA_MAJ_VER, MIN_HA_MIN_VER)
 
 
 def _notify_error(hass, notification_id, title, message):
@@ -477,7 +496,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {}).setdefault(entry.entry_id, {})
     hass.data[DOMAIN][entry.entry_id][DATA_OPTIONS] = entry.options.copy()
 
-    hass.config_entries.async_setup_platforms(entry, [Platform.MEDIA_PLAYER])
+    await async_setup_entity_platforms(hass, entry, [Platform.MEDIA_PLAYER])
 
     return True
 
