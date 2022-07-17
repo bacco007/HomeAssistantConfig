@@ -8,13 +8,17 @@ from haffmpeg.camera import CameraMjpeg
 from haffmpeg.tools import ImageFrame
 import voluptuous as vol
 
-from homeassistant.components.camera import SUPPORT_ON_OFF, SUPPORT_STREAM, Camera
+from homeassistant.components.camera import SUPPORT_ON_OFF, SUPPORT_STREAM, Camera, CameraEntityFeature
 from homeassistant.components.camera.const import STREAM_TYPE_HLS
 from homeassistant.components.ffmpeg import DATA_FFMPEG
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_platform
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.aiohttp_client import (
+    async_aiohttp_proxy_stream,
+    async_get_clientsession,
+)
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.event import async_call_later
@@ -68,6 +72,11 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 ALARM_TRIGGER_SCHEMA = make_entity_service_schema({vol.Required("duration"): cv.Number})
 
 
+QUICK_RESPONSE_SCHEMA = make_entity_service_schema(
+    {vol.Required("voice_id"): cv.Number}
+)
+
+
 async def async_setup_entry(
     hass: HomeAssistant, config_entry: ConfigEntry, async_add_devices
 ):
@@ -116,9 +125,12 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "reset_alarm_for_camera", {}, "async_reset_alarm"
     )
+    platform.async_register_entity_service(
+        "quick_response", QUICK_RESPONSE_SCHEMA, "async_quick_response"
+    )
 
 
-class EufySecurityCamera(EufySecurityEntity, Camera):
+class EufySecurityCamera(Camera, EufySecurityEntity):
     def __init__(
         self,
         coordinator: EufySecurityDataUpdateCoordinator,
@@ -130,6 +142,12 @@ class EufySecurityCamera(EufySecurityEntity, Camera):
 
         self.device.set_streaming_status_callback(self.set_is_streaming)
         self._attr_frontend_stream_type = STREAM_TYPE_HLS
+        self._attr_supported_features = CameraEntityFeature.STREAM
+        self._attr_name = self.device.name
+        self._attr_id = f"{DOMAIN}_{self.device.serial_number}_camera"
+        self._attr_unique_id = self._attr_id
+        self._attr_brand = NAME
+        self._attr_model = self.device.model
 
         # camera image
         self.picture_bytes = None
@@ -141,6 +159,7 @@ class EufySecurityCamera(EufySecurityEntity, Camera):
 
         # video generation using ffmpeg for p2p
         self.ffmpeg_binary = self.coordinator.hass.data[DATA_FFMPEG].binary
+        self.ffmpeg_content_type = self.coordinator.hass.data[DATA_FFMPEG].ffmpeg_stream_content_type
         self.ffmpeg = CameraMjpeg(self.ffmpeg_binary)
         self.default_codec = DEFAULT_CODEC
         self.is_ffmpeg_running = False
@@ -399,6 +418,26 @@ class EufySecurityCamera(EufySecurityEntity, Camera):
                         )
         return self.picture_bytes
 
+    async def handle_async_mjpeg_stream(self, request):
+        _LOGGER.debug(f"{DOMAIN} handle_async_mjpeg_stream {request}")
+        try:
+            stream = CameraMjpeg(self.ffmpeg_binary)
+            stream_source_url = await self.stream_source()
+            await stream.open_camera(stream_source_url)
+            try:
+                stream_reader = await stream.get_reader()
+                return await async_aiohttp_proxy_stream(
+                    self.hass,
+                    request,
+                    stream_reader,
+                    self.ffmpeg_content_type,
+                )
+            finally:
+                await stream.close()
+        except Exception as ex:
+            _LOGGER.debug(f"{DOMAIN} {self.name} stream exception: {ex}- traceback: {traceback.format_exc()}")
+
+
     def turn_on(self) -> None:
         asyncio.run_coroutine_threadsafe(
             self.start_stream_function(), self.coordinator.hass.loop
@@ -476,6 +515,16 @@ class EufySecurityCamera(EufySecurityEntity, Camera):
             self.device.serial_number
         )
 
+    async def async_quick_response(self, voice_id) -> None:
+        if self.device.is_doorbell() is False:
+            _LOGGER.warn(
+                f"{DOMAIN} {self.name} - quick_response is only supported for doorbells"
+            )
+            raise HomeAssistantError(
+                f"{self.name} - quick_response is only supported for doorbells"
+            )
+        await self.coordinator.async_quick_response(self.device.serial_number, voice_id)
+
     def async_reset_alarm(self) -> None:
         asyncio.run_coroutine_threadsafe(
             self.coordinator.async_reset_camera_alarm(self.device.serial_number),
@@ -491,26 +540,6 @@ class EufySecurityCamera(EufySecurityEntity, Camera):
         ).result()
 
     @property
-    def id(self):
-        return f"{DOMAIN}_{self.device.serial_number}_camera"
-
-    @property
-    def unique_id(self):
-        return self.id
-
-    @property
-    def name(self):
-        return self.device.name
-
-    @property
-    def brand(self):
-        return f"{NAME}"
-
-    @property
-    def model(self):
-        return self.device.model
-
-    @property
     def is_on(self):
         return self.device.state.get("enabled", True)
 
@@ -519,19 +548,18 @@ class EufySecurityCamera(EufySecurityEntity, Camera):
         return self.device.state.get("motionDetection", False)
 
     @property
-    def state_attributes(self):
+    def extra_state_attributes(self):
+        custom_attributes = {
+            "is_streaming": self.device.is_streaming,
+            "stream_source_type": self.device.stream_source_type,
+            "stream_source_address": self.device.stream_source_address,
+            "codec": self.device.codec,
+            "is_rtsp_streaming": self.device.is_rtsp_streaming,
+            "is_p2p_streaming": self.device.is_p2p_streaming,
+        }
+        if self.device.voices:
+            custom_attributes["voices"] = self.device.voices
         return {
             "inherited": super().state_attributes,
-            "custom": {
-                "is_streaming": self.device.is_streaming,
-                "stream_source_type": self.device.stream_source_type,
-                "stream_source_address": self.device.stream_source_address,
-                "codec": self.device.codec,
-                "is_rtsp_streaming": self.device.is_rtsp_streaming,
-                "is_p2p_streaming": self.device.is_p2p_streaming,
-            },
+            "custom": custom_attributes,
         }
-
-    @property
-    def supported_features(self) -> int:
-        return SUPPORT_ON_OFF | SUPPORT_STREAM
