@@ -72,7 +72,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         await self.setup_auto_fetch()
         async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
-        async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=0, second=15, local=True)
+        async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=10, second=15, local=True)
 
     async def setup_auto_fetch(self):
         try:
@@ -84,7 +84,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             
             self._finishhour= next_setting.astimezone().hour # already one hour ahead
             
-            self._auto_fetch_tracker = async_track_utc_time_change(self._hass, self.update_forecast, minute=0, second=10, local=True)
+            self._auto_fetch_tracker = async_track_utc_time_change(self._hass, self.update_forecast, minute=10, second=10, local=True)
 
             _LOGGER.debug("Solcast - API will only connect between the hours %s and %s and at midnight",self._starthour,self._finishhour)
 

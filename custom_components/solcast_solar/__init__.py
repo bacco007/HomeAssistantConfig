@@ -70,3 +70,20 @@ async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEnt
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener."""
     await hass.config_entries.async_reload(entry.entry_id)
+
+# async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+#     """Migrate old entry."""
+#     try:
+#         _LOGGER.debug("Solcast Config Migrating from version %s", config_entry.version)
+
+#         if config_entry.version == 1:
+#             new_data = {**config_entry.options}
+
+#             config_entry.version = 2
+#             hass.config_entries.async_update_entry(config_entry, options=new_data)
+
+#         _LOGGER.info("Solcast Config Migration to version %s successful", config_entry.version)
+#         return True
+#     except Exception as err:
+#         _LOGGER.error("async_remove_entry: %s",traceback.format_exc())
+#         return False
