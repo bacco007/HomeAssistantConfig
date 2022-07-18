@@ -9,6 +9,7 @@ from dateutil.rrule import rruleset, rrulestr
 from dateutil.tz import gettz, tzutc
 import icalendar
 import voluptuous as vol
+from homeassistant.components.calendar import CalendarEvent
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, CONF_URL, CONF_VERIFY_SSL
@@ -106,7 +107,11 @@ class ICalEvents:
 
                 if event["start"] < end_date and event["end"] > start_date:
                     _LOGGER.debug("... and it has")
-                    events.append(event)
+                    # strongly type class fix
+                    events.append(
+                        CalendarEvent(event["start"], event["end"], event["summary"])
+                    )
+                    # events.append(event)
         return events
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
@@ -114,26 +119,20 @@ class ICalEvents:
         """Update list of upcoming events."""
         _LOGGER.debug("Running ICalEvents update for calendar %s", self.name)
         parts = urlparse(self.url)
-        if parts.scheme == 'file':
+        if parts.scheme == "file":
             with open(parts.path) as f:
                 text = f.read()
         else:
-            if parts.scheme == 'webcal':
+            if parts.scheme == "webcal":
                 # There is a potential issue here if the real URL is http, not https
-                self.url = parts.geturl().replace('webcal', 'https', 1)
+                self.url = parts.geturl().replace("webcal", "https", 1)
             session = async_get_clientsession(self.hass, verify_ssl=self.verify_ssl)
             async with session.get(self.url) as response:
                 text = await response.text()
         if text is not None:
             # Some calendars are for some reason filled with NULL-bytes.
             # They break the parsing, so we get rid of them
-            try:
-                event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))
-            except Exception as e:
-                _LOGGER.error(e)
-                _LOGGER.debug(self.url)
-                _LOGGER.debug(text)
-                return
+            event_list = icalendar.Calendar.from_ical(text.replace("\x00", ""))
             start_of_events = dt.start_of_local_day()
             end_of_events = dt.start_of_local_day() + timedelta(days=self.days)
 
@@ -408,7 +407,7 @@ class ICalEvents:
         if not str(indate.tzinfo).startswith("tzfile"):
             # _LOGGER.debug("Pytz indate: %s. replacing with tz %s", str(indate), str(gettz(str(indate.tzinfo))))
             indate = indate.replace(tzinfo=gettz(str(indate.tzinfo)))
-        if str(indate.tzinfo).endswith('/UTC'):
+        if str(indate.tzinfo).endswith("/UTC"):
             indate = indate.replace(tzinfo=tzutc)
         # _LOGGER.debug("Tzinfo 2: %s", str(indate.tzinfo))
 
