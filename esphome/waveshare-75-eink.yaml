@@ -178,8 +178,8 @@ text_sensor:
     entity_id: sensor.e_ink_display_data
     attribute: media_playing_status
     id: media_status
-    on_value: # Redraw every time data changes
-      - component.update: "${esp_name}_display"
+    # on_value: # Redraw every time data changes
+    #   - component.update: "${esp_name}_display"
       # - lambda: |-
       #     id(updates_since_refresh)++;
   - platform: homeassistant
@@ -199,8 +199,8 @@ text_sensor:
     id: condition
     entity_id: sensor.e_ink_display_data
     attribute: current_weather_condition
-    on_value: # Redraw every time data changes
-      - component.update: "${esp_name}_display"
+    # on_value: # Redraw every time data changes
+    #   - component.update: "${esp_name}_display"
       # - lambda: |-
       #     id(updates_since_refresh)++;    
           
@@ -292,8 +292,8 @@ sensor:
     id: temperature
     entity_id: sensor.e_ink_display_data
     attribute: home_temperature
-    on_value: # Redraw every time data changes
-      - component.update: "${esp_name}_display"
+    # on_value: # Redraw every time data changes
+    #   - component.update: "${esp_name}_display"
       # - lambda: |-
       #     id(updates_since_refresh)++;
 
