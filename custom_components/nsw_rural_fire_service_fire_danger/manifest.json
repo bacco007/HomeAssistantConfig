@@ -4,7 +4,7 @@
   "documentation": "https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger",
   "issue_tracker": "https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger/issues",
   "requirements": [
-    "xmltodict>=0.11.0"
+    "xmltodict>=0.13.0"
   ],
   "dependencies": [],
   "after_dependencies": ["rest"],
@@ -12,6 +12,6 @@
   "codeowners": [
     "@exxamalte"
   ],
-  "version": "0.9",
+  "version": "0.10",
   "iot_class": "cloud_polling"
 }

@@ -10,6 +10,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import StateType
 
 from .const import BINARY_SENSOR_TYPES, DOMAIN
 from .entity import NswFireServiceFireDangerEntity
@@ -33,7 +34,6 @@ async def async_setup_entry(
             )
             for sensor_type in BINARY_SENSOR_TYPES
         ],
-        True,
     )
     _LOGGER.debug("Binary sensor setup done")
 
@@ -45,7 +45,6 @@ class NswFireServiceFireDangerBinarySensor(
 
     _attr_device_class = BinarySensorDeviceClass.SAFETY
 
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if the binary sensor is on."""
-        return bool(self._state)
+    def _update_state(self, new_state: StateType) -> None:
+        """Update the state from the provided value."""
+        self._attr_is_on = new_state

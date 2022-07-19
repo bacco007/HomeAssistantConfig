@@ -5,6 +5,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import StateType
 
 from .const import DOMAIN, SENSOR_TYPES
 from .entity import NswFireServiceFireDangerEntity
@@ -28,7 +29,6 @@ async def async_setup_entry(
             )
             for sensor_type in SENSOR_TYPES
         ],
-        True,
     )
     _LOGGER.debug("Sensor setup done")
 
@@ -37,3 +37,7 @@ class NswFireServiceFireDangerSensor(NswFireServiceFireDangerEntity, SensorEntit
     """Implementation of the sensor."""
 
     _attr_icon = "mdi:speedometer-medium"
+
+    def _update_state(self, new_state: StateType) -> None:
+        """Update the state from the provided value."""
+        self._attr_native_value = new_state

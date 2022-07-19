@@ -10,7 +10,7 @@ DEFAULT_ATTRIBUTION: Final = "NSW Rural Fire Service"
 
 DEFAULT_FORCE_UPDATE: Final = True
 DEFAULT_METHOD: Final = "GET"
-DEFAULT_NAME: Final = "Fire Danger"
+DEFAULT_NAME_PREFIX: Final = "Fire danger"
 DEFAULT_SCAN_INTERVAL: Final = timedelta(minutes=15)
 DEFAULT_VERIFY_SSL: Final = True
 
@@ -29,10 +29,10 @@ SENSOR_ATTRIBUTES: Final = {
 BINARY_SENSOR_TYPES: Final = ["fire_ban_today", "fire_ban_tomorrow"]
 SENSOR_TYPES: Final = ["danger_level_today", "danger_level_tomorrow"]
 TYPES: Final = {
-    "danger_level_today": "Danger Level Today",
-    "danger_level_tomorrow": "Danger Level Tomorrow",
-    "fire_ban_today": "Fire Ban Today",
-    "fire_ban_tomorrow": "Fire Ban Tomorrow",
+    "danger_level_today": "Danger level today",
+    "danger_level_tomorrow": "Danger level tomorrow",
+    "fire_ban_today": "Fire ban today",
+    "fire_ban_tomorrow": "Fire ban tomorrow",
 }
 
 PLATFORMS: Final = [Platform.BINARY_SENSOR, Platform.SENSOR]

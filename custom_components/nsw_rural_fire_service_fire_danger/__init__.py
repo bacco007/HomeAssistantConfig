@@ -1,13 +1,14 @@
 # NSW Rural Fire Service Fire Danger.
 import logging
 from datetime import timedelta
+from typing import Any
 
 import voluptuous as vol
 import xmltodict
 from homeassistant.components.rest.data import RestData
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_STARTED
-from homeassistant.core import CoreState, HomeAssistant
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -74,26 +75,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = NswRfsFireDangerFeedCoordinator(hass, entry)
     hass.data[DOMAIN][entry.entry_id] = coordinator
     _LOGGER.debug("Feed coordinator added for %s", entry.entry_id)
-
-    async def _enable_scheduled_updates(*_):
-        """Activate the data update coordinator."""
-        scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
-        if isinstance(scan_interval, int):
-            coordinator.update_interval = timedelta(minutes=scan_interval)
-        else:
-            coordinator.update_interval = scan_interval
-        await coordinator.async_refresh()
-
-    if hass.state == CoreState.running:
-        await _enable_scheduled_updates()
-    else:
-        # Run updates only after server is started.
-        hass.bus.async_listen_once(
-            EVENT_HOMEASSISTANT_STARTED, _enable_scheduled_updates
-        )
-
     hass.config_entries.async_setup_platforms(entry, PLATFORMS)
-
     return True
 
 
@@ -105,25 +87,22 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-class NswRfsFireDangerFeedCoordinator(DataUpdateCoordinator):
+class NswRfsFireDangerFeedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Feed Entity Manager for NSW Rural Fire Service Fire Danger feed."""
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the Feed Entity Manager."""
         self.hass = hass
-        self.config_entry: ConfigEntry = config_entry
         self._district_name = config_entry.data[CONF_DISTRICT_NAME]
-        self._config_entry_id = config_entry.entry_id
-        self._scan_interval = timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
         self._rest = RestData(
             hass, DEFAULT_METHOD, URL_DATA, None, None, None, None, DEFAULT_VERIFY_SSL
         )
-        # self._attributes = None
         super().__init__(
             self.hass,
             _LOGGER,
             name=DOMAIN,
             update_method=self.async_update,
+            update_interval=timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL]),
         )
 
     @property
