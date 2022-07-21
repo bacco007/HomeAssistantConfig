@@ -1,41 +1,138 @@
 theme: Backend-selected
 title: Now Playing
 path: media
-type: "custom:grid-layout"
-layout:
-  grid-template-columns: calc( 100% - 8px )
-  grid-template-rows: auto
-  grid-template-areas: '"info"'
-  grid-column-gap: 16px
-  margin: 0 16px
-badges: []
+# type: "custom:grid-layout"
+# layout:
+#   grid-template-columns: calc( 100% - 8px )
+#   grid-template-rows: auto
+#   grid-template-areas: '"info"'
+#   grid-column-gap: 16px
+#   margin: 0 16px
+# badges: []
+# cards:
+#   - type: "custom:auto-entities"
+#     filter:
+#       include:
+#         - domain: media_player
+#           state: playing
+#           options:
+#             type: "custom:decluttering-card"
+#             template: metro_media_player_page
+#             variables:
+#               - entity: this.entity_id
+#         - domain: media_player
+#           state: paused
+#           options:
+#             type: "custom:decluttering-card"
+#             template: metro_media_player_page
+#             variables:
+#               - entity: this.entity_id
+#       exclude: []
+#     sort:
+#       method: friendly_name
+#       reverse: false
+#     show_empty: true
+#     card:
+#       type: "custom:swipe-card"
+#       parameters:
+#         slidesPerView: 1
+#     card_param: cards
+#     view_layout:
+#       grid-area: info
+
 cards:
-  - type: "custom:auto-entities"
-    filter:
-      include:
-        - domain: media_player
-          state: playing
-          options:
-            type: "custom:decluttering-card"
-            template: metro_media_player_page
+  - type: vertical-stack
+    cards:
+      - type: "custom:auto-entities"
+        sort:
+          method: attribute
+          attribute: sortorder
+        filter:
+          include:
+            - entity_id: sensor.sport_*
+              options:
+                type: "custom:button-card"
+                template:
+                  - live_tile_sport
+                entity: this.entity_id
+                icon: mdi:football-australian
+                label: >
+                  [[[ return states["this.entity_id"].attributes.nexttime ]]]
+                variables:
+                  aspect_ratio: 2/1
+        show_empty: false
+        card:
+          type: "custom:swipe-card"
+          parameters:
+            direction: vertical
+            autoHeight: true
+            height: 112
+            effect: cube
+            autoplay:
+              delay: 5000
+            cubeEffect:
+              - slideShadows: false
+        card_param: cards
+        view_layout:
+          grid-column: 1/3
+          grid-row: 1/2
+
+      - type: "custom:swipe-card"
+        parameters:
+          direction: vertical
+          autoHeight: true
+          height: 112
+          effect: cube
+          autoplay:
+            delay: 10000
+          cubeEffect:
+            - slideShadows: false
+        view_layout:
+          grid-column: span 2
+        cards:
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: media_player.office_sonos
+            icon: "mdi:album"
+            name: Sonos
+            # label: >
+            #   [[[ return
+            #   states["sensor.lastfm_user_topartists"].attributes.artist[1].name
+            #   + "<br/>" +
+            #   states["sensor.lastfm_user_topartists"].attributes.artist[2].name
+            #   + "<br/>" +
+            #   states["sensor.lastfm_user_topartists"].attributes.artist[3].name
+            #   + "<br/>" +
+            #   states["sensor.lastfm_user_topartists"].attributes.artist[4].name
+            #   ]]]
             variables:
-              - entity: this.entity_id
-        - domain: media_player
-          state: paused
-          options:
-            type: "custom:decluttering-card"
-            template: metro_media_player_page
+              aspect_ratio: 2/1
+            styles:
+              card:
+                - color: white
+                - background-size: cover
+                - background-position: center center
+                - background-image: >
+                    [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                      entity.attributes.entity_picture + "')" ]]]
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: sensor.frontpage_plex_unwatched_tv
+            icon: "mdi:album"
+            name: Plex (TV)
             variables:
-              - entity: this.entity_id
-      exclude: []
-    sort:
-      method: friendly_name
-      reverse: false
-    show_empty: true
-    card:
-      type: "custom:swipe-card"
-      parameters:
-        slidesPerView: 1
-    card_param: cards
-    view_layout:
-      grid-area: info
+              aspect_ratio: 2/1
+
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: sensor.frontpage_radarr_upcoming
+            icon: "mdi:album"
+            name: Plex (TV)
+            variables:
+              aspect_ratio: 2/1

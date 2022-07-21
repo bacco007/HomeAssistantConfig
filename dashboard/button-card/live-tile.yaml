@@ -503,3 +503,214 @@ hue_scene_card_mini:
       - font-size: var(--h6-font-size)
       - font-weight: 500
       - text-transform: uppercase
+
+live_tile_sport:
+  template:
+    - live_tile_card
+    - live_tile_with_long_state
+  variables:
+    aspect_ratio: 2/1
+
+  # state_display: "[[[ return entity.attributes.media_title ]]]"
+  # label: |-
+  #   [[[
+  #     if (entity.attributes.media_content_type != undefined) {
+  #       if (entity.attributes.media_content_type == "music") {
+  #         if (entity.attributes.media_artist) {
+  #           return entity.attributes.media_artist
+  #           }
+  #       } else if (entity.attributes.media_content_type == "tvshow") {
+  #         if (entity.attributes.media_series_title) { return entity.attributes.media_series_title }
+  #       }
+  #     }
+  #   ]]]
+  custom_fields:
+    picture: ""
+  # color: var(--primary-color)
+  styles:
+    grid:
+      - grid-template-areas: '"s picture" "l picture" "n i"'
+      - grid-template-columns: auto min-content
+    state:
+      - padding-right: |-
+          [[[
+            if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
+              return "50%"
+            } else { return 0 }
+          ]]]
+      - font_weight: 700
+    label:
+      - padding-right: |-
+          [[[
+            if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
+              return "50%"
+            } else { return 0 }
+          ]]]
+    img_cell:
+      - place-self: end end
+      - width: 24px
+      - position: absolute
+    name:
+      - padding-right: 24px
+    custom_fields:
+      picture:
+        - background: |-
+            [[[
+              if (entity.attributes.entity_picture != undefined) {
+                return "url(" + entity.attributes.entity_picture + ")"
+              } else if (entity.attributes.entity_picture_local != undefined) {
+                return "url(" + entity.attributes.entity_picture_local + ")"
+              }
+            ]]]
+        - background-size: "calc( 75% )"
+        - background-repeat: no-repeat
+        - background-position: center center
+        - position: absolute
+        - right: 16px
+        - width: |-
+            [[[
+              if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
+                return "calc( 50% - 32px )"
+              } else { return 0 }
+            ]]]
+        - border-radius: 50%
+        - aspect-ratio: 1/1
+
+live_tile_conditional_media:
+  template:
+    - live_tile_card
+    - live_tile_with_long_state
+  variables:
+    aspect_ratio: 2/1
+    i: >
+      [[[
+        if (entity) {
+          let data = entity.attributes.data;
+          return data === undefined || Math.floor(Math.random() * (data.length - 1)) + 1;
+        }
+      ]]]
+  icon: >-
+    [[[ if (entity.state == "playing") { return "mdi:play" } else if
+    (entity.state == "paused") { return "mdi:pause" } else { return
+    entity.attributes.icon } ]]]
+  state_display: >
+    [[[
+      if (entity) {
+        let elt = this.shadowRoot,
+          data = entity.attributes.data,
+          artist = entity.attributes.media_artist,
+          title = entity.attributes.media_title;
+          if (data !== undefined) {
+            var number = data[variables.i].number === undefined && data[variables.i].aired !== undefined
+              ? `(${data[variables.i].aired.split("-")[0]})`
+              : data[variables.i].number === undefined && data[variables.i].aired === undefined
+                ? ' '
+                : data[variables.i].number,
+              output = `${data[variables.i].title} ${number}`;
+          } else {
+            var output = artist === undefined && title !== undefined
+              ? title
+              : title === undefined && artist !== undefined
+                ? artist
+                : title !== undefined && artist !== undefined
+                  ? `${artist} - ${title}`
+                  : variables.translate_idle;
+          }
+        return output;
+      }
+      return variables.translate_unknown;
+    ]]]
+  label: |-
+    [[[
+      if (entity.attributes.media_content_type != undefined) {
+        if (entity.attributes.media_content_type == "music") {
+          if (entity.attributes.media_artist) {
+            return entity.attributes.media_artist
+            }
+        } else if (entity.attributes.media_content_type == "tvshow") {
+          if (entity.attributes.media_series_title) { return entity.attributes.media_series_title }
+        }
+      }
+    ]]]
+  custom_fields:
+    picture: ""
+  color: var(--primary-color)
+  state:
+    - value: paused
+      styles:
+        card:
+          - background: var(--ha-card-background)
+        state:
+          - color: var(--disabled-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+  styles:
+    grid:
+      - grid-template-areas: '"s picture" "l picture" "n i"'
+      - grid-template-columns: auto min-content
+    state:
+      - padding-right: |-
+          [[[
+            if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
+              return "50%"
+            } else { return 0 }
+          ]]]
+    label:
+      - padding-right: |-
+          [[[
+            if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
+              return "50%"
+            } else { return 0 }
+          ]]]
+    img_cell:
+      - place-self: end end
+      - width: 24px
+      - position: absolute
+    name:
+      - padding-right: 24px
+    card:
+      - color: white
+      - background-size: cover
+      - background-position: center center
+      - background-image: |-
+          [[[
+            if (entity.attributes.entity_picture != undefined) {
+              return "url(" + entity.attributes.entity_picture + ")"
+            } else if (entity.attributes.entity_picture_local != undefined) {
+              return "url(" + entity.attributes.entity_picture_local + ")"
+            } else if (entity.attributes.data[variables.i].poster != undefined) {
+              return "url(" + entity.attributes.data[variables.i].poster + ")"
+            } else if (entity.attributes.data[variables.i].fanart != undefined) {
+              return "url(" + entity.attributes.data[variables.i].fanart + ")"
+            } 
+          ]]]
+
+    # custom_fields:
+    #   picture:
+    #     - background: |-
+    #         [[[
+    #           if (entity.attributes.entity_picture != undefined) {
+    #             return "url(" + entity.attributes.entity_picture + ")"
+    #           } else if (entity.attributes.entity_picture_local != undefined) {
+    #             return "url(" + entity.attributes.entity_picture_local + ")"
+    #           } else if (entity.attributes.data[variables.i].fanart != undefined) {
+    #             return "url(" + entity.attributes.data[variables.i].fanart + ")"
+    #           } else if (entity.attributes.data[variables.i].poster != undefined) {
+    #             return "url(" + entity.attributes.data[variables.i].poster + ")"
+    #           }
+    #         ]]]
+    #     - background-size: cover
+    #     - background-position: center center
+    #     # - position: absolute
+    #     # - right: 16px
+    #     # - width: |-
+    #     #     [[[
+    #     #       if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
+    #     #         return "calc( 50% - 32px )"
+    #     #       } else { return 0 }
+    #     #     ]]]
+    #     # - border-radius: 50%
+    #     # - aspect-ratio: 1/1

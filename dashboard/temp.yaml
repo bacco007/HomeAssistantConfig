@@ -1305,14 +1305,14 @@ cards:
                   #     grid-row: 3/4
 
                   # Force fix for the height of the swipe card tile above.
-                  - type: "custom:button-card"
-                    template: live_tile
-                    styles:
-                      card:
-                        - background: none
-                    view_layout:
-                      grid-column: 1/1
-                      grid-row: 3/4
+                  # - type: "custom:button-card"
+                  #   template: live_tile
+                  #   styles:
+                  #     card:
+                  #       - background: none
+                  #   view_layout:
+                  #     grid-column: 1/1
+                  #     grid-row: 3/4
 
                   - type: "custom:decluttering-card"
                     template: mini_graph_tile
