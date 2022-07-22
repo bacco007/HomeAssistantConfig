@@ -1,0 +1,15 @@
+card_mod:
+  style: "ha-card {\n  animation: borderPulse 2s ease-out infinite;\n}\n@keyframes\
+    \ borderPulse {\n  50% {\n    box-shadow: 0 0 20px red;\n  }\n}\n"
+col_span: '1'
+col_span_lg: '1'
+col_span_xl: '1'
+icon: mdi:radioactive
+icon_color: red
+position: bottom
+primary: Warning
+row_span: '1'
+row_span_lg: '1'
+row_span_xl: '1'
+secondary: Warning! Warning! Warning!
+type: custom:mushroom-template-card
