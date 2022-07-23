@@ -1,0 +1,41 @@
+{
+  "config": {
+    "error": {
+      "invalid_token": "Invalid token",
+      "unknow_station_id": "WAQI API doesn't support this station ID",
+      "server_error": "Server error",
+      "server_not_available": "Server is not available",
+      "invalid_station_name": "Invalid station name"
+    },
+    "step": {
+      "user": {
+        "title": "Choose station adding method WAQI",
+        "description": "Choose station adding method WAQI, what you preffered: using geographic localization or using station ID",
+        "data": {
+          "geographic_localization": "Geographic localization",
+          "station_id": "Station ID",
+          "scan_interval": "Scan interval of station updating"
+        }
+      },
+      "geographic_localization": {
+        "title": "Add WAQI station using grographic localization",
+        "description": "Fill your WAQI token, latitude and longitude of your station or home, and optionally custom name for service instace. You can find WAQI token here https://aqicn.org/data-platform/token/",
+        "data": {
+          "token": "Token key of World's Air Quality Index account",
+          "latitude": "Latitude of station",
+          "longitude": "Longitude of station",
+          "name": "Name of service"
+        }
+      },
+      "station_id": {
+        "title": "Add WAQI station using ID",
+        "description": "Fill your WAQI token, id of your station (without @ prefix) and optionally custom name for service instace. You can find WAQI token here https://aqicn.org/data-platform/token/",
+        "data": {
+          "token": "Token key of World's Air Quality Index account",
+          "id": "Station ID",
+          "name": "Name of service"
+        }
+      }
+    }
+  }
+}

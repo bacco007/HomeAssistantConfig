@@ -1,0 +1,15 @@
+{
+  "domain": "worlds_air_quality_index",
+  "name": "World's Air Quality Index",
+  "config_flow": true,
+  "documentation": "https://github.com/pawkakol1/worlds-air-quality-index",
+  "issue_tracker": "https://github.com/pawkakol1/worlds-air-quality-index/issues",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": ["@pawkakol1"],
+  "iot_class": "cloud_polling",
+  "version": "0.3.3"
+}
