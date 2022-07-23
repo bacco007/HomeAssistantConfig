@@ -1,0 +1,15 @@
+---
+sensor:
+  - name: indoor_outdoor_temperature_difference
+    unique_id: indoor_outdoor_temperature_difference
+    unit_of_measurement: °C
+    device_class: temperature
+    state: >
+      {{ (states('sensor.indoor_average_temperature')|float - states('sensor.tempest_st_00056115_temperature')|float) | round(2) }}
+    attributes:
+      description: >
+        {%- if (states('sensor.indoor_average_temperature')|float - states('sensor.tempest_st_00056115_temperature')|float) | round(2) > 0 %}
+          Warmer
+        {% else %}
+          Cooler
+        {% endif %}

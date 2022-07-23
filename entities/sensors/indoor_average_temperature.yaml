@@ -1,0 +1,8 @@
+---
+platform: average
+name: indoor_average_temperature
+unique_id: indoor_average_temperature
+entities:
+  - sensor.zha_bedroom_temperature
+  - sensor.zha_lounge_weather_temperature
+  - sensor.zha_office_temperature

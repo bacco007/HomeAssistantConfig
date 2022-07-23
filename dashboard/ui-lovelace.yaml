@@ -3,11 +3,13 @@ title: Dashboard
 
 views:
   - !include temp.yaml
+  - !include climate.yaml
   - !include me.yaml
   - !include nowplaying.yaml
 
 button_card_templates: !include_dir_merge_named button-card
 decluttering_templates: !include declutter.yaml
+apexcharts_card_templates: !include apexcharts.yaml
 
 swipe_nav:
   animate: swipe
