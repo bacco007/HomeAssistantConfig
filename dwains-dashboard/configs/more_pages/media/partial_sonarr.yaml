@@ -16,9 +16,29 @@ cards:
         name: Wanted Episodes
 
   - type: markdown
-    card_mod: !include ../../1_Templates/style_markdowntable.yaml
-    content: |
-      |Date|Time|Detail|
-      |:---:|:---:|:---|
-      {% for item in state_attr('sensor.sonarr_upcoming_media', 'data') %}{% if item.airdate | default('', true) %}{% set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}{% set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}|{{ airdate }}|{{airtime}}|{{item.title}}<br/>_({{item.number}}, {{item.episode}})_|
-      {% endif %}{% endfor %}
+    #card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |-
+      <table width="100%">
+      <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Detail</th>
+      </tr>
+      {%- for item in state_attr('sensor.sonarr_upcoming_media', 'data') %}
+      {%- if item.airdate | default('', true) %}
+      {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
+      {%- set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}
+      <tr>
+      <td>{{ airdate }}</td>
+      <td>{{ airtime }}</td>
+      <td>{{item.title}}: ({{item.number}}, {{item.episode}})</td>
+      </tr>
+      {%- endif %}{% endfor %}
+      </table>
+    card_mod:
+      style:
+        ha-markdown$: |
+          th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05); }
+          th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase; padding-top: 0 !important; }
+          th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+          xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5) !important; }

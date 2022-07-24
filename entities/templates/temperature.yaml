@@ -5,11 +5,24 @@ sensor:
     unit_of_measurement: °C
     device_class: temperature
     state: >
-      {{ (states('sensor.indoor_average_temperature')|float - states('sensor.tempest_st_00056115_temperature')|float) | round(2) }}
+      {{ (states('sensor.indoor_average_temperature')|float(default=0) - states('sensor.tempest_st_00056115_temperature')|float(default=0))|abs| round(2) }}
     attributes:
       description: >
-        {%- if (states('sensor.indoor_average_temperature')|float - states('sensor.tempest_st_00056115_temperature')|float) | round(2) > 0 %}
+        {%- if (states('sensor.indoor_average_temperature')|float(default=0) - states('sensor.tempest_st_00056115_temperature')|float(default=0)) | round(2) > 0 %}
           Warmer
         {% else %}
           Cooler
+        {% endif %}
+  - name: indoor_outdoor_humidity_difference
+    unique_id: indoor_outdoor_humidity_difference
+    unit_of_measurement: "%"
+    # device_class: temperature
+    state: >
+      {{ (states('sensor.indoor_average_humidity')|float(default=0) - states('sensor.tempest_st_00056115_humidity')|float(default=0)) | abs | round(2) }}
+    attributes:
+      description: >
+        {%- if (states('sensor.indoor_average_humidity')|float(default=0) - states('sensor.tempest_st_00056115_humidity')|float(default=0)) | round(2) > 0 %}
+          Wetter
+        {% else %}
+          Dryer
         {% endif %}

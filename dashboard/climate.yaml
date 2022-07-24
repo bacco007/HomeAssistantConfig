@@ -12,8 +12,10 @@ cards:
       grid-area: cc
     layout:
       grid-column-gap: 32px
-      grid-template-columns: "repeat(auto-fit, [col-start] minmax(400px, 1fr) [col-end])"
+      #grid-template-columns: "repeat(auto-fit, [col-start] minmax(400px, 1fr) [col-end])"
+      grid-template-columns: "repeat(4, [col-start] minmax(400px, 1fr) [col-end])"
       grid-template-rows: auto
+      max_cols: 4
       margin: -1px
     mediaquery:
       "(max-width: 480px)":
@@ -457,12 +459,12 @@ cards:
             in_card: true
             cards:
               - type: sensor
-                entity: sensor.valhalla_cloud_cover
+                entity: sensor.climacell_cloud_cover
 
               - type: custom:apexcharts-card
                 config_templates: environment_chart
                 series:
-                  - entity: sensor.valhalla_cloud_cover
+                  - entity: sensor.climacell_cloud_cover
                     name: Brooklyn
                     yaxis_id: main
                     color: "var(--primary-color)"
@@ -536,7 +538,7 @@ cards:
                         } else { return '' }
                       }
                 series:
-                  - entity: sensor.sun_elevation
+                  - entity: sensor.elevation
                     color: var(--primary-text-color)
                     opacity: .2
                     stroke_width: .5
@@ -544,7 +546,7 @@ cards:
                     show:
                       legend_value: false
 
-                  - entity: sensor.sun_elevation
+                  - entity: sensor.elevation
                     color: var(--primary-text-color)
                     opacity: .2
                     stroke_width: .5
@@ -553,7 +555,7 @@ cards:
                       const now = new Date();
                       const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
                       return data;
-                  - entity: sensor.tempest_st_00056115_humidity
+                  - entity: sensor.tamworth_airport_humidity
                     type: area
                     name: Accuweather
                     yaxis_id: main
@@ -564,8 +566,8 @@ cards:
                       datalabels: true
                       extremas: true
 
-                  - entity: sensor.netatmo_strawberry_land_indoor_outdoor_humidity
-                    name: Outside Netatmo
+                  - entity: sensor.tempest_st_00056115_humidity
+                    name: Outside
                     stroke_width: .5
                     color: gray
                     yaxis_id: main
@@ -575,38 +577,38 @@ cards:
                     show:
                       datalabels: true
 
-                  - entity: sensor.netatmo_strawberry_land_indoor_humidity
-                    name: Bedroom Netatmo
-                    stroke_width: 1
-                    yaxis_id: main
-                    color: hotpink
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
+                  # - entity: sensor.netatmo_strawberry_land_indoor_humidity
+                  #   name: Bedroom Netatmo
+                  #   stroke_width: 1
+                  #   yaxis_id: main
+                  #   color: hotpink
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: avg
+                  #     duration: 30min
 
-                  - entity: sensor.bathroom_env_sensor_humidity
-                    name: Bathroom
-                    stroke_width: 1
-                    color: turquoise
-                    yaxis_id: main
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
+                  # - entity: sensor.bathroom_env_sensor_humidity
+                  #   name: Bathroom
+                  #   stroke_width: 1
+                  #   color: turquoise
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: avg
+                  #     duration: 30min
 
-                  - entity: sensor.living_room_air_purifier_humidity
-                    name: Living Room
-                    stroke_width: 1
-                    color: green
-                    yaxis_id: main
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
+                  # - entity: sensor.living_room_air_purifier_humidity
+                  #   name: Living Room
+                  #   stroke_width: 1
+                  #   color: green
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: avg
+                  #     duration: 30min
 
                   - entity: sensor.indoor_average_humidity
                     name: Indoor Avg
@@ -722,17 +724,17 @@ cards:
                 config_templates: environment_chart
                 series:
                   - entity: sensor.nsw_air_quality_tamworth
-                    name: WAQI
+                    name: AQI
                     yaxis_id: second
                     show:
                       datalabels: true
                   - entity: sensor.nsw_air_quality_tamworth_pm10
-                    name: Particulate Matter (PM25)
+                    name: PM10
                     yaxis_id: main
                     show:
                       datalabels: true
                   - entity: sensor.nsw_air_quality_tamworth_pm25
-                    name: Particulate Matter (PM25)
+                    name: PM2.5
                     yaxis_id: main
                     show:
                       datalabels: true
@@ -895,32 +897,32 @@ cards:
                   line-height: var(--body-line-height);
                 }
       # [Column] Noise
-      - type: vertical-stack
-        cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: NOISE
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
+      # - type: vertical-stack
+      #   cards:
+      #     - type: "custom:button-card"
+      #       template: header_card_no_link
+      #       variables:
+      #         name: NOISE
+      #       view_layout:
+      #         grid-column-start: 1
+      #         grid-column-end: -1
 
-          - type: vertical-stack
-            in_card: true
-            cards:
-              - type: sensor
-                entity: sensor.netatmo_strawberry_land_indoor_noise
+      #     - type: vertical-stack
+      #       in_card: true
+      #       cards:
+      #         - type: sensor
+      #           entity: sensor.netatmo_strawberry_land_indoor_noise
 
-              - type: custom:apexcharts-card
-                config_templates: environment_chart
-                series:
-                  - entity: sensor.netatmo_strawberry_land_indoor_noise
-                    yaxis_id: main
-                    color: "var(--primary-color)"
-                    show:
-                      datalabels: true
-                yaxis:
-                  - id: main
-                apex_config:
-                  chart:
-                    height: 160px
+      #         - type: custom:apexcharts-card
+      #           config_templates: environment_chart
+      #           series:
+      #             - entity: sensor.netatmo_strawberry_land_indoor_noise
+      #               yaxis_id: main
+      #               color: "var(--primary-color)"
+      #               show:
+      #                 datalabels: true
+      #           yaxis:
+      #             - id: main
+      #           apex_config:
+      #             chart:
+      #               height: 160px
