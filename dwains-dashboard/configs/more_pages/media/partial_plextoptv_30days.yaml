@@ -2,12 +2,33 @@
 type: custom:stack-in-card
 cards:
   - type: markdown
-    card_mod: !include ../../1_Templates/style_markdowntable.yaml
-    content: |
+    #card_mod: !include ../../1_Templates/style_markdowntable.yaml
+    content: |-
       ### Plex Top TV (Last 30 Days)
 
-      |TV Show|Plays|Duration|Last Play|
-      |---|:---:|:---:|:---:|
-      {% for row in state_attr("sensor.plex_tautulli_toptv_30days", "rows") -%}{% set uptime = row.total_duration | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}{% set hours = ((uptime) / 3600) | int -%}{% set days = (uptime / 86400) | int -%}
-      |{{row.title}}|{{row.total_plays}}|{{'%02d' % hours}}:{{'%02d' % minutes}}|{{ row.last_play|timestamp_custom ('%d/%m/%Y %H:%M') }}|
-      {% endfor -%}
+      <table width="100%">
+      <tr>
+      <th>TV Show</th>
+      <th>Plays</th>
+      <th>Duration</th>
+      <th>Last Play</th>
+      </tr>
+      {%- for item in state_attr('sensor.plex_tautulli_toptv_30days', 'rows') %}
+      {% set uptime = item.total_duration | int -%}
+      {% set minutes = ((uptime % 3600) / 60) | int -%}
+      {% set hours = ((uptime) / 3600) | int -%}{% set days = (uptime / 86400) | int -%}
+      <tr>
+      <td>{{item.title}}</td>
+      <td>{{item.total_plays}}</td>
+      <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+      <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y %H:%M') }}</td>
+      </tr>
+      {%- endfor %}
+      </table>
+    card_mod:
+      style:
+        ha-markdown$: |
+          th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05); }
+          th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase; padding-top: 0 !important; }
+          th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+          xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5) !important; }

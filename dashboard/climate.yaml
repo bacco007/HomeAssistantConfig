@@ -108,48 +108,48 @@ cards:
                       action: more-info
 
       #[Row] Controls
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: 0
-          grid-template-columns: "repeat(auto-fit, [col-start] minmax(348px, 1fr) [col-end])"
-        cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: CONTROLS
-            view_layout:
-              grid-column: 1/-1
-          - type: vertical-stack
-            in_card: true
-            cards:
-              - type: "custom:mushroom-fan-card"
-                entity: fan.bedroom
-                icon_animation: true
-                show_oscillate_control: true
-                show_percentage_control: true
-                hold_action:
-                  action: more-info
-                icon: ""
-          - type: vertical-stack
-            in_card: true
-            cards:
-              - type: "custom:mushroom-entity-card"
-                entity: switch.spare_power
-                tap_action:
-                  action: toggle
-                hold_action:
-                  action: more-info
-          - type: vertical-stack
-            in_card: true
-            cards:
-              - type: "custom:mini-climate"
-                entity: climate.bedroom
-                temperature:
-                  unit: °C
-                  round: 1
-        view_layout:
-          grid-column: 1/-1
+      # - type: "custom:layout-card"
+      #   layout_type: "custom:grid-layout"
+      #   layout:
+      #     margin: 0
+      #     grid-template-columns: "repeat(auto-fit, [col-start] minmax(348px, 1fr) [col-end])"
+      #   cards:
+      #     - type: "custom:button-card"
+      #       template: header_card_no_link
+      #       variables:
+      #         name: CONTROLS
+      #       view_layout:
+      #         grid-column: 1/-1
+      #     - type: vertical-stack
+      #       in_card: true
+      #       cards:
+      #         - type: "custom:mushroom-fan-card"
+      #           entity: fan.bedroom
+      #           icon_animation: true
+      #           show_oscillate_control: true
+      #           show_percentage_control: true
+      #           hold_action:
+      #             action: more-info
+      #           icon: ""
+      #     - type: vertical-stack
+      #       in_card: true
+      #       cards:
+      #         - type: "custom:mushroom-entity-card"
+      #           entity: switch.spare_power
+      #           tap_action:
+      #             action: toggle
+      #           hold_action:
+      #             action: more-info
+      #     - type: vertical-stack
+      #       in_card: true
+      #       cards:
+      #         - type: "custom:mini-climate"
+      #           entity: climate.bedroom
+      #           temperature:
+      #             unit: °C
+      #             round: 1
+      #   view_layout:
+      #     grid-column: 1/-1
 
       # [Column] Comfort
       - type: vertical-stack
@@ -162,8 +162,8 @@ cards:
               grid-column-start: 1
               grid-column-end: -1
 
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: vertical-stack
                 cards:
@@ -282,8 +282,8 @@ cards:
               grid-column-start: 1
               grid-column-end: -1
 
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: horizontal-stack
                 cards:
@@ -366,7 +366,7 @@ cards:
                     color: gray
                     yaxis_id: main
                     group_by:
-                      func: avg
+                      func: last
                       duration: 30min
                     show:
                       datalabels: true
@@ -379,7 +379,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   # - entity: sensor.workspace_room_hue_sensor_temperature
@@ -390,7 +390,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   # - entity: sensor.bathroom_env_sensor_temperature
@@ -401,7 +401,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   # - entity: sensor.living_room_air_purifier_temperature
@@ -412,7 +412,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   # - entity: sensor.living_room_hue_sensor_temperature
@@ -423,7 +423,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   - entity: sensor.indoor_average_temperature
@@ -455,8 +455,8 @@ cards:
                         data.push([new Date(entity.attributes.forecast[i].datetime).getTime() + i * 1000 * 60 * 60, entity.attributes.forecast[i].temperature] );
                       }
                       return data.reverse();
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: sensor
                 entity: sensor.climacell_cloud_cover
@@ -494,8 +494,8 @@ cards:
               grid-column-start: 1
               grid-column-end: -1
 
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: horizontal-stack
                 cards:
@@ -572,7 +572,7 @@ cards:
                     color: gray
                     yaxis_id: main
                     group_by:
-                      func: avg
+                      func: last
                       duration: 30min
                     show:
                       datalabels: true
@@ -585,7 +585,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   # - entity: sensor.bathroom_env_sensor_humidity
@@ -596,7 +596,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   # - entity: sensor.living_room_air_purifier_humidity
@@ -607,7 +607,7 @@ cards:
                   #   show:
                   #     datalabels: true
                   #   group_by:
-                  #     func: avg
+                  #     func: last
                   #     duration: 30min
 
                   - entity: sensor.indoor_average_humidity
@@ -631,8 +631,8 @@ cards:
                         font-size: var(--h6-font-size) !important; font-weight: 500 !important;}                          
                       .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
                         font-size: var(--h6-font-size) !important; font-weight: normal !important;}
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: sensor
                 entity: sensor.tempest_st_00056115_rain_today
@@ -700,8 +700,8 @@ cards:
               grid-column-start: 1
               grid-column-end: -1
 
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: horizontal-stack
                 cards:
@@ -795,8 +795,8 @@ cards:
                   - justify-self: start
                   - color: var(--secondary-text-color)
 
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: sensor
                 entity: sensor.tamworth_airport_wind_speed_kilometre
@@ -811,7 +811,7 @@ cards:
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: last
                       duration: 30min
                   - entity: weather.east_tamworth_hourly
                     name: Meteo
@@ -835,8 +835,8 @@ cards:
                   chart:
                     height: 160px
 
-          - type: vertical-stack
-            in_card: true
+          - type: custom:stack-in-card
+            mode: vertical
             cards:
               - type: horizontal-stack
                 cards:

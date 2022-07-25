@@ -526,7 +526,7 @@ live_tile_sport:
   #   ]]]
   custom_fields:
     picture: ""
-  # color: var(--primary-color)
+  color: var(--primary-background-color)
   styles:
     grid:
       - grid-template-areas: '"s picture" "l picture" "n i"'
@@ -634,19 +634,7 @@ live_tile_conditional_media:
     ]]]
   custom_fields:
     picture: ""
-  color: var(--primary-color)
-  state:
-    - value: paused
-      styles:
-        card:
-          - background: var(--ha-card-background)
-        state:
-          - color: var(--disabled-text-color)
-        name:
-          - color: var(--primary-text-color)
-        label:
-          - color: var(--primary-text-color)
-          - opacity: 0.67
+  color: var(--primary-background-color)
   styles:
     grid:
       - grid-template-areas: '"s picture" "l picture" "n i"'
@@ -672,7 +660,7 @@ live_tile_conditional_media:
     name:
       - padding-right: 24px
     card:
-      - color: white
+      - color: var(--primary-background-color)
       - background-size: cover
       - background-position: center center
       - background-image: |-
@@ -687,30 +675,3 @@ live_tile_conditional_media:
               return "url(" + entity.attributes.data[variables.i].fanart + ")"
             } 
           ]]]
-
-    # custom_fields:
-    #   picture:
-    #     - background: |-
-    #         [[[
-    #           if (entity.attributes.entity_picture != undefined) {
-    #             return "url(" + entity.attributes.entity_picture + ")"
-    #           } else if (entity.attributes.entity_picture_local != undefined) {
-    #             return "url(" + entity.attributes.entity_picture_local + ")"
-    #           } else if (entity.attributes.data[variables.i].fanart != undefined) {
-    #             return "url(" + entity.attributes.data[variables.i].fanart + ")"
-    #           } else if (entity.attributes.data[variables.i].poster != undefined) {
-    #             return "url(" + entity.attributes.data[variables.i].poster + ")"
-    #           }
-    #         ]]]
-    #     - background-size: cover
-    #     - background-position: center center
-    #     # - position: absolute
-    #     # - right: 16px
-    #     # - width: |-
-    #     #     [[[
-    #     #       if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
-    #     #         return "calc( 50% - 32px )"
-    #     #       } else { return 0 }
-    #     #     ]]]
-    #     # - border-radius: 50%
-    #     # - aspect-ratio: 1/1

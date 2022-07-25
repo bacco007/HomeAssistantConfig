@@ -1,6 +1,6 @@
 sun_elevation:
   series:
-    - entity: sensor.sun_elevation
+    - entity: sensor.elevation
       color: rgb(255,255,255)
       opacity: .2
       stroke_width: .5
@@ -8,7 +8,7 @@ sun_elevation:
       unit: °
       show:
         legend_value: false
-    - entity: sensor.sun_elevation
+    - entity: sensor.elevation
       color: rgb(255,255,255)
       opacity: .2
       stroke_width: .5
@@ -30,7 +30,7 @@ environment_chart:
     unit: ""
   graph_span: 48h
   span:
-    start: minute
+    start: hour
     offset: "-36h"
   now:
     show: true
