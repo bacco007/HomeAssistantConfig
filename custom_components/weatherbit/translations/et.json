@@ -1,0 +1,29 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Asukoht on juba määratud. Vali uus asukoht",
+            "connection_error": "Ei saanud Weatherbit-iga ühendust. Kontrolli API võtit."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Laius",
+                    "longitude": "Pikkus",
+                    "api_key": "Weatherbit API võti"
+                },
+                "title": "Weatherbit andmete asukoht"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Interval in minutes between sensor updates (Default 5 min)",
+                    "forecast_interval": "Interval between in minutes forecast updates (Default 30 min)",
+                    "forecast_language": "Forecast Language"
+                }
+            }
+        }
+    }
+}

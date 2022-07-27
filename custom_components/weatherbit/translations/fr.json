@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Emplacement déjà configuré. Choisissez d'autres coordonnées.",
+            "connection_error": "Quelque chose s'est mal passé lors de la tentative de connexion à WeatherBit.",
+            "invalid_api_key": "La clé API WeatherBit n'est pas valide."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                    "api_key": "clé API WeatherBit"
+                },
+                "title": "Configurer un emplacement WeatherBit"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Intervalle en minutes entre les mises à jour du capteur (Défaut 5 min)",
+                    "forecast_interval": "Intervalle entre les mises à jour des prévisions en minutes (Défaut 30 min)",
+                    "forecast_language": "Langue des prévisions"
+                }
+            }
+        }
+    }
+}

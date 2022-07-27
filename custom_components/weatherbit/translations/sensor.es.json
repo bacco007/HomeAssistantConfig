@@ -1,0 +1,37 @@
+{
+    "state": {
+        "beaufort": {
+            "calm": "Calma",
+            "light_air": "Ventolina",
+            "light_breeze": "Flojito, Brisa muy débil",
+            "gentle_breeze": "Flojo, Brisa débil",
+            "moderate_breeze": "Bonancible, Brisa moderada",
+            "fresh_breeze": "Fresquito, Brisa fresca",
+            "strong_breeze": "Fresco, Brisa fuerte",
+            "moderate_gale": "Frescachó, Viento fuerte",
+            "fresh_gale": "Viento duro",
+            "strong_gale": "Viento muy duro",
+            "storm": "Temporal",
+            "violent_storm": "Temporal duro, Borrasca",
+            "hurricane": "Huracán"
+        },
+        "wind_cardinal": {
+            "n": "N",
+            "nne": "NNE",
+            "ne": "NE",
+            "ene": "ENE",
+            "e": "E",
+            "ese": "ESE",
+            "se": "SE",
+            "sse": "SSE",
+            "s": "S",
+            "ssw": "SSO",
+            "sw": "SO",
+            "wsw": "OSO",
+            "w": "O",
+            "wnw": "ONO",
+            "nw": "NO",
+            "nnw": "NNO"
+        }
+    }
+}

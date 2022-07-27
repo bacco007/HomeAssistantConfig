@@ -1,0 +1,37 @@
+{
+    "state": {
+        "beaufort": {
+            "calm": "Lugnt",
+            "light_air": "Svag vind",
+            "light_breeze": "Svag vind",
+            "gentle_breeze": "Måttlig vind",
+            "moderate_breeze": "Måttlig vind",
+            "fresh_breeze": "Frisk vind",
+            "strong_breeze": "Frisk vind",
+            "moderate_gale": "Hård vind",
+            "fresh_gale": "Hård vind",
+            "strong_gale": "Hård vind",
+            "storm": "Storm",
+            "violent_storm": "Storm",
+            "hurricane": "Orkan"
+        },
+        "wind_cardinal": {
+            "n": "N",
+            "nne": "NNÖ",
+            "ne": "NÖ",
+            "ene": "ÖNÖ",
+            "e": "Ö",
+            "ese": "ÖSÖ",
+            "se": "SÖ",
+            "sse": "SSÖ",
+            "s": "S",
+            "ssw": "SSV",
+            "sw": "SV",
+            "wsw": "VSV",
+            "w": "V",
+            "wnw": "VNV",
+            "nw": "NV",
+            "nnw": "NNV"
+        }
+    }
+}

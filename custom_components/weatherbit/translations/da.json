@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Placering allerede brugt. Vælg andre koordinator.",
+            "connection_error": "Noget gik galt under forsøget med at kontaket WeatherBit.",
+            "invalid_api_key": "WeatherBit API nøglen er ikke gyldig."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Breddegrad",
+                    "longitude": "Længdegrad",
+                    "api_key": "Weatherbit API nøgle"
+                },
+                "title": "Konfigurer en WeatherBit placering"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Interval i minutter mellem sensor opdateringer (Standard 5 min)",
+                    "forecast_interval": "Interval i minutter mellem forecast opdateringer (Standard 30 min)",
+                    "forecast_language": "Sprog for Vejrudsigt"
+                }
+            }
+        }
+    }
+}

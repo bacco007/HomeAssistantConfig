@@ -1,0 +1,29 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Lokalizacja jest już skonfigurowana. Wybierz inne współrzędne.",
+            "connection_error": "Nie można się połączyć z Weatherbit. Sprawdź klucz API."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Szerokość geograficzna",
+                    "longitude": "Długość geograficzna",
+                    "api_key": "Klucz API Weatherbit"
+                },
+                "title": "Lokalizacja danych pomiarowych Weatherbit"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "forecast_language": "Język prognozy",
+                    "update_interval": "Interwał aktualizacji danych bieżących (minuty)",
+                    "forecast_interval": "Interwał aktualizacji danych prognozy (minuty)"
+                }
+            }
+        }
+    }
+}

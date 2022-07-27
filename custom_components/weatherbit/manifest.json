@@ -1,0 +1,15 @@
+  {
+    "domain": "weatherbit",
+    "name": "Weatherbit",
+    "config_flow": true,
+    "documentation": "https://github.com/briis/weatherbit",
+    "issue_tracker": "https://github.com/briis/weatherbit/issues",
+    "version": "1.0.11",
+    "requirements": [
+      "pyweatherbitdata==1.0.13"
+    ],
+    "codeowners": [
+      "@briis"
+    ],
+    "iot_class": "cloud_polling"
+  }

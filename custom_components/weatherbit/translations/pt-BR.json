@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Local já configurado. Escolha outras coordenadas.",
+            "connection_error": "Algo deu errado ao tentar se conectar ao WeatherBit.",
+            "invalid_api_key": "A chave API WeatherBit é inválida."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                    "api_key": "Chave API WeatherBit"
+                },
+                "title": "Configuração de um local WeatherBit"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Intervalo em minutos entre atualizações de sensores (padrão 5 min)",
+                    "forecast_interval": "Intervalo entre atualizações de previsão em minutos (padrão 30 min)",
+                    "forecast_language": "Linguagem da previsão"
+                }
+            }
+        }
+    }
+}

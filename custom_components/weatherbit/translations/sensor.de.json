@@ -1,0 +1,45 @@
+{
+    "state": {
+        "beaufort": {
+            "calm": "Calm",
+            "light_air": "Leiser Zug",
+            "light_breeze": "Leichte Brise",
+            "gentle_breeze": "Schwache Brise",
+            "moderate_breeze": "Mäßige Brise",
+            "fresh_breeze": "Frischer Wind",
+            "strong_breeze": "Starker Wind",
+            "moderate_gale": "Steifer Wind",
+            "fresh_gale": "Stürmischer Wind",
+            "strong_gale": "Sturm",
+            "storm": "Schwerer Sturm",
+            "violent_storm": "Orkanartiger Sturm",
+            "hurricane": "Orkan"
+        },
+        "wind_cardinal": {
+            "n": "N",
+            "nne": "NNO",
+            "ne": "NO",
+            "ene": "ONO",
+            "e": "O",
+            "ese": "OSO",
+            "se": "SO",
+            "sse": "SSO",
+            "s": "S",
+            "ssw": "SSW",
+            "sw": "SW",
+            "wsw": "WSW",
+            "w": "W",
+            "wnw": "WNW",
+            "nw": "NW",
+            "nnw": "NNW"
+        },
+        "uv_description": {
+            "extreme": "Extrem",
+            "very-high": "Sehr hoch",
+            "high": "Hoch",
+            "moderate": "Mäßig",
+            "low": "Gering",
+            "none": "Kein Sonnenlicht"
+        }
+    }
+}

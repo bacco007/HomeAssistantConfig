@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Standort bereits eingerichtet. Wählen Sie andere Koordinaten.",
+            "connection_error": "Beim Versuch, eine Verbindung zu WeatherBit herzustellen, ist etwas schief gelaufen.",
+            "invalid_api_key": "Der WeatherBit API-Schlüssel ist ungültig."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Breitengrad",
+                    "longitude": "Längengrad",
+                    "api_key": "WeatherBit API-Schlüssel"
+                },
+                "title": "WeatherBit-Standort einrichten"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Intervall in Minuten zwischen den Sensoraktualisierungen (Standard 5 min)",
+                    "forecast_interval": "Intervall zwischen den Vorhersageaktualisierungen in Minuten (Standard 30 min)",
+                    "forecast_language": "Vorhersage Sprache"
+                }
+            }
+        }
+    }
+}

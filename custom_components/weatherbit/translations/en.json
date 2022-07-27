@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "name_exists": "Location already setup. Choose other coordinates.",
+            "connection_error": "Something went wrong when trying to connect to WeatherBit.",
+            "invalid_api_key": "The WeatherBit API Key is invalid."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                    "api_key": "Weatherbit API Key"
+                },
+                "title": "Setup a WeatherBit location"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "update_interval": "Interval in minutes between sensor updates (Default 5 min)",
+                    "forecast_interval": "Interval between in minutes forecast updates (Default 30 min)",
+                    "forecast_language": "Forecast Language"
+                }
+            }
+        }
+    }
+}
