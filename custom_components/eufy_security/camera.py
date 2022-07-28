@@ -74,7 +74,6 @@ FFMPEG_OPTIONS = (
     " -sc_threshold 0"
     " -fflags genpts+nobuffer+flush_packets"
     " -loglevel debug"
-    " -report"
 )
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
@@ -260,10 +259,15 @@ class EufySecurityCamera(Camera, EufySecurityEntity):
         _LOGGER.debug(
             f"{DOMAIN} {self.name} - start_ffmpeg 2 - ffmpeg_command_instance {ffmpeg_command_instance}"
         )
+
+        ffmpeg_options_instance = FFMPEG_OPTIONS
+        if self.coordinator.config.generate_ffmpeg_logs == True:
+            ffmpeg_options_instance = ffmpeg_options_instance + " -report"
+
         result = await self.ffmpeg.open(
             cmd=ffmpeg_command_instance,
             input_source=None,
-            extra_cmd=FFMPEG_OPTIONS,
+            extra_cmd=ffmpeg_options_instance,
             output=self.ffmpeg_output,
             stderr_pipe=False,
             stdout_pipe=False,
@@ -331,7 +335,9 @@ class EufySecurityCamera(Camera, EufySecurityEntity):
             _LOGGER.debug(f"{DOMAIN} {self.name} - set_is_streaming - some streaming")
             if self.device.is_rtsp_streaming is True:
                 self.device.stream_source_type = STREAMING_SOURCE_RTSP
-                self.device.stream_source_address = self.device.state["rtspStreamUrl"]
+                self.device.stream_source_address = self.device.properties[
+                    "rtspStreamUrl"
+                ]
                 self.device.is_streaming = True
                 _LOGGER.debug(
                     f"{DOMAIN} {self.name} - set_is_streaming - is_rtsp_streaming"
