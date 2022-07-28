@@ -1,0 +1,5 @@
+---
+platform: ping
+host: 1.1.1.1
+name: ping_cloudflare
+scan_interval: 30

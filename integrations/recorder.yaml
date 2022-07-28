@@ -36,8 +36,8 @@ recorder:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
       - sensor.date*
-      - sensor.here_travel_*
-      - sensor.waze_travel_*
+      # - sensor.here_travel_*
+      # - sensor.waze_travel_*
       - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*

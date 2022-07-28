@@ -6,6 +6,13 @@ views:
   - !include climate.yaml
   - !include me.yaml
   - !include nowplaying.yaml
+  - !include astrometrics.yaml
+  - !include energy.yaml
+  - !include lights.yaml
+  - !include maintenance.yaml
+  - !include media.yaml
+  - !include neighbourhood.yaml
+  - !include network.yaml
 
 button_card_templates: !include_dir_merge_named button-card
 decluttering_templates: !include declutter.yaml

@@ -67,6 +67,7 @@ check_config.txt
 watchman_report.txt
 file.log
 solcast.json
+rtsp*
 
 node-red/*
 !node-red/flows.json

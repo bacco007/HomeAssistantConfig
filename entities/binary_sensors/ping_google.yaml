@@ -1,0 +1,5 @@
+---
+platform: ping
+host: google.com.au
+name: ping_google
+scan_interval: 30

@@ -1,0 +1,215 @@
+cards:
+- card_mod:
+    style:
+      ha-markdown$: 'th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05);
+        }
+
+        th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase;
+        padding-top: 0 !important; }
+
+        th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+
+        xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5)
+        !important; }
+
+        '
+  content: '### Swans Draw
+
+
+    <table width="100%">
+
+    <tr>
+
+    <th>Rd</th>
+
+    <th>Match</th>
+
+    <th>Time</th>
+
+    <th>Result</th>
+
+    </tr>
+
+    {%- for item in state_attr(''sensor.getdata_afl_draw'', ''draw'') %}
+
+    <tr>
+
+    <td>{{item.round}}</td>
+
+    <td>{{item.match}}</td>
+
+    <td>{{as_timestamp(item.time) | timestamp_custom(''%a %b %d, %H:%M'')}}</td>
+
+    <td>{{item.result}}</td>
+
+    </tr>
+
+    {%- endfor %}
+
+    </table>'
+  type: markdown
+- card_mod:
+    style:
+      ha-markdown$: 'th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05);
+        }
+
+        th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase;
+        padding-top: 0 !important; }
+
+        th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+
+        xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5)
+        !important; }
+
+        '
+  content: '### AFL Ladder
+
+
+    <table width="100%">
+
+    <tr>
+
+    <th>#</th>
+
+    <th>Team</th>
+
+    <th>Form</th>
+
+    <th>%</th>
+
+    <th>Next</th>
+
+    <th>Pts</th>
+
+    </tr>
+
+    {%- for item in state_attr(''sensor.getdata_afl_ladder'', ''ladder'') %}
+
+    <tr>
+
+    <td>{{item.position}}</td>
+
+    <td>{{item.team}}</td>
+
+    <td>{{item.form}}</td>
+
+    <td>{{item.percent}}</td>
+
+    <td>{{item.nextgame}}</td>
+
+    <td>{{item.points}}</td>
+
+    </tr>
+
+    {%- endfor %}
+
+    </table>'
+  type: markdown
+- card_mod:
+    style:
+      ha-markdown$: 'th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05);
+        }
+
+        th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase;
+        padding-top: 0 !important; }
+
+        th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+
+        xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5)
+        !important; }
+
+        '
+  content: '### Swans Draw
+
+
+    <table width="100%">
+
+    <tr>
+
+    <th>Rd</th>
+
+    <th>Match</th>
+
+    <th>Time</th>
+
+    <th>Result</th>
+
+    </tr>
+
+    {%- for item in state_attr(''sensor.getdata_nrl_draw'', ''draw'') %}
+
+    <tr>
+
+    <td>{{item.round}}</td>
+
+    <td>{{item.match}}</td>
+
+    <td>{{as_timestamp(item.time,0) | timestamp_custom(''%a %b %d, %H:%M'')}}</td>
+
+    <td>{{item.result}}</td>
+
+    </tr>
+
+    {%- endfor %}
+
+    </table>'
+  type: markdown
+- card_mod:
+    style:
+      ha-markdown$: 'th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05);
+        }
+
+        th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase;
+        padding-top: 0 !important; }
+
+        th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+
+        xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5)
+        !important; }
+
+        '
+  content: '### NRL Ladder
+
+
+    <table width="100%">
+
+    <tr>
+
+    <th>#</th>
+
+    <th>Team</th>
+
+    <th>Form</th>
+
+    <th>Diff</th>
+
+    <th>Next</th>
+
+    <th>Pts</th>
+
+    </tr>
+
+    {%- for item in state_attr(''sensor.getdata_nrl_ladder'', ''ladder'') %}
+
+    <tr>
+
+    <td>{{item.position}}</td>
+
+    <td>{{item.team}}</td>
+
+    <td>{{item.form}}</td>
+
+    <td>{{item.difference}}</td>
+
+    <td>{{item.nextgame}}</td>
+
+    <td>{{item.points}}</td>
+
+    </tr>
+
+    {%- endfor %}
+
+    </table>'
+  type: markdown
+items_classes: col-xs-12 col-md-3 col-sm-3 col-xl-3
+type: custom:dwains-flexbox-card
