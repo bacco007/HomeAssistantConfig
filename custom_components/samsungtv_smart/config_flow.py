@@ -467,13 +467,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_SYNC_TURN_OFF,
                 description={
-                    "suggested_value": options.get(CONF_SYNC_TURN_OFF)
+                    "suggested_value": options.get(CONF_SYNC_TURN_OFF, [])
                 },
             ): cv.multi_select(switch_entities),
             vol.Optional(
                 CONF_SYNC_TURN_ON,
                 description={
-                    "suggested_value": options.get(CONF_SYNC_TURN_ON)
+                    "suggested_value": options.get(CONF_SYNC_TURN_ON, [])
                 },
             ): cv.multi_select(switch_entities),
             vol.Required(CONF_SHOW_ADV_OPT, default=False): bool,
@@ -556,7 +556,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_EXT_POWER_ENTITY,
                 description={
-                    "suggested_value": options.get(CONF_EXT_POWER_ENTITY)
+                    "suggested_value": options.get(CONF_EXT_POWER_ENTITY, "")
                 }
             ): vol.In(external_entities),
             vol.Required(
