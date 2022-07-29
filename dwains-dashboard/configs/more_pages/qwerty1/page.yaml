@@ -1,0 +1,35 @@
+cards:
+- entities:
+  - sensor.time
+  - sensor.time_london
+  type: entities
+- card_mod:
+    style:
+      ha-markdown:
+        height: 750px;
+      ha-markdown$: 'th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05);
+        }
+
+        th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase;
+        padding-top: 0 !important; }
+
+        th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+
+        xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5)
+        !important; }
+
+        '
+  content: "<ha-alert alert-type=\"error\">This is an error alert \u2014 check it\
+    \ out!</ha-alert>\n<ha-alert alert-type=\"warning\">This is a warning alert \u2014\
+    \ check it out!</ha-alert>\n<ha-alert alert-type=\"info\">This is an info alert\
+    \ \u2014 check it out!</ha-alert>\n<ha-alert alert-type=\"success\">This is a\
+    \ success alert \u2014 check it out!</ha-alert>\n<ha-alert title=\"Test alert\"\
+    >This is an alert with a title</ha-alert>\n<table width=\"100%\">\n<tr>\n<th>Date</th>\n\
+    <th>Time</th>\n<th>Detail</th>\n</tr>\n{%- for item in state_attr('sensor.sonarr_upcoming_media',\
+    \ 'data') %}\n{%- if item.airdate | default('', true) %}\n{%- set airdate = as_timestamp(item.airdate)\
+    \ | timestamp_custom('%a %b %d') %}\n{%- set airtime = as_timestamp(item.airdate)\
+    \ | timestamp_custom('%H:%M') %}\n<tr>\n<td>{{ airdate }}</td>\n<td>{{ airtime\
+    \ }}</td>\n<td>{{item.title}}: ({{item.number}}, {{item.episode}})</td>\n</tr>\n\
+    {%- endif %}{% endfor %}\n</table>"
+  type: markdown
+type: custom:stack-in-card

@@ -13,6 +13,7 @@ views:
   - !include media.yaml
   - !include neighbourhood.yaml
   - !include network.yaml
+  - !include testing.yaml
 
 button_card_templates: !include_dir_merge_named button-card
 decluttering_templates: !include declutter.yaml

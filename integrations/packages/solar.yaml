@@ -3,10 +3,10 @@ sensor:
   - platform: mqtt
     icon: mdi:solar-power
     name: sungrowsolar_alldata
-    state_topic: solar/inverter_SG5KD/SENSOR
+    state_topic: solar/inverter/SENSOR
     value_template: "{{value_json.daily_power_yields|float(default=0)}}"
     unit_of_measurement: "kW"
-    json_attributes_topic: solar/inverter_SG5KD/SENSOR
+    json_attributes_topic: solar/inverter/SENSOR
   - platform: integration
     source: sensor.sungrowsolar_solar_production
     name: SungrowSolar Solar Production (kWh)
