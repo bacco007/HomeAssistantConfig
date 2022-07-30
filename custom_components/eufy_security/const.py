@@ -183,6 +183,12 @@ SET_LOCK_MESSAGE = {
     "serialNumber": None,
     "value": None,
 }
+SET_PTZ_MESSAGE = {
+    "messageId": "device_set_ptz",
+    "command": "device.pan_and_tilt",
+    "serialNumber": None,
+    "direction": None,
+}
 
 
 MESSAGE_IDS_TO_PROCESS = [
@@ -273,6 +279,14 @@ STATE_ALARM_DELAYED = "delayed"
 STATE_GUARD_SCHEDULE = "schedule"
 STATE_GUARD_GEO = "geo"
 STATE_GUARD_OFF = "off"
+
+
+class PTZ(Enum):
+    ROTATE360 = 0
+    LEFT = 1
+    RIGHT = 2
+    UP = 3
+    DOWN = 4
 
 
 class DEVICE_TYPE(Enum):
@@ -472,7 +486,12 @@ class Device:
         self.callback = callback
 
     def set_property(self, property_name, value):
-        self.state[property_name] = value
+        if self.state.get(property_name, None) is not None:
+            self.state[property_name] = value
+
+        if self.properties.get(property_name, None) is not None:
+            self.properties[property_name] = value
+
         self.set_global_motion_sensor()
         if property_name in STREAMING_EVENT_NAMES:
             self.set_streaming_status()
