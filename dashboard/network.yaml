@@ -4,6 +4,7 @@
 
 title: Network
 path: "network"
+icon: mdi:lan-connect
 theme: "Fluent Red"
 
 type: "custom:grid-layout"

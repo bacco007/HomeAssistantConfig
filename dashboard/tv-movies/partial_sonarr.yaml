@@ -1,0 +1,50 @@
+---
+type: vertical-stack
+cards:
+  - type: "custom:button-card"
+    template: header_card
+    variables:
+      name: Sonarr
+      label: Manage
+      arrow: "mdi:arrow-top-right"
+      action: url
+      link: http://192.168.1.91:8989
+    view_layout:
+      grid-column-start: 1
+      grid-column-end: -1
+  - type: entity
+    entity: sensor.sonarr_upcoming
+    name: Upcoming Episodes
+  - type: custom:stack-in-card
+    mode: vertical
+    cards:
+      - type: entities
+        card_mod: !include ../snippets/style-entities.yaml
+        entities:
+          - entity: sensor.sonarr_queue
+            name: Queued Episodes
+          - entity: sensor.sonarr_wanted
+            name: Wanted Episodes
+          - entity: sensor.sonarr_installed_version
+          - entity: sensor.sonarr_latest_update
+      - type: markdown
+        card_mod: !include ../snippets/style-markdown-table-scroll.yaml
+        content: |-
+          <table width="100%">
+          <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Detail</th>
+          </tr>
+          {%- for item in state_attr('sensor.sonarr_upcoming_media', 'data') %}
+          {%- if item.airdate | default('', true) %}
+          {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
+          {%- set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}
+          <tr>
+          <td>{{ airdate }}</td>
+          <td>{{ airtime }}</td>
+          <td>{{item.title}}<br/>
+              <span>({{item.number}}, {{item.episode}})</span></td>
+          </tr>
+          {%- endif %}{% endfor %}
+          </table>

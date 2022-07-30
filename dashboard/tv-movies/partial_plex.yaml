@@ -1,0 +1,55 @@
+---
+type: vertical-stack
+cards:
+  - type: "custom:button-card"
+    template: header_card
+    variables:
+      name: Plex
+      label: Manage
+      arrow: "mdi:arrow-top-right"
+      action: url
+      link: http://192.168.1.100:32400
+    view_layout:
+      grid-column-start: 1
+      grid-column-end: -1
+  - type: horizontal-stack
+    cards:
+      - type: entity
+        entity: sensor.plexstats_tvepisodecount
+        name: TV Episodes
+      - type: entity
+        entity: sensor.plexstats_moviecount
+        name: Movies
+  - type: custom:stack-in-card
+    mode: vertical
+    cards:
+      - type: entities
+        card_mod: !include ../snippets/style-entities.yaml
+        entities:
+          - entity: sensor.plex_thecube2
+          - entity: sensor.plex_installed_version
+          - entity: sensor.plex_latest_version
+      - type: markdown
+        card_mod: !include ../snippets/style-markdown-table-scroll.yaml
+        content: |-
+          <table width="100%">
+          <tr>
+          <th>User</th>
+          <th>Total Plays</th>
+          <th>Watch Length</th>
+          <th>Last Play</th>
+          <th>
+          </tr>
+          {%- for item in state_attr('sensor.plex_tautulli_topusers', 'rows') %}
+          {%- set uptime = item.total_duration | int -%}
+          {%- set minutes = ((uptime % 3600) / 60) | int -%}
+          {%- set hours = ((uptime) / 3600) | int -%}
+          {%- set days = (uptime / 86400) | int -%}
+          <tr>
+          <td>{{ item.friendly_name }}</td>
+          <td>{{ item.total_plays }}</td>
+          <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+          <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+          </tr>
+          {% endfor %}
+          </table>

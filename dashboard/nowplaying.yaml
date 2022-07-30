@@ -1,6 +1,5 @@
-theme: Backend-selected
 title: Now Playing
-path: media
+path: now-playing
 theme: "Fluent Red"
 
 type: "custom:grid-layout"

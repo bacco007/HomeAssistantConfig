@@ -122,6 +122,6 @@ header_card_no_link:
       - text-align: left
       - align-self: center
       - justify-self: start
-      - font-size: var(--body-font-size)
+      - font-size: var(--h4-font-size)
       - font-weight: 500
       - color: var(--secondary-text-color)

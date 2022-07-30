@@ -1,0 +1,45 @@
+---
+type: vertical-stack
+cards:
+  - type: "custom:button-card"
+    template: header_card
+    variables:
+      name: Radarr
+      label: Manage
+      arrow: "mdi:arrow-top-right"
+      action: url
+      link: http://192.168.1.91:7878
+    view_layout:
+      grid-column-start: 1
+      grid-column-end: -1
+  - type: entity
+    entity: sensor.radarr_upcoming
+    name: Upcoming Episodes
+  - type: custom:stack-in-card
+    mode: vertical
+    cards:
+      - type: entities
+        card_mod: !include ../snippets/style-entities.yaml
+        entities:
+          - entity: sensor.radarr_status
+          - entity: sensor.radarr_movies
+          - entity: sensor.radarr_installed_version
+          - entity: sensor.radarr_latest_update
+      - type: markdown
+        card_mod: !include ../snippets/style-markdown-table-scroll.yaml
+        content: |-
+          <table width="100%">
+          <tr>
+          <th>Date</th>
+          <th>Time</th>
+          </tr>
+          {%- for item in state_attr('sensor.radarr_upcoming_media', 'data') %}
+          {%- if item.airdate | default('', true) %}
+          {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
+          {%- set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}
+          <tr>
+          <td>{{ airdate }}</td>
+          <td>{{item.title}}</td>
+          </tr>
+          {%- endif %}{% endfor %}
+          </table>

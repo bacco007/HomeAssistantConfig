@@ -1,0 +1,12 @@
+---
+style:
+  ha-markdown: |
+    ha-card.type-markdown { box-shadow: none; overflow-y: scroll; height: 450px; }
+    ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
+    .no-header {padding-top: 0px !important; }
+  ha-markdown$: |
+    th, td { padding: 2px 4px 4px 2px; border-bottom: thin solid rgba(var(--rgb-primary-text-color),.05); vertical-align: top; }
+    th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase; padding-top: 0 !important; }
+    th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); white-space: nowrap; }
+    xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5) !important; }
+    span {font-size: smaller;}

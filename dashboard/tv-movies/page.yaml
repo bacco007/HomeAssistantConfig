@@ -1,0 +1,168 @@
+title: TV & Movies
+path: tv-movies
+theme: "Fluent Red"
+icon: mdi:television
+
+type: "custom:grid-layout"
+layout: !include ../snippets/layout-page-margin.yaml
+
+cards:
+  - type: "custom:layout-card"
+    layout_type: "custom:grid-layout"
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(450px, 1fr) [col-end])"
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        "(max-width: 800px)":
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
+
+    cards:
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout: !include ../snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: markdown
+            style: !include ../snippets/style-markdown-page-title.yaml
+            content: >
+              # Network
+
+              The Internet is {{ states('binary_sensor.ping_cloudflare') }}
+              and {{ states('sensor.asuswrt_devices_connected') }} devices
+              are connected.{%- if states('sensor.speedtest_download') !=
+              'unavailable' -%}{{ ' ' }}The speed is {{ iif(
+              states('sensor.speedtest_download')|int >= 22, 'normal',
+              'slower than usual') }}.{%- endif -%}
+          - type: "custom:layout-card"
+            layout_type: "custom:horizontal-layout"
+            view_layout:
+              place-self: center start
+            cards:
+              - type: "custom:swipe-card"
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    "600":
+                      enabled: false
+                      slidesPerView: 3
+                cards:
+                  # - type: "custom:mushroom-entity-card"
+                  #   entity: sensor.goodserviceio_l_service
+                  #   name: Subway Map ↗
+                  #   icon_color: pink
+                  #   tap_action:
+                  #     action: url
+                  #     url_path: "https://citizen.com/explore"
+                  #   style: "ha-card {background: none;}"
+
+                  - type: "custom:mushroom-template-card"
+                    primary: Citizen ↗
+                    icon: "mdi:police-badge"
+                    style: "ha-card {background: none;}"
+                    icon_color: pink
+                    tap_action:
+                      action: url
+                      url_path: "https://citizen.com/explore"
+
+                  - type: "custom:mushroom-template-card"
+                    primary: NYC 311 ↗
+                    secondary: null
+                    icon: "mdi:shield-alert"
+                    icon_color: pink
+                    style: "ha-card {background: none;}"
+                    tap_action:
+                      action: url
+                      url_path: "https://portal.311.nyc.gov/"
+
+      # Column 1 - Sonarr
+      - !include partial_sonarr.yaml
+
+      # Column 2 - Radarr
+      - !include partial_radarr.yaml
+
+      # Column 3 - Plex
+      - !include partial_plex.yaml
+
+      - type: custom:layout-break
+
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: auto auto
+          grid-template-rows: auto
+          grid-column-gap: 32px
+          margin: -1px
+          mediaquery:
+            "(max-width: 820px)":
+              grid-template-columns: auto
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Plex Top TV - By Duration
+              - type: markdown
+                card_mod: !include ../snippets/style-markdown-table-scroll.yaml
+                content: |-
+                  <table width="100%">
+                  <tr>
+                  <th>Show</th>
+                  <th>Total Plays</th>
+                  <th>Watch Length</th>
+                  <th>Last Play</th>
+                  <th>
+                  </tr>
+                  {%- for item in state_attr('sensor.plex_tautulli_toptv', 'rows') %}
+                  {%- set uptime = item.total_duration | int -%}
+                  {%- set minutes = ((uptime % 3600) / 60) | int -%}
+                  {%- set hours = ((uptime) / 3600) | int -%}
+                  {%- set days = (uptime / 86400) | int -%}
+                  <tr>
+                  <td>{{ item.title }}</td>
+                  <td>{{ item.total_plays }}</td>
+                  <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+                  <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+                  </tr>
+                  {% endfor %}
+                  </table>
+
+          - type: vertical-stack
+            cards:
+              - type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Plex Top TV - By Eps Watched
+              - type: markdown
+                card_mod: !include ../snippets/style-markdown-table-scroll.yaml
+                content: |-
+                  <table width="100%">
+                  <tr>
+                  <th>Show</th>
+                  <th>Total Plays</th>
+                  <th>Watch Length</th>
+                  <th>Last Play</th>
+                  <th>
+                  </tr>
+                  {%- for item in state_attr('sensor.plex_tautulli_toptv_plays', 'rows') %}
+                  {%- set uptime = item.total_duration | int -%}
+                  {%- set minutes = ((uptime % 3600) / 60) | int -%}
+                  {%- set hours = ((uptime) / 3600) | int -%}
+                  {%- set days = (uptime / 86400) | int -%}
+                  <tr>
+                  <td>{{ item.title }}</td>
+                  <td>{{ item.total_plays }}</td>
+                  <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+                  <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+                  </tr>
+                  {% endfor %}
+                  </table>
