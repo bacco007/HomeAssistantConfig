@@ -5,7 +5,6 @@ views:
   - !include temp.yaml
   - !include climate.yaml
   - !include me.yaml
-  - !include nowplaying.yaml
   - !include astrometrics.yaml
   - !include energy.yaml
   - !include lights.yaml
@@ -13,7 +12,10 @@ views:
   - !include media2.yaml
   - !include neighbourhood.yaml
   - !include network.yaml
+  - !include nowplaying.yaml
+  - !include home/page.yaml
   - !include tv-movies/page.yaml
+  - !include sport.yaml
 
 button_card_templates: !include_dir_merge_named button-card
 decluttering_templates: !include declutter.yaml

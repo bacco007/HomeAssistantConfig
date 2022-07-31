@@ -1,0 +1,263 @@
+title: Upcoming Sport
+path: sport
+theme: "Fluent Red"
+icon: mdi:football-australian
+
+type: "custom:grid-layout"
+layout: !include snippets/layout-page-margin.yaml
+
+cards:
+  - type: "custom:layout-card"
+    layout_type: "custom:grid-layout"
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(350px, 1fr) [col-end])"
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        "(max-width: 800px)":
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
+
+    cards:
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout: !include snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
+            content: >
+              # Upcoming Sport
+
+          - type: "custom:layout-card"
+            layout_type: "custom:horizontal-layout"
+            view_layout:
+              place-self: center start
+            cards:
+              - type: "custom:swipe-card"
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    "600":
+                      enabled: false
+                      slidesPerView: 2
+                cards:
+                  - type: "custom:mushroom-template-card"
+                    primary: Today
+                    secondary: >
+                      {{ states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 0)|list|count }}
+                    icon: "mdi:football-australian"
+                    style: "ha-card {background: none;}"
+                    icon_color: pink
+
+                  - type: "custom:mushroom-template-card"
+                    primary: This Week
+                    secondary: >
+                      {{ states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 7)|list|count }}
+                    icon: "mdi:football-australian"
+                    icon_color: pink
+                    style: "ha-card {background: none;}"
+
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_anaheim_ducks_event_
+          icon: /local/sportlogos/Anaheim_Ducks.svg
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_btcc_event_
+          icon: /local/sportlogos/btcc.png
+          limit: 5
+          replace: "BTCC - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_cricket_australia_event_
+          icon: /local/sportlogos/cricket.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_dtm_event_
+          icon: /local/sportlogos/dtm.png
+          limit: 5
+          replace: "DTM - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_extreme_e_event_
+          icon: /local/sportlogos/extremee.png
+          limit: 5
+          replace: "Extreme E - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_f1_event_
+          icon: /local/sportlogos/f1.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_formula_e_event_
+          icon: /local/sportlogos/formulae.png
+          limit: 5
+          replace: "Formula E - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_igtc_event_
+          icon: /local/sportlogos/icgtc.png
+          limit: 5
+          replace: "IGTC - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_imsa_event_
+          icon: /local/sportlogos/imsasc.png
+          limit: 5
+          replace: "IMSA WeatherTech Championship - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_indycar_event_
+          icon: /local/sportlogos/indycar.png
+          limit: 5
+          replace: "IndyCar - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_manchester_united_event_
+          icon: /local/sportlogos/manu.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_misc_motorsport_event_
+          icon: /local/sportlogos/miscmotorsports.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_motogp_event_
+          icon: /local/sportlogos/motogp.png
+          limit: 5
+          replace: "MotoGP - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_nascar_cup_series_event_
+          icon: /local/sportlogos/nascarcup.png
+          limit: 5
+          #replace: "\uD83C\uDFC1"
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_nascar_xfinity_series_event_
+          icon: /local/sportlogos/nascarxfinity.png
+          limit: 5
+          #replace: "\uD83C\uDFC1"
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_new_england_patriots_event_
+          icon: /local/sportlogos/newengpats.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_new_york_yankees_event_
+          icon: /local/sportlogos/yankees.png
+          limit: 5
+          #replace: "\u26BE\uFE0F"
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_newcastle_knights_event_
+          icon: /local/sportlogos/newknights.svg
+          limit: 5
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_nsw_waratahs_event_
+          icon: /local/sportlogos/nswaratahs.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_socceroos_event_
+          icon: /local/sportlogos/socceroos.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_supercars_event_
+          icon: /local/sportlogos/supercars.png
+          limit: 5
+          replace: "Repco Supercars - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_swifts_event_
+          icon: /local/sportlogos/swifts.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_sydney_fc_event_
+          icon: /local/sportlogos/sydfc.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_sydney_swans_event_
+          icon: /local/sportlogos/sydswans.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_sydney_swans_vfl_event_
+          icon: /local/sportlogos/sydswans.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_wallabies_event_
+          icon: /local/sportlogos/wallabies.png
+          limit: 5
+          replace: dummytext
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_wec_event_
+          icon: /local/sportlogos/wec.png
+          limit: 5
+          replace: "FIA WEC - "
+      - template: sport_cal
+        type: custom:button-card
+        variables:
+          entity_part: sensor.ical_wrc_event_
+          icon: /local/sportlogos/wrc.png
+          limit: 5
+          replace: "WRC - "

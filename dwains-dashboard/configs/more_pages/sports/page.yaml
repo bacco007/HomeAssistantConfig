@@ -138,7 +138,7 @@
       type: custom:button-card
       variables:
         entity_part: sensor.ical_socceroos_event_
-        icon:
+        icon: /local/sportlogos/socceroos.png
         limit: 5
         replace: dummytext
     - template: sport_cal
@@ -174,6 +174,13 @@
       variables:
         entity_part: sensor.ical_sydney_swans_vfl_event_
         icon: /local/sportlogos/sydswans.png
+        limit: 5
+        replace: dummytext
+    - template: sport_cal
+      type: custom:button-card
+      variables:
+        entity_part: sensor.ical_wallabies_event_
+        icon: /local/sportlogos/wallabies.png
         limit: 5
         replace: dummytext
     - template: sport_cal

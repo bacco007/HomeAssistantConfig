@@ -4,7 +4,7 @@
   }
 ha-markdown$: |
   h1 {
-    font-size: var(--title-font-size);
+    font-size: var(--h1-font-size);
     font-weight: 500;
     line-height: 1.1;
     margin-left: -2px;

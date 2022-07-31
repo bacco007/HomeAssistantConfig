@@ -26,7 +26,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -80,7 +80,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -134,7 +134,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -189,7 +189,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -244,7 +244,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -299,7 +299,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -354,7 +354,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -408,7 +408,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -463,7 +463,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -517,7 +517,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -572,7 +572,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -627,7 +627,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -687,7 +687,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -755,7 +755,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -823,7 +823,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -885,7 +885,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -939,7 +939,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -992,7 +992,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1045,7 +1045,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1098,7 +1098,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1151,7 +1151,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1204,7 +1204,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1257,7 +1257,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1310,7 +1310,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1369,7 +1369,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1436,7 +1436,7 @@ sensor:
                   {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
                 {%- endif %}
               {%- else %}
-                None
+                No Time
               {%- endif %}
             {%- endif %}
           nextevent: >-
@@ -1467,6 +1467,112 @@ sensor:
               0
             {%- else %}
               {%- set st = state_attr('calendar.ical_misc_motorsport', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}
+              {%- else %}
+                999
+              {%- endif %}
+            {%- endif %}
+      sport_wallabies:
+        friendly_name: Wallabies
+        entity_picture_template: /local/sportlogos/wallabies.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_wallabies', 'message') %}
+            {{ state_attr('calendar.ical_wallabies', 'message') }}
+          {%- else %}
+            Nothing Scheduled
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_wallabies', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_wallabies', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- set op = state_attr('calendar.ical_wallabies', 'message') %}
+            {%- set st = state_attr('calendar.ical_wallabies', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          nextlocation: >-
+            {%- set op = state_attr('calendar.ical_wallabies', 'location') %}
+            {%- if op != None %}
+              {{ op }}
+            {%- else %}
+              No Location Noted
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_wallabies', 'on') %}
+              0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_wallabies', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}
+              {%- else %}
+                999
+              {%- endif %}
+            {%- endif %}
+      sport_socceroos:
+        friendly_name: Socceroos
+        entity_picture_template: /local/sportlogos/socceroos.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_socceroos', 'message') %}
+            {{ state_attr('calendar.ical_socceroos', 'message') }}
+          {%- else %}
+            Nothing Scheduled
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_socceroos', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_socceroos', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- set op = state_attr('calendar.ical_socceroos', 'message') %}
+            {%- set st = state_attr('calendar.ical_socceroos', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          nextlocation: >-
+            {%- set op = state_attr('calendar.ical_socceroos', 'location') %}
+            {%- if op != None %}
+              {{ op }}
+            {%- else %}
+              No Location Noted
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_socceroos', 'on') %}
+              0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_socceroos', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}

@@ -1,0 +1,74 @@
+---
+type: custom:state-switch
+entity: user
+default: default
+view_layout:
+  grid-area: h
+states:
+  default:
+    type: "custom:layout-card"
+    layout_type: "custom:grid-layout"
+    layout:
+      grid-template-columns: auto min-content
+      grid-template-rows: auto
+      margin: -1px -1px -16px -1px
+      padding: 0
+    view_layout:
+      grid-area: h
+    cards:
+      - type: markdown
+        content: >
+          # {% if now() > today_at('18:00') %}Good evening{% elif
+          now() > today_at('12:00') %}Good afternoon{% elif now() >
+          today_at('5:00') %}Good morning{% else %}Good night{%
+          endif %}
+        style:
+          .: |
+            ha-card {
+              background: none;
+              margin-bottom: -16px;
+            }
+          ha-markdown$: |
+            h1 {
+              font-size: var(--h1-font-size);
+              font-weight: 500;
+              line-height: 1.1;
+              margin-left: -2px;
+              margin-block-end: -8px;
+              margin-top: -12px !important;
+            }
+      - type: "custom:layout-card"
+        layout_type: "custom:horizontal-layout"
+        cards:
+          - type: "custom:mushroom-person-card"
+            entity: person.thomas_baxter
+            style: "ha-card {background: none;}"
+            use_entity_picture: true
+            view_layout: null
+        layout:
+          width: 225
+          margin: -1
+        view_layout:
+          place-self: center
+          show:
+            mediaquery: "(min-width: 800px)"
+
+      - type: "custom:layout-card"
+        layout_type: "custom:horizontal-layout"
+        cards:
+          - type: "custom:mushroom-person-card"
+            entity: person.thomas_baxter
+            use_entity_picture: true
+            hide_state: true
+            hide_name: true
+            style: |
+              ha-card {background: none;
+                margin-top: 16px;
+                transform: scale(1.5) translate(-8px);
+              }
+        layout:
+          width: 72
+        view_layout:
+          place-self: start
+          show:
+            mediaquery: "(max-width: 799.99px)"

@@ -75,6 +75,8 @@ cards:
             filter:
               include:
                 - entity_id: sensor.sport_*
+                  attributes:
+                    sortorder: "<=7"
                   options:
                     type: "custom:button-card"
                     template:
