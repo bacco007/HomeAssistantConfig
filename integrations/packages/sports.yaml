@@ -46,14 +46,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_manchester_united', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_manchester_united', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -100,14 +100,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_new_england_patriots', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_new_england_patriots', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -154,14 +154,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_anaheim_ducks', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_anaheim_ducks', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -209,14 +209,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_new_york_yankees', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_new_york_yankees', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -264,14 +264,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_cricket_australia', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_cricket_australia', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -319,14 +319,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_supercars', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_supercars', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -374,14 +374,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_f1', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_f1', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -428,14 +428,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_wec', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_wec', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -483,14 +483,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_nascar_cup_series', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_nascar_cup_series', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -537,14 +537,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_nascar_xfinity_series', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_nascar_xfinity_series', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -592,14 +592,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_indycar', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_indycar', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -647,14 +647,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_newcastle_knights', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_newcastle_knights', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -715,14 +715,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_sydney_fc', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_sydney_fc', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -783,14 +783,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_sydney_swans', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_sydney_swans', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -851,14 +851,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_sydney_swans_vfl', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_sydney_swans_vfl', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -905,14 +905,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_nsw_waratahs', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_nsw_waratahs', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
 
@@ -959,14 +959,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_btcc', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_btcc', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_icgtc:
@@ -1012,14 +1012,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_igtc', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_igtc', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_imsasports:
@@ -1065,14 +1065,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_imsa', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_imsa', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_motogp:
@@ -1118,14 +1118,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_motogp', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_motogp', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_wrc:
@@ -1171,14 +1171,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_wrc', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_wrc', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_dtm:
@@ -1224,14 +1224,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_dtm', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_dtm', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_formula_e:
@@ -1277,14 +1277,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_formula_e', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_formula_e', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_extreme_e:
@@ -1330,14 +1330,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_extreme_e', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_extreme_e', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_swifts:
@@ -1397,14 +1397,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_swifts', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_swifts', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_miscmotorsport:
@@ -1464,14 +1464,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_misc_motorsport', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_misc_motorsport', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_wallabies:
@@ -1517,14 +1517,14 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_wallabies', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_wallabies', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}
       sport_socceroos:
@@ -1570,13 +1570,13 @@ sensor:
             {%- endif %}
           sortorder: >-
             {%- if is_state('calendar.ical_socceroos', 'on') %}
-              0
+              0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_socceroos', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
-                  {{ diff }}
+                  {{ diff }}.0
               {%- else %}
-                999
+                999.0
               {%- endif %}
             {%- endif %}

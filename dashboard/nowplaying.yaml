@@ -69,24 +69,25 @@ cards:
       - type: vertical-stack
         cards:
           - type: "custom:auto-entities"
+            view_layout:
+              grid-column: span 2
             sort:
               method: attribute
               attribute: sortorder
+            card_param: cards
             filter:
-              include:
-                - entity_id: sensor.sport_*
-                  attributes:
-                    sortorder: "<=7"
-                  options:
-                    type: "custom:button-card"
-                    template:
-                      - live_tile_sport
-                    entity: this.entity_id
-                    icon: mdi:football-australian
-                    label: >
-                      [[[ return states["this.entity_id"].attributes.nexttime ]]]
-                    variables:
-                      aspect_ratio: 3/1
+              template: >-
+                {% for s in states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 7) -%}
+                  {{
+                    {
+                      'type': 'custom:button-card',
+                      'entity': s.entity_id,
+                      'template': ['live_tile_sport'],
+                      'icon': 'mdi:football-australian',
+                      'variables': [{'aspect_ratio': '2/1'}]
+                    }
+                  }},
+                {%- endfor %}
             show_empty: false
             card:
               type: "custom:swipe-card"
@@ -97,12 +98,9 @@ cards:
                 effect: cube
                 autoplay:
                   delay: 5000
+                loop: true
                 cubeEffect:
                   - slideShadows: false
-            card_param: cards
-            view_layout:
-              grid-column: 1/3
-              grid-row: 1/2
 
       - type: vertical-stack
         cards:

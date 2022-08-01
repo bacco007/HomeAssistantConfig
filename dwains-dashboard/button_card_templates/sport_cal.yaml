@@ -60,6 +60,7 @@ sport_cal:
       text-align: center;
       float: left;
       width: 16px;
+      line-height: 0px !important;
     }
     table {
       margin-left: 10px;
@@ -106,7 +107,7 @@ sport_cal:
       display: block;
       text-align: left;
       font-size: 0.6em;
-      padding-top: 5px;
+      padding-top: 6px;
     }
     .time {
       padding-bottom: 1em;

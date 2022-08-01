@@ -384,10 +384,25 @@ cards:
                 variables:
                   - aspect_ratio: 2/1
                   - points_per_hour: 6
+                  - hours_to_show: 24
                   - entities:
                       - entity: sensor.tempest_st_00056115_temperature
                   - title: Temperature
                   - icon: "mdi:thermometer"
+                  - line_width: 2
+
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  - aspect_ratio: 2/1
+                  - points_per_hour: 6
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.tempest_st_00056115_rain_today
+                  - title: Rainfall
+                  - icon: "mdi:water-drop"
                   - line_width: 2
 
           - type: "custom:layout-card"

@@ -507,23 +507,19 @@ hue_scene_card_mini:
 live_tile_sport:
   template:
     - live_tile_card
-    - live_tile_with_long_state
+    - live_tile_with_longer_state
   variables:
     aspect_ratio: 2/1
 
   # state_display: "[[[ return entity.attributes.media_title ]]]"
-  # label: |-
-  #   [[[
-  #     if (entity.attributes.media_content_type != undefined) {
-  #       if (entity.attributes.media_content_type == "music") {
-  #         if (entity.attributes.media_artist) {
-  #           return entity.attributes.media_artist
-  #           }
-  #       } else if (entity.attributes.media_content_type == "tvshow") {
-  #         if (entity.attributes.media_series_title) { return entity.attributes.media_series_title }
-  #       }
-  #     }
-  #   ]]]
+  label: |-
+    [[[
+      if (entity.attributes.nexttime != undefined) {
+          return entity.attributes.nexttime
+        } else  {
+          return "None Recorded"
+        }
+    ]]]
   custom_fields:
     picture: ""
   color: var(--primary-background-color)
@@ -579,7 +575,7 @@ live_tile_sport:
 live_tile_conditional_media:
   template:
     - live_tile_card
-    - live_tile_with_long_state
+    - live_tile_with_longer_state
   variables:
     aspect_ratio: 2/1
     i: >
