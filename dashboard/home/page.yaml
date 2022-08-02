@@ -561,10 +561,10 @@ cards:
                 type: "custom:button-card"
                 template:
                   - light_button_card_group
-                  - require_confirmation
                 entity: light.all_lights
                 name: All Lights
                 icon: "mdi:lightbulb-multiple"
+                tap_action: !include ../popup/all_lights.yaml
                 variables:
                   aspect_ratio: 2/1
                 state:
@@ -600,8 +600,8 @@ cards:
             layout:
               width: 350
               max_width: 700
-              max_cols: 4
-              card_margin: 0 32px
+              max_cols: 5
+              card_margin: 0 16px
               margin: 0 -16px
             view_layout:
               grid-area: mc
@@ -1021,6 +1021,59 @@ cards:
                   #     grid-column: span 2
                   #     show:
                   #       mediaquery: "(min-width: 1508px)"
+
+              # [Column] System
+
+              - type: "custom:layout-card"
+                layout_type: "custom:grid-layout"
+                layout:
+                  grid-template-columns: "repeat(auto-fill, [col-start] minmax(100px, 1fr) [col-end])"
+                  grid-template-rows: auto
+                  margin: -1
+
+                cards:
+                  - type: "custom:button-card"
+                    template: header_card
+                    variables:
+                      name: SYSTEM
+                      label: More
+                      link: /ui-dashboard/system
+                    view_layout:
+                      grid-column: 1/-1
+                  - type: "custom:button-card"
+                    template: live_tile
+                    entity: sensor.ha_update_counter_ha
+                    name: HA Updates
+                    tap_action: !include ../popup/updates_ha.yaml
+                    view_layout:
+                      grid-column: span 2
+                    variables:
+                      aspect_ratio: 1.5/1
+                    state_display: "[[[ return entity.state  ]]]"
+                    icon: '[[[ return (entity.state >= 1) ? "mdi:package-variant-closed" : "mdi:package-variant" ]]]'
+                    show_units: false
+                    styles:
+                      grid:
+                        - background: '[[[ return (entity.state >= 1) ? "rgba(var(--rgb-primary-color),0.35)" : "rgba(var(--rgb-primary-color),0)" ]]]'
+                      card:
+                        - background: var(--ha-card-background)
+                  - type: "custom:button-card"
+                    template: live_tile
+                    entity: sensor.ha_update_counter_hacs
+                    name: HACS Updates
+                    tap_action: !include ../popup/updates_hacs.yaml
+                    view_layout:
+                      grid-column: span 2
+                    variables:
+                      aspect_ratio: 1.5/1
+                    state_display: "[[[ return entity.state  ]]]"
+                    icon: '[[[ return (entity.state >= 1) ? "mdi:package-variant-closed" : "mdi:package-variant" ]]]'
+                    show_units: false
+                    styles:
+                      grid:
+                        - background: '[[[ return (entity.state >= 1) ? "rgba(var(--rgb-primary-color),0.35)" : "rgba(var(--rgb-primary-color),0)" ]]]'
+                      card:
+                        - background: var(--ha-card-background)
 
               # [Column] Neighborhood
 

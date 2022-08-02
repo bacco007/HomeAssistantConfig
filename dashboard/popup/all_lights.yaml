@@ -1,0 +1,48 @@
+---
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: All Lights
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:mushroom-light-card
+        collapsible_controls: true
+        entity: light.all_lights
+        fill_container: true
+        name: All Lights
+        position: top
+        show_brightness_control: true
+        show_color_control: true
+        show_color_temp_control: true
+        use_light_color: true
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: light
+              options:
+                type: custom:mushroom-light-card
+                collapsible_controls: true
+                fill_container: true
+                position: top
+                show_brightness_control: true
+                show_color_control: true
+                show_color_temp_control: true
+                tap_action:
+                  action: toggle
+                use_light_color: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      padding: 4px 12px !important;
+                      --ha-card-box-shadow: 0px;
+                    }
+          exclude:
+            - entity_id: light.all_lights
+            - entity_id: light.browser*
+        card:
+          type: custom:layout-card
+          cards: []
+          layout_type: masonry
+        sort:
+          method: friendly_name

@@ -1,0 +1,33 @@
+---
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: HA Updates
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: update
+              integration: hacs
+              state: "on"
+              options:
+                layout: horizontal
+                show_buttons_control: true
+                type: custom:mushroom-update-card
+                use_entity_picture: true
+                fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      padding: 4px 12px !important;
+                      --ha-card-box-shadow: 0px;
+                    }
+          exclude: []
+        card:
+          type: custom:layout-card
+          cards: []
+          layout_type: masonry
+        sort:
+          method: friendly_name
