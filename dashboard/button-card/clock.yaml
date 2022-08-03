@@ -31,8 +31,8 @@ clock:
           img_cell:
             - justify-content: center
           icon:
-            - width: 4.0rem
-            - height: 3.5rem
+            - width: 2rem
+            # - height: 2.5rem
           card:
             - background-color: transparent
             - box-shadow: none
@@ -63,7 +63,11 @@ clock:
           ]]]
         extra_styles: |
           span.unit {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
+          }
+          span.value {
+            font-size: 1.3rem !important;
+            font-weight: 300 !important;
           }
         styles:
           grid:
@@ -75,7 +79,7 @@ clock:
             - justify-self: center
             - align-self: center
             - font-weight: 300
-            - font-size: 2rem
+            - font-size: var(--h4-font-size)
             - filter: "opacity(40%)"
           card:
             - background-color: transparent
@@ -106,7 +110,8 @@ clock:
             - grid-template-rows: min-content
           state:
             - background-color: transparent
-            - font-size: 1.2rem
+            - font-size: var(--h4-font-size)
+            - font-weight: 300
             - justify-self: end
             - align-self: start
             - filter: "opacity(40%)"
@@ -152,8 +157,8 @@ clock:
             }
           ]]]
     state:
-      - font-weight: 200
-      - font-size: 5rem
+      - font-weight: 600
+      - font-size: var(--h3-font-size)
       - background-color: transparent
       - justify-self: end
       - align-self: end
@@ -167,11 +172,11 @@ clock:
     custom_fields:
       weather:
         - place-self: end center
-        - padding-bottom: 0.25rem
+        # - padding-bottom: 0.1rem
         - margin-left: 0.8rem
       temp:
         - place-self: start center
-        - padding-top: 0.25rem
+        # - padding-top: 0.1rem
         - margin-left: 0.8rem
       date:
         - align-self: start
