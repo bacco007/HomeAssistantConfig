@@ -98,7 +98,7 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
     WeatherFlowSensorEntityDescription(
         key="absolute_humidity",
         name="Absolute Humidity",
-        native_unit_of_measurement="%",
+        native_unit_of_measurement="g/m^3",
         device_class=DEVICE_CLASS_HUMIDITY,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
