@@ -1,6 +1,7 @@
 title: Now Playing
 path: now-playing
 theme: "Fluent Red"
+visible: false
 
 type: "custom:grid-layout"
 layout: !include snippets/layout-page-margin.yaml

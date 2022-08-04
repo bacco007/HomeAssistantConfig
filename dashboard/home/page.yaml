@@ -1230,7 +1230,7 @@ cards:
                     template: live_tile
                     entity: sensor.binday_waste
                     name: Red Bin
-                    state_display: "[[[ return entity.state  ]]]"
+                    state_display: "[[[ return entity.attributes.days  ]]]"
                     show_units: false
                     styles:
                       grid:
@@ -1252,7 +1252,7 @@ cards:
                     entity: sensor.binday_recycling
                     name: Yellow Bin
                     view_layout:
-                    state_display: "[[[ return entity.state  ]]]"
+                    state_display: "[[[ return entity.attributes.days ]]]"
                     show_units: false
                     styles:
                       grid:
@@ -1273,7 +1273,7 @@ cards:
                     template: live_tile
                     entity: sensor.binday_greenwaste
                     name: Green Bin
-                    state_display: "[[[ return entity.state  ]]]"
+                    state_display: "[[[ return entity.attributes.days  ]]]"
                     show_units: false
                     styles:
                       grid:
