@@ -61,7 +61,7 @@ cards:
               - live_tile_media_player
             entity: media_player.spotify_thomas_baxter
             icon: "mdi:spotify"
-            name: Apple TV
+            name: Spotify
             variables:
               aspect_ratio: 2/1
           - type: "custom:button-card"

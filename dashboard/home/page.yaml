@@ -55,8 +55,8 @@ cards:
           grid-template-columns: 1fr 1fr 1fr
           grid-template-areas: |
             "h h h"
-            "c1 fp fp"
-            "c2 none none"
+            "c1 c2 none"
+            "fp fp none"
           margin: 0
       margin: 0
 
@@ -473,8 +473,8 @@ cards:
           card_margin: 1px
         view_layout:
           grid-area: c2
-          show:
-            mediaquery: "(min-width: 1508.1px), (max-width: 800px)"
+          # show:
+          #   mediaquery: "(min-width: 1508.1px), (max-width: 800px)"
         cards:
           - entity: sensor.time
             template: clock

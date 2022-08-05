@@ -511,7 +511,6 @@ live_tile_sport:
   variables:
     aspect_ratio: 2/1
 
-  # state_display: "[[[ return entity.attributes.media_title ]]]"
   label: |-
     [[[
       if (entity.attributes.nexttime != undefined) {
@@ -638,16 +637,13 @@ live_tile_conditional_media:
     state:
       - padding-right: |-
           [[[
-            if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
-              return "50%"
-            } else { return 0 }
+            return "50%"
           ]]]
+      - font_weight: 700
     label:
       - padding-right: |-
           [[[
-            if ((entity.attributes.entity_picture != undefined) || (entity.attributes.entity_picture_local != undefined)) {
-              return "50%"
-            } else { return 0 }
+            return "50%"
           ]]]
     img_cell:
       - place-self: end end
@@ -655,19 +651,28 @@ live_tile_conditional_media:
       - position: absolute
     name:
       - padding-right: 24px
-    card:
-      - color: var(--primary-background-color)
-      - background-size: cover
-      - background-position: center center
-      - background-image: |-
-          [[[
-            if (entity.attributes.entity_picture != undefined) {
-              return "url(" + entity.attributes.entity_picture + ")"
-            } else if (entity.attributes.entity_picture_local != undefined) {
-              return "url(" + entity.attributes.entity_picture_local + ")"
-            } else if (entity.attributes.data[variables.i].poster != undefined) {
-              return "url(" + entity.attributes.data[variables.i].poster + ")"
-            } else if (entity.attributes.data[variables.i].fanart != undefined) {
-              return "url(" + entity.attributes.data[variables.i].fanart + ")"
-            } 
-          ]]]
+    custom_fields:
+      picture:
+        - background: |-
+            [[[
+              if (entity.attributes.entity_picture != undefined) {
+                return "url(" + variables.image + ")"
+              } else if (entity.attributes.entity_picture_local != undefined) {
+                return "url(" + entity.attributes.entity_picture_local + ")"
+              } else if (entity.attributes.data[variables.i].poster != undefined) {
+                return "url(" + entity.attributes.data[variables.i].poster + ")"
+              } else if (entity.attributes.data[variables.i].fanart != undefined) {
+                return "url(" + entity.attributes.data[variables.i].fanart + ")"
+              } 
+            ]]]
+        - background-size: "calc( 75% )"
+        - background-repeat: no-repeat
+        - background-position: center center
+        - position: absolute
+        - right: 16px
+        - width: |-
+            [[[
+              return "calc( 50% - 32px )"
+            ]]]
+        - border-radius: 50%
+        - aspect-ratio: 1/1
