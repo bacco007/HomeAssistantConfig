@@ -30,7 +30,7 @@ cards:
           - type: markdown
             style: !include ../snippets/style-markdown-page-title.yaml
             content: >
-              # Network
+              # TV & Movies
 
               The Internet is {{ states('binary_sensor.ping_cloudflare') }}
               and {{ states('sensor.asuswrt_devices_connected') }} devices
@@ -39,47 +39,21 @@ cards:
               states('sensor.speedtest_download')|int >= 22, 'normal',
               'slower than usual') }}.{%- endif -%}
           - type: "custom:layout-card"
-            layout_type: "custom:horizontal-layout"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: 0
+              padding: 0
+              card_margin: 1px
             view_layout:
-              place-self: center start
+              place-self: end right
             cards:
-              - type: "custom:swipe-card"
-                parameters:
-                  breakpointBase: container
-                  enabled: true
-                  slidesPerView: 1.66
-                  breakpoints:
-                    "600":
-                      enabled: false
-                      slidesPerView: 3
-                cards:
-                  # - type: "custom:mushroom-entity-card"
-                  #   entity: sensor.goodserviceio_l_service
-                  #   name: Subway Map ↗
-                  #   icon_color: pink
-                  #   tap_action:
-                  #     action: url
-                  #     url_path: "https://citizen.com/explore"
-                  #   style: "ha-card {background: none;}"
-
-                  - type: "custom:mushroom-template-card"
-                    primary: Citizen ↗
-                    icon: "mdi:police-badge"
-                    style: "ha-card {background: none;}"
-                    icon_color: pink
-                    tap_action:
-                      action: url
-                      url_path: "https://citizen.com/explore"
-
-                  - type: "custom:mushroom-template-card"
-                    primary: NYC 311 ↗
-                    secondary: null
-                    icon: "mdi:shield-alert"
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: "https://portal.311.nyc.gov/"
+              - entity: sensor.time
+                template: clock
+                type: custom:button-card
+                variables:
+                  entity_date: sensor.date
+                  entity_temperature: sensor.tempest_st_00056115_temperature
+                  entity_weather: weather.east_tamworth_hourly
 
       # Column 1 - Sonarr
       - !include partial_sonarr.yaml

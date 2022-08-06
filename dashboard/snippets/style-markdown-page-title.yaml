@@ -1,6 +1,7 @@
 .: |
   ha-card {
     background: none;
+    margin-bottom: -16px;
   }
 ha-markdown$: |
   h1 {
@@ -9,4 +10,5 @@ ha-markdown$: |
     line-height: 1.1;
     margin-left: -2px;
     margin-block-end: -8px;
+    margin-top: -12px !important;
   }
