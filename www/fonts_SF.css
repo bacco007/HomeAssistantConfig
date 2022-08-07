@@ -1,231 +1,418 @@
-@font-face {
-  font-family: sf display;
-  font-weight: 900;
-  src: url(/local/fonts/SF-UI-Display-Black.otf);
-}
+/*
+Copy fonts to config/www/fonts
+https://drive.google.com/file/d/1XRnmy2k0VFxOFaicnkdYH4o-wfAYZAf1/view?usp=sharing
+*/
 
+/* * * SF Mono * * */
+
+/* Bold */
 @font-face {
-  font-family: sf display;
+  src: local("SF Mono Bold"),
+    url("/local/fonts/SFMono-Bold.woff2") format("woff2");
+  font-family: "SF Mono";
   font-weight: 700;
-  src: url(/local/fonts/SF-UI-Display-Bold.otf);
+  font-display: swap;
 }
 
+/* Bold Italic */
 @font-face {
-  font-family: sf display;
+  src: local("SF Mono Bold Italic"),
+    url("/local/fonts/SFMono-BoldItalic.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Heavy */
+@font-face {
+  src: local("SF Mono Heavy"),
+    url("/local/fonts/SFMono-Heavy.woff2") format("woff2");
+  font-family: "SF Mono";
   font-weight: 800;
-  src: url(/local/fonts/SF-UI-Display-Heavy.otf);
+  font-display: swap;
 }
 
+/* Heavy Italic */
 @font-face {
-  font-family: sf display;
-  font-weight: 200;
-  src: url(/local/fonts/SF-UI-Display-Light.otf);
+  src: local("SF Mono Heavy Italic"),
+    url("/local/fonts/SFMono-HeavyItalic.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
 }
 
+/* Light */
 @font-face {
-  font-family: sf display;
-  font-weight: 500;
-  src: url(/local/fonts/SF-UI-Display-Medium.otf);
-}
-
-@font-face {
-  font-family: sf display;
-  font-weight: 400;
-  src: url(/local/fonts/SF-UI-Display-Regular.otf);
-}
-
-@font-face {
-  font-family: sf display;
-  font-weight: 600;
-  src: url(/local/fonts/SF-UI-Display-Semibold.otf);
-}
-
-@font-face {
-  font-family: sf display;
+  src: local("SF Mono Light"),
+    url("/local/fonts/SFMono-Light.woff2") format("woff2");
+  font-family: "SF Mono";
   font-weight: 300;
-  src: url(/local/fonts/SF-UI-Display-Thin.otf);
+  font-display: swap;
 }
 
+/* Light Italic */
 @font-face {
-  font-family: sf display;
+  src: local("SF Mono Light Italic"),
+    url("/local/fonts/SFMono-LightItalic.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Medium */
+@font-face {
+  src: local("SF Mono Medium"),
+    url("/local/fonts/SFMono-Medium.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* Medium Italic */
+@font-face {
+  src: local("SF Mono Medium Italic"),
+    url("/local/fonts/SFMono-MediumItalic.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Regular */
+@font-face {
+  src: local("SF Mono Regular"),
+    url("/local/fonts/SFMono-Regular.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Regular Italic */
+@font-face {
+  src: local("SF Mono Regular Italic"),
+    url("/local/fonts/SFMono-RegularItalic.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Semibold */
+@font-face {
+  src: local("SF Mono Semibold"),
+    url("/local/fonts/SFMono-Semibold.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 600;
+  font-display: swap;
+}
+
+/* Semibold Italic */
+@font-face {
+  src: local("SF Mono Semibold Italic"),
+    url("/local/fonts/SFMono-SemiboldItalic.woff2") format("woff2");
+  font-family: "SF Mono";
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* * * SF Pro Display * * */
+
+/* Black */
+@font-face {
+  src: local("SF Pro Display Black"),
+    url("/local/fonts/SFProDisplay-Black.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 900;
+  font-display: swap;
+}
+
+/* Black Italic */
+@font-face {
+  src: local("SF Pro Display Black Italic"),
+    url("/local/fonts/SFProDisplay-BlackItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Bold */
+@font-face {
+  src: local("SF Pro Display Bold"),
+    url("/local/fonts/SFProDisplay-Bold.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* Bold Italic */
+@font-face {
+  src: local("SF Pro Display Bold Italic"),
+    url("/local/fonts/SFProDisplay-BoldItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Heavy */
+@font-face {
+  src: local("SF Pro Display Heavy"),
+    url("/local/fonts/SFProDisplay-Heavy.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 800;
+  font-display: swap;
+}
+
+/* Heavy Italic */
+@font-face {
+  src: local("SF Pro Display Heavy Italic"),
+    url("/local/fonts/SFProDisplay-HeavyItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Light */
+@font-face {
+  src: local("SF Pro Display Light"),
+    url("/local/fonts/SFProDisplay-Light.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 300;
+  font-display: swap;
+}
+
+/* Light Italic */
+@font-face {
+  src: local("SF Pro Display Light Italic"),
+    url("/local/fonts/SFProDisplay-LightItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Medium */
+@font-face {
+  src: local("SF Pro Display Medium"),
+    url("/local/fonts/SFProDisplay-Medium.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* Medium Italic */
+@font-face {
+  src: local("SF Pro Display Medium Italic"),
+    url("/local/fonts/SFProDisplay-MediumItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Regular */
+@font-face {
+  src: local("SF Pro Display Regular"),
+    url("/local/fonts/SFProDisplay-Regular.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Regular Italic */
+@font-face {
+  src: local("SF Pro Display Regular Italic"),
+    url("/local/fonts/SFProDisplay-RegularItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Semibold */
+@font-face {
+  src: local("SF Pro Display Semibold"),
+    url("/local/fonts/SFProDisplay-Semibold.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 600;
+  font-display: swap;
+}
+
+/* Semibold Italic */
+@font-face {
+  src: local("SF Pro Display Semibold Italic"),
+    url("/local/fonts/SFProDisplay-SemiboldItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Thin */
+@font-face {
+  src: local("SF Pro Display Thin"),
+    url("/local/fonts/SFProDisplay-Thin.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 200;
+  font-display: swap;
+}
+
+/* Thin Italic */
+@font-face {
+  src: local("SF Pro Display Thin Italic"),
+    url("/local/fonts/SFProDisplay-ThinItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Ultralight */
+@font-face {
+  src: local("SF Pro Display Ultralight"),
+    url("/local/fonts/SFProDisplay-Ultralight.woff2") format("woff2");
+  font-family: "SF Pro Display";
   font-weight: 100;
-  src: url(/local/fonts/SF-UI-Display-Ultralight.otf);
+  font-display: swap;
 }
 
+/* Ultralight Italic */
 @font-face {
-  font-family: sf text;
-  font-weight: 700;
-  src: url(/local/fonts/SF-UI-Text-Bold.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 700;
-  font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-BoldItalic.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 800;
-  src: url(/local/fonts/SF-UI-Text-Heavy.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 800;
-  font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-HeavyItalic.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 200;
-  src: url(/local/fonts/SF-UI-Text-Light.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 200;
-  font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-LightItalic.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 500;
-  src: url(/local/fonts/SF-UI-Text-Medium.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 500;
-  font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-MediumItalic.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 400;
-  src: url(/local/fonts/SF-UI-Text-Regular.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 400;
-  font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-RegularItalic.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 600;
-  src: url(/local/fonts/SF-UI-Text-Semibold.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 600;
-  font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-SemiboldItalic.otf);
-}
-
-@font-face {
-  font-family: sf text;
-  font-weight: 100;
-  src: url(/local/fonts/SF-UI-Text-Ultrathin.otf);
-}
-
-@font-face {
-  font-family: sf text;
+  src: local("SF Pro Display Ultralight Italic"),
+    url("/local/fonts/SFProDisplay-UltralightItalic.woff2") format("woff2");
+  font-family: "SF Pro Display";
   font-weight: 100;
   font-style: italic;
-  src: url(/local/fonts/SF-UI-Text-UltrathinItalic.otf);
+  font-display: swap;
 }
 
+/* * * SF Pro Text * * */
+
+/* Bold */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Bold"),
+    url("/local/fonts/SFProText-Bold.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 700;
-  src: url(/local/fonts/SFMono-Bold.otf);
+  font-display: swap;
 }
 
+/* Bold Italic */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Bold Italic"),
+    url("/local/fonts/SFProText-BoldItalic.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 700;
   font-style: italic;
-  src: url(/local/fonts/SFMono-BoldItalic.otf);
+  font-display: swap;
 }
 
+/* Heavy */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Heavy"),
+    url("/local/fonts/SFProText-Heavy.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 800;
-  src: url(/local/fonts/SFMono-Heavy.otf);
+  font-display: swap;
 }
 
+/* Heavy Italic */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Heavy Italic"),
+    url("/local/fonts/SFProText-HeavyItalic.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 800;
   font-style: italic;
-  src: url(/local/fonts/SFMono-HeavyItalic.otf);
+  font-display: swap;
 }
 
+/* Light */
 @font-face {
-  font-family: sf mono;
-  font-weight: 200;
-  src: url(/local/fonts/SFMono-Light.otf);
+  src: local("SF Pro Text Light"),
+    url("/local/fonts/SFProText-Light.woff2") format("woff2");
+  font-family: "SF Pro Text";
+  font-weight: 300;
+  font-display: swap;
 }
 
+/* Light Italic */
 @font-face {
-  font-family: sf mono;
-  font-weight: 200;
+  src: local("SF Pro Text Light Italic"),
+    url("/local/fonts/SFProText-LightItalic.woff2") format("woff2");
+  font-family: "SF Pro Text";
+  font-weight: 300;
   font-style: italic;
-  src: url(/local/fonts/SFMono-LightItalic.otf);
+  font-display: swap;
 }
 
+/* Medium */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Medium"),
+    url("/local/fonts/SFProText-Medium.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 500;
-  src: url(/local/fonts/SFMono-Medium.otf);
+  font-display: swap;
 }
 
+/* Medium Italic */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Medium Italic"),
+    url("/local/fonts/SFProText-MediumItalic.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 500;
   font-style: italic;
-  src: url(/local/fonts/SFMono-MediumItalic.otf);
+  font-display: swap;
 }
 
+/* Regular */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Regular"),
+    url("/local/fonts/SFProText-Regular.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 400;
-  src: url(/local/fonts/SFMono-Regular.otf);
+  font-display: swap;
 }
 
+/* Regular Italic */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Regular Italic"),
+    url("/local/fonts/SFProText-RegularItalic.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 400;
   font-style: italic;
-  src: url(/local/fonts/SFMono-RegularItalic.otf);
+  font-display: swap;
 }
 
+/* Semibold */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Semibold"),
+    url("/local/fonts/SFProText-Semibold.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 600;
-  src: url(/local/fonts/SFMono-Semibold.otf);
+  font-display: swap;
 }
 
+/* Semibold Italic */
 @font-face {
-  font-family: sf mono;
+  src: local("SF Pro Text Semibold Italic"),
+    url("/local/fonts/SFProText-SemiboldItalic.woff2") format("woff2");
+  font-family: "SF Pro Text";
   font-weight: 600;
   font-style: italic;
-  src: url(/local/fonts/SFMono-SemiboldItalic.otf);
+  font-display: swap;
 }
 
 body {
-  font-family: SF Text, Roboto, system-ui;
+  font-family: SF Pro Text, Roboto, system-ui;
 }
 
 html {
-  font-family: SF Text, Roboto, system-ui;
-  --paper-font-common-base_-_font-family: SF Text, Roboto, system-ui;
+  font-family: SF Pro Text, Roboto, system-ui;
+  --paper-font-common-base_-_font-family: SF Pro Text, Roboto, system-ui;
 }

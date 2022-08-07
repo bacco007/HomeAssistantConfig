@@ -1,5 +1,5 @@
-title: Environment
-path: climate
+title: Weather
+path: weather
 theme: "Fluent Red"
 
 type: "custom:grid-layout"
@@ -11,17 +11,14 @@ cards:
     view_layout:
       grid-area: cc
     layout:
-      grid-column-gap: 32px
-      grid-template-columns: "repeat(auto-fit, [col-start] minmax(400px, 1fr) [col-end])"
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(450px, 1fr) [col-end])"
       grid-template-rows: auto
-      max_cols: 4
+      grid-column-gap: 32px
       margin: -1px
-    mediaquery:
-      "(max-width: 480px)":
-        grid-template-columns: 1fr
-
+      mediaquery:
+        "(max-width: 800px)":
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
     cards:
-      # [Header] Summary
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
         layout: !include snippets/layout-page-title.yaml
@@ -29,82 +26,26 @@ cards:
           grid-column: 1/-1
         cards:
           - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
             content: >
-              # Environment
-              It is {{ states('sensor.thermal_comfort_indoor_average_simmerzone') | regex_replace(find='_', replace=' ') | lower }} 
-              and {{ states('sensor.thermal_comfort_indoor_average_perception') | regex_replace(find='_', replace=' ') | lower }} at 
-              {{states('sensor.indoor_average_temperature')}}°C
-              inside. It is {{ states('sensor.outside_thermal_comfort_simmerzone') | regex_replace(find='_', replace=' ') | lower }} 
-              and {{ states('sensor.outside_thermal_comfort_perception') | regex_replace(find='_', replace=' ') | lower }} at {{
-              states('sensor.tempest_st_00056115_feels_like_temperature') }}°C and is
-              getting {{ iif
-              (states('sensor.valhalla_hourly_forecast_temperature_rising')
-              == 'Falling', 'colder', 'warmer') }} and {{ iif
-              (states('sensor.valhalla_hourly_forecast_wind_speed_increasing')
-              == 'Increasing', 'more windy', 'less windy') }} outside.
-              {%- set is_window_open =
-              is_state('binary_sensor.bedroom_window_sensor_center_ias_zone',
-              'on') or
-              is_state('binary_sensor.living_room_window_sensor_right_ias_zone',
-              'on') or
-              is_state('binary_sensor.living_room_window_sensor_center_ias_zone',
-              'on') -%} {{ iif( is_window_open and
-              states('sensor.tempest_st_00056115_feels_like_temperature')|int < 15, ' You
-              should close your windows.', '') }}
-            style:
-              .: |
-                ha-card {
-                  background: none;
-                }
-              ha-markdown$: |
-                h1 {
-                  font-size: var(--title-font-size);
-                  font-weight: 500;
-                  line-height: 1.1;
-                  margin-left: -2px;
-                  margin-block-end: -8px;
-                }
+              # Weather
+
           - type: "custom:layout-card"
-            layout_type: "custom:horizontal-layout"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: 0
+              padding: 0
+              card_margin: 1px
             view_layout:
-              place-self: center start
+              place-self: end right
             cards:
-              - type: "custom:swipe-card"
-                parameters:
-                  breakpointBase: container
-                  enabled: true
-                  slidesPerView: 1.66
-                  breakpoints:
-                    "600":
-                      enabled: false
-                      slidesPerView: 3
-                cards:
-                  - type: "custom:mushroom-entity-card"
-                    entity: device_tracker.weatherflow
-                    name: Tempest ↗
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: "https://my.netatmo.com/app/station"
-
-                  - type: "custom:mushroom-fan-card"
-                    entity: fan.bedroom
-                    icon_animation: true
-                    name: Bedroom Dyson
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    hold_action:
-                      action: more-info
-
-                  - type: "custom:mushroom-entity-card"
-                    entity: switch.spare_power
-                    icon_animation: true
-                    name: Bedroom Humidifier
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    hold_action:
-                      action: more-info
+              - entity: sensor.time
+                template: clock
+                type: custom:button-card
+                variables:
+                  entity_date: sensor.date
+                  entity_temperature: sensor.tempest_st_00056115_temperature
+                  entity_weather: weather.east_tamworth_hourly
 
       #[Row] Controls
       # - type: "custom:layout-card"
@@ -309,13 +250,6 @@ cards:
                     entities:
                       - sensor.indoor_outdoor_temperature_difference
 
-                  # - type: entities
-                  #   entities:
-                  #     - entity: sensor.workspace_room_hue_sensor_temperature
-                  #       name: ' '
-                  #     - entity: sensor.bathroom_env_sensor_temperature
-                  #       name: ' '
-
               - type: custom:apexcharts-card
                 config_templates:
                   - environment_chart
@@ -329,25 +263,26 @@ cards:
                         } else { return '' }
                       }
                 series:
-                  - entity: sensor.elevation
-                    color: var(--primary-text-color)
-                    opacity: .2
-                    stroke_width: .5
-                    yaxis_id: sun
-                    unit: °
-                    show:
-                      legend_value: false
+                  # - entity: sensor.elevation
+                  #   color: var(--primary-text-color)
+                  #   opacity: .2
+                  #   stroke_width: .5
+                  #   yaxis_id: sun
+                  #   unit: °
+                  #   show:
+                  #     legend_value: false
 
-                  - entity: sensor.elevation
-                    color: var(--primary-text-color)
-                    opacity: .2
-                    stroke_width: .5
-                    yaxis_id: sun
-                    unit: °
-                    data_generator: |
-                      const now = new Date();
-                      const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
-                      return data;
+                  # - entity: sensor.elevation
+                  #   color: var(--primary-text-color)
+                  #   opacity: .2
+                  #   stroke_width: .5
+                  #   yaxis_id: sun
+                  #   unit: °
+                  #   data_generator: |
+                  #     const now = new Date();
+                  #     const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
+                  #     return data;
+
                   - entity: sensor.tamworth_airport_temp
                     type: area
                     name: Airport
@@ -358,6 +293,9 @@ cards:
                     show:
                       datalabels: true
                       extremas: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
                   - entity: sensor.tempest_st_00056115_temperature
                     name: Outside
@@ -370,38 +308,38 @@ cards:
                     show:
                       datalabels: true
 
-                  # - entity: sensor.bedroom_hue_sensor_temperature
-                  #   name: Bedroom Hue
-                  #   stroke_width: 1
-                  #   yaxis_id: main
-                  #   color: hotpink
-                  #   show:
-                  #     datalabels: true
-                  #   group_by:
-                  #     func: last
-                  #     duration: 30min
+                  - entity: sensor.zha_bedroom_temperature
+                    name: Bedroom
+                    stroke_width: 1
+                    yaxis_id: main
+                    color: hotpink
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
-                  # - entity: sensor.workspace_room_hue_sensor_temperature
-                  #   name: Workspace
-                  #   stroke_width: 1
-                  #   yaxis_id: main
-                  #   color: orange
-                  #   show:
-                  #     datalabels: true
-                  #   group_by:
-                  #     func: last
-                  #     duration: 30min
+                  - entity: sensor.zha_office_temperature
+                    name: Office
+                    stroke_width: 1
+                    yaxis_id: main
+                    color: orange
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
-                  # - entity: sensor.bathroom_env_sensor_temperature
-                  #   name: Bathroom
-                  #   stroke_width: 1
-                  #   color: turquoise
-                  #   yaxis_id: main
-                  #   show:
-                  #     datalabels: true
-                  #   group_by:
-                  #     func: last
-                  #     duration: 30min
+                  - entity: sensor.zha_lounge_weather_temperature
+                    name: Lounge
+                    stroke_width: 1
+                    color: green
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
                   # - entity: sensor.living_room_air_purifier_temperature
                   #   name: Living Room
@@ -432,6 +370,9 @@ cards:
                     show:
                       datalabels: true
                       extremas: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
                   # - entity: sensor.indoor_temperature_legal_limit
                   #   name: Legal Limit
@@ -440,7 +381,7 @@ cards:
 
                   - entity: weather.east_tamworth_hourly
                     type: area
-                    name: Meteo
+                    name: Forecast
                     attribute: temperature
                     yaxis_id: main
                     stroke_width: .5
@@ -537,26 +478,26 @@ cards:
                         } else { return '' }
                       }
                 series:
-                  - entity: sensor.elevation
-                    color: var(--primary-text-color)
-                    opacity: .2
-                    stroke_width: .5
-                    yaxis_id: sun
-                    show:
-                      legend_value: false
+                  # - entity: sensor.elevation
+                  #   color: var(--primary-text-color)
+                  #   opacity: .2
+                  #   stroke_width: .5
+                  #   yaxis_id: sun
+                  #   show:
+                  #     legend_value: false
 
-                  - entity: sensor.elevation
-                    color: var(--primary-text-color)
-                    opacity: .2
-                    stroke_width: .5
-                    yaxis_id: sun
-                    data_generator: |
-                      const now = new Date();
-                      const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
-                      return data;
+                  # - entity: sensor.elevation
+                  #   color: var(--primary-text-color)
+                  #   opacity: .2
+                  #   stroke_width: .5
+                  #   yaxis_id: sun
+                  #   data_generator: |
+                  #     const now = new Date();
+                  #     const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
+                  #     return data;
                   - entity: sensor.tamworth_airport_humidity
                     type: area
-                    name: Accuweather
+                    name: Airport
                     yaxis_id: main
                     stroke_width: .5
                     color: gray
@@ -564,6 +505,9 @@ cards:
                     show:
                       datalabels: true
                       extremas: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
                   - entity: sensor.tempest_st_00056115_humidity
                     name: Outside
@@ -576,38 +520,38 @@ cards:
                     show:
                       datalabels: true
 
-                  # - entity: sensor.netatmo_strawberry_land_indoor_humidity
-                  #   name: Bedroom Netatmo
-                  #   stroke_width: 1
-                  #   yaxis_id: main
-                  #   color: hotpink
-                  #   show:
-                  #     datalabels: true
-                  #   group_by:
-                  #     func: last
-                  #     duration: 30min
+                  - entity: sensor.zha_bedroom_humidity
+                    name: Bedroom
+                    stroke_width: 1
+                    yaxis_id: main
+                    color: hotpink
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
-                  # - entity: sensor.bathroom_env_sensor_humidity
-                  #   name: Bathroom
-                  #   stroke_width: 1
-                  #   color: turquoise
-                  #   yaxis_id: main
-                  #   show:
-                  #     datalabels: true
-                  #   group_by:
-                  #     func: last
-                  #     duration: 30min
+                  - entity: sensor.zha_office_humidity
+                    name: Office
+                    stroke_width: 1
+                    color: orange
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
-                  # - entity: sensor.living_room_air_purifier_humidity
-                  #   name: Living Room
-                  #   stroke_width: 1
-                  #   color: green
-                  #   yaxis_id: main
-                  #   show:
-                  #     datalabels: true
-                  #   group_by:
-                  #     func: last
-                  #     duration: 30min
+                  - entity: sensor.zha_lounge_weather_humidity
+                    name: Lounge
+                    stroke_width: 1
+                    color: green
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
                   - entity: sensor.indoor_average_humidity
                     name: Indoor Avg
@@ -616,6 +560,9 @@ cards:
                     show:
                       datalabels: true
                       extremas: true
+                    group_by:
+                      func: last
+                      duration: 30min
 
                 card_mod:
                   style:

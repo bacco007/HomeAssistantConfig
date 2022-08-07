@@ -1,12 +1,15 @@
 ---
 type: "custom:layout-card"
 view_layout:
-  grid-column: span 2
+  grid-column: 1/-1
 layout_type: "custom:grid-layout"
 layout:
   grid-template-columns: "repeat(auto-fill, [col-start] minmax(50%, 1fr) [col-end])"
   grid-template-rows: auto
   margin: -1
+  mediaquery:
+    "(max-width: 760px)":
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(100%, 1fr) [col-end])"
 cards:
   - type: "custom:button-card"
     template: header_card
@@ -36,8 +39,7 @@ cards:
         name: Movies
   - type: vertical-stack
     view_layout:
-      grid-column-start: 1
-      grid-column-end: 1
+      grid-column-start: 1/1
     cards:
       - type: custom:stack-in-card
         mode: vertical
@@ -87,8 +89,7 @@ cards:
               </details>
   - type: vertical-stack
     view_layout:
-      grid-column-start: 2
-      grid-column-end: 2
+      grid-column-start: 2/2
     cards:
       - type: custom:stack-in-card
         mode: vertical
@@ -107,7 +108,8 @@ cards:
               {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
               <tr>
               <td>{{ airdate }}</td>
-              <td>{{item.title}}: ({{item.number}}, {{item.episode}})</td>
+              <td>{{item.title}}<br/>
+                <span>{{item.number}}, {{item.episode}}</span></td>
               </tr>
               {%- endif %}{%endif%}{% endfor %}
               </table>

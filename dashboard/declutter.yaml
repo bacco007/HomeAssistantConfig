@@ -14,6 +14,7 @@ mini_graph_tile:
     - aspect_ratio: 1/1
     - line_width: 4
     - icon: ""
+    - decimals: 0
   card:
     type: "custom:mini-graph-card"
     entities: "[[entities]]"
@@ -29,7 +30,7 @@ mini_graph_tile:
       labels_secondary: false
       points: false
       legend: false
-    decimals: 0
+    decimals: "[[decimals]]"
     lower_bound: "[[lower_bound]]"
     upper_bound: "[[upper_bound]]"
     card_mod:

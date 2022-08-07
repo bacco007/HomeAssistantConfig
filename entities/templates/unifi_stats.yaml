@@ -1,0 +1,32 @@
+---
+sensor:
+  - name: unifi_networkstats_connected_devices
+    unique_id: unifi_networkstats_connected_devices
+    unit_of_measurement: Devices
+    icon: mdi:network-pos
+    state: >
+      {{ state_attr('sensor.unifi_gateway_lan','num_user')|int(default=0) +
+         state_attr('sensor.unifi_gateway_lan','num_iot')|int(default=0) +
+         state_attr('sensor.unifi_gateway_wlan','num_user')|int(default=0) +
+         state_attr('sensor.unifi_gateway_wlan','num_iot')|int(default=0)}}
+    attributes:
+      lan_devices: >
+        {{ state_attr('sensor.unifi_gateway_lan','num_user')|int(default=0)}}
+      lan_iot_devices: >
+        {{ state_attr('sensor.unifi_gateway_lan','num_iot')|int(default=0)}}
+      wlan_devices: >
+        {{ state_attr('sensor.unifi_gateway_wlan','num_user')|int(default=0)}}
+      wlan_iot_devices: >
+        {{ state_attr('sensor.unifi_gateway_wlan','num_iot')|int(default=0)}}
+  - name: unifi_networkstats_switchap
+    unique_id: unifi_networkstats_switchap
+    unit_of_measurement: Devices
+    icon: mdi:network-pos
+    state: >
+      {{ state_attr('sensor.unifi_gateway_lan','num_adopted')|int(default=0) +
+         state_attr('sensor.unifi_gateway_wlan','num_adopted')|int(default=0)}}
+    attributes:
+      switch: >
+        {{ state_attr('sensor.unifi_gateway_lan','num_adopted')|int(default=0)}}
+      ap: >
+        {{ state_attr('sensor.unifi_gateway_wlan','num_adopted')|int(default=0)}}

@@ -222,20 +222,20 @@ sensor:
 
       # Cricket
       sport_cricket:
-        friendly_name: Cricket (Aus/Syd6)
+        friendly_name: Cricket (Australia)
         entity_picture_template: /local/sportlogos/cricket.png
         value_template: >-
-          {%- if state_attr('calendar.ical_cricket_australia', 'message') %}
-            {{ state_attr('calendar.ical_cricket_australia', 'message') }}
+          {%- if state_attr('calendar.ical_australia_cricket', 'message') %}
+            {{ state_attr('calendar.ical_australia_cricket', 'message') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
         attribute_templates:
           nexttime: >-
-            {%- if is_state('calendar.ical_cricket_australia', 'on') %}
+            {%- if is_state('calendar.ical_australia_cricket', 'on') %}
               On Now!
             {%- else %}
-              {%- set st = state_attr('calendar.ical_cricket_australia', 'start_time') %}
+              {%- set st = state_attr('calendar.ical_australia_cricket', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {%- if diff > 6 %}
@@ -248,25 +248,25 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_cricket_australia', 'message') %}
-            {%- set st = state_attr('calendar.ical_cricket_australia', 'start_time') %}
+            {%- set op = state_attr('calendar.ical_australia_cricket', 'message') %}
+            {%- set st = state_attr('calendar.ical_australia_cricket', 'start_time') %}
             {%- if st != None %}
               {{ op }}
             {%- else %}
               No Match Scheduled
             {%- endif %}
           nextlocation: >-
-            {%- set op = state_attr('calendar.ical_cricket_australia', 'location') %}
+            {%- set op = state_attr('calendar.ical_australia_cricket', 'location') %}
             {%- if op != None %}
               {{ op }}
             {%- else %}
               No Location Noted
             {%- endif %}
           sortorder: >-
-            {%- if is_state('calendar.ical_cricket_australia', 'on') %}
+            {%- if is_state('calendar.ical_australia_cricket', 'on') %}
               0.0
             {%- else %}
-              {%- set st = state_attr('calendar.ical_cricket_australia', 'start_time') %}
+              {%- set st = state_attr('calendar.ical_australia_cricket', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}.0
@@ -281,7 +281,7 @@ sensor:
         entity_picture_template: /local/sportlogos/supercars.png
         value_template: >-
           {%- if state_attr('calendar.ical_supercars', 'message') %}
-            {{ state_attr('calendar.ical_supercars', 'message') | replace('SUPERCARS: ','') }}
+            {{ state_attr('calendar.ical_supercars', 'message') | replace('Repco Supercars - ','') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
@@ -303,7 +303,7 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_supercars', 'message') | replace('SUPERCARS: ','') %}
+            {%- set op = state_attr('calendar.ical_supercars', 'message') | replace('Repco Supercars - ','') %}
             {%- set st = state_attr('calendar.ical_supercars', 'start_time') %}
             {%- if st != None %}
               {{ op }}
@@ -554,7 +554,7 @@ sensor:
         entity_picture_template: /local/sportlogos/indycar.png
         value_template: >-
           {%- if state_attr('calendar.ical_indycar', 'message') %}
-            {{ state_attr('calendar.ical_indycar', 'message') | replace('🏁 ', '') }}
+            {{ state_attr('calendar.ical_indycar', 'message') | replace('Indycar - ', '') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
@@ -576,7 +576,7 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_indycar', 'message') | replace('🏁 ', '') %}
+            {%- set op = state_attr('calendar.ical_indycar', 'message') | replace('Indycar - ', '') %}
             {%- set st = state_attr('calendar.ical_indycar', 'start_time') %}
             {%- if st != None %}
               {{ op }}
@@ -718,6 +718,74 @@ sensor:
               0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_sydney_fc', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}.0
+              {%- else %}
+                999.0
+              {%- endif %}
+            {%- endif %}
+
+      sport_sydfc_women:
+        friendly_name: Sydney FC Women
+        entity_picture_template: /local/sportlogos/sydfc.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_sydney_fc_women', 'message')  == None %}
+            No Game Scheduled
+          {%- else %}
+            {%- set op = state_attr('calendar.ical_sydney_fc_women', 'message').split(' - ')[0] %}
+            {%- set st = state_attr('calendar.ical_sydney_fc_women', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_sydney_fc_women', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_fc_women', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- if state_attr('calendar.ical_sydney_fc_women', 'message')  == None %}
+              No Game Scheduled
+            {%- else %}
+              {%- set op = state_attr('calendar.ical_sydney_fc_women', 'message').split(' - ')[0] %}
+              {%- set st = state_attr('calendar.ical_sydney_fc_women', 'start_time') %}
+              {%- if st != None %}
+                {{ op }}
+              {%- else %}
+                No Game Scheduled
+              {%- endif %}
+            {%- endif %}
+          nextlocation: >-
+            {%- if state_attr('calendar.ical_sydney_fc_women', 'message')  == None %}
+              No Location Noted
+            {%- else %}
+              {%- set op = state_attr('calendar.ical_sydney_fc_women', 'location') %}
+              {%- if op != None %}
+                {{ op }}
+              {%- else %}
+                No Location Noted
+              {%- endif %}
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_sydney_fc_women', 'on') %}
+              0.0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_fc_women', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}.0
@@ -974,7 +1042,7 @@ sensor:
         entity_picture_template: /local/sportlogos/icgtc.png
         value_template: >-
           {%- if state_attr('calendar.ical_igtc', 'message')  %}
-            {{ state_attr('calendar.ical_igtc', 'message') }}
+            {{ state_attr('calendar.ical_igtc', 'message') | replace('IGTC - ', '') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
@@ -996,7 +1064,7 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_igtc', 'message') %}
+            {%- set op = state_attr('calendar.ical_igtc', 'message') | replace('IGTC - ', '') %}
             {%- set st = state_attr('calendar.ical_igtc', 'start_time') %}
             {%- if st != None %}
               {{ op }}
@@ -1239,7 +1307,7 @@ sensor:
         entity_picture_template: /local/sportlogos/formulae.png
         value_template: >-
           {%- if state_attr('calendar.ical_formula_e', 'message')  %}
-            {{ state_attr('calendar.ical_formula_e', 'message') | replace('FE - ', '') }}
+            {{ state_attr('calendar.ical_formula_e', 'message') | replace('Formula E - ', '') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
@@ -1261,7 +1329,7 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_formula_e', 'message') | replace('FE - ', '') %}
+            {%- set op = state_attr('calendar.ical_formula_e', 'message') | replace('Formula E - ', '') %}
             {%- set st = state_attr('calendar.ical_formula_e', 'start_time') %}
             {%- if st != None %}
               {{ op }}
@@ -1573,6 +1641,222 @@ sensor:
               0.0
             {%- else %}
               {%- set st = state_attr('calendar.ical_socceroos', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}.0
+              {%- else %}
+                999.0
+              {%- endif %}
+            {%- endif %}
+
+      sport_sydneykings:
+        friendly_name: Sydney Kings
+        entity_picture_template: /local/sportlogos/SydneyKings.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_sydney_kings', 'message')  %}
+            {{ state_attr('calendar.ical_sydney_kings', 'message') | replace('🏀 ', '') }}
+          {%- else %}
+            Nothing Scheduled
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_sydney_kings', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_kings', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- set op = state_attr('calendar.ical_sydney_kings', 'message') | replace('🏀 ', '') %}
+            {%- set st = state_attr('calendar.ical_sydney_kings', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          nextlocation: >-
+            {%- set op = state_attr('calendar.ical_sydney_kings', 'location') %}
+            {%- if op != None %}
+              {{ op }}
+            {%- else %}
+              No Location Noted
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_sydney_kings', 'on') %}
+              0.0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_kings', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}.0
+              {%- else %}
+                999.0
+              {%- endif %}
+            {%- endif %}
+
+      sport_cricketwomen:
+        friendly_name: Cricket (Australia) Women
+        entity_picture_template: /local/sportlogos/cricket.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_australia_cricket_women', 'message') %}
+            {{ state_attr('calendar.ical_australia_cricket_women', 'message') }}
+          {%- else %}
+            Nothing Scheduled
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_australia_cricket_women', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_australia_cricket_women', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- set op = state_attr('calendar.ical_australia_cricket_women', 'message') %}
+            {%- set st = state_attr('calendar.ical_australia_cricket_women', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Match Scheduled
+            {%- endif %}
+          nextlocation: >-
+            {%- set op = state_attr('calendar.ical_australia_cricket_women', 'location') %}
+            {%- if op != None %}
+              {{ op }}
+            {%- else %}
+              No Location Noted
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_australia_cricket_women', 'on') %}
+              0.0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_australia_cricket_women', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}.0
+              {%- else %}
+                999.0
+              {%- endif %}
+            {%- endif %}
+
+      sport_sydneysixers:
+        friendly_name: Sydney Sixers
+        entity_picture_template: /local/sportlogos/sydneysixers.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_sydney_sixers', 'message')  %}
+            {{ state_attr('calendar.ical_sydney_sixers', 'message') | replace('🏏 ', '') }}
+          {%- else %}
+            Nothing Scheduled
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_sydney_sixers', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_sixers', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- set op = state_attr('calendar.ical_sydney_sixers', 'message') | replace('🏏 ', '') %}
+            {%- set st = state_attr('calendar.ical_sydney_sixers', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          nextlocation: >-
+            {%- set op = state_attr('calendar.ical_sydney_sixers', 'location') %}
+            {%- if op != None %}
+              {{ op }}
+            {%- else %}
+              No Location Noted
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_sydney_sixers', 'on') %}
+              0.0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_sixers', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}.0
+              {%- else %}
+                999.0
+              {%- endif %}
+            {%- endif %}
+
+      sport_sydneysixerswomen:
+        friendly_name: Sydney Sixers Women
+        entity_picture_template: /local/sportlogos/sydneysixers.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_sydney_sixers_women', 'message')  %}
+            {{ state_attr('calendar.ical_sydney_sixers_women', 'message') | replace('🏏 ', '') }}
+          {%- else %}
+            Nothing Scheduled
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_sydney_sixers_women', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_sixers_women', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- set op = state_attr('calendar.ical_sydney_sixers_women', 'message') | replace('🏏 ', '') %}
+            {%- set st = state_attr('calendar.ical_sydney_sixers_women', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          nextlocation: >-
+            {%- set op = state_attr('calendar.ical_sydney_sixers_women', 'location') %}
+            {%- if op != None %}
+              {{ op }}
+            {%- else %}
+              No Location Noted
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_sydney_sixers_women', 'on') %}
+              0.0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_sixers_women', 'start_time') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}.0

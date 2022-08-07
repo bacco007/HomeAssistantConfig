@@ -9,6 +9,8 @@ recorder:
       - sensor.unifi_gateway_www_uptime
       - sensor.unifi_gateway_wan_uptimeavail
       - sensor.unifi_gateway_wan_uptimeavail_stats
+      - sensor.unifi_networkstats_connected_devices
+      - sensor.unifi_networkstats_switchap
   exclude:
     entities:
       - sun.sun

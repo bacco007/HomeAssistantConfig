@@ -385,6 +385,7 @@ cards:
                   - hours_to_show: 24
                   - entities:
                       - entity: sensor.tempest_st_00056115_temperature
+                  - decimals: 2
                   - title: Temperature
                   - icon: "mdi:thermometer"
                   - line_width: 2
@@ -397,6 +398,7 @@ cards:
                   - hours_to_show: 24
                   - entities:
                       - entity: sensor.tempest_st_00056115_rain_today
+                  - decimals: 2
                   - title: Rainfall
                   - icon: "mdi:water-drop"
                   - line_width: 2
@@ -499,33 +501,19 @@ cards:
                 view_layout:
                   grid-column: 1/-1
 
-              - type: "custom:button-card"
-                template:
-                  - live_tile_card
-                  - live_tile_with_long_state
-                  - live_tile_with_state_countdown
-                entity: sensor.speedtest_ping
-                name: WAN
-                state:
-                  - value: "off"
-                    styles:
-                      card:
-                        - background: var(--primary-color)
-                  - value: "on"
-                    styles:
-                      card:
-                        - background: var(--ha-card-background)
-                        - color: var(--primary-text-color)
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
                 variables:
-                  aspect_ratio: "[[[ return Math.round(this.offsetWidth / 150) ]]]"
-                view_layout:
-                  grid-column: 1/-2
+                  - entities:
+                      - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+                  - decimals: 2
+                  - title: Internet Uptime
 
               - type: "custom:decluttering-card"
                 template: mini_graph_tile
                 variables:
                   - entities:
-                      - entity: sensor.unifi_gateway_wlan_num_user
+                      - entity: sensor.unifi_networkstats_connected_devices
                   - title: Devices Connected
 
               - type: "custom:decluttering-card"
@@ -533,6 +521,7 @@ cards:
                 variables:
                   - entities:
                       - entity: sensor.speedtest_download
+                  - decimals: 2
                   - title: Download Speed
 
               - type: "custom:decluttering-card"
@@ -540,6 +529,7 @@ cards:
                 variables:
                   - entities:
                       - entity: sensor.speedtest_upload
+                  - decimals: 2
                   - title: Upload Speed
 
             layout:
@@ -611,20 +601,20 @@ cards:
             view_layout:
               grid-area: mc
             cards:
-              # [Column] Network (Repeat)
+              # # [Column] Network (Repeat)
 
-              - type: "custom:layout-card"
-                layout_type: "custom:grid-layout"
-                layout:
-                  grid-template-columns: >-
-                    repeat(auto-fill, [col-start] minmax(150px, 1fr)
-                    [col-end])
-                  margin: 0
-                  card_margin: 1px
-                view_layout:
-                  show:
-                    mediaquery: "(min-width: 800.1px) and (max-width: 1508px)"
-                cards: *summary-column-network-cards
+              # - type: "custom:layout-card"
+              #   layout_type: "custom:grid-layout"
+              #   layout:
+              #     grid-template-columns: >-
+              #       repeat(auto-fill, [col-start] minmax(150px, 1fr)
+              #       [col-end])
+              #     margin: 0
+              #     card_margin: 1px
+              #   view_layout:
+              #     show:
+              #       mediaquery: "(min-width: 800.1px) and (max-width: 1508px)"
+              #   cards: *summary-column-network-cards
 
               # [Column] Devices
 
@@ -701,24 +691,24 @@ cards:
                   #         - entity: sensor.unison_processor_use
                   #     - title: Unison
 
-              # [Column] Light (Repeat) / Me
+              # # [Column] Light (Repeat) / Me
 
               - type: "custom:layout-card"
                 layout_type: "custom:grid-layout"
                 layout:
                   margin: -1
                 cards:
-                  - type: "custom:layout-card"
-                    layout_type: "custom:grid-layout"
-                    layout:
-                      grid-template-columns: >-
-                        repeat(auto-fill, [col-start] minmax(150px, 1fr)
-                        [col-end])
-                      margin: -1
-                    view_layout:
-                      show:
-                        mediaquery: "(min-width: 800.1px) and (max-width: 1508px)"
-                    cards: *summary-column-lights-cards
+                  #     - type: "custom:layout-card"
+                  #       layout_type: "custom:grid-layout"
+                  #       layout:
+                  #         grid-template-columns: >-
+                  #           repeat(auto-fill, [col-start] minmax(150px, 1fr)
+                  #           [col-end])
+                  #         margin: -1
+                  #       view_layout:
+                  #         show:
+                  #           mediaquery: "(min-width: 800.1px) and (max-width: 1508px)"
+                  #       cards: *summary-column-lights-cards
 
                   - !include partial_me.yaml
 
@@ -1297,6 +1287,7 @@ cards:
                       - entities:
                           - entity: sensor.home_to_work
                       - title: Home -> Work
+                      - decimals: 2
 
                   # - type: "custom:button-card"
                   #   template:
@@ -1313,6 +1304,7 @@ cards:
                       - entities:
                           - entity: sensor.tamworth_fuel_average_pdl
                       - title: Avg PDL Price
+                      - decimals: 2
 
                   # - type: "custom:button-card"
                   #   template:
