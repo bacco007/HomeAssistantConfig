@@ -121,20 +121,20 @@ class SolcastApi:
     def get_api_used_count(self) -> int:
         """Return API polling count for this UTC 24hr period"""
         try:
-            sites = len(self._sites)
-            polls = self._api_used
-            if sites==1:
-                #only one site
-                return 50 - int(self._api_used)
-            elif sites%2 == 0:
-                #even number of sites
-                return 50 - int((polls / sites) * 2)
-            else:
-                #odd number of sites.. max 2 sites per api_key.. so max polls for 2 sites
-                return 50 - int((polls - (polls / sites)))
-
+            # sites = len(self._sites)
+            # polls = self._api_used
+            # if sites==1:
+            #     #only one site
+            #     return 50 - int(self._api_used)
+            # elif sites%2 == 0:
+            #     #even number of sites
+            #     return 50 - int((polls / sites) * 2)
+            # else:
+            #     #odd number of sites.. max 2 sites per api_key.. so max polls for 2 sites
+            #     return 50 - int((polls - (polls / sites)))
+            return 50 - self._api_used
         except Exception:
-            return -1
+            return 50
 
     def get_last_updated_datetime(self) -> dt:
         """Return date time with the data was last updated"""

@@ -127,11 +127,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             #self.async_set_updated_data(True)
             #self.async_update_listeners()
 
-            if "2022.7" in self._v:
-                self.async_update_listeners()
-            else:
-                for update_callback in self._listeners:
-                    update_callback()
+            self.async_update_listeners()
 
         except Exception:
             _LOGGER.error("update_forecast: %s", traceback.format_exc())
