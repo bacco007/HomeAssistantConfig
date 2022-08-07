@@ -405,92 +405,6 @@ cards:
 
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
-            layout:
-              grid-template-columns: >-
-                repeat(auto-fill, [col-start] minmax(150px, 1fr)
-                [col-end])
-              margin: 0
-              card_margin: 1px
-            cards:
-              - type: "custom:button-card"
-                template: header_card
-                variables:
-                  name: SECURITY
-                  label: More
-                  link: /ui-dashboard/security
-                view_layout:
-                  grid-column: 1/-1
-
-              - type: "custom:button-card"
-                template:
-                  - live_tile_card
-                  - live_tile_with_long_state
-                  - live_tile_with_state_countdown
-                entity: binary_sensor.office_motion_2_ias_zone
-                name: Front Door
-                variables:
-                  aspect_ratio: "[[[ return Math.round(this.offsetWidth / 150) ]]]"
-                view_layout:
-                  grid-column: 1/-2
-
-              - type: "custom:button-card"
-                template:
-                  - live_tile
-                entity: alarm_control_panel.home
-                show_state: false
-                state:
-                  - value: armed_away
-                    color: "rgb(var(--rgb-primary-color))"
-                    icon: mdi:shield-home
-                  - value: disarmed
-                    color: >-
-                      [[[ return iif( person.madelena.state == "home",
-                      "none", "rgb(var(--rgb-primary-color))") ]]]
-                    icon: mdi:shield-off
-
-              - type: "custom:button-card"
-                template: live_tile_with_camera
-                entity: camera.back_door
-                name: Front Door
-
-              # - type: "custom:swipe-card"
-              #   parameters:
-              #     direction: vertical
-              #     autoHeight: true
-              #     height: 150
-              #     effect: cube
-              #     cubeEffect:
-              #       - slideShadows: false
-              #     xautoplay:
-              #       delay: 60000
-              #   cards: !include secret/summary-cameras.yaml
-
-      # [Column] Network / Lights
-
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: 0
-          padding: 0
-          card_margin: 1px
-        view_layout:
-          grid-area: c2
-          # show:
-          #   mediaquery: "(min-width: 1508.1px), (max-width: 800px)"
-        cards:
-          - entity: sensor.time
-            template: clock
-            type: custom:button-card
-            variables:
-              entity_date: sensor.date
-              entity_temperature: sensor.tempest_st_00056115_temperature
-              entity_weather: weather.east_tamworth_hourly
-            view_layout:
-              place-self: start right
-          - !include partial_media.yaml
-          - !include partial_sports.yaml
-          - type: "custom:layout-card"
-            layout_type: "custom:grid-layout"
             cards: &summary-column-network-cards
               - type: "custom:button-card"
                 template: header_card
@@ -575,6 +489,33 @@ cards:
                 [col-end])
               margin: 0
               card_margin: 1px
+
+
+      # [Column] Network / Lights
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: 0
+          padding: 0
+          card_margin: 1px
+        view_layout:
+          grid-area: c2
+          # show:
+          #   mediaquery: "(min-width: 1508.1px), (max-width: 800px)"
+        cards:
+          - entity: sensor.time
+            template: clock
+            type: custom:button-card
+            variables:
+              entity_date: sensor.date
+              entity_temperature: sensor.tempest_st_00056115_temperature
+              entity_weather: weather.east_tamworth_hourly
+            view_layout:
+              place-self: start right
+          - !include partial_media.yaml
+          - !include partial_sports.yaml
+
 
       # Begin Masonry Layout here.
 
@@ -1555,94 +1496,94 @@ cards:
 
               # [Column] Astrometrics
 
-              - type: "custom:layout-card"
-                layout_type: "custom:grid-layout"
-                cards:
-                  - type: "custom:button-card"
-                    template: header_card
-                    variables:
-                      name: ASTROMETRICS
-                      label: More
-                      link: /ui-dashboard/astrometrics
-                    view_layout:
-                      grid-column: 1/-1
+              # - type: "custom:layout-card"
+              #   layout_type: "custom:grid-layout"
+              #   cards:
+              #     - type: "custom:button-card"
+              #       template: header_card
+              #       variables:
+              #         name: ASTROMETRICS
+              #         label: More
+              #         link: /ui-dashboard/astrometrics
+              #       view_layout:
+              #         grid-column: 1/-1
 
-                  - type: "custom:mod-card"
-                    card_mod:
-                      style: "ha-card { margin: -1px !important; }"
-                    card:
-                      type: "custom:layout-card"
-                      layout_type: "custom:grid-layout"
-                      layout:
-                        margin: 0
-                      cards:
-                        - type: "custom:button-card"
-                          template: live_tile_card
-                          entity: sun.sun
-                          show_name: false
-                          show_icon: false
-                          color_type: icon
-                          variables:
-                            aspect_ratio: 3/1
-                          state_display: |-
-                            [[[
-                              if (entity.attributes.elevation >= 0) {
-                                var diff = -(new Date() - new Date(entity.attributes.next_setting)) / 1000 / 60 / 60
-                                if (diff > 1.5) {
-                                  return Math.round(diff) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> HR</span>"
-                                } else {
-                                  return Math.round(diff * 60) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> MIN</span>"
-                                }
-                              } else {
-                                var diff = -(new Date() - new Date(entity.attributes.next_rising)) / 1000 / 60 / 60
-                                if (diff > 1.5) {
-                                  return Math.round(diff) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> HR</span>"
-                                } else {
-                                  return Math.round(diff * 60) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> MIN</span>"
-                                }
-                              }
-                            ]]]
-                        - type: "custom:sun-card"
-                          style: >
-                            ha-card { aspect-ratio: 3/1; margin-top: -2px; }
-                            .sun-card {padding: 0 !important; }
-                            .sun-card-header, .sun-card-footer {display: none
-                            !important; }
-                            .sun-card-body { padding-top: 0 !important;}
-                        - type: "custom:button-card"
-                          template: live_tile
-                          entity: sun.sun
-                          show_state: false
-                          show_icon: false
-                          variables:
-                            aspect_ratio: 3/1
-                          name: |-
-                            [[[
-                              if (entity.attributes.elevation >= 0) {
-                                return "To Sunset"
-                              } else {
-                                return "To Sunrise"
-                              }
-                            ]]]
-                          label: |-
-                            [[[
-                              if (entity.attributes.elevation >= 0) {
-                                var time = new Date(entity.attributes.next_setting)
-                                return time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
-                              } else {
-                                var time = new Date(entity.attributes.next_rising)
-                                return time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
-                              }
-                            ]]]
-                          styles:
-                            card:
-                              - margin-top: "-2px"
+              #     - type: "custom:mod-card"
+              #       card_mod:
+              #         style: "ha-card { margin: -1px !important; }"
+              #       card:
+              #         type: "custom:layout-card"
+              #         layout_type: "custom:grid-layout"
+              #         layout:
+              #           margin: 0
+              #         cards:
+              #           - type: "custom:button-card"
+              #             template: live_tile_card
+              #             entity: sun.sun
+              #             show_name: false
+              #             show_icon: false
+              #             color_type: icon
+              #             variables:
+              #               aspect_ratio: 3/1
+              #             state_display: |-
+              #               [[[
+              #                 if (entity.attributes.elevation >= 0) {
+              #                   var diff = -(new Date() - new Date(entity.attributes.next_setting)) / 1000 / 60 / 60
+              #                   if (diff > 1.5) {
+              #                     return Math.round(diff) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> HR</span>"
+              #                   } else {
+              #                     return Math.round(diff * 60) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> MIN</span>"
+              #                   }
+              #                 } else {
+              #                   var diff = -(new Date() - new Date(entity.attributes.next_rising)) / 1000 / 60 / 60
+              #                   if (diff > 1.5) {
+              #                     return Math.round(diff) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> HR</span>"
+              #                   } else {
+              #                     return Math.round(diff * 60) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> MIN</span>"
+              #                   }
+              #                 }
+              #               ]]]
+              #           - type: "custom:sun-card"
+              #             style: >
+              #               ha-card { aspect-ratio: 3/1; margin-top: -2px; }
+              #               .sun-card {padding: 0 !important; }
+              #               .sun-card-header, .sun-card-footer {display: none
+              #               !important; }
+              #               .sun-card-body { padding-top: 0 !important;}
+              #           - type: "custom:button-card"
+              #             template: live_tile
+              #             entity: sun.sun
+              #             show_state: false
+              #             show_icon: false
+              #             variables:
+              #               aspect_ratio: 3/1
+              #             name: |-
+              #               [[[
+              #                 if (entity.attributes.elevation >= 0) {
+              #                   return "To Sunset"
+              #                 } else {
+              #                   return "To Sunrise"
+              #                 }
+              #               ]]]
+              #             label: |-
+              #               [[[
+              #                 if (entity.attributes.elevation >= 0) {
+              #                   var time = new Date(entity.attributes.next_setting)
+              #                   return time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
+              #                 } else {
+              #                   var time = new Date(entity.attributes.next_rising)
+              #                   return time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
+              #                 }
+              #               ]]]
+              #             styles:
+              #               card:
+              #                 - margin-top: "-2px"
 
-                  - type: "custom:button-card"
-                    template: live_tile
-                    entity: sensor.moon
-                    name: '[[[ return entity.state.replace("_", " ") ]]]'
-                    show_state: false
+              #     - type: "custom:button-card"
+              #       template: live_tile
+              #       entity: sensor.moon
+              #       name: '[[[ return entity.state.replace("_", " ") ]]]'
+              #       show_state: false
 
                   # - type: "custom:decluttering-card"
                   #   template: mini_graph_tile
