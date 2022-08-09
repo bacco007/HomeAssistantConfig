@@ -690,7 +690,7 @@ cards:
                 series:
                   - entity: sensor.nsw_air_quality_tamworth
                     name: AQI
-                    yaxis_id: second
+                    yaxis_id: main
                     show:
                       datalabels: true
                   - entity: sensor.nsw_air_quality_tamworth_pm10
@@ -707,7 +707,6 @@ cards:
                       datalabels: true
                 yaxis:
                   - id: main
-                  - id: second
                 apex_config:
                   chart:
                     height: 240px
