@@ -230,13 +230,13 @@ cards:
             entities:
               - &astrometrics-noaa-alert
                 type: "custom:button-card"
-                entity: sensor.noaa_space_weather_alert_1
+                entity: sensor.rocket_launch_1
                 show_icon: false
                 show_state: true
                 show_label: true
-                name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " + moment(entity.attributes.date).fromNow() ]]]'
-                state_display: '[[[ return entity.attributes.summary.split(": ")[1] ]]]'
-                label: "[[[ return entity.attributes.potential_impacts ]]]"
+                name: "[[[ return entity.attributes.name ]]]"
+                # state_display: '[[[ return entity.attributes.summary.split(": ")[1] ]]]'
+                # label: "[[[ return entity.attributes.potential_impacts ]]]"
                 styles:
                   card:
                     - background: none
@@ -261,13 +261,13 @@ cards:
                     - white-space: normal
                     - text-align: left
               - <<: *astrometrics-noaa-alert
-                entity: sensor.noaa_space_weather_alert_2
+                entity: sensor.rocket_launch_2
               - <<: *astrometrics-noaa-alert
-                entity: sensor.noaa_space_weather_alert_3
+                entity: sensor.rocket_launch_3
               - <<: *astrometrics-noaa-alert
-                entity: sensor.noaa_space_weather_alert_4
+                entity: sensor.rocket_launch_4
               - <<: *astrometrics-noaa-alert
-                entity: sensor.noaa_space_weather_alert_5
+                entity: sensor.rocket_launch_5
             title: NOAA Alerts
 
       # Space Weather, Solar Flare
@@ -534,13 +534,14 @@ cards:
                     entities:
                       - &astrometrics-rocket-launch
                         type: "custom:button-card"
-                        entity: sensor.rocketlaunch_live_next_1
+                        entity: sensor.rocket_launch_1
+                        show_name: true
                         show_icon: false
                         show_state: true
                         show_label: true
-                        name: "[[[ return entity.attributes.date ]]]"
-                        state_display: "[[[ return entity.attributes.missions ]]]"
-                        label: "[[[ return entity.attributes.launch_description ]]]"
+                        name: "[[[ return entity.launch_target ]]]"
+                        state_display: "[[[ return entity.state ]]]"
+                        label: "[[[ return entity.attributes.launch_date_target + '<br/>' + entity.attributes.provider + ' ' + entity.attributes.vehicle ]]]"
                         styles:
                           card:
                             - background: none
@@ -565,13 +566,13 @@ cards:
                             - white-space: normal
                             - text-align: left
                       - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_2
+                        entity: sensor.rocket_launch_2
                       - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_3
+                        entity: sensor.rocket_launch_3
                       - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_4
+                        entity: sensor.rocket_launch_4
                       - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_5
+                        entity: sensor.rocket_launch_5
                     title: Rocket Launches
 
               - type: vertical-stack
