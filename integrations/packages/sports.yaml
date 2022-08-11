@@ -1864,3 +1864,71 @@ sensor:
                 999.0
               {%- endif %}
             {%- endif %}
+
+      sport_sydswansaflw:
+        friendly_name: Sydney Swans AFLW
+        entity_picture_template: /local/sportlogos/sydswans.png
+        value_template: >-
+          {%- if state_attr('calendar.ical_sydney_swans_aflw', 'message')  == None %}
+            No Game Scheduled
+          {%- else %}
+            {%- set op = state_attr('calendar.ical_sydney_swans_aflw', 'message').split(' - ')[0] %}
+            {%- set st = state_attr('calendar.ical_sydney_swans_aflw', 'start_time') %}
+            {%- if st != None %}
+              {{ op }}
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
+          {%- endif %}
+        attribute_templates:
+          nexttime: >-
+            {%- if is_state('calendar.ical_sydney_swans_aflw', 'on') %}
+              On Now!
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_swans_aflw', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {{ diff }} Days
+                {%- else %}
+                  {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+                {%- endif %}
+              {%- else %}
+                No Time
+              {%- endif %}
+            {%- endif %}
+          nextevent: >-
+            {%- if state_attr('calendar.ical_sydney_swans_aflw', 'message')  == None %}
+              No Game Scheduled
+            {%- else %}
+              {%- set op = state_attr('calendar.ical_sydney_swans_aflw', 'message').split(' - ')[0] %}
+              {%- set st = state_attr('calendar.ical_sydney_swans_aflw', 'start_time') %}
+              {%- if st != None %}
+                {{ op }}
+              {%- else %}
+                No Game Scheduled
+              {%- endif %}
+            {%- endif %}
+          nextlocation: >-
+            {%- if state_attr('calendar.ical_sydney_swans_aflw', 'message')  == None %}
+              No Location Noted
+            {%- else %}
+              {%- set op = state_attr('calendar.ical_sydney_swans_aflw', 'location') %}
+              {%- if op != None %}
+                {{ op }}
+              {%- else %}
+                No Location Noted
+              {%- endif %}
+            {%- endif %}
+          sortorder: >-
+            {%- if is_state('calendar.ical_sydney_swans_aflw', 'on') %}
+              0.0
+            {%- else %}
+              {%- set st = state_attr('calendar.ical_sydney_swans_aflw', 'start_time') %}
+              {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                  {{ diff }}.0
+              {%- else %}
+                999.0
+              {%- endif %}
+            {%- endif %}

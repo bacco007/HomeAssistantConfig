@@ -300,6 +300,14 @@ cards:
               replace: dummytext
           - template: sport_cal
             type: custom:button-card
+
+            variables:
+              entity_part: sensor.ical_sydney_swans_aflw_event_
+              icon: /local/sportlogos/sydswans.png
+              limit: 5
+              replace: dummytext
+          - template: sport_cal
+            type: custom:button-card
             variables:
               entity_part: sensor.ical_sydney_swans_vfl_event_
               icon: /local/sportlogos/sydswans.png
