@@ -169,7 +169,10 @@ async def async_get_state(config) -> dict:
                 values["kickoff_in"] = arrow.get(event["date"]).humanize()
                 values["venue"] = event["competitions"][0]["venue"]["fullName"]
                 values["location"] = "%s, %s" % (event["competitions"][0]["venue"]["address"]["city"], event["competitions"][0]["venue"]["address"]["state"])
-                values["tv_network"] = event["competitions"][0]["broadcasts"][0]["names"][0]
+                try:
+                    values["tv_network"] = event["competitions"][0]["broadcasts"][0]["names"][0]
+                except:
+                    values["tv_network"] = None
                 if event["status"]["type"]["state"].lower() in ['pre']: # odds only exist pre-game
                     values["odds"] = event["competitions"][0]["odds"][0]["details"]
                     values["overunder"] = event["competitions"][0]["odds"][0]["overUnder"]
