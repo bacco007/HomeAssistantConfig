@@ -1,0 +1,23 @@
+---
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: event_template_reloaded
+  - platform: state
+    entity_id:
+      - weather.east_tamworth_hourly
+      - weather.weatherflow_hourly_based_forecast
+sensor:
+  - name: Tamworth Airport Hourly Forecast Temperature Rising
+    state: >
+      {{ iif (state_attr('weather.east_tamworth_hourly', 'temperature') < ((state_attr('weather.east_tamworth_hourly', 'forecast') | map(attribute='temperature') | slice(6) | first() | sum / 4)), 'Rising', 'Falling') }}
+  - name: Tamworth Airport Hourly Forecast Wind Speed Increasing
+    state: >
+      {{ iif (state_attr('weather.east_tamworth_hourly', 'wind_speed') < ((state_attr('weather.east_tamworth_hourly', 'forecast') | map(attribute='wind_speed') | slice(6) | first() | sum / 4)), 'Increasing', 'Decreasing') }}
+  - name: Outside Hourly Forecast Temperature Rising
+    state: >
+      {{ iif (state_attr('weather.weatherflow_hourly_based_forecast', 'temperature') < ((state_attr('weather.weatherflow_hourly_based_forecast', 'forecast') | map(attribute='temperature') | slice(6) | first() | sum / 4)), 'Rising', 'Falling') }}
+  - name: Outside Hourly Forecast Wind Speed Increasing
+    state: >
+      {{ iif (state_attr('weather.weatherflow_hourly_based_forecast', 'wind_speed') < ((state_attr('weather.weatherflow_hourly_based_forecast', 'forecast') | map(attribute='wind_speed') | slice(6) | first() | sum / 4)), 'Increasing', 'Decreasing') }}

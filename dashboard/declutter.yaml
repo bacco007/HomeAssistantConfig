@@ -15,11 +15,13 @@ mini_graph_tile:
     - line_width: 4
     - icon: ""
     - decimals: 0
+    - unit: ""
   card:
     type: "custom:mini-graph-card"
     entities: "[[entities]]"
     name: "[[title]]"
     icon: "[[icon]]"
+    unit: "[[unit]]"
     hours_to_show: "[[hours_to_show]]"
     points_per_hour: "[[points_per_hour]]"
     hour24: true
@@ -107,6 +109,7 @@ multi_graph_card:
     - lower_bound: ~10000
     - upper_bound: ~0
     - animate: true
+    - show_extrema: false
   card:
     type: "custom:mini-graph-card"
     entities: "[[entities]]"
@@ -122,6 +125,7 @@ multi_graph_card:
     animate: "[[animate]]"
     show:
       labels_secondary: false
+      extrema: "[[show_extrema]]"
     card_mod:
       style: |
         ha-card { padding-top: 0 !important; }
@@ -141,6 +145,7 @@ multi_graph_card:
         .state__value {
           font-size: var(--h1-font-size) !important;
           font-weight: 100 !important;
+          padding-top: 4px;
         }
         .state__uom {
           font-size: var(--h6-font-size) !important;
@@ -165,6 +170,30 @@ multi_graph_card:
         }
         .icon {
           margin-top: 12px;
+          margin-top: 6px;
+          flex-basis: 0 !important;
+        }
+        .info.flex {
+          flex-flow: column;
+          position: absolute;
+          top: 32px;
+          right: 0;
+        }
+        .info__item {
+          flex-flow: row !important;
+          align-self: flex-end;
+          align-items: baseline !important;
+        }
+        .info__item span {
+          padding-left: 4px;
+          line-height: 16px;
+        }
+        .info__item__type {
+          font-size: var(--h6-font-size);
+          text-transform: uppercase !important;
+        }
+        .info__item__time {
+          display: none;          
         }
 # History Graph Card
 history_graph_card:
@@ -226,6 +255,9 @@ metro_bar_card:
       bar-card-name, bar-card-value {
         margin: 0;
       }
+      bar-card-value {
+        font-size: var(--h5-font-size);
+      }
     title:
       - "[[title]]"
 
@@ -253,6 +285,9 @@ metro_bar_card_no_icon:
       }
       bar-card-name, bar-card-value {
         margin: 0;
+      }
+      bar-card-value {
+        font-size: var(--h5-font-size);
       }
     title:
       - "[[title]]"

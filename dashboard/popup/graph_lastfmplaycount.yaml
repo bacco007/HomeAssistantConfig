@@ -1,0 +1,16 @@
+---
+type: custom:apexcharts-card
+config_templates:
+  - year_chart
+apex_config:
+  chart: { height: 350 }
+series:
+  - entity: sensor.archive_last_fm_playcount_365day
+    name: Songs
+    data_generator: |
+      let res = [];
+      for (const [key, value] of
+          Object.entries(entity.attributes)) {
+          res.push([new Date(key).getTime(), value]);
+      }
+      return res.sort((a, b) => { return a[0] - b[0] });

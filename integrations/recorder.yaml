@@ -33,6 +33,9 @@ recorder:
       - sensor.bomforecast_tamworth_hr
       - sensor.adsb_aircraft_tracked
       - sensor.e_ink_display_data
+      - sensor.lastfm_user_topalbums
+      - sensor.lastfm_user_topartists
+      - sensor.lastfm_user_toptracks
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*

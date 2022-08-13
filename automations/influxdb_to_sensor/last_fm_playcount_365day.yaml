@@ -1,0 +1,25 @@
+---
+id: "influx2entity_lastfmplaycount365day"
+alias: "InfluxDB to Entity: 365 Day LastFM Playcount"
+description: "InfluxDB to Entity: 365 Day LastFM Playcount"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/1"
+condition: []
+action:
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:"Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["entity_id"] == "lastfm_user_playcount")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: last, createEmpty: true)
+          |> fill(value: 0.0)
+          |> yield(name: "last")
+      entity_id: sensor.archive_last_fm_playcount_365day
+      unit_of_measurement: Songs
+      friendly_name: Last.fm - Playcount - 365 Day
+      icon: "si:lastfm"

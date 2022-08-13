@@ -1,0 +1,3 @@
+---
+# https://github.com/danieldotnl/ha-multiscrape
+multiscrape: !include_dir_merge_list ../entities/multiscrape

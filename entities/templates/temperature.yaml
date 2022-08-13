@@ -8,11 +8,7 @@ sensor:
       {{ (states('sensor.indoor_average_temperature')|float(default=0) - states('sensor.tempest_st_00056115_temperature')|float(default=0))|abs| round(2) }}
     attributes:
       description: >
-        {%- if (states('sensor.indoor_average_temperature')|float(default=0) - states('sensor.tempest_st_00056115_temperature')|float(default=0)) | round(2) > 0 %}
-          Warmer
-        {% else %}
-          Cooler
-        {% endif %}
+        {{ iif( states('sensor.tempest_st_00056115_temperature') | float >= states('sensor.indoor_average_temperature') | float, 'cooler', 'warmer') }}
   - name: indoor_outdoor_humidity_difference
     unique_id: indoor_outdoor_humidity_difference
     unit_of_measurement: "%"
@@ -21,8 +17,4 @@ sensor:
       {{ (states('sensor.indoor_average_humidity')|float(default=0) - states('sensor.tempest_st_00056115_humidity')|float(default=0)) | abs | round(2) }}
     attributes:
       description: >
-        {%- if (states('sensor.indoor_average_humidity')|float(default=0) - states('sensor.tempest_st_00056115_humidity')|float(default=0)) | round(2) > 0 %}
-          Wetter
-        {% else %}
-          Dryer
-        {% endif %}
+        {{ iif( states('sensor.tempest_st_00056115_humidity') | float >= states('v') | float, 'drier', 'wetter') }}

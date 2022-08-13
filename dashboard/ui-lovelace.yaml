@@ -21,6 +21,33 @@ button_card_templates: !include_dir_merge_named button-card
 decluttering_templates: !include declutter.yaml
 apexcharts_card_templates: !include apexcharts.yaml
 
+popup_cards:
+  sensor.lastfm_user_playcount:
+    title: Last.fm Play Count
+    card:
+      type: "custom:layout-card"
+      layout_type: "custom:grid-layout"
+      layout:
+        margin: 17px
+      cards:
+        - !include popup/graph_lastfmplaycount.yaml
+    style:
+      .: |
+        :host .content { width: 90vw; height: 375px; }
+  sensor.tempest_st_00056115_temperature:
+    title: Temperature
+    card:
+      type: "custom:layout-card"
+      layout_type: "custom:grid-layout"
+      layout:
+        margin: 17px
+      cards:
+        - !include popup/graph_temp.yaml
+    style:
+      .: |
+        :host .content { width: 90vw; height: 75vh; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; height: 100vh; } }
+
 swipe_nav:
   animate: swipe
   prevent_default: true

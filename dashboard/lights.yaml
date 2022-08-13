@@ -66,6 +66,30 @@ cards:
                       action: url
                       url_path: http://www.google.com
 
+      # [Column] Daylight
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: DAYLIGHT
+
+          - type: "custom:layout-card"
+            layout_type: "custom:vertical-layout"
+            cards:
+              - type: "custom:decluttering-card"
+                template: multi_graph_card
+                variables:
+                  - entities:
+                      - entity: sensor.south_facade_hue_sensor_light_level
+                        name: South Facade
+                  - title: Light Level
+                  - line_width: 1
+
       # [Column] Living Room
 
       - type: "custom:layout-card"

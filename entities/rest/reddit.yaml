@@ -1,0 +1,14 @@
+---
+resource: http://reddit.com/user/bacco007/about.json
+sensor:
+  name: reddit_profile_bacco007
+  value_template: "{{ value_json.data.total_karma | int }}"
+  unit_of_measurement: "karma"
+  json_attributes_path: "$.data"
+  json_attributes:
+    - total_karma
+    - link_karma
+    - comment_karma
+    - awardee_karma
+    - awarder_karma
+scan_interval: 60
