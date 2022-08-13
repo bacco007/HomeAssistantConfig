@@ -532,6 +532,25 @@ ________________________________________Common Base 3 (Do Not Use): &common-card
         box-shadow: inset 0px 4px 6px -4px rgb(0 0 0 / 10%) !important;
       }
 
+  card-mod-sidebar: &card-mod-sidebar |
+    .menu .title {
+      font-weight: 500;
+    }
+    :host([expanded]) paper-icon-item {
+      width: 100%;
+    }
+    .iron-selected paper-icon-item {
+      border-left: 3px solid var(--accent-color) !important;
+      border-radius: var(--ha-card-border-radius) !important;
+      padding-left: 9px !important;
+    }
+    .profile.iron-selected paper-icon-item {
+      padding-left: 1px !important;
+    }
+    paper-icon-item span {
+      font-weight: normal !important;
+    }
+
   card-mod-view: &card-mod-view |
     .main-title {
       font-size: 10pt;
@@ -564,7 +583,7 @@ ________________________________________Common Base 4 (Do Not Use):
       ha-card-border-radius: 0
       ha-config-card-border-radius: 0
       ha-dialog-border-radius: 0
-      vertical-stack-card-margin: 0
+      vertical-stack-card-margin: "1px 0px 1px 0px"
       mush-control-border-radius: 0px
 
       mdc-theme-surface: "rgb(24,24,24)"
@@ -581,7 +600,7 @@ ________________________________________Common Base 4 (Do Not Use):
       ha-card-border-radius: 0
       ha-config-card-border-radius: 0
       ha-dialog-border-radius: 0
-      vertical-stack-card-margin: 0
+      vertical-stack-card-margin: "1px 0px 1px 0px"
       mush-control-border-radius: 0px
 
       mdc-theme-surface: var(--primary-background-color)
@@ -599,7 +618,7 @@ ________________________________________Common Base 5 (Do Not Use):
       ha-card-border-radius: "4px"
       ha-config-card-border-radius: "4px"
       ha-dialog-border-radius: "8px"
-      vertical-stack-card-margin: "1px"
+      vertical-stack-card-margin: "1px 0px 1px 0px"
       mush-control-border-radius: 4px      
 
       mdc-theme-surface: var(--primary-background-color)
@@ -613,7 +632,7 @@ ________________________________________Common Base 5 (Do Not Use):
       ha-card-border-radius: "4px"
       ha-config-card-border-radius: "4px"
       ha-dialog-border-radius: "8px"
-      vertical-stack-card-margin: "1px"
+      vertical-stack-card-margin: "1px 0px 1px 0px"
       mush-control-border-radius: 4px
 
       mdc-theme-surface: var(--card-background-color)
