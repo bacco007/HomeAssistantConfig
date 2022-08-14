@@ -196,41 +196,79 @@ cards:
             view_layout:
               grid-column: 1/-1
 
-          - type: "custom:decluttering-card"
-            template: metro_bar_card_no_icon
-            variables:
-              - entities:
-                  - entity: sensor.front_door_camera_battery
-                  - entity: sensor.kitchen_leak_sensor_power
-              - title: Crucial
-
-          - type: "custom:decluttering-card"
-            template: metro_bar_card_no_icon
-            variables:
-              - entities:
-                  - entity: sensor.netatmo_strawberry_land_indoor_outdoor_battery_percent
-                  - entity: sensor.living_room_window_sensor_center_power
-                  - entity: sensor.living_room_window_sensor_right_power
-                  - entity: sensor.bedroom_window_sensor_center_power
-                  - entity: sensor.bedroom_hue_sensor_battery
-                  - entity: sensor.living_room_hue_sensor_battery
-                  - entity: sensor.workspace_room_hue_sensor_battery
-                  - entity: binary_sensor.kitchen_sink_motion_sensor_battery
-                  - entity: sensor.kitchen_leak_sensor_power
-                  - entity: sensor.bathroom_env_sensor_power
-              - title: Sensors
-
-          - type: "custom:decluttering-card"
-            template: metro_bar_card_no_icon
-            variables:
-              - entities:
-                  - entity: sensor.037_switchbot_pakkeimak_com_battery
-                  - entity: sensor.037_switchbot_pakkeimak_com_battery_2
-                  - entity: sensor.astralplane_hue_dimmer_battery_level
-                  - entity: sensor.bedroom_hue_dimmer_battery_level
-                  - entity: sensor.living_room_hue_dimmer_battery_level
-                  - entity: sensor.living_room_accents_dimmer_battery_level
-                  - entity: sensor.living_room_dining_table_dimmer_power
-                  - entity: sensor.living_room_dimmer_knob_power
-                  - entity: sensor.hallway_dimmer_battery_level
-              - title: Remotes
+          - card:
+              style: |
+                ha-card {
+                  background-color: var(--dwains-theme-primary);
+                  box-shadow: none;
+                }
+                .card-header {
+                  padding: 5px 16px 10px;
+                  font-size: 18px;
+                  font-weight: 700 !important;
+                }
+              type: entities
+            filter:
+              include:
+                - entity_id: sensor.*battery*
+                  options:
+                    entity_row: true
+                    height: 4
+                    max: 100
+                    min: 0
+                    positions:
+                      icon: "off"
+                      indicator: "off"
+                      name: inside
+                      value: inside
+                    style: |-
+                      bar-card-row {
+                        height: 12px;
+                        padding-top: 36px;
+                      }
+                      bar-card-background {
+                        background: var(--primary-background-color);
+                      }
+                      bar-card-contentbar {
+                        margin-top: -16px;
+                      }
+                      bar-card-name, bar-card-value {
+                        margin: 0;
+                      }
+                    type: custom:bar-card
+                  state: <=100
+                  unit_of_measurement: "%"
+                - attributes:
+                    device_class: battery
+                  domain: sensor
+                  options:
+                    entity_row: true
+                    height: 4
+                    max: 100
+                    min: 0
+                    positions:
+                      icon: "off"
+                      indicator: "off"
+                      name: inside
+                      value: inside
+                    style: |-
+                      bar-card-row {
+                        height: 12px;
+                        padding-top: 36px;
+                      }
+                      bar-card-background {
+                        background: var(--primary-background-color);
+                      }
+                      bar-card-contentbar {
+                        margin-top: -16px;
+                      }
+                      bar-card-name, bar-card-value {
+                        margin: 0;
+                      }
+                    type: custom:bar-card
+                  state: <=100
+            sort:
+              method: state
+              numeric: true
+              reverse: true
+            type: custom:auto-entities

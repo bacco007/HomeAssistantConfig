@@ -40,7 +40,7 @@ cards:
                   'entity': s.entity_id,
                   'template': ['live_tile_sport'],
                   'icon': 'mdi:football-australian',
-                  'variables': [{'aspect_ratio': '2/1'}]
+                  'variables': [{'aspect_ratio': '3/1'}]
                 }
               }},
             {%- endfor %}

@@ -26,6 +26,17 @@ cards:
       grid-column: 1/-1
       grid-row: 2/3
     cards:
+      - type: "custom:decluttering-card"
+        template: mini_graph_tile
+        variables:
+          - entities:
+              - entity: sensor.lastfm_user_playcount
+          - title: Last.fm
+          - icon: "mdi:music"
+          - hours_to_show: 48
+          - aspect_ratio: 2.5/1
+        view_layout:
+          grid-column: 1/-1
       - type: "custom:swipe-card"
         parameters:
           direction: vertical
@@ -47,7 +58,7 @@ cards:
             icon: "mdi:album"
             name: Sonos
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_media_player
@@ -55,7 +66,7 @@ cards:
             icon: "ios:tv-circle-fill"
             name: Apple TV
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_media_player
@@ -63,7 +74,7 @@ cards:
             icon: "mdi:spotify"
             name: Spotify
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_card
@@ -72,7 +83,7 @@ cards:
             icon: "mdi:plex"
             name: Plex (New, Unwatched TV)
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_card
@@ -81,7 +92,7 @@ cards:
             icon: "mdi:plex"
             name: Plex (New, Unwatched Movies)
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_card
@@ -90,7 +101,7 @@ cards:
             icon: "mdi:television"
             name: Sonarr (Upcoming TV)
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_card
@@ -99,9 +110,71 @@ cards:
             icon: "mdi:filmstrip"
             name: Radarr (Upcoming Movies)
             variables:
-              aspect_ratio: 2/1
+              aspect_ratio: 3/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_longer_state
+            entity: sensor.last_fm_top_artists
+            icon: "mdi:album"
+            color: var(--primary-background-color)
+            name: last.fm Top Artists
+            label: >
+              [[[ return
+              entity.attributes.artist_2 + " (" + entity.attributes.artist_2_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.artist_3 + " (" + entity.attributes.artist_3_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.artist_4 + " (" + entity.attributes.artist_4_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.artist_5 + " (" + entity.attributes.artist_5_playcount + ")"
+              ]]]
+            variables:
+              aspect_ratio: 3/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_longer_state
+            entity: sensor.last_fm_top_albums
+            color: var(--primary-background-color)
+            icon: "mdi:album"
+            name: last.fm Top Albums
+            label: >
+              [[[ return
+              entity.attributes.album_2 + " (" + entity.attributes.album_2_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.album_3 + " (" + entity.attributes.album_3_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.album_4 + " (" + entity.attributes.album_4_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.album_5 + " (" + entity.attributes.album_5_playcount + ")"
+              ]]]
+            variables:
+              aspect_ratio: 3/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_with_longer_state
+            entity: sensor.last_fm_top_tracks
+            color: var(--primary-background-color)
+            icon: "mdi:album"
+            name: last.fm Top Tracks
+            label: >
+              [[[ return
+              entity.attributes.track_2 + " (" + entity.attributes.track_2_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.track_3 + " (" + entity.attributes.track_3_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.track_4 + " (" + entity.attributes.track_4_playcount + ")"
+              + "<br/>" + 
+              entity.attributes.track_5 + " (" + entity.attributes.track_5_playcount + ")"
+              ]]]
+            variables:
+              aspect_ratio: 3/1
       - type: "custom:button-card"
         template: live_tile_card
+        variables:
+          aspect_ratio: 1.5/1
         styles:
           card:
             - background: none

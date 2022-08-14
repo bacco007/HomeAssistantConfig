@@ -38,37 +38,18 @@ states:
               margin-top: -12px !important;
             }
       - type: "custom:layout-card"
-        layout_type: "custom:horizontal-layout"
-        cards:
-          - type: "custom:mushroom-person-card"
-            entity: person.thomas_baxter
-            style: "ha-card {background: none;}"
-            use_entity_picture: true
-            view_layout: null
+        layout_type: "custom:grid-layout"
         layout:
-          width: 225
-          margin: -1
+          margin: 0
+          padding: 0
+          card_margin: 1px
         view_layout:
-          place-self: center
-          show:
-            mediaquery: "(min-width: 800px)"
-
-      - type: "custom:layout-card"
-        layout_type: "custom:horizontal-layout"
+          place-self: end right
         cards:
-          - type: "custom:mushroom-person-card"
-            entity: person.thomas_baxter
-            use_entity_picture: true
-            hide_state: true
-            hide_name: true
-            style: |
-              ha-card {background: none;
-                margin-top: 16px;
-                transform: scale(1.5) translate(-8px);
-              }
-        layout:
-          width: 72
-        view_layout:
-          place-self: start
-          show:
-            mediaquery: "(max-width: 799.99px)"
+          - entity: sensor.time
+            template: clock
+            type: custom:button-card
+            variables:
+              entity_date: sensor.date
+              entity_temperature: sensor.tempest_st_00056115_temperature
+              entity_weather: weather.east_tamworth_hourly

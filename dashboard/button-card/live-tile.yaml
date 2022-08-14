@@ -526,7 +526,7 @@ live_tile_sport:
     - live_tile_card
     - live_tile_with_longer_state
   variables:
-    aspect_ratio: 2/1
+    aspect_ratio: 3/1
 
   label: |-
     [[[
@@ -574,7 +574,7 @@ live_tile_sport:
                 return "url(" + entity.attributes.entity_picture_local + ")"
               }
             ]]]
-        - background-size: "calc( 75% )"
+        - background-size: "calc( 60% )"
         - background-repeat: no-repeat
         - background-position: center center
         - position: absolute
@@ -593,7 +593,7 @@ live_tile_conditional_media:
     - live_tile_card
     - live_tile_with_longer_state
   variables:
-    aspect_ratio: 2/1
+    aspect_ratio: 3/1
     i: >
       [[[
         if (entity) {
@@ -682,7 +682,7 @@ live_tile_conditional_media:
                 return "url(" + entity.attributes.data[variables.i].fanart + ")"
               } 
             ]]]
-        - background-size: "calc( 75% )"
+        - background-size: "calc( 60% )"
         - background-repeat: no-repeat
         - background-position: center center
         - position: absolute
