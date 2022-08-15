@@ -247,8 +247,8 @@ async def async_get_state(config) -> dict:
                 values["opponent_homeaway"] = event["competitions"][0]["competitors"][oppo_index]["homeAway"]
                 values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
                 try:
-                    values["opponent_colors"] = [''.join(('#',event["competitions"][0]["competitors"][team_index]["team"]["color"])), 
-                                         ''.join(('#',event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]))]
+                    values["opponent_colors"] = [''.join(('#',event["competitions"][0]["competitors"][oppo_index]["team"]["color"])), 
+                                         ''.join(('#',event["competitions"][0]["competitors"][oppo_index]["team"]["alternateColor"]))]
                 except:
                     if team_id == 'AFC':
                         values["opponent_colors"] = ['#013369','#013369']
