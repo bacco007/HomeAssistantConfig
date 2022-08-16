@@ -63,7 +63,7 @@ cards:
             "c3 none c4"
           margin: 0
 
-        '(max-width: 1440px)':
+        "(max-width: 1440px)":
           grid-template-columns: >-
             calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
             25% - 24px )
@@ -238,7 +238,7 @@ cards:
         view_layout:
           grid-area: c2
           show:
-            mediaquery: '(min-width: 1128.1px), (max-width: 800px)'
+            mediaquery: "(min-width: 1128.1px), (max-width: 800px)"
         cards:
           - !include partial_me.yaml
 
@@ -252,7 +252,7 @@ cards:
         view_layout:
           grid-area: c3
           show:
-            mediaquery: '(min-width: 1128.1px), (max-width: 800px)'
+            mediaquery: "(min-width: 1128.1px), (max-width: 800px)"
         cards:
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
@@ -324,146 +324,144 @@ cards:
               grid-template-rows: auto
               margin: -1
             cards:
-            - type: "custom:button-card"
-              template: header_card
-              variables:
-                name: TAMWORTH
-                label: More
-                link: /ui-dashboard/neighborhood
-              view_layout:
-                grid-column: 1/-1
+              - type: "custom:button-card"
+                template: header_card
+                variables:
+                  name: TAMWORTH
+                  label: More
+                  link: /ui-dashboard/neighborhood
+                view_layout:
+                  grid-column: 1/-1
 
-            - type: "custom:button-card"
-              template: live_tile
-              entity: sensor.binday_waste
-              name: Red Bin
-              state_display: "[[[ return entity.attributes.days  ]]]"
-              show_units: false
-              view_layout:
-                grid-column: span 2
-              variables:
-                aspect_ratio: 1.5/1
-              styles:
-                grid:
-                  - background: |
-                      [[[
-                        var temp = parseFloat(entity.attributes.days)
-                        if (temp <= 1) {
-                          return "rgba(var(--rgb-primary-color)," + 1 + ")"
-                        }
-                        if (temp <= 6) {
-                          return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
-                        }
-                        return "transparent"
-                      ]]]
-                card:
-                  - background: var(--ha-card-background)
-            - type: "custom:button-card"
-              template: live_tile
-              entity: sensor.binday_recycling
-              name: Yellow Bin
-              view_layout:
-              state_display: "[[[ return entity.attributes.days ]]]"
-              show_units: false
-              view_layout:
-                grid-column: span 2
-              variables:
-                aspect_ratio: 1.5/1
-              styles:
-                grid:
-                  - background: |
-                      [[[
-                        var temp = parseFloat(entity.attributes.days)
-                        if (temp <= 1) {
-                          return "rgba(var(--rgb-primary-color)," + 1 + ")"
-                        }
-                        if (temp <= 6) {
-                          return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
-                        }
-                        return "transparent"
-                      ]]]
-                card:
-                  - background: var(--ha-card-background)
-            - type: "custom:button-card"
-              template: live_tile
-              entity: sensor.binday_greenwaste
-              name: Green Bin
-              state_display: "[[[ return entity.attributes.days  ]]]"
-              show_units: false
-              view_layout:
-                grid-column: span 2
-              variables:
-                aspect_ratio: 1.5/1
-              styles:
-                grid:
-                  - background: |
-                      [[[
-                        var temp = parseFloat(entity.attributes.days)
-                        if (temp <= 1) {
-                          return "rgba(var(--rgb-primary-color)," + 1 + ")"
-                        }
-                        if (temp <= 6) {
-                          return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
-                        }
-                        return "transparent"
-                      ]]]
-                card:
-                  - background: var(--ha-card-background)
+              - type: "custom:button-card"
+                template: live_tile
+                entity: sensor.binday_waste
+                name: Red Bin
+                state_display: "[[[ return entity.attributes.days  ]]]"
+                show_units: false
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  aspect_ratio: 1.5/1
+                styles:
+                  grid:
+                    - background: |
+                        [[[
+                          var temp = parseFloat(entity.attributes.days)
+                          if (temp <= 1) {
+                            return "rgba(var(--rgb-primary-color)," + 1 + ")"
+                          }
+                          if (temp <= 6) {
+                            return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
+                          }
+                          return "transparent"
+                        ]]]
+                  card:
+                    - background: var(--ha-card-background)
+              - type: "custom:button-card"
+                template: live_tile
+                entity: sensor.binday_recycling
+                name: Yellow Bin
+                state_display: "[[[ return entity.attributes.days ]]]"
+                show_units: false
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  aspect_ratio: 1.5/1
+                styles:
+                  grid:
+                    - background: |
+                        [[[
+                          var temp = parseFloat(entity.attributes.days)
+                          if (temp <= 1) {
+                            return "rgba(var(--rgb-primary-color)," + 1 + ")"
+                          }
+                          if (temp <= 6) {
+                            return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
+                          }
+                          return "transparent"
+                        ]]]
+                  card:
+                    - background: var(--ha-card-background)
+              - type: "custom:button-card"
+                template: live_tile
+                entity: sensor.binday_greenwaste
+                name: Green Bin
+                state_display: "[[[ return entity.attributes.days  ]]]"
+                show_units: false
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  aspect_ratio: 1.5/1
+                styles:
+                  grid:
+                    - background: |
+                        [[[
+                          var temp = parseFloat(entity.attributes.days)
+                          if (temp <= 1) {
+                            return "rgba(var(--rgb-primary-color)," + 1 + ")"
+                          }
+                          if (temp <= 6) {
+                            return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
+                          }
+                          return "transparent"
+                        ]]]
+                  card:
+                    - background: var(--ha-card-background)
 
-            - type: "custom:decluttering-card"
-              template: mini_graph_tile
-              variables:
-                - entities:
-                    - entity: sensor.flighttracker_flights_now
-                - title: Planes Overhead
-                - aspect_ratio: 1.5/1
-              view_layout:
-                grid-column: span 2
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.flighttracker_flights_now
+                  - title: Planes Overhead
+                  - aspect_ratio: 1.5/1
+                view_layout:
+                  grid-column: span 2
 
-            - type: "custom:decluttering-card"
-              template: mini_graph_tile
-              variables:
-                - entities:
-                    - entity: sensor.home_to_work
-                - title: Home -> Work
-                - decimals: 2
-                - aspect_ratio: 1.5/1
-              view_layout:
-                grid-column: span 2
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.home_to_work
+                  - title: Home -> Work
+                  - decimals: 2
+                  - aspect_ratio: 1.5/1
+                view_layout:
+                  grid-column: span 2
 
-            - type: "custom:decluttering-card"
-              template: mini_graph_tile
-              variables:
-                - entities:
-                    - entity: sensor.tom_to_home
-                - title: Tom -> Home
-                - decimals: 2
-                - aspect_ratio: 1.5/1
-              view_layout:
-                grid-column: span 2
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.here_tom_to_home_duration_in_traffic
+                  - title: Tom -> Home
+                  - decimals: 2
+                  - aspect_ratio: 1.5/1
+                view_layout:
+                  grid-column: span 2
 
-            - type: "custom:decluttering-card"
-              template: mini_graph_tile
-              variables:
-                - entities:
-                    - entity: sensor.tom_to_work
-                - title: Tom -> Work
-                - decimals: 2
-                - aspect_ratio: 1.5/1
-              view_layout:
-                grid-column: span 2
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.here_tom_to_work_duration_in_traffic
+                  - title: Tom -> Work
+                  - decimals: 2
+                  - aspect_ratio: 1.5/1
+                view_layout:
+                  grid-column: span 2
 
-
-            - type: "custom:decluttering-card"
-              template: mini_graph_tile
-              variables:
-                - entities:
-                    - entity: sensor.tamworth_fuel_average_ulp95
-                - title: Avg U95 Price
-                - decimals: 2
-                - aspect_ratio: 1.5/1
-              view_layout:
-                grid-column: span 2
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.tamworth_fuel_average_ulp95
+                  - title: Avg U95 Price
+                  - decimals: 2
+                  - aspect_ratio: 1.5/1
+                view_layout:
+                  grid-column: span 2
 
       # Column 5
 
