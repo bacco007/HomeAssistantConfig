@@ -33,7 +33,10 @@ sensor:
       - build_timestamp
       - feed_alias
       - mlat-ok
+      - mlat-number-seen
       - last_rx_connect_time
+      - feed_num_ac_adsb_tracked
+      - feed_num_ac_non_adsb_tracked
 
   - platform: template
     sensors:
@@ -55,3 +58,20 @@ sensor:
         friendly_name: Version
         icon_template: mdi:airplane
         value_template: '{{ states.sensor.adsb_fr24_feeder.attributes["build_version"] }}'
+      adsb_fr24_feed_num_ac_adsb_tracked:
+        friendly_name: ADSB Tracked
+        icon_template: mdi:airplane
+        value_template: '{{ states.sensor.fr24_feeder.attributes["feed_num_ac_adsb_tracked"] | round(0) }}'
+        unit_of_measurement: "aircraft"
+      adsb_fr24_feed_num_ac_non_adsb_tracked:
+        friendly_name: NON-ADSB Tracked
+        icon_template: mdi:airplane
+        value_template: '{{ states.sensor.fr24_feeder.attributes["feed_num_ac_non_adsb_tracked"] | round(0) }}'
+        unit_of_measurement: "aircraft"
+      adsb_fr24_mlat_ok:
+        friendly_name: MLAT Status
+        value_template: '{{ states.sensor.fr24_feeder.attributes["mlat-ok"] }}'
+      adsb_fr24_mlat_number_seen:
+        friendly_name: MLAT number seen
+        value_template: '{{ states.sensor.fr24_feeder.attributes["mlat-number-seen"] | round(0) }}'
+        unit_of_measurement: "aircraft"
