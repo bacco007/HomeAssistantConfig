@@ -1,3 +1,4 @@
+---
 # https://github.com/troinine/hass-config/blob/main/button_card_templates/troinine/clock.yaml
 clock:
   variables:

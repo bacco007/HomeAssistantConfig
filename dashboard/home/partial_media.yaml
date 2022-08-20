@@ -122,11 +122,11 @@ cards:
             label: >
               [[[ return
               entity.attributes.artist_2 + " (" + entity.attributes.artist_2_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.artist_3 + " (" + entity.attributes.artist_3_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.artist_4 + " (" + entity.attributes.artist_4_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.artist_5 + " (" + entity.attributes.artist_5_playcount + ")"
               ]]]
             variables:
@@ -142,11 +142,11 @@ cards:
             label: >
               [[[ return
               entity.attributes.album_2 + " (" + entity.attributes.album_2_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.album_3 + " (" + entity.attributes.album_3_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.album_4 + " (" + entity.attributes.album_4_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.album_5 + " (" + entity.attributes.album_5_playcount + ")"
               ]]]
             variables:
@@ -162,11 +162,11 @@ cards:
             label: >
               [[[ return
               entity.attributes.track_2 + " (" + entity.attributes.track_2_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.track_3 + " (" + entity.attributes.track_3_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.track_4 + " (" + entity.attributes.track_4_playcount + ")"
-              + "<br/>" + 
+              + "<br/>" +
               entity.attributes.track_5 + " (" + entity.attributes.track_5_playcount + ")"
               ]]]
             variables:

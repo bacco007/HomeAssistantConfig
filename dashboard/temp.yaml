@@ -890,7 +890,7 @@ cards:
                   - operator: default
                     color: "var(--primary-color)"
                 state_display: >-
-                  [[[ 
+                  [[[
                     if (entity.state == "error") { return entity.attributes.error }
                     if (entity.attributes.bin_full) { return 'Bin full' }
                     if (!entity.attributes.bin_present) { return 'Bin not present' }
@@ -1073,7 +1073,7 @@ cards:
                         return "mdi:weather-" + weatherIcon
                       ]]]
                     name: |
-                      [[[ 
+                      [[[
                         var weatherNameDict = {
                           'partlycloudy': 'Partly Cloudy',
                           'clear-night': 'Clear Night'
@@ -1086,7 +1086,7 @@ cards:
                       [[[
                         var tempForecast = entity.attributes.forecast.map((item) => { return item.temperature }).slice(0, 4)
                         if (states['sensor.valhalla_hourly_forecast_temperature_rising'] == 'Rising') {
-                          return '↗ ' + Math.max(...tempForecast) + '°'                      
+                          return '↗ ' + Math.max(...tempForecast) + '°'
                         } else {
                           return '↘ ' + Math.min(...tempForecast) + '°'
                         }
@@ -1374,17 +1374,17 @@ cards:
                       - live_tile_with_long_state
                     entity: sensor.mta_subway_l_service_status
                     state_display: >-
-                      [[[ 
+                      [[[
                         if (( entity.state == 'No Data' ) || ( entity.state == 'unavailable')) { return 'No Data' }
                         return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses.north : entity.state)
                       ]]]
                     name: L Train Northbound
                     icon: "mdi:train"
                     label: |-
-                      [[[ 
+                      [[[
                         if (( entity.state == 'No Data' ) || ( entity.state == 'unavailable')) { return '' }
                         if ( entity.state == 'No Service') {
-                          var label = entity.attributes.service_change_summaries.both[0] 
+                          var label = entity.attributes.service_change_summaries.both[0]
                         } else {
                           var label = ((entity.attributes.service_change_summaries.north.length > 0) ? entity.attributes.service_change_summaries.north[0] : '') +
                             ((entity.attributes.delay_summaries.north != null) ? entity.attributes.delay_summaries.north : '') +
@@ -1655,7 +1655,7 @@ cards:
                       [[[ return states["sensor.dorothy_library_" +
                       variables.newest].attributes.last_added_item ]]]
                     label: |-
-                      [[[ 
+                      [[[
                         var diff = (-(new Date(states["sensor.dorothy_library_" +
                           variables.newest].attributes.last_added_timestamp) - new Date()) /
                           1000 / 60 / 60 / 24)
@@ -1698,11 +1698,11 @@ cards:
                         label: >
                           [[[ return
                           states["sensor.last_fm_top_artists"].attributes.artist_2
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_artists"].attributes.artist_3
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_artists"].attributes.artist_4
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_artists"].attributes.artist_5
                           ]]]
                         variables:
@@ -1712,7 +1712,7 @@ cards:
                             - color: var(--primary-text-color)
                             - background-size: cover
                             - background-image: >
-                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" +
                                   states["sensor.last_fm_top_artist_photo"].state + "')" ]]]
                       - type: "custom:button-card"
                         template:
@@ -1727,11 +1727,11 @@ cards:
                         label: >
                           [[[ return
                           states["sensor.last_fm_top_albums"].attributes.album_2
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_albums"].attributes.album_3
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_albums"].attributes.album_4
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_albums"].attributes.album_5
                           ]]]
                         variables:
@@ -1741,7 +1741,7 @@ cards:
                             - color: var(--primary-text-color)
                             - background-size: cover
                             - background-image: >
-                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" +
                                   states["sensor.last_fm_top_albums"].attributes.album_1_image + "')" ]]]
                       - type: "custom:button-card"
                         template:
@@ -1756,11 +1756,11 @@ cards:
                         label: >
                           [[[ return
                           states["sensor.last_fm_top_tracks"].attributes.track_2
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_tracks"].attributes.track_3
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_tracks"].attributes.track_4
-                          + "<br/>" + 
+                          + "<br/>" +
                           states["sensor.last_fm_top_tracks"].attributes.track_5
                           ]]]
                         variables:

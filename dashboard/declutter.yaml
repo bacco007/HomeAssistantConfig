@@ -1,3 +1,4 @@
+---
 # GRAPH CARDS
 
 # Mini Graph Tile
@@ -47,7 +48,7 @@ mini_graph_tile:
           padding: 4px 4px 12px 12px !important;
           background-color: rgba(var(--rgb-accent-color),.15);
         }
-        .name { align-self: flex-end; 
+        .name { align-self: flex-end;
         }
         .name > span {
           font-size: var(--body-font-size) !important;
@@ -193,7 +194,7 @@ multi_graph_card:
           text-transform: uppercase !important;
         }
         .info__item__time {
-          display: none;          
+          display: none;
         }
 # History Graph Card
 history_graph_card:
@@ -435,7 +436,7 @@ metro_media_player_page:
           custom_fields:
             picture:
               - background: |-
-                  [[[ 
+                  [[[
                     if (entity.attributes.entity_picture != '') {
                       return "url(" + entity.attributes.entity_picture + ")"
                     } else if (entity.attributes.entity_picture_local != '') {

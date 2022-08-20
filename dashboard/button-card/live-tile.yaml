@@ -289,7 +289,7 @@ live_tile_with_percent_bar:
       - background: |
           [[[
             return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${entity.state}% 4px no-repeat,
-              linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background)) top left / ${entity.state}% 100% no-repeat, 
+              linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background)) top left / ${entity.state}% 100% no-repeat,
               linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background))`
           ]]]
         color: var(--accent-text-color)
@@ -301,7 +301,7 @@ live_tile_with_accent_percent_bar:
       - background: |
           [[[
             return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${entity.state}% 4px no-repeat,
-              linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5)) top left / ${entity.state}% 100% no-repeat, 
+              linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5)) top left / ${entity.state}% 100% no-repeat,
               linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5))`
           ]]]
         color: var(--accent-text-color)
@@ -680,7 +680,7 @@ live_tile_conditional_media:
                 return "url(" + entity.attributes.data[variables.i].poster + ")"
               } else if (entity.attributes.data[variables.i].fanart != undefined) {
                 return "url(" + entity.attributes.data[variables.i].fanart + ")"
-              } 
+              }
             ]]]
         - background-size: "calc( 60% )"
         - background-repeat: no-repeat

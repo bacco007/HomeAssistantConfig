@@ -1,3 +1,4 @@
+---
 grid-template-rows: auto 32px
 grid-template-columns: 32px auto 32px
 grid-template-areas: |

@@ -1,3 +1,4 @@
+---
 sport_cal:
   custom_fields:
     calendar: |
@@ -21,7 +22,7 @@ sport_cal:
         let location = states[entity_loop].attributes.location;
         if (location === "" || location === undefined) {location = "-"}
 
-      calSnippet += 
+      calSnippet +=
         `<table><tr>
             <td class="date month">${start_month}</td><td class="event"><div class="event-title">${event}</div></td>
           </tr>
@@ -31,7 +32,7 @@ sport_cal:
           }
       }
       if (calSnippet === "") {calSnippet = `<span class="nothing">Nothing Scheduled</span>`}
-        
+
       return calSnippet;
       ]]]
     person: |
@@ -69,11 +70,11 @@ sport_cal:
       width: 100%;
     }
     td {
-      white-space: -o-pre-wrap; 
+      white-space: -o-pre-wrap;
       word-wrap: break-word;
-      white-space: pre-wrap; 
-      white-space: -moz-pre-wrap; 
-      white-space: -pre-wrap; 
+      white-space: pre-wrap;
+      white-space: -moz-pre-wrap;
+      white-space: -pre-wrap;
     }
     .date {
       border-right: 2px solid var(--accent-color);

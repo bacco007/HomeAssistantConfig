@@ -8,4 +8,4 @@ sensor:
     - screen_name
   value_template: "{{ value_json[0].followers_count | int }}"
   unit_of_measurement: "followers"
-scan_interval: 60
+scan_interval: 600

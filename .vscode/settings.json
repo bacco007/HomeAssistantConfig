@@ -18,5 +18,6 @@
   "python.formatting.provider": "black",
   "python.formatting.blackArgs": ["--line-length=99"],
   "python.sortImports.args": ["-rc", "-sp isort.cfg"],
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true
 }

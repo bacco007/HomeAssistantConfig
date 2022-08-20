@@ -1,3 +1,4 @@
+---
 ## BASES AND COMPONENTS
 
 # VanillaTilt
@@ -22,7 +23,6 @@ tilt:
         }
       ]]]
 # Require Confirmation Dialog
-
 require_confirmation:
   confirmation:
     text: >-

@@ -1,3 +1,4 @@
+---
 grid-template-columns: auto min-content
 grid-template-rows: auto
 mediaquery:

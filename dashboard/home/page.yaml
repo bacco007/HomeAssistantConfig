@@ -137,6 +137,17 @@ cards:
                   - line_width: 2
                   - aspect_ratio: 1.5/1
 
+              - type: custom:hourly-weather
+                entity: weather.east_tamworth_hourly
+                num_segments: 24
+                label_spacing: 4
+                name: null
+                view_layout:
+                  grid-column: span 2
+                style:
+                  ha-card: |
+                    {background: var(--ha-card-background)}
+
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
             cards: &summary-column-network-cards
@@ -413,16 +424,6 @@ cards:
                 template: mini_graph_tile
                 variables:
                   - entities:
-                      - entity: sensor.flighttracker_flights_now
-                  - title: Planes Overhead
-                  - aspect_ratio: 1.5/1
-                view_layout:
-                  grid-column: span 2
-
-              - type: "custom:decluttering-card"
-                template: mini_graph_tile
-                variables:
-                  - entities:
                       - entity: sensor.home_to_work
                   - title: Home -> Work
                   - decimals: 2
@@ -459,6 +460,51 @@ cards:
                       - entity: sensor.tamworth_fuel_average_ulp95
                   - title: Avg U95 Price
                   - decimals: 2
+                  - aspect_ratio: 1.5/1
+                view_layout:
+                  grid-column: span 2
+
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(100px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+            cards:
+              - type: "custom:button-card"
+                template: header_card
+                variables:
+                  name: FLIGHT TRACKER
+                  label: More
+                  link: /ui-dashboard/1
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: "custom:button-card"
+                template: live_tile
+                entity: sensor.flighttracker_planeoverhead
+                name: Closest Plane
+                # tap_action: !include ../popup/updates_ha.yaml
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  aspect_ratio: 1.5/1
+                state_display: "[[[ return entity.state  ]]]"
+                label: >-
+                  [[[ return entity.attributes.distance.toFixed(2) + "km" ]]]
+                show_units: false
+                styles:
+                  card:
+                    - background: var(--ha-card-background)
+
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.flighttracker_flights_now
+                  - title: Planes Overhead
                   - aspect_ratio: 1.5/1
                 view_layout:
                   grid-column: span 2

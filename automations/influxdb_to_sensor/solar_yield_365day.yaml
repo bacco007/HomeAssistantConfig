@@ -25,16 +25,16 @@ action:
       unit_of_measurement: kWh
       friendly_name: Solar - 365 Day - Yield
       icon: "mdi:solar-power"
-    # - service: pyscript.influxdb_query_to_entity
-    #   data:
-    #     query: >-
-    #       select yield from (SELECT moving_average(max("value"),7) AS "yield" FROM "homeassistant"."autogen"."kWh"
-    #       WHERE time >= now() - 365d AND ("entity_id"='solar_sungrow_daily_yield' OR "entity_id"='sungrowsolar_daily_power_yields' OR "entity_id"='sungrowsolar_daily_power_yield')
-    #       GROUP BY time(1d) FILL(null) tz('Australia/Sydney')) where yield < 100
-    #     key_field_name: time
-    #     value_field_name: yield
-    #     entity_id: sensor.archive_solar_yield_365day_avg
-    #     unit_of_measurement: kWh
-    #     friendly_name: Solar - 365 Day - Yield - Avg
-    #     icon: "mdi:solar-power"
 mode: single
+# - service: pyscript.influxdb_query_to_entity
+#   data:
+#     query: >-
+#       select yield from (SELECT moving_average(max("value"),7) AS "yield" FROM "homeassistant"."autogen"."kWh"
+#       WHERE time >= now() - 365d AND ("entity_id"='solar_sungrow_daily_yield' OR "entity_id"='sungrowsolar_daily_power_yields' OR "entity_id"='sungrowsolar_daily_power_yield')
+#       GROUP BY time(1d) FILL(null) tz('Australia/Sydney')) where yield < 100
+#     key_field_name: time
+#     value_field_name: yield
+#     entity_id: sensor.archive_solar_yield_365day_avg
+#     unit_of_measurement: kWh
+#     friendly_name: Solar - 365 Day - Yield - Avg
+#     icon: "mdi:solar-power"

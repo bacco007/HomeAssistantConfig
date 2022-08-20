@@ -5,4 +5,4 @@ sensor:
   value_template: >
     {{ value_json.user.playcount}}
   unit_of_measurement: Songs
-scan_interval: 10
+scan_interval: 600

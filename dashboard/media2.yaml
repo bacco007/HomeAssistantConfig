@@ -1,3 +1,4 @@
+---
 # MAXIMALIST DASHBOARD
 # Media View
 # Made by Madelena Mak 2022
@@ -32,8 +33,8 @@ cards:
             content: >
               # Media
               {{ states.media_player|selectattr('state','equalto','playing')|list|length }}
-              device{{ iif( states.media_player|selectattr('state','equalto','playing')|list|length == 1, ' is ', 's are ') }} playing and 
-              {{ states.media_player|selectattr('state','equalto','paused')|list|length }} 
+              device{{ iif( states.media_player|selectattr('state','equalto','playing')|list|length == 1, ' is ', 's are ') }} playing and
+              {{ states.media_player|selectattr('state','equalto','paused')|list|length }}
               {{ iif( states.media_player|selectattr('state','equalto','paused')|list|length == 1, ' is ', ' are ') }} paused.
           - type: "custom:layout-card"
             layout_type: "custom:horizontal-layout"

@@ -1,3 +1,4 @@
+---
 title: Weather
 path: weather
 theme: "Fluent Red"
@@ -47,7 +48,7 @@ cards:
                   entity_temperature: sensor.tempest_st_00056115_temperature
                   entity_weather: weather.east_tamworth_hourly
 
-      #[Row] Controls
+      # [Row] Controls
       # - type: "custom:layout-card"
       #   layout_type: "custom:grid-layout"
       #   layout:
@@ -439,14 +440,14 @@ cards:
                   style:
                     .: |
                       #graph {margin-left: -44px; margin-top: -16px;}
-                      .apexcharts-yaxis-label { font-family: var(--font-stack) !important; 
+                      .apexcharts-yaxis-label { font-family: var(--font-stack) !important;
                         font-size: var(--h6-font-size) !important;
                         opacity: 0.15;}
                       .apexcharts-yaxis-label:nth-child(5n+1) { opacity: .5;}
                       .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); }
-                      .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
-                        font-size: var(--h6-font-size) !important; font-weight: 500 !important;}                          
-                      .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
+                      .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important;
+                        font-size: var(--h6-font-size) !important; font-weight: 500 !important;}
+                      .apexcharts-point-annotation-label { font-family: var(--font-stack) !important;
                         font-size: var(--h6-font-size) !important; font-weight: normal !important;}
           - type: custom:stack-in-card
             mode: vertical

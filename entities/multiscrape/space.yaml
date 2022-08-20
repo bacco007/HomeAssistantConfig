@@ -1,3 +1,4 @@
+---
 # Split NOAA space weather condition scales (R/S/G) JSON into sensors.
 
 - name: NOAA Space Weather - Conditions
@@ -162,7 +163,7 @@
           value_template: '{{ value_json[0]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
         - name: Potential Impacts
           value_template: |
-            {{ iif( value_json[0]["message"] | regex_findall('Potential Impacts') != [], 
+            {{ iif( value_json[0]["message"] | regex_findall('Potential Impacts') != [],
               value_json[0]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
     - unique_id: noaa_space_weather_alert_2
       name: NOAA Space Weather - Alert 2
@@ -176,7 +177,7 @@
           value_template: '{{ value_json[1]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
         - name: Potential Impacts
           value_template: |
-            {{ iif( value_json[1]["message"] | regex_findall('Potential Impacts') != [], 
+            {{ iif( value_json[1]["message"] | regex_findall('Potential Impacts') != [],
               value_json[1]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
     - unique_id: noaa_space_weather_alert_3
       name: NOAA Space Weather - Alert 3
@@ -190,7 +191,7 @@
           value_template: '{{ value_json[2]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
         - name: Potential Impacts
           value_template: |
-            {{ iif( value_json[2]["message"] | regex_findall('Potential Impacts') != [], 
+            {{ iif( value_json[2]["message"] | regex_findall('Potential Impacts') != [],
               value_json[2]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
     - unique_id: noaa_space_weather_alert_4
       name: NOAA Space Weather - Alert 4
@@ -204,7 +205,7 @@
           value_template: '{{ value_json[3]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
         - name: Potential Impacts
           value_template: |
-            {{ iif( value_json[3]["message"] | regex_findall('Potential Impacts') != [], 
+            {{ iif( value_json[3]["message"] | regex_findall('Potential Impacts') != [],
               value_json[3]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
     - unique_id: noaa_space_weather_alert_5
       name: NOAA Space Weather - Alert 5
@@ -218,7 +219,7 @@
           value_template: '{{ value_json[4]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
         - name: Potential Impacts
           value_template: |
-            {{ iif( value_json[4]["message"] | regex_findall('Potential Impacts') != [], 
+            {{ iif( value_json[4]["message"] | regex_findall('Potential Impacts') != [],
               value_json[4]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
 # Get the next 5 launches from rocketlaunch.live free API.
 - name: Rocket Launch - Next 5

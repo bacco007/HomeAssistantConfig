@@ -11,4 +11,4 @@ sensor:
     - comment_karma
     - awardee_karma
     - awarder_karma
-scan_interval: 60
+scan_interval: 600

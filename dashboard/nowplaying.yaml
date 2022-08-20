@@ -1,3 +1,4 @@
+---
 title: Now Playing
 path: now-playing
 theme: "Fluent Red"
@@ -13,7 +14,7 @@ cards:
       grid-area: cc
     layout:
       grid-column-gap: 32px
-      #grid-template-columns: "repeat(auto-fit, [col-start] minmax(400px, 1fr) [col-end])"
+      # grid-template-columns: "repeat(auto-fit, [col-start] minmax(400px, 1fr) [col-end])"
       grid-template-columns: "repeat(4, [col-start] minmax(400px, 1fr) [col-end])"
       grid-template-rows: auto
       max_cols: 4
@@ -33,10 +34,10 @@ cards:
           - type: markdown
             content: >
               # Environment
-              It is {{ states('sensor.thermal_comfort_indoor_average_simmerzone') | regex_replace(find='_', replace=' ') | lower }} 
-              and {{ states('sensor.thermal_comfort_indoor_average_perception') | regex_replace(find='_', replace=' ') | lower }} at 
+              It is {{ states('sensor.thermal_comfort_indoor_average_simmerzone') | regex_replace(find='_', replace=' ') | lower }}
+              and {{ states('sensor.thermal_comfort_indoor_average_perception') | regex_replace(find='_', replace=' ') | lower }} at
               {{states('sensor.indoor_average_temperature')}}°C
-              inside. It is {{ states('sensor.outside_thermal_comfort_simmerzone') | regex_replace(find='_', replace=' ') | lower }} 
+              inside. It is {{ states('sensor.outside_thermal_comfort_simmerzone') | regex_replace(find='_', replace=' ') | lower }}
               and {{ states('sensor.outside_thermal_comfort_perception') | regex_replace(find='_', replace=' ') | lower }} at {{
               states('sensor.tempest_st_00056115_feels_like_temperature') }}°C and is
               getting {{ iif
@@ -133,7 +134,7 @@ cards:
                     - background-size: cover
                     - background-position: center center
                     - background-image: >
-                        [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                        [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" +
                           entity.attributes.entity_picture + "')" ]]]
               - type: "custom:button-card"
                 template:

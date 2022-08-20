@@ -7,4 +7,5 @@ sensor:
   json_attributes_path: $.topalbums
   json_attributes:
     - album
-scan_interval: 10
+scan_interval: 600
+
