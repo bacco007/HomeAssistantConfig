@@ -1,9 +1,11 @@
-"""Constants for HDHomeRun"""
+"""Constants for HDHomeRun."""
 
 # region #-- imports --#
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.binary_sensor import \
+    DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+
 # TODO: remove try/except when minimum version of HASS is 2022.4.0
 try:
     from homeassistant.components.update import DOMAIN as UPDATE_DOMAIN

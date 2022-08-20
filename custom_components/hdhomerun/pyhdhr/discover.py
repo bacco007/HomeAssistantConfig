@@ -1,4 +1,4 @@
-"""Discovery for HDHomeRun devices"""
+"""Discovery for HDHomeRun devices."""
 
 # region #-- imports --#
 from __future__ import annotations
@@ -7,40 +7,22 @@ import asyncio
 import logging
 import socket
 import struct
-from enum import (
-    Enum,
-    unique,
-)
-from typing import (
-    Dict,
-    List,
-    Optional,
-    Tuple,
-)
+from enum import Enum, unique
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 import aiohttp
 
 from . import HDHomeRunDevice
-from .const import (
-    HDHOMERUN_DEVICE_ID_WILDCARD,
-    HDHOMERUN_DEVICE_TYPE_TUNER,
-    HDHOMERUN_TAG_BASE_URL,
-    HDHOMERUN_TAG_DEVICE_AUTH_STR,
-    HDHOMERUN_TAG_DEVICE_ID,
-    HDHOMERUN_TAG_DEVICE_TYPE,
-    HDHOMERUN_TAG_LINEUP_URL,
-    HDHOMERUN_TAG_TUNER_COUNT,
-    HDHOMERUN_TYPE_DISCOVER_REQ,
-    HDHOMERUN_TYPE_DISCOVER_RPY,
-    HDHOMERUN_DISCOVER_UDP_PORT,
-)
-from .exceptions import (
-    HDHomeRunHTTPDiscoveryNotAvailableError,
-)
-from .protocol import HDHomeRunProtocol
-
+from .const import (HDHOMERUN_DEVICE_ID_WILDCARD, HDHOMERUN_DEVICE_TYPE_TUNER,
+                    HDHOMERUN_DISCOVER_UDP_PORT, HDHOMERUN_TAG_BASE_URL,
+                    HDHOMERUN_TAG_DEVICE_AUTH_STR, HDHOMERUN_TAG_DEVICE_ID,
+                    HDHOMERUN_TAG_DEVICE_TYPE, HDHOMERUN_TAG_LINEUP_URL,
+                    HDHOMERUN_TAG_TUNER_COUNT, HDHOMERUN_TYPE_DISCOVER_REQ,
+                    HDHOMERUN_TYPE_DISCOVER_RPY)
+from .exceptions import HDHomeRunHTTPDiscoveryNotAvailableError
 from .logger import Logger
+from .protocol import HDHomeRunProtocol
 
 # endregion
 
@@ -49,7 +31,7 @@ _LOGGER = logging.getLogger(__name__)
 
 @unique
 class DiscoverMode(Enum):
-    """Available discovery modes"""
+    """Available discovery modes."""
 
     AUTO = 0
     HTTP = 1
@@ -57,16 +39,15 @@ class DiscoverMode(Enum):
 
 
 class Discover:
-    """Generic discovery representation"""
+    """Generic discovery representation."""
 
     def __init__(self, mode: DiscoverMode = DiscoverMode.AUTO) -> None:
-        """Constructor"""
-
+        """Initialise."""
         self._log_formatter: Logger = Logger()
-        self._mode: DiscoverMode = mode
+        self._mode: DiscoverMode = DiscoverMode(mode)
 
     async def discover(self, broadcast_address: Optional[str] = "255.255.255.255") -> List[HDHomeRunDevice]:
-        """Carry out a discovery for devices
+        """Carry out a discovery for devices.
 
         N.B. when the mode is set to AUTO HTTP is discovery is attempted first and then UDP.
         The device lists are merged with the settings from UDP winning if they are not None.
@@ -75,7 +56,6 @@ class Discover:
         :param broadcast_address: the address to broadcast to when using the UDP protocol
         :return: a list of device objects for those found
         """
-
         _LOGGER.debug(self._log_formatter.format("entered, broadcast_address: %s"), broadcast_address)
         _LOGGER.debug(self._log_formatter.format("mode: %s"), self._mode)
 
@@ -107,7 +87,7 @@ class Discover:
         # region #-- try and rediscover via HTTP to get further details (UDP won't offer any more) --#
         if len(devices):
             _LOGGER.debug(self._log_formatter.format("attempting targeted rediscover via HTTP"))
-        for device_id, dev in devices.items():
+        for _, dev in devices.items():
             await DiscoverHTTP.rediscover(target=dev)
         # endregion
 
@@ -116,12 +96,11 @@ class Discover:
 
     @staticmethod
     async def rediscover(target: HDHomeRunDevice) -> HDHomeRunDevice:
-        """Get updated information for the given target
+        """Get updated information for the given target.
 
         :param target: the device to refresh information for
         :return: the updated device
         """
-
         log_formatter: Logger = Logger(unique_id=target.ip)
         _LOGGER.debug(log_formatter.format("entered"))
 
@@ -144,7 +123,7 @@ class Discover:
 
 
 class DiscoverHTTP:
-    """Discover a device over HTTP"""
+    """Discover a device over HTTP."""
 
     JSON_PROPERTIES_MAP: Dict[str, str] = {
         "BaseURL": "_base_url",
@@ -167,14 +146,13 @@ class DiscoverHTTP:
         session: Optional[aiohttp.ClientSession] = None,
         timeout: float = 2.5
     ) -> List[HDHomeRunDevice]:
-        """Issue a request to get known devices or updated information about a device
+        """Issue a request to get known devices or updated information about a device.
 
         :param discover_url: the URL to query
         :param session: an existing session to use
         :param timeout: timeout for the query
         :return: list of devices found or with refreshed information
         """
-
         log_formatter: Logger = Logger(prefix=f"{__class__.__name__}.")
         _LOGGER.debug(
             log_formatter.format("entered, discover_url: %s, session: %s, timeout: %.2f"),
@@ -220,7 +198,7 @@ class DiscoverHTTP:
         session: Optional[aiohttp.ClientSession] = None,
         timeout: float = 2.5
     ) -> HDHomeRunDevice:
-        """Gather updated information about a device
+        """Gather updated information about a device.
 
         N.B. the discover_url will be used if available. If not, one is built (UDP discovered devices
         won't have one).
@@ -230,7 +208,6 @@ class DiscoverHTTP:
         :param timeout: timeout for the query
         :return: the updated device
         """
-
         log_formatter: Logger = Logger(prefix=f"{__class__.__name__}.")
         _LOGGER.debug(
             log_formatter.format("entered, target: %s, session: %s, timeout: %.2f"),
@@ -253,7 +230,7 @@ class DiscoverHTTP:
         else:
             setattr(target, "_discover_url", discover_url)
             updated_device = updated_device[0]
-            for json_property_name, property_name in DiscoverHTTP.JSON_PROPERTIES_MAP.items():  # set the properties
+            for _, property_name in DiscoverHTTP.JSON_PROPERTIES_MAP.items():  # set the properties
                 if (property_value := getattr(updated_device, property_name, None)) is not None:
                     setattr(target, property_name, property_value)
 
@@ -262,7 +239,7 @@ class DiscoverHTTP:
 
 
 class DiscoverUDP:
-    """Representation of using UDP for discovery"""
+    """Representation of using UDP for discovery."""
 
     DISCOVER_PORT: int = HDHOMERUN_DISCOVER_UDP_PORT
 
@@ -272,14 +249,13 @@ class DiscoverUDP:
         target: str = "255.255.255.255",
         timeout: float = 1
     ) -> List[HDHomeRunDevice]:
-        """Use the UDP protocol to broadcast for discovery
+        """Use the UDP protocol to broadcast for discovery.
 
         :param interface: the interface to use
         :param target: the broadcast address to use (this can also be an individual IP)
         :param timeout: timeout for the query
         :return: list of discovered devices
         """
-
         log_formatter: Logger = Logger(prefix=f"{__class__.__name__}.")
         _LOGGER.debug(
             log_formatter.format("entered, interface: %s, target: %s, timeout: %.2f"),
@@ -313,7 +289,7 @@ class DiscoverUDP:
 
 
 class _DiscoverProtocol(asyncio.DatagramProtocol):
-    """Internal implementation of the discovery protocol"""
+    """Internal implementation of the discovery protocol."""
 
     discovered_devices: List[HDHomeRunDevice] = []
 
@@ -332,8 +308,7 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         interface: Optional[str] = None,
         target: str = "255.255.255.255"
     ) -> None:
-        """Constructor"""
-
+        """Initialise."""
         self._interface: Optional[str] = interface
         self._log_formatter: Logger = Logger(prefix=f"{__class__.__name__}.")
         self._target = (target, port)
@@ -342,12 +317,11 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         self.discovered_devices = []
 
     def connection_made(self, transport: asyncio.DatagramTransport) -> None:
-        """Respond when a conection is made
+        """Respond when a conection is made.
 
         :param transport: UDP transport
         :return: None
         """
-
         # region #-- initialise the socket --#
         self._transport = transport
         sock: Optional[socket.socket] = self._transport.get_extra_info("socket")
@@ -361,20 +335,19 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         self.do_discover()
 
     def connection_lost(self, exc: Exception | None) -> None:
-        """React to the connection being lost"""
+        """React to the connection being lost."""
 
     def datagram_received(self, data: bytes, addr: tuple[str, int]) -> None:
-        """Process the data received
+        """Process the data received.
 
         :param data: data received in response to the message
         :param addr: where the data came from
         :return: None
         """
-
-        ip, port = addr
+        ip_address, _ = addr
 
         # region #-- initialise the device object --#
-        discovered_device: HDHomeRunDevice = HDHomeRunDevice(host=ip)
+        discovered_device: HDHomeRunDevice = HDHomeRunDevice(host=ip_address)
         response = HDHomeRunProtocol.parse_response(data)
         # endregion
 
@@ -410,8 +383,7 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         self.discovered_devices.append(discovered_device)
 
     def do_discover(self) -> None:
-        """Send the packets"""
-
+        """Send the packets."""
         _LOGGER.debug(self._log_formatter.format("entered"))
 
         pkt_type: bytes = struct.pack(">H", HDHOMERUN_TYPE_DISCOVER_REQ)
@@ -427,4 +399,4 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         _LOGGER.debug(self._log_formatter.format("exited"))
 
     def error_received(self, exc: Exception) -> None:
-        """React to an error being received"""
+        """React to an error being received."""

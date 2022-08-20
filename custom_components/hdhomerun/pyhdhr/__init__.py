@@ -1,28 +1,17 @@
-"""Representation of an HDHomeRun device"""
+"""Representation of an HDHomeRun device."""
 
 # region #-- imports --#
 from __future__ import annotations
 
 import asyncio
 import logging
-from enum import (
-    Enum,
-    unique,
-)
-from typing import (
-    Dict,
-    List,
-    Optional,
-    Tuple,
-)
+from enum import Enum, unique
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse, urlunparse
 
 import aiohttp
 
-from .const import (
-    HDHOMERUN_TAG_GETSET_NAME,
-    HDHOMERUN_TAG_GETSET_VALUE,
-)
+from .const import HDHOMERUN_TAG_GETSET_NAME, HDHOMERUN_TAG_GETSET_VALUE
 from .exceptions import HDHomeRunTimeoutError
 from .logger import Logger
 from .protocol import HDHomeRunProtocol
@@ -34,24 +23,22 @@ _LOGGER = logging.getLogger(__name__)
 
 @unique
 class DeviceType(Enum):
-    """Device types as defined by the protocol"""
+    """Device types as defined by the protocol."""
 
     TUNER = 1
     STORAGE = 5
 
 
 class HDHomeRunDevice:
-    """Representation of a device"""
+    """Representation of a device."""
 
     def __del__(self) -> None:
-        """Close the session if necessary"""
-
+        """Close the session if necessary."""
         if self._session and self._created_session:
             asyncio.run_coroutine_threadsafe(coro=self._session.close(), loop=asyncio.get_event_loop())
 
     def __init__(self, host: str) -> None:
-        """Constructor"""
-
+        """Initialise."""
         self._host: str = host
         self._log_formatter: Logger = Logger(unique_id=self._host)
 
@@ -75,17 +62,15 @@ class HDHomeRunDevice:
         self._tuner_status: Optional[List[Dict[str, int | str]]] = None
 
     def __repr__(self) -> str:
-        """"""
-
+        """Friendly representation of the device."""
         return f"{self.__class__.__name__} {self._host}"
 
     async def _async_tuner_refresh_http(self, timeout: Optional[float] = 2.5) -> None:
-        """Refresh the tuner data using HTTP
+        """Refresh the tuner data using HTTP.
 
         :param timeout: timeout for the query
         :return: None
         """
-
         # region #-- build the URL and create a session if needed --#
         tuner_status_url: List[str] | str = list(urlparse(self._discover_url))
         tuner_status_url[2] = "/status.json"
@@ -105,22 +90,20 @@ class HDHomeRunDevice:
             _LOGGER.error("ClientResponseError --> %s", err)
         except asyncio.TimeoutError:
             self._is_online = False
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             _LOGGER.error("%s type: %s", err, type(err))
         else:
             self._is_online = True
             resp_json = await resp.json()
             self._tuner_status = resp_json
 
-    # noinspection PyUnresolvedReferences
     async def _async_tuner_refresh_tcp(self) -> None:
-        """Refresh the tuner information using the TCP control protocol
+        """Refresh the tuner information using the TCP control protocol.
 
         N.B. this tries to closely mimic the response from the HTTP response
 
         :return: None
         """
-
         proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
 
         tuners = [
@@ -143,8 +126,8 @@ class HDHomeRunDevice:
                 "Resource": key.split("/")[1]
             }
             status_details = val.split(" ")  # status details are space delimited
-            for d in status_details:  # tags are = delimited
-                tag, value = tuple(map(str, d.split("=")))
+            for detail in status_details:  # tags are = delimited
+                tag, value = tuple(map(str, detail.split("=")))
                 try:
                     value = int(value)
                 except ValueError:  # we're onlhy interested in the items that are numbers
@@ -190,7 +173,7 @@ class HDHomeRunDevice:
             self._tuner_status = tuner_status
 
     async def async_get_variable(self, variable: str, timeout: float = 2.5) -> Dict[str, int | str]:
-        """Retrieve the given variable from the device
+        """Retrieve the given variable from the device.
 
         :param variable: variable name
         :param timeout: timeout for the request
@@ -204,7 +187,6 @@ class HDHomeRunDevice:
                 }
             }
         """
-
         _LOGGER.debug(self._log_formatter.format("entered, variable: %s, timeout: %.2f"), variable, timeout)
         ret: Dict[str, int | str] = {}
         proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
@@ -215,33 +197,34 @@ class HDHomeRunDevice:
         return ret
 
     async def async_tuner_refresh(self, timeout: float = 2.5) -> None:
-        """Genric function refreshing tuners
+        """Genric function refreshing tuners.
 
         N.B. assumes that a discover_url means that the device will respond to HTTP
 
         :param timeout: timeout for the query (ignored for TCP Control protocol)
         :return: None
         """
-
         if self._discover_url is not None:
             await self._async_tuner_refresh_http(timeout=timeout)
         else:
             await self._async_tuner_refresh_tcp()
 
     async def async_rediscover(self, timeout: float = 2.5) -> HDHomeRunDevice:
-        """Refresh the information for a device
+        """Refresh the information for a device.
 
         :param timeout: timeout for the query
         :return: None
         """
-
         tcp_property_map: Dict[str, str] = {
             "/sys/version": "_sys_version",
             "/sys/model": "_sys_model",
             "/sys/hwmodel": "_sys_hwmodel",
         }
 
-        from .discover import Discover  # late import for Discover to avoid a circular import
+        # late import for Discover to avoid a circular import
+        from .discover import \
+            Discover  # pylint: disable=import-outside-toplevel
+
         device: HDHomeRunDevice = await Discover.rediscover(target=self)
         if getattr(device, "_discover_url", None) is None and device.online:
             proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
@@ -281,8 +264,7 @@ class HDHomeRunDevice:
         return device
 
     async def async_restart(self) -> None:
-        """"""
-
+        """Restart the device."""
         proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
 
         await proto.async_restart()
@@ -290,91 +272,76 @@ class HDHomeRunDevice:
     # region #-- properties --#
     @property
     def base_url(self) -> Optional[str]:
-        """Get the base URL"""
-
+        """Get the base URL."""
         return self._base_url
 
     @property
     def channels(self) -> List[Dict[str, str]]:
-        """Get a list of channels as per the HTTP API"""
-
+        """Get a list of channels as per the HTTP API."""
         return self._channels
 
     @property
     def device_auth_string(self) -> Optional[str]:
-        """Get the device auth string"""
-
+        """Get the device auth string."""
         return self._device_auth_str
 
     @property
     def device_id(self) -> Optional[str]:
-        """Get the device ID"""
-
+        """Get the device ID."""
         return self._device_id
 
     @property
     def device_type(self) -> Optional[DeviceType]:
-        """Get the device type as defined in the UDP protocol"""
-
+        """Get the device type as defined in the UDP protocol."""
         return self._device_type
 
     @property
     def friendly_name(self) -> Optional[str]:
-        """Get the friendly name as defined by the HTTP API"""
-
+        """Get the friendly name as defined by the HTTP API."""
         return self._friendly_name
 
     @property
     def hw_model(self) -> Optional[str]:
-        """Get the model number"""
-
+        """Get the model number."""
         return self._sys_hwmodel
 
     @property
     def installed_version(self) -> Optional[str]:
-        """Get the installed firmware version"""
-
+        """Get the installed firmware version."""
         return self._sys_version
 
     @property
-    def ip(self) -> Optional[str]:
-        """Get the IP address"""
-
+    def ip(self) -> Optional[str]:  # pylint: disable=invalid-name
+        """Get the IP address."""
         return self._host
 
     @property
     def latest_version(self) -> Optional[str]:
-        """Get the atest available version (HTTP API)"""
-
+        """Get the atest available version (HTTP API)."""
         return self._available_firmware
 
     @property
     def lineup_url(self) -> Optional[str]:
-        """Get the URL for the channel lineup"""
-
+        """Get the URL for the channel lineup."""
         return self._lineup_url
 
     @property
     def model(self) -> Optional[str]:
-        """Get the firmware name"""
-
+        """Get the firmware name."""
         return self._sys_model
 
     @property
     def online(self) -> bool:
-        """Get whether the device is online or not"""
-
+        """Get whether the device is online or not."""
         return self._is_online
 
     @property
     def tuner_count(self) -> Optional[int]:
-        """Get the number of tuners"""
-
+        """Get the number of tuners."""
         return self._tuner_count
 
     @property
     def tuner_status(self) -> Optional[List[Dict[str, int | str]]]:
-        """Get the status for all tuners"""
-
+        """Get the status for all tuners."""
         return self._tuner_status
     # endregion

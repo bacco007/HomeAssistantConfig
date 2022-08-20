@@ -1,21 +1,14 @@
-"""Diagnostics support for Linksys Velop"""
+"""Diagnostics support."""
 
 # region #-- imports --#
 import logging
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+from typing import Any, Dict, List
 
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import (
-    CONF_DEVICE,
-    DOMAIN,
-)
+from .const import CONF_DEVICE, DOMAIN
 from .pyhdhr import HDHomeRunDevice
 
 # endregion
@@ -25,8 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_get_config_entry_diagnostics(hass: HomeAssistant, config_entry: ConfigEntry) -> Dict[str, Any]:
-    """Diagnostics for the config entry"""
-
+    """Diagnostics for the config entry."""
     props_to_remove: List[str] = [
         "_log_formatter",
         "_session",

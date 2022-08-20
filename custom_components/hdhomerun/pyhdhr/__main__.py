@@ -1,19 +1,17 @@
-"""Basic CLI for testing pyhdr"""
+"""Basic CLI for testing pyhdr."""
+
+# region #-- imports --#
 import asyncio
 import logging
-from typing import (
-    List,
-    Optional,
-)
+from typing import List, Optional
 
 import asyncclick as click
 
-from pyhdhr import HDHomeRunDevice
-from pyhdhr.discover import (
-    Discover,
-    DiscoverMode,
-)
-from pyhdhr.logger import Logger
+from . import HDHomeRunDevice
+from .discover import Discover, DiscoverMode
+from .logger import Logger
+
+# endregion
 
 _LOGGER = logging.getLogger(__name__)
 log_formatter: Logger = Logger()
@@ -24,9 +22,8 @@ click.anyio_backend = "asyncio"
 @click.group(invoke_without_command=True)
 @click.option("-v", "--verbose", count=True)
 @click.pass_context
-async def cli(ctx: click.Context, verbose: int) -> None:
-    """"""
-
+async def cli(ctx: click.Context = None, verbose: int = 0) -> None:
+    """Initialise the CLI."""
     if ctx.invoked_subcommand is None:
         click.echo(ctx.get_help())
     else:
@@ -40,29 +37,17 @@ async def cli(ctx: click.Context, verbose: int) -> None:
 
 
 @cli.command()
-@click.option(
-    "-b", "--broadcast-address",
-    default="255.255.255.255",
-)
-@click.option(
-    "--include-tuner-info/--no-include-tuner-info",
-    default=False
-)
-@click.option(
-    "-m", "--mode",
-    default=DiscoverMode.AUTO.value,
-)
-@click.option(
-    "--target",
-)
+@click.option("-b", "--broadcast-address", default="255.255.255.255")
+@click.option("--include-tuner-info/--no-include-tuner-info", default=False)
+@click.option("-m", "--mode", default=DiscoverMode.AUTO.value)
+@click.option("--target")
 async def discover(
     broadcast_address: Optional[str] = None,
     mode: Optional[DiscoverMode] = DiscoverMode.AUTO,
     target: Optional[str] = None,
     include_tuner_info: bool = False,
 ) -> None:
-    """"""
-
+    """Attempt to discover devices."""
     _LOGGER.debug(log_formatter.format("entered, args: %s"), locals())
 
     if target is None:
@@ -83,13 +68,9 @@ async def discover(
 
 
 @cli.command()
-@click.option(
-    "--target",
-    required=True,
-)
+@click.option("--target", required=True)
 async def restart(target: str) -> None:
-    """"""
-
+    """Issue a restart command to the device."""
     _LOGGER.debug(log_formatter.format("entered, args: %s"), locals())
 
     device: HDHomeRunDevice = HDHomeRunDevice(host=target)
@@ -99,17 +80,10 @@ async def restart(target: str) -> None:
 
 
 @cli.command()
-@click.option(
-    "--target",
-    required=True
-)
-@click.option(
-    "--variable",
-    required=True
-)
+@click.option("--target", required=True)
+@click.option("--variable", required=True)
 async def get_variable(target: str, variable: str) -> None:
-    """"""
-
+    """Retrieve a specific variable from the device."""
     _LOGGER.debug(log_formatter.format("entered, args: %s"), locals())
 
     device: HDHomeRunDevice = HDHomeRunDevice(host=target)
@@ -121,8 +95,7 @@ async def get_variable(target: str, variable: str) -> None:
 
 
 def _print_to_screen(device: HDHomeRunDevice) -> None:
-    """"""
-
+    """Print device details to the screen."""
     click.echo(device.device_id)
     click.echo('-' * len(device.device_id))
     click.echo(f"Online: {device.online}")

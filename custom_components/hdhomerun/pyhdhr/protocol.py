@@ -1,4 +1,4 @@
-"""Discover/Control UDP/TCP Protocol
+"""Discover/Control UDP/TCP Protocol.
 
 N.B. Implementation follows the instructions here: https://github.com/Silicondust/libhdhomerun
 """
@@ -12,23 +12,11 @@ import logging
 import string
 import struct
 import zlib
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-)
+from typing import Any, Dict, List, Optional, Tuple
 
-from .const import (
-    HDHOMERUN_CONTROL_TCP_PORT,
-    HDHOMERUN_MAX_PACKET_SIZE,
-    HDHOMERUN_TAG_GETSET_NAME,
-    HDHOMERUN_TAG_GETSET_VALUE,
-    HDHOMERUN_TYPE_GETSET_REQ,
-    HDHOMERUN_TYPE_GETSET_RPY,
-)
-
+from .const import (HDHOMERUN_CONTROL_TCP_PORT, HDHOMERUN_MAX_PACKET_SIZE,
+                    HDHOMERUN_TAG_GETSET_NAME, HDHOMERUN_TAG_GETSET_VALUE,
+                    HDHOMERUN_TYPE_GETSET_REQ, HDHOMERUN_TYPE_GETSET_RPY)
 from .logger import Logger
 
 # endregion
@@ -37,11 +25,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class HDHomeRunProtocol:
-    """Representation of the protocol"""
+    """Representation of the protocol."""
 
     def __init__(self, host: str, connection_timeout: int = 2.5, query_timeout: int = 2.5) -> None:
-        """Constructor"""
-
+        """Initialise."""
         self._connection_timeout: int = connection_timeout
         self._host: str = host
         self._lock_query: Optional[asyncio.Lock] = None
@@ -53,27 +40,26 @@ class HDHomeRunProtocol:
 
     @staticmethod
     def encode_tlv(payload: List[Tuple[int, bytes | str]]) -> bytes:
-        """Prepare the TLV values to send with the packet
+        """Prepare the TLV values to send with the packet.
 
         :param payload: a list of the tag, value items
         :return: a bytes object representing the TLV
         """
-
         ret: bytes = b""
-        for t, v in payload:
-            tag: bytes = struct.pack(">B", t)
+        for _tag, _value in payload:
+            tag: bytes = struct.pack(">B", _tag)
             length: bytes
             value: bytes
 
             # region #-- format the value --#
-            if isinstance(v, str):
-                if all([c in string.hexdigits for c in v]):  # hex string passed in
-                    value = bytes.fromhex(v)
+            if isinstance(_value, str):
+                if all([c in string.hexdigits for c in _value]):  # hex string passed in
+                    value = bytes.fromhex(_value)
                 else:
-                    v += "\00"
-                    value = bytes(v, "utf8")
+                    _value += "\00"
+                    value = bytes(_value, "utf8")
             else:
-                value = v
+                value = _value
             # endregion
 
             # region #-- calculate the length --#
@@ -90,23 +76,21 @@ class HDHomeRunProtocol:
 
     @staticmethod
     def build_crc(payload: bytes) -> bytes:
-        """Build the CRC for the given payload
+        """Build the CRC for the given payload.
 
         :param payload: the packet to be sent
         :return: Little-endian CRC32
         """
-
         return struct.pack("<L", zlib.crc32(payload))
 
     @staticmethod
     def build_request(packet_payload: List[Tuple[int, bytes | str]], packet_type: bytes) -> bytes:
-        """Build the entire request to send on the network
+        """Build the entire request to send on the network.
 
         :param packet_payload: the tag, value pairs to send
         :param packet_type: the packet type as defined by the protocol
         :return: a bytes object to send
         """
-
         payload: bytes = HDHomeRunProtocol.encode_tlv(payload=packet_payload)
         pkt: bytes = packet_type + struct.pack(">H", len(payload)) + payload
         crc: bytes = HDHomeRunProtocol.build_crc(pkt)
@@ -115,7 +99,7 @@ class HDHomeRunProtocol:
 
     @staticmethod
     def parse_response(data: bytes) -> Optional[Dict[str, Any]]:
-        """Read the response given and break it up into sections
+        """Read the response given and break it up into sections.
 
         :param data: the response received from the device
         :return: a dictionary in the form
@@ -128,7 +112,6 @@ class HDHomeRunProtocol:
                 }
             }
         """
-
         ret = {}
         cur_pos: int = 0
 
@@ -174,8 +157,7 @@ class HDHomeRunProtocol:
         return ret or None
 
     async def _async_close(self) -> None:
-        """Close the connection to the device"""
-
+        """Close the connection to the device."""
         writer = self._writer
         self._reader = self._writer = None
         if writer:
@@ -184,8 +166,7 @@ class HDHomeRunProtocol:
                 await writer.wait_closed()
 
     async def _async_connect(self, timeout: float = 2.5) -> None:
-        """Connect to the device"""
-
+        """Connect to the device."""
         if self._writer:  # the writer is already in use somehow
             return
 
@@ -193,12 +174,11 @@ class HDHomeRunProtocol:
         self._reader, self._writer = await asyncio.wait_for(task, timeout=timeout or self._connection_timeout)
 
     async def _execute_query(self, request: bytes) -> Optional[Dict[str, Any]]:
-        """Send the request to the device using the TCP control channel
+        """Send the request to the device using the TCP control channel.
 
         :param request: the request to send
         :return: the reaponse as parsed by the `parse_response` function
         """
-
         self._writer.write(request)
         await self._writer.drain()
 
@@ -217,7 +197,7 @@ class HDHomeRunProtocol:
         timeout: float = 2.5,
         value: Optional[str] = None
     ) -> Dict[int | str, bytes]:
-        """Build the query ready to send on to the device
+        """Build the query ready to send on to the device.
 
         :param tag: the variable to query
         :param timeout: timeout for the request
@@ -227,7 +207,6 @@ class HDHomeRunProtocol:
                         <tag|variable>: <response data>
                     }
         """
-
         _LOGGER.debug(self._log_formatter.format("entered, tag: %s, value: %s, timeout: %.2f"), tag, value, timeout)
         pkt_type: bytes = struct.pack(">H", HDHOMERUN_TYPE_GETSET_REQ)
         payload_data: List[Tuple[int, str]] = [
@@ -244,13 +223,12 @@ class HDHomeRunProtocol:
         return ret
 
     async def _query(self, request: bytes, timeout: float = 2.5) -> Optional[Dict[str, bytes]]:
-        """Create the connection to the device, lock, send and close
+        """Create the connection to the device, lock, send and close.
 
         :param request: full request to send to the device
         :param timeout: timeout for the request
         :return: the parsed response
         """
-
         if not self._lock_query:
             self._lock_query = asyncio.Lock()
 
@@ -258,7 +236,7 @@ class HDHomeRunProtocol:
         async with self._lock_query:
             try:
                 await self._async_connect()
-            except Exception as err:
+            except Exception as err:  # pylint: disable=broad-except
                 _LOGGER.error("_query, %s --> %s", type(err), err)
                 await self._async_close()
             else:
@@ -271,33 +249,30 @@ class HDHomeRunProtocol:
         return ret
 
     async def get_hwmodel(self, timeout: float = 2.5) -> Dict[str, bytes]:
-        """Get the model number
+        """Get the model number.
 
         :param timeout: timeout for the query
         :return: details as parsed by the `parse_response` function
         """
-
         value_name = "/sys/hwmodel"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
     async def get_model(self, timeout: float = 2.5) -> Dict[str, bytes]:
-        """Get the firmware name
+        """Get the firmware name.
 
         :param timeout: timeout for the query
         :return: details as parsed by the `parse_response` function
         """
-
         value_name = "/sys/model"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
     async def get_tuner_current_channel(self, tuner_idx, timeout: float = 2.5) -> Tuple[Dict[str, bytes], ...]:
-        """Get the current channel information from the tuner
+        """Get the current channel information from the tuner.
 
         :param tuner_idx: the index number of the tuner
         :param timeout: timeout for the query
         :return: a tuple of tuner details as parsed by the `parse_response` function
         """
-
         details = [
             self._get_set_req(tag=f"/tuner{tuner_idx}/program", timeout=timeout),
             self._get_set_req(tag=f"/tuner{tuner_idx}/streaminfo", timeout=timeout),
@@ -309,13 +284,12 @@ class HDHomeRunProtocol:
         return channel_details
 
     async def get_tuner_status(self, tuner_idx: int, timeout: float = 2.5) -> Dict[str, bytes]:
-        """Get the current tuner status
+        """Get the current tuner status.
 
         :param tuner_idx: index number of the tuner
         :param timeout: timeout for the query
         :return: details as parsed by the `parse_response` function
         """
-
         if tuner_idx < 0:
             raise ValueError
 
@@ -323,22 +297,20 @@ class HDHomeRunProtocol:
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
     async def get_version(self, timeout: float = 2.5) -> Dict[str, bytes]:
-        """Get the firmware version
+        """Get the firmware version.
 
         :param timeout: timeout for the query
         :return: details as parsed by the `parse_response` function
         """
-
         value_name = "/sys/version"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
     async def get_available_options(self, timeout: float = 2.5) -> List[str]:
-        """Get the available variables that can be set/queried on the device
+        """Get the available variables that can be set/queried on the device.
 
         :param timeout: timeout for the query
         :return: a list of the available variables that can be set/queried on the device
         """
-
         ret: List[str] = []
         value_name: str = "help"
 
@@ -354,8 +326,7 @@ class HDHomeRunProtocol:
         return ret
 
     async def async_restart(self, timeout: float = 2.5) -> None:
-        """Instruct the device to do a restart"""
-
+        """Instruct the device to do a restart."""
         tag: str = "/sys/restart"
         value: str = "self"
 

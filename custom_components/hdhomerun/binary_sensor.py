@@ -1,36 +1,20 @@
-"""Binary sensors"""
+"""Binary sensors."""
 
 # region #-- imports --#
 import dataclasses
-from typing import (
-    Any,
-    Callable,
-    List,
-    Optional,
-)
+from typing import Any, Callable, List, Optional
 
+from homeassistant.components.binary_sensor import DOMAIN as ENTITY_DOMAIN
 from homeassistant.components.binary_sensor import (
-    BinarySensorDeviceClass,
-    BinarySensorEntity,
-    BinarySensorEntityDescription,
-    DOMAIN as ENTITY_DOMAIN,
-)
+    BinarySensorDeviceClass, BinarySensorEntity, BinarySensorEntityDescription)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from . import (
-    entity_cleanup,
-    HDHomerunEntity,
-)
-from .const import (
-    CONF_DATA_COORDINATOR_GENERAL,
-    DOMAIN,
-    UPDATE_DOMAIN,
-)
-
+from . import HDHomerunEntity, entity_cleanup
+from .const import CONF_DATA_COORDINATOR_GENERAL, DOMAIN, UPDATE_DOMAIN
 
 # endregion
 
@@ -60,7 +44,7 @@ class HDHomerunBinarySensorEntityDescription(
 
 # region #-- binary sensor classes --#
 class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
-    """"""
+    """Representation of a binary sensor."""
 
     entity_description: HDHomerunBinarySensorEntityDescription
 
@@ -71,17 +55,15 @@ class HDHomerunBinarySensor(HDHomerunEntity, BinarySensorEntity):
         description: HDHomerunBinarySensorEntityDescription,
         hass: HomeAssistant,
     ) -> None:
-        """Constructor"""
-
-        self.ENTITY_DOMAIN = ENTITY_DOMAIN
-        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
+        """Initialise."""
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
+        self.entity_domain = ENTITY_DOMAIN
+        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
 
     # region #-- properties --#
     @property
     def is_on(self) -> bool:
         """Return if the service is on."""
-
         if self._device:
             if self.entity_description.key:
                 return self.entity_description.state_value(getattr(self._device, self.entity_description.key, None))
@@ -110,8 +92,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback
 ) -> None:
-    """Set up the sensor"""
-
+    """Create the sensor."""
     sensors = [
         HDHomerunBinarySensor(
             config_entry=config_entry,

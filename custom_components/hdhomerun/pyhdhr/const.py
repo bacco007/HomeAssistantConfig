@@ -1,4 +1,4 @@
-"""Constants"""
+"""Constants."""
 
 HDHOMERUN_CONTROL_TCP_PORT: int = 65001
 HDHOMERUN_DISCOVER_UDP_PORT: int = 65001

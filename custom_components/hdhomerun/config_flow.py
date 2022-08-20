@@ -1,4 +1,4 @@
-"""Provice UI for configuring the integration"""
+"""Provide UI for configuring the integration."""
 
 # region #-- imports --#
 from __future__ import annotations
@@ -6,43 +6,28 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import (
-    Dict,
-    List,
-    Optional,
-)
+from typing import Dict, List, Optional
 from urllib.parse import urlparse
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant import (
-    config_entries,
-    data_entry_flow,
-)
+from homeassistant import config_entries, data_entry_flow
 from homeassistant.components import ssdp
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import callback
 
-from .const import (
-    CONF_HOST,
-    CONF_SCAN_INTERVAL_TUNER_STATUS,
-    CONF_TUNER_CHANNEL_AVAILABLE_FORMATS,
-    CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
-    CONF_TUNER_CHANNEL_FORMAT,
-    DEF_SCAN_INTERVAL_SECS,
-    DEF_SCAN_INTERVAL_TUNER_STATUS_SECS,
-    DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
-    DEF_TUNER_CHANNEL_FORMAT,
-    DOMAIN,
-)
+from .const import (CONF_HOST, CONF_SCAN_INTERVAL_TUNER_STATUS,
+                    CONF_TUNER_CHANNEL_AVAILABLE_FORMATS,
+                    CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
+                    CONF_TUNER_CHANNEL_FORMAT, DEF_SCAN_INTERVAL_SECS,
+                    DEF_SCAN_INTERVAL_TUNER_STATUS_SECS,
+                    DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
+                    DEF_TUNER_CHANNEL_FORMAT, DOMAIN)
 from .logger import Logger
 from .pyhdhr import HDHomeRunDevice
 from .pyhdhr.discover import Discover
-from .pyhdhr.exceptions import (
-    HDHomeRunDeviceNotFoundError,
-    HDHomeRunError,
-    HDHomeRunTimeoutError,
-)
+from .pyhdhr.exceptions import (HDHomeRunDeviceNotFoundError, HDHomeRunError,
+                                HDHomeRunTimeoutError)
 
 # endregion
 
@@ -60,13 +45,12 @@ STEP_USER: str = "user"
 
 
 async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol.Schema:
-    """Build the input and validation schema for the config UI
+    """Build the input and validation schema for the config UI.
 
     :param step: the step we're in for a configuration or installation of the integration
     :param user_input: the data that should be used as defaults
     :return: the schema including necessary restrictions, defaults, pre-selections etc.
     """
-
     if user_input is None:
         user_input = {}
 
@@ -122,15 +106,15 @@ async def _async_build_schema_with_user_input(step: str, user_input=None) -> vol
 
 
 class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
-    """
+    """Potential flows the configuration can follow.
+
     1.  SSDP -> Friendly Name -> Finish
     2.  User -> IP provided -> Details -> Friendly Name -> Finish
     3.  User -> No IP provided -> Discover -> Selection -> Friendly Name -> Finish
     """
 
     def __init__(self):
-        """"""
-
+        """Initialis."""
         Logger.__init__(self)
 
         self._discovered_devices: Optional[Dict[str, str]] = None
@@ -145,19 +129,17 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
-        """Get the options flow for this handler"""
-
+        """Get the options flow for this handler."""
         return HDHomerunOptionsFlowHandler(config_entry=config_entry)
 
     async def _async_task_discover_all(self) -> None:
-        """Discover all available devices"""
-
+        """Discover all available devices."""
         err_msg: Optional[str] = None
         try:
             self._discovered_devices_hd: List[HDHomeRunDevice] = await Discover().discover()
             if len(self._discovered_devices_hd) == 0:
                 raise ValueError
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             err_msg = "generic_hdhomerun_error"
             self._error_message = str(err)
             _LOGGER.error(self.format("%s"), err)
@@ -168,8 +150,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         self.hass.async_create_task(self.hass.config_entries.flow.async_configure(flow_id=self.flow_id))
 
     async def _async_task_discover_single(self) -> None:
-        """Discover a single device as specified by the instance host"""
-
+        """Discover a single device as specified by the instance host."""
         err_msg: Optional[str] = None
         if self._host:
             hdhomerun_device: Optional[HDHomeRunDevice] = None
@@ -189,12 +170,12 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
                     raise HDHomeRunDeviceNotFoundError(device=self._host)
 
             except HDHomeRunError as err:
-                if type(err) == HDHomeRunTimeoutError:
+                if isinstance(err, HDHomeRunTimeoutError):
                     err_msg = "timeout_error"
                 else:
                     err_msg = "generic_hdhomerun_error"
                     self._error_message = str(err)
-            except Exception as err:
+            except Exception as err:  # pylint: disable=broad-except
                 err_msg = "generic_hdhomerun_error"
                 self._error_message = str(err)
                 _LOGGER.error(self.format("%s"), err)
@@ -212,8 +193,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         self.hass.async_create_task(self.hass.config_entries.flow.async_configure(flow_id=self.flow_id))
 
     async def async_step_details(self, user_input=None) -> data_entry_flow.FlowResult:
-        """Execute the discovery before proceeding"""
-
+        """Execute the discovery before proceeding."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if not self._task_details:
             _LOGGER.debug(self.format("creating task for gathering details"))
@@ -240,8 +220,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
             return self.async_show_progress_done(next_step_id=STEP_SELECT_DEVICE)
 
     async def async_step_finish(self, _=None) -> data_entry_flow.FlowResult:
-        """Finalise the configuration entry"""
-
+        """Finalise the configuration entry."""
         _LOGGER.debug(self.format("entered"))
 
         if not self.unique_id:
@@ -253,11 +232,10 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         return self.async_create_entry(title=self._friendly_name or "HDHomerun", data=data)
 
     async def async_step_friendly_name(self, user_input=None) -> data_entry_flow.FlowResult:
-        """Specify a friendly name
+        """Specify a friendly name.
 
         N.B. defaults to the value of the friendly_name instance variable
         """
-
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
 
         if user_input is not None:
@@ -273,8 +251,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         )
 
     async def async_step_select_device(self, user_input=None) -> data_entry_flow.FlowResult:
-        """Present a screen to select available devices from"""
-
+        """Present a screen to select available devices from."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if user_input is not None:
             self._errors = {}
@@ -317,8 +294,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         )
 
     async def async_step_ssdp(self, discovery_info: ssdp.SsdpServiceInfo) -> data_entry_flow.FlowResult:
-        """Manage the devices discovered by SSDP"""
-
+        """Manage the devices discovered by SSDP."""
         _LOGGER.debug(self.format("entered, discovery_info: %s"), discovery_info)
 
         # region #-- get the important information --#
@@ -343,8 +319,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         return await self.async_step_friendly_name()
 
     async def async_step_user(self, user_input=None) -> data_entry_flow.FlowResult:
-        """Handle a flow initiated by the user"""
-
+        """Handle a flow initiated by the user."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
 
         if user_input is not None:
@@ -364,31 +339,27 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
 
 
 class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
-    """Manage the options flow"""
+    """Manage the options flow."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Constructor"""
-
+        """Initialise."""
         super().__init__()
         self._config_entry = config_entry
         self._errors: dict = {}
         self._options: dict = dict(config_entry.options)
 
     async def async_step_finish(self, user_input=None) -> data_entry_flow.FlowResult:
-        """Finalise the settings to write back"""
-
+        """Finalise the settings to write back."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         return self.async_create_entry(title=self._config_entry.title, data=self._options)
 
     async def async_step_init(self, user_input=None) -> data_entry_flow.FlowResult:
-        """First step in the flow"""
-
+        """First step in the flow."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         return await self.async_step_timeouts()
 
     async def async_step_options(self, user_input: Optional[dict] = None) -> data_entry_flow.FlowResult:
-        """Present the main options"""
-
+        """Present the main options."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if user_input is not None:
             self._errors = {}
@@ -407,8 +378,7 @@ class HDHomerunOptionsFlowHandler(config_entries.OptionsFlow, Logger):
         )
 
     async def async_step_timeouts(self, user_input: Optional[dict] = None) -> data_entry_flow.FlowResult:
-        """Present the timeout options"""
-
+        """Present the timeout options."""
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
         if user_input is not None:
             self._errors = {}

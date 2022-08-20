@@ -1,4 +1,4 @@
-"""Button entities"""
+"""Button entities."""
 
 # region #-- imports --#
 from __future__ import annotations
@@ -6,32 +6,19 @@ from __future__ import annotations
 import dataclasses
 import logging
 from abc import ABC
-from typing import (
-    Callable,
-    List,
-    Optional,
-)
+from typing import Callable, List, Optional
 
-from homeassistant.components.button import (
-    ButtonDeviceClass,
-    ButtonEntity,
-    ButtonEntityDescription,
-    DOMAIN as ENTITY_DOMAIN,
-)
+from homeassistant.components.button import DOMAIN as ENTITY_DOMAIN
+from homeassistant.components.button import (ButtonDeviceClass, ButtonEntity,
+                                             ButtonEntityDescription)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from . import (
-    entity_cleanup,
-    HDHomerunEntity
-)
-from .const import (
-    CONF_DATA_COORDINATOR_GENERAL,
-    DOMAIN,
-)
+from . import HDHomerunEntity, entity_cleanup
+from .const import CONF_DATA_COORDINATOR_GENERAL, DOMAIN
 from .pyhdhr import HDHomeRunDevice
 
 # endregion
@@ -60,7 +47,7 @@ class HDHomeRunButtonDescription(
     ButtonEntityDescription,
     RequiredButtonDescription
 ):
-    """Describes button entity"""
+    """Describes button entity."""
 # endregion
 
 
@@ -79,8 +66,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback
 ) -> None:
-    """"""
-
+    """Create the button."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL]
 
     buttons: List[HDHomeRunButton] = [
@@ -106,8 +92,7 @@ async def _async_button_pressed(
     hass: HomeAssistant,
     action_arguments: Optional[dict] = None
 ) -> None:
-    """"""
-
+    """Carry out the action for the button being pressed."""
     action: Optional[Callable] = getattr(device, action, None)
     signal: str = action_arguments.pop("signal", None)
     if action and isinstance(action, Callable):
@@ -119,7 +104,7 @@ async def _async_button_pressed(
 
 
 class HDHomeRunButton(HDHomerunEntity, ButtonEntity, ABC):
-    """Representation for a button in the Mesh"""
+    """Representation for a button in the Mesh."""
 
     entity_description: HDHomeRunButtonDescription
 
@@ -130,14 +115,12 @@ class HDHomeRunButton(HDHomerunEntity, ButtonEntity, ABC):
         description: HDHomeRunButtonDescription,
         hass: HomeAssistant,
     ) -> None:
-        """Constructor"""
-
-        self.ENTITY_DOMAIN = ENTITY_DOMAIN
+        """Initialise."""
+        self.entity_domain = ENTITY_DOMAIN
         super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
 
     async def async_press(self) -> None:
-        """Handle the button being pressed"""
-
+        """Handle the button being pressed."""
         await _async_button_pressed(
             action=self.entity_description.press_action,
             action_arguments=self.entity_description.press_action_arguments.copy(),
