@@ -18,6 +18,7 @@ logger:
     pychromecast.socket_client: fatal
     custom_components.monitor_docker: fatal
     custom_components.monitor_docker.helpers: fatal
+    custom_components.google_fit: debug
 
   filters:
     homeassistant:

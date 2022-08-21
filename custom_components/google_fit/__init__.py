@@ -1,1 +1,0 @@
-"""The Google Fit Component."""
