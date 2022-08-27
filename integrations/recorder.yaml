@@ -69,7 +69,6 @@ recorder:
       - sensor.unifi_*
       - sensor.space_*
       - sensor.plex_tautulli*
-      - sensor.watchman*
       - sensor.*_upcoming_media
     domains:
       - anniversaries

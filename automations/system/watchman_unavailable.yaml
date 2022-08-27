@@ -1,0 +1,30 @@
+---
+alias: "Watchman - Notify new unavailable entities"
+id: watchman_notifyunavailable
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.watchman_missing_entities
+condition:
+  - condition: template
+    value_template: "{{ trigger.from_state.state | int < trigger.to_state.state | int }}"
+action:
+  - service: watchman.report
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - condition: template
+    value_template: >-
+      {{ trigger.from_state.state | int <
+      states('sensor.watchman_missing_entities') | int }}
+  - service: persistent_notification.create
+    data_template:
+      title: Unavailable Entities
+      message: >-
+        There are new unavailable entities
+      notification_id: unavail_entities
+mode: single

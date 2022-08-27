@@ -21,11 +21,6 @@ pyscript:
     getdata_untappd:
       clientid: !secret untappd_id
       clientsecret: !secret untappd_secret
-    # influxdb_query_to_sensor:
-    #   host: 192.168.1.62
-    #   port: !secret influxdb_port
-    #   username: homeassistant
-    #   password: homeassistant
     influxdb2_query_to_entity:
       url: !secret influxdb_url
       token: !secret influxdb_token

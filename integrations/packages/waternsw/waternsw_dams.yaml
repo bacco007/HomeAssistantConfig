@@ -146,8 +146,6 @@ sensor:
           capacity: "102000"
           active_storage: "90360"
           dead_storage: "2400"
-          latitude: "-31.348147000"
-          longitude: "151.13947000"
 
       waternsw_keepit_dam:
         friendly_name: "Keepit Dam"
@@ -161,8 +159,6 @@ sensor:
           capacity: "420000"
           active_storage: "243451"
           dead_storage: "6600"
-          latitude: "-30.879200000"
-          longitude: "150.49280000"
 
       waternsw_split_rock_dam:
         friendly_name: "Split Rock Dam"
@@ -176,5 +172,3 @@ sensor:
           capacity: "397000"
           active_storage: "116461"
           dead_storage: "3200"
-          latitude: "-30.533333333"
-          longitude: "150.70000000"
