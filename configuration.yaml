@@ -1,8 +1,6 @@
----
-# This file bootstraps the system
-# Have a look inside the Integrations and Entities folders for my config
 homeassistant:
-  packages: !include_dir_named integrations
-  customize: !include customize.yaml
+  packages: !include_dir_named 'integrations'
+  customize: !include 'customize.yaml'
   allowlist_external_dirs:
-    - /config/
+  - /config/
+automation shortumation: !include 'automations.yaml'
