@@ -10,7 +10,7 @@ use_blueprint:
     confirm_action:
       - type: turn_off
         device_id: 2ebc7af490704d5a9bcb70823bb65b7e
-        entity_id: light.zha_office_light
+        entity_id: light.office_lamp
         domain: light
     dismiss_text: Nah
 mode: single

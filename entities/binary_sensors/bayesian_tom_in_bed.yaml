@@ -14,6 +14,11 @@ observations:
     prob_given_false: 0.1 # 10% chance i'm in bed if not charging
     platform: "state"
     to_state: "Charging"
+  - entity_id: sensor.tbiphone13pro_battery_state
+    prob_given_true: 0.60 # 60% chance i'm asleep if phone is charging
+    prob_given_false: 0.1 # 10% chance i'm in bed if not charging
+    platform: "state"
+    to_state: "Full"
   - entity_id: light.bedroom_lamp
     prob_given_true: 0.1
     prob_given_false: 0.60
@@ -33,3 +38,8 @@ observations:
     prob_given_true: 0.75
     platform: "state"
     to_state: "below_horizon"
+  - entity_id: media_player.apple_tv_bedroom
+    prob_given_true: 0.1
+    prob_given_false: 0.75
+    platform: state
+    to_state: playing

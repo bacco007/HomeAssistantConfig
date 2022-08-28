@@ -1,0 +1,14 @@
+---
+platform: trend
+sensors:
+  trend_sun_rising:
+    entity_id: sun.sun
+    attribute: elevation
+  trend_outdoor_temperature:
+    entity_id: sensor.tempest_st_00056115_temperature
+    sample_duration: 7200
+    max_samples: 120
+  trend_indoor_average_temperature:
+    entity_id: sensor.indoor_average_temperature
+    sample_duration: 7200
+    max_samples: 120

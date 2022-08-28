@@ -1,7 +1,7 @@
 ---
 # https://www.home-assistant.io/integrations/panel_iframe/
-panel_iframe:
-  homer:
-    title: Homer
-    url: !secret homer_url
-    icon: mdi:desktop-mac-dashboard
+# panel_iframe:
+#   homer:
+#     title: Homer
+#     url: !secret homer_url
+#     icon: mdi:desktop-mac-dashboard
