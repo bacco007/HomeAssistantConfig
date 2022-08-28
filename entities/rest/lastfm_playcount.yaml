@@ -1,5 +1,5 @@
 ---
-resource: !secret lastfm_user_playcount
+resource: !secret lastfm_playcount_url
 sensor:
   name: lastfm_user_playcount
   value_template: >

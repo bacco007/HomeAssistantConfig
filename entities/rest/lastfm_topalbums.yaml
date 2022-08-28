@@ -1,5 +1,5 @@
 ---
-resource: !secret lastfm_user_topalbums
+resource: !secret lastfm_topalbums_url
 sensor:
   name: lastfm_user_topalbums
   value_template: >
@@ -8,4 +8,3 @@ sensor:
   json_attributes:
     - album
 scan_interval: 600
-

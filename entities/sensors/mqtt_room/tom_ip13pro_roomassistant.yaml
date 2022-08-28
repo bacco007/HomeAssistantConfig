@@ -1,0 +1,7 @@
+---
+platform: mqtt_room
+device_id: "roomAssistant:a323b74c-37e6-471a-ab11-a60749475b09"
+name: Room > Tom > iPhone13Pro
+state_topic: "espresense/room"
+timeout: 30
+away_timeout: 120

@@ -1,5 +1,5 @@
 ---
-resource: !secret lastfm_user_toptracks
+resource: !secret lastfm_toptracks_url
 sensor:
   name: lastfm_user_toptracks
   value_template: >

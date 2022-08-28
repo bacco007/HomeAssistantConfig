@@ -1,0 +1,7 @@
+---
+platform: mqtt_room
+device_id: "apple:watch6-8"
+name: Room > Tom > Apple Watch
+state_topic: "espresense/rooms"
+timeout: 30
+away_timeout: 30

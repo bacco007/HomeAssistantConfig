@@ -1,5 +1,5 @@
 ---
-resource: !secret lastfm_user_topartists
+resource: !secret lastfm_topartists_url
 sensor:
   name: lastfm_user_topartists
   value_template: >

@@ -3,7 +3,7 @@
 platform: bayesian
 name: tom_in_bed
 prior: 0.33 # Assumes 8hrs sleep
-probability_threshold: 0.9 # Trigger at 90% confidence
+probability_threshold: 0.85 # Trigger at 90% confidence
 observations:
   - entity_id: person.thomas_baxter
     prob_given_true: 0.4 # 40% Chance I'm asleep if I'm at home
@@ -11,27 +11,27 @@ observations:
     to_state: home
   - entity_id: sensor.tbiphone13pro_battery_state
     prob_given_true: 0.60 # 60% chance i'm asleep if phone is charging
-    prob_given_false: 0.1 # 10% chance i'm in bed if not charging
+    prob_given_false: 0.4 # 10% chance i'm in bed if not charging
     platform: "state"
     to_state: "Charging"
   - entity_id: sensor.tbiphone13pro_battery_state
-    prob_given_true: 0.60 # 60% chance i'm asleep if phone is charging
+    prob_given_true: 0.70 # 60% chance i'm asleep if phone is charging
     prob_given_false: 0.1 # 10% chance i'm in bed if not charging
     platform: "state"
     to_state: "Full"
   - entity_id: light.bedroom_lamp
     prob_given_true: 0.1
-    prob_given_false: 0.60
+    prob_given_false: 0.7
     platform: "state"
     to_state: "on"
   - entity_id: light.office_lamp
-    prob_given_true: 0.1
-    prob_given_false: 0.4
+    prob_given_true: 0.05
+    prob_given_false: 0.2
     platform: "state"
     to_state: "on"
   - entity_id: binary_sensor.aqara_fp1_presence
     prob_given_true: 0.75
-    prob_given_false: 0.1
+    prob_given_false: 0.15
     platform: "state"
     to_state: "on"
   - entity_id: "sun.sun"
@@ -40,6 +40,9 @@ observations:
     to_state: "below_horizon"
   - entity_id: media_player.apple_tv_bedroom
     prob_given_true: 0.1
-    prob_given_false: 0.75
     platform: state
     to_state: playing
+  - entity_id: media_player.apple_tv_bedroom
+    prob_given_true: 0.1
+    platform: state
+    to_state: 'idle'

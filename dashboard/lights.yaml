@@ -1,10 +1,7 @@
 ---
-# MAXIMALIST DASHBOARD
-# Lights View
-# Made by Madelena Mak 2022
-
 title: Light
 path: lights
+icon: "mdi:ceiling-light-multiple"
 theme: "Fluent Red"
 
 type: "custom:grid-layout"
@@ -18,7 +15,6 @@ cards:
       grid-area: cc
     cards:
       # [Header] Summary
-
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
         layout: !include snippets/layout-page-title.yaml
@@ -28,128 +24,27 @@ cards:
           - type: markdown
             style: !include snippets/style-markdown-page-title.yaml
             content: >
-              # Light
+              # Lights
+
               {% set daylight = ( state_attr('sun.sun', 'next_rising') | as_timestamp(0) - state_attr('sun.sun', 'next_setting') | as_timestamp(0) ) | abs / 60 / 60 %}
-              You have {{ states.light|length }} lights and {{ states.light|selectattr('state','equalto','on')|list|length }}
-              of them {{ iif(
-              (states.light|selectattr('state','equalto','on')|list|length
-              == 1), 'is', 'are') }}  turned on. There are {{ daylight | round(1) }} hours of daylight and {{ 24 - daylight | round(1) }} hours of nighttime today.
+              There are {{ daylight | round(1) }} hours of daylight and {{ 24 - daylight | round(1) }} hours of nighttime today.
+
           - type: "custom:layout-card"
-            layout_type: "custom:horizontal-layout"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: 0
+              padding: 0
+              card_margin: 1px
             view_layout:
-              place-self: center start
+              place-self: end right
             cards:
-              - type: "custom:swipe-card"
-                parameters:
-                  breakpointBase: container
-                  enabled: true
-                  slidesPerView: 2
-                  breakpoints:
-                    "600":
-                      enabled: false
-                      slidesPerView: 2
-                cards:
-                  - type: "custom:mushroom-entity-card"
-                    entity: binary_sensor.ping_valhalla_rainbow
-                    name: Rainbow Hub ↗
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: http://www.google.com
-
-                  - type: "custom:mushroom-entity-card"
-                    entity: binary_sensor.ping_valhalla_insteon
-                    name: Insteon Hub ↗
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: http://www.google.com
-
-      # [Column] Daylight
-
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: -1
-        cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: DAYLIGHT
-
-          - type: "custom:layout-card"
-            layout_type: "custom:vertical-layout"
-            cards:
-              - type: "custom:decluttering-card"
-                template: multi_graph_card
+              - entity: sensor.time
+                template: clock
+                type: custom:button-card
                 variables:
-                  - entities:
-                      - entity: sensor.south_facade_hue_sensor_light_level
-                        name: South Facade
-                  - title: Light Level
-                  - line_width: 1
-
-      # [Column] Living Room
-
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: -1
-        cards:
-          - type: "custom:button-card"
-            template: header_card
-            variables:
-              name: LIVING ROOM
-              label: Scenes
-              action: more-info
-              link: popup.living_room_scenes
-
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout: !include snippets/layout-live-tile.yaml
-          #   cards: !include columns/lights-living-room.yaml
-
-      # [Column] Living Room Accents
-
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: -1
-        cards:
-          - type: "custom:button-card"
-            template: header_card
-            variables:
-              name: LIVING ROOM ACCENTS
-              label: Scenes
-              action: more-info
-              link: popup.living_room_accents_scenes
-
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout: !include snippets/layout-live-tile.yaml
-          #   cards: !include columns/lights-living-room-accents.yaml
-
-      # [Column] Kitchen
-
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: -1
-        cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: KITCHEN
-              label: Scenes
-              action: more-info
-              link: popup.kitchen_scenes
-
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout: !include snippets/layout-live-tile.yaml
-          #   cards: !include columns/lights-kitchen.yaml
+                  entity_date: sensor.date
+                  entity_temperature: sensor.tempest_st_00056115_temperature
+                  entity_weather: weather.east_tamworth_hourly
 
       # [Column] Bedroom
 
@@ -159,59 +54,56 @@ cards:
           margin: -1
         cards:
           - type: "custom:button-card"
-            template: header_card
+            template: header_card_no_link
             variables:
               name: BEDROOM
-              label: Scenes
-              action: more-info
-              link: popup.bedroom_scenes
-            view_layout:
-              grid-column: 1/-1
 
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout: !include snippets/layout-live-tile.yaml
-          #   cards: !include columns/lights-bedroom.yaml
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout: !include snippets/layout-live-tile.yaml
+            cards:
+              - view_layout:
+                  grid-column: span 2
+                type: "custom:button-card"
+                template:
+                  - light_button_card_group
+                entity: light.bedroom_group
+                name: All Lights
+                icon: "mdi:ceiling-light-multiple"
+                variables:
+                  aspect_ratio: 2/1
 
-      # [Column] Workspace Accents
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: switch.adaptive_lighting_bedroom_adaptive
+                  - name: Adaptive Lighting
 
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: -1
-        cards:
-          - type: "custom:button-card"
-            template: header_card
-            variables:
-              name: WORKSPACE ACCENTS
-              label: Scenes
-              action: more-info
-              link: popup.workspace_accents_scenes
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: light.bedroom_lamp
+                  - name: Lamp
 
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout: !include snippets/layout-live-tile.yaml
-          #   cards: !include columns/lights-workspace-accents.yaml
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: light.play_light_1
+                  - name: Play Light 1
 
-      # [Column] Workspace Desk
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: light.play_light_2
+                  - name: Play Light 2
 
-      - type: "custom:layout-card"
-        layout_type: "custom:grid-layout"
-        layout:
-          margin: -1
-        cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: ASTRALPLANE
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: light.play_lights
+                  - name: Both Play Lights
 
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout:
-          #     margin: -1
-          #   cards: !include columns/lights-workspace-desk.yaml
-
-      # [Column] Workbench Studio
+      # [Column] Office
 
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
@@ -221,10 +113,78 @@ cards:
           - type: "custom:button-card"
             template: header_card_no_link
             variables:
-              name: MAKERY
+              name: OFFICE
 
-          # - type: "custom:layout-card"
-          #   layout_type: "custom:grid-layout"
-          #   layout:
-          #     margin: -1
-          #   cards: !include columns/lights-workspace-studio.yaml
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout: !include snippets/layout-live-tile.yaml
+            cards:
+              - view_layout:
+                  grid-column: span 2
+                type: "custom:button-card"
+                template:
+                  - light_button_card_group
+                entity: light.office_group
+                name: All Lights
+                icon: "mdi:ceiling-light-multiple"
+                variables:
+                  aspect_ratio: 2/1
+
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: switch.adaptive_lighting_office_adaptive
+                  - name: Adaptive Lighting
+
+              - type: "custom:decluttering-card"
+                template: light_card
+                variables:
+                  - entity: light.office_lamp
+                  - name: Lamp
+              - type: "custom:rgb-light-card"
+                view_layout:
+                  grid-column: 1/-1
+                entity: light.office_lamp
+                hide_when_off: true
+                justify: between
+                label_size: 9
+                colors:
+                  - label: "bright ambient"
+                    transition: 1
+                    rgb_color: [207, 172, 104]
+                  - label: "bright"
+                    transition: 1
+                    rgb_color: [250, 207, 125]
+                  - label: "relax"
+                    transition: 1
+                    rgb_color: [195, 150, 71]
+                  - label: "nightlight"
+                    transition: 1
+                    rgb_color: [63, 46, 25]
+                  - label: "lights camera action!"
+                    transition: 1
+                    rgb_color: [141, 97, 59]
+                  - label: "pink thoughts"
+                    transition: 1
+                    rgb_color: [207, 50, 188]
+                  - label: "soho"
+                    transition: 1
+                    rgb_color: [107, 28, 203]
+                  - label: "nebula"
+                    transition: 1
+                    rgb_color: [95, 101, 156]
+                  - label: "arctic aurora"
+                    transition: 1
+                    rgb_color: [89, 196, 190]
+                  - label: "energize"
+                    transition: 1
+                    rgb_color: [64, 64, 64]
+                  - label: "concentrate"
+                    transition: 1
+                    rgb_color: [251, 212, 180]
+                  - label: "read"
+                    transition: 1
+                    rgb_color: [248, 173, 107]
+                  - label: "dimmed"
+                    transition: 1
+                    rgb_color: [64, 47, 33]
