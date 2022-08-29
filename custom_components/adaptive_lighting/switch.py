@@ -12,7 +12,7 @@ import functools
 import hashlib
 import logging
 import math
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import astral
 import voluptuous as vol
@@ -28,14 +28,12 @@ from homeassistant.components.light import (
     ATTR_KELVIN,
     ATTR_RGB_COLOR,
     ATTR_TRANSITION,
-    ATTR_WHITE_VALUE,
     ATTR_XY_COLOR,
     DOMAIN as LIGHT_DOMAIN,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR,
     SUPPORT_COLOR_TEMP,
     SUPPORT_TRANSITION,
-    SUPPORT_WHITE_VALUE,
     VALID_TRANSITION,
     is_on,
     COLOR_MODE_RGB,
@@ -134,7 +132,6 @@ from .const import (
 
 _SUPPORT_OPTS = {
     "brightness": SUPPORT_BRIGHTNESS,
-    "white_value": SUPPORT_WHITE_VALUE,
     "color_temp": SUPPORT_COLOR_TEMP,
     "color": SUPPORT_COLOR,
     "transition": SUPPORT_TRANSITION,
@@ -163,7 +160,6 @@ COLOR_ATTRS = {  # Should ATTR_PROFILE be in here?
 
 BRIGHTNESS_ATTRS = {
     ATTR_BRIGHTNESS,
-    ATTR_WHITE_VALUE,
     ATTR_BRIGHTNESS_PCT,
     ATTR_BRIGHTNESS_STEP,
     ATTR_BRIGHTNESS_STEP_PCT,
@@ -179,7 +175,7 @@ def _short_hash(string: str, length: int = 4) -> str:
 
 
 def create_context(
-    name: str, which: str, index: int, parent: Optional[Context] = None
+    name: str, which: str, index: int, parent: Context | None = None
 ) -> Context:
     """Create a context that can identify this integration."""
     # Use a hash for the name because otherwise the context might become
@@ -191,7 +187,7 @@ def create_context(
     )
 
 
-def is_our_context(context: Optional[Context]) -> bool:
+def is_our_context(context: Context | None) -> bool:
     """Check whether this integration created 'context'."""
     if context is None:
         return False
@@ -207,7 +203,6 @@ def _split_service_data(service_data, adapt_brightness, adapt_color):
     service_datas = []
     if adapt_color:
         service_data_color = service_data.copy()
-        service_data_color.pop(ATTR_WHITE_VALUE, None)
         service_data_color.pop(ATTR_BRIGHTNESS, None)
         service_datas.append(service_data_color)
     if adapt_brightness:
@@ -328,7 +323,9 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         SERVICE_APPLY,
         {
-            vol.Optional(CONF_LIGHTS, default=[]): cv.entity_ids,  # pylint: disable=protected-access
+            vol.Optional(
+                CONF_LIGHTS, default=[]
+            ): cv.entity_ids,  # pylint: disable=protected-access
             vol.Optional(
                 CONF_TRANSITION,
                 default=switch._initial_transition,  # pylint: disable=protected-access
@@ -365,7 +362,7 @@ def validate(config_entry: ConfigEntry):
     return data
 
 
-def match_switch_state_event(event: Event, from_or_to_state: List[str]):
+def match_switch_state_event(event: Event, from_or_to_state: list[str]):
     """Match state event when either 'from_state' or 'to_state' matches."""
     old_state = event.data.get("old_state")
     from_state_match = old_state is not None and old_state.state in from_or_to_state
@@ -377,7 +374,7 @@ def match_switch_state_event(event: Event, from_or_to_state: List[str]):
     return match
 
 
-def _expand_light_groups(hass: HomeAssistant, lights: List[str]) -> List[str]:
+def _expand_light_groups(hass: HomeAssistant, lights: list[str]) -> list[str]:
     all_lights = set()
     turn_on_off_listener = hass.data[DOMAIN][ATTR_TURN_ON_OFF_LISTENER]
     for light in lights:
@@ -425,7 +422,7 @@ def _supported_features(hass: HomeAssistant, light: str):
 
 
 def color_difference_redmean(
-    rgb1: Tuple[float, float, float], rgb2: Tuple[float, float, float]
+    rgb1: tuple[float, float, float], rgb2: tuple[float, float, float]
 ) -> float:
     """Distance between colors in RGB space (redmean metric).
 
@@ -436,17 +433,17 @@ def color_difference_redmean(
     - https://www.compuphase.com/cmetric.htm
     """
     r_hat = (rgb1[0] + rgb2[0]) / 2
-    delta_r, delta_g, delta_b = [(col1 - col2) for col1, col2 in zip(rgb1, rgb2)]
-    red_term = (2 + r_hat / 256) * delta_r ** 2
-    green_term = 4 * delta_g ** 2
-    blue_term = (2 + (255 - r_hat) / 256) * delta_b ** 2
+    delta_r, delta_g, delta_b = ((col1 - col2) for col1, col2 in zip(rgb1, rgb2))
+    red_term = (2 + r_hat / 256) * delta_r**2
+    green_term = 4 * delta_g**2
+    blue_term = (2 + (255 - r_hat) / 256) * delta_b**2
     return math.sqrt(red_term + green_term + blue_term)
 
 
 def _attributes_have_changed(
     light: str,
-    old_attributes: Dict[str, Any],
-    new_attributes: Dict[str, Any],
+    old_attributes: dict[str, Any],
+    new_attributes: dict[str, Any],
     adapt_brightness: bool,
     adapt_color: bool,
     context: Context,
@@ -465,24 +462,6 @@ def _attributes_have_changed(
                 light,
                 last_brightness,
                 current_brightness,
-                context.id,
-            )
-            return True
-
-    if (
-        adapt_brightness
-        and ATTR_WHITE_VALUE in old_attributes
-        and ATTR_WHITE_VALUE in new_attributes
-    ):
-        last_white_value = old_attributes[ATTR_WHITE_VALUE]
-        current_white_value = new_attributes[ATTR_WHITE_VALUE]
-        if abs(current_white_value - last_white_value) > BRIGHTNESS_CHANGE:
-            _LOGGER.debug(
-                "White Value of '%s' significantly changed from %s to %s with"
-                " context.id='%s'",
-                light,
-                last_white_value,
-                current_white_value,
                 context.id,
             )
             return True
@@ -602,16 +581,16 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
         self._state = None
 
         # Tracks 'off' → 'on' state changes
-        self._on_to_off_event: Dict[str, Event] = {}
+        self._on_to_off_event: dict[str, Event] = {}
         # Tracks 'on' → 'off' state changes
-        self._off_to_on_event: Dict[str, Event] = {}
+        self._off_to_on_event: dict[str, Event] = {}
         # Locks that prevent light adjusting when waiting for a light to 'turn_off'
-        self._locks: Dict[str, asyncio.Lock] = {}
+        self._locks: dict[str, asyncio.Lock] = {}
         # To count the number of `Context` instances
         self._context_cnt: int = 0
 
         # Set in self._update_attrs_and_maybe_adapt_lights
-        self._settings: Dict[str, Any] = {}
+        self._settings: dict[str, Any] = {}
 
         # Set and unset tracker in async_turn_on and async_turn_off
         self.remove_listeners = []
@@ -637,7 +616,7 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
         return self._name
 
     @property
-    def is_on(self) -> Optional[bool]:
+    def is_on(self) -> bool | None:
         """Return true if adaptive lighting is on."""
         return self._state
 
@@ -703,7 +682,7 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
         return self._icon
 
     @property
-    def extra_state_attributes(self) -> Dict[str, Any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return the attributes of the switch."""
         if not self.is_on:
             return {key: None for key in self._settings}
@@ -715,7 +694,7 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
         return dict(self._settings, manual_control=manual_control)
 
     def create_context(
-        self, which: str = "default", parent: Optional[Context] = None
+        self, which: str = "default", parent: Context | None = None
     ) -> Context:
         """Create a context that identifies this Adaptive Lighting instance."""
         # Right now the highest number of each context_id it can create is
@@ -759,18 +738,20 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
 
     async def _async_update_at_interval(self, now=None) -> None:
         await self._update_attrs_and_maybe_adapt_lights(
-            transition=self._transition, force=False, context=self.create_context("interval")
+            transition=self._transition,
+            force=False,
+            context=self.create_context("interval"),
         )
 
     async def _adapt_light(
         self,
         light: str,
-        transition: Optional[int] = None,
-        adapt_brightness: Optional[bool] = None,
-        adapt_color: Optional[bool] = None,
-        prefer_rgb_color: Optional[bool] = None,
+        transition: int | None = None,
+        adapt_brightness: bool | None = None,
+        adapt_color: bool | None = None,
+        prefer_rgb_color: bool | None = None,
         force: bool = False,
-        context: Optional[Context] = None,
+        context: Context | None = None,
     ) -> None:
         lock = self._locks.get(light)
         if lock is not None and lock.locked():
@@ -794,10 +775,6 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
         if "brightness" in features and adapt_brightness:
             brightness = round(255 * self._settings["brightness_pct"] / 100)
             service_data[ATTR_BRIGHTNESS] = brightness
-
-        if "white_value" in features and adapt_brightness:
-            white_value = round(255 * self._settings["brightness_pct"] / 100)
-            service_data[ATTR_WHITE_VALUE] = white_value
 
         if (
             "color_temp" in features
@@ -859,10 +836,10 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
 
     async def _update_attrs_and_maybe_adapt_lights(
         self,
-        lights: Optional[List[str]] = None,
-        transition: Optional[int] = None,
+        lights: list[str] | None = None,
+        transition: int | None = None,
         force: bool = False,
-        context: Optional[Context] = None,
+        context: Context | None = None,
     ) -> None:
         assert context is not None
         _LOGGER.debug(
@@ -883,10 +860,10 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
 
     async def _adapt_lights(
         self,
-        lights: List[str],
-        transition: Optional[int],
+        lights: list[str],
+        transition: int | None,
         force: bool,
-        context: Optional[Context],
+        context: Context | None,
     ) -> None:
         assert context is not None
         _LOGGER.debug(
@@ -1017,7 +994,7 @@ class SimpleSwitch(SwitchEntity, RestoreEntity):
         return self._icon
 
     @property
-    def is_on(self) -> Optional[bool]:
+    def is_on(self) -> bool | None:
         """Return true if adaptive lighting is on."""
         return self._state
 
@@ -1053,14 +1030,14 @@ class SunLightSettings:
     min_color_temp: int
     sleep_brightness: int
     sleep_color_temp: int
-    sunrise_offset: Optional[datetime.timedelta]
-    sunrise_time: Optional[datetime.time]
-    sunset_offset: Optional[datetime.timedelta]
-    sunset_time: Optional[datetime.time]
+    sunrise_offset: datetime.timedelta | None
+    sunrise_time: datetime.time | None
+    sunset_offset: datetime.timedelta | None
+    sunset_time: datetime.time | None
     time_zone: datetime.tzinfo
     transition: int
 
-    def get_sun_events(self, date: datetime.datetime) -> Dict[str, float]:
+    def get_sun_events(self, date: datetime.datetime) -> dict[str, float]:
         """Get the four sun event's timestamps at 'date'."""
 
         def _replace_time(date: datetime.datetime, key: str) -> datetime.datetime:
@@ -1068,20 +1045,24 @@ class SunLightSettings:
             date_time = datetime.datetime.combine(date, time)
             try:  # HA ≤2021.05, https://github.com/basnijholt/adaptive-lighting/issues/128
                 utc_time = self.time_zone.localize(date_time).astimezone(dt_util.UTC)
-            except AttributeError: # HA ≥2021.06
-                utc_time = date_time.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE).astimezone(dt_util.UTC)
+            except AttributeError:  # HA ≥2021.06
+                utc_time = date_time.replace(
+                    tzinfo=dt_util.DEFAULT_TIME_ZONE
+                ).astimezone(dt_util.UTC)
             return utc_time
 
         def calculate_noon_and_midnight(
-                sunset: datetime.datetime, sunrise: datetime.datetime
-        ) -> Tuple[datetime.datetime, datetime.datetime]:
+            sunset: datetime.datetime, sunrise: datetime.datetime
+        ) -> tuple[datetime.datetime, datetime.datetime]:
             middle = abs(sunset - sunrise) / 2
             if sunset > sunrise:
                 noon = sunrise + middle
                 midnight = noon + timedelta(hours=12) * (1 if noon.hour < 12 else -1)
             else:
                 midnight = sunset + middle
-                noon = midnight + timedelta(hours=12) * (1 if midnight.hour < 12 else -1)
+                noon = midnight + timedelta(hours=12) * (
+                    1 if midnight.hour < 12 else -1
+                )
             return noon, midnight
 
         location = self.astral_location
@@ -1130,7 +1111,7 @@ class SunLightSettings:
 
         return events
 
-    def relevant_events(self, now: datetime.datetime) -> List[Tuple[str, float]]:
+    def relevant_events(self, now: datetime.datetime) -> list[tuple[str, float]]:
         """Get the previous and next sun event."""
         events = [
             self.get_sun_events(now + timedelta(days=days)) for days in [-1, 0, 1]
@@ -1178,20 +1159,24 @@ class SunLightSettings:
 
     def get_settings(
         self, is_sleep, transition
-    ) -> Dict[str, Union[float, Tuple[float, float], Tuple[float, float, float]]]:
+    ) -> dict[str, float | tuple[float, float] | tuple[float, float, float]]:
         """Get all light settings.
 
         Calculating all values takes <0.5ms.
         """
-        percent = self.calc_percent(transition) if transition is not None else self.calc_percent(0)
+        percent = (
+            self.calc_percent(transition)
+            if transition is not None
+            else self.calc_percent(0)
+        )
         brightness_pct = self.calc_brightness_pct(percent, is_sleep)
         color_temp_kelvin = self.calc_color_temp_kelvin(percent, is_sleep)
         color_temp_mired: float = color_temperature_kelvin_to_mired(color_temp_kelvin)
-        rgb_color: Tuple[float, float, float] = color_temperature_to_rgb(
+        rgb_color: tuple[float, float, float] = color_temperature_to_rgb(
             color_temp_kelvin
         )
-        xy_color: Tuple[float, float] = color_RGB_to_xy(*rgb_color)
-        hs_color: Tuple[float, float] = color_xy_to_hs(*xy_color)
+        xy_color: tuple[float, float] = color_RGB_to_xy(*rgb_color)
+        hs_color: tuple[float, float] = color_xy_to_hs(*xy_color)
         return {
             "brightness_pct": brightness_pct,
             "color_temp_kelvin": color_temp_kelvin,
@@ -1212,19 +1197,19 @@ class TurnOnOffListener:
         self.lights = set()
 
         # Tracks 'light.turn_off' service calls
-        self.turn_off_event: Dict[str, Event] = {}
+        self.turn_off_event: dict[str, Event] = {}
         # Tracks 'light.turn_on' service calls
-        self.turn_on_event: Dict[str, Event] = {}
+        self.turn_on_event: dict[str, Event] = {}
         # Keep 'asyncio.sleep' tasks that can be cancelled by 'light.turn_on' events
-        self.sleep_tasks: Dict[str, asyncio.Task] = {}
+        self.sleep_tasks: dict[str, asyncio.Task] = {}
         # Tracks which lights are manually controlled
-        self.manual_control: Dict[str, bool] = {}
+        self.manual_control: dict[str, bool] = {}
         # Counts the number of times (in a row) a light had a changed state.
-        self.cnt_significant_changes: Dict[str, int] = defaultdict(int)
+        self.cnt_significant_changes: dict[str, int] = defaultdict(int)
         # Track 'state_changed' events of self.lights resulting from this integration
-        self.last_state_change: Dict[str, List[State]] = {}
+        self.last_state_change: dict[str, list[State]] = {}
         # Track last 'service_data' to 'light.turn_on' resulting from this integration
-        self.last_service_data: Dict[str, Dict[str, Any]] = {}
+        self.last_service_data: dict[str, dict[str, Any]] = {}
 
         # When a state is different `max_cnt_significant_changes` times in a row,
         # mark it as manually_controlled.
@@ -1314,7 +1299,7 @@ class TurnOnOffListener:
             # called with a color_temp outside of its range (and HA reports the
             # incorrect 'min_mireds' and 'max_mireds', which happens e.g., for
             # Philips Hue White GU10 Bluetooth lights).
-            old_state: Optional[List[State]] = self.last_state_change.get(entity_id)
+            old_state: list[State] | None = self.last_state_change.get(entity_id)
             if (
                 old_state is not None
                 and old_state[0].context.id == new_state.context.id
@@ -1386,7 +1371,7 @@ class TurnOnOffListener:
         """
         if light not in self.last_state_change:
             return False
-        old_states: List[State] = self.last_state_change[light]
+        old_states: list[State] = self.last_state_change[light]
         await self.hass.helpers.entity_component.async_update_entity(light)
         new_state = self.hass.states.get(light)
         compare_to = functools.partial(
@@ -1444,7 +1429,7 @@ class TurnOnOffListener:
         return changed
 
     async def maybe_cancel_adjusting(
-        self, entity_id: str, off_to_on_event: Event, on_to_off_event: Optional[Event]
+        self, entity_id: str, off_to_on_event: Event, on_to_off_event: Event | None
     ) -> bool:
         """Cancel the adjusting of a light if it has just been turned off.
 

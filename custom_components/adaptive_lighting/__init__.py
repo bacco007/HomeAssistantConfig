@@ -1,6 +1,6 @@
 """Adaptive Lighting integration in Home-Assistant."""
 import logging
-from typing import Any, Dict
+from typing import Any
 
 import voluptuous as vol
 
@@ -36,7 +36,7 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
-async def async_setup(hass: HomeAssistant, config: Dict[str, Any]):
+async def async_setup(hass: HomeAssistant, config: dict[str, Any]):
     """Import integration from config."""
 
     if DOMAIN in config:

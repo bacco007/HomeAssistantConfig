@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod, abstractstaticmethod
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from custom_components.trakt_tv.apis.tmdb import get_movie_data, get_show_data
@@ -108,7 +108,9 @@ class Movie(Media):
         movie = data if data.get("title") else data["movie"]
 
         released = (
-            datetime.fromisoformat(data["released"]) if data.get("released") else None
+            datetime.fromisoformat(data["released"]).replace(tzinfo=timezone.utc)
+            if data.get("released")
+            else None
         )
 
         return Movie(
@@ -141,7 +143,9 @@ class Movie(Media):
             self.studio = production_companies[0].get("name")
         if not self.released:
             if data.get("release_date"):
-                self.released = datetime.fromisoformat(data["release_date"])
+                self.released = datetime.fromisoformat(data["release_date"]).replace(
+                    tzinfo=timezone.utc
+                )
             else:
                 self.released = datetime.min
 
@@ -156,7 +160,7 @@ class Movie(Media):
             **self.common_information(),
             "runtime": self.runtime,
             "release": "$day, $date $time",
-            "airdate": self.released.isoformat() + "Z",
+            "airdate": self.released.replace(tzinfo=None).isoformat() + "Z",
         }
 
         return default
@@ -202,10 +206,13 @@ class Show(Media):
         show = data if data.get("title") else data["show"]
 
         released = (
-            datetime.strptime(data["first_aired"], UPCOMING_DATA_FORMAT)
+            datetime.strptime(data["first_aired"], UPCOMING_DATA_FORMAT).replace(
+                tzinfo=timezone.utc
+            )
             if data.get("first_aired")
             else None
         )
+
         episode = Episode.from_trakt(data["episode"]) if data.get("episode") else None
 
         return Show(
@@ -253,7 +260,7 @@ class Show(Media):
         default = {
             **self.common_information(),
             "release": "$day, $date $time",
-            "airdate": self.released.isoformat() + "Z",
+            "airdate": self.released.replace(tzinfo=None).isoformat() + "Z",
         }
 
         if self.episode:
