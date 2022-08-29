@@ -50,6 +50,8 @@ www/images/radar_moree_256km.gif
 www/images/radar_namoi_128km.gif
 README_Dev.md
 zigbee.db
+zigbee.db-shm
+zigbee.db-wal
 airsonos.xml
 .xbox-token.json
 .pip_progress
@@ -68,6 +70,7 @@ watchman_report.txt
 file.log
 solcast.json
 rtsp*
+
 
 node-red/*
 !node-red/flows.json

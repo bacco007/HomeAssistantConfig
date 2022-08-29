@@ -20,6 +20,7 @@ ignore: |
   notebooks/
   blueprints/
   zigbee2mqtt/
+  .shortumations/
 rules:
   braces:
     level: error

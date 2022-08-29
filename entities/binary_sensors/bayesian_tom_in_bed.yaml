@@ -45,4 +45,4 @@ observations:
   - entity_id: media_player.apple_tv_bedroom
     prob_given_true: 0.1
     platform: state
-    to_state: 'idle'
+    to_state: "idle"
