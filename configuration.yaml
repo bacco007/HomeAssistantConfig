@@ -7,4 +7,3 @@ homeassistant:
   customize: !include "customize.yaml"
   allowlist_external_dirs:
     - /config/
-automation shortumation: !include "automations.yaml"
