@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import bisect
 from collections import defaultdict
 from copy import deepcopy
@@ -9,14 +10,11 @@ from dataclasses import dataclass
 import datetime
 from datetime import timedelta
 import functools
-import hashlib
 import logging
 import math
 from typing import Any
 
 import astral
-import voluptuous as vol
-
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_BRIGHTNESS_PCT,
@@ -27,27 +25,30 @@ from homeassistant.components.light import (
     ATTR_HS_COLOR,
     ATTR_KELVIN,
     ATTR_RGB_COLOR,
+    ATTR_SUPPORTED_COLOR_MODES,
     ATTR_TRANSITION,
     ATTR_XY_COLOR,
-    DOMAIN as LIGHT_DOMAIN,
+    COLOR_MODE_BRIGHTNESS,
+    COLOR_MODE_COLOR_TEMP,
+    COLOR_MODE_HS,
+    COLOR_MODE_RGB,
+    COLOR_MODE_RGBW,
+    COLOR_MODE_XY,
+)
+from homeassistant.components.light import (
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR,
     SUPPORT_COLOR_TEMP,
     SUPPORT_TRANSITION,
     VALID_TRANSITION,
     is_on,
-    COLOR_MODE_RGB,
-    COLOR_MODE_RGBW,
-    COLOR_MODE_HS,
-    COLOR_MODE_XY,
-    COLOR_MODE_COLOR_TEMP,
-    COLOR_MODE_BRIGHTNESS,
-    ATTR_SUPPORTED_COLOR_MODES,
 )
-
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN, SwitchEntity
+from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
+    ATTR_AREA_ID,
     ATTR_DOMAIN,
     ATTR_ENTITY_ID,
     ATTR_SERVICE,
@@ -80,6 +81,7 @@ from homeassistant.helpers.event import (
 )
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.sun import get_astral_location
+from homeassistant.helpers.template import area_entities
 from homeassistant.util import slugify
 from homeassistant.util.color import (
     color_RGB_to_xy,
@@ -88,6 +90,7 @@ from homeassistant.util.color import (
     color_xy_to_hs,
 )
 import homeassistant.util.dt as dt_util
+import voluptuous as vol
 
 from .const import (
     ADAPT_BRIGHTNESS_SWITCH,
@@ -95,9 +98,9 @@ from .const import (
     ATTR_ADAPT_BRIGHTNESS,
     ATTR_ADAPT_COLOR,
     ATTR_TURN_ON_OFF_LISTENER,
+    CONF_ADAPT_DELAY,
     CONF_DETECT_NON_HA_CHANGES,
     CONF_INITIAL_TRANSITION,
-    CONF_SLEEP_TRANSITION,
     CONF_INTERVAL,
     CONF_LIGHTS,
     CONF_MANUAL_CONTROL,
@@ -110,6 +113,7 @@ from .const import (
     CONF_SEPARATE_TURN_ON_COMMANDS,
     CONF_SLEEP_BRIGHTNESS,
     CONF_SLEEP_COLOR_TEMP,
+    CONF_SLEEP_TRANSITION,
     CONF_SUNRISE_OFFSET,
     CONF_SUNRISE_TIME,
     CONF_SUNSET_OFFSET,
@@ -169,9 +173,18 @@ BRIGHTNESS_ATTRS = {
 _DOMAIN_SHORT = "adapt_lgt"
 
 
+def _int_to_bytes(i: int, signed: bool = False) -> bytes:
+    bits = i.bit_length()
+    if signed:
+        # Make room for the sign bit.
+        bits += 1
+    return i.to_bytes((bits + 7) // 8, "little", signed=signed)
+
+
 def _short_hash(string: str, length: int = 4) -> str:
     """Create a hash of 'string' with length 'length'."""
-    return hashlib.sha1(string.encode("UTF-8")).hexdigest()[:length]
+    str_hash_bytes = _int_to_bytes(hash(string), signed=True)
+    return base64.b85encode(str_hash_bytes)[:length]
 
 
 def create_context(
@@ -181,10 +194,12 @@ def create_context(
     # Use a hash for the name because otherwise the context might become
     # too long (max len == 36) to fit in the database.
     name_hash = _short_hash(name)
+    # Pack index with base85 to maximize the number of contexts we can create
+    # before we exceed the 36-character limit and are forced to wrap.
+    index_packed = base64.b85encode(_int_to_bytes(index, signed=False))
+    context_id = f"{_DOMAIN_SHORT}:{name_hash}:{which}:{index_packed}"[:36]
     parent_id = parent.id if parent else None
-    return Context(
-        id=f"{_DOMAIN_SHORT}_{name_hash}_{which}_{index}", parent_id=parent_id
-    )
+    return Context(id=context_id, parent_id=parent_id)
 
 
 def is_our_context(context: Context | None) -> bool:
@@ -210,6 +225,9 @@ def _split_service_data(service_data, adapt_brightness, adapt_color):
         service_data_brightness.pop(ATTR_RGB_COLOR, None)
         service_data_brightness.pop(ATTR_COLOR_TEMP, None)
         service_datas.append(service_data_brightness)
+
+    if not service_datas:  # neither adapt_brightness nor adapt_color
+        return [service_data]
     return service_datas
 
 
@@ -551,6 +569,7 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
         self._separate_turn_on_commands = data[CONF_SEPARATE_TURN_ON_COMMANDS]
         self._take_over_control = data[CONF_TAKE_OVER_CONTROL]
         self._transition = data[CONF_TRANSITION]
+        self._adapt_delay = data[CONF_ADAPT_DELAY]
         _loc = get_astral_location(self.hass)
         if isinstance(_loc, tuple):
             # Astral v2.2
@@ -698,13 +717,15 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
     ) -> Context:
         """Create a context that identifies this Adaptive Lighting instance."""
         # Right now the highest number of each context_id it can create is
-        # 'adapt_lgt_XXXX_turn_on_9999999999999'
-        # 'adapt_lgt_XXXX_interval_999999999999'
-        # 'adapt_lgt_XXXX_adapt_lights_99999999'
-        # 'adapt_lgt_XXXX_sleep_999999999999999'
-        # 'adapt_lgt_XXXX_light_event_999999999'
-        # 'adapt_lgt_XXXX_service_9999999999999'
-        # So 100 million calls before we run into the 36 chars limit.
+        # 'adapt_lgt:XXXX:turn_on:*************'
+        # 'adapt_lgt:XXXX:interval:************'
+        # 'adapt_lgt:XXXX:adapt_lights:********'
+        # 'adapt_lgt:XXXX:sleep:***************'
+        # 'adapt_lgt:XXXX:light_event:*********'
+        # 'adapt_lgt:XXXX:service:*************'
+        # The smallest space we have is for adapt_lights, which has
+        # 8 characters. In base85 encoding, that's enough space to hold values
+        # up to 2**48 - 1, which should give us plenty of calls before we wrap.
         context = create_context(self._name, which, self._context_cnt, parent=parent)
         self._context_cnt += 1
         return context
@@ -898,6 +919,7 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
 
     async def _sleep_mode_switch_state_event(self, event: Event) -> None:
         if not match_switch_state_event(event, (STATE_ON, STATE_OFF)):
+            _LOGGER.debug("%s: Ignoring sleep event %s", self._name, event)
             return
         _LOGGER.debug(
             "%s: _sleep_mode_switch_state_event, event: '%s'", self._name, event
@@ -943,6 +965,21 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
                         "%s: Cancelling adjusting lights for %s", self._name, entity_id
                     )
                     return
+
+            if self._adapt_delay > 0:
+                _LOGGER.debug(
+                    "%s: sleep started for '%s' with context.id='%s'",
+                    self._name,
+                    entity_id,
+                    event.context.id,
+                )
+                await asyncio.sleep(self._adapt_delay)
+                _LOGGER.debug(
+                    "%s: sleep ended for '%s' with context.id='%s'",
+                    self._name,
+                    entity_id,
+                    event.context.id,
+                )
 
             await self._update_attrs_and_maybe_adapt_lights(
                 lights=[entity_id],
@@ -1011,10 +1048,12 @@ class SimpleSwitch(SwitchEntity, RestoreEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn on adaptive lighting sleep mode."""
+        _LOGGER.debug("%s: Turning on", self._name)
         self._state = True
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn off adaptive lighting sleep mode."""
+        _LOGGER.debug("%s: Turning off", self._name)
         self._state = False
 
 
@@ -1239,7 +1278,19 @@ class TurnOnOffListener:
 
         service = event.data[ATTR_SERVICE]
         service_data = event.data[ATTR_SERVICE_DATA]
-        entity_ids = cv.ensure_list_csv(service_data[ATTR_ENTITY_ID])
+        if ATTR_ENTITY_ID in service_data:
+            entity_ids = cv.ensure_list_csv(service_data[ATTR_ENTITY_ID])
+        elif ATTR_AREA_ID in service_data:
+            area_ids = cv.ensure_list_csv(service_data[ATTR_AREA_ID])
+            entity_ids = []
+            for area_id in area_ids:
+                area_entity_ids = area_entities(self.hass, area_id)
+                for entity_id in area_entity_ids:
+                    if entity_id.startswith(LIGHT_DOMAIN):
+                        entity_ids.append(entity_id)
+                _LOGGER.debug(
+                    "Found entity_ids '%s' for area_id '%s'", entity_ids, area_id
+                )
 
         if not any(eid in self.lights for eid in entity_ids):
             return
