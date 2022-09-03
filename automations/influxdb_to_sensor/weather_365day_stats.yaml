@@ -73,4 +73,21 @@ action:
       unit_of_measurement: mm
       friendly_name: Home - Year - Rain
       icon: "mdi:water"
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "mm")
+          |> filter(fn: (r) => r["entity_id"] == "tempest_st_00056115_rain_today")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
+          |> cumulativeSum()
+          |> fill(value: 0.0)
+          |> yield(name: "max")
+      entity_id: sensor.archive_homerain_365day_cume
+      unit_of_measurement: mm
+      friendly_name: Home - Year - Rain Cume
+      icon: "mdi:water"
 mode: single

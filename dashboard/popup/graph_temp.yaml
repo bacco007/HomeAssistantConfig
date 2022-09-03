@@ -3,6 +3,7 @@ type: custom:apexcharts-card
 config_templates:
   - environment_chart
 apex_config:
+  chart: { height: 600 }
   dataLabels:
     formatter: |
       EVAL:function(value, { seriesIndex, dataPointIndex, w }) {
