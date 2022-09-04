@@ -14,6 +14,7 @@ views:
   - !include network.yaml
   - !include nowplaying.yaml
   - !include temp.yaml
+  - !include docker.yaml
   - !include tv-movies/page.yaml
   - !include sport.yaml
 

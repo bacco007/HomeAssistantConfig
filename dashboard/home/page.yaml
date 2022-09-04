@@ -492,7 +492,7 @@ cards:
                 template: live_tile
                 entity: sensor.binday_greenwaste
                 name: Green Bin
-                state_display: "[[[ return entity.attributes.days  ]]]"
+                state_display: "[[[ return entity.attributes.days ]]]"
                 show_units: false
                 variables:
                   aspect_ratio: 1.5/1
@@ -506,6 +506,39 @@ cards:
                           }
                           if (temp <= 6) {
                             return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
+                          }
+                          return "transparent"
+                        ]]]
+                  card:
+                    - background: var(--ha-card-background)
+
+              - type: "custom:button-card"
+                template: live_tile
+                entity: sensor.northern_slopes_danger_level_today
+                icon: mdi:fire-alert
+                name: Fire Danger
+                state_display: "[[[ return entity.state  ]]]"
+                label: >-
+                  [[[ return "Fire Ban: " + entity.attributes.fire_ban_today ]]]
+                show_units: false
+                variables:
+                  aspect_ratio: 1.5/1
+                styles:
+                  grid:
+                    - background: |
+                        [[[
+                          var temp = entity.state;
+                          if (temp == "Moderate") {
+                            return "rgba(255,221,221,1)"
+                          }
+                          if (temp == "High") {
+                            return "rgba(255,248,216,1)"
+                          }
+                          if (temp == "Extreme") {
+                            return "rgba(255,230,202,1)"
+                          }
+                          if (temp == "Catastrophic") {
+                            return "rgba(255,221,221,1)"
                           }
                           return "transparent"
                         ]]]
