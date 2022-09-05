@@ -17,8 +17,7 @@
         "flow_title": "SamsungTV Smart: {model}",
         "step": {
             "confirm": {
-                "description": "Deseja configurar a TV Samsung {model}? Se você nunca conectou o Home Assistant antes, verá um pop-up na TV solicitando uma autorização. As configurações manuais para esta TV serão substituídas.",
-                "title": "SamsungTV Smart"
+                "description": "Deseja configurar a TV Samsung {model}? Se você nunca conectou o Home Assistant antes, verá um pop-up na TV solicitando uma autorização. As configurações manuais para esta TV serão substituídas."
             },
             "user": {
                 "data": {
@@ -27,25 +26,21 @@
                     "use_ha_name_for_ws": "Use o nome da instância do HA para a identificação na TV",
                     "api_key": "Token gerado pelo SmartThings (opcional)"
                 },
-                "description": "Insira as informações da sua TV Samsung. O token SmartThings é opcional, mas muito sugerido. Depois de confirmar os dados, verá um pop-up na TV solicitando uma autorização.",
-                "title": "SamsungTV Smart"
+                "description": "Insira as informações da sua TV Samsung. O token SmartThings é opcional, mas muito sugerido. Depois de confirmar os dados, verá um pop-up na TV solicitando uma autorização."
             },
             "stdevice": {
                 "data": {
                     "st_devices": "SmartThings TV"
                 },
-                "description": "Você tem várias TVs configuradas em sua conta. Selecione a TV que você está configurando na lista.",
-                "title": "SamsungTV Smart"
+                "description": "Você tem várias TVs configuradas em sua conta. Selecione a TV que você está configurando na lista."
             },
             "stdeviceid": {
                 "data": {
                     "device_id": "ID de TV SmartThings"
                 },
-                "description": "Falha na detecção automática de ID do SmartThings. Para continuar você deve identificar o ID no site SmartThings (ver documentação) e inseri-lo aqui.",
-                "title": "SamsungTV Smart"
+                "description": "Falha na detecção automática de ID do SmartThings. Para continuar você deve identificar o ID no site SmartThings (ver documentação) e inseri-lo aqui."
             }
-        },
-        "title": "SamsungTV Smart"
+        }
     },
     "options": {
         "step": {

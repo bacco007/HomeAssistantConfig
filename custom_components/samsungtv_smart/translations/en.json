@@ -17,8 +17,7 @@
         "flow_title": "SamsungTV Smart: {model}",
         "step": {
             "confirm": {
-                "description": "Do you want to set up Samsung TV {model}? If you never connected Home Assistant before you should see a popup on your TV asking for authorization. Manual configurations for this TV will be overwritten.",
-                "title": "SamsungTV Smart"
+                "description": "Do you want to set up Samsung TV {model}? If you never connected Home Assistant before you should see a popup on your TV asking for authorization. Manual configurations for this TV will be overwritten."
             },
             "user": {
                 "data": {
@@ -27,25 +26,21 @@
                     "use_ha_name_for_ws": "Use HA instance name for identification on TV",
                     "api_key": "SmartThings generated token (optional)"
                 },
-                "description": "Enter your Samsung TV information. SmartThings token is optional but really suggested. After confirm you should see a popup on your TV asking for authorization.",
-                "title": "SamsungTV Smart"
+                "description": "Enter your Samsung TV information. SmartThings token is optional but really suggested. After confirm you should see a popup on your TV asking for authorization."
             },
             "stdevice": {
                 "data": {
                     "st_devices": "SmartThings TV"
                 },
-                "description": "You have multiple TVs configured on your account. Select the TV you are configuring from the list.",
-                "title": "SamsungTV Smart"
+                "description": "You have multiple TVs configured on your account. Select the TV you are configuring from the list."
             },
             "stdeviceid": {
                 "data": {
                     "device_id": "SmartThings TV deviceID"
                 },
-                "description": "Automatic SmartThings deviceID detection failed. To continue you must identify the deviceID on the SmartThings site (see documentation) and insert it here.",
-                "title": "SamsungTV Smart"
+                "description": "Automatic SmartThings deviceID detection failed. To continue you must identify the deviceID on the SmartThings site (see documentation) and insert it here."
             }
-        },
-        "title": "SamsungTV Smart"
+        }
     },
     "options": {
         "step": {

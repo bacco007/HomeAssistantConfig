@@ -17,8 +17,7 @@
         "flow_title": "SamsungTV Smart: {model}",
         "step": {
             "confirm": {
-                "description": "Vuoi configurare Samsung TV {model}? Se non hai mai connesso Home Assistant in precedenza, dovresti vedere un messaggio sul tuo TV in cui \u00e8 richiesta l'autorizzazione. Le configurazioni manuali per questo TV verranno sovrascritte.",
-                "title": "SamsungTV Smart"
+                "description": "Vuoi configurare Samsung TV {model}? Se non hai mai connesso Home Assistant in precedenza, dovresti vedere un messaggio sul tuo TV in cui \u00e8 richiesta l'autorizzazione. Le configurazioni manuali per questo TV verranno sovrascritte."
             },
             "user": {
                 "data": {
@@ -27,25 +26,21 @@
                     "use_ha_name_for_ws": "Usare il nome dell'istanza HA per identificarsi sulla TV",
                     "api_key": "SmartThings token generato (opzionale)"
                 },
-                "description": "Inserisci le informazioni del tuo Samsung TV. Il token SmartThings \u00e8 opzionale ma fortemente consigliato. Dopo aver confermato i dati, dovresti vedere un messaggio sul TV in cui \u00e8 richiesta l'autorizzazione.",
-                "title": "SamsungTV Smart"
+                "description": "Inserisci le informazioni del tuo Samsung TV. Il token SmartThings \u00e8 opzionale ma fortemente consigliato. Dopo aver confermato i dati, dovresti vedere un messaggio sul TV in cui \u00e8 richiesta l'autorizzazione."
             },
             "stdevice": {
                 "data": {
                     "st_devices": "SmartThings TV"
                 },
-                "description": "Hai più di un TV configurato sul tuo account. Seleziona il TV che stai configurando dalla lista.",
-                "title": "SamsungTV Smart"
+                "description": "Hai più di un TV configurato sul tuo account. Seleziona il TV che stai configurando dalla lista."
             },
             "stdeviceid": {
                 "data": {
                     "device_id": "SmartThings TV deviceID"
                 },
-                "description": "Identificazione automatica del deviceID SmartThings fallita. Per continuare devi identificare il deviceID sul sito SmartThings (vedere documentazione) e inserirlo qui.",
-                "title": "SamsungTV Smart"
+                "description": "Identificazione automatica del deviceID SmartThings fallita. Per continuare devi identificare il deviceID sul sito SmartThings (vedere documentazione) e inserirlo qui."
             }
-        },
-        "title": "SamsungTV Smart"
+        }
     },
     "options": {
         "step": {
