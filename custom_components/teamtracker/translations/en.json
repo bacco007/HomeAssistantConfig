@@ -1,0 +1,49 @@
+{
+  "config": {
+    "error": {
+      "league": "Invalid league entered."
+    },
+    "step": {
+      "user": {
+        "title": "Team Tracker",
+        "description": "Enter the League and Team to create the sensor.\n\nLeague: NFL, NCAAF, MLB, NBA, WNBA, NCAAM, NCAAW, MLS, NWSL, BUND, EPL, LIGA, LIG1, SERA\n\nTeam: 2-4 letter team abreviation used on ESPN's scoreboards and stats pages",
+        "data": {
+          "league_id": "League",
+          "team_id": "Team",  
+          "name": "Friendly Name",
+          "timeout": "Update Timeout (in seconds)"
+        }
+      },
+      "path": {
+        "title": "Custom API Configurator",
+        "description": "Enter the 'sport' and 'league' portion of the ESPN API path to use a self-configured API",
+        "data": {
+          "sport_path": "Sport Path", 
+          "league_path": "League Path"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options Team Tracker",
+        "description": "Enter the League and Team to create the sensor.\n\nLeague: NFL, NCAAF, MLB, NBA, WNBA, NCAAM, NCAAW, MLS, NWSL, BUND, EPL, LIGA, LIG1, SERA\n\nTeam: 2-4 letter team abreviation used on ESPN's scoreboards and stats pages",
+        "data": {
+          "league_id": "League",
+          "team_id": "Team",  
+          "name": "Friendly Name",
+          "timeout": "Update Timeout (in seconds)"
+        }
+      },
+      "path": {
+        "title": "Options Custom API Configurator",
+        "description": "Enter the 'sport' and 'league' portion of the ESPN API path to use a self-configured API",
+        "data": {
+          "sport_path": "Sport Path", 
+          "league_path": "League Path"
+        }
+      }
+    }
+  }
+}
