@@ -136,14 +136,14 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug("Solcast - Event called to force an update of data from Solcast API")
         await self.solcast.force_api_poll()
         #self.async_set_updated_data(True)
-        #self.async_update_listeners()
+        self.async_update_listeners()
         #for update_callback in self._listeners:
         #        update_callback()
-        if "2022.7" in self._v:
-            self.async_update_listeners()
-        else:
-            for update_callback in self._listeners:
-                update_callback()
+        #if "2022.7" in self._v:
+        #    self.async_update_listeners()
+        #else:
+        #    for update_callback in self._listeners:
+        #        update_callback()
 
     def get_energy_tab_data(self):
         return self.solcast.get_energy_data()
