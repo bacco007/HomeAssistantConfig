@@ -9,14 +9,17 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
+from homeassistant.helpers import config_validation as cv
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    CONF_CONFERENCE_ID,
     CONF_LEAGUE_ID,
     CONF_LEAGUE_PATH,
     CONF_SPORT_PATH,
     CONF_TIMEOUT,
     CONF_TEAM_ID,
+    DEFAULT_CONFERENCE_ID,
     DEFAULT_LEAGUE,
     DEFAULT_LEAGUE_PATH,
     DEFAULT_SPORT_PATH,
@@ -45,10 +48,11 @@ def _get_schema(hass: Any, user_input: list, default_dict: list) -> Any:
 
     return vol.Schema(
         {
-            vol.Required(CONF_LEAGUE_ID, default=_get_default(CONF_LEAGUE_ID)): str,
-            vol.Required(CONF_TEAM_ID, default=_get_default(CONF_TEAM_ID)): str,
-            vol.Optional(CONF_NAME, default=_get_default(CONF_NAME)): str,
+            vol.Required(CONF_LEAGUE_ID, default=_get_default(CONF_LEAGUE_ID)): cv.string,
+            vol.Required(CONF_TEAM_ID, default=_get_default(CONF_TEAM_ID)): cv.string,
+            vol.Optional(CONF_NAME, default=_get_default(CONF_NAME)): cv.string,
             vol.Optional(CONF_TIMEOUT, default=_get_default(CONF_TIMEOUT)): int,
+            vol.Optional(CONF_CONFERENCE_ID, default=_get_default(CONF_CONFERENCE_ID)): cv.string,
         }
     )
 
@@ -117,6 +121,7 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             CONF_NAME: DEFAULT_NAME,
             CONF_TIMEOUT: DEFAULT_TIMEOUT,
             CONF_TEAM_ID: '',
+            CONF_CONFERENCE_ID: DEFAULT_CONFERENCE_ID,
         }
         _LOGGER.debug("show_config_form() self._errors: %s", self._errors)
         return self.async_show_form(

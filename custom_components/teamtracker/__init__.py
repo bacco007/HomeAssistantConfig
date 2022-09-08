@@ -2,8 +2,11 @@
 import logging
 from datetime import timedelta
 import arrow
+import json
+import codecs
 
 import aiohttp
+import aiofiles
 from async_timeout import timeout
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
@@ -16,12 +19,14 @@ from homeassistant.helpers.entity_registry import (
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    CONF_CONFERENCE_ID,
     CONF_LEAGUE_ID,
     CONF_LEAGUE_PATH,
     CONF_SPORT_PATH,
     CONF_TIMEOUT,
     CONF_TEAM_ID,
     COORDINATOR,
+    DEFAULT_CONFERENCE_ID,
     DEFAULT_TIMEOUT,
     DEFAULT_LEAGUE,
     DEFAULT_LEAGUE_LOGO,
@@ -169,19 +174,33 @@ async def async_get_state(config) -> dict:
     values = {}
     headers = {"User-Agent": USER_AGENT, "Accept": "application/ld+json"}
     data = None
+    file_override = False
     global team_prob
     global oppo_prob
 
     league_id = config[CONF_LEAGUE_ID].upper()
     sport_path = config[CONF_SPORT_PATH]
     league_path = config[CONF_LEAGUE_PATH]
+    url_parms = ""
+    if CONF_CONFERENCE_ID in config.keys():
+            if (len(config[CONF_CONFERENCE_ID]) > 0):
+                url_parms = "?groups=" + config[CONF_CONFERENCE_ID]
+                if (config[CONF_CONFERENCE_ID] == '9999'):
+                    file_override = True
     team_id = config[CONF_TEAM_ID].upper()
-    url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as r:
-            _LOGGER.debug("Getting state for %s from %s" % (team_id, url))
-            if r.status == 200:
-                data = await r.json()
+    url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
+    
+    if (file_override):
+        print("Opening file:")
+        async with aiofiles.open('/share/test.json', mode='r') as f:
+            contents = await f.read()
+        data = json.loads(contents)
+    else:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers) as r:
+                _LOGGER.debug("Getting state for %s from %s" % (team_id, url))
+                if r.status == 200:
+                    data = await r.json()
 
     found_team = False
     prob_key = league_id + '-' + team_id
@@ -193,7 +212,12 @@ async def async_get_state(config) -> dict:
         values["sport"] = sport_path
         for event in data["events"]:
             #_LOGGER.debug("Looking at this event: %s" % event)
-            if team_id in event["shortName"]:
+            try:
+                sn = event["shortName"]
+            except:
+                sn = ""
+                _LOGGER.debug("This is an ill-formed event, it does not have a short name: %s" % event)
+            if sn.startswith(team_id + ' ') or sn.endswith(' ' + team_id):
                 _LOGGER.debug("Found event; parsing data.")
                 found_team = True
                 team_index = 0 if event["competitions"][0]["competitors"][0]["team"]["abbreviation"] == team_id else 1
@@ -289,13 +313,19 @@ async def async_get_state(config) -> dict:
                 values["team_homeaway"] = event["competitions"][0]["competitors"][team_index]["homeAway"]
                 values["team_logo"] = event["competitions"][0]["competitors"][team_index]["team"]["logo"]
                 try:
-                    values["team_colors"] = [''.join(('#',event["competitions"][0]["competitors"][team_index]["team"]["color"])), 
-                                         ''.join(('#',event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]))]
+                    color = '#' + event["competitions"][0]["competitors"][team_index]["team"]["color"]
                 except:
                     if team_id == 'NFC':
-                        values["team_colors"] = ['#013369','#013369']
-                    if team_id == 'AFC':
-                        values["team_colors"] = ['#D50A0A','#D50A0A']
+                        color = '#013369'
+                    elif team_id == 'AFC':
+                        color = '#D50A0A'
+                    else:
+                        color = "#D3D3D3"
+                try:
+                    alt_color = '#' + event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]
+                except:
+                    alt_color = color
+                values["team_colors"] = [color, alt_color]
                 values["team_score"] = event["competitions"][0]["competitors"][team_index]["score"]                
                 values["opponent_abbr"] = event["competitions"][0]["competitors"][oppo_index]["team"]["abbreviation"]
                 values["opponent_id"] = event["competitions"][0]["competitors"][oppo_index]["team"]["id"]
@@ -307,13 +337,19 @@ async def async_get_state(config) -> dict:
                 values["opponent_homeaway"] = event["competitions"][0]["competitors"][oppo_index]["homeAway"]
                 values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
                 try:
-                    values["opponent_colors"] = [''.join(('#',event["competitions"][0]["competitors"][oppo_index]["team"]["color"])), 
-                                         ''.join(('#',event["competitions"][0]["competitors"][oppo_index]["team"]["alternateColor"]))]
+                    color = '#' + event["competitions"][0]["competitors"][oppo_index]["team"]["color"]
                 except:
-                    if team_id == 'AFC':
-                        values["opponent_colors"] = ['#013369','#013369']
                     if team_id == 'NFC':
-                        values["opponent_colors"] = ['#D50A0A','#D50A0A']
+                        color = '#013369'
+                    elif team_id == 'AFC':
+                        color = '#D50A0A'
+                    else:
+                        color = "#A9A9A9"
+                try:
+                    alt_color = '#' + event["competitions"][0]["competitors"][oppo_index]["team"]["alternateColor"]
+                except:
+                    alt_color = color
+                values["opponent_colors"] = [color, alt_color]
                 values["opponent_score"] = event["competitions"][0]["competitors"][oppo_index]["score"]
                 values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
                 values["private_fast_refresh"] = False
@@ -400,6 +436,49 @@ async def async_get_state(config) -> dict:
                             except:
                                 values["last_play"] = values["last_play"] + " (Last play not found) "
         
+#
+# The Volleyball Specific Fields
+#
+                values["team_sets_won"] = None
+                values["opponent_sets_won"] = None
+
+                if sport_path in ['volleyball']:
+                    if event["status"]["type"]["state"].lower() in ['in']: # Set MLB specific fields
+                        values["clock"] = event["status"]["type"]["detail"] # Set
+                        values["team_sets_won"] = values["team_score"]
+                        values["opponent_sets_won"] = values["opponent_score"]
+                        try:
+                            values["team_score"] = event["competitions"] [0] ["competitors"] [team_index] ["linescores"] [-1] ["value"]
+                        except:
+                            values["team_score"] = 0
+                        try:
+                            values["opponent_score"] = event["competitions"] [0] ["competitors"] [oppo_index] ["linescores"] [-1] ["value"]
+                        except:
+                            values["opponent_score"] = 0
+                            
+                        values["last_play"] = ''
+                        try:
+                            sets = len(event["competitions"] [0] ["competitors"] [team_index] ["linescores"])
+                        except:
+                            sets = 0
+                        for x in range (0, sets):
+                            values["last_play"] = values["last_play"] + " Set " + str(x + 1) + ": "
+                            values["last_play"] = values["last_play"] + values["team_abbr"] + " "
+                            try:
+                                values["last_play"] = values["last_play"] + str(int(event["competitions"] [0] ["competitors"] [team_index] ["linescores"] [x] ["value"])) + " "
+                            except:
+                                values["last_play"] = values["last_play"] + "?? "
+                            values["last_play"] = values["last_play"] + values["opponent_abbr"] + " "
+                            try:
+                                values["last_play"] = values["last_play"] + str(int(event["competitions"] [0] ["competitors"] [oppo_index] ["linescores"] [x] ["value"])) + "; "
+                            except:
+                                values["last_play"] = values["last_play"] + "??; "
+
+                if 'IN' in values["state"]:
+                    break
+                if 'PRE' in values["state"] and "minute" in values["kickoff_in"]:
+                    break
+
         # Never found the team. Either a bye or a post-season condition
         if not found_team:
             _LOGGER.debug("Did not find a game with for the configured team. Checking if it's a bye week.")
@@ -518,6 +597,11 @@ async def async_clear_states(config) -> dict:
         "team_total_shots": None,
         "opponent_shots_on_target": None,
         "opponent_total_shots": None,
+#
+# The Soccer Specific Fields
+#
+        "team_sets_won": None,
+        "opponent_sets_won": None,
         "private_fast_refresh": False
     }
 

@@ -13,12 +13,14 @@ from . import AlertsDataUpdateCoordinator
 
 from .const import (
     ATTRIBUTION,
+    CONF_CONFERENCE_ID,
     CONF_LEAGUE_ID,
     CONF_LEAGUE_PATH,
     CONF_SPORT_PATH,
     CONF_TIMEOUT,
     CONF_TEAM_ID,
     COORDINATOR,
+    DEFAULT_CONFERENCE_ID,
     DEFAULT_ICON,
     DEFAULT_LEAGUE,
     DEFAULT_LEAGUE_PATH,
@@ -38,6 +40,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required(CONF_TEAM_ID): cv.string,
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
         vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): int,
+        vol.Optional(CONF_CONFERENCE_ID, default=DEFAULT_CONFERENCE_ID): cv.string,
         vol.Optional(CONF_SPORT_PATH, default=DEFAULT_SPORT_PATH): cv.string,
         vol.Optional(CONF_LEAGUE_PATH, default=DEFAULT_LEAGUE_PATH): cv.string,
     }
@@ -156,6 +159,11 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._team_total_shots = None
         self._opponent_shots_on_target = None
         self._opponent_total_shots = None
+#
+#  Volleyball Specific Fields
+#
+        self._team_sets_won = None
+        self._opponent_sets_won = None
 
     @property
     def unique_id(self):
@@ -245,7 +253,11 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs["team_total_shots"] = self.coordinator.data["team_total_shots"]
         attrs["opponent_shots_on_target"] = self.coordinator.data["opponent_shots_on_target"]
         attrs["opponent_total_shots"] = self.coordinator.data["opponent_total_shots"]
-
+#
+#  Volleyball Specific Fields
+#
+        attrs["team_sets_won"] = self.coordinator.data["team_sets_won"]
+        attrs["opponent_sets_won"] = self.coordinator.data["opponent_sets_won"]
         return attrs
 
     @property
