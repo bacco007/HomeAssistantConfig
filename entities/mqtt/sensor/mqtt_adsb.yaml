@@ -1,0 +1,36 @@
+---
+- expire_after: 120
+  name: adsb_aircraft_count
+  icon: mdi:airplane
+  state_topic: "adsb"
+  value_template: >-
+    {% if value_json.aircraft is defined %}
+      {{ value_json.aircraft }}
+    {% else %}
+      {{ states('sensor.adsb_aircraft_count') }}
+    {% endif %}
+  unit_of_measurement: "Aircraft"
+
+- expire_after: 120
+  name: adsb_position_count
+  icon: mdi:radar
+  state_topic: "adsb"
+  value_template: >-
+    {% if value_json.positions is defined %}
+      {{ value_json.positions }}
+    {% else %}
+      {{ states('sensor.adsb_position_count') }}
+    {% endif %}
+  unit_of_measurement: "Positions"
+
+- expire_after: 120
+  name: adsb_message_rate
+  icon: mdi:radar
+  state_topic: "adsb"
+  value_template: >-
+    {% if value_json.msgs_per_sec is defined %}
+      {{ value_json.msgs_per_sec }}
+    {% else %}
+      {{ states('sensor.adsb_message_rate') }}
+    {% endif %}
+  unit_of_measurement: "Msgs/sec"

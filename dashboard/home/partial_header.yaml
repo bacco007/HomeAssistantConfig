@@ -13,10 +13,21 @@ states:
       grid-template-rows: auto
       margin: -1px -1px -16px -1px
       padding: 0
+      grid-template-areas: |
+        "c1 c2"
+      mediaquery:
+        "(max-width: 512px)":
+          grid-template-columns: 1fr
+          grid-template-areas: |
+            "c1"
+            "c2"
+          margin: 0
     view_layout:
       grid-area: h
     cards:
       - type: markdown
+        view_layout:
+          grid-area: c1
         content: >
           # {% if now() > today_at('18:00') %}Good evening{% elif
           now() > today_at('12:00') %}Good afternoon{% elif now() >
@@ -44,6 +55,7 @@ states:
           padding: 0
           card_margin: 1px
         view_layout:
+          grid-area: c2
           place-self: end right
         cards:
           - entity: sensor.time

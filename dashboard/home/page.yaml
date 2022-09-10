@@ -55,23 +55,24 @@ cards:
             "c2 c3"
             "c4 none"
           margin: 0
-        # "(max-width: 1128px)":
-        #   grid-template-columns: 1fr 1fr 1fr
-        #   grid-template-areas: |
-        #     "h h h"
-        #     "c1 c2 c5"
-        #     "c3 none c4"
-        #   margin: 0
 
-        "(max-width: 1440px)":
-          grid-template-columns: >-
-            calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
-            25% - 24px )
+        # iPad Pro
+        "(min-width: 1024px) and (max-height: 1366px)":
+          grid-template-columns: 1fr 1fr 1fr
           grid-template-areas: |
-            "h h h h"
-            "c1 c2 c3 c5"
-            "none c4 c5 none"
+            "h h h"
+            "c1 c2 c5"
+            "c3 none c4"
           margin: 0
+        # "(max-width: 1440px)":
+        #   grid-template-columns: >-
+        #     calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
+        #     25% - 24px )
+        #   grid-template-areas: |
+        #     "h h h h"
+        #     "c1 c2 c3 c5"
+        #     "none c4 c5 none"
+        #   margin: 0
       margin: 0
 
     view_layout:

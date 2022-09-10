@@ -1,0 +1,7 @@
+---
+- icon: mdi:solar-power
+  name: sungrowsolar_alldata
+  state_topic: solar/inverter/SENSOR
+  value_template: "{{value_json.daily_power_yields|float(default=0)}}"
+  unit_of_measurement: "kW"
+  json_attributes_topic: solar/inverter/SENSOR

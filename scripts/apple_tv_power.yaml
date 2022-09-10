@@ -1,0 +1,16 @@
+---
+alias: Apple TV Power
+mode: single
+sequence:
+  - service: remote.send_command
+    data:
+      delay_secs: 1
+      command:
+        - home_hold
+        - select
+    target:
+      entity_id: remote.apple_tv_bedroom
+  - service: media_player.toggle
+    data: {}
+    target:
+      entity_id: media_player.apple_tv_bedroom
