@@ -202,7 +202,7 @@ cards:
               - type: "custom:list-card"
                 entity: sensor.lastfm_user_topartists
                 feed_attribute: artist
-                row_limit: 5
+                row_limit: 10
                 columns:
                   - field: name
                     title: artist

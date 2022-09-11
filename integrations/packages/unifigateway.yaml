@@ -15,21 +15,6 @@ sensor:
       - alerts
       - firmware
 
-  - platform: command_line
-    name: udm_unifios
-    command: !secret unifi_udm_unifios
-    value_template: |-
-      {% set json = value_json.data[0] %}
-      {{ json["system-stats"].cpu }}|
-      {{ json.temperatures[1].value | round(1) }}|
-      {{ json["system-stats"].mem }}|
-      {{ ((json.storage[1].used / json.storage[1].size) * 100) | round(1) }}|
-      {{ json.internet }}|
-      {{ json.startup_timestamp | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}|
-      {{ json.displayable_version }}|
-      {{ json.upgradable }}
-    scan_interval: 60
-
   - platform: template
     sensors:
       unifi_gateway_wan_cpu:

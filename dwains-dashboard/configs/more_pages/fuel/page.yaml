@@ -39,7 +39,7 @@ cards:
                 mode: vertical
                 cards:
                   - type: entities
-                    title: Unleaded 98
+                    title: Unleaded 98 
                     style: |
                       .card-header {
                         padding: 5px 16px;

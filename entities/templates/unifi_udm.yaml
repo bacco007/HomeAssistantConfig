@@ -1,64 +1,56 @@
 ---
-# https://community.home-assistant.io/t/cookie-login-to-get-value-for-sensor/350417/9?u=bacco007
 binary_sensor:
   - unique_id: udm_internet
-    icon: mdi:wan
-    device_class: connectivity
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[4] | default }}
+      {{ state_attr('sensor.udm_unifios', 'internet') | default }}
     attributes:
       friendly_name: Internet
-
-  - unique_id: udm_upgradable
-    icon: mdi:update
-    device_class: update
-    state: >
-      {{ states('sensor.udm_unifios').split('|\n')[7] | default }}
-    attributes:
-      friendly_name: Update
+      icon: mdi:wan
+      device_class: connectivity
 
 sensor:
   - unique_id: udm_cpu
-    icon: mdi:chip
-    unit_of_measurement: "%"
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[0] | default }}
+      {{ state_attr('sensor.udm_unifios', 'cpu') | default }}
     attributes:
       friendly_name: Processor
+      icon: mdi:chip
+      unit_of_measurement: "%"
 
   - unique_id: udm_cpu_temp
-    icon: mdi:thermometer
-    unit_of_measurement: "°C"
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[1] | default }}
+      {{ state_attr('sensor.udm_unifios', 'cpu_temp') | default }}
     attributes:
       friendly_name: Processor Temperature
+      icon: mdi:thermometer
+      unit_of_measurement: "°C"
 
   - unique_id: udm_mem
-    icon: mdi:memory
-    unit_of_measurement: "%"
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[2] | default }}
+      {{ state_attr('sensor.udm_unifios', 'mem') | default }}
     attributes:
       friendly_name: Memory
+      icon: mdi:memory
+      unit_of_measurement: "%"
 
   - unique_id: udm_disk
-    icon: mdi:harddisk
-    unit_of_measurement: "%"
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[3] | default }}
+      {{ state_attr('sensor.udm_unifios', 'disk') | default }}
     attributes:
       friendly_name: Hard Disk
+      icon: mdi:harddisk
+      unit_of_measurement: "%"
 
   - unique_id: udm_uptime
-    device_class: timestamp
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[5] | default }}
+      {{ state_attr('sensor.udm_unifios', 'uptime') | default }}
     attributes:
       friendly_name: Uptime
+      device_class: timestamp
+
   - unique_id: udm_version
-    icon: mdi:router-wireless
     state: >
-      {{ states('sensor.udm_unifios').split('|\n')[6] | default }}
+      {{ state_attr('sensor.udm_unifios', 'version') | default }}
     attributes:
       friendly_name: Version
+      icon: mdi:router-wireless

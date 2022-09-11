@@ -55,49 +55,6 @@ cards:
                   margin-left: -2px;
                   margin-block-end: -8px;
                 }
-          - type: "custom:layout-card"
-            layout_type: "custom:horizontal-layout"
-            view_layout:
-              place-self: center start
-            cards:
-              - type: "custom:swipe-card"
-                parameters:
-                  breakpointBase: container
-                  enabled: true
-                  slidesPerView: 1.66
-                  breakpoints:
-                    "600":
-                      enabled: false
-                      slidesPerView: 3
-                cards:
-                  - type: "custom:mushroom-entity-card"
-                    entity: binary_sensor.ping_cloudflare
-                    name: WAN ↗
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: http://192.168.1.1
-
-                  - type: "custom:mushroom-entity-card"
-                    entity: sensor.asuswrt_devices_connected
-                    name: Router ↗
-                    icon: "mdi:router-wireless"
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: http://192.168.1.1
-
-                  - type: "custom:mushroom-entity-card"
-                    entity: binary_sensor.ping_valhalla_outlet
-                    name: Outlet ↗
-                    icon: "mdi:power-socket-us"
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: http://192.168.1.1
 
       # [Column] Network Map
       - type: vertical-stack
@@ -294,6 +251,53 @@ cards:
               #   label: "[[[ entity.last_changed ]]]"
               #   state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
 
+      # [Column] UnFi Dream Machine
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card
+            variables:
+              name: UNIFI DREAM MACHINE
+              label: More
+              arrow: "mdi:arrow-top-right"
+              action: url
+              link: 192.168.1.1
+            view_layout:
+              grid-column: 1/-1
+          - type: vertical-stack
+            cards:
+              - type: entities
+                state_color: true
+                card_mod:
+                  class: content
+                entities:
+                  - entity: binary_sensor.template_udm_internet
+                    secondary_info: last-changed
+
+                  - entity: sensor.template_udm_cpu_temp
+                    name: CPU Temperature
+
+                  - type: custom:bar-card
+                    width: 55%
+                    height: 2em
+                    decimal: 0
+                    unit_of_measurement: "%"
+                    positions:
+                      icon: outside
+                      indicator: "off"
+                      name: outside
+                    severity:
+                      - color: "#6d2525"
+                        from: 90
+                        to: 999
+                    entity_row: true
+                    entities:
+                      - entity: sensor.template_udm_cpu
+                      - entity: sensor.template_udm_mem
+                      - entity: sensor.template_udm_disk
+
+                  - entity: sensor.template_udm_uptime
+
       # [Column] Download
       - type: vertical-stack
         cards:
@@ -389,44 +393,6 @@ cards:
             tap_action: {}
             tooltip: {}
             blink: {}
-
-      # [Column] Router
-      - type: vertical-stack
-        cards:
-          - type: "custom:button-card"
-            template: header_card
-            variables:
-              name: VALHALLA ROUTER
-              label: More
-              arrow: "mdi:arrow-top-right"
-              action: url
-              link: 192.168.1.1
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
-          - type: sensor
-            graph: line
-            entity: sensor.asuswrt_devices_connected
-            name: Devices Connected
-            detail: 2
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.asuswrt_load_avg_1m
-            name: Router Load
-            detail: 2
-            unit: "%"
-          - type: "custom:decluttering-card"
-            template: multi_graph_card
-            variables:
-              - entities:
-                  - entity: sensor.asuswrt_cpu_temperature
-                    name: CPU
-                  - entity: sensor.asuswrt_2_4ghz_temperature
-                    name: 2.4GHz
-                  - entity: sensor.asuswrt_5ghz_temperature
-                    name: 5GHz
-              - title: Temperatures
 
       # [Column] AdGuard
       - type: vertical-stack

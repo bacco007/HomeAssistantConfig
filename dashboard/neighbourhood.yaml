@@ -16,7 +16,7 @@ cards:
     view_layout:
       grid-area: cc
     layout:
-      grid-template-columns: "repeat(auto-fill, [col-start] minmax(352px, 1fr) [col-end])"
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(400px, 1fr) [col-end])"
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
@@ -30,78 +30,25 @@ cards:
           grid-column: 1/-1
         cards:
           - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
             content: >
-              # {{ states('input_text.neighborhood_name') }}
-              {{ state_attr('sensor.nws_alert_rss_feed', 'entries')[0].title
-              }}. Parking restrictions are {{
-              states('sensor.nyc_311_alternate_side_parking_0d') | lower }}. Trains are in {{
-              states('sensor.goodserviceio_l_service') | lower }} currently.
-              {%- set is_cold =  state_attr('weather.valhalla_hourly',
-              'forecast')|map(attribute='temperature')|average < 18 -%} {%-
-              set is_freezing =  state_attr('weather.valhalla_hourly',
-              'forecast')|map(attribute='temperature')|average < 8 -%} {%-
-              set is_rainy = 'rainy' in
-              state_attr('weather.valhalla_hourly',
-              'forecast')|map(attribute='condition')|join(',') -%} {{ iif(
-              is_cold or is_rainy, ' You should', '') }} {{ iif( is_cold, '
-              wear a jacket', '') }} {{ iif( is_freezing, ' and a scarf, and
-              also', ' and') }} {{ iif( is_rainy, ' bring an umbrella.',
-              '.') }}
-            style:
-              .: |
-                ha-card {
-                  background: none;
-                }
-              ha-markdown$: |
-                h1 {
-                  font-size: var(--title-font-size);
-                  font-weight: 500;
-                  line-height: 1.1;
-                  margin-left: -2px;
-                  margin-block-end: -8px;
-                }
+              # Tamworth
           - type: "custom:layout-card"
-            layout_type: "custom:horizontal-layout"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: 0
+              padding: 0
+              card_margin: 1px
             view_layout:
-              place-self: center start
+              place-self: end right
             cards:
-              - type: "custom:swipe-card"
-                parameters:
-                  breakpointBase: container
-                  enabled: true
-                  slidesPerView: 1.66
-                  breakpoints:
-                    "600":
-                      enabled: false
-                      slidesPerView: 3
-                cards:
-                  - type: "custom:mushroom-entity-card"
-                    entity: sensor.goodserviceio_l_service
-                    name: Subway Map ↗
-                    icon_color: pink
-                    tap_action:
-                      action: url
-                      url_path: "https://citizen.com/explore"
-                    style: "ha-card {background: none;}"
-
-                  - type: "custom:mushroom-template-card"
-                    primary: Citizen ↗
-                    icon: "mdi:police-badge"
-                    style: "ha-card {background: none;}"
-                    icon_color: pink
-                    tap_action:
-                      action: url
-                      url_path: "https://citizen.com/explore"
-
-                  - type: "custom:mushroom-template-card"
-                    primary: NYC 311 ↗
-                    secondary: null
-                    icon: "mdi:shield-alert"
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: "https://portal.311.nyc.gov/"
+              - entity: sensor.time
+                template: clock
+                type: custom:button-card
+                variables:
+                  entity_date: sensor.date
+                  entity_temperature: sensor.tempest_st_00056115_temperature
+                  entity_weather: weather.east_tamworth_hourly
 
       # # [Column] Transit
       # - type: vertical-stack
@@ -134,15 +81,13 @@ cards:
               - title: Driving Time to Union Square
               - lower_bound: 0
               - entities:
-                  - entity: sensor.waze_travel_time
-                    name: Union Square
-                  - entity: sensor.waze_travel_time_to_hicksville
+                  - entity: sensor.here_home_to_work_duration_in_traffic
                     name: Hicksville
-                  - entity: sensor.waze_travel_time_to_newark
+                  - entity: sensor.here_tom_to_work_duration_in_traffic
                     name: Newark
-                  - entity: sensor.waze_travel_time_to_tappan_zee
+                  - entity: sensor.here_tom_to_home_duration_in_traffic
                     name: Tappan Zee
-                  - entity: sensor.sun_elevation
+                  - entity: sensor.elevation
                     show_legend: false
                     y_axis: secondary
                     show_line: false
@@ -371,8 +316,447 @@ cards:
       # # [Column] Gas
       # - !include secret/neighborhood-gas.yaml
 
-      # # [Column] Stores
-      # - !include secret/neighborhood-stores.yaml
+      # # [Column] Fuel
+      - type: "custom:layout-card"
+        view_layout:
+          grid-column: span 2
+        layout_type: "custom:grid-layout"
+        layout:
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(50%, 1fr) [col-end])"
+          grid-template-rows: auto
+          margin: -1
+          mediaquery:
+            "(max-width: 760px)":
+              grid-template-columns: "repeat(auto-fill, [col-start] minmax(100%, 1fr) [col-end])"
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: FUEL WATCH
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    title: Unleaded 98
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamworth_fuel_average_ulp98
+                        name: Unleaded 98 (Tamworth Average)
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*ulp98*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_ulp98
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      - entity: sensor.tamworth_fuel_average_ulp98
+                        name: Average
+                      - entity: sensor.tamworth_fuel_average_ulp98
+                        attribute: max
+                        name: Max
+                      - entity: sensor.tamworth_fuel_average_ulp98
+                        attribute: min
+                        name: Min
+
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    title: Unleaded 95
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamworth_fuel_average_ulp95
+                        name: Unleaded 95 (Tamworth Average)
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*ulp95*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_ulp95
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      - entity: sensor.tamworth_fuel_average_ulp95
+                        name: Average
+                      - entity: sensor.tamworth_fuel_average_ulp95
+                        attribute: max
+                        name: Max
+                      - entity: sensor.tamworth_fuel_average_ulp95
+                        attribute: min
+                        name: Min
+
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    title: Unleaded 91
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamworth_fuel_average_ulp91
+                        name: Unleaded 91 (Tamworth Average)
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*ulp91*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_ulp91
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      - entity: sensor.tamworth_fuel_average_ulp91
+                        name: Average
+                      - entity: sensor.tamworth_fuel_average_ulp91
+                        attribute: max
+                        name: Max
+                      - entity: sensor.tamworth_fuel_average_ulp91
+                        attribute: min
+                        name: Min
+
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    title: Premium Diesel
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamworth_fuel_average_pdl
+                        name: PDL (Tamworth Average)
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*pdl*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_pdl
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      - entity: sensor.tamworth_fuel_average_pdl
+                        name: Average
+                      - entity: sensor.tamworth_fuel_average_pdl
+                        attribute: max
+                        name: Max
+                      - entity: sensor.tamworth_fuel_average_pdl
+                        attribute: min
+                        name: Min
+
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    title: Diesel
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamworth_fuel_average_diesel
+                        name: Diesel (Tamworth Average)
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*diesel*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_diesel
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      - entity: sensor.tamworth_fuel_average_diesel
+                        name: Average
+                      - entity: sensor.tamworth_fuel_average_diesel
+                        attribute: max
+                        name: Max
+                      - entity: sensor.tamworth_fuel_average_diesel
+                        attribute: min
+                        name: Min
+
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    title: E10
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamworth_fuel_average_e10
+                        name: E10 (Tamworth Average)
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - entity_id: "*e10*"
+                              options:
+                                secondary_info: last-changed
+                          exclude:
+                            - entity_id: sensor.tamworth_fuel_average_e10
+                            - entity_id: sensor.archive_*
+                            - domain: automation
+                        sort:
+                          method: state
+                        card:
+                          type: custom:fold-entity-row
+                          head:
+                            label: Individual Service Stations
+                            type: section
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      - entity: sensor.tamworth_fuel_average_e10
+                        name: Average
+                      - entity: sensor.tamworth_fuel_average_e10
+                        attribute: max
+                        name: Max
+                      - entity: sensor.tamworth_fuel_average_e10
+                        attribute: min
+                        name: Min
 
       # [Column] Bird Watch
       - type: vertical-stack
