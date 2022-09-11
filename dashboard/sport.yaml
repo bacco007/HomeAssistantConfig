@@ -335,3 +335,21 @@ cards:
               icon: /local/sportlogos/wrc.png
               limit: 5
               replace: "WRC - "
+
+      - type: custom:auto-entities
+        unique: true
+        show_empty: false
+        card:
+          type: entities
+        filter:
+          template: |
+            {%- for team in integration_entities("teamtracker") -%}
+                {{{"type": "custom:teamtracker-card",
+                  "entity": team }}},
+            {%- endfor -%}
+          exclude:
+            - entity_id: "*team_tracker*"
+        options: null
+        sort:
+          method: attribute
+          attribute: date

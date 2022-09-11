@@ -35,8 +35,10 @@ cards:
           - icon: "mdi:music"
           - hours_to_show: 48
           - aspect_ratio: 2.5/1
+          - tap_action: !include ../popup/graph_lastfmplaycount.yaml
         view_layout:
           grid-column: 1/-1
+
       - type: "custom:swipe-card"
         parameters:
           direction: vertical

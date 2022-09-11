@@ -57,7 +57,7 @@ cards:
           margin: 0
 
         # iPad Pro
-        "(min-width: 1024px) and (max-height: 1366px)":
+        "(max-width: 1366px) and (max-height: 1366px)":
           grid-template-columns: 1fr 1fr 1fr
           grid-template-areas: |
             "h h h"
@@ -121,6 +121,7 @@ cards:
                   - icon: "mdi:thermometer"
                   - line_width: 2
                   - aspect_ratio: 1.5/1
+                  - tap_action: !include ../popup/graph_temp.yaml
 
               - type: "custom:decluttering-card"
                 template: mini_graph_tile
@@ -135,6 +136,7 @@ cards:
                   - icon: "mdi:water"
                   - line_width: 2
                   - aspect_ratio: 1.5/1
+                  - tap_action: !include ../popup/graph_rainfall.yaml
 
               - type: custom:stack-in-card
                 view_layout:

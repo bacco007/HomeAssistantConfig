@@ -17,6 +17,7 @@ mini_graph_tile:
     - icon: ""
     - decimals: 0
     - unit: ""
+    - tap_action: "action: more-info"
   card:
     type: "custom:mini-graph-card"
     entities: "[[entities]]"
@@ -28,6 +29,7 @@ mini_graph_tile:
     hour24: true
     line_width: "[[line_width]]"
     smoothing: true
+    tap_action: "[[tap_action]]"
     show:
       labels: false
       labels_secondary: false
