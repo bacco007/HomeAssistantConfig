@@ -24,15 +24,18 @@ from homeassistant.const import Platform
 from homeassistant.const import SERVICE_RELOAD
 from homeassistant.core import HomeAssistant
 from homeassistant.core import ServiceCall
+from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import discovery
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.reload import async_reload_integration_platforms
 from homeassistant.helpers.service import async_set_service_schema
+from homeassistant.helpers.template import Template
 from homeassistant.util import slugify
 
 from .const import CONF_FIELDS
 from .const import CONF_FORM_INPUT
+from .const import CONF_FORM_INPUT_FILTER
 from .const import CONF_FORM_RESOURCE
 from .const import CONF_FORM_RESUBMIT_ERROR
 from .const import CONF_FORM_SELECT
@@ -218,7 +221,6 @@ def _create_scrape_http_wrapper(config_name, config, hass, file_manager):
     password = config.get(CONF_PASSWORD)
     auth_type = config.get(CONF_AUTHENTICATION)
     timeout = config.get(CONF_TIMEOUT)
-    data = config.get(CONF_PAYLOAD)
     headers = config.get(CONF_HEADERS)
     params = config.get(CONF_PARAMS)
 
@@ -229,7 +231,6 @@ def _create_scrape_http_wrapper(config_name, config, hass, file_manager):
         client,
         file_manager,
         timeout,
-        data=data,
         params=params,
         request_headers=headers,
     )
@@ -261,6 +262,7 @@ def _create_form_submitter(config_name, config, hass, http, file_manager, parser
     resource = config.get(CONF_FORM_RESOURCE)
     select = config.get(CONF_FORM_SELECT)
     input_values = config.get(CONF_FORM_INPUT)
+    input_filter = config.get(CONF_FORM_INPUT_FILTER)
     resubmit_error = config.get(CONF_FORM_RESUBMIT_ERROR)
     submit_once = config.get(CONF_FORM_SUBMIT_ONCE)
 
@@ -272,6 +274,7 @@ def _create_form_submitter(config_name, config, hass, http, file_manager, parser
         resource,
         select,
         input_values,
+        input_filter,
         submit_once,
         resubmit_error,
         parser,
@@ -287,6 +290,7 @@ def _create_multiscrape_coordinator(
     scan_interval = conf.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     resource = conf.get(CONF_RESOURCE)
     resource_template = conf.get(CONF_RESOURCE_TEMPLATE)
+    data_renderer = create_renderer(hass, conf.get(CONF_PAYLOAD))
 
     if resource_template is not None:
         resource_template.hass = hass
@@ -302,6 +306,7 @@ def _create_multiscrape_coordinator(
         resource,
         resource_template,
         method,
+        data_renderer,
     )
 
 
@@ -315,3 +320,23 @@ def _create_scraper(config_name, config, hass, file_manager):
         file_manager,
         parser,
     )
+
+
+def create_renderer(hass, value_template):
+    """Create a renderer based on variable_template value."""
+    if value_template is None:
+        return lambda value: value
+
+    if not isinstance(value_template, Template):
+        value_template = Template(value_template, hass)
+    else:
+        value_template.hass = hass
+
+    def _render(value):
+        try:
+            return value_template.async_render({"value": value}, parse_result=False)
+        except TemplateError:
+            _LOGGER.exception("Error parsing value of template")
+            return value
+
+    return _render

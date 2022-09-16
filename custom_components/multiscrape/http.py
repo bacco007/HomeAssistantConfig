@@ -16,7 +16,6 @@ class HttpWrapper:
         timeout,
         params=None,
         request_headers=None,
-        data=None,
     ):
         _LOGGER.debug("%s # Initializing http wrapper", config_name)
         self._client = client
@@ -25,7 +24,6 @@ class HttpWrapper:
         self._timeout = timeout
         self._hass = hass
         self._auth = None
-        self._data = data
         self._params = params
         self._request_headers = request_headers
 
@@ -38,9 +36,6 @@ class HttpWrapper:
 
     async def async_request(self, context, method, resource, request_data=None):
 
-        if not request_data:
-            request_data = self._data
-
         _LOGGER.debug(
             "%s # Executing %s-request with a %s to url: %s.",
             self._config_name,
@@ -48,6 +43,12 @@ class HttpWrapper:
             method,
             resource,
         )
+        if self._file_manager:
+            await self._async_file_log(
+                "request_headers", context, self._request_headers
+            )
+            await self._async_file_log("request_body", context, request_data)
+
         try:
             response = await self._client.request(
                 method,
@@ -84,6 +85,21 @@ class HttpWrapper:
                 resource,
                 repr(ex),
             )
+            try:
+                if self._file_manager:
+                    await self._async_file_log(
+                        "response_headers_error", context, response.headers
+                    )
+                    await self._async_file_log(
+                        "response_body_error", context, response.text
+                    )
+            except Exception as exc:
+                _LOGGER.debug(
+                    "%s # Unable to write headers and body to files during handling of exception.\n Error message:\n %s",
+                    self._config_name,
+                    repr(exc),
+                )
+
             raise
 
     async def _async_file_log(self, content_name, context, content):

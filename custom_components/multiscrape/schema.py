@@ -37,6 +37,7 @@ from homeassistant.const import HTTP_DIGEST_AUTHENTICATION
 
 from .const import CONF_ATTR
 from .const import CONF_FORM_INPUT
+from .const import CONF_FORM_INPUT_FILTER
 from .const import CONF_FORM_RESOURCE
 from .const import CONF_FORM_RESUBMIT_ERROR
 from .const import CONF_FORM_SELECT
@@ -73,6 +74,7 @@ FORM_SUBMIT_SCHEMA = {
     vol.Optional(CONF_FORM_RESOURCE): cv.string,
     vol.Required(CONF_FORM_SELECT): cv.string,
     vol.Optional(CONF_FORM_INPUT): vol.Schema({cv.string: cv.string}),
+    vol.Optional(CONF_FORM_INPUT_FILTER, default=[]): cv.ensure_list,
     vol.Optional(CONF_FORM_SUBMIT_ONCE, default=False): cv.boolean,
     vol.Optional(CONF_FORM_RESUBMIT_ERROR, default=True): cv.boolean,
 }
@@ -88,7 +90,7 @@ INTEGRATION_SCHEMA = {
     vol.Optional(CONF_METHOD, default=DEFAULT_METHOD): vol.In(METHODS),
     vol.Optional(CONF_USERNAME): cv.string,
     vol.Optional(CONF_PASSWORD): cv.string,
-    vol.Optional(CONF_PAYLOAD): cv.string,
+    vol.Optional(CONF_PAYLOAD): cv.template,
     vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): cv.boolean,
     vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
     vol.Optional(CONF_PARSER, default=DEFAULT_PARSER): cv.string,
