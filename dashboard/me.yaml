@@ -93,14 +93,19 @@ cards:
                 filter:
                   include:
                     - entity_id: sensor.anniversary*
+                      options:
+                        type: custom:multiple-entity-row
+                        secondary_info:
+                          attribute: date
+                          format: date
                   exclude:
-                    - entity_id: sensor.anniversary_datetracking_mybirthday
-                    - entity_id: sensor.anniversary_datetracking_myworkbirthday
                     - entity_id: sensor.anniversary_days_at_work
                     - entity_id: sensor.anniversary_days_on_earth
                 sort:
-                  method: state
-                  reverse: true
+                  method: attribute
+                  attribute: weeks_remaining
+                  reverse: false
+                  numeric: true
 
       # [Column] Social Reach
       - type: vertical-stack
@@ -349,7 +354,7 @@ cards:
                     icon: "mdi:numeric-6-box-multiple"
                     state_display: "[[[ return entity.attributes.album[5].name ]]]"
                     label: >-
-                      [[[ return entity.attributes.album[4].artist.name +
+                      [[[ return entity.attributes.album[5].artist.name +
                       "<br/>" + entity.attributes.album[5].playcount + " Plays"
                       ]]]
                     styles:
@@ -569,7 +574,7 @@ cards:
                     icon: "mdi:numeric-6-box-multiple"
                     state_display: "[[[ return entity.attributes.track[5].name ]]]"
                     label: >-
-                      [[[ return entity.attributes.track[4].artist.name +
+                      [[[ return entity.attributes.track[5].artist.name +
                       "<br/>" + entity.attributes.track[5].playcount + " Plays"
                       ]]]
                     styles:

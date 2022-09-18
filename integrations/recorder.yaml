@@ -27,7 +27,6 @@ recorder:
       - sensor.udm_unifios
       - sensor.sungrowsolar_runtime
       - sensor.sungrowsolar_runtime
-      - sensor.nhl
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
       - sensor.bomforecast_tamworth_hr

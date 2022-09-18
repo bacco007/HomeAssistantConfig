@@ -468,52 +468,58 @@ cards:
                         ]]]
                   card:
                     - background: var(--ha-card-background)
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.binday_recycling
-                name: Yellow Bin
-                state_display: "[[[ return entity.attributes.days ]]]"
-                show_units: false
-                variables:
-                  aspect_ratio: 1.5/1
-                styles:
-                  grid:
-                    - background: |
-                        [[[
-                          var temp = parseFloat(entity.attributes.days)
-                          if (temp <= 1) {
-                            return "rgba(var(--rgb-primary-color)," + 1 + ")"
-                          }
-                          if (temp <= 6) {
-                            return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
-                          }
-                          return "transparent"
-                        ]]]
-                  card:
-                    - background: var(--ha-card-background)
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.binday_greenwaste
-                name: Green Bin
-                state_display: "[[[ return entity.attributes.days ]]]"
-                show_units: false
-                variables:
-                  aspect_ratio: 1.5/1
-                styles:
-                  grid:
-                    - background: |
-                        [[[
-                          var temp = parseFloat(entity.attributes.days)
-                          if (temp <= 1) {
-                            return "rgba(var(--rgb-primary-color)," + 1 + ")"
-                          }
-                          if (temp <= 6) {
-                            return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
-                          }
-                          return "transparent"
-                        ]]]
-                  card:
-                    - background: var(--ha-card-background)
+              - type: custom:state-switch
+                entity: template
+                template: "{% if states('sensor.binday_recycling') | int < 7 %} recycle {% else %} green {% endif %}"
+                states:
+                  recycle:
+                    type: "custom:button-card"
+                    template: live_tile
+                    entity: sensor.binday_recycling
+                    name: Yellow Bin
+                    state_display: "[[[ return entity.attributes.days ]]]"
+                    show_units: false
+                    variables:
+                      aspect_ratio: 1.5/1
+                    styles:
+                      grid:
+                        - background: |
+                            [[[
+                              var temp = parseFloat(entity.attributes.days)
+                              if (temp <= 1) {
+                                return "rgba(var(--rgb-primary-color)," + 1 + ")"
+                              }
+                              if (temp <= 6) {
+                                return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
+                              }
+                              return "transparent"
+                            ]]]
+                      card:
+                        - background: var(--ha-card-background)
+                  green:
+                    type: "custom:button-card"
+                    template: live_tile
+                    entity: sensor.binday_greenwaste
+                    name: Green Bin
+                    state_display: "[[[ return entity.attributes.days ]]]"
+                    show_units: false
+                    variables:
+                      aspect_ratio: 1.5/1
+                    styles:
+                      grid:
+                        - background: |
+                            [[[
+                              var temp = parseFloat(entity.attributes.days)
+                              if (temp <= 1) {
+                                return "rgba(var(--rgb-primary-color)," + 1 + ")"
+                              }
+                              if (temp <= 6) {
+                                return "rgba(var(--rgb-primary-color)," + 0.4 + ")"
+                              }
+                              return "transparent"
+                            ]]]
+                      card:
+                        - background: var(--ha-card-background)
 
               - type: "custom:button-card"
                 template: live_tile
