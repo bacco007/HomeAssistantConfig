@@ -58,12 +58,14 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def reset_api_counter(self, *args):
         try:
             await self.solcast.reset_api_counter()
+            _LOGGER.debug("SOLCAST: api counter was reset")
         except Exception as error:
             _LOGGER.error("Solcast - Error resetting API counter")
             
     async def reset_past_data(self, *args):
         try:
             await get_instance(self._hass).async_add_executor_job(self.gethistory)
+            _LOGGER.debug("SOLCAST: got past data")
         except Exception as error:
             _LOGGER.error("Solcast - Error resetting past data")
 
@@ -95,6 +97,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         """Update forecast state."""
 
         try:
+            _LOGGER.debug("SOLCAST: begin code for updating forcast")
             last_update = self.solcast.get_last_updated_datetime() 
             date_now = dt_util.now() - timedelta(seconds=3500)
             if last_update < date_now:
@@ -102,6 +105,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 date_now = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
                 if last_update < date_now:
                     #more than a day since uopdate
+                    _LOGGER.debug("SOLCAST: been longer than a day so forcing an api call to update data")
                     await self.solcast.force_api_poll(True)
                 else:
                     #sometime today.. 
@@ -109,16 +113,21 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                     if _hournow == 0 or _hournow == self._starthour or _hournow == self._finishhour:
                         #if midnight, or sunrise hour or sunset set run it
                         if  _hournow == self._finishhour:
+                            _LOGGER.debug("SOLCAST: its midnight force and update api data call")
                             await self.solcast.force_api_poll(True)
                         else:
+                            _LOGGER.debug("SOLCAST: start or finish hour calling update code")
                             await self.solcast.force_api_poll(False)
                     elif (_hournow > self._starthour and _hournow < self._finishhour):
                         #else its between sun rise and set
+                        _LOGGER.debug("SOLCAST: between sun rise/set code test un forcast_update")
                         if self.solcast._sites:
                             #if we have sites to even poll
                             if _hournow % 3 == 0: 
+                                _LOGGER.debug("SOLCAST: calling the update data code to include past data")
                                 await self.solcast.force_api_poll(True) #also do the actual past values
                             else:
+                                _LOGGER.debug("SOLCAST: calliung the update data code but not include past data")
                                 await self.solcast.force_api_poll(False) #just update forecast values
                                 
             else:
@@ -126,7 +135,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             
             #self.async_set_updated_data(True)
             #self.async_update_listeners()
-
+            _LOGGER.debug("SOLCAST: updating listerners")
             self.async_update_listeners()
 
         except Exception:
@@ -212,9 +221,10 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 with suppress(ValueError):
                     d[state.last_updated.replace(minute=0,second=0,microsecond=0).isoformat()] = float(state.state)
             
+            _LOGGER.debug(f"SOLCAST: gethistory got {len(d)} items")
             self._previousenergy = d
         except Exception:
-            _LOGGER.error("Solcast - testhistory: %s", traceback.format_exc())
+            _LOGGER.error("Solcast - gethistory: %s", traceback.format_exc())
         
 
 

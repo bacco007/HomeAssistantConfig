@@ -77,11 +77,13 @@ class SolcastApi:
                     )
     
                     resp_json = await resp.json(content_type=None)
+                    _LOGGER.debug(f"SOLCAST: sites_data code http_session returned data type is {type(resp_json)}")
+                    _LOGGER.debug(f"SOLCAST: sites_data code http_session returned status {resp.status}")
                     status = resp.status
 
                 if status == 200:
-                    #self._api_used = self._api_used + 1
                     d = cast(dict, resp_json)
+                    _LOGGER.debug(f"SOLCAST: sites_data code got data {d}")
                     for i in d['sites']:
                         i['apikey'] = spl.strip()
 
@@ -106,13 +108,18 @@ class SolcastApi:
             if file_exists(self._filename):
                 with open(self._filename) as data_file:
                     self._data = json.load(data_file, cls=JSONDecoder)
+                    _LOGGER.debug(f"SOLCAST: load_saved_data file exists.. file type is {type(self._data)}")
                 if self._data and "api_used" in self._data:
                     self._api_used = self._data["api_used"]
             else:
                 #no file to load
+                _LOGGER.debug(f"SOLCAST: load_saved_data there is not existing file to load")
                 await self.http_data(True)
+        else:
+            _LOGGER.debug(f"SOLCAST: load_saved_data site count is zero! ")
 
     async def force_api_poll(self, *args):
+        _LOGGER.debug(f"SOLCAST: force_api_poll with any args? : {args}")
         if args:
             await self.http_data(args[0])
         else:
@@ -138,12 +145,16 @@ class SolcastApi:
 
     def get_last_updated_datetime(self) -> dt:
         """Return date time with the data was last updated"""
+        _LOGGER.debug(f"SOLCAST: get_last_update_datetime code")
         try:
+            _LOGGER.debug(f"SOLCAST: get_last_update_datetime try with get date {dt.fromisoformat(self._data['last_updated'])}")
             return dt.fromisoformat(self._data["last_updated"])
         except Exception:
+            _LOGGER.debug(f"SOLCAST: get_last_update_datetime try failed so returning year 2000")
             return dt.now(timezone.utc).replace(year=2000,month=1,day=1).isoformat()
 
     async def reset_api_counter(self):
+        _LOGGER.debug(f"SOLCAST: api reset to zero in reset_api_counter code")
         self._api_used = 0
 
     def get_rooftop_site_total_today(self, rooftopid = "") -> float:
@@ -467,13 +478,18 @@ class SolcastApi:
         
         try:
             params = {"format": "json", "api_key": apikey, "hours": hours}
-            
+            url=f"{self.options.host}/rooftop_sites/{site}/{path}"
+
             async with async_timeout.timeout(20):
                 resp: ClientResponse = await self.aiohttp_session.get(
-                    url=f"{self.options.host}/rooftop_sites/{site}/{path}", params=params, ssl=False
+                    url=url, params=params, ssl=False
                 )
+
+                _LOGGER.debug(f"SOLCAST: fetch_data code url {url}")
     
                 resp_json = await resp.json(content_type=None)
+                _LOGGER.debug(f"SOLCAST: fetch_data code http_session returned data type is {type(resp_json)}")
+                _LOGGER.debug(f"SOLCAST: fetch_data code http_session status is {resp.status}")
                 status = resp.status
 
             if status == 429:
@@ -489,8 +505,10 @@ class SolcastApi:
                 _LOGGER.error("The rooftop site cannot be found or is not accessible.")
                 #raise Exception(f"HTTP error: The rooftop site cannot be found or is not accessible.")
             elif status == 200:
+                _LOGGER.debug(f"SOLCAST: fetch_data code status 200")
                 self._api_used = self._api_used + 1
                 d = cast(dict, resp_json)
+                _LOGGER.debug(f"SOLCAST: fetch_data code got data {d}")
                 return d
                 #await self.format_json_data(d)
         except ConnectionRefusedError as err:
