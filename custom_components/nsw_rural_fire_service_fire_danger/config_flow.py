@@ -10,9 +10,12 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    CONF_DATA_FEED,
     CONF_DISTRICT_NAME,
+    DEFAULT_DATA_FEED,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    VALID_DATA_FEEDS,
     VALID_DISTRICT_NAMES,
 )
 
@@ -36,7 +39,12 @@ class NswRuralFireServiceFireDangerFlowHandler(
     async def _show_form(self, errors: dict[str, Any] | None = None) -> FlowResult:
         """Show the form to the user."""
         data_schema = vol.Schema(
-            {vol.Required(CONF_DISTRICT_NAME): vol.In(VALID_DISTRICT_NAMES)}
+            {
+                vol.Required(CONF_DISTRICT_NAME): vol.In(VALID_DISTRICT_NAMES),
+                vol.Optional(CONF_DATA_FEED, default=DEFAULT_DATA_FEED): vol.In(
+                    VALID_DATA_FEEDS
+                ),
+            }
         )
 
         return self.async_show_form(

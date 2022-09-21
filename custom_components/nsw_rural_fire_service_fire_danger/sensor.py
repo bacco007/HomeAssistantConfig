@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 
-from .const import DOMAIN, SENSOR_TYPES
+from .const import CONF_DATA_FEED, DEFAULT_DATA_FEED, DOMAIN, SENSOR_TYPES
 from .entity import NswFireServiceFireDangerEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,13 +21,14 @@ async def async_setup_entry(
     """Set up the NSW Rural Fire Service Fire Danger Feed platform."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
     config_entry_unique_id = config_entry.unique_id
+    data_feed = config_entry.data.get(CONF_DATA_FEED, DEFAULT_DATA_FEED)
 
     async_add_entities(
         [
             NswFireServiceFireDangerSensor(
                 coordinator, sensor_type, config_entry_unique_id
             )
-            for sensor_type in SENSOR_TYPES
+            for sensor_type in SENSOR_TYPES[data_feed]
         ],
     )
     _LOGGER.debug("Sensor setup done")

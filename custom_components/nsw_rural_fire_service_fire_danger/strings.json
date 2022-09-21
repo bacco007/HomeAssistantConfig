@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Fill in your details.",
-        "data": { "district_name": "District" }
+        "data": { "district_name": "District", "data_feed": "Feed" }
       }
     },
     "abort": { "already_configured": "District is already configured" }
