@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from datetime import timedelta
 import logging
-from typing import Final
 
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
@@ -34,15 +33,15 @@ from .const import (
     DEFAULT_CONF_INCLUDE_PRE_VALUES,
     DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
     DEFAULT_CONF_SHOW_TRENDING_ICON,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     HASS_DATA_CONFIG,
-    HASS_DATA_COORDINATOR,
+    HASS_DATA_COORDINATORS,
+    MINIMUM_SCAN_INTERVAL,
     SERVICE_REFRESH,
 )
 
 _LOGGER = logging.getLogger(__name__)
-DEFAULT_SCAN_INTERVAL: Final = timedelta(hours=6)
-MINIMUM_SCAN_INTERVAL: Final = timedelta(seconds=30)
 
 
 BASIC_SYMBOL_SCHEMA = vol.All(cv.string, vol.Upper)
@@ -53,6 +52,9 @@ COMPLEX_SYMBOL_SCHEMA = vol.All(
         {
             vol.Required("symbol"): BASIC_SYMBOL_SCHEMA,
             vol.Optional(CONF_TARGET_CURRENCY): BASIC_SYMBOL_SCHEMA,
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.Any(
+                "none", "None", cv.positive_time_period
+            ),
         }
     ),
 )
@@ -101,16 +103,26 @@ class SymbolDefinition:
     """Symbol definition."""
 
     symbol: str
-    target_currency: str
+    target_currency: str | None = None
+    scan_interval: timedelta | None = None
 
-    def __init__(self, symbol: str, target_currency: str | None = None) -> None:
-        """Create a new symbol definition."""
+    def __init__(self, symbol: str, **kwargs: any) -> None:
+        """Create a new symbol definition.
+
+        ### Parameters
+            symbol(str): The symbol
+            **scan_interval (time_delta): The symbol scan interval
+        """
         self.symbol = symbol
-        self.target_currency = target_currency
+
+        if "target_currency" in kwargs:
+            self.target_currency = kwargs["target_currency"]
+        if "scan_interval" in kwargs:
+            self.scan_interval = kwargs["scan_interval"]
 
     def __repr__(self) -> str:
         """Return the representation."""
-        return f"{self.symbol},{self.target_currency}"
+        return f"{self.symbol},{self.target_currency},{self.scan_interval}"
 
     def __eq__(self, other: any) -> bool:
         """Return the comparison."""
@@ -118,11 +130,12 @@ class SymbolDefinition:
             isinstance(other, SymbolDefinition)
             and self.symbol == other.symbol
             and self.target_currency == other.target_currency
+            and self.scan_interval == other.scan_interval
         )
 
     def __hash__(self) -> int:
         """Make hashable."""
-        return hash((self.symbol, self.target_currency))
+        return hash((self.symbol, self.target_currency, self.scan_interval))
 
 
 def parse_scan_interval(scan_interval: timedelta | str) -> timedelta:
@@ -141,7 +154,9 @@ def parse_scan_interval(scan_interval: timedelta | str) -> timedelta:
     return scan_interval
 
 
-def normalize_input(defined_symbols: list) -> tuple[list[str], list[SymbolDefinition]]:
+def normalize_input_symbols(
+    defined_symbols: list,
+) -> tuple[list[str], list[SymbolDefinition]]:
     """Normalize input and remove duplicates."""
     symbols = set()
     symbol_definitions: list[SymbolDefinition] = []
@@ -156,7 +171,13 @@ def normalize_input(defined_symbols: list) -> tuple[list[str], list[SymbolDefini
             if symbol not in symbols:
                 symbols.add(symbol)
                 symbol_definitions.append(
-                    SymbolDefinition(symbol, value.get(CONF_TARGET_CURRENCY))
+                    SymbolDefinition(
+                        symbol,
+                        target_currency=value.get(CONF_TARGET_CURRENCY),
+                        scan_interval=parse_scan_interval(
+                            value.get(CONF_SCAN_INTERVAL)
+                        ),
+                    )
                 )
 
     return (list(symbols), symbol_definitions)
@@ -167,7 +188,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     domain_config = config.get(DOMAIN, {})
     defined_symbols = domain_config.get(CONF_SYMBOLS, [])
 
-    symbols, symbol_definitions = normalize_input(defined_symbols)
+    symbol_definitions: list[SymbolDefinition]
+    symbols, symbol_definitions = normalize_input_symbols(defined_symbols)
     domain_config[CONF_SYMBOLS] = symbol_definitions
 
     scan_interval = parse_scan_interval(domain_config.get(CONF_SCAN_INTERVAL))
@@ -175,24 +197,48 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     # Populate parsed value into domain_config
     domain_config[CONF_SCAN_INTERVAL] = scan_interval
 
-    coordinator = YahooSymbolUpdateCoordinator(symbols, hass, scan_interval)
+    # Group symbols by scan_interval
+    symbols_by_scan_interval: dict[timedelta, list[str]] = {}
+    for symbol in symbol_definitions:
+        # Use integration level scan_interval if none defined
+        if symbol.scan_interval is None:
+            symbol.scan_interval = scan_interval
 
-    # Refresh coordinator to get initial symbol data
-    _LOGGER.info(
-        "Requesting data from coordinator with update interval of %s.", scan_interval
-    )
-    await coordinator.async_refresh()
+        if symbol.scan_interval in symbols_by_scan_interval:
+            symbols_by_scan_interval[symbol.scan_interval].append(symbol.symbol)
+        else:
+            symbols_by_scan_interval[symbol.scan_interval] = [symbol.symbol]
+
+    _LOGGER.info("Total %d unique scan intervals", len(symbols_by_scan_interval))
+
+    coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = {}
+    for key_scan_interval, symbols in symbols_by_scan_interval.items():
+        _LOGGER.info(
+            "Creating coordinator with scan_interval %s for symbols %s",
+            key_scan_interval,
+            symbols,
+        )
+        coordinator = YahooSymbolUpdateCoordinator(symbols, hass, key_scan_interval)
+        coordinators[key_scan_interval] = coordinator
+
+        _LOGGER.info(
+            "Requesting initial data from coordinator with update interval of %s.",
+            key_scan_interval,
+        )
+        await coordinator.async_refresh()
 
     # Pass down the coordinator and config to platforms.
     hass.data[DOMAIN] = {
-        HASS_DATA_COORDINATOR: coordinator,
+        HASS_DATA_COORDINATORS: coordinators,
         HASS_DATA_CONFIG: domain_config,
     }
 
     async def handle_refresh_symbols(_call) -> None:
         """Refresh symbol data."""
         _LOGGER.info("Processing refresh_symbols")
-        await coordinator.async_request_refresh()
+
+        for coordinator in coordinators.values():
+            await coordinator.async_refresh()
 
     hass.services.async_register(
         DOMAIN,

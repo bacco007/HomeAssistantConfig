@@ -6,9 +6,8 @@ https://github.com/iprak/yahoofinance
 
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import logging
-from timeit import default_timer as timer
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
@@ -17,8 +16,10 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import async_generate_entity_id
-from homeassistant.helpers.typing import StateType
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from custom_components.yahoofinance import SymbolDefinition, convert_to_float
@@ -51,7 +52,7 @@ from .const import (
     DEFAULT_NUMERIC_DATA_GROUP,
     DOMAIN,
     HASS_DATA_CONFIG,
-    HASS_DATA_COORDINATOR,
+    HASS_DATA_COORDINATORS,
     NUMERIC_DATA_GROUPS,
     PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION,
 )
@@ -60,20 +61,30 @@ _LOGGER = logging.getLogger(__name__)
 ENTITY_ID_FORMAT = SENSOR_DOMAIN + "." + DOMAIN + "_{}"
 
 
-async def async_setup_platform(hass, _config, async_add_entities, _discovery_info=None):
+async def async_setup_platform(
+    hass: HomeAssistant,
+    _config: ConfigType,
+    async_add_entities: AddEntitiesCallback,
+    _discovery_info: DiscoveryInfoType | None = None,
+):
     """Set up the Yahoo Finance sensor platform."""
 
-    coordinator = hass.data[DOMAIN][HASS_DATA_COORDINATOR]
+    coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = hass.data[DOMAIN][
+        HASS_DATA_COORDINATORS
+    ]
     domain_config = hass.data[DOMAIN][HASS_DATA_CONFIG]
     symbol_definitions: list[SymbolDefinition] = domain_config[CONF_SYMBOLS]
 
     # We don't know the currency of a symbol so can't added conversion symbols upfront
 
     sensors = [
-        YahooFinanceSensor(hass, coordinator, symbol, domain_config)
+        YahooFinanceSensor(
+            hass, coordinators[symbol.scan_interval], symbol, domain_config
+        )
         for symbol in symbol_definitions
     ]
 
+    # We have already invoked async_refresh on coordinator, so don'tupdate_before_add
     async_add_entities(sensors, update_before_add=False)
     _LOGGER.info("Entities added for %s", [item.symbol for item in symbol_definitions])
 
@@ -81,6 +92,7 @@ async def async_setup_platform(hass, _config, async_add_entities, _discovery_inf
 class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     """Represents a Yahoo finance entity."""
 
+    # pylint: disable=too-many-instance-attributes
     _currency = DEFAULT_CURRENCY
     _icon = DEFAULT_ICON
     _market_price = None
@@ -88,20 +100,23 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     _target_currency = None
     _original_currency = None
     _last_available_timer = None
-    _waiting_on_converstion = False
+    _waiting_on_conversion = False
 
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_device_class = SensorDeviceClass.MONETARY
 
     def __init__(
         self,
-        hass,
+        hass: HomeAssistant,
         coordinator: YahooSymbolUpdateCoordinator,
         symbol_definition: SymbolDefinition,
-        domain_config,
+        domain_config: dict,
     ) -> None:
         """Initialize the YahooFinance entity."""
         super().__init__(coordinator)
+
+        # Entity.hass is only populated after async_add_entities, use local reference to hass
+        self._hass = hass
 
         symbol = symbol_definition.symbol
         self._symbol = symbol
@@ -142,6 +157,8 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
             "Created entity for target_currency=%s",
             self._target_currency,
         )
+
+        self.update_properties()
 
     @staticmethod
     def safe_convert(value: float | None, conversion: float | None) -> float | None:
@@ -194,6 +211,23 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
         """Return the icon to use in the frontend, if any."""
         return self._icon
 
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        value = (
+            self._market_price is not None
+            and super().available
+            and not self._waiting_on_conversion
+        )
+        _LOGGER.debug("%s available=%s", self._symbol, value)
+        return value
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.update_properties()
+        super()._handle_coordinator_update()
+
     def _round(self, value: float | None) -> float | int | None:
         """Return formatted value based on decimal_places."""
         if value is None:
@@ -206,9 +240,25 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
 
         return round(value, self._decimal_places)
 
+    def _find_symbol_data(self, symbol: str) -> any | None:
+        """Find data for the specified symbol in all coordinators."""
+        coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = self._hass.data[
+            DOMAIN
+        ][HASS_DATA_COORDINATORS]
+
+        if coordinators:
+            for coordinator in coordinators.values():
+                data = coordinator.data
+                if data is not None:
+                    symbol_data = data.get(symbol)
+                    if symbol_data is not None:
+                        return symbol_data
+
+        return None
+
     def _get_target_currency_conversion(self) -> float | None:
         value = None
-        self._waiting_on_converstion = False
+        self._waiting_on_conversion = False
 
         if self._target_currency and self._original_currency:
             if self._target_currency == self._original_currency:
@@ -218,22 +268,23 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
             conversion_symbol = (
                 f"{self._original_currency}{self._target_currency}=X".upper()
             )
-            data = self.coordinator.data
 
-            if data is not None:
-                symbol_data = data.get(conversion_symbol)
+            # Locate conversion symbol in all coordinators
+            symbol_data = self._find_symbol_data(conversion_symbol)
 
-                if symbol_data is not None:
-                    value = symbol_data[DATA_REGULAR_MARKET_PRICE]
-                    _LOGGER.debug("%s %s is %s", self._symbol, conversion_symbol, value)
-                else:
-                    _LOGGER.info(
-                        "%s No data found for %s, symbol added to coordinator",
-                        self._symbol,
-                        conversion_symbol,
-                    )
-                    self._waiting_on_converstion = True
-                    self.coordinator.add_symbol(conversion_symbol)
+            if symbol_data is not None:
+                value = symbol_data[DATA_REGULAR_MARKET_PRICE]
+                _LOGGER.debug("%s %s is %s", self._symbol, conversion_symbol, value)
+            else:
+                _LOGGER.info(
+                    "%s No data found for %s, symbol added to coordinator",
+                    self._symbol,
+                    conversion_symbol,
+                )
+                self._waiting_on_conversion = True
+
+                # The conversion symbol is added to the current coordinator
+                self.coordinator.add_symbol(conversion_symbol)
 
         return value
 
@@ -258,8 +309,8 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
 
         self._original_currency = currency or financial_currency or DEFAULT_CURRENCY
 
-    def _update_properties(self) -> None:
-        """Update local fields."""
+    def update_properties(self) -> None:
+        """Update local fields. This is also used in unit testing."""
 
         data = self.coordinator.data
         if data is None:
@@ -361,24 +412,3 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
             return "down"
 
         return "neutral"
-
-    @property
-    def available(self) -> bool:
-        """Return if entity is available."""
-
-        current_timer = timer()
-
-        # Limit data update if available was invoked within 400 ms.
-        # This matched the slow entity reporting done in Entity.
-        if (self._last_available_timer is None) or (
-            (current_timer - self._last_available_timer) > 0.4
-        ):
-            self._update_properties()
-            self._last_available_timer = current_timer
-
-        return_value = (
-            self.coordinator.last_update_success and not self._waiting_on_converstion
-        )
-
-        _LOGGER.info("%s available=%s", self._symbol, return_value)
-        return return_value

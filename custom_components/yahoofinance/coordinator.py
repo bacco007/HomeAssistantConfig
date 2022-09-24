@@ -107,12 +107,12 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         """Get the update interval for the next async_track_point_in_utc_time call."""
         if self.last_update_success:
             return self._update_interval
-        else:
-            _LOGGER.warning(
-                "Error obtaining data, retrying in %d seconds.",
-                FAILURE_ASYNC_REQUEST_REFRESH,
-            )
-            return self._failure_update_interval
+
+        _LOGGER.warning(
+            "Error obtaining data, retrying in %d seconds.",
+            FAILURE_ASYNC_REQUEST_REFRESH,
+        )
+        return self._failure_update_interval
 
     @callback
     def _schedule_refresh(self) -> None:
@@ -222,7 +222,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         else:
             _LOGGER.debug("Data = %s", result)
 
-        _LOGGER.info("All symbols updated")
+        _LOGGER.info("Data updated [interval=%s]", self._update_interval)
         return data
 
     def process_json_result(self, result) -> tuple[bool, dict]:
