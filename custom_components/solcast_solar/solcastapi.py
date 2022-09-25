@@ -71,6 +71,7 @@ class SolcastApi:
             for spl in sp:
                 #params = {"format": "json", "api_key": self.options.api_key}
                 params = {"format": "json", "api_key": spl.strip()}
+                _LOGGER.debug(f"SOLCAST: trying to connect to - {self.options.host}/rooftop_sites?format=json&api_key={spl.strip()}")
                 async with async_timeout.timeout(10):
                     resp: ClientResponse = await self.aiohttp_session.get(
                         url=f"{self.options.host}/rooftop_sites", params=params, ssl=False
@@ -479,13 +480,12 @@ class SolcastApi:
         try:
             params = {"format": "json", "api_key": apikey, "hours": hours}
             url=f"{self.options.host}/rooftop_sites/{site}/{path}"
+            _LOGGER.debug(f"SOLCAST: fetch_data code url - {url}")
 
             async with async_timeout.timeout(20):
                 resp: ClientResponse = await self.aiohttp_session.get(
                     url=url, params=params, ssl=False
                 )
-
-                _LOGGER.debug(f"SOLCAST: fetch_data code url {url}")
     
                 resp_json = await resp.json(content_type=None)
                 _LOGGER.debug(f"SOLCAST: fetch_data code http_session returned data type is {type(resp_json)}")
