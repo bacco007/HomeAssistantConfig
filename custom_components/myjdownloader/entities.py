@@ -137,9 +137,9 @@ class MyJDownloaderDeviceEntity(MyJDownloaderEntity):
     async def start_downloads(self):
         """Service call to start downloads."""
         device = self.hub.get_device(self._device_id)
-        await self.hub.async_query(device.update.start_downloads)
+        await self.hub.async_query(device.downloadcontroller.start_downloads)
 
     async def stop_downloads(self):
         """Service call to stop downloads."""
         device = self.hub.get_device(self._device_id)
-        await self.hub.async_query(device.update.stop_downloads)
+        await self.hub.async_query(device.downloadcontroller.stop_downloads)

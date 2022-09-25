@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya está configurado"
+        },
+        "error": {
+            "cannot_connect": "Error al conectar",
+            "invalid_auth": "Autenticación no valida",
+            "unknown": "Error inesperado"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "email": "E-mail",
+                    "password": "Contraseña"
+                }
+            }
+        }
+    }
+}
