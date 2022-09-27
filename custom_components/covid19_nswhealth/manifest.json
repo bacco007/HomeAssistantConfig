@@ -1,9 +1,0 @@
-{
-  "domain": "covid19_nswhealth",
-  "name": "COVID-19 NSW Health",
-  "documentation": "",
-  "dependencies": [],
-  "codeowners": ["@bacco007"],
-  "requirements": ["pandas>=1.0.5"],
-  "version": "0.1"
-}
