@@ -245,6 +245,8 @@ async def async_get_state(config) -> dict:
                         values.update(await async_get_in_soccer_event_attributes(event, values, team_index, oppo_index))
                     elif sport_path in ["volleyball"]:
                         values.update(await async_get_in_volleyball_event_attributes(event, values, team_index, oppo_index))
+                    elif sport_path in ["hockey"]:
+                        values.update(await async_get_in_hockey_event_attributes(event, values, team_index, oppo_index))
 
                 if 'IN' in values["state"]:
                     break
@@ -313,6 +315,7 @@ async def async_clear_states(config) -> dict:
         "team_name": None,
         "team_id": None,
         "team_record": None,
+        "team_rank": None,
         "team_homeaway": None,
         "team_logo": None,
         "team_colors": None,
@@ -323,6 +326,7 @@ async def async_clear_states(config) -> dict:
         "opponent_name": None,
         "opponent_id": None,
         "opponent_record": None,
+        "opponent_rank": None,
         "opponent_homeaway": None,
         "opponent_logo": None,
         "opponent_colors": None,
@@ -386,6 +390,11 @@ async def async_get_universal_event_attributes(event, team_index, oppo_index) ->
         new_values["team_record"] = event["competitions"][0]["competitors"][team_index]["records"][0]["summary"]
     except:
         new_values["team_record"] = None
+    try:
+        if (event["competitions"][0]["competitors"][team_index]["curatedRank"]["current"] != 99):
+            new_values["team_rank"] = event["competitions"][0]["competitors"][team_index]["curatedRank"]["current"] 
+    except:
+        new_values["team_rank"] = None
     new_values["team_homeaway"] = event["competitions"][0]["competitors"][team_index]["homeAway"]
     new_values["team_logo"] = event["competitions"][0]["competitors"][team_index]["team"]["logo"]
     try:
@@ -410,6 +419,11 @@ async def async_get_universal_event_attributes(event, team_index, oppo_index) ->
         new_values["opponent_record"] = event["competitions"][0]["competitors"][oppo_index]["records"][0]["summary"]
     except:
         new_values["opponent_record"] = None
+    try:
+        if (event["competitions"][0]["competitors"][oppo_index]["curatedRank"]["current"] != 99):
+            new_values["opponent_rank"] = event["competitions"][0]["competitors"][oppo_index]["curatedRank"]["current"] 
+    except:
+        new_values["opponent_rank"] = None
     new_values["opponent_homeaway"] = event["competitions"][0]["competitors"][oppo_index]["homeAway"]
     new_values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
     try:
@@ -497,7 +511,7 @@ async def async_get_in_event_attributes(event, old_values, team_index, oppo_inde
                 new_values["last_play"] = new_values["last_play"] + codecs.decode(alt_lp, "rot13")
 
     new_values["quarter"] = event["status"]["period"]
-    new_values["clock"] = event["status"]["displayClock"]
+    new_values["clock"] = event["status"]["type"]["shortDetail"]
     try:
         new_values["down_distance_text"] = event["competitions"][0]["situation"]["downDistanceText"]
     except:
@@ -623,3 +637,24 @@ async def async_get_in_volleyball_event_attributes(event, old_values, team_index
     return new_values
 
 
+async def async_get_in_hockey_event_attributes(event, old_values, team_index, oppo_index) -> dict:
+    """Get IN event values"""
+    new_values = {}
+
+    new_values["clock"] = event["status"]["type"]["shortDetail"] # Period clock
+
+    new_values["team_shots_on_target"] = 0
+    for statistic in event["competitions"] [0] ["competitors"] [oppo_index] ["statistics"]:
+        _LOGGER.debug("Looking at this statistic: %s" % statistic)
+        if "saves" in statistic["name"]:
+            shots = int(old_values["team_score"]) + int(statistic["displayValue"])
+            new_values["team_shots_on_target"] = str(shots)
+
+    new_values["opponent_shots_on_target"] = 0
+    for statistic in event["competitions"] [0] ["competitors"] [team_index] ["statistics"]:
+        _LOGGER.debug("Looking at this statistic: %s" % statistic)
+        if "saves" in statistic["name"]:
+            shots = int(old_values["opponent_score"]) + int(statistic["displayValue"])
+            new_values["opponent_shots_on_target"] = str(shots)
+            
+    return new_values
