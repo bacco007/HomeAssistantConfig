@@ -208,7 +208,11 @@ class MyJDownloaderJDownloadersOnlineSensor(MyJDownloaderSensor):
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
-        return {"jdownloaders": sorted(device.name for device in self.devices.values())}
+        devices = sorted(self.devices.values(), key=lambda x: x.name)
+        return {
+            "jdownloaders": [device.name for device in devices],
+            "jdownloader_ids": [device.device_id for device in devices],
+        }
 
 
 class MyJDownloaderDownloadSpeedSensor(MyJDownloaderDeviceSensor):
