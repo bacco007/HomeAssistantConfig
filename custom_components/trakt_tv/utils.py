@@ -1,8 +1,10 @@
+import json
 from datetime import datetime, timedelta
 from math import ceil
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from .const import DOMAIN
+from .exception import TraktException
 
 
 def update_domain_data(hass, key, content):
@@ -40,3 +42,16 @@ def compute_calendar_args(
         res.append((from_date.strftime("%Y-%m-%d"), days))
         previous_date = from_date + timedelta(days)
     return res
+
+
+def deserialize_json(document: str) -> Dict[str, Any]:
+    """
+    Deserialize a json returning a better error than JSONDecodeError.
+
+    :param document: The json document
+    :return: The dictionary
+    """
+    try:
+        return json.loads(document)
+    except json.decoder.JSONDecodeError:
+        raise TraktException(f"Can't deserialize the following json:\n{document}")

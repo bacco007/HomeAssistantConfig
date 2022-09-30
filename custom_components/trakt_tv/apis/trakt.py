@@ -16,6 +16,7 @@ from ..configuration import Configuration
 from ..const import API_HOST, DOMAIN
 from ..models.kind import BASIC_KINDS, TraktKind
 from ..models.media import Medias
+from ..utils import deserialize_json
 
 LOGGER = logging.getLogger(__name__)
 
@@ -100,7 +101,7 @@ class TraktApi:
             ]
         )
         data = await gather(*[response.text() for response in responses])
-        raw_medias = [media for medias in data for media in json.loads(medias)]
+        raw_medias = [media for medias in data for media in deserialize_json(medias)]
         raw_medias = raw_medias[0:max_medias]
         medias = [trakt_kind.value.model.from_trakt(media) for media in raw_medias]
 
@@ -138,7 +139,7 @@ class TraktApi:
         data = await gather(*[response.text() for response in responses])
         res = {}
         for trakt_kind, payload in zip(BASIC_KINDS, data):
-            raw_medias = json.loads(payload)
+            raw_medias = deserialize_json(payload)
             medias = [trakt_kind.value.model.from_trakt(media) for media in raw_medias]
             await gather(*[media.get_more_information(language) for media in medias])
             res[trakt_kind] = Medias(medias)
