@@ -46,6 +46,15 @@ class Configuration:
         except KeyError:
             return 3
 
+    def get_exclude_shows(self, identifier: str) -> list:
+        try:
+            return self.conf["sensors"]["next_to_watch"][identifier]["exclude"]
+        except KeyError:
+            return []
+
+    def next_to_watch_identifier_exists(self, identifier: str) -> bool:
+        return self.identifier_exists(identifier, "next_to_watch")
+
     def upcoming_identifier_exists(
         self, identifier: str, all_medias: bool = False
     ) -> bool:

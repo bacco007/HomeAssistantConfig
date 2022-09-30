@@ -70,7 +70,54 @@ class TraktApi:
             "get", f"calendars/{root}/{path}/{from_date}/{nb_days}"
         )
 
-    async def fetch_upcoming(self, trakt_kind: TraktKind, all_medias: bool):
+    async def fetch_watched(self, excluded_shows: list):
+        response = await self.request("get", f"sync/watched/shows?extended=noseasons")
+        raw_shows = await response.json()
+        raw_medias = []
+        for show in raw_shows:
+            try:
+                ids = data["show"]["ids"]
+                is_excluded = ids["slug"] in excluded_shows
+            except IndexError:
+                is_excluded = False
+
+            if is_excluded:
+                continue
+
+            try:
+                response_progress = await self.fetch_show_progress(ids["trakt"])
+                raw_episode = await response_progress.json()
+                if raw_episode.get("next_episode") is not None:
+                    if raw_episode["next_episode"].get("season") is not None:
+                        response_episode = await self.fetch_show_informations(
+                            ids["trakt"],
+                            raw_episode["next_episode"].get("season"),
+                            raw_episode["next_episode"].get("number"),
+                        )
+                        raw_episode_full = await response_episode.json()
+                        show["episode"] = raw_episode_full
+                        show["first_aired"] = raw_episode_full["first_aired"]
+                        raw_medias.append(show)
+            except IndexError:
+                LOGGER.warning("Show %s doesn't contain any trakt ID", ids["slug"])
+                continue
+
+        return raw_medias
+
+    async def fetch_show_progress(self, id: str):
+        return await self.request("get", f"shows/{id}/progress/watched")
+
+    async def fetch_show_informations(
+        self, show_id: str, season_nbr: str, episode_nbr: str
+    ):
+        return await self.request(
+            "get",
+            f"shows/{show_id}/seasons/{season_nbr}/episodes/{episode_nbr}?extended=full",
+        )
+
+    async def fetch_upcoming(
+        self, trakt_kind: TraktKind, all_medias: bool, next_to_watch: bool
+    ):
         """
         Fetch the calendar of the user trakt account based on the trak_type containing
         the calendar type.
@@ -84,37 +131,56 @@ class TraktApi:
         path = trakt_kind.value.path
         identifier = trakt_kind.value.identifier
 
-        if not configuration.upcoming_identifier_exists(identifier, all_medias):
+        if (
+            not configuration.upcoming_identifier_exists(identifier, all_medias)
+        ) and not (configuration.next_to_watch_identifier_exists(identifier)):
             return None
 
         configuration = Configuration(data=self.hass.data)
-        days_to_fetch = configuration.get_upcoming_days_to_fetch(identifier, all_medias)
+
         max_medias = configuration.get_upcoming_max_medias(identifier, all_medias)
         language = configuration.get_language()
 
-        calendar_args = compute_calendar_args(days_to_fetch, 33)
+        if next_to_watch:
+            excluded_shows = configuration.get_exclude_shows(identifier)
+            raw_medias = await self.fetch_watched(excluded_shows)
+        else:
+            days_to_fetch = configuration.get_upcoming_days_to_fetch(
+                identifier, all_medias
+            )
+            calendar_args = compute_calendar_args(days_to_fetch, 33)
+            responses = await gather(
+                *[
+                    self.fetch_calendar(path, args[0], args[1], all_medias)
+                    for args in calendar_args
+                ]
+            )
+            data = await gather(*[response.text() for response in responses])
+            raw_medias = [media for medias in data for media in json.loads(medias)]
+            raw_medias = raw_medias[0:max_medias]
 
-        responses = await gather(
-            *[
-                self.fetch_calendar(path, args[0], args[1], all_medias)
-                for args in calendar_args
-            ]
-        )
-        data = await gather(*[response.text() for response in responses])
-        raw_medias = [media for medias in data for media in deserialize_json(medias)]
-        raw_medias = raw_medias[0:max_medias]
         medias = [trakt_kind.value.model.from_trakt(media) for media in raw_medias]
 
-        timezoned_now = datetime.now(pytz.timezone(configuration.get_timezone()))
-        new_medias = [media for media in medias if media.released >= timezoned_now]
+        if next_to_watch:
+            new_medias = medias
+        else:
+            timezoned_now = datetime.now(pytz.timezone(configuration.get_timezone()))
+            new_medias = [media for media in medias if media.released >= timezoned_now]
 
         await gather(*[media.get_more_information(language) for media in new_medias])
 
         return trakt_kind, Medias(new_medias)
 
+    async def fetch_next_to_watch(self):
+        data = await gather(
+            *[self.fetch_upcoming(kind, False, True) for kind in TraktKind]
+        )
+        data = filter(lambda x: x is not None, data)
+        return {trakt_kind: medias for trakt_kind, medias in data}
+
     async def fetch_upcomings(self, all_medias: bool):
         data = await gather(
-            *[self.fetch_upcoming(kind, all_medias) for kind in TraktKind]
+            *[self.fetch_upcoming(kind, all_medias, False) for kind in TraktKind]
         )
         data = filter(lambda x: x is not None, data)
         return {trakt_kind: medias for trakt_kind, medias in data}
@@ -147,12 +213,13 @@ class TraktApi:
 
     async def retrieve_data(self):
         async with timeout(60):
-            titles = ["upcoming", "all_upcoming", "recommendation"]
+            titles = ["upcoming", "all_upcoming", "recommendation", "next_to_watch"]
             data = await gather(
                 *[
                     self.fetch_upcomings(all_medias=False),
                     self.fetch_upcomings(all_medias=True),
                     self.fetch_recommendations(),
+                    self.fetch_next_to_watch(),
                 ]
             )
             return {title: medias for title, medias in zip(titles, data)}

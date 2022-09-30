@@ -39,6 +39,7 @@ def sensors_schema() -> Dict[str, Any]:
     return {
         "upcoming": upcoming_schema(),
         "all_upcoming": upcoming_schema(),
+        "next_to_watch": next_to_watch_schema(),
         "recommendation": recommendation_schema(),
     }
 
@@ -49,6 +50,17 @@ def upcoming_schema() -> Dict[str, Any]:
         subschemas[trakt_kind.value.identifier] = {
             Required("days_to_fetch", default=30): cv.positive_int,
             Required("max_medias", default=3): cv.positive_int,
+        }
+
+    return subschemas
+
+
+def next_to_watch_schema() -> Dict[str, Any]:
+    subschemas = {}
+    for trakt_kind in TraktKind:
+        subschemas[trakt_kind.value.identifier] = {
+            Required("max_medias", default=3): cv.positive_int,
+            Required("exclude", default=[]): list,
         }
 
     return subschemas
