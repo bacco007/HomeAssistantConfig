@@ -51,8 +51,68 @@ cards:
                   entity_weather: weather.east_tamworth_hourly
 
       # # [Column] Transit
-      # - type: vertical-stack
-      #   cards: !include secret/neighborhood-transit.yaml
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card
+            variables:
+              name: FIRE DANGER
+              label: NSW RFS
+              arrow: "mdi:arrow-top-right"
+              action: url
+              link: "https://www.rfs.nsw.gov.au/"
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          # Fire Danger Today
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: sensor.fire_danger_northern_slopes_danger_level_today
+                show_name: false
+                show_state: false
+                state_image:
+                  "None": /local/icons/fire_danger/fdr-no-rating.svg
+                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                  "High": /local/icons/fire_danger/fdr-high.svg
+                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: sensor.fire_danger_northern_slopes_danger_level_tomorrow
+                show_name: false
+                show_state: false
+                state_image:
+                  "None": /local/icons/fire_danger/fdr-no-rating.svg
+                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                  "High": /local/icons/fire_danger/fdr-high.svg
+                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: sensor.fire_danger_northern_slopes_danger_level_day_3
+                show_name: false
+                show_state: false
+                state_image:
+                  "None": /local/icons/fire_danger/fdr-no-rating.svg
+                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                  "High": /local/icons/fire_danger/fdr-high.svg
+                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: sensor.fire_danger_northern_slopes_danger_level_day_4
+                show_name: false
+                show_state: false
+                state_image:
+                  "None": /local/icons/fire_danger/fdr-no-rating.svg
+                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                  "High": /local/icons/fire_danger/fdr-high.svg
+                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
 
       # [Column] Traffic
       - type: vertical-stack
@@ -192,11 +252,17 @@ cards:
             hold_action:
               action: none
 
-          - type: "custom:weather-chart-card"
-            entity: weather.valhalla_hourly
+          - type: weather-forecast
+            entity: weather.east_tamworth
+            show_forecast: true
+            title: Daily Forecast
+            card_mod:
+              style: |
+                .content {display: none !important;}
+                .forecast {padding-top: 0 !important;}
 
           - type: weather-forecast
-            entity: weather.valhalla_2
+            entity: weather.east_tamworth_hourly
             show_forecast: true
             title: Daily Forecast
             card_mod:
@@ -227,92 +293,52 @@ cards:
 
               - entity: sensor.moon
 
-              - entity: sensor.noaa_tides
-                name: Tides
-                icon: "mdi:waves"
-
-          - type: vertical-stack
-            in_card: true
-            cards:
-              - type: entities
-                entities:
-                  - entity: sensor.nws_alert_rss_feed
-                    type: custom:template-entity-row
-                    state: ""
-                    name: "{{states('sensor.nws_alert_rss_feed')}} Alert{% if states('sensor.nws_alert_rss_feed') | int > 1 %}s{% endif %} "
-                title: NWS Alerts
-
-              # - !include cards/nws-alerts.yaml
-
-          - type: entities
-            entities:
-              - entity: sensor.tomorrow_io_valhalla_fire_index
-                name: Fire Index
-
-          - type: entities
-            title: Pollen
-            entities:
-              - entity: sensor.tomorrow_io_valhalla_grass_pollen_index
-                name: Grass Pollen Index
-              - entity: sensor.valhalla_grass_pollen_0d
-                name: Grass Pollen
-              - entity: sensor.tomorrow_io_valhalla_tree_pollen_index
-                name: Tree Pollen Index
-              - entity: sensor.valhalla_tree_pollen_0d
-                name: Tree Pollen
-              - entity: sensor.tomorrow_io_valhalla_weed_pollen_index
-                name: Weed Pollen Index
-              - entity: sensor.valhalla_mold_pollen_0d
-                name: Mold Pollen
-              - entity: sensor.valhalla_ragweed_pollen_0d
-                name: Ragweed Pollen
-
-      # [Column] Notices
-      - type: vertical-stack
-        cards:
-          - type: "custom:button-card"
-            template: header_card
-            variables:
-              name: NOTICES
-              label: Notify NYC
-              arrow: "mdi:arrow-top-right"
-              action: url
-              link: "https://twitter.com/NotifyNYC"
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
-          - type: "custom:list-card"
-            entity: sensor.notify_nyc
-            feed_attribute: entries
-            columns:
-              - title: ""
-                field: title
-                style:
-                  - display: block
-                  - font-weight: 500
-                  - font-size: var(--h4-font-size)
-                  - xwhite-space: nowrap
-                  - padding: 16px 0 2px
-                regex: (?<=- ).*
-              - title: ""
-                field: published
-                style:
-                  - display: block
-                  - font-size: var(--h6-font-size)
-                  - padding: 0 0 4px
-                  - opacity: 0.5
-                  - text-transform: uppercase
-              - title: ""
-                field: summary
-                style:
-                  - display: block
-                  - padding: 0
-                regex: (?<=.*\.\s\n+)(.|\n)*(?=\n+To view this message)
-            style: >
-              xha-card { background: none; }
-              table tbody:first-child { display: none; }
-              tbody tr:nth-child(odd), tbody tr:nth-child(even) {
-              background: none; }
+      # # [Column] Notices
+      # - type: vertical-stack
+      #   cards:
+      #     - type: "custom:button-card"
+      #       template: header_card
+      #       variables:
+      #         name: NOTICES
+      #         label: Notify NYC
+      #         arrow: "mdi:arrow-top-right"
+      #         action: url
+      #         link: "https://twitter.com/NotifyNYC"
+      #       view_layout:
+      #         grid-column-start: 1
+      #         grid-column-end: -1
+      #     - type: "custom:list-card"
+      #       entity: sensor.notify_nyc
+      #       feed_attribute: entries
+      #       columns:
+      #         - title: ""
+      #           field: title
+      #           style:
+      #             - display: block
+      #             - font-weight: 500
+      #             - font-size: var(--h4-font-size)
+      #             - xwhite-space: nowrap
+      #             - padding: 16px 0 2px
+      #           regex: (?<=- ).*
+      #         - title: ""
+      #           field: published
+      #           style:
+      #             - display: block
+      #             - font-size: var(--h6-font-size)
+      #             - padding: 0 0 4px
+      #             - opacity: 0.5
+      #             - text-transform: uppercase
+      #         - title: ""
+      #           field: summary
+      #           style:
+      #             - display: block
+      #             - padding: 0
+      #           regex: (?<=.*\.\s\n+)(.|\n)*(?=\n+To view this message)
+      #       style: >
+      #         xha-card { background: none; }
+      #         table tbody:first-child { display: none; }
+      #         tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+      #         background: none; }
       # # [Column] Gas
       # - !include secret/neighborhood-gas.yaml
 

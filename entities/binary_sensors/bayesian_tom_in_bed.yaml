@@ -2,11 +2,12 @@
 # http://peterhajas.com/blog/in_bed_bayesian.html
 platform: bayesian
 name: tom_in_bed
-prior: 0.33 # Assumes 8hrs sleep
+prior: 0.3 # Assumes 8hrs sleep
 probability_threshold: 0.85 # Trigger at 90% confidence
 observations:
   - entity_id: person.thomas_baxter
     prob_given_true: 0.4 # 40% Chance I'm asleep if I'm at home
+    prob_given_false: 0.6
     platform: state
     to_state: home
   - entity_id: sensor.tbiphone13pro_battery_state
@@ -36,13 +37,16 @@ observations:
     to_state: "on"
   - entity_id: "sun.sun"
     prob_given_true: 0.75
+    prob_given_false: 0
     platform: "state"
     to_state: "below_horizon"
   - entity_id: media_player.apple_tv_bedroom
     prob_given_true: 0.1
+    prob_given_false: 0.05
     platform: state
     to_state: playing
   - entity_id: media_player.apple_tv_bedroom
     prob_given_true: 0.1
+    prob_given_false: 0.05
     platform: state
     to_state: "idle"

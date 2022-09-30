@@ -538,16 +538,16 @@ cards:
                         [[[
                           var temp = entity.state;
                           if (temp == "Moderate") {
-                            return "rgba(255,221,221,1)"
+                            return "rgba(100,191,48,0.25)"
                           }
                           if (temp == "High") {
-                            return "rgba(255,248,216,1)"
+                            return "rgba(254,221,58,0.25)"
                           }
                           if (temp == "Extreme") {
-                            return "rgba(255,230,202,1)"
+                            return "rgba(247,129,0,0.25)"
                           }
                           if (temp == "Catastrophic") {
-                            return "rgba(255,221,221,1)"
+                            return "rgba(173,9,9,0.25)"
                           }
                           return "transparent"
                         ]]]
