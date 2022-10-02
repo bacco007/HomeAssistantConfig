@@ -57,8 +57,24 @@ cards:
             template:
               - live_tile_media_player
             entity: media_player.office_sonos
+            icon: "phu:sonos-one"
+            name: Sonos (Office)
+            variables:
+              aspect_ratio: 3/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.bedroom_symfonisk
+            icon: "phu:symfonisk-lampe"
+            name: Sonos (Bedroom)
+            variables:
+              aspect_ratio: 3/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.homepod_mini_bedroom
             icon: "mdi:album"
-            name: Sonos
+            name: Homepod Mini
             variables:
               aspect_ratio: 3/1
           - type: "custom:button-card"

@@ -1,10 +1,6 @@
 ---
-# MAXIMALIST DASHBOARD
-# Neighborhood View
-# Made by Madelena Mak 2022
-
-title: Neighborhood
-path: neighborhood
+title: Tamworth
+path: tamworth
 theme: "Fluent Red"
 
 type: "custom:grid-layout"
@@ -65,54 +61,58 @@ cards:
               grid-column-start: 1
               grid-column-end: -1
           # Fire Danger Today
-          - type: vertical-stack
+          - type: horizontal-stack
             cards:
-              - type: picture-entity
-                entity: sensor.fire_danger_northern_slopes_danger_level_today
-                show_name: false
-                show_state: false
-                state_image:
-                  "None": /local/icons/fire_danger/fdr-no-rating.svg
-                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
-                  "High": /local/icons/fire_danger/fdr-high.svg
-                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
-                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
-          - type: vertical-stack
+              - type: vertical-stack
+                cards:
+                  - type: picture-entity
+                    entity: sensor.fire_danger_northern_slopes_danger_level_today
+                    show_name: false
+                    show_state: false
+                    state_image:
+                      "None": /local/icons/fire_danger/fdr-no-rating.svg
+                      "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                      "High": /local/icons/fire_danger/fdr-high.svg
+                      "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                      "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+              - type: vertical-stack
+                cards:
+                  - type: picture-entity
+                    entity: sensor.fire_danger_northern_slopes_danger_level_tomorrow
+                    show_name: false
+                    show_state: false
+                    state_image:
+                      "None": /local/icons/fire_danger/fdr-no-rating.svg
+                      "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                      "High": /local/icons/fire_danger/fdr-high.svg
+                      "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                      "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+          - type: horizontal-stack
             cards:
-              - type: picture-entity
-                entity: sensor.fire_danger_northern_slopes_danger_level_tomorrow
-                show_name: false
-                show_state: false
-                state_image:
-                  "None": /local/icons/fire_danger/fdr-no-rating.svg
-                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
-                  "High": /local/icons/fire_danger/fdr-high.svg
-                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
-                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
-          - type: vertical-stack
-            cards:
-              - type: picture-entity
-                entity: sensor.fire_danger_northern_slopes_danger_level_day_3
-                show_name: false
-                show_state: false
-                state_image:
-                  "None": /local/icons/fire_danger/fdr-no-rating.svg
-                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
-                  "High": /local/icons/fire_danger/fdr-high.svg
-                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
-                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
-          - type: vertical-stack
-            cards:
-              - type: picture-entity
-                entity: sensor.fire_danger_northern_slopes_danger_level_day_4
-                show_name: false
-                show_state: false
-                state_image:
-                  "None": /local/icons/fire_danger/fdr-no-rating.svg
-                  "Moderate": /local/icons/fire_danger/fdr-moderate.svg
-                  "High": /local/icons/fire_danger/fdr-high.svg
-                  "Extreme": /local/icons/fire_danger/fdr-extreme.svg
-                  "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+              - type: vertical-stack
+                cards:
+                  - type: picture-entity
+                    entity: sensor.fire_danger_northern_slopes_danger_level_day_3
+                    show_name: false
+                    show_state: false
+                    state_image:
+                      "None": /local/icons/fire_danger/fdr-no-rating.svg
+                      "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                      "High": /local/icons/fire_danger/fdr-high.svg
+                      "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                      "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
+              - type: vertical-stack
+                cards:
+                  - type: picture-entity
+                    entity: sensor.fire_danger_northern_slopes_danger_level_day_4
+                    show_name: false
+                    show_state: false
+                    state_image:
+                      "None": /local/icons/fire_danger/fdr-no-rating.svg
+                      "Moderate": /local/icons/fire_danger/fdr-moderate.svg
+                      "High": /local/icons/fire_danger/fdr-high.svg
+                      "Extreme": /local/icons/fire_danger/fdr-extreme.svg
+                      "Catastrophic": /local/icons/fire_danger/fdr-catastrophic.svg
 
       # [Column] Traffic
       - type: vertical-stack
@@ -240,17 +240,26 @@ cards:
               label: More
               arrow: "mdi:arrow-top-right"
               action: url
-              link: http://www.google.com
+              link: https://weather.bom.gov.au/location/r67r4u3-east-tamworth
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
 
-          - type: picture
-            image: //s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/usbgm/animate.png
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          - type: "custom:bom-radar-card"
+            frame_count: 25
+            center_latitude: "-31.09"
+            center_longitude: "150.93"
+            marker_latitude: "-31.09"
+            marker_longitude: "150.93"
+            show_marker: true
+            show_range: true
+            show_zoom: true
+            show_recenter: true
+            show_playback: true
+            extra_labels: true
+            show_radar_coverage: true
+            show_radar_location: true
+            zoom_level: "8"
 
           - type: weather-forecast
             entity: weather.east_tamworth
@@ -288,8 +297,24 @@ cards:
                     styles:
                       text-align: left
 
-              - entity: sensor.valhalla_uv_index
-                name: UV Index
+              - type: section
+              - binary_sensor.protection_window
+              - type: custom:multiple-entity-row
+                entity: sensor.current_uv_index
+                secondary_info:
+                  entity: sensor.current_uv_level
+              - sensor.max_uv_index
+              - sensor.current_ozone_level
+              - type: custom:fold-entity-row
+                head:
+                  type: section
+                  label: Safe Exposure Times
+                entities:
+                  - sensor.skin_type_1_safe_exposure_time
+                  - sensor.skin_type_2_safe_exposure_time
+                  - sensor.skin_type_3_safe_exposure_time
+                  - sensor.skin_type_4_safe_exposure_time
+                  - sensor.skin_type_5_safe_exposure_time
 
               - entity: sensor.moon
 

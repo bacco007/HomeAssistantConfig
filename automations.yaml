@@ -1,0 +1,19 @@
+- id: '1664679704109'
+  alias: Controller - IKEA E1744 SYMFONISK Rotary Remote
+  description: ''
+  use_blueprint:
+    path: EPMatt/ikea_e1744.yaml
+    input:
+      integration: ZHA
+      controller_device: 60c680d2da19565a2feafe27325f13ed
+      helper_last_controller_event: input_text.remote_lastcontrollerevent
+- id: '1664679805983'
+  alias: Hook - Media Player
+  description: ''
+  use_blueprint:
+    path: EPMatt/media_player.yaml
+    input:
+      controller_device: 60c680d2da19565a2feafe27325f13ed
+      controller_entity: media_
+      controller_model: IKEA E1744 SYMFONISK Rotary Remote
+      media_player: media_player.office_sonos

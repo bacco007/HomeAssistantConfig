@@ -1,12 +1,9 @@
 ---
-# MAXIMALIST DASHBOARD
-# Media View
-# Made by Madelena Mak 2022
-
 title: Docker
 path: docker
 icon: mdi:docker
 theme: "Fluent Red"
+visible: false
 
 type: "custom:grid-layout"
 layout: !include snippets/layout-page-margin.yaml
@@ -50,140 +47,286 @@ cards:
                   entity_temperature: sensor.tempest_st_00056115_temperature
                   entity_weather: weather.east_tamworth_hourly
 
-      # [Row] Terpsichora
-      - type: vertical-stack
-        cards:
-          - type: "custom:button-card"
-            template: header_card
-            variables:
-              name: TBSH1
-              icon: mdi:cat
-              show_icon: true
-              label: null
-              arrow: "mdi:arrow-top-right"
-              action: navigate
-              link: "/ui-machines/terpsichora"
-
-          - type: custom:auto-entities
+      - type: custom:tabbed-card
+        tabs:
+          - label: TBSH1
             card:
-              type: custom:layout-card
-              layout_type: "custom:grid-layout"
-              layout: !include snippets/layout-page-columns.yaml
-            sort:
-              method: name
-              ignore_case: true
-            filter:
-              exclude: []
-              include:
-                - entity_id: switch.tbsh1_monitordocker*
-                  options:
-                    type: custom:auto-entities
-                    card:
-                      type: custom:layout-card
-                    filter:
-                      template: |
-                        {{ [{
-                          "type": "entities",
-                          "style": "ha-card {\n  padding-bottom: 10px;\n}\n.card-header {\n  padding: 5px 16px;\n  font-size: 18px;\n  font-weight: 700 !important;\n}\n.card-content div {\n  margin: 0 !important;\n}\n#states {\n  padding-top: 0px !important;\n  padding-bottom: 0px !important;\n}\n.secondary {\n  color: darkgray !important;\n  margin-left: 2px !important;\n}\n",
-                          "title": state_attr(config.entity, "friendly_name"),
-                          "entities": [
-                            {
-                              "entity": config.entity,
-                              "name": "Switch",
-                              "icon": "mdi:docker"
-                            },
-                            {
-                              "type": "attribute",
-                              "entity": config.entity.replace("switch", "sensor"),
-                              "name": "Health",
-                              "attribute": "health",
-                              "icon": "mdi:docker"
-                            },
-                            {
-                              "type": "attribute",
-                              "entity": config.entity.replace("switch", "sensor"),
-                              "attribute": "image",
-                              "name": "Image",
-                            },
-                            {
-                              "type": "attribute",
-                              "entity": config.entity.replace("switch", "sensor"),
-                              "attribute": "uptime",
-                              "format": "relative",
-                              "name": "Started",
-                              "icon": "mdi:update"
-                            },
-                            {
-                              "type": "custom:bar-card",
-                              "width": "55%",
-                              "height": "2em",
-                              "decimal": 2,
-                              "unit_of_measurement": "%",
-                              "positions": {
-                                "icon": "outside",
-                                "indicator": "off",
-                                "name": "outside"
+              type: custom:auto-entities
+              card:
+                type: custom:layout-card
+                layout_type: "custom:grid-layout"
+                layout: !include snippets/layout-page-columns.yaml
+              sort:
+                method: name
+                ignore_case: true
+              filter:
+                exclude: []
+                include:
+                  - entity_id: switch.tbsh1_monitordocker*
+                    options:
+                      type: custom:auto-entities
+                      card:
+                        type: custom:layout-card
+                      filter:
+                        template: |
+                          {{ [{
+                            "type": "entities",
+                            "style": "ha-card {\n  padding-bottom: 10px;\n}\n.card-header {\n  padding: 5px 16px;\n  font-size: 18px;\n  font-weight: 700 !important;\n}\n.card-content div {\n  margin: 0 !important;\n}\n#states {\n  padding-top: 0px !important;\n  padding-bottom: 0px !important;\n}\n.secondary {\n  color: darkgray !important;\n  margin-left: 2px !important;\n}\n",
+                            "title": state_attr(config.entity, "friendly_name"),
+                            "entities": [
+                              {
+                                "entity": config.entity,
+                                "name": "Switch",
+                                "icon": "mdi:docker"
                               },
-                              "severity": [
-                                {
-                                  "color": "#6d2525",
-                                  "from": 85,
-                                  "to": 999
-                                }
-                              ],
-                              "entity_row": true,
-                              "entities": [
-                                {
-                                  "entity": config.entity.replace("switch", "sensor"),
-                                  "attribute": "cpu_percentage",
-                                  "name": "CPU",
-                                  "icon": "mdi:chip"
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "name": "Health",
+                                "attribute": "health",
+                                "icon": "mdi:docker"
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "attribute": "image",
+                                "name": "Image",
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "attribute": "uptime",
+                                "format": "relative",
+                                "name": "Started",
+                                "icon": "mdi:update"
+                              },
+                              {
+                                "type": "custom:bar-card",
+                                "width": "55%",
+                                "height": "2em",
+                                "decimal": 2,
+                                "unit_of_measurement": "%",
+                                "positions": {
+                                  "icon": "outside",
+                                  "indicator": "off",
+                                  "name": "outside"
                                 },
-                                {
-                                  "entity": config.entity.replace("switch", "sensor"),
-                                  "attribute": "1cpu_percentage",
-                                  "name": "1CPU",
-                                  "icon": "mdi:chip"
+                                "severity": [
+                                  {
+                                    "color": "#6d2525",
+                                    "from": 85,
+                                    "to": 999
+                                  }
+                                ],
+                                "entity_row": true,
+                                "entities": [
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "cpu_percentage",
+                                    "name": "CPU",
+                                    "icon": "mdi:chip"
+                                  },
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "1cpu_percentage",
+                                    "name": "1CPU",
+                                    "icon": "mdi:chip"
+                                  },
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "memory_percentage",
+                                    "name": "Memory",
+                                    "icon": "mdi:memory"
+                                  }
+                                ]
+                              }
+                            ]
+                          }] }}
+
+          - label: TBSH03
+            card:
+              type: custom:auto-entities
+              card:
+                type: custom:layout-card
+                layout_type: "custom:grid-layout"
+                layout: !include snippets/layout-page-columns.yaml
+              sort:
+                method: name
+                ignore_case: true
+              filter:
+                exclude: []
+                include:
+                  - entity_id: switch.tbsh03_monitordocker*
+                    options:
+                      type: custom:auto-entities
+                      card:
+                        type: custom:layout-card
+                      filter:
+                        template: |
+                          {{ [{
+                            "type": "entities",
+                            "style": "ha-card {\n  padding-bottom: 10px;\n}\n.card-header {\n  padding: 5px 16px;\n  font-size: 18px;\n  font-weight: 700 !important;\n}\n.card-content div {\n  margin: 0 !important;\n}\n#states {\n  padding-top: 0px !important;\n  padding-bottom: 0px !important;\n}\n.secondary {\n  color: darkgray !important;\n  margin-left: 2px !important;\n}\n",
+                            "title": state_attr(config.entity, "friendly_name"),
+                            "entities": [
+                              {
+                                "entity": config.entity,
+                                "name": "Switch",
+                                "icon": "mdi:docker"
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "name": "Health",
+                                "attribute": "health",
+                                "icon": "mdi:docker"
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "attribute": "image",
+                                "name": "Image",
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "attribute": "uptime",
+                                "format": "relative",
+                                "name": "Started",
+                                "icon": "mdi:update"
+                              },
+                              {
+                                "type": "custom:bar-card",
+                                "width": "55%",
+                                "height": "2em",
+                                "decimal": 2,
+                                "unit_of_measurement": "%",
+                                "positions": {
+                                  "icon": "outside",
+                                  "indicator": "off",
+                                  "name": "outside"
                                 },
-                                {
-                                  "entity": config.entity.replace("switch", "sensor"),
-                                  "attribute": "memory_percentage",
-                                  "name": "Memory",
-                                  "icon": "mdi:memory"
-                                }
-                              ]
-                            }
-                          ]
-                        }] }}
-              # - type: custom:auto-entities
-              #   card:
-              #     type: custom:easy-layout-card
-              #     cards:
-              #       type: custom:config-template-card
-              #       variables:
-              #         getEntityId: |
-              #           entityid => {
-              #             return entityid.replace("switch", "sensor");
-              #           }
-              #       entities:
-              #         - this.entity_id
-              #       card:
-              #         type: entities
-              #         entities:
-              #           - entity: this.entity_id
-              #             name: Off / On
-              #             toggle: true
-              #           - entity: ${getEntityId('this.entity_id')}
-              #             attribute: status
-              #             name: Uptime
-              #             styles:
-              #               width: 200px
-              #               align: center
-              #     layout_type: horizontal
-              #   filter:
-              #     include:
-              #       - entity_id: switch.tbsh1_monitordocker*
-              #   sort:
-              #     method: friendly_name
-              #   show_empty: true
-              #   unique: true
+                                "severity": [
+                                  {
+                                    "color": "#6d2525",
+                                    "from": 85,
+                                    "to": 999
+                                  }
+                                ],
+                                "entity_row": true,
+                                "entities": [
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "cpu_percentage",
+                                    "name": "CPU",
+                                    "icon": "mdi:chip"
+                                  },
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "1cpu_percentage",
+                                    "name": "1CPU",
+                                    "icon": "mdi:chip"
+                                  },
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "memory_percentage",
+                                    "name": "Memory",
+                                    "icon": "mdi:memory"
+                                  }
+                                ]
+                              }
+                            ]
+                          }] }}
+
+          - label: PI4SRV
+            card:
+              type: custom:auto-entities
+              card:
+                type: custom:layout-card
+                layout_type: "custom:grid-layout"
+                layout: !include snippets/layout-page-columns.yaml
+              sort:
+                method: name
+                ignore_case: true
+              filter:
+                exclude: []
+                include:
+                  - entity_id: switch.pi4srv_monitordocker*
+                    options:
+                      type: custom:auto-entities
+                      card:
+                        type: custom:layout-card
+                      filter:
+                        template: |
+                          {{ [{
+                            "type": "entities",
+                            "style": "ha-card {\n  padding-bottom: 10px;\n}\n.card-header {\n  padding: 5px 16px;\n  font-size: 18px;\n  font-weight: 700 !important;\n}\n.card-content div {\n  margin: 0 !important;\n}\n#states {\n  padding-top: 0px !important;\n  padding-bottom: 0px !important;\n}\n.secondary {\n  color: darkgray !important;\n  margin-left: 2px !important;\n}\n",
+                            "title": state_attr(config.entity, "friendly_name"),
+                            "entities": [
+                              {
+                                "entity": config.entity,
+                                "name": "Switch",
+                                "icon": "mdi:docker"
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "name": "Health",
+                                "attribute": "health",
+                                "icon": "mdi:docker"
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "attribute": "image",
+                                "name": "Image",
+                              },
+                              {
+                                "type": "attribute",
+                                "entity": config.entity.replace("switch", "sensor"),
+                                "attribute": "uptime",
+                                "format": "relative",
+                                "name": "Started",
+                                "icon": "mdi:update"
+                              },
+                              {
+                                "type": "custom:bar-card",
+                                "width": "55%",
+                                "height": "2em",
+                                "decimal": 2,
+                                "unit_of_measurement": "%",
+                                "positions": {
+                                  "icon": "outside",
+                                  "indicator": "off",
+                                  "name": "outside"
+                                },
+                                "severity": [
+                                  {
+                                    "color": "#6d2525",
+                                    "from": 85,
+                                    "to": 999
+                                  }
+                                ],
+                                "entity_row": true,
+                                "entities": [
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "cpu_percentage",
+                                    "name": "CPU",
+                                    "icon": "mdi:chip"
+                                  },
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "1cpu_percentage",
+                                    "name": "1CPU",
+                                    "icon": "mdi:chip"
+                                  },
+                                  {
+                                    "entity": config.entity.replace("switch", "sensor"),
+                                    "attribute": "memory_percentage",
+                                    "name": "Memory",
+                                    "icon": "mdi:memory"
+                                  }
+                                ]
+                              }
+                            ]
+                          }] }}
