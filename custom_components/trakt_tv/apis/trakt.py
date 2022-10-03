@@ -76,7 +76,7 @@ class TraktApi:
         raw_medias = []
         for show in raw_shows:
             try:
-                ids = data["show"]["ids"]
+                ids = show["show"]["ids"]
                 is_excluded = ids["slug"] in excluded_shows
             except IndexError:
                 is_excluded = False
@@ -134,6 +134,9 @@ class TraktApi:
         if (
             not configuration.upcoming_identifier_exists(identifier, all_medias)
         ) and not (configuration.next_to_watch_identifier_exists(identifier)):
+            return None
+
+        if next_to_watch and trakt_kind.value.identifier != "show":
             return None
 
         configuration = Configuration(data=self.hass.data)
