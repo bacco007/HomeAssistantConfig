@@ -37,6 +37,18 @@ class TeamTrackerCard extends LitElement {
     var gameDate = dateForm.toLocaleDateString('en-US', { day: '2-digit' });
     var outColor = outlineColor;
     
+    var lastDate = ""
+    if (stateObj.attributes.api_message) {
+        lastDate = "API Error"
+        var apiTail = stateObj.attributes.api_message.substring(stateObj.attributes.api_message.length - 17)
+        if (apiTail.slice(-1) == "Z") {
+          lastDate = apiTail
+          var lastDateForm = new Date (apiTail)
+          lastDate = "through " + lastDateForm.toLocaleDateString('en-US')
+        }
+    }
+
+    
     var overUnder = '';
     if (stateObj.attributes.overunder) {
       overUnder = 'O/U: ' + stateObj.attributes.overunder;
@@ -108,10 +120,8 @@ class TeamTrackerCard extends LitElement {
     if (stateObj.attributes.last_play) {
       lastPlaySpeed = 18 + Math.floor(stateObj.attributes.last_play.length/40) * 5;
     }
-    var nfTeamBG = stateObj.attributes.league_logo;
-    var nfTeam = stateObj.attributes.league_logo;
-    var nfTerm1 = stateObj.attributes.league + ": " + stateObj.attributes.team_abbr;
-    var nfTerm2 = 'No Upcoming Games'
+    var notFoundTeamBG = stateObj.attributes.league_logo;
+    var notFoundTeam = stateObj.attributes.league_logo;
     var startTerm = 'Kickoff';
     var probTerm = 'Win Probability';
     var playClock = stateObj.attributes.clock;
@@ -131,6 +141,19 @@ class TeamTrackerCard extends LitElement {
     if (this._config.show_rank == false) {
       rankDisplay = 'none';
     }
+
+    var notFoundTerm1 = stateObj.attributes.league + ": " + stateObj.attributes.team_abbr;
+    var notFoundTerm2 = ""
+    if (stateObj.attributes.api_message) {
+        notFoundTerm2 = "API Error"
+        var apiTail = stateObj.attributes.api_message.substring(stateObj.attributes.api_message.length - 17)
+        if (apiTail.slice(-1) == "Z") {
+          lastDate = apiTail
+          var lastDateForm = new Date (apiTail)
+          notFoundTerm2 = "No upcoming games through " + lastDateForm.toLocaleDateString('en-US')
+        }
+    }
+
 //
 //  MLB Specific Changes
 //
@@ -212,7 +235,7 @@ class TeamTrackerCard extends LitElement {
 //  NCAA Specific Changes
 //
     if (stateObj.attributes.league.includes("NCAA")) {
-      nfTeam = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png'
+      notFoundTeam = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png'
     }
     
     if (stateObj.state == 'POST') {
@@ -472,15 +495,16 @@ class TeamTrackerCard extends LitElement {
           .name { font-size: 1.6em; margin-bottom: 4px; }
           .line { height: 1px; background-color: var(--primary-text-color); margin:10px 0; }
           .eos { font-size: 1.8em; line-height: 1.2em; text-align: center; width: 50%; }
+          .eos2 { font-size: 1.4em; line-height: 1.2em; text-align: center; width: 50%; display: inline; }
         </style>
         <ha-card>
           <div class="card">
-            <img class="team-bg" src="${nfTeamBG}" />
+            <img class="team-bg" src="${notFoundTeamBG}" />
             <div class="card-content">
               <div class="team">
-                <img src="${nfTeam}" />
+                <img src="${notFoundTeam}" />
               </div>
-              <div class="eos">${nfTerm1}<br />${nfTerm2}</div>
+              <div><span class="eos">${notFoundTerm1}</span><span class="eos2"><br /><br />${notFoundTerm2}</span></div>
           </div>
         </ha-card>
       `;
