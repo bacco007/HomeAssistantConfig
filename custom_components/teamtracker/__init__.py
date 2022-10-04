@@ -1,4 +1,5 @@
 """ TeamTracker Team Status """
+import asyncio
 import logging
 from datetime import datetime, timedelta
 import arrow
@@ -29,7 +30,7 @@ from .const import (
     DEFAULT_CONFERENCE_ID,
     DEFAULT_TIMEOUT,
     DEFAULT_LEAGUE,
-    DEFAULT_LEAGUE_LOGO,
+    DEFAULT_LOGO,
     DEFAULT_LEAGUE_PATH,
     DEFAULT_PROB,
     DEFAULT_SPORT_PATH,
@@ -57,6 +58,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     hass.data.setdefault(DOMAIN, {})
 
+#
+#  No support for an Options flow at this time.  Uncomment line below if ever added.
+#    entry.add_update_listener(update_listener)
+
     if entry.unique_id is not None:
         hass.config_entries.async_update_entry(entry, unique_id=None)
 
@@ -65,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             ent_reg.async_update_entity(entity.entity_id, new_unique_id=entry.entry_id)
 
     # Setup the data coordinator
-    coordinator = AlertsDataUpdateCoordinator(
+    coordinator = TeamTrackerDataUpdateCoordinator(
         hass,
         entry.data,
         entry.data.get(CONF_TIMEOUT)
@@ -82,21 +87,34 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-async def async_unload_entry(hass, config_entry):
+async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Handle removal of an entry."""
-    try:
-        await hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
-        _LOGGER.info("Successfully removed sensor from the " + DOMAIN + " integration")
-    except ValueError:
-        pass
-    return True
 
+    _LOGGER.debug("Attempting to unload entities from the %s integration", DOMAIN)
 
-async def update_listener(hass, entry):
-    """Update listener."""
-    entry.data = entry.options
-    await hass.config_entries.async_forward_entry_unload(entry, "sensor")
-    hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
+    unload_ok = all(
+        await asyncio.gather(
+            *[
+                hass.config_entries.async_forward_entry_unload(config_entry, platform)
+                for platform in PLATFORMS
+            ]
+        )
+    )
+
+    if unload_ok:
+        _LOGGER.debug("Successfully removed entities from the %s integration", DOMAIN)
+        hass.data[DOMAIN].pop(config_entry.entry_id)
+
+    return unload_ok
+
+#
+#  Only needed if Options Flow is added
+#
+#async def update_listener(hass, entry):
+#    """Update listener."""
+#    entry.data = entry.options
+#    await hass.config_entries.async_forward_entry_unload(entry, "sensor")
+#    hass.async_add_job(hass.config_entries.async_forward_entry_setup(entry, "sensor"))
 
 
 async def async_migrate_entry(hass, config_entry):
@@ -131,7 +149,7 @@ async def async_migrate_entry(hass, config_entry):
     return True
 
 
-class AlertsDataUpdateCoordinator(DataUpdateCoordinator):
+class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching TeamTracker data."""
 
     def __init__(self, hass, config, the_timeout: int):
@@ -142,7 +160,7 @@ class AlertsDataUpdateCoordinator(DataUpdateCoordinator):
         self.config = config
         self.hass = hass
 
-        _LOGGER.debug("Data will be updated every %s for %s", (self.interval, self.name))
+        _LOGGER.debug("Data will be updated every %s", self.interval)
 
         super().__init__(hass, _LOGGER, name=self.name, update_interval=self.interval)
 
@@ -179,6 +197,8 @@ async def async_get_state(config) -> dict:
     headers = {"User-Agent": USER_AGENT, "Accept": "application/ld+json"}
     data = None
     file_override = False
+    first_date = "9999"
+    last_date =  "0000"
 
     league_id = config[CONF_LEAGUE_ID].upper()
     sport_path = config[CONF_SPORT_PATH]
@@ -207,7 +227,7 @@ async def async_get_state(config) -> dict:
     values = await async_clear_states(config)
     values["sport"] = sport_path
     values["league"] = league_id
-    values["league_logo"] = DEFAULT_LEAGUE_LOGO
+    values["league_logo"] = DEFAULT_LOGO
     values["team_abbr"] = team_id
 
     found_team = False
@@ -215,7 +235,7 @@ async def async_get_state(config) -> dict:
         try:
             values["league_logo"] = data["leagues"][0]["logos"][0]["href"]
         except:
-            values["league_logo"] = DEFAULT_LEAGUE_LOGO
+            values["league_logo"] = DEFAULT_LOGO
 
         for event in data["events"]:
             #_LOGGER.debug("Looking at this event: %s" % event)
@@ -224,6 +244,17 @@ async def async_get_state(config) -> dict:
             except:
                 sn = ""
                 _LOGGER.debug("This is an ill-formed event, it does not have a short name: %s" % event)
+
+            try:
+                if (last_date < event["date"]):
+                    last_date = event["date"]
+            except:
+                last_date = last_date
+            try:
+                if (event["date"] < first_date):
+                    first_date = event["date"]
+            except:
+                first_date = first_date
 
             if sn.startswith(team_id + ' ') or sn.endswith(' ' + team_id):
                 found_team = True
@@ -268,11 +299,13 @@ async def async_get_state(config) -> dict:
                         values["state"] = 'BYE'
                         values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
                 if found_bye == False:
-                    _LOGGER.debug("Team information (%s) not returned by API: %s" % (team_id, url))
+                    values["api_message"] = "No game scheduled for " + team_id + " between " + first_date + " and " + last_date
+                    _LOGGER.debug("Competitor information (%s) not returned by API: %s" % (team_id, url))
                     values["state"] = 'NOT_FOUND'
                     values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
             except:
-                _LOGGER.debug("Team information (%s) not returned by API: %s" % (team_id, url))
+                values["api_message"] = "No game scheduled for " + team_id + " between " + first_date + " and " + last_date
+                _LOGGER.debug("Competitor information (%s) not returned by API: %s" % (team_id, url))
                 values["state"] = 'NOT_FOUND'
                 values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
         if values["state"] == 'PRE' and ((arrow.get(values["date"])-arrow.now()).total_seconds() < 1200):
@@ -285,7 +318,8 @@ async def async_get_state(config) -> dict:
             _LOGGER.debug("Event is over, setting refresh back to 10 minutes.")
             values["private_fast_refresh"] = False
     else:
-        _LOGGER.warn("URL did not return data for team (%s):  %s" % (team_id, url))
+        values["api_message"] = "API error, no data returned"
+        _LOGGER.warn("API did not return any data for team (%s):  %s" % (team_id, url))
         values["state"] = 'NOT_FOUND'
         values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
         values["private_fast_refresh"] = False
@@ -356,7 +390,9 @@ async def async_clear_states(config) -> dict:
         "opponent_sets_won": None,
 
         "last_update": None,
-        "private_fast_refresh": False
+        "api_message": None,
+        
+        "private_fast_refresh": False,
     }
 
     return new_values
@@ -396,7 +432,10 @@ async def async_get_universal_event_attributes(event, team_index, oppo_index) ->
     except:
         new_values["team_rank"] = None
     new_values["team_homeaway"] = event["competitions"][0]["competitors"][team_index]["homeAway"]
-    new_values["team_logo"] = event["competitions"][0]["competitors"][team_index]["team"]["logo"]
+    try:
+        new_values["team_logo"] = event["competitions"][0]["competitors"][team_index]["team"]["logo"]
+    except:
+        new_values["team_logo"] = DEFAULT_LOGO
     try:
         color = '#' + event["competitions"][0]["competitors"][team_index]["team"]["color"]
     except:
@@ -425,7 +464,10 @@ async def async_get_universal_event_attributes(event, team_index, oppo_index) ->
     except:
         new_values["opponent_rank"] = None
     new_values["opponent_homeaway"] = event["competitions"][0]["competitors"][oppo_index]["homeAway"]
-    new_values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
+    try:
+        new_values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
+    except:
+        new_values["opponent_logo"] = DEFAULT_LOGO
     try:
         color = '#' + event["competitions"][0]["competitors"][oppo_index]["team"]["color"]
     except:
