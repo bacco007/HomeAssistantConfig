@@ -178,7 +178,7 @@ class FormulaOneSensor(Entity):
         polling_delta = self.set_polling()
         nexttime = nowtime + polling_delta
         # Setup timer to run again at polling delta
-        # track_point_in_time(self.hass, self.timer, nexttime)
+        track_point_in_time(self.hass, self.timer, nexttime)
 
     def get_race_data(self):
         """Get the latest data from the http://ergast.com/ via a custom formulaonepy."""
@@ -205,6 +205,7 @@ class FormulaOneSensor(Entity):
 
         # # Merge all attributes to a single dict.
         all_attr = {
+            'last_update': now,
             'next_race': next_race,
             'races': races['MRData']['RaceTable']['Races'],
             'drivers': drivers['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'],
