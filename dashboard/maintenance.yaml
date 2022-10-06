@@ -80,40 +80,6 @@ cards:
                     {--vc-background: none; --vc-spacing: 16px;} .tips
                     {flex-direction: row-reverse;} .toolbar {background:
                     none !important;}
-          - type: entities
-            entities:
-              - entity: binary_sensor.peanut_hamper_bin_full
-                type: "custom:template-entity-row"
-                name: Vacuum Bin
-                state: >-
-                  {{ iif( is_state('binary_sensor.peanut_hamper_bin_full',
-                  'on'), 'Full', 'Not Full') }}
-                secondary: >-
-                  Since {{
-                  states.binary_sensor.peanut_hamper_bin_full.last_changed |
-                  relative_time }} ago
-          - type: "custom:logbook-card"
-            entity: vacuum.peanut_hamper
-            history: 5
-            max_items: 10
-            date_format: "MMM D hh:mm"
-            show:
-              state: true
-              duration: true
-              start_date: true
-              end_date: true
-              icon: false
-              separator: false
-            collapse: 3
-            title: " "
-
-          - type: entities
-            entities:
-              - type: "custom:multiple-entity-row"
-                entity: sensor.bedroom_humidifier_power
-                secondary_info:
-                  attribute: lackWater
-            title: Bedroom Humidifier
 
           - type: entities
             entities:

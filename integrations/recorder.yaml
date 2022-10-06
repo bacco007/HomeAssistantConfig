@@ -29,7 +29,6 @@ recorder:
       - sensor.sungrowsolar_runtime
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
-      - sensor.bomforecast_tamworth_hr
       - sensor.adsb_aircraft_tracked
       - sensor.e_ink_display_data
       - sensor.lastfm_user_topalbums

@@ -16,7 +16,7 @@ cards:
     view_layout:
       grid-area: cc
     layout:
-      grid-template-columns: "repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])"
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(400px, 1fr) [col-end])"
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
@@ -91,6 +91,74 @@ cards:
                       action: url
                       url_path: >-
                         https://www.coned.com/en/accounts-billing/dashboard?tab1=billingandusage-1&tab2=sectionEnergyBillingUsage-1&tab3=sectionEnergyHistory-2
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Next Race
+          - type: custom:formulaone-card
+            card_type: next_race
+            sensor: sensor.formula_one_sensor_races
+            date_locale: au
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Last Race
+          - type: custom:formulaone-card
+            card_type: last_result
+            sensor: sensor.formula_one_sensor_last_result
+            date_locale: au
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Schedule
+          - type: custom:formulaone-card
+            card_type: schedule
+            sensor: sensor.formula_one_sensor_races
+            date_locale: au
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Constructor Standings
+          - type: custom:formulaone-card
+            card_type: constructor_standings
+            sensor: sensor.formula_one_sensor_constructors
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Driver Standings
+          - type: custom:formulaone-card
+            card_type: driver_standings
+            sensor: sensor.formula_one_sensor_drivers
+
       # [Row] Summary + Totals
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
@@ -101,252 +169,6 @@ cards:
           grid-column-start: 1
           grid-column-end: -1
         cards:
-          - type: "custom:sankey-chart"
-            show_names: true
-            height: 250
-            min_box_height: 2
-            sections:
-              - entities:
-                  - entity_id: sensor.total_energy_use_on_fossil_fuel
-                    name: Fossil Fuel
-                    color: var(--warning-color)
-                    children:
-                      - sensor.total_energy_use
-                  - entity_id: sensor.total_energy_use_on_renewables
-                    name: Renewables
-                    color: var(--success-color)
-                    children:
-                      - sensor.total_energy_use
-              - entities:
-                  - entity_id: sensor.total_energy_use
-                    name: Est. Total
-                    children:
-                      - sensor.circuit_south_power
-                      - sensor.circuit_north_power
-                      - sensor.circuit_center_power
-                      - sensor.circuit_fridge_counter_power
-                      - sensor.circuit_living_room_lights_power
-                      - sensor.circuit_bedroom_a_c_power
-                      - sensor.circuit_living_room_projector_power
-                      - sensor.bedroom_ceiling_lights_power
-              - entities:
-                  - entity_id: sensor.circuit_south_power
-                    name: South Circuit
-                    children:
-                      - sensor.astralplane_plug_smartenergy_metering
-                      - sensor.bedroom_devices_plug_smartenergy_metering
-                      - sensor.kitchen_aerogardens_plug_smartenergy_metering
-                      - sensor.living_room_air_conditioner_plug_smartenergy_metering
-                      - sensor.makery_plug_smartenergy_metering
-                      - sensor.quattro_plug_smartenergy_metering
-                      - sensor.terpsichora_plug_smartenergy_metering
-                      - sensor.kitchen_sink_lights_power
-                      - sensor.kitchen_counter_accent_lights_power
-                      - sensor.living_room_hue_bowl_power
-                      - sensor.living_room_table_lights_power
-                  - entity_id: sensor.circuit_north_power
-                    name: North Circuit
-                    children:
-                      - sensor.valhalla_plug_smartenergy_metering
-                  - entity_id: sensor.circuit_center_power
-                    name: Center Circuit
-                    children:
-                      - sensor.dorothy_devices_plug_smartenergy_metering
-                      - sensor.dorothy_plug_smartenergy_metering
-                      - sensor.living_room_strala_light_power
-                  - entity_id: sensor.circuit_fridge_counter_power
-                    name: Fridge + Counter
-                    children:
-                      - sensor.kitchen_fridge_plug_smartenergy_metering
-                      - sensor.kitchen_microwave_plug_smartenergy_metering
-                      - sensor.kitchen_counter_echo_plug_current_consumption
-                      - >-
-                        sensor.kitchen_counter_hand_blender_current_consumption
-                      - sensor.kitchen_counter_kettle_current_consumption
-                      - sensor.kitchen_counter_plug_3_current_consumption
-                      - >-
-                        sensor.kitchen_counter_rice_cooker_current_consumption
-                      - sensor.kitchen_counter_toaster_current_consumption
-                  - entity_id: sensor.circuit_living_room_lights_power
-                    name: Living Room Lights
-                    children:
-                      - sensor.living_room_chandelier_main_power
-                      - sensor.kitchen_spot_lights_power
-                      - sensor.kitchen_counter_lights_power
-                  - entity_id: sensor.circuit_bedroom_a_c_power
-                    name: Bedroom A/C Circuit
-                    children:
-                      - >-
-                        sensor.bedroom_air_conditioner_plug_smartenergy_metering
-                  - entity_id: sensor.circuit_living_room_projector_power
-                    name: Living Room Ceiling Circuit
-                    children:
-                      - >-
-                        sensor.living_room_projector_plug_smartenergy_metering
-                      - sensor.living_room_decor_lights_power
-                      - sensor.living_room_ramsele_light_power
-                      - sensor.living_room_random_light_power
-                  - entity_id: sensor.bedroom_ceiling_lights_power
-                    name: Bedroom Ceiling Circuit
-                    children:
-                      - sensor.bedroom_ceiling_lights_power
-              - entities:
-                  - entity_id: sensor.astralplane_plug_smartenergy_metering
-                    name: Astralplane
-                    children:
-                      - sensor.all_computers_energy_use
-                  - entity_id: sensor.dorothy_plug_smartenergy_metering
-                    name: Dorothy
-                    children:
-                      - sensor.all_computers_energy_use
-                  - entity_id: sensor.makery_plug_smartenergy_metering
-                    name: Makery
-                    children:
-                      - sensor.all_computers_energy_use
-                  - entity_id: sensor.quattro_plug_smartenergy_metering
-                    name: Quattro
-                    children:
-                      - sensor.all_computers_energy_use
-                  - entity_id: sensor.valhalla_plug_smartenergy_metering
-                    name: Valhalla
-                    children:
-                      - sensor.all_computers_energy_use
-                  - entity_id: sensor.living_room_air_conditioner_plug_smartenergy_metering
-                    name: Living Room A/C
-                    children:
-                      - sensor.all_climate_energy_use
-                  - entity_id: sensor.bedroom_air_conditioner_plug_smartenergy_metering
-                    name: Bedroom A/C
-                    children:
-                      - sensor.all_climate_energy_use
-                  - entity_id: sensor.dorothy_devices_plug_smartenergy_metering
-                    name: Dorothy Devices
-                    children:
-                      - sensor.all_entertainment_energy_use
-                  - entity_id: sensor.terpsichora_plug_smartenergy_metering
-                    name: Terpsichora
-                    children:
-                      - sensor.all_entertainment_energy_use
-                  - entity_id: sensor.living_room_projector_plug_smartenergy_metering
-                    name: Living Room Projector
-                    children:
-                      - sensor.all_entertainment_energy_use
-                  - entity_id: sensor.kitchen_aerogardens_plug_smartenergy_metering
-                    name: Aerogardens
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_fridge_plug_smartenergy_metering
-                    name: Fridge
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_microwave_plug_smartenergy_metering
-                    name: Microwave
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_counter_echo_plug_current_consumption
-                    name: Echo Plug
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_counter_hand_blender_current_consumption
-                    name: Hand Blender
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_counter_kettle_current_consumption
-                    name: Kettle
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_counter_plug_3_current_consumption
-                    name: Plug 3
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_counter_rice_cooker_current_consumption
-                    name: Rice Cooker
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_counter_toaster_current_consumption
-                    name: Toaster
-                    children:
-                      - sensor.all_kitchen_energy_use
-                  - entity_id: sensor.kitchen_sink_lights_power
-                    name: Kitchen Sink Lights
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.kitchen_counter_accent_lights_power
-                    name: Kitchen Counter Accent
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_random_light_power
-                    name: Living Room Random Light
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_ramsele_light_power
-                    name: Living Room Ramsele Light
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_strala_light_power
-                    name: Living Room Strala Light
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_hue_bowl_power
-                    name: Living Room Hue Bowl
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_table_lights_power
-                    name: Living Room Table Lights
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_chandelier_main_power
-                    name: Living Room Chandelier
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.kitchen_spot_lights_power
-                    name: Kitchen Spot Lights
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.kitchen_counter_lights_power
-                    name: Kitchen Counter Lights
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.living_room_decor_lights_power
-                    name: Living Room Decor Lights
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.bedroom_ceiling_lights_power
-                    name: Bedroom Ceiling Lights
-                    children:
-                      - sensor.all_lights_energy_use
-                  - entity_id: sensor.bedroom_devices_plug_smartenergy_metering
-                    name: Bedroom Devices
-              - entities:
-                  - entity_id: sensor.all_computers_energy_use
-                    name: Computers
-                    color: maroon
-                  - entity_id: sensor.all_climate_energy_use
-                    name: Climate
-                    color: green
-                  - entity_id: sensor.all_entertainment_energy_use
-                    name: Entertainment
-                    color: teal
-                  - entity_id: sensor.all_kitchen_energy_use
-                    name: Kitchen
-                    color: purple
-                  - entity_id: sensor.all_lights_energy_use
-                    name: Lights
-                    color: yellow
-            view_layout:
-              grid-column: 1/-1
-            card_mod:
-              style: >
-                ha-card { background: none; }
-                .connectors { left: 8px !important; right: 4px !important; }
-                .box div:first-child { width: 4px !important; }
-                .box .label { padding-left: 8px !important; font-weight:
-                500;}
-                .box .label span { font-weight: normal; font-style: normal
-                !important; }
-                .box .label span.state { font-weight: 500; }
-                .box .label span.name { font-size: inherit; }
-                .section:last-child { flex-grow: .667 !important; flex-shrink: 2 !important; }
           - type: "custom:button-card"
             template: header_card_no_link
             variables:
