@@ -205,7 +205,7 @@ async def async_setup_entry(
     platform = entity_platform.current_platform.get()
     platform.async_register_entity_service(
         SERVICE_SELECT_PICTURE_MODE,
-        vol.Schema({vol.Required(ATTR_PICTURE_MODE): cv.string}),
+        {vol.Required(ATTR_PICTURE_MODE): cv.string},
         "async_select_picture_mode",
     )
     platform.async_register_entity_service(
