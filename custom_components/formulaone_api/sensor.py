@@ -38,6 +38,5 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities([RacesSensor(name, scan_interval, hass)])
     add_entities([ConstructorsSensor(name, scan_interval, hass)])
     add_entities([DriversSensor(name, scan_interval, hass)])
-    add_entities([DriversSensor(name, scan_interval, hass)])
     add_entities([LastResultSensor(name, scan_interval, hass)])
         
