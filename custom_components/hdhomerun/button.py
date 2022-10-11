@@ -9,8 +9,11 @@ from abc import ABC
 from typing import Callable, List, Optional
 
 from homeassistant.components.button import DOMAIN as ENTITY_DOMAIN
-from homeassistant.components.button import (ButtonDeviceClass, ButtonEntity,
-                                             ButtonEntityDescription)
+from homeassistant.components.button import (
+    ButtonDeviceClass,
+    ButtonEntity,
+    ButtonEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
@@ -43,11 +46,11 @@ class RequiredButtonDescription:
 
 @dataclasses.dataclass
 class HDHomeRunButtonDescription(
-    OptionalButtonDescription,
-    ButtonEntityDescription,
-    RequiredButtonDescription
+    OptionalButtonDescription, ButtonEntityDescription, RequiredButtonDescription
 ):
     """Describes button entity."""
+
+
 # endregion
 
 
@@ -64,10 +67,12 @@ BUTTON_DESCRIPTIONS: tuple[HDHomeRunButtonDescription, ...] = (
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create the button."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id][
+        CONF_DATA_COORDINATOR_GENERAL
+    ]
 
     buttons: List[HDHomeRunButton] = [
         HDHomeRunButton(
@@ -90,7 +95,7 @@ async def _async_button_pressed(
     action: str,
     device: HDHomeRunDevice,
     hass: HomeAssistant,
-    action_arguments: Optional[dict] = None
+    action_arguments: Optional[dict] = None,
 ) -> None:
     """Carry out the action for the button being pressed."""
     action: Optional[Callable] = getattr(device, action, None)
@@ -117,7 +122,12 @@ class HDHomeRunButton(HDHomerunEntity, ButtonEntity, ABC):
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN
-        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
+        super().__init__(
+            config_entry=config_entry,
+            coordinator=coordinator,
+            description=description,
+            hass=hass,
+        )
 
     async def async_press(self) -> None:
         """Handle the button being pressed."""

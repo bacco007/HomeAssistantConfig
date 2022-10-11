@@ -35,7 +35,9 @@ class HDHomeRunDevice:
     def __del__(self) -> None:
         """Close the session if necessary."""
         if self._session and self._created_session:
-            asyncio.run_coroutine_threadsafe(coro=self._session.close(), loop=asyncio.get_event_loop())
+            asyncio.run_coroutine_threadsafe(
+                coro=self._session.close(), loop=asyncio.get_event_loop()
+            )
 
     def __init__(self, host: str) -> None:
         """Initialise."""
@@ -52,6 +54,7 @@ class HDHomeRunDevice:
         self._device_id: Optional[str] = None
         self._device_type: Optional[DeviceType] = None
         self._discover_url: Optional[str] = None
+        self._discovery_method = None
         self._friendly_name: Optional[str] = None
         self._is_online: bool = True
         self._lineup_url: Optional[str] = None
@@ -82,9 +85,7 @@ class HDHomeRunDevice:
 
         try:
             resp: aiohttp.ClientResponse = await self._session.get(
-                url=tuner_status_url,
-                timeout=timeout,
-                raise_for_status=True
+                url=tuner_status_url, timeout=timeout, raise_for_status=True
             )
         except aiohttp.ClientResponseError as err:
             _LOGGER.error("ClientResponseError --> %s", err)
@@ -107,8 +108,7 @@ class HDHomeRunDevice:
         proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
 
         tuners = [
-            proto.get_tuner_status(tuner_idx=idx)
-            for idx in range(self.tuner_count)
+            proto.get_tuner_status(tuner_idx=idx) for idx in range(self.tuner_count)
         ]
         tuner_status_info = await asyncio.gather(*tuners)
 
@@ -121,10 +121,10 @@ class HDHomeRunDevice:
 
             self._is_online = True
             key = tuner.get("data", {})[HDHOMERUN_TAG_GETSET_NAME].decode().rstrip("\0")
-            val = tuner.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
-            tuner_info: Dict[str, int | str] = {
-                "Resource": key.split("/")[1]
-            }
+            val = (
+                tuner.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
+            )
+            tuner_info: Dict[str, int | str] = {"Resource": key.split("/")[1]}
             status_details = val.split(" ")  # status details are space delimited
             for detail in status_details:  # tags are = delimited
                 tag, value = tuple(map(str, detail.split("=")))
@@ -141,19 +141,32 @@ class HDHomeRunDevice:
                         elif tag == "ss":
                             tuner_info["SignalStrengthPercent"] = value
 
-            if "SymbolQualityPercent" in tuner_info:  # need to get the channel details now
+            if (
+                "SymbolQualityPercent" in tuner_info
+            ):  # need to get the channel details now
                 channel_details = await proto.get_tuner_current_channel(
                     tuner_idx=tuner_info["Resource"].replace("tuner", "")
                 )
                 tuner_channel_id, channel_names, tuner_target = channel_details
-                tuner_channel_id = tuner_channel_id.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
+                tuner_channel_id = (
+                    tuner_channel_id.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE]
+                    .decode()
+                    .rstrip("\0")
+                )
                 if int(tuner_channel_id):
                     channel_names = (
-                        channel_names.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0").split("\n")
+                        channel_names.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE]
+                        .decode()
+                        .rstrip("\0")
+                        .split("\n")
                     )
                     channel: str
                     channel_name: List[Tuple[str, ...]] = [
-                        tuple(channel.replace(f"{tuner_channel_id}: ", "").split(" ", maxsplit=1))
+                        tuple(
+                            channel.replace(f"{tuner_channel_id}: ", "").split(
+                                " ", maxsplit=1
+                            )
+                        )
                         for channel in channel_names
                         if channel.startswith(f"{tuner_channel_id}: ")
                     ]
@@ -161,9 +174,9 @@ class HDHomeRunDevice:
                         vct_number, vct_name = channel_name[0]
                         tuner_info["VctNumber"] = str(vct_number)
                         tuner_info["VctName"] = str(vct_name)
-                    tuner_info["TargetIP"] = (
-                        urlparse(tuner_target.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE]).hostname.decode()
-                    )
+                    tuner_info["TargetIP"] = urlparse(
+                        tuner_target.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE]
+                    ).hostname.decode()
 
             if not tuner_status:
                 tuner_status = []
@@ -172,7 +185,9 @@ class HDHomeRunDevice:
         if tuner_status:
             self._tuner_status = tuner_status
 
-    async def async_get_variable(self, variable: str, timeout: float = 2.5) -> Dict[str, int | str]:
+    async def async_get_variable(
+        self, variable: str, timeout: float = 2.5
+    ) -> Dict[str, int | str]:
         """Retrieve the given variable from the device.
 
         :param variable: variable name
@@ -187,7 +202,11 @@ class HDHomeRunDevice:
                 }
             }
         """
-        _LOGGER.debug(self._log_formatter.format("entered, variable: %s, timeout: %.2f"), variable, timeout)
+        _LOGGER.debug(
+            self._log_formatter.format("entered, variable: %s, timeout: %.2f"),
+            variable,
+            timeout,
+        )
         ret: Dict[str, int | str] = {}
         proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
         if (get_variable_func := getattr(proto, "_get_set_req", None)) is not None:
@@ -222,11 +241,13 @@ class HDHomeRunDevice:
         }
 
         # late import for Discover to avoid a circular import
-        from .discover import \
-            Discover  # pylint: disable=import-outside-toplevel
+        from .discover import (  # pylint: disable=import-outside-toplevel
+            Discover,
+            DiscoverMode,
+        )
 
         device: HDHomeRunDevice = await Discover.rediscover(target=self)
-        if getattr(device, "_discover_url", None) is None and device.online:
+        if device.discovery_method is not DiscoverMode.HTTP and device.online:
             proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
             supplemental_info = [
                 proto.get_version(),
@@ -236,8 +257,16 @@ class HDHomeRunDevice:
             info = await asyncio.gather(*supplemental_info)
             prop: Dict[str, Dict[int | str, bytes]]
             for prop in info:
-                tcp_prop_name = prop.get("data", {})[HDHOMERUN_TAG_GETSET_NAME].decode().rstrip("\0")
-                prop_value = prop.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
+                tcp_prop_name = (
+                    prop.get("data", {})[HDHOMERUN_TAG_GETSET_NAME]
+                    .decode()
+                    .rstrip("\0")
+                )
+                prop_value = (
+                    prop.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE]
+                    .decode()
+                    .rstrip("\0")
+                )
                 if (prop_name := tcp_property_map.get(tcp_prop_name, None)) is not None:
                     setattr(device, prop_name, prop_value)
 
@@ -248,7 +277,9 @@ class HDHomeRunDevice:
                 self._session = aiohttp.ClientSession()
 
             try:
-                response = await self._session.get(url=device.lineup_url, timeout=timeout, raise_for_status=True)
+                response = await self._session.get(
+                    url=device.lineup_url, timeout=timeout, raise_for_status=True
+                )
             except asyncio.TimeoutError:
                 setattr(device, "_is_online", False)
                 _LOGGER.error("Timeout experienced reaching %s", device.lineup_url)
@@ -294,6 +325,11 @@ class HDHomeRunDevice:
     def device_type(self) -> Optional[DeviceType]:
         """Get the device type as defined in the UDP protocol."""
         return self._device_type
+
+    @property
+    def discovery_method(self):
+        """Return the discovery method."""
+        return self._discovery_method
 
     @property
     def friendly_name(self) -> Optional[str]:
@@ -344,4 +380,5 @@ class HDHomeRunDevice:
     def tuner_status(self) -> Optional[List[Dict[str, int | str]]]:
         """Get the status for all tuners."""
         return self._tuner_status
+
     # endregion

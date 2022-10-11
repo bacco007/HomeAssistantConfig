@@ -52,7 +52,9 @@ async def discover(
 
     if target is None:
         discovery = Discover(mode=mode)
-        devices: List[HDHomeRunDevice] = await discovery.discover(broadcast_address=broadcast_address)
+        devices: List[HDHomeRunDevice] = await discovery.discover(
+            broadcast_address=broadcast_address
+        )
     else:
         device = HDHomeRunDevice(host=target)
         # setattr(device, "_discover_url", f"http://{device.ip}/discover.json")
@@ -97,7 +99,8 @@ async def get_variable(target: str, variable: str) -> None:
 def _print_to_screen(device: HDHomeRunDevice) -> None:
     """Print device details to the screen."""
     click.echo(device.device_id)
-    click.echo('-' * len(device.device_id))
+    click.echo("-" * len(device.device_id))
+    click.echo(f"Discovery Method: {device.discovery_method}")
     click.echo(f"Online: {device.online}")
     click.echo(f"FriendlyName: {device.friendly_name}")
     click.echo(f"IP: {device.ip}")

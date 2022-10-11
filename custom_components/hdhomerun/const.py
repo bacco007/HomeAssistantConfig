@@ -1,8 +1,7 @@
 """Constants for HDHomeRun."""
 
 # region #-- imports --#
-from homeassistant.components.binary_sensor import \
-    DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 

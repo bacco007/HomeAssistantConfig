@@ -10,9 +10,11 @@ from datetime import date, datetime
 from typing import Any, Callable, Dict, List, Mapping, Optional
 
 from homeassistant.components.sensor import DOMAIN as ENTITY_DOMAIN
-from homeassistant.components.sensor import (SensorEntity,
-                                             SensorEntityDescription,
-                                             StateType)
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorEntityDescription,
+    StateType,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
@@ -20,13 +22,20 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from . import HDHomerunEntity, entity_cleanup
-from .const import (CONF_DATA_COORDINATOR_GENERAL,
-                    CONF_DATA_COORDINATOR_TUNER_STATUS, CONF_DEVICE,
-                    CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
-                    CONF_TUNER_CHANNEL_FORMAT, CONF_TUNER_CHANNEL_NAME,
-                    CONF_TUNER_CHANNEL_NUMBER, CONF_TUNER_CHANNEL_NUMBER_NAME,
-                    DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
-                    DEF_TUNER_CHANNEL_FORMAT, DOMAIN, UPDATE_DOMAIN)
+from .const import (
+    CONF_DATA_COORDINATOR_GENERAL,
+    CONF_DATA_COORDINATOR_TUNER_STATUS,
+    CONF_DEVICE,
+    CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
+    CONF_TUNER_CHANNEL_FORMAT,
+    CONF_TUNER_CHANNEL_NAME,
+    CONF_TUNER_CHANNEL_NUMBER,
+    CONF_TUNER_CHANNEL_NUMBER_NAME,
+    DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
+    DEF_TUNER_CHANNEL_FORMAT,
+    DOMAIN,
+    UPDATE_DOMAIN,
+)
 from .pyhdhr import HDHomeRunDevice
 
 # endregion
@@ -49,9 +58,11 @@ class OptionalHDHomerunSensorDescription:
 class HDHomerunSensorEntityDescription(
     OptionalHDHomerunSensorDescription,
     SensorEntityDescription,
-    RequiredHDHomerunSensorDescription
+    RequiredHDHomerunSensorDescription,
 ):
     """Describes sensor entity."""
+
+
 # endregion
 
 
@@ -70,7 +81,12 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN
-        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
+        super().__init__(
+            config_entry=config_entry,
+            coordinator=coordinator,
+            description=description,
+            hass=hass,
+        )
 
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
@@ -79,8 +95,12 @@ class HDHomerunSensor(HDHomerunEntity, SensorEntity):
         """Get the value of the sensor."""
         if self._device:  # we have data
             if self.entity_description.state_value:  # custom state_value function
-                if self.entity_description.key:  # use the key attribute as the data for the state_value function
-                    return self.entity_description.state_value(getattr(self._device, self.entity_description.key, None))
+                if (
+                    self.entity_description.key
+                ):  # use the key attribute as the data for the state_value function
+                    return self.entity_description.state_value(
+                        getattr(self._device, self.entity_description.key, None)
+                    )
                 else:  # use the hdhomerun device as the data
                     return self.entity_description.state_value(self._device)
             else:  # use the key attribute as the value
@@ -100,7 +120,12 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         hass: HomeAssistant,
     ) -> None:
         """Initialise."""
-        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
+        super().__init__(
+            config_entry=config_entry,
+            coordinator=coordinator,
+            description=description,
+            hass=hass,
+        )
 
         self._tuner: dict = self._get_tuner()
 
@@ -108,7 +133,10 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         """Get the tuner information from the coordinator."""
         tuner: Dict[str, int | str] = {}
         for _tuner in self._device.tuner_status:
-            if _tuner.get("Resource", "").lower() == self.entity_description.name.lower():
+            if (
+                _tuner.get("Resource", "").lower()
+                == self.entity_description.name.lower()
+            ):
                 tuner = _tuner
                 break
 
@@ -123,7 +151,9 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         """Determine the value of the sensor."""
         ret = STATE_IDLE
         if self._tuner.get("VctNumber") and self._tuner.get("VctName"):
-            channel_format = self._config.options.get(CONF_TUNER_CHANNEL_FORMAT, DEF_TUNER_CHANNEL_FORMAT)
+            channel_format = self._config.options.get(
+                CONF_TUNER_CHANNEL_FORMAT, DEF_TUNER_CHANNEL_FORMAT
+            )
             if channel_format == CONF_TUNER_CHANNEL_NAME:
                 ret = self._tuner.get("VctName")
             elif channel_format == CONF_TUNER_CHANNEL_NUMBER:
@@ -143,17 +173,23 @@ class HDHomerunTunerSensor(HDHomerunSensor):
         ret = None
         entity_picture_path = self._config.options.get(
             CONF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
-            DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH
+            DEF_TUNER_CHANNEL_ENTITY_PICTURE_PATH,
         )
-        if entity_picture_path and self._value() not in (STATE_IDLE, STATE_IN_USE, STATE_SCANNING):
-            ret = os.path.join(entity_picture_path, f"{self._tuner.get('VctName', '').lower()}.png")
+        if entity_picture_path and self._value() not in (
+            STATE_IDLE,
+            STATE_IN_USE,
+            STATE_SCANNING,
+        ):
+            ret = os.path.join(
+                entity_picture_path, f"{self._tuner.get('VctName', '').lower()}.png"
+            )
 
         return ret
 
     @property
     def extra_state_attributes(self) -> Optional[Mapping[str, Any]]:
         """Define additional information for the sensor."""
-        regex = re.compile(r'(?<!^)(?=[A-Z])')
+        regex = re.compile(r"(?<!^)(?=[A-Z])")
         ret = {
             regex.sub("_", k).lower().replace("_i_p", "_ip"): v
             for k, v in self._tuner.items()
@@ -175,14 +211,14 @@ class HDHomerunTunerSensor(HDHomerunSensor):
     def native_value(self) -> StateType | date | datetime:
         """Get the value of the sensor."""
         return self._value()
+
+
 # endregion
 
 
 SENSORS: tuple[HDHomerunSensorEntityDescription, ...] = (
     HDHomerunSensorEntityDescription(
-        key="channels",
-        name="Channel Count",
-        state_value=lambda d: len(d)
+        key="channels", name="Channel Count", state_value=lambda d: len(d)
     ),
     HDHomerunSensorEntityDescription(
         key="tuner_count",
@@ -198,7 +234,7 @@ SENSOR_VERSIONS: tuple[HDHomerunSensorEntityDescription, ...] = (
     HDHomerunSensorEntityDescription(
         key="",
         name="Newest Version",
-        state_value=lambda d: d.latest_firmware or d.current_firmware
+        state_value=lambda d: d.latest_firmware or d.current_firmware,
     ),
 )
 
@@ -210,11 +246,15 @@ STATE_SCANNING = "Scanning"
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create the sensor."""
-    coordinator_general: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL]
-    coordinator_tuner: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_TUNER_STATUS]
+    coordinator_general: DataUpdateCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ][CONF_DATA_COORDINATOR_GENERAL]
+    coordinator_tuner: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
+        CONF_DATA_COORDINATOR_TUNER_STATUS
+    ]
 
     # region #-- add default sensors --#
     sensors: List[HDHomerunSensor] = [
@@ -242,7 +282,9 @@ async def async_setup_entry(
     # endregion
 
     # region #-- add tuner sensors --#
-    hdhomerun_device: HDHomeRunDevice = hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE]
+    hdhomerun_device: HDHomeRunDevice = hass.data[DOMAIN][config_entry.entry_id][
+        CONF_DEVICE
+    ]
     if hdhomerun_device and hdhomerun_device.tuner_status:
         for tuner in hdhomerun_device.tuner_status:
             sensors.append(
@@ -261,7 +303,9 @@ async def async_setup_entry(
     async_add_entities(sensors)
 
     sensors_to_remove: List[HDHomerunSensor] = []
-    if UPDATE_DOMAIN is not None:  # remove the existing version sensors if the update entity is available
+    if (
+        UPDATE_DOMAIN is not None
+    ):  # remove the existing version sensors if the update entity is available
         for description in SENSOR_VERSIONS:
             sensors_to_remove.append(
                 HDHomerunSensor(

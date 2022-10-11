@@ -8,8 +8,7 @@ from abc import ABC
 from typing import List
 
 from homeassistant.components.update import DOMAIN as ENTITY_DOMAIN
-from homeassistant.components.update import (UpdateEntity,
-                                             UpdateEntityDescription)
+from homeassistant.components.update import UpdateEntity, UpdateEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -36,9 +35,11 @@ class OptionalHDHomerunUpdateDescription:
 class HDHomerunUpdateEntityDescription(
     OptionalHDHomerunUpdateDescription,
     UpdateEntityDescription,
-    RequiredHDHomerunUpdateDescription
+    RequiredHDHomerunUpdateDescription,
 ):
     """Describes update entity."""
+
+
 # endregion
 
 
@@ -57,7 +58,12 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
     ) -> None:
         """Initialise."""
         self.entity_domain = ENTITY_DOMAIN
-        super().__init__(config_entry=config_entry, coordinator=coordinator, description=description, hass=hass)
+        super().__init__(
+            config_entry=config_entry,
+            coordinator=coordinator,
+            description=description,
+            hass=hass,
+        )
 
     @property
     def installed_version(self) -> str | None:
@@ -76,10 +82,12 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the update entity."""
-    coordinator_general: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][CONF_DATA_COORDINATOR_GENERAL]
+    coordinator_general: DataUpdateCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ][CONF_DATA_COORDINATOR_GENERAL]
 
     # region #-- add default sensors --#
     update_entities: List[HDHomerunUpdate] = [
@@ -90,7 +98,7 @@ async def async_setup_entry(
                 key="",
                 name="Update",
             ),
-            hass=hass
+            hass=hass,
         )
     ]
     # endregion
