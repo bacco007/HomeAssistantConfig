@@ -132,13 +132,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         default=self.config_entry.options.get(
                             CONF_INTERVAL_SENSORS, DEFAULT_INTERVAL_SENSORS
                         ),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=4, max=30)),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=60, max=180)),
                     vol.Optional(
                         CONF_INTERVAL_FORECAST,
                         default=self.config_entry.options.get(
                             CONF_INTERVAL_FORECAST, DEFAULT_INTERVAL_FORECAST
                         ),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=15, max=120)),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=60, max=240)),
                     vol.Optional(
                         CONF_FORECAST_LANGUAGE,
                         default=self.config_entry.options.get(

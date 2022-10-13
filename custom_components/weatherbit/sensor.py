@@ -13,20 +13,21 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     DEGREE,
-    TEMP_CELSIUS,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import StateType
 from homeassistant.util.unit_conversion import (
     SpeedConverter,
     DistanceConverter,
+    TemperatureConverter,
     LENGTH_MILLIMETERS,
     LENGTH_INCHES,
     SPEED_METERS_PER_SECOND,
     SPEED_KILOMETERS_PER_HOUR,
     SPEED_MILES_PER_HOUR,
+    TEMP_FAHRENHEIT,
+    TEMP_CELSIUS,
 )
-from homeassistant.util.temperature import celsius_to_fahrenheit
 from homeassistant.components.weather import (
     ATTR_FORECAST_NATIVE_PRECIPITATION,
     ATTR_FORECAST_PRECIPITATION_PROBABILITY,
@@ -491,12 +492,16 @@ class WeatherbitSensor(WeatherbitEntity, SensorEntity):
             _temp = (
                 self.day_data.max_temp
                 if self.hass.config.units.is_metric
-                else celsius_to_fahrenheit(self.day_data.max_temp)
+                else TemperatureConverter.convert(
+                    self.day_data.max_temp, TEMP_CELSIUS, TEMP_FAHRENHEIT
+                )
             )
             _temp_low = (
                 self.day_data.min_temp
                 if self.hass.config.units.is_metric
-                else celsius_to_fahrenheit(self.day_data.min_temp)
+                else TemperatureConverter.convert(
+                    self.day_data.max_temp, TEMP_CELSIUS, TEMP_FAHRENHEIT
+                )
             )
             _precip = (
                 self.day_data.precip
