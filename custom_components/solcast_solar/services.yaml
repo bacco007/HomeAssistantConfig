@@ -1,5 +1,4 @@
 # Describes the format for available services for the Solcast integration
-
-solcast_update_all_forecasts:
-  description: >
-    Fetches the forecasts from Solcast.
+update_forecasts:
+  name: Update
+  description: Fetches the forecasts from Solcast.

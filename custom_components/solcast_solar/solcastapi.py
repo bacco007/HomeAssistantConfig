@@ -91,7 +91,7 @@ class SolcastApi:
                     self._sites = self._sites + d['sites']
                 else:
                     _LOGGER.error(
-                        f"Solcast Error {status} - Gathering rooftop sites data."
+                        f"Solcast http status Error {status} - Gathering rooftop sites data."
                     )
                     raise Exception(f"HTTP error: Solcast Error gathering rooftop sites data.")
         except ConnectionRefusedError as err:
@@ -104,20 +104,22 @@ class SolcastApi:
             _LOGGER.error("Solcast http_data error: %s", traceback.format_exc())
 
     async def load_saved_data(self):
-
-        if len(self._sites) > 0:
-            if file_exists(self._filename):
-                with open(self._filename) as data_file:
-                    self._data = json.load(data_file, cls=JSONDecoder)
-                    _LOGGER.debug(f"SOLCAST: load_saved_data file exists.. file type is {type(self._data)}")
-                if self._data and "api_used" in self._data:
-                    self._api_used = self._data["api_used"]
+        try:
+            if len(self._sites) > 0:
+                if file_exists(self._filename):
+                    with open(self._filename) as data_file:
+                        self._data = json.load(data_file, cls=JSONDecoder)
+                        _LOGGER.debug(f"SOLCAST: load_saved_data file exists.. file type is {type(self._data)}")
+                    if self._data and "api_used" in self._data:
+                        self._api_used = self._data["api_used"]
+                else:
+                    #no file to load
+                    _LOGGER.debug(f"SOLCAST: load_saved_data there is no existing file to load")
+                    await self.http_data(True)
             else:
-                #no file to load
-                _LOGGER.debug(f"SOLCAST: load_saved_data there is not existing file to load")
-                await self.http_data(True)
-        else:
-            _LOGGER.debug(f"SOLCAST: load_saved_data site count is zero! ")
+                _LOGGER.debug(f"SOLCAST: load_saved_data site count is zero! ")
+        except Exception as e:
+            _LOGGER.error("Solcast load_saved_data error: %s", traceback.format_exc())
 
     async def force_api_poll(self, *args):
         _LOGGER.debug(f"SOLCAST: force_api_poll with any args? : {args}")
@@ -525,23 +527,26 @@ class SolcastApi:
     def makeenergydict(self) -> dict:
         wh_hours = {}
 
-        lastv = -1
-        lastk = -1
-        for v in self._data["forecasts"]:
-            d = v['period_end'].isoformat()
-            if v['pv_estimate'] == 0.0:
-                if lastv > 0.0:
-                    wh_hours[d] = v['pv_estimate'] * 1000
-                lastk = d
-                lastv = v['pv_estimate']
-            else:
-                if lastv == 0.0:
-                    #add the last one
-                    wh_hours[lastk] = lastv * 1000
+        try:
+            lastv = -1
+            lastk = -1
+            for v in self._data["forecasts"]:
+                d = v['period_end'].isoformat()
+                if v['pv_estimate'] == 0.0:
+                    if lastv > 0.0:
+                        wh_hours[d] = v['pv_estimate'] * 1000
+                    lastk = d
+                    lastv = v['pv_estimate']
+                else:
+                    if lastv == 0.0:
+                        #add the last one
+                        wh_hours[lastk] = lastv * 1000
 
-                wh_hours[d] = v['pv_estimate'] * 1000
-                
-                lastk = d
-                lastv = v['pv_estimate']
+                    wh_hours[d] = v['pv_estimate'] * 1000
+                    
+                    lastk = d
+                    lastv = v['pv_estimate']
+        except Exception as e:
+            _LOGGER.error("Solcast makeenergydict: %s", traceback.format_exc())
 
         return wh_hours

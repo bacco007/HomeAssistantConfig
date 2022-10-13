@@ -46,7 +46,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         hass.config_entries.async_setup_platforms(entry, PLATFORMS)
 
-        hass.bus.async_listen("solcast_update_all_forecasts", coordinator.service_event_update)
+        async def handle_service_update_forecast(call):
+            """Handle service call"""
+            _LOGGER.debug("executing update_forecasts service call")
+            await solcast.force_api_poll(True)
+
+        hass.services.async_register(
+            DOMAIN, "update_forecasts", handle_service_update_forecast
+        )
+
+        #hass.bus.async_listen("solcast_update_all_forecasts", coordinator.service_event_update)
 
         return True
 

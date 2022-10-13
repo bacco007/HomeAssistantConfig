@@ -70,11 +70,13 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.error("Solcast - Error resetting past data")
 
     async def setup(self):
-        await get_instance(self._hass).async_add_executor_job(self.gethistory)
-
-        await self.setup_auto_fetch()
-        async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
-        async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=10, second=15, local=True)
+        try:
+            await get_instance(self._hass).async_add_executor_job(self.gethistory)
+            await self.setup_auto_fetch()
+            async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
+            async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=10, second=15, local=True)
+        except Exception as error:
+            _LOGGER.error("Solcast - Error coordinator setup: %s", traceback.format_exc())
 
     async def setup_auto_fetch(self):
         try:
