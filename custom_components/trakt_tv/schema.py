@@ -60,6 +60,7 @@ def next_to_watch_schema() -> Dict[str, Any]:
     for trakt_kind in TraktKind:
         subschemas[trakt_kind.value.identifier] = {
             Required("max_medias", default=3): cv.positive_int,
+            Required("only_aired", default=False): bool,
             Required("exclude", default=[]): list,
         }
 

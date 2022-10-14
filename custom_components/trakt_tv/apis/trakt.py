@@ -143,9 +143,11 @@ class TraktApi:
 
         max_medias = configuration.get_upcoming_max_medias(identifier, all_medias)
         language = configuration.get_language()
+        only_aired = False
 
         if next_to_watch:
             excluded_shows = configuration.get_exclude_shows(identifier)
+            only_aired = configuration.get_only_aired(identifier)
             raw_medias = await self.fetch_watched(excluded_shows)
         else:
             days_to_fetch = configuration.get_upcoming_days_to_fetch(
@@ -165,7 +167,15 @@ class TraktApi:
         medias = [trakt_kind.value.model.from_trakt(media) for media in raw_medias]
 
         if next_to_watch:
-            new_medias = medias
+            if only_aired:
+                timezoned_now = datetime.now(
+                    pytz.timezone(configuration.get_timezone())
+                )
+                new_medias = [
+                    media for media in medias if media.released < timezoned_now
+                ]
+            else:
+                new_medias = medias
         else:
             timezoned_now = datetime.now(pytz.timezone(configuration.get_timezone()))
             new_medias = [media for media in medias if media.released >= timezoned_now]

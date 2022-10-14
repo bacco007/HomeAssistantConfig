@@ -52,6 +52,12 @@ class Configuration:
         except KeyError:
             return []
 
+    def get_only_aired(self, identifier: str) -> bool:
+        try:
+            return self.conf["sensors"]["next_to_watch"][identifier]["only_aired"]
+        except KeyError:
+            return False
+
     def next_to_watch_identifier_exists(self, identifier: str) -> bool:
         return self.identifier_exists(identifier, "next_to_watch")
 
