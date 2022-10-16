@@ -202,7 +202,7 @@ class HDHomerunTunerSensor(HDHomerunSensor):
     def icon(self) -> Optional[str]:
         """Get the icon for the sensor."""
         ret = "mdi:television-classic"
-        if self._value() in (STATE_IDLE, STATE_IN_USE, STATE_SCANNING):
+        if self._value() in (STATE_IDLE, STATE_SCANNING):
             ret = "mdi:television-classic-off"
 
         return ret
