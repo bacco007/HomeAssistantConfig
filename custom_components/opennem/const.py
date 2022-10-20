@@ -28,7 +28,7 @@ DEFAULT_NAME = "OpenNEM"
 DEFAULT_FORCE_UPDATE = True
 
 # Misc
-VERSION = "2022.03.2"
+VERSION = "2022.10.1"
 DOMAIN = "opennem"
 PLATFORM = "sensor"
 ATTRIBUTION = "Data provided by OpenNEM"
@@ -63,7 +63,6 @@ DEFAULT_VALUES = {
     "temperature": 0,
     "fossilfuel": 0,
     "renewables": 0,
-    "emissions_factor": 0,
     "flow_NSW": 0,
     "flow_QLD": 0,
     "flow_SA": 0,
