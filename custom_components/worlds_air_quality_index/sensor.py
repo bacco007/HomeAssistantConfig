@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import logging
+from this import s
 
 from .waqi_api import WaqiDataRequester
+
+import json
 
 import voluptuous as vol
 
@@ -26,27 +29,24 @@ from homeassistant.const import (
     CONF_LONGITUDE, 
     CONF_TOKEN,
     CONF_ID,
-    CONF_METHOD
+    CONF_METHOD,
+    CONF_TEMPERATURE_UNIT,
+    TEMP_FAHRENHEIT,
+    TEMP_CELSIUS
 )
 
 from .const import (
     SENSORS,
     DOMAIN,
     DEFAULT_NAME,
-    SW_VERSION
+    SW_VERSION,
+    WIND_DIRECTION,
+    WIND_DIRECTION_PREFIX,
+    WIND_DIRECTION_SUFFIX,
+    WIND_DIRECTION_FOLDER,
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-PLATFORM_SCHEMA = PARENT_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_TOKEN): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_LATITUDE): cv.string,
-        vol.Optional(CONF_LONGITUDE): cv.string,
-    }
-)
-
 
 async def async_setup_platform(
     hass: HomeAssistant,
@@ -84,6 +84,7 @@ async def async_setup_entry(
     name = entry.data[CONF_NAME]
     token = entry.data[CONF_TOKEN]
     method = entry.data[CONF_METHOD]
+    tempUnit = entry.data[CONF_TEMPERATURE_UNIT]
     
     if method == CONF_ID:
         _LOGGER.debug("config ID:")
@@ -108,7 +109,7 @@ async def async_setup_entry(
     
     for res in SENSORS:
         if res == "aqi" or res in scannedData:
-            entities.append(WorldsAirQualityIndexSensor(res, requester))
+            entities.append(WorldsAirQualityIndexSensor(res, requester, tempUnit))
 
     async_add_entities(entities, update_before_add=True)
 
@@ -117,14 +118,16 @@ async def async_setup_entry(
 class WorldsAirQualityIndexSensor(SensorEntity):
     """Representation of a Sensor."""
 
-    def __init__(self, resType: str, requester: WaqiDataRequester) -> None:
+    def __init__(self, resType: str, requester: WaqiDataRequester, tempUnit: str) -> None:
         self._state = None
         self._resType = resType
         self._requester = requester
         self._stationName = self._requester.GetStationName()
         self._stationIdx = self._requester.GetStationIdx()
         self._updateLastTime = self._requester.GetUpdateLastTime()
+        self._data = self._requester.GetData()
         self._name = SENSORS[self._resType][0]
+        self._tempUnit = tempUnit
 
         self._attr_name = self._name
         self._attr_unique_id = f"{self._stationName}_{self._stationIdx}_{self._name}"
@@ -148,7 +151,10 @@ class WorldsAirQualityIndexSensor(SensorEntity):
     @property
     def unit_of_measurement(self) -> str:
         #Return the unit of measurement.
-        return SENSORS[self._resType][1]
+        if SENSORS[self._resType][1] == TEMP_CELSIUS:
+            return self._tempUnit
+        else:
+            return SENSORS[self._resType][1]
 
     @property
     def device_class(self) -> SensorDeviceClass | str | None:
@@ -156,7 +162,24 @@ class WorldsAirQualityIndexSensor(SensorEntity):
 
     @property
     def icon(self) -> str | None:
-        return SENSORS[self._resType][2]
+        if self._resType != 'wg':
+            return SENSORS[self._resType][2]
+    
+    @property
+    def entity_picture(self) -> str | None:
+        _LOGGER.debug("Check:")
+        _LOGGER.debug(self._resType)
+        if SENSORS[self._resType][2] == 'custom' and self._resType == 'wg':
+            val = float(self._data["data"]["iaqi"]["wg"]["v"])
+            _LOGGER.debug(val)
+            for res in WIND_DIRECTION:
+                if val > float(res["min"]):
+                    _LOGGER.debug(res["val"])
+                    _LOGGER.debug("matched")
+                    return WIND_DIRECTION_FOLDER + WIND_DIRECTION_PREFIX + res["val"] + WIND_DIRECTION_SUFFIX
+            return WIND_DIRECTION_FOLDER + WIND_DIRECTION_PREFIX + WIND_DIRECTION[0]["val"] + WIND_DIRECTION_SUFFIX
+        else:
+            return None
 
     def update(self) -> None:
         #Fetch new state data for the sensor.
@@ -164,13 +187,22 @@ class WorldsAirQualityIndexSensor(SensorEntity):
 
         self._requester.update()
 
-        _data = self._requester.GetData()
+        self._data = self._requester.GetData()
         self._updateLastTime = self._requester.GetUpdateLastTime()
 
         if self._resType == 'aqi':
-            self._state = float(_data["data"]["aqi"])
+            if _data["data"]["aqi"] == "-":
+                _LOGGER.warning("aqi value from json waqi api was undefined ('-' value)")
+                self._state = 0
+            else:
+                self._state = int(_data["data"]["aqi"])
+        elif self._resType == 't':
+            if self._tempUnit == TEMP_FAHRENHEIT:
+                self._state = 9.0 * float(self._data["data"]["iaqi"]['t']["v"]) / 5.0 + 32.0
+            else:
+                self._state = float(self._data["data"]["iaqi"]['t']["v"])
         else:
-            self._state = float(_data["data"]["iaqi"][self._resType]["v"])
+            self._state = float(self._data["data"]["iaqi"][self._resType]["v"])
         
         self._attr_extra_state_attributes = {
             "StationName": self._requester.GetStationName(),

@@ -5,23 +5,20 @@ import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import (
-    callback,
     HomeAssistant
 )
-from homeassistant.helpers.entity_registry import async_migrate_entries
 from homeassistant.const import (
-    CONF_NAME,
     CONF_LATITUDE, 
     CONF_LONGITUDE, 
-    CONF_TOKEN,
     CONF_LOCATION,
     CONF_METHOD,
-    CONF_ID
+    CONF_ID,
+    CONF_TEMPERATURE_UNIT,
+    TEMP_CELSIUS
 )
 
 from .const import (
-    PLATFORMS,
-    GEOGRAPHIC_LOCALIZATION
+    PLATFORMS
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -70,6 +67,15 @@ async def async_migrate_entry(hass, config_entry):
         version = 2
         config_entry.version = version
         config_entries.async_update_entry(config_entry, data=new_data)
+    
+    if version == 2:
+        tempUnit = TEMP_CELSIUS
+        new_data = {**data, CONF_TEMPERATURE_UNIT: tempUnit}
+        
+        version = 3
+        config_entry.version = version
+        config_entries.async_update_entry(config_entry, data=new_data)
+
 
     _LOGGER.info("Migration to version %s successful", version)
 

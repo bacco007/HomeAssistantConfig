@@ -18,7 +18,10 @@ from homeassistant.const import (
     CONF_TOKEN,
     CONF_LOCATION,
     CONF_METHOD,
-    CONF_ID
+    CONF_ID,
+    CONF_TEMPERATURE_UNIT,
+    TEMP_FAHRENHEIT,
+    TEMP_CELSIUS
 )
 from .const import (
     DOMAIN,
@@ -31,7 +34,7 @@ from .const import (
 class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for worlds_air_quality_index integration."""
 
-    VERSION = 2
+    VERSION = 3
 
     async def async_step_import(self, config: dict[str, Any]) -> FlowResult:
         """Import a configuration from config.yaml."""
@@ -52,6 +55,7 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         STATION_ID
                     )
                 )
+
             }
         )
 
@@ -72,6 +76,12 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data_schema = vol.Schema(
             {
                 vol.Required(CONF_TOKEN): cv.string,
+                vol.Required(CONF_TEMPERATURE_UNIT, default=TEMP_CELSIUS): vol.In(
+                    (
+                        TEMP_CELSIUS,
+                        TEMP_FAHRENHEIT
+                    )
+                ),
                 vol.Required(CONF_LATITUDE, default=self.hass.config.latitude): cv.latitude,
                 vol.Required(CONF_LONGITUDE, default=self.hass.config.longitude): cv.longitude,
                 vol.Optional(CONF_NAME): cv.string
@@ -80,6 +90,7 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input:
             token = user_input[CONF_TOKEN]
+            tempUnit = user_input[CONF_TEMPERATURE_UNIT]
             latitude = user_input[CONF_LATITUDE]
             longitude = user_input[CONF_LONGITUDE]
             method = CONF_LOCATION
@@ -116,6 +127,7 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     title=name,
                     data={
                         CONF_TOKEN: token,
+                        CONF_TEMPERATURE_UNIT: tempUnit,
                         CONF_LATITUDE: latitude,
                         CONF_LONGITUDE: longitude,
                         CONF_NAME: name,
@@ -135,6 +147,12 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data_schema = vol.Schema(
             {
                 vol.Required(CONF_TOKEN): cv.string,
+                vol.Required(CONF_TEMPERATURE_UNIT, default=TEMP_CELSIUS): vol.In(
+                    (
+                        TEMP_CELSIUS,
+                        TEMP_FAHRENHEIT
+                    )
+                ),
                 vol.Required(CONF_ID): cv.string,
                 vol.Optional(CONF_NAME): cv.string
             }
@@ -143,6 +161,7 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input:
 
             token = user_input[CONF_TOKEN]
+            tempUnit = user_input[CONF_TEMPERATURE_UNIT]
             id = user_input[CONF_ID]
             method = CONF_ID
             requester = WaqiDataRequester(None, None, token, id, method)
@@ -169,7 +188,7 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             stationName = requester.GetStationName()
             name = user_input.get(CONF_NAME, stationName)
-
+            
             if not errors:
                 await self.async_set_unique_id(name)
                 self._abort_if_unique_id_configured()
@@ -178,6 +197,7 @@ class WorldsAirQualityIndexConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     title=name,
                     data={
                         CONF_TOKEN: token,
+                        CONF_TEMPERATURE_UNIT: tempUnit,
                         CONF_ID: id,
                         CONF_NAME: name,
                         CONF_METHOD: method,
