@@ -71,13 +71,38 @@ class TraktApi:
         )
 
     async def fetch_watched(self, excluded_shows: list):
+        """First, let's retrieve hidden items from user as a workaround for a potential bug in show progress_watch API"""
+        hidden_shows = []
+        for section in [
+            "calendar",
+            "progress_watched",
+            "progress_watched_reset",
+            "progress_collected",
+        ]:
+            hidden_items = await self.request(
+                "get", f"users/hidden/{section}?type=show"
+            )
+            raw_hidden_items = await hidden_items.json()
+            for hidden_item in raw_hidden_items:
+                try:
+                    trakt_id = hidden_item["show"]["ids"]["trakt"]
+                    hidden_shows.append(trakt_id)
+                except IndexError:
+                    LOGGER.error(
+                        "Error while trying to retrieve hidden items in section %s",
+                        section,
+                    )
+
+        """Then, let's retrieve progress for current user by removing hidden or excluded shows"""
         response = await self.request("get", f"sync/watched/shows?extended=noseasons")
         raw_shows = await response.json()
         raw_medias = []
         for show in raw_shows:
             try:
                 ids = show["show"]["ids"]
-                is_excluded = ids["slug"] in excluded_shows
+                is_excluded = (
+                    ids["slug"] in excluded_shows or ids["trakt"] in hidden_shows
+                )
             except IndexError:
                 is_excluded = False
 
