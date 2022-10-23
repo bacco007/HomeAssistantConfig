@@ -37,20 +37,22 @@ from homeassistant.components.weather import (
     ATTR_FORECAST_WIND_BEARING,
     ATTR_FORECAST_NATIVE_WIND_SPEED,
 )
-from pyweatherbitdata.data import AlertDescription, ForecastDetailDescription
+
+# from pyweatherbitdata.data import AlertDescription, ForecastDetailDescription
+from pyweatherbitdata.data import ForecastDetailDescription
 from .const import (
-    ATTR_ALERTS_CITY_NAME,
-    ATTR_ALERT_DESCRIPTION_EN,
-    ATTR_ALERT_DESCRIPTION_LOC,
-    ATTR_ALERT_EFFECTIVE,
-    ATTR_ALERT_ENDS,
-    ATTR_ALERT_EXPIRES,
-    ATTR_ALERT_ONSET,
-    ATTR_ALERT_REGIONS,
-    ATTR_ALERT_SEVERITY,
-    ATTR_ALERT_TITLE,
-    ATTR_ALERT_URI,
-    ATTR_ALERTS,
+    # ATTR_ALERTS_CITY_NAME,
+    # ATTR_ALERT_DESCRIPTION_EN,
+    # ATTR_ALERT_DESCRIPTION_LOC,
+    # ATTR_ALERT_EFFECTIVE,
+    # ATTR_ALERT_ENDS,
+    # ATTR_ALERT_EXPIRES,
+    # ATTR_ALERT_ONSET,
+    # ATTR_ALERT_REGIONS,
+    # ATTR_ALERT_SEVERITY,
+    # ATTR_ALERT_TITLE,
+    # ATTR_ALERT_URI,
+    # ATTR_ALERTS,
     ATTR_AQI_LEVEL,
     ATTR_FORECAST_CLOUDINESS,
     ATTR_FORECAST_SNOW,
@@ -63,7 +65,7 @@ from .const import (
 from .entity import WeatherbitEntity
 from .models import WeatherBitEntryData
 
-_KEY_ALERTS = "alerts"
+# _KEY_ALERTS = "alerts"
 _KEY_AQI = "aqi"
 
 
@@ -286,13 +288,13 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         unit_type="none",
         extra_attributes=False,
     ),
-    WeatherBitSensorEntityDescription(
-        key="alerts",
-        name="Weather Alerts",
-        icon="mdi:alert",
-        unit_type="none",
-        extra_attributes=True,
-    ),
+    # WeatherBitSensorEntityDescription(
+    #     key="alerts",
+    #     name="Weather Alerts",
+    #     icon="mdi:alert",
+    #     unit_type="none",
+    #     extra_attributes=True,
+    # ),
     WeatherBitSensorEntityDescription(
         key="forecast_day_1",
         name="Forecast Day 1",
@@ -418,8 +420,8 @@ class WeatherbitSensor(WeatherbitEntity, SensorEntity):
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
 
-        if self.entity_description.key == _KEY_ALERTS:
-            return getattr(self.coordinator.data, "alert_count")
+        # if self.entity_description.key == _KEY_ALERTS:
+        #     return getattr(self.coordinator.data, "alert_count")
 
         if self.entity_description.is_forecast_item:
             self.forecast_data = getattr(self.forecast_coordinator.data, "forecast")
@@ -447,34 +449,34 @@ class WeatherbitSensor(WeatherbitEntity, SensorEntity):
     @property
     def extra_state_attributes(self):
         """Return the sensor state attributes."""
-        if self.entity_description.key == _KEY_ALERTS:
-            data = []
-            count = 1
-            alerts: AlertDescription = getattr(
-                self.coordinator.data, self.entity_description.key
-            )
-            for item in alerts:
-                data.append(
-                    {
-                        f"Alert No {count}": "-------------------",
-                        ATTR_ALERT_TITLE: item.title,
-                        ATTR_ALERT_SEVERITY: item.severity,
-                        ATTR_ALERT_EFFECTIVE: item.effective_utc,
-                        ATTR_ALERT_ONSET: item.onset_utc,
-                        ATTR_ALERT_ENDS: item.ends_utc,
-                        ATTR_ALERT_EXPIRES: item.expires_utc,
-                        ATTR_ALERT_URI: item.uri,
-                        ATTR_ALERTS_CITY_NAME: item.city_name,
-                        ATTR_ALERT_REGIONS: item.regions,
-                        ATTR_ALERT_DESCRIPTION_EN: item.en_description,
-                        ATTR_ALERT_DESCRIPTION_LOC: item.loc_description,
-                    }
-                )
-                count += 1
-            return {
-                **super().extra_state_attributes,
-                ATTR_ALERTS: data,
-            }
+        # if self.entity_description.key == _KEY_ALERTS:
+        #     data = []
+        #     count = 1
+        #     alerts: AlertDescription = getattr(
+        #         self.coordinator.data, self.entity_description.key
+        #     )
+        #     for item in alerts:
+        #         data.append(
+        #             {
+        #                 f"Alert No {count}": "-------------------",
+        #                 ATTR_ALERT_TITLE: item.title,
+        #                 ATTR_ALERT_SEVERITY: item.severity,
+        #                 ATTR_ALERT_EFFECTIVE: item.effective_utc,
+        #                 ATTR_ALERT_ONSET: item.onset_utc,
+        #                 ATTR_ALERT_ENDS: item.ends_utc,
+        #                 ATTR_ALERT_EXPIRES: item.expires_utc,
+        #                 ATTR_ALERT_URI: item.uri,
+        #                 ATTR_ALERTS_CITY_NAME: item.city_name,
+        #                 ATTR_ALERT_REGIONS: item.regions,
+        #                 ATTR_ALERT_DESCRIPTION_EN: item.en_description,
+        #                 ATTR_ALERT_DESCRIPTION_LOC: item.loc_description,
+        #             }
+        #         )
+        #         count += 1
+        #     return {
+        #         **super().extra_state_attributes,
+        #         ATTR_ALERTS: data,
+        #     }
         if self.entity_description.is_forecast_item:
             _wind_spd = (
                 SpeedConverter.convert(
