@@ -24,7 +24,7 @@ class RacesSensor(FormulaOneSensor):
             if (not found): 
                 #print(race)
                 #r = json.loads(race)
-                if (dt.strptime(race['date'], '%Y-%m-%d') == dt.today()):
+                if (race['date'] == now.strftime('%Y-%m-%d')):
                     next_race = race
                     found = True
                 elif (dt.strptime(race['date'], '%Y-%m-%d') > dt.today()):
@@ -47,7 +47,7 @@ class RacesSensor(FormulaOneSensor):
         # Set sensor state attributes.
         if all_attr['next_race'] == None:
             self._state = 'None'
-        elif dt.strptime(all_attr['next_race']['date'], '%Y-%m-%d') == dt.today():
+        elif all_attr['next_race']['date'] == dt.today().strftime('%Y-%m-%d'):
             self._state = 'Race Day'
         else:
             self._state = 'Scheduled'
