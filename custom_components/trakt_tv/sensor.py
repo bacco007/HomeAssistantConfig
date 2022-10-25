@@ -6,7 +6,7 @@ from homeassistant.helpers.entity import Entity
 
 from .configuration import Configuration
 from .const import DOMAIN
-from .models.kind import BASIC_KINDS, TraktKind
+from .models.kind import BASIC_KINDS, NEXT_TO_WATCH_KINDS, TraktKind
 
 LOGGER = logging.getLogger(__name__)
 
@@ -50,8 +50,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             )
             sensors.append(sensor)
 
-        if trakt_kind.value.identifier != "show":
+    for trakt_kind in TraktKind:
+        if trakt_kind not in NEXT_TO_WATCH_KINDS:
             continue
+
+        identifier = trakt_kind.value.identifier
 
         if configuration.next_to_watch_identifier_exists(identifier):
             sensor = TraktSensor(
@@ -59,7 +62,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 config_entry=config_entry,
                 coordinator=coordinator,
                 trakt_kind=trakt_kind,
-                source="next_to_watch",
+                source=identifier,
                 prefix="Trakt Next To Watch",
                 mdi_icon="mdi:calendar",
             )
@@ -105,7 +108,10 @@ class TraktSensor(Entity):
     def configuration(self):
         identifier = self.trakt_kind.value.identifier
         data = self.hass.data[DOMAIN]
-        return data["configuration"]["sensors"][self.source][identifier]
+        source = (
+            "next_to_watch" if self.trakt_kind in NEXT_TO_WATCH_KINDS else self.source
+        )
+        return data["configuration"]["sensors"][source][identifier]
 
     @property
     def data(self):
