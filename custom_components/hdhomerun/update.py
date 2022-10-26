@@ -43,42 +43,6 @@ class HDHomerunUpdateEntityDescription(
 # endregion
 
 
-# region #-- update classes --#
-class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
-    """Representation of an HDHomeRun update entity."""
-
-    entity_description: HDHomerunUpdateEntityDescription
-
-    def __init__(
-        self,
-        config_entry: ConfigEntry,
-        coordinator: DataUpdateCoordinator,
-        description: HDHomerunUpdateEntityDescription,
-        hass: HomeAssistant,
-    ) -> None:
-        """Initialise."""
-        self.entity_domain = ENTITY_DOMAIN
-        super().__init__(
-            config_entry=config_entry,
-            coordinator=coordinator,
-            description=description,
-            hass=hass,
-        )
-
-    @property
-    def installed_version(self) -> str | None:
-        """Get the currently installed firmware version."""
-        return self._device.installed_version
-
-    @property
-    def latest_version(self) -> str | None:
-        """Get the latest available version of the firmware.
-
-        N.B. this is set to the currently installed version if not found
-        """
-        return self._device.latest_version or self.installed_version
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -98,9 +62,42 @@ async def async_setup_entry(
                 key="",
                 name="Update",
             ),
-            hass=hass,
         )
     ]
     # endregion
 
     async_add_entities(update_entities)
+
+
+# region #-- update classes --#
+class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
+    """Representation of an HDHomeRun update entity."""
+
+    entity_description: HDHomerunUpdateEntityDescription
+
+    def __init__(
+        self,
+        config_entry: ConfigEntry,
+        coordinator: DataUpdateCoordinator,
+        description: HDHomerunUpdateEntityDescription,
+    ) -> None:
+        """Initialise."""
+        self.entity_domain = ENTITY_DOMAIN
+        super().__init__(
+            config_entry=config_entry,
+            coordinator=coordinator,
+            description=description,
+        )
+
+    @property
+    def installed_version(self) -> str | None:
+        """Get the currently installed firmware version."""
+        return self.coordinator.data.installed_version
+
+    @property
+    def latest_version(self) -> str | None:
+        """Get the latest available version of the firmware.
+
+        N.B. this is set to the currently installed version if not found
+        """
+        return self.coordinator.data.latest_version or self.installed_version

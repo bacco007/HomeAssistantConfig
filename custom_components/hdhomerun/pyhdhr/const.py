@@ -1,5 +1,10 @@
 """Constants."""
 
+# region #-- imports --#
+from enum import Enum, unique
+
+# endregion
+
 HDHOMERUN_CONTROL_TCP_PORT: int = 65001
 HDHOMERUN_DISCOVER_UDP_PORT: int = 65001
 
@@ -27,3 +32,12 @@ HDHOMERUN_DEVICE_ID_WILDCARD: int = 0xFFFFFFFF
 HDHOMERUN_DEVICE_TYPE_STORAGE: int = 0x00000005
 HDHOMERUN_DEVICE_TYPE_TUNER: int = 0x00000001
 HDHOMERUN_DEVICE_TYPE_WILDCARD: int = 0xFFFFFFFF
+
+
+@unique
+class DiscoverMode(Enum):
+    """Available discovery modes."""
+
+    AUTO = 0
+    HTTP = 1
+    UDP = 2

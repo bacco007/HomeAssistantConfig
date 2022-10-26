@@ -9,10 +9,7 @@ import homeassistant.helpers.entity_registry as er
 from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -24,7 +21,6 @@ from homeassistant.util import slugify
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     CONF_DATA_COORDINATOR_TUNER_STATUS,
-    CONF_DEVICE,
     CONF_HOST,
     CONF_SCAN_INTERVAL_TUNER_STATUS,
     DEF_SCAN_INTERVAL_SECS,
@@ -32,10 +28,10 @@ from .const import (
     DOMAIN,
     ENTITY_SLUG,
     PLATFORMS,
-    SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY,
 )
 from .logger import Logger
-from .pyhdhr import HDHomeRunDevice
+from .pyhdhr.const import DiscoverMode
+from .pyhdhr.discover import Discover, HDHomeRunDevice
 
 # endregion
 
@@ -58,52 +54,50 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     # listen for options updates
     config_entry.async_on_unload(config_entry.add_update_listener(_async_reload))
 
-    hass.data[DOMAIN][config_entry.entry_id][
-        CONF_DEVICE
-    ]: HDHomeRunDevice = HDHomeRunDevice(host=config_entry.data.get(CONF_HOST))
-    if (
-        config_entry.source == "ssdp"
-    ):  # force the discovery url because this should be available
-        setattr(
-            hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE],
-            "_discover_url",
-            f"http://{hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].ip}/discover.json",
-        )
-
     # region #-- set up the coordinators --#
     async def _async_data_coordinator_update() -> bool:
         """Update routine for the general details DataUpdateCoordinator."""
+        device: List[HDHomeRunDevice] | HDHomeRunDevice | None = None
         try:
-            hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE] = await hass.data[
-                DOMAIN
-            ][config_entry.entry_id][CONF_DEVICE].async_rediscover()
+            if (
+                device := hass.data[DOMAIN][config_entry.entry_id][
+                    CONF_DATA_COORDINATOR_GENERAL
+                ].data
+            ) is None:
+                device = await Discover(
+                    broadcast_address=config_entry.data.get(CONF_HOST),
+                    session=async_get_clientsession(hass=hass),
+                ).async_discover()
+                if device:
+                    device = device[0]
+            await device.async_gather_details()
         except Exception as exc:
             _LOGGER.warning(log_formatter.format("%s"), exc)
             raise UpdateFailed(str(exc)) from exc
 
-        return True
+        return device
 
     async def _async_data_coordinator_tuner_status_update() -> bool:
         """Update routine for the tuner status DataUpdateCoordinator."""
-        previous_availability: bool = hass.data[DOMAIN][config_entry.entry_id][
-            CONF_DEVICE
-        ].online
+        device: List[HDHomeRunDevice] | HDHomeRunDevice | None = None
         try:
-            await hass.data[DOMAIN][config_entry.entry_id][
-                CONF_DEVICE
-            ].async_tuner_refresh()
+            if (
+                device := hass.data[DOMAIN][config_entry.entry_id][
+                    CONF_DATA_COORDINATOR_TUNER_STATUS
+                ].data
+            ) is None:
+                device = await Discover(
+                    broadcast_address=config_entry.data.get(CONF_HOST),
+                    session=async_get_clientsession(hass=hass),
+                ).async_discover()
+                if device:
+                    device = device[0]
+            await device.async_refresh_tuner_status()
         except Exception as exc:
             _LOGGER.warning(log_formatter.format("%s"), exc)
             raise UpdateFailed(str(exc)) from exc
 
-        if (
-            previous_availability
-            != hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].online
-        ):
-            _LOGGER.debug(log_formatter.format("sending availability signal"))
-            async_dispatcher_send(hass, SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY)
-
-        return True
+        return device
 
     coordinator_general: DataUpdateCoordinator = DataUpdateCoordinator(
         hass,
@@ -118,9 +112,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         CONF_DATA_COORDINATOR_GENERAL
     ] = coordinator_general
     await coordinator_general.async_config_entry_first_refresh()
-
-    if not hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].online:
-        raise ConfigEntryNotReady("Not currently online.")
 
     coordinator_tuner_status: DataUpdateCoordinator = DataUpdateCoordinator(
         hass,
@@ -137,9 +128,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         CONF_DATA_COORDINATOR_TUNER_STATUS
     ] = coordinator_tuner_status
     await coordinator_tuner_status.async_config_entry_first_refresh()
-
-    if not hass.data[DOMAIN][config_entry.entry_id][CONF_DEVICE].online:
-        raise ConfigEntryNotReady("Not currently online.")
     # endregion
 
     # region #-- setup the platforms --#
@@ -184,15 +172,11 @@ class HDHomerunEntity(CoordinatorEntity):
         config_entry: ConfigEntry,
         coordinator: DataUpdateCoordinator,
         description,
-        hass: HomeAssistant,
     ) -> None:
         """Initialize the entity."""
         super().__init__(coordinator)
+
         self._config: ConfigEntry = config_entry
-        self._hass: HomeAssistant = hass
-        self._device: HDHomeRunDevice = self._hass.data[DOMAIN][self._config.entry_id][
-            CONF_DEVICE
-        ]
 
         self.entity_description = description
 
@@ -216,38 +200,18 @@ class HDHomerunEntity(CoordinatorEntity):
             f"{slugify(self.entity_description.name)}"
         )
 
-    def _handle_coordinator_update(self) -> None:
-        """Update the information when the coordinator updates."""
-        self._device = self._hass.data[DOMAIN][self._config.entry_id][CONF_DEVICE]
-        super()._handle_coordinator_update()
-
-    async def async_added_to_hass(self) -> None:
-        """Do stuff when entity is added to registry."""
-        await super().async_added_to_hass()
-        self.async_on_remove(
-            async_dispatcher_connect(
-                hass=self._hass,
-                signal=SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY,
-                target=self.async_update_ha_state,
-            )
-        )
-
-    @property
-    def available(self) -> bool:
-        """Get with the device is available to read state info."""
-        return self._device.online
-
     @property
     def device_info(self) -> DeviceInfo:
         """Return the device information of the entity."""
-        # noinspection HttpUrlsUsage
         return DeviceInfo(
-            configuration_url=self._device.base_url,
+            configuration_url=self.coordinator.data.base_url,
             identifiers={(DOMAIN, self._config.unique_id)},
-            manufacturer="SiliconDust",
-            model=self._device.model if self._device else "",
+            manufacturer=f"SiliconDust ({self.coordinator.data.discovery_method.name})",
+            model=self.coordinator.data.model if self.coordinator.data else "",
             name=self._config.title,
-            sw_version=self._device.installed_version if self._device else "",
+            sw_version=self.coordinator.data.installed_version
+            if self.coordinator.data
+            else "",
         )
 
 

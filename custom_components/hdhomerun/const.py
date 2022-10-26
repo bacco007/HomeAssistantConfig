@@ -3,6 +3,7 @@
 # region #-- imports --#
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN
+from homeassistant.components.select import DOMAIN as SELECT_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 
 # TODO: remove try/except when minimum version of HASS is 2022.4.0
@@ -41,8 +42,10 @@ DEF_TUNER_CHANNEL_FORMAT: str = CONF_TUNER_CHANNEL_NAME
 PLATFORMS = [
     BINARY_SENSOR_DOMAIN,
     BUTTON_DOMAIN,
+    SELECT_DOMAIN,
     SENSOR_DOMAIN,
     UPDATE_DOMAIN,
 ]
 
-SIGNAL_HDHOMERUN_DEVICE_AVAILABILITY: str = f"{DOMAIN}_device_availability"
+SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED: str = f"{DOMAIN}_channel_scanning_started"
+SIGNAL_HDHOMERUN_CHANNEL_SOURCE_CHANGE: str = f"{DOMAIN}_channel_source_changed"

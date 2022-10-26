@@ -15,6 +15,7 @@ from homeassistant import config_entries, data_entry_flow
 from homeassistant.components import ssdp
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import callback
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_HOST,
@@ -29,13 +30,8 @@ from .const import (
     DOMAIN,
 )
 from .logger import Logger
-from .pyhdhr import HDHomeRunDevice
-from .pyhdhr.discover import Discover
-from .pyhdhr.exceptions import (
-    HDHomeRunDeviceNotFoundError,
-    HDHomeRunError,
-    HDHomeRunTimeoutError,
-)
+from .pyhdhr.discover import Discover, HDHomeRunDevice
+from .pyhdhr.exceptions import HDHomeRunDeviceNotFoundError
 
 # endregion
 
@@ -128,14 +124,13 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         """Initialis."""
         Logger.__init__(self)
 
-        self._discovered_devices: Optional[Dict[str, str]] = None
-        self._discovered_devices_hd: Optional[List[HDHomeRunDevice]] = None
+        self._discovered_devices: Dict[str, str] | None = None
+        self._discovered_devices_hd: List[HDHomeRunDevice] | None = None
         self._errors: dict = {}
         self._error_message: str = ""
         self._friendly_name: str = ""
         self._host: str = ""
-        self._serial: str = ""
-        self._task_details: Optional[asyncio.Task] = None
+        self._task_details: asyncio.Task | None = None
 
     @staticmethod
     @callback
@@ -147,11 +142,11 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
 
     async def _async_task_discover_all(self) -> None:
         """Discover all available devices."""
-        err_msg: Optional[str] = None
+        err_msg: str | None = None
         try:
-            self._discovered_devices_hd: List[
-                HDHomeRunDevice
-            ] = await Discover().discover()
+            self._discovered_devices_hd: List[HDHomeRunDevice] = await Discover(
+                session=async_get_clientsession(hass=self.hass)
+            ).async_discover()
             if len(self._discovered_devices_hd) == 0:
                 raise ValueError
         except Exception as err:  # pylint: disable=broad-except
@@ -170,33 +165,18 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         """Discover a single device as specified by the instance host."""
         err_msg: Optional[str] = None
         if self._host:
-            hdhomerun_device: Optional[HDHomeRunDevice] = None
+            hdhomerun_device: List[HDHomeRunDevice] | HDHomeRunDevice
             try:
-                await self._async_task_discover_all()
-                if len(self._discovered_devices_hd) == 0:
-                    raise ValueError
-
-                for dev in self._discovered_devices_hd:
-                    if dev.ip == self._host:
-                        hdhomerun_device = dev
-                        break
-
-                self._discovered_devices_hd = None
-
-                if hdhomerun_device is None:
-                    raise HDHomeRunDeviceNotFoundError(device=self._host)
-
-            except HDHomeRunError as err:
-                if isinstance(err, HDHomeRunTimeoutError):
-                    err_msg = "timeout_error"
-                else:
-                    err_msg = "generic_hdhomerun_error"
-                    self._error_message = str(err)
-            except Exception as err:  # pylint: disable=broad-except
+                hdhomerun_device = await Discover(
+                    broadcast_address=self._host,
+                    session=async_get_clientsession(hass=self.hass),
+                ).async_discover()
+            except HDHomeRunDeviceNotFoundError as err:
                 err_msg = "generic_hdhomerun_error"
                 self._error_message = str(err)
-                _LOGGER.error(self.format("%s"), err)
             else:
+                hdhomerun_device = hdhomerun_device[0]
+                await hdhomerun_device.async_gather_details()
                 if hdhomerun_device.friendly_name:
                     self._friendly_name = hdhomerun_device.friendly_name
                 self._friendly_name += (
@@ -204,7 +184,9 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
                     if self._friendly_name
                     else hdhomerun_device.device_id
                 )
-                self._serial = hdhomerun_device.device_id
+                await self.async_set_unique_id(
+                    unique_id=hdhomerun_device.device_id, raise_on_progress=False
+                )
 
         if err_msg is not None:
             self._errors["base"] = err_msg
@@ -239,23 +221,15 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         _LOGGER.debug(self.format("proceeding to next step"))
         if self._discovered_devices_hd is None:
             return self.async_show_progress_done(next_step_id=STEP_FRIENDLY_NAME)
-        else:
-            return self.async_show_progress_done(next_step_id=STEP_SELECT_DEVICE)
+
+        return self.async_show_progress_done(next_step_id=STEP_SELECT_DEVICE)
 
     async def async_step_finish(self, _=None) -> data_entry_flow.FlowResult:
         """Finalise the configuration entry."""
         _LOGGER.debug(self.format("entered"))
 
-        if not self.unique_id:
-            await self.async_set_unique_id(
-                unique_id=self._serial, raise_on_progress=False
-            )
-            self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
-
-        data = {CONF_HOST: self._host}
-
         return self.async_create_entry(
-            title=self._friendly_name or "HDHomerun", data=data
+            title=self._friendly_name or "HDHomerun", data={CONF_HOST: self._host}
         )
 
     async def async_step_friendly_name(
@@ -266,6 +240,8 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         N.B. defaults to the value of the friendly_name instance variable
         """
         _LOGGER.debug(self.format("entered, user_input: %s"), user_input)
+
+        self._abort_if_unique_id_configured()
 
         if user_input is not None:
             self._friendly_name = user_input.get(CONF_FRIENDLY_NAME, "")
@@ -287,11 +263,12 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
             self._errors = {}
             self._host = user_input.get(CONF_HOST)
             self._friendly_name = self._discovered_devices.get(self._host)
-            self._serial = [
+            serial = [
                 dev.device_id
                 for dev in self._discovered_devices_hd
                 if dev.ip == self._host
             ][0]
+            await self.async_set_unique_id(unique_id=serial)
             return await self.async_step_friendly_name()
 
         # region #-- build the names to show as options --#
@@ -300,6 +277,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         ] = self.hass.config_entries.async_entries(domain=DOMAIN)
         existing_ids: List[str] = [ce.unique_id for ce in existing_entries]
         for dev in self._discovered_devices_hd:
+            await dev.async_gather_details()
             if dev.device_id not in existing_ids:
                 dev_name: str = ""
                 if dev.friendly_name:
@@ -340,12 +318,12 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
             _LOGGER.debug(self.format("%s"), json.dumps(service_list))
             service = service_list[0]
             self._host = urlparse(url=service.get("controlURL", "")).hostname
-        self._serial: str = discovery_info.upnp.get("serialNumber", "")
+        serial: str = discovery_info.upnp.get("serialNumber", "")
         # endregion
 
         # region #-- set a unique_id, update details if device has changed IP --#
-        _LOGGER.debug(self.format("setting unique_id: %s"), self._serial)
-        await self.async_set_unique_id(unique_id=self._serial)
+        _LOGGER.debug(self.format("setting unique_id: %s"), serial)
+        await self.async_set_unique_id(unique_id=serial)
         self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
         # endregion
 

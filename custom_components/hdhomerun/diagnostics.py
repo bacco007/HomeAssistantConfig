@@ -2,14 +2,18 @@
 
 # region #-- imports --#
 import logging
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict
 
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_DEVICE, DOMAIN
-from .pyhdhr import HDHomeRunDevice
+from .const import (
+    CONF_DATA_COORDINATOR_GENERAL,
+    CONF_DATA_COORDINATOR_TUNER_STATUS,
+    DOMAIN,
+)
+from .pyhdhr.discover import HDHomeRunDevice
 
 # endregion
 
@@ -21,16 +25,23 @@ async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, config_entry: ConfigEntry
 ) -> Dict[str, Any]:
     """Diagnostics for the config entry."""
-    props_to_remove: List[str] = [
-        "_log_formatter",
-        "_session",
-    ]
+    diags: Dict[str, Any] = {}
 
-    hdhomerun_device: HDHomeRunDevice = hass.data[DOMAIN][config_entry.entry_id][
-        CONF_DEVICE
-    ]
-    diags = hdhomerun_device.__dict__.copy()
-    for prop in props_to_remove:
-        diags.pop(prop, None)
+    device: HDHomeRunDevice | None = hass.data[DOMAIN][config_entry.entry_id][
+        CONF_DATA_COORDINATOR_GENERAL
+    ].data
+    diags: Dict[str, Any] = {
+        "device": {
+            p: getattr(device, p, None)
+            for p in [prop for prop in dir(HDHomeRunDevice) if not prop.startswith("_")]
+            if not isinstance(getattr(device, p, None), Callable)
+        }
+    }
 
-    return async_redact_data(diags, to_redact=("_device_auth_str", "_device_id"))
+    device_tuner_status: HDHomeRunDevice | None = hass.data[DOMAIN][
+        config_entry.entry_id
+    ][CONF_DATA_COORDINATOR_TUNER_STATUS].data
+
+    diags["device"]["tuner_status"] = device_tuner_status.tuner_status
+
+    return async_redact_data(diags, to_redact=("device_id", "device_auth_string"))

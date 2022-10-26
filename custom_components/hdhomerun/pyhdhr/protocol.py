@@ -274,7 +274,7 @@ class HDHomeRunProtocol:
 
         return ret
 
-    async def get_hwmodel(self, timeout: float = 2.5) -> Dict[str, bytes]:
+    async def async_get_hwmodel(self, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the model number.
 
         :param timeout: timeout for the query
@@ -283,7 +283,7 @@ class HDHomeRunProtocol:
         value_name = "/sys/hwmodel"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_model(self, timeout: float = 2.5) -> Dict[str, bytes]:
+    async def async_get_model(self, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the firmware name.
 
         :param timeout: timeout for the query
@@ -292,7 +292,7 @@ class HDHomeRunProtocol:
         value_name = "/sys/model"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_tuner_current_channel(
+    async def async_get_tuner_current_channel(
         self, tuner_idx, timeout: float = 2.5
     ) -> Tuple[Dict[str, bytes], ...]:
         """Get the current channel information from the tuner.
@@ -311,7 +311,7 @@ class HDHomeRunProtocol:
 
         return channel_details
 
-    async def get_tuner_status(
+    async def async_get_tuner_status(
         self, tuner_idx: int, timeout: float = 2.5
     ) -> Dict[str, bytes]:
         """Get the current tuner status.
@@ -326,7 +326,7 @@ class HDHomeRunProtocol:
         value_name: str = f"/tuner{tuner_idx}/status"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_version(self, timeout: float = 2.5) -> Dict[str, bytes]:
+    async def async_get_version(self, timeout: float = 2.5) -> Dict[str, bytes]:
         """Get the firmware version.
 
         :param timeout: timeout for the query
@@ -335,7 +335,7 @@ class HDHomeRunProtocol:
         value_name = "/sys/version"
         return await self._get_set_req(tag=value_name, timeout=timeout)
 
-    async def get_available_options(self, timeout: float = 2.5) -> List[str]:
+    async def async_get_available_options(self, timeout: float = 2.5) -> List[str]:
         """Get the available variables that can be set/queried on the device.
 
         :param timeout: timeout for the query
