@@ -191,11 +191,11 @@ class WorldsAirQualityIndexSensor(SensorEntity):
         self._updateLastTime = self._requester.GetUpdateLastTime()
 
         if self._resType == 'aqi':
-            if _data["data"]["aqi"] == "-":
+            if self._data["data"]["aqi"] == "-":
                 _LOGGER.warning("aqi value from json waqi api was undefined ('-' value)")
                 self._state = 0
             else:
-                self._state = int(_data["data"]["aqi"])
+                self._state = int(self._data["data"]["aqi"])
         elif self._resType == 't':
             if self._tempUnit == TEMP_FAHRENHEIT:
                 self._state = 9.0 * float(self._data["data"]["iaqi"]['t']["v"]) / 5.0 + 32.0

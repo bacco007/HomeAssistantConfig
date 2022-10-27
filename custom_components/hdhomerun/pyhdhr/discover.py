@@ -132,7 +132,10 @@ class Discover:
 
                 return None
 
-            if self._broadcast_address != DEF_BROADCAST_ADDRESS:
+            if (
+                self._broadcast_address != DEF_BROADCAST_ADDRESS
+                and self._mode is DiscoverMode.HTTP
+            ):
                 discovered_devices = [HDHomeRunDevice(host=self._broadcast_address)]
                 setattr(discovered_devices[0], "_discovery_method", DiscoverMode.HTTP)
             already_discovered = [device.ip for device in discovered_devices]
@@ -150,11 +153,15 @@ class Discover:
                             discovered_devices[discovered_idx].discovery_method
                             is DiscoverMode.HTTP
                         ):
-                            _LOGGER.warning(
-                                "%s is not available locally, removing from discovered devices",
+                            _LOGGER.debug(
+                                "%s is not available locally over HTTP, setting to UDP only",
                                 device_ip,
                             )
-                            discovered_devices.pop(discovered_idx)
+                            setattr(
+                                discovered_devices[discovered_idx],
+                                "_discovery_method",
+                                DiscoverMode.UDP,
+                            )
                     else:
                         setattr(
                             discovered_devices[discovered_idx],

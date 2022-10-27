@@ -78,10 +78,13 @@ class HDHomeRunDevice:
         """Friendly representation of the device."""
         return f"{self.__class__.__name__} {self._host}"
 
-    def get_from_datagram(self, tag: int) -> str | None:
+    def get_from_datagram(
+        self, tag: int, device_details: HDHomeRunDevice | None = None
+    ) -> str | None:
         """Grab the data from the processed datagram."""
         ret: str | None = None
-        value = self._processed_datagram.get("data", {}).get(tag, b"")
+        device = device_details or self
+        value = getattr(device, "_processed_datagram", {}).get("data", {}).get(tag, b"")
         if tag == HDHOMERUN_TAG_BASE_URL:
             ret = value.decode()
         elif tag == HDHOMERUN_TAG_DEVICE_AUTH_STR:
@@ -107,7 +110,7 @@ class HDHomeRunDevice:
                 raise_for_status=True,
             ),
             self._session.get(
-                url=f"http://{self.ip}/{DevicePaths.LINEUP}",
+                url=self.lineup_url or f"http://{self.ip}/{DevicePaths.LINEUP}",
                 params={
                     "show": "found",
                 },
@@ -135,7 +138,7 @@ class HDHomeRunDevice:
         if updated_device:
             updated_device = updated_device[0]
             for tag in getattr(updated_device, "_processed_datagram", {}).get("data"):
-                value = self.get_from_datagram(tag=tag)
+                value = self.get_from_datagram(device_details=updated_device, tag=tag)
                 if tag == HDHOMERUN_TAG_BASE_URL:
                     self._base_url = value
                 elif tag == HDHOMERUN_TAG_DEVICE_AUTH_STR:

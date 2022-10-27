@@ -54,8 +54,8 @@ LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = ("media_player", "switch", "number", "select")
 
-MIN_HA_VERSION = "2022.8.0"
-MAX_HA_VERSION = "2022.8.999"
+MIN_HA_VERSION = "2022.11.0"
+MAX_HA_VERSION = "2022.12.999"
 
 
 async def read_manifest() -> dict:

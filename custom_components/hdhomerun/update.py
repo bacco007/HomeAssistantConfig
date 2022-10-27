@@ -8,7 +8,11 @@ from abc import ABC
 from typing import List
 
 from homeassistant.components.update import DOMAIN as ENTITY_DOMAIN
-from homeassistant.components.update import UpdateEntity, UpdateEntityDescription
+from homeassistant.components.update import (
+    UpdateDeviceClass,
+    UpdateEntity,
+    UpdateEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -30,6 +34,8 @@ class RequiredHDHomerunUpdateDescription:
 @dataclasses.dataclass
 class OptionalHDHomerunUpdateDescription:
     """Represent the optional attributes of the Update description."""
+
+    release_url: str | None = None
 
 
 @dataclasses.dataclass
@@ -63,8 +69,10 @@ async def async_setup_entry(
                 config_entry=config_entry,
                 coordinator=coordinator_general,
                 description=HDHomerunUpdateEntityDescription(
+                    device_class=UpdateDeviceClass.FIRMWARE,
                     key="",
                     name="Update",
+                    release_url="https://www.silicondust.com/support/downloads/firmware-changelog/",
                 ),
             )
         )
@@ -105,3 +113,8 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
         N.B. this is set to the currently installed version if not found
         """
         return self.coordinator.data.latest_version or self.installed_version
+
+    @property
+    def release_url(self) -> str | None:
+        """Get the URL to release notes."""
+        return self.entity_description.release_url

@@ -16,7 +16,7 @@ from homeassistant.components.sensor import SensorDeviceClass
 
 DOMAIN = "worlds_air_quality_index"
 PLATFORMS = [Platform.SENSOR]
-SW_VERSION = "0.3.4"
+SW_VERSION = "0.3.5"
 
 SCAN_INTERVAL = timedelta(minutes=30)
 
