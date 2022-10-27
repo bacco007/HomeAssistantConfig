@@ -43,5 +43,9 @@ async def async_get_config_entry_diagnostics(
     ][CONF_DATA_COORDINATOR_TUNER_STATUS].data
 
     diags["device"]["tuner_status"] = device_tuner_status.tuner_status
+    diags["device"]["raw_details"] = getattr(device, "_raw_details", None)
+    diags["device"]["processed_datagram"] = getattr(device, "_processed_datagram", None)
 
-    return async_redact_data(diags, to_redact=("device_id", "device_auth_string"))
+    return async_redact_data(
+        diags, to_redact=("device_id", "DeviceID", "device_auth_string", "DeviceAuth")
+    )

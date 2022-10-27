@@ -23,6 +23,7 @@ from .const import (
     HDHOMERUN_TAG_TUNER_COUNT,
     DiscoverMode,
 )
+from .decorators import needs_http
 from .logger import Logger
 from .protocol import HDHomeRunProtocol
 
@@ -52,13 +53,6 @@ class DeviceType(Enum):
 class HDHomeRunDevice:
     """Representation of a device."""
 
-    def __del__(self) -> None:
-        """Cleanup."""
-        if self._session:
-            asyncio.run_coroutine_threadsafe(
-                coro=self._session.close(), loop=asyncio.get_event_loop()
-            )
-
     def __init__(self, host: str) -> None:
         """Initialise."""
         self._discovery_method: DiscoverMode | None = None
@@ -66,7 +60,7 @@ class HDHomeRunDevice:
         self._log_formatter: Logger = Logger(unique_id=self._host)
         self._processed_datagram: Dict[str, Any]
         self._raw_details: Dict[str, Any] = {}
-        self._session: aiohttp.ClientSession = aiohttp.ClientSession()
+        self._session: aiohttp.ClientSession | None = None
 
         self._base_url: str | None = None
         self._channel_sources: List[str] | None = None
@@ -104,14 +98,20 @@ class HDHomeRunDevice:
 
         return ret
 
+    @needs_http
     async def _async_gather_details_http(self) -> None:
         """Gather details for an HTTP discovered device."""
         requests: List[aiohttp.ClientRequest] = [
             self._session.get(
-                url=f"http://{self.ip}/{DevicePaths.DISCOVER}", raise_for_status=True
+                url=f"http://{self.ip}/{DevicePaths.DISCOVER}",
+                raise_for_status=True,
             ),
             self._session.get(
-                url=f"http://{self.ip}/{DevicePaths.LINEUP}", raise_for_status=True
+                url=f"http://{self.ip}/{DevicePaths.LINEUP}",
+                params={
+                    "show": "found",
+                },
+                raise_for_status=True,
             ),
             self._session.get(
                 url=f"http://{self.ip}/{DevicePaths.LINEUP_STATUS}",
@@ -130,7 +130,7 @@ class HDHomeRunDevice:
 
         # region #-- get the properties available from a discovery --#
         updated_device: List[HDHomeRunDevice] | HDHomeRunDevice = await Discover(
-            broadcast_address=self.ip, mode=DiscoverMode.UDP
+            broadcast_address=self.ip, mode=DiscoverMode.UDP, session=None
         ).async_discover()
         if updated_device:
             updated_device = updated_device[0]
@@ -213,6 +213,7 @@ class HDHomeRunDevice:
 
         return ret
 
+    @needs_http
     async def _async_get_tuner_status_http(self) -> None:
         """Get the current details for the tuners using HTTP."""
         resp: aiohttp.ClientResponse = await self._session.get(
@@ -277,6 +278,7 @@ class HDHomeRunDevice:
         if self._discovery_method is DiscoverMode.UDP:
             await self._async_gather_details_udp()
 
+    @needs_http
     async def async_get_channel_scan_progress(self, timeout: float = 2.5) -> int | None:
         """Return the current channel scan progress as of now."""
         try:
@@ -318,6 +320,7 @@ class HDHomeRunDevice:
         proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
         await proto.async_restart()
 
+    @needs_http
     async def async_channel_scan_start(self, channel_source: str) -> None:
         """Start a channel scan on the device."""
         _LOGGER.debug(self._log_formatter.format("entered"))
@@ -329,10 +332,16 @@ class HDHomeRunDevice:
             "scan": "start",
             "source": channel_source,
         }
-        await self._session.post(
-            url=f"{self.base_url}/{DevicePaths.LINEUP_ACTION}",
-            params=params,
-        )
+        try:
+            await self._session.post(
+                url=f"{self.base_url}/{DevicePaths.LINEUP_ACTION}",
+                params=params,
+                raise_for_status=True,
+            )
+        except Exception as err:
+            _LOGGER.error(self._log_formatter.format("%s; %s"), type(err), err)
+            raise err from None
+
         _LOGGER.debug(self._log_formatter.format("exited"))
 
     # region #-- properties --#

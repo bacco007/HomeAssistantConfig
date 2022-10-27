@@ -7,6 +7,7 @@ import asyncio
 import logging
 from typing import Dict, List, Tuple
 
+import aiohttp
 import asyncclick as click
 
 from .discover import Discover, DiscoverMode, HDHomeRunDevice
@@ -14,7 +15,7 @@ from .logger import Logger
 
 # endregion
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger("pyhdhr.cli")
 log_formatter: Logger = Logger()
 
 click.anyio_backend = "asyncio"
@@ -25,50 +26,57 @@ click.anyio_backend = "asyncio"
 @click.pass_context
 async def cli(ctx: click.Context = None, verbose: int = 0) -> None:
     """Initialise the CLI."""
-    if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
-    else:
-        if verbose:
-            logging.basicConfig()
-            _LOGGER.setLevel(logging.DEBUG)
-            if verbose > 1:
-                logging.getLogger("pyhdhr").setLevel(logging.DEBUG)
-
-    await asyncio.sleep(0.1)
+    ctx.obj = aiohttp.ClientSession()
+    if verbose:
+        logging.basicConfig()
+        _LOGGER.setLevel(logging.DEBUG)
+        if verbose > 1:
+            logging.getLogger("pyhdhr").setLevel(logging.DEBUG)
 
 
 @cli.command()
 @click.option("--source")
 @click.option("--target")
-async def channel_scan(source: str, target: str):
+@click.pass_context
+async def channel_scan(ctx: click.Context, source: str, target: str):
     """Carry out a channel scan on the device."""
     _LOGGER.debug(log_formatter.format("entered, args: %s"), locals())
 
-    device: List[HDHomeRunDevice] | HDHomeRunDevice = await Discover(
-        broadcast_address=target
-    ).async_discover()
-    if device:
-        device = device[0]
-        await device.async_gather_details()
-        await device.async_channel_scan_start(channel_source=source)
-        prev_progress: int = 0
+    async with ctx.obj as session:
+        device: List[HDHomeRunDevice] | HDHomeRunDevice = await Discover(
+            broadcast_address=target, session=session
+        ).async_discover()
+        if device:
+            device = device[0]
+            await device.async_gather_details()
+            try:
+                await device.async_channel_scan_start(channel_source=source)
+            except Exception as err:  # pylint: disable=broad-except
+                _LOGGER.error(
+                    log_formatter.format("Error when attempting to scan channels")
+                )
+                _LOGGER.error(log_formatter.format("%s"), err)
+            else:
+                prev_progress: int = 0
 
-        with click.progressbar(
-            label="Channel scanning progress",
-            length=100,
-            show_eta=False,
-            show_percent=True,
-        ) as pbar:
-            while True:
-                progress: int | None = await device.async_get_channel_scan_progress()
-                if progress is None:
-                    pbar.update(100 - prev_progress)
-                    break
+                with click.progressbar(
+                    label="Channel scanning progress",
+                    length=100,
+                    show_eta=False,
+                    show_percent=True,
+                ) as pbar:
+                    while True:
+                        progress: int | None = (
+                            await device.async_get_channel_scan_progress()
+                        )
+                        if progress is None:
+                            pbar.update(100 - prev_progress)
+                            break
 
-                if prev_progress != progress:
-                    pbar.update(progress - prev_progress)
-                    prev_progress = progress
-                await asyncio.sleep(1)
+                        if prev_progress != progress:
+                            pbar.update(progress - prev_progress)
+                            prev_progress = progress
+                        await asyncio.sleep(1)
 
     _LOGGER.debug(log_formatter.format("exited"))
 
@@ -76,53 +84,56 @@ async def channel_scan(source: str, target: str):
 @cli.command()
 @click.option("-b", "--broadcast-address", default="255.255.255.255")
 @click.option("-m", "--mode", default=DiscoverMode.AUTO.value)
+@click.pass_context
 async def discover(
+    ctx: click.Context,
     broadcast_address: str | None = None,
     mode: DiscoverMode = DiscoverMode.AUTO,
 ) -> None:
     """Attempt to discover devices."""
     _LOGGER.debug(log_formatter.format("entered, args: %s"), locals())
 
-    devices: List[HDHomeRunDevice] = await Discover(
-        broadcast_address=broadcast_address, mode=mode
-    ).async_discover()
+    async with ctx.obj as session:
+        devices: List[HDHomeRunDevice] = await Discover(
+            broadcast_address=broadcast_address, mode=mode, session=session
+        ).async_discover()
 
-    dev: HDHomeRunDevice
-    for dev in devices:
-        await dev.async_gather_details()
-        await dev.async_refresh_tuner_status()
-        _display_data(
-            _build_display_data(
-                mappings=[
-                    ("device_id", "Device ID"),
-                    ("device_type", "Device Type"),
-                    ("discovery_method", "Discovery Method"),
-                    ("device_auth_string", "Device Auth"),
-                    ("base_url", "Base URL"),
-                    ("lineup_url", "LineUp URL"),
-                    ("tuner_count", "# Tuners"),
-                    ("model", "Model"),
-                    ("hw_model", "HW Model"),
-                    ("installed_version", "Firmware Version"),
-                    ("latest_version", "Latest Firmware Version"),
-                    ("channel_scanning", "Channel Scanning"),
-                    ("tuner_status", "Tuner Status"),
-                    # (
-                    #     "channels",
-                    #     "Channels",
-                    #     "\n  "
-                    #     + "\n  ".join(
-                    #         [
-                    #             f"{channel.get('GuideNumber')}: {channel.get('GuideName')}"
-                    #             for channel in dev.channels
-                    #         ]
-                    #     ),
-                    # ),
-                ],
-                obj=dev,
-                title=dev.friendly_name or dev.device_id,
+        dev: HDHomeRunDevice
+        for dev in devices:
+            await dev.async_gather_details()
+            await dev.async_refresh_tuner_status()
+            _display_data(
+                _build_display_data(
+                    mappings=[
+                        ("device_id", "Device ID"),
+                        ("device_type", "Device Type"),
+                        ("discovery_method", "Discovery Method"),
+                        ("device_auth_string", "Device Auth"),
+                        ("base_url", "Base URL"),
+                        ("lineup_url", "LineUp URL"),
+                        ("tuner_count", "# Tuners"),
+                        ("model", "Model"),
+                        ("hw_model", "HW Model"),
+                        ("installed_version", "Firmware Version"),
+                        ("latest_version", "Latest Firmware Version"),
+                        ("channel_scanning", "Channel Scanning"),
+                        ("tuner_status", "Tuner Status"),
+                        # (
+                        #     "channels",
+                        #     "Channels",
+                        #     "\n  "
+                        #     + "\n  ".join(
+                        #         [
+                        #             f"{channel.get('GuideNumber')}: {channel.get('GuideName')}"
+                        #             for channel in dev.channels
+                        #         ]
+                        #     ),
+                        # ),
+                    ],
+                    obj=dev,
+                    title=dev.friendly_name or dev.device_id,
+                )
             )
-        )
 
     _LOGGER.debug(log_formatter.format("exited"))
 

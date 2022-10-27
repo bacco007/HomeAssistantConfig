@@ -82,19 +82,20 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create the sensor."""
+    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
+        CONF_DATA_COORDINATOR_GENERAL
+    ]
     sensors = [
         HDHomerunBinarySensor(
             config_entry=config_entry,
-            coordinator=hass.data[DOMAIN][config_entry.entry_id][
-                CONF_DATA_COORDINATOR_GENERAL
-            ],
+            coordinator=coordinator,
             description=description,
         )
         for description in BINARY_SENSORS
     ]
 
-    sensors.extend(
-        [
+    if coordinator.data.channel_sources:
+        sensors.append(
             HDHomeRunRecurringBinarySensor(
                 config_entry=config_entry,
                 coordinator=hass.data[DOMAIN][config_entry.entry_id][
@@ -111,9 +112,8 @@ async def async_setup_entry(
                 recurrence_trigger=SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED,
                 state_method="async_get_channel_scan_progress",
                 state_processor=lambda s: s is not None,
-            ),
-        ]
-    )
+            )
+        )
 
     # region #-- add version sensors if need be --#
     if UPDATE_DOMAIN is None:

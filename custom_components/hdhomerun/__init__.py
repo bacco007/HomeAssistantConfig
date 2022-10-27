@@ -3,7 +3,7 @@
 # region #-- imports --#
 import logging
 from datetime import timedelta
-from typing import List
+from typing import Any, Callable, List, Mapping
 
 import homeassistant.helpers.entity_registry as er
 from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady
@@ -21,8 +21,10 @@ from homeassistant.util import slugify
 from .const import (
     CONF_DATA_COORDINATOR_GENERAL,
     CONF_DATA_COORDINATOR_TUNER_STATUS,
+    CONF_DISCOVERY_MODE,
     CONF_HOST,
     CONF_SCAN_INTERVAL_TUNER_STATUS,
+    DEF_DISCOVERY_MODE,
     DEF_SCAN_INTERVAL_SECS,
     DEF_SCAN_INTERVAL_TUNER_STATUS_SECS,
     DOMAIN,
@@ -66,6 +68,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             ) is None:
                 device = await Discover(
                     broadcast_address=config_entry.data.get(CONF_HOST),
+                    mode=DiscoverMode(
+                        config_entry.options.get(
+                            CONF_DISCOVERY_MODE, DEF_DISCOVERY_MODE.value
+                        )
+                    ),
                     session=async_get_clientsession(hass=hass),
                 ).async_discover()
                 if device:
@@ -88,10 +95,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             ) is None:
                 device = await Discover(
                     broadcast_address=config_entry.data.get(CONF_HOST),
+                    mode=DiscoverMode(
+                        config_entry.options.get(
+                            CONF_DISCOVERY_MODE, DEF_DISCOVERY_MODE.value
+                        )
+                    ),
                     session=async_get_clientsession(hass=hass),
                 ).async_discover()
                 if device:
                     device = device[0]
+            await device.async_gather_details()
             await device.async_refresh_tuner_status()
         except Exception as exc:
             _LOGGER.warning(log_formatter.format("%s"), exc)
@@ -213,6 +226,16 @@ class HDHomerunEntity(CoordinatorEntity):
             if self.coordinator.data
             else "",
         )
+
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Additional attributes for the entity."""
+        if hasattr(self.entity_description, "extra_attributes") and isinstance(
+            self.entity_description.extra_attributes, Callable
+        ):
+            return self.entity_description.extra_attributes(self.coordinator.data)
+
+        return None
 
 
 # endregion

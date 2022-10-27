@@ -16,6 +16,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from . import HDHomerunEntity
 from .const import CONF_DATA_COORDINATOR_GENERAL, DOMAIN
+from .pyhdhr.const import DiscoverMode
 
 # endregion
 
@@ -54,16 +55,19 @@ async def async_setup_entry(
     ][CONF_DATA_COORDINATOR_GENERAL]
 
     # region #-- add default sensors --#
-    update_entities: List[HDHomerunUpdate] = [
-        HDHomerunUpdate(
-            config_entry=config_entry,
-            coordinator=coordinator_general,
-            description=HDHomerunUpdateEntityDescription(
-                key="",
-                name="Update",
-            ),
+    update_entities: List[HDHomerunUpdate] = []
+
+    if coordinator_general.data.discovery_method is DiscoverMode.HTTP:
+        update_entities.append(
+            HDHomerunUpdate(
+                config_entry=config_entry,
+                coordinator=coordinator_general,
+                description=HDHomerunUpdateEntityDescription(
+                    key="",
+                    name="Update",
+                ),
+            )
         )
-    ]
     # endregion
 
     async_add_entities(update_entities)

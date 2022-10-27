@@ -19,6 +19,22 @@ class HDHomeRunConnectionError(HDHomeRunError):
         super().__init__(message="Error connecting", device=device)
 
 
+class HDHomeRunDeviceHasNoSession(Exception):
+    """Base error for when a device was discovered using HTTP but no session is available."""
+
+    def __init__(self) -> None:
+        """Initialise."""
+        super().__init__("No session available for HTTP requests")
+
+
+class HDHomeRunDeviceMustBeHTTP(Exception):
+    """Base error for when a device was not discovered using HTTP."""
+
+    def __init__(self) -> None:
+        """Initialise."""
+        super().__init__("The device was not discovered using HTTP")
+
+
 class HDHomeRunDeviceNotFoundError(HDHomeRunError):
     """Base error for a device that is not found."""
 

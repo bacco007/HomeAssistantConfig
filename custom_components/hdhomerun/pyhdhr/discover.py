@@ -38,10 +38,10 @@ class Discover:
 
     def __init__(
         self,
+        session: aiohttp.ClientSession,
         broadcast_address: str = DEF_BROADCAST_ADDRESS,
         interface: str | None = None,
         mode: DiscoverMode = DiscoverMode.AUTO,
-        session: aiohttp.ClientSession | None = None,
     ) -> None:
         """Initialise."""
         self._log_formatter: Logger = Logger()
@@ -49,10 +49,7 @@ class Discover:
         self._created_session: bool = False
         self._interface: str | None = interface
         self._mode: DiscoverMode = DiscoverMode(mode)
-        self._session: aiohttp.ClientSession = session
-        if self._session is None:
-            self._session = aiohttp.ClientSession()
-            self._created_session = True
+        self._session: aiohttp.ClientSession | None = session or None
         self._udp_timeout: float = 1
 
     async def async_discover(self) -> List[HDHomeRunDevice]:
@@ -163,6 +160,11 @@ class Discover:
                             discovered_devices[discovered_idx],
                             "_discovery_method",
                             DiscoverMode.HTTP,
+                        )
+                        setattr(
+                            discovered_devices[discovered_idx],
+                            "_session",
+                            self._session,
                         )
             # endregion
 

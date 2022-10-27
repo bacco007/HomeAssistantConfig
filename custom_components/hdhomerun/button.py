@@ -67,17 +67,6 @@ class HDHomeRunButtonDescription(
 
 BUTTON_DESCRIPTIONS: tuple[HDHomeRunButtonDescription, ...] = (
     HDHomeRunButtonDescription(
-        key="",
-        listen_for_signal=SIGNAL_HDHOMERUN_CHANNEL_SOURCE_CHANGE,
-        listen_for_signal_action="_set_channel_source",
-        name="Channel Scan",
-        press_action="async_channel_scan_start",
-        press_action_arguments={
-            "signal": SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED,
-            "channel_source": lambda s: getattr(s, "_channel_source", None),
-        },
-    ),
-    HDHomeRunButtonDescription(
         device_class=ButtonDeviceClass.RESTART,
         key="",
         name="Restart",
@@ -92,7 +81,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create the button."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][
+    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
         CONF_DATA_COORDINATOR_GENERAL
     ]
 
@@ -104,6 +93,26 @@ async def async_setup_entry(
         )
         for button_description in BUTTON_DESCRIPTIONS
     ]
+
+    if coordinator.data.channel_sources:
+        buttons.append(
+            HDHomeRunButton(
+                config_entry=config_entry,
+                coordinator=coordinator,
+                description=HDHomeRunButtonDescription(
+                    icon="mdi:text-search",
+                    key="",
+                    listen_for_signal=SIGNAL_HDHOMERUN_CHANNEL_SOURCE_CHANGE,
+                    listen_for_signal_action="_set_channel_source",
+                    name="Channel Scan",
+                    press_action="async_channel_scan_start",
+                    press_action_arguments={
+                        "signal": SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED,
+                        "channel_source": lambda s: getattr(s, "_channel_source", None),
+                    },
+                ),
+            )
+        )
 
     async_add_entities(buttons)
 

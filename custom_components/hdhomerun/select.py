@@ -64,16 +64,20 @@ async def async_setup_entry(
         CONF_DATA_COORDINATOR_GENERAL
     ]
 
-    selects: List[HDHomeRunSelect] = [
-        HDHomeRunSelect(
-            config_entry=config_entry,
-            coordinator=coordinator,
-            description=HDHomeRunSelectDescription(
-                key="channel_sources",
-                name="Channel Sources",
-            ),
+    selects: List[HDHomeRunSelect] = []
+
+    if coordinator.data.channel_sources:
+        selects.append(
+            HDHomeRunSelect(
+                config_entry=config_entry,
+                coordinator=coordinator,
+                description=HDHomeRunSelectDescription(
+                    entity_category=EntityCategory.CONFIG,
+                    key="channel_sources",
+                    name="Channel Sources",
+                ),
+            )
         )
-    ]
 
     async_add_entities(selects)
 
@@ -89,7 +93,6 @@ class HDHomeRunSelect(HDHomerunEntity, SelectEntity):
     ) -> None:
         """Initialise."""
         self._attr_current_option = None
-        self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self.entity_domain = ENTITY_DOMAIN
 
         super().__init__(
