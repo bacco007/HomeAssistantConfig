@@ -1,5 +1,5 @@
 ---
-alias: OpenUV - Update During Day (15min Interval)
+alias: OpenUV - Update During Day
 id: 003780ee-c3a1-475a-b54f-8f2ef3a5c2dcß
 trigger:
   - platform: time_pattern
@@ -12,9 +12,9 @@ condition:
   - condition: template
     value_template: >-
       {{
-        state_attr('automation.openuv_update_during_day_15min_interval', 'last_triggered') == None
+        state_attr('automation.openuv_update_during_day', 'last_triggered') == None
         or (
-          now() - state_attr('automation.openuv_update_during_day_15min_interval', 'last_triggered')
+          now() - state_attr('automation.openuv_update_during_day', 'last_triggered')
         ) >= timedelta(hours = 0, minutes = 40)
       }}
 action:
