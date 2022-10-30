@@ -58,6 +58,7 @@ class Discover:
         discovered_devices: List[HDHomeRunDevice] = []
 
         if self._mode in (DiscoverMode.AUTO, DiscoverMode.UDP):
+            _LOGGER.debug(self._log_formatter.format("carrying out UDP discovery"))
             loop = asyncio.get_event_loop()
             transport, protocol = await loop.create_datagram_endpoint(
                 lambda: _DiscoverProtocol(
@@ -78,11 +79,18 @@ class Discover:
                 transport.close()
 
             discovered_devices.extend(protocol.discovered_devices)
+            _LOGGER.debug(
+                self._log_formatter.format("UDP discovery found %d devices"),
+                len(discovered_devices),
+            )
 
         if self._mode in (DiscoverMode.AUTO, DiscoverMode.HTTP):
             if self._broadcast_address == DEF_BROADCAST_ADDRESS:
                 # region #-- query the SiliconDust online service --#
                 try:
+                    _LOGGER.debug(
+                        self._log_formatter.format("querying the online service")
+                    )
                     url: str = "https://ipv4-api.hdhomerun.com/discover"
                     response: aiohttp.ClientResponse = await self._session.get(
                         url=url,
@@ -101,6 +109,11 @@ class Discover:
                 # endregion
 
                 # region #-- upgrade to existing device to HTTP or add new ones in --#
+                _LOGGER.debug(
+                    self._log_formatter.format(
+                        "matching up UDP results and those from the online service"
+                    )
+                )
                 already_discovered = [device.ip for device in discovered_devices]
                 resp_json = await response.json()
                 for device in resp_json:
@@ -110,8 +123,19 @@ class Discover:
                         except ValueError:
                             hdhr_device = HDHomeRunDevice(host=host)
                             setattr(hdhr_device, "_discovery_method", DiscoverMode.HTTP)
+                            _LOGGER.debug(
+                                self._log_formatter.format(
+                                    "adding %s to discovered devices"
+                                )
+                            )
                             discovered_devices.append(hdhr_device)
                         else:
+                            _LOGGER.debug(
+                                self._log_formatter.format(
+                                    "updating %s to use HTTP discovery"
+                                ),
+                                host,
+                            )
                             setattr(
                                 discovered_devices[idx],
                                 "_discovery_method",
@@ -136,6 +160,10 @@ class Discover:
                 self._broadcast_address != DEF_BROADCAST_ADDRESS
                 and self._mode is DiscoverMode.HTTP
             ):
+                _LOGGER.debug(
+                    self._log_formatter.format("creating dummy found device for %s"),
+                    self._broadcast_address,
+                )
                 discovered_devices = [HDHomeRunDevice(host=self._broadcast_address)]
                 setattr(discovered_devices[0], "_discovery_method", DiscoverMode.HTTP)
             already_discovered = [device.ip for device in discovered_devices]
@@ -143,6 +171,12 @@ class Discover:
                 discovered_idx = _find_in_discovered_devices(device_ip)
                 if discovered_idx is not None:
                     try:
+                        _LOGGER.debug(
+                            self._log_formatter.format(
+                                "attempting to reach local discovery for %s"
+                            ),
+                            device_ip,
+                        )
                         url = f"http://{device_ip}/{DevicePaths.DISCOVER}"
                         response: aiohttp.ClientResponse = await self._session.get(
                             url=url,
@@ -154,7 +188,9 @@ class Discover:
                             is DiscoverMode.HTTP
                         ):
                             _LOGGER.debug(
-                                "%s is not available locally over HTTP, setting to UDP only",
+                                self._log_formatter.format(
+                                    "%s is not available locally over HTTP, setting to UDP only"
+                                ),
                                 device_ip,
                             )
                             setattr(
@@ -163,6 +199,12 @@ class Discover:
                                 DiscoverMode.UDP,
                             )
                     else:
+                        _LOGGER.debug(
+                            self._log_formatter.format(
+                                "setting %s to use HTTP mode and setting the session"
+                            ),
+                            device_ip,
+                        )
                         setattr(
                             discovered_devices[discovered_idx],
                             "_discovery_method",
@@ -183,6 +225,11 @@ class Discover:
                 raise HDHomeRunDeviceNotFoundError(device="no devices")
 
             raise HDHomeRunDeviceNotFoundError(device=self._broadcast_address)
+
+        _LOGGER.debug(
+            self._log_formatter.format("discovered devices: %s"),
+            discovered_devices,
+        )
         _LOGGER.debug(self._log_formatter.format("exited"))
         return discovered_devices
 

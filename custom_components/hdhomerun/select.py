@@ -32,7 +32,7 @@ class OptionalHDHomeRunSelectDescription:
 
     extra_attributes_args: dict | None = dataclasses.field(default_factory=dict)
     extra_attributes: Callable[[Any], dict] | None = None
-    options: Callable[[Any], list[str]] | list[str] = dataclasses.field(
+    custom_options: Callable[[Any], list[str]] | list[str] = dataclasses.field(
         default_factory=list
     )
 
@@ -117,7 +117,7 @@ class HDHomeRunSelect(HDHomerunEntity, SelectEntity):
         if self.entity_description.key:
             return getattr(self.coordinator.data, self.entity_description.key, None)
 
-        if isinstance(self.entity_description.options, Callable):
-            return self.entity_description.options(self.coordinator.data)
+        if isinstance(self.entity_description.custom_options, Callable):
+            return self.entity_description.custom_options(self.coordinator.data)
 
-        return self.entity_description.options
+        return self.entity_description.custom_options or self.entity_description.options
