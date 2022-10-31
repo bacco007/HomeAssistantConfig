@@ -49,8 +49,16 @@ TYPE_NATIVE_LAUNCH = "NATIVE_LAUNCH"
 _WS_ENDPOINT_REMOTE_CONTROL = "/api/v2/channels/samsung.remote.control"
 _WS_ENDPOINT_APP_CONTROL = "/api/v2"
 _WS_ENDPOINT_ART = "/api/v2/channels/com.samsung.art-app"
+_WS_LOG_NAME = "websocket"
 
 _LOGGING = logging.getLogger(__name__)
+
+
+def _set_ws_logger_level(level: int = logging.CRITICAL) -> None:
+    """Set the websocket library logging level."""
+    ws_logger = logging.getLogger(_WS_LOG_NAME)
+    if ws_logger.level < level:
+        ws_logger.setLevel(level)
 
 
 def _format_rest_url(host: str, append: str = "") -> str:
@@ -58,7 +66,7 @@ def _format_rest_url(host: str, append: str = "") -> str:
     return f"http://{host}:8001/api/v2/{append}"
 
 
-def gen_uuid():
+def gen_uuid() -> str:
     """Generate new uuid."""
     return str(uuid.uuid4())
 
@@ -353,6 +361,16 @@ class SamsungTVWS:
                         return True
         return False
 
+    @staticmethod
+    def _run_forever(
+        ws_app: websocket.WebSocketApp, *, sslopt: dict = None, ping_interval: int = 0
+    ) -> None:
+        """Call method run_forever changing library log level before."""
+        _set_ws_logger_level()
+        ws_app.run_forever(
+            sslopt=sslopt, ping_interval=ping_interval
+        )
+
     def _client_remote_thread(self):
         if self._ws_remote:
             return
@@ -373,8 +391,8 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungRemote started")
         # we set ping interval (1 hour) only to enable multi-threading mode
         # on socket. TV do not answer to ping but send ping to client
-        self._ws_remote.run_forever(
-            sslopt=sslopt, ping_interval=3600
+        self._run_forever(
+            self._ws_remote, sslopt=sslopt, ping_interval=3600
         )
         self._is_connected = False
         if self._ws_art:
@@ -463,8 +481,8 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungControl started")
         # we set ping interval (1 hour) only to enable multi-threading mode
         # on socket. TV do not answer to ping but send ping to client
-        self._ws_control.run_forever(
-            sslopt=sslopt, ping_interval=3600
+        self._run_forever(
+            self._ws_control, sslopt=sslopt, ping_interval=3600
         )
         self._ws_control.close()
         self._ws_control = None
@@ -589,8 +607,8 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungArt started")
         # we set ping interval (1 hour) only to enable multi-threading mode
         # on socket. TV do not answer to ping but send ping to client
-        self._ws_art.run_forever(
-            sslopt=sslopt, ping_interval=3600
+        self._run_forever(
+            self._ws_art, sslopt=sslopt, ping_interval=3600
         )
         self._ws_art.close()
         self._ws_art = None

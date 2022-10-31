@@ -12,5 +12,5 @@
   "codeowners": ["@jaruba", "@ollo69", "@screwdgeh"],
   "config_flow": true,
   "iot_class": "cloud_polling",
-  "version": "0.7.8"
+  "version": "0.7.9"
 }
