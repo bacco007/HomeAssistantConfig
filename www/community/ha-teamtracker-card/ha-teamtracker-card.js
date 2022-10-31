@@ -25,17 +25,42 @@ class TeamTrackerCard extends LitElement {
     const stateObj = this.hass.states[this._config.entity];
     const outline = this._config.outline;
     const outlineColor = this._config.outline_color;
-    var teamProb = (stateObj.attributes.team_win_probability * 100).toFixed(0);
-    var oppoProb = (stateObj.attributes.opponent_win_probability * 100).toFixed(0);
+    var teamProb = 0;
+    if (stateObj.attributes.team_win_probability) {
+        var teamProb = (stateObj.attributes.team_win_probability * 100).toFixed(0);
+    }
+    var oppoProb = 0;
+    if (stateObj.attributes.opponent_win_probability) {
+        oppoProb = (stateObj.attributes.opponent_win_probability * 100).toFixed(0);
+    }
     var tScr = stateObj.attributes.team_score;
     var oScr = stateObj.attributes.opponent_score;
 
     var lang = this.hass.selectedLanguage || this.hass.language  || navigator.language || "en"
+
+    var time_format = "language";
+    try {
+      time_format = this.hass.locale["time_format"] || "language";
+    }
+    catch (e) {
+      time_format = "language"
+    }
+
     var t = new Translator(lang);
 
     var dateForm = new Date (stateObj.attributes.date);
     var gameDay = dateForm.toLocaleDateString(lang, { weekday: 'long' });
     var gameTime = dateForm.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit' });
+    if (time_format == "24") {
+      gameTime = dateForm.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', hour12:false });
+    }
+    if (time_format == "12") {
+      gameTime = dateForm.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', hour12:true });
+    }
+    if (time_format == "system") {
+      var sys_lang = navigator.language || "en"
+      gameTime = dateForm.toLocaleTimeString(sys_lang, { hour: '2-digit', minute:'2-digit' });
+    }
     var gameMonth = dateForm.toLocaleDateString(lang, { month: 'short' });
     var gameDate = dateForm.toLocaleDateString(lang, { day: '2-digit' });
     var outColor = outlineColor;
@@ -113,7 +138,7 @@ class TeamTrackerCard extends LitElement {
 
     var overUnder = '';
     if (stateObj.attributes.overunder) {
-      overUnder = t.translate(sport + ".overUnder", "%s", stateObj.attributes.overunder);
+      overUnder = t.translate(sport + ".overUnder", "%s", String(stateObj.attributes.overunder));
     }
     var gameStat1 = '';
     if (stateObj.attributes.down_distance_text) {
@@ -185,9 +210,9 @@ class TeamTrackerCard extends LitElement {
       var onThirdOp = 0.2;
     }
     if (sport.includes("baseball")) {
-      gameStat1 = t.translate("baseball.gameStat1", "%s", stateObj.attributes.balls);
-      gameStat2 = t.translate("baseball.gameStat2", "%s", stateObj.attributes.strikes);
-      gameStat3 = t.translate("baseball.gameStat3", "%s", stateObj.attributes.outs);
+      gameStat1 = t.translate("baseball.gameStat1", "%s", String(stateObj.attributes.balls));
+      gameStat2 = t.translate("baseball.gameStat2", "%s", String(stateObj.attributes.strikes));
+      gameStat3 = t.translate("baseball.gameStat3", "%s", String(stateObj.attributes.outs));
       outsDisplay = 'inherit';
       timeoutsDisplay = 'none';
       basesDisplay = 'inherit';
@@ -212,8 +237,8 @@ class TeamTrackerCard extends LitElement {
       gameBar = t.translate("volleyball.gameBar", "%s", stateObj.attributes.clock);
       teamProb = stateObj.attributes.team_score;
       oppoProb = stateObj.attributes.opponent_score;
-      teamBarLabel = t.translate("volleyball.teamBarLabel", "%s", stateObj.attributes.team_score);
-      oppoBarLabel = t.translate("volleyball.oppoBarLabel", "%s", stateObj.attributes.opponent_score);
+      teamBarLabel = t.translate("volleyball.teamBarLabel", "%s", String(stateObj.attributes.team_score));
+      oppoBarLabel = t.translate("volleyball.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score));
       teamTimeouts = stateObj.attributes.team_sets_won;
       oppoTimeouts = stateObj.attributes.opponent_sets_won;
       timeoutsDisplay = 'inline';
@@ -232,8 +257,8 @@ class TeamTrackerCard extends LitElement {
     if (sport.includes("hockey")) {
       teamProb = stateObj.attributes.team_shots_on_target;
       oppoProb = stateObj.attributes.opponent_shots_on_target;
-      teamBarLabel = t.translate("hockey.teamBarLabel", "%s", stateObj.attributes.team_shots_on_target);
-      oppoBarLabel = t.translate("hockey.oppoBarLabel", "%s", stateObj.attributes.opponent_shots_on_target);
+      teamBarLabel = t.translate("hockey.teamBarLabel", "%s", String(stateObj.attributes.team_shots_on_target));
+      oppoBarLabel = t.translate("hockey.oppoBarLabel", "%s", String(stateObj.attributes.opponent_shots_on_target));
 
       timeoutsDisplay = 'none';
     }
