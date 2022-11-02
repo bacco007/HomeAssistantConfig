@@ -19,6 +19,9 @@ from homeassistant.components.weather import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
+from homeassistant.util.unit_system import (
+    METRIC_SYSTEM,
+)
 
 from pyweatherflowrest.data import (
     ForecastDailyDescription,
@@ -80,7 +83,7 @@ async def async_setup_entry(
                 station_data,
                 description,
                 entry,
-                hass.config.units.is_metric,
+                hass.config.units is METRIC_SYSTEM,
             )
         )
 

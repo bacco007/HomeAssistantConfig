@@ -9,13 +9,15 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_API_TOKEN,
     CONF_ID,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_UNIT_SYSTEM_METRIC,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util.unit_system import (
+    METRIC_SYSTEM,
+)
+
 from pyweatherflowrest import (
     BadRequest,
     Invalid,
@@ -35,6 +37,8 @@ from .const import (
     CONF_INTERVAL_OBSERVATION,
     CONF_STATION_ID,
     CONFIG_OPTIONS,
+    CONF_UNIT_SYSTEM_IMPERIAL,
+    CONF_UNIT_SYSTEM_METRIC,
     DEFAULT_BRAND,
     DEFAULT_FORECAST_HOURS,
     DEFAULT_FORECAST_INTERVAL,
@@ -69,7 +73,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_create_clientsession(hass)
     unit_system = (
         CONF_UNIT_SYSTEM_METRIC
-        if hass.config.units.is_metric
+        if hass.config.units is METRIC_SYSTEM
         else CONF_UNIT_SYSTEM_IMPERIAL
     )
 
