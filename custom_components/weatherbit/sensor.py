@@ -13,6 +13,9 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     DEGREE,
+    UnitOfLength,
+    UnitOfSpeed,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import StateType
@@ -20,13 +23,9 @@ from homeassistant.util.unit_conversion import (
     SpeedConverter,
     DistanceConverter,
     TemperatureConverter,
-    LENGTH_MILLIMETERS,
-    LENGTH_INCHES,
-    SPEED_METERS_PER_SECOND,
-    SPEED_KILOMETERS_PER_HOUR,
-    SPEED_MILES_PER_HOUR,
-    TEMP_FAHRENHEIT,
-    TEMP_CELSIUS,
+)
+from homeassistant.util.unit_system import (
+    METRIC_SYSTEM,
 )
 from homeassistant.components.weather import (
     ATTR_FORECAST_NATIVE_PRECIPITATION,
@@ -91,7 +90,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="temp",
         name="Air Temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
-        native_unit_of_measurement=TEMP_CELSIUS,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
@@ -100,7 +99,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="app_temp",
         name="Apparent Temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
-        native_unit_of_measurement=TEMP_CELSIUS,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
@@ -198,7 +197,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="dewpt",
         name="Dew Point",
         device_class=SensorDeviceClass.TEMPERATURE,
-        native_unit_of_measurement=TEMP_CELSIUS,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
@@ -481,42 +480,46 @@ class WeatherbitSensor(WeatherbitEntity, SensorEntity):
             _wind_spd = (
                 SpeedConverter.convert(
                     self.day_data.wind_spd,
-                    SPEED_METERS_PER_SECOND,
-                    SPEED_MILES_PER_HOUR,
+                    UnitOfSpeed.METERS_PER_SECOND,
+                    UnitOfSpeed.MILES_PER_HOUR,
                 )
-                if not self.hass.config.units.is_metric
+                if not self.hass.config.units is METRIC_SYSTEM
                 else SpeedConverter.convert(
                     self.day_data.wind_spd,
-                    SPEED_METERS_PER_SECOND,
-                    SPEED_KILOMETERS_PER_HOUR,
+                    UnitOfSpeed.METERS_PER_SECOND,
+                    UnitOfSpeed.MILES_PER_HOUR,
                 )
             )
             _temp = (
                 self.day_data.max_temp
-                if self.hass.config.units.is_metric
+                if self.hass.config.units is METRIC_SYSTEM
                 else TemperatureConverter.convert(
-                    self.day_data.max_temp, TEMP_CELSIUS, TEMP_FAHRENHEIT
+                    self.day_data.max_temp,
+                    UnitOfTemperature.CELSIUS,
+                    UnitOfTemperature.FAHRENHEIT,
                 )
             )
             _temp_low = (
                 self.day_data.min_temp
-                if self.hass.config.units.is_metric
+                if self.hass.config.units is METRIC_SYSTEM
                 else TemperatureConverter.convert(
-                    self.day_data.max_temp, TEMP_CELSIUS, TEMP_FAHRENHEIT
+                    self.day_data.max_temp,
+                    UnitOfTemperature.CELSIUS,
+                    UnitOfTemperature.FAHRENHEIT,
                 )
             )
             _precip = (
                 self.day_data.precip
-                if self.hass.config.units.is_metric
+                if self.hass.config.units is METRIC_SYSTEM
                 else DistanceConverter.convert(
-                    self.day_data.precip, LENGTH_MILLIMETERS, LENGTH_INCHES
+                    self.day_data.precip, UnitOfLength.MILLIMETERS, UnitOfLength.INCHES
                 )
             )
             _snow = (
                 self.day_data.snow
-                if self.hass.config.units.is_metric
+                if self.hass.config.units is METRIC_SYSTEM
                 else DistanceConverter.convert(
-                    self.day_data.snow, LENGTH_MILLIMETERS, LENGTH_INCHES
+                    self.day_data.snow, UnitOfLength.MILLIMETERS, UnitOfLength.INCHES
                 )
             )
             return {

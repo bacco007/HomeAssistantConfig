@@ -18,9 +18,9 @@ from homeassistant.components.weather import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    LENGTH_MILLIMETERS,
     PRECISION_TENTHS,
-    TEMP_CELSIUS,
+    UnitOfLength,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from pyweatherbitdata.data import ForecastDetailDescription
@@ -99,9 +99,9 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
         )
         self.daily_forecast = self.entity_description.key in _WEATHER_DAILY
         self._attr_name = self.entity_description.name
-        self._attr_native_precipitation_unit = LENGTH_MILLIMETERS
+        self._attr_native_precipitation_unit = UnitOfLength.MILLIMETERS
         self._attr_precision = PRECISION_TENTHS
-        self._attr_native_temperature_unit = TEMP_CELSIUS
+        self._attr_native_temperature_unit = UnitOfTemperature.CELSIUS
 
     @property
     def condition(self):

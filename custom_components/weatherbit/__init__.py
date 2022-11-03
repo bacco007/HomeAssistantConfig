@@ -11,13 +11,14 @@ from homeassistant.const import (
     CONF_API_KEY,
     CONF_LATITUDE,
     CONF_LONGITUDE,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_UNIT_SYSTEM_METRIC,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util.unit_system import (
+    METRIC_SYSTEM,
+)
 from pyweatherbitdata import (
     RequestError,
     InvalidApiKey,
@@ -37,6 +38,8 @@ from .const import (
     CONF_FORECAST_LANGUAGE,
     CONF_INTERVAL_FORECAST,
     CONF_INTERVAL_SENSORS,
+    CONF_UNIT_SYSTEM_IMPERIAL,
+    CONF_UNIT_SYSTEM_METRIC,
     CONFIG_OPTIONS,
     DEFAULT_BRAND,
     WEATHERBIT_API_VERSION,
@@ -69,7 +72,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_create_clientsession(hass)
     unit_system = (
         CONF_UNIT_SYSTEM_METRIC
-        if hass.config.units.is_metric
+        # if hass.config.units.is_metric
+        if hass.config.units is METRIC_SYSTEM
         else CONF_UNIT_SYSTEM_IMPERIAL
     )
 
