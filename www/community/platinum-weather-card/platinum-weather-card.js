@@ -1,1 +1,1 @@
-export{P as PlatinumWeatherCard}from"./platinum-weather-card-006c5bff.js";
+export{P as PlatinumWeatherCard}from"./platinum-weather-card-52c96873.js";
