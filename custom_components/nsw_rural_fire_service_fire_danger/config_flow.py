@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -10,8 +11,10 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    CONF_CONVERT_NO_RATING,
     CONF_DATA_FEED,
     CONF_DISTRICT_NAME,
+    DEFAULT_CONVERT_NO_RATING,
     DEFAULT_DATA_FEED,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -44,6 +47,9 @@ class NswRuralFireServiceFireDangerFlowHandler(
                 vol.Optional(CONF_DATA_FEED, default=DEFAULT_DATA_FEED): vol.In(
                     VALID_DATA_FEEDS
                 ),
+                vol.Optional(
+                    CONF_CONVERT_NO_RATING, default=DEFAULT_CONVERT_NO_RATING
+                ): cv.boolean,
             }
         )
 

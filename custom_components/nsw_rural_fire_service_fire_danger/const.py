@@ -4,6 +4,7 @@ from typing import Final
 
 from homeassistant.const import Platform
 
+CONF_CONVERT_NO_RATING: Final = "convert_no_rating"
 CONF_DISTRICT_NAME: Final = "district_name"
 CONF_DATA_FEED: Final = "data_feed"
 
@@ -11,6 +12,7 @@ DEFAULT_ATTRIBUTION: Final = "NSW Rural Fire Service"
 
 DEFAULT_DATA_FEED: Final = "standard"
 
+DEFAULT_CONVERT_NO_RATING: Final = False
 DEFAULT_FORCE_UPDATE: Final = True
 DEFAULT_METHOD: Final = "GET"
 DEFAULT_NAME_PREFIX: Final = "Fire danger"
@@ -24,28 +26,46 @@ XML_FIRE_DANGER_MAP: Final = "FireDangerMap"
 XML_NAME: Final = "Name"
 XML_SENSOR_ATTRIBUTES: Final = {
     # <XML Key>: [<Display Name>, <Conversion Function>]
-    "RegionNumber": ["region_number", lambda x: int(x)],
-    "Councils": ["councils", lambda x: x.split(";")],
-    "DangerLevelToday": ["danger_level_today", lambda x: x.lower().capitalize()],
-    "DangerLevelTomorrow": ["danger_level_tomorrow", lambda x: x.lower().capitalize()],
-    "FireBanToday": ["fire_ban_today", lambda x: x == "Yes"],
-    "FireBanTomorrow": ["fire_ban_tomorrow", lambda x: x == "Yes"],
+    "RegionNumber": ["region_number", lambda x, y: int(x)],
+    "Councils": ["councils", lambda x, y: x.split(";")],
+    "DangerLevelToday": [
+        "danger_level_today",
+        lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
+    ],
+    "DangerLevelTomorrow": [
+        "danger_level_tomorrow",
+        lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
+    ],
+    "FireBanToday": ["fire_ban_today", lambda x, y: x == "Yes"],
+    "FireBanTomorrow": ["fire_ban_tomorrow", lambda x, y: x == "Yes"],
 }
 
 JSON_AREA_NAME = "areaName"
 JSON_FIRE_WEATHER_AREA_RATINGS = "fireWeatherAreaRatings"
 JSON_SENSOR_ATTRIBUTES: Final = {
     # <JSON Key>: [<Display Name>, <Conversion Function>]
-    "areaId": ["region_number", lambda x: int(x)],
-    "areaCouncils": ["councils", lambda x: x.split(";")],
-    "ratingToday": ["danger_level_today", lambda x: x.lower().capitalize()],
-    "ratingTomorrow": ["danger_level_tomorrow", lambda x: x.lower().capitalize()],
-    "ratingDay3": ["danger_level_day3", lambda x: x.lower().capitalize()],
-    "ratingDay4": ["danger_level_day4", lambda x: x.lower().capitalize()],
-    "tobanToday": ["fire_ban_today", lambda x: x == "Yes"],
-    "tobanTomorrow": ["fire_ban_tomorrow", lambda x: x == "Yes"],
-    "tobanDay3": ["fire_ban_day3", lambda x: x == "Yes"],
-    "tobanDay4": ["fire_ban_day4", lambda x: x == "Yes"],
+    "areaId": ["region_number", lambda x, y: int(x)],
+    "areaCouncils": ["councils", lambda x, y: x.split(";")],
+    "ratingToday": [
+        "danger_level_today",
+        lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
+    ],
+    "ratingTomorrow": [
+        "danger_level_tomorrow",
+        lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
+    ],
+    "ratingDay3": [
+        "danger_level_day3",
+        lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
+    ],
+    "ratingDay4": [
+        "danger_level_day4",
+        lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
+    ],
+    "tobanToday": ["fire_ban_today", lambda x, y: x == "Yes"],
+    "tobanTomorrow": ["fire_ban_tomorrow", lambda x, y: x == "Yes"],
+    "tobanDay3": ["fire_ban_day3", lambda x, y: x == "Yes"],
+    "tobanDay4": ["fire_ban_day4", lambda x, y: x == "Yes"],
 }
 
 BINARY_SENSOR_TYPES_STANDARD: Final = ["fire_ban_today", "fire_ban_tomorrow"]

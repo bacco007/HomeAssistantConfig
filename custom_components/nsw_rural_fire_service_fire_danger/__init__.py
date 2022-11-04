@@ -10,8 +10,10 @@ from homeassistant.helpers.typing import ConfigType
 
 from .config_flow import configured_instances
 from .const import (
+    CONF_CONVERT_NO_RATING,
     CONF_DATA_FEED,
     CONF_DISTRICT_NAME,
+    DEFAULT_CONVERT_NO_RATING,
     DEFAULT_DATA_FEED,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -35,6 +37,9 @@ CONFIG_SCHEMA = vol.Schema(
                     VALID_DATA_FEEDS
                 ),
                 vol.Optional(
+                    CONF_CONVERT_NO_RATING, default=DEFAULT_CONVERT_NO_RATING
+                ): cv.boolean,
+                vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
                 ): cv.time_period,
             }
@@ -53,6 +58,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     district_name = conf.get[CONF_DISTRICT_NAME]
     data_feed = conf[CONF_DATA_FEED]
     scan_interval = conf[CONF_SCAN_INTERVAL]
+    convert_no_rating = conf[CONF_CONVERT_NO_RATING]
     identifier = f"{district_name}"
     if identifier in configured_instances(hass):
         return True
@@ -64,6 +70,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             data={
                 CONF_DISTRICT_NAME: district_name,
                 CONF_DATA_FEED: data_feed,
+                CONF_CONVERT_NO_RATING: convert_no_rating,
                 CONF_SCAN_INTERVAL: scan_interval,
             },
         )
