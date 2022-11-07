@@ -503,7 +503,7 @@ class WeatherbitSensor(WeatherbitEntity, SensorEntity):
                 self.day_data.min_temp
                 if self.hass.config.units is METRIC_SYSTEM
                 else TemperatureConverter.convert(
-                    self.day_data.max_temp,
+                    self.day_data.min_temp,
                     UnitOfTemperature.CELSIUS,
                     UnitOfTemperature.FAHRENHEIT,
                 )

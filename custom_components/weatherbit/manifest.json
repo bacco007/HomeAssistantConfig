@@ -4,7 +4,7 @@
     "config_flow": true,
     "documentation": "https://github.com/briis/weatherbit",
     "issue_tracker": "https://github.com/briis/weatherbit/issues",
-    "version": "1.0.16",
+    "version": "1.0.17",
     "requirements": [
       "pyweatherbitdata==1.0.15"
     ],
