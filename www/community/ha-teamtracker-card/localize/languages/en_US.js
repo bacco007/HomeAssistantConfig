@@ -3,7 +3,15 @@ export const en_US = {
         "api_error": "API Error",
         "no_upcoming_games": "No upcoming games through %s",
         "finalTerm": "%s - Final",
-        "byeTerm": "BYE"
+        "byeTerm": "BYE",
+        "tourney2": "Final",
+        "tourney4": "Semifinals",
+        "tourney8": "Quarterfinals",
+        "tourney16": "Round of 16",
+        "tourney32": "Round of 32",
+        "tourney64": "Round of 64",
+        "tourney128": "Early Rounds",
+        "tourney256": "Early Rounds"
     },
     "baseball": {
         "startTerm": "First Pitch",
@@ -35,6 +43,16 @@ export const en_US = {
         "teamBarLabel": "%s%",
         "oppoBarLabel": "%s%"
     },
+    "golf": {
+        "startTerm": "Round Starts",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Shots (Thru)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
     "hockey": {
         "startTerm": "Puck Drop",
         "overUnder": "O/U: %s",
@@ -45,6 +63,16 @@ export const en_US = {
         "teamBarLabel": "%s",
         "oppoBarLabel": "%s"
     },
+    "mma": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Win Probability",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
     "soccer": {
         "startTerm": "Kickoff",
         "overUnder": "O/U: %s",
@@ -52,6 +80,16 @@ export const en_US = {
         "gameStat2": "%s",
         "gameStat3": "",
         "gameBar": "Shots (On Target)",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
+    "tennis": {
+        "startTerm": "First Serve",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "%s",
         "teamBarLabel": "%s",
         "oppoBarLabel": "%s"
     },
