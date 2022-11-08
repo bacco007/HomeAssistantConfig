@@ -11,7 +11,11 @@ LEAGUE_LIST = [
     ["NCAAW", "basketball", "womens-college-basketball"],
     ["NCAAF", "football", "college-football"],
     ["NFL", "football", "nfl"],
+    ["PGA", "golf", "pga"],
     ["NHL", "hockey", "nhl"],
+    ["UFC", "mma", "ufc"],
+    ["F1", "racing", "f1"],
+    ["IRL", "racing", "irl"],
     ["BUND", "soccer", "ger.1"],
     ["CL", "soccer", "uefa.champions"], 
     ["EPL", "soccer", "eng.1"], 
@@ -21,6 +25,8 @@ LEAGUE_LIST = [
     ["NWSL", "soccer", "usa.nwsl"], 
     ["SERA", "soccer", "ita.1"],
     ["WC", "soccer", "fifa.world"],
+    ["ATP", "tennis", "atp"],
+    ["WTA", "tennis", "wta"],
     ["NCAAVB", "volleyball", "mens-college-volleyball"],
     ["NCAAVBW", "volleyball", "womens-college-volleyball"],
     ]
@@ -29,8 +35,12 @@ SPORT_LIST = [
     ["baseball", "mdi:baseball"],
     ["basketball", "mdi:basketball"],
     ["football", "mdi:football"],
+    ["golf", "mdi:golf-tee"],
     ["hockey", "mdi:hockey-puck"],
+    ["mma", "mdi:karate"],
+    ["racing", "mdi:flag-checkered"],
     ["soccer", "mdi:soccer"],
+    ["tennis", "mdi:tennis"],
     ["volleyball", "mdi:volleyball"]
 ]
 
@@ -55,7 +65,7 @@ DEFAULT_TIMEOUT = 120
 
 # Misc
 TEAM_ID = ""
-VERSION = "v0.4.1"
+VERSION = "v0.5.0"
 ISSUE_URL = "https://github.com/vasqued2/ha-teamtracker"
 DOMAIN = "teamtracker"
 PLATFORM = "sensor"
