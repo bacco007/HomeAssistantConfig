@@ -324,7 +324,20 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         # region #-- set a unique_id, update details if device has changed IP --#
         _LOGGER.debug(self.format("setting unique_id: %s"), serial)
         await self.async_set_unique_id(unique_id=serial)
-        self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
+        matching_instance: List[
+            config_entries.ConfigEntry
+        ] | config_entries.ConfigEntry = [
+            instance for instance in self.hass.config_entries.async_entries(DOMAIN)
+        ]
+        if matching_instance:
+            matching_instance = matching_instance[0]
+            if matching_instance.source == "ssdp":
+                _LOGGER.debug(self.format("instance already configured, updating host"))
+                self._abort_if_unique_id_configured(updates={CONF_HOST: self._host})
+            else:
+                _LOGGER.debug(
+                    self.format("instance already configured, not updating host")
+                )
         # endregion
 
         self.context["title_placeholders"] = {
