@@ -382,14 +382,19 @@ class SolcastApi:
                 else:
                     #_LOGGER.debug("not doing past data so fill ion the blanks")
                     _data = _olddata['siteinfo'][site['resource_id']]['forecasts']
-                    for item in _data2:
-                        found_data = [d for d in _data if d['period_end'] == item['period_end']]
-                        if len(found_data) > 0:
-                            #_LOGGER.warn(f"found this to update {found_data[0]}")
-                            found_data[0].update({"period_end": item['period_end'],"pv_estimate": item['pv_estimate']})
-                        else:
-                            #_LOGGER.warn(f"did not found update so adding to list")
-                            _data.append({"period_end": item['period_end'],"pv_estimate": item['pv_estimate']})
+
+                    #v3.0.26 change for issue 83
+                    if not _data2:
+                        _LOGGER.debug(f"No new data. Solcast returned {_data2}")
+                    else:
+                        for item in _data2:
+                            found_data = [d for d in _data if d['period_end'] == item['period_end']]
+                            if len(found_data) > 0:
+                                #_LOGGER.warn(f"found this to update {found_data[0]}")
+                                found_data[0].update({"period_end": item['period_end'],"pv_estimate": item['pv_estimate']})
+                            else:
+                                #_LOGGER.warn(f"did not found update so adding to list")
+                                _data.append({"period_end": item['period_end'],"pv_estimate": item['pv_estimate']})
 
                 _data = sorted(_data, key=itemgetter("period_end"))
                 _s.update({site['resource_id']:{'forecasts': _data}})
