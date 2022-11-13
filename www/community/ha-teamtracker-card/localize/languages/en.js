@@ -73,6 +73,16 @@ export const en = {
         "teamBarLabel": "%s%",
         "oppoBarLabel": "%s%"
     },
+    "racing": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Laps",
+        "teamBarLabel": "%s",
+        "oppoBarLabel": "%s"
+    },
     "soccer": {
         "startTerm": "Kickoff",
         "overUnder": "O/U: %s",

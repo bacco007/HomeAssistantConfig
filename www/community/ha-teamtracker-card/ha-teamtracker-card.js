@@ -331,16 +331,28 @@ if (sport.includes("basketball")) {
       title = stateObj.attributes.event_name;
       timeoutsDisplay = 'none';
       probDisplay = "none";
-      var probWrapDisplay = "none";
+      probWrapDisplay = "none";
 
     }
 
 //
 //  Racing Specific Changes
 //
-if (sport.includes("racing")) {
-  title = stateObj.attributes.event_name;
-}
+    if (sport.includes("racing")) {
+      title = stateObj.attributes.event_name;
+      if (stateObj.attributes.quarter) {
+        odds = stateObj.attributes.quarter;
+        gameStat1 = stateObj.attributes.quarter;
+        finalTerm = finalTerm + " (" + stateObj.attributes.quarter + ")";
+      }
+      timeoutsDisplay = 'none';
+      
+      teamProb = stateObj.attributes.team_total_shots;
+      oppoProb = stateObj.attributes.team_total_shots;
+      teamBarLabel = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
+      oppoBarLabel = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
+
+    }
 
 
 //
