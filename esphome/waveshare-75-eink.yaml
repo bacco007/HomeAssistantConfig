@@ -61,6 +61,10 @@ globals:
     type: bool
     restore_value: no
     initial_value: "false"
+  - id: recorded_display_refresh
+    type: int
+    restore_value: yes
+    initial_value: '0'    
 
 time:
   - platform: homeassistant
@@ -81,6 +85,8 @@ time:
                 - logger.log: "Sensor data updated: Refreshing display..."
                 - component.update: eink_display
                 - lambda: "id(data_updated) = false;"
+                - lambda: 'id(recorded_display_refresh) += 1;'
+                - lambda: 'id(display_last_update).publish_state(id(ntp).now().timestamp);'                
               else:
                 - logger.log: "No sensors updated - skipping display refresh."
 sun:
@@ -88,6 +94,10 @@ sun:
   longitude: !secret home_longitude
 
 button:
+  - platform: shutdown
+    name: "${esp_name} Shutdown"
+  - platform: restart
+    name: "${esp_name} Restart"
   - platform: template
     name: "${esp_name} Refresh"
     icon: "mdi:update"
@@ -96,10 +106,6 @@ button:
         - component.update: eink_display
 
 switch:
-  - platform: restart
-    name: "${esp_name} Restart"
-    id: restartesp
-
   - platform: gpio
     id: statusLED
     name: "${esp_name} Status LED"
@@ -233,6 +239,16 @@ text_sensor:
         - lambda: "id(data_updated) = true;"
 
 sensor:
+  - platform: template
+    name: "${esp_name} Last Update"
+    device_class: timestamp
+    id: display_last_update
+
+  - platform: template
+    name: "${esp_name} Recorded Display Refresh"
+    lambda: 'return id(recorded_display_refresh);'
+    unit_of_measurement: "refreshes"
+
   - platform: wifi_signal
     id: sensor_wifi_signal
     name: "${esp_name} WiFi"
