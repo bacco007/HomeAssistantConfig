@@ -35,18 +35,39 @@ class TeamTrackerCard extends LitElement {
     const outlineColor = this._config.outline_color;
     const showLeague = this._config.show_league;
     const showTicker = this._config.show_ticker;
-    const homeSide = this._config.home_side;
+    var homeSide = String(this._config.home_side).toUpperCase();
 
-    var teamProb = 0;
+    var logoBG = [];
+    var logo = [];
+    var name = [];
+    var rank = [];
+    var record = [];
+    var score = [];
+    var scoreOp = [];
+    var barLabel= [];
+    var barLength = [];
+    var color = [];
+    var timeouts =[];
+    var possessionOp = [];
+
+    var team = 1;
+    var oppo = 2;
+    if (((homeSide == "RIGHT") && (stateObj.attributes.team_homeaway == "home")) ||
+        ((homeSide == "LEFT")  && (stateObj.attributes.opponent_homeaway == "home"))) { 
+        team = 2;
+        oppo = 1;
+    }
+
+    barLength[team] = 0;
     if (stateObj.attributes.team_win_probability) {
-        var teamProb = (stateObj.attributes.team_win_probability * 100).toFixed(0);
+        barLength[team] = (stateObj.attributes.team_win_probability * 100).toFixed(0);
     }
-    var oppoProb = 0;
+    barLength[oppo] = 0;
     if (stateObj.attributes.opponent_win_probability) {
-        oppoProb = (stateObj.attributes.opponent_win_probability * 100).toFixed(0);
+        barLength[oppo] = (stateObj.attributes.opponent_win_probability * 100).toFixed(0);
     }
-    var tScr = stateObj.attributes.team_score;
-    var oScr = stateObj.attributes.opponent_score;
+    score[team] = stateObj.attributes.team_score;
+    score[oppo] = stateObj.attributes.opponent_score;
 
     var lang = this.hass.selectedLanguage || this.hass.language  || navigator.language || "en"
 
@@ -91,39 +112,35 @@ class TeamTrackerCard extends LitElement {
       var outColor = '#ffffff';
     }
 
-    if (Boolean(stateObj.state == 'POST') && Number(tScr) > Number(oScr)) {
-        var oppoScore = 0.6;
-        var teamScore = 1;
+    scoreOp[1] = 1;
+    scoreOp[2] = 1;
+    if (Number(score[1]) < Number(score[2])) {
+        scoreOp[1] = 0.6;
     }
-    if (Boolean(stateObj.state == 'POST') && Number(tScr) < Number(oScr)) {
-        var oppoScore = 1;
-        var teamScore = 0.6;
-    }
-    if (Boolean(stateObj.state == 'POST') && Number(tScr) == Number(oScr)) {
-        var oppoScore = 1;
-        var teamScore = 1;
+    if (Number(score[2]) < Number(score[1])) {
+        scoreOp[2] = 0.6;
     }
 
     if (stateObj.attributes.team_homeaway == 'home') {
-      var teamColor = stateObj.attributes.team_colors[0];
-      var oppoColor = stateObj.attributes.opponent_colors[1];
+      color[team] = stateObj.attributes.team_colors[0];
+      color[oppo] = stateObj.attributes.opponent_colors[1];
     }
     else if (stateObj.attributes.team_homeaway == 'away') {
-      var teamColor = stateObj.attributes.team_colors[1];
-      var oppoColor = stateObj.attributes.opponent_colors[0];
+      color[team] = stateObj.attributes.team_colors[1];
+      color[oppo] = stateObj.attributes.opponent_colors[0];
     }
     else {
-      var teamColor = '#ffffff';
-      var oppoColor = '#000000';
+      color[team] = '#ffffff';
+      color[oppo] = '#000000';
     }
 
+    possessionOp[team] = 0;
+    possessionOp[oppo] = 0;
     if (stateObj.attributes.possession == stateObj.attributes.team_id) {
-      var teamPoss = 1;
-      var basesColor = teamColor;
+      possessionOp[team] = 1;
     }
     if (stateObj.attributes.possession == stateObj.attributes.opponent_id) {
-      var oppoPoss = 1;
-      var basesColor = oppoColor
+      possessionOp[oppo] = 1;
     }
 
     if (!stateObj) {
@@ -148,39 +165,49 @@ class TeamTrackerCard extends LitElement {
     if (showLeague) {
       title = stateObj.attributes.league
     }
-    var teamLogo = stateObj.attributes.team_logo
-    var teamLogoBG = teamLogo
-    var oppoLogo = stateObj.attributes.opponent_logo
-    var oppoLogoBG = oppoLogo
+
+    logo[team] = stateObj.attributes.team_logo;
+    logoBG[team] = stateObj.attributes.team_logo;
+    name[team] = stateObj.attributes.team_name;
+    rank[team] = stateObj.attributes.team_rank;
+    record[team] = stateObj.attributes.team_record;
+    logo[oppo] = stateObj.attributes.opponent_logo;
+    logoBG[oppo] = stateObj.attributes.opponent_logo;
+    name[oppo] = stateObj.attributes.opponent_name;
+    rank[oppo] = stateObj.attributes.opponent_rank;
+    record[oppo] = stateObj.attributes.opponent_record;
+
     if (showLeague) {
-      teamLogoBG = stateObj.attributes.league_logo
-      oppoLogoBG = stateObj.attributes.league_logo
+      logoBG[team] = stateObj.attributes.league_logo
+      logoBG[oppo] = stateObj.attributes.league_logo
     }
 
     var finalTerm = t.translate("common.finalTerm", "%s", gameMonth + " " + gameDate);
     var startTerm = t.translate(sport + ".startTerm");
-    var context1 = stateObj.attributes.venue;
-    var context2 = stateObj.attributes.location;
+    var startTime =stateObj.attributes.kickoff_in;
+    var venue = stateObj.attributes.venue;
+    var location = stateObj.attributes.location;
 
-    var overUnder = '';
+    var pre1 = stateObj.attributes.odds;
+    var pre2 = '';
     if (stateObj.attributes.overunder) {
-      overUnder = t.translate(sport + ".overUnder", "%s", String(stateObj.attributes.overunder));
+      pre2 = t.translate(sport + ".overUnder", "%s", String(stateObj.attributes.overunder));
     }
-    var odds = stateObj.attributes.odds;
+    var pre3 = stateObj.attributes.tv_network;
 
-    var gameStat1 = '';
+    var in0 = '';
+    var in1 = '';
     if (stateObj.attributes.down_distance_text) {
-        gameStat1 = t.translate(sport + ".gameStat1", "%s", stateObj.attributes.down_distance_text);
+        in1 = t.translate(sport + ".gameStat1", "%s", stateObj.attributes.down_distance_text);
     }
-    var gameStat2 = '';
+    var in2 = '';
     if (stateObj.attributes.tv_network) {
-        gameStat2 = t.translate(sport + ".gameStat2", "%s", stateObj.attributes.tv_network);
+        in2 = t.translate(sport + ".gameStat2", "%s", stateObj.attributes.tv_network);
     }
-    var gameStat3 = '';
 
     var gameBar = t.translate(sport + ".gameBar");
-    var teamBarLabel = t.translate(sport + ".teamBarLabel", "%s", String(teamProb));
-    var oppoBarLabel = t.translate(sport + ".oppoBarLabel", "%s", String(oppoProb));
+    barLabel[team] = t.translate(sport + ".teamBarLabel", "%s", String(barLength[team]));
+    barLabel[oppo] = t.translate(sport + ".oppoBarLabel", "%s", String(barLength[oppo]));
 
     var lastPlay = stateObj.attributes.last_play;
     var lastPlaySpeed = 18;
@@ -192,10 +219,10 @@ class TeamTrackerCard extends LitElement {
     var playClock = stateObj.attributes.clock;
     var outsDisplay = 'none';
     var basesDisplay = 'none';
-    var probDisplay = 'inherit';
-    var probWrapDisplay = "flex";
-    var teamTimeouts = stateObj.attributes.team_timeouts;
-    var oppoTimeouts = stateObj.attributes.opponent_timeouts;
+    var barDisplay = 'inherit';
+    var barWrapDisplay = "flex";
+    timeouts[team] = stateObj.attributes.team_timeouts;
+    timeouts[oppo] = stateObj.attributes.opponent_timeouts;
 
     var timeoutsDisplay = 'inline';
     if (this._config.show_timeouts == false) {
@@ -240,9 +267,9 @@ class TeamTrackerCard extends LitElement {
       var onThirdOp = 0.2;
     }
     if (sport.includes("baseball")) {
-      gameStat1 = t.translate("baseball.gameStat1", "%s", String(stateObj.attributes.balls));
-      gameStat2 = t.translate("baseball.gameStat2", "%s", String(stateObj.attributes.strikes));
-      gameStat3 = t.translate("baseball.gameStat3", "%s", String(stateObj.attributes.outs));
+      in1 = t.translate("baseball.gameStat1", "%s", String(stateObj.attributes.balls));
+      in2 = t.translate("baseball.gameStat2", "%s", String(stateObj.attributes.strikes));
+      in0 = t.translate("baseball.gameStat3", "%s", String(stateObj.attributes.outs));
       outsDisplay = 'inherit';
       timeoutsDisplay = 'none';
       basesDisplay = 'inherit';
@@ -252,11 +279,10 @@ class TeamTrackerCard extends LitElement {
 //  Soccer Specific Changes
 //
     if (sport.includes("soccer")) {
-      teamProb = stateObj.attributes.team_total_shots;
-      oppoProb = stateObj.attributes.opponent_total_shots;
-      teamBarLabel = stateObj.attributes.team_total_shots +'(' + stateObj.attributes.team_shots_on_target + ')';
-      teamBarLabel = t.translate("soccer.teamBarLabel", "%s", stateObj.attributes.team_total_shots +'(' + stateObj.attributes.team_shots_on_target + ')');
-      oppoBarLabel = t.translate("soccer.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots +'(' + stateObj.attributes.opponent_shots_on_target + ')');
+      barLength[team] = stateObj.attributes.team_total_shots;
+      barLength[oppo] = stateObj.attributes.opponent_total_shots;
+      barLabel[team] = t.translate("soccer.teamBarLabel", "%s", stateObj.attributes.team_total_shots +'(' + stateObj.attributes.team_shots_on_target + ')');
+      barLabel[oppo] = t.translate("soccer.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots +'(' + stateObj.attributes.opponent_shots_on_target + ')');
       timeoutsDisplay = 'none';
     }
 
@@ -264,10 +290,10 @@ class TeamTrackerCard extends LitElement {
 //  Hockey Specific Changes
 //
 if (sport.includes("hockey")) {
-  teamProb = stateObj.attributes.team_shots_on_target;
-  oppoProb = stateObj.attributes.opponent_shots_on_target;
-  teamBarLabel = t.translate("hockey.teamBarLabel", "%s", String(stateObj.attributes.team_shots_on_target));
-  oppoBarLabel = t.translate("hockey.oppoBarLabel", "%s", String(stateObj.attributes.opponent_shots_on_target));
+  barLength[team] = stateObj.attributes.team_shots_on_target;
+  barLength[oppo] = stateObj.attributes.opponent_shots_on_target;
+  barLabel[team] = t.translate("hockey.teamBarLabel", "%s", String(stateObj.attributes.team_shots_on_target));
+  barLabel[oppo] = t.translate("hockey.oppoBarLabel", "%s", String(stateObj.attributes.opponent_shots_on_target));
 
   timeoutsDisplay = 'none';
 }
@@ -277,12 +303,12 @@ if (sport.includes("hockey")) {
 //
     if (sport.includes("volleyball")) {
       gameBar = t.translate("volleyball.gameBar", "%s", stateObj.attributes.clock);
-      teamProb = stateObj.attributes.team_score;
-      oppoProb = stateObj.attributes.opponent_score;
-      teamBarLabel = t.translate("volleyball.teamBarLabel", "%s", String(stateObj.attributes.team_score));
-      oppoBarLabel = t.translate("volleyball.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score));
-      teamTimeouts = stateObj.attributes.team_sets_won;
-      oppoTimeouts = stateObj.attributes.opponent_sets_won;
+      barLength[team] = stateObj.attributes.team_score;
+      barLength[oppo] = stateObj.attributes.opponent_score;
+      barLabel[team] = t.translate("volleyball.teamBarLabel", "%s", String(stateObj.attributes.team_score));
+      barLabel[oppo] = t.translate("volleyball.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score));
+      timeouts[team] = stateObj.attributes.team_sets_won;
+      timeouts[team] = stateObj.attributes.opponent_sets_won;
       timeoutsDisplay = 'inline';
     }
 
@@ -297,28 +323,31 @@ if (sport.includes("basketball")) {
 //  Tennis Specific Changes
 //
     if (sport.includes("tennis")) {
-      context2 = t.translate("common.tourney" + stateObj.attributes.odds)
-      odds = null
+      venue = stateObj.attributes.event_name;
+      pre1 = t.translate("common.tourney" + stateObj.attributes.odds)
+//      pre2 = null;
+//      pre3 = null;
+
       gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock);
-      teamProb = stateObj.attributes.team_score;
-      oppoProb = stateObj.attributes.opponent_score;
+      barLength[team] = stateObj.attributes.team_score;
+      barLength[oppo] = stateObj.attributes.opponent_score;
       if (stateObj.attributes.team_shots_on_target) {
         gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock + "(tiebreak)");
-        teamBarLabel = t.translate("tennis.teamBarLabel", "%s", stateObj.attributes.team_score +'(' + stateObj.attributes.team_shots_on_target + ')');
+        barLabel[team] = t.translate("tennis.teamBarLabel", "%s", stateObj.attributes.team_score +'(' + stateObj.attributes.team_shots_on_target + ')');
       }
       else {
-        teamBarLabel = t.translate("tennis.teamBarLabel", "%s", String(stateObj.attributes.team_score));
+        barLabel[team] = t.translate("tennis.teamBarLabel", "%s", String(stateObj.attributes.team_score));
       }
       if (stateObj.attributes.team_shots_on_target) {
         gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock + "(tiebreak)");
-        oppoBarLabel = t.translate("tennis.oppoBarLabel", "%s", stateObj.attributes.opponent_score +'(' + stateObj.attributes.opponent_shots_on_target + ')');
+        barLabel[oppo] = t.translate("tennis.oppoBarLabel", "%s", stateObj.attributes.opponent_score +'(' + stateObj.attributes.opponent_shots_on_target + ')');
       }
       else {
-        oppoBarLabel = t.translate("tennis.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score ));
+        barLabel[oppo] = t.translate("tennis.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score ));
       }
-      teamTimeouts = stateObj.attributes.team_sets_won;
-      oppoTimeouts = stateObj.attributes.opponent_sets_won;
-      title = stateObj.attributes.event_name + " - " + context2;
+      timeouts[team] = stateObj.attributes.team_sets_won;
+      timeouts[oppo] = stateObj.attributes.opponent_sets_won;
+      title = stateObj.attributes.event_name
 
       timeoutsDisplay = 'inline';
     }
@@ -330,9 +359,8 @@ if (sport.includes("basketball")) {
     if (sport.includes("mma")) {
       title = stateObj.attributes.event_name;
       timeoutsDisplay = 'none';
-      probDisplay = "none";
-      probWrapDisplay = "none";
-
+      barDisplay = "none";
+      barWrapDisplay = "none";
     }
 
 //
@@ -341,16 +369,16 @@ if (sport.includes("basketball")) {
     if (sport.includes("racing")) {
       title = stateObj.attributes.event_name;
       if (stateObj.attributes.quarter) {
-        odds = stateObj.attributes.quarter;
-        gameStat1 = stateObj.attributes.quarter;
+        pre1 = stateObj.attributes.quarter;
+        in1 = stateObj.attributes.quarter;
         finalTerm = finalTerm + " (" + stateObj.attributes.quarter + ")";
       }
       timeoutsDisplay = 'none';
       
-      teamProb = stateObj.attributes.team_total_shots;
-      oppoProb = stateObj.attributes.team_total_shots;
-      teamBarLabel = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
-      oppoBarLabel = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
+      barLength[team] = stateObj.attributes.team_total_shots;
+      barLength[oppo] = stateObj.attributes.team_total_shots;
+      barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
+      barLabel[oppo] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
 
     }
 
@@ -359,31 +387,26 @@ if (sport.includes("basketball")) {
 //  Golf Specific Changes
 //
     if (sport.includes("golf")) {
-      teamProb = stateObj.attributes.team_shots_on_target;
-      oppoProb = stateObj.attributes.opponent_shots_on_target;
-      teamBarLabel = t.translate("golf.teamBarLabel", "%s", stateObj.attributes.team_total_shots +'(' + stateObj.attributes.team_shots_on_target + ')');
-      oppoBarLabel = t.translate("golf.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots +'(' + stateObj.attributes.opponent_shots_on_target + ')');
-      finalTerm = stateObj.attributes.clock;
       title = stateObj.attributes.event_name;
+      venue = stateObj.attributes.event_name;
+      barLength[team] = stateObj.attributes.team_shots_on_target;
+      barLength[oppo] = stateObj.attributes.opponent_shots_on_target;
+      barLabel[team] = t.translate("golf.teamBarLabel", "%s", stateObj.attributes.team_total_shots +'(' + stateObj.attributes.team_shots_on_target + ')');
+      barLabel[oppo] = t.translate("golf.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots +'(' + stateObj.attributes.opponent_shots_on_target + ')');
+      finalTerm = stateObj.attributes.clock;
       timeoutsDisplay = 'none';
     }
 
     if (sport.includes("golf") || sport.includes("racing")) {
-      if (Boolean(stateObj.state == 'POST') && Number(tScr) < Number(oScr)) {
-        oppoScore = 0.6;
-        teamScore = 1;
-      }
-      if (Boolean(stateObj.state == 'POST') && Number(tScr) > Number(oScr)) {
-        oppoScore = 1;
-        teamScore = 0.6;
-      }
-      if (Boolean(stateObj.state == 'POST') && Number(tScr) == Number(oScr)) {
-        oppoScore = 1;
-        teamScore = 1;
-      }
+        if (Number(score[1]) < Number(score[2])) {
+            scoreOp[1] = 1.0;
+            scoreOp[2] = 0.6;
+        }
+        if (Number(score[2]) < Number(score[1])) {
+          scoreOp[1] = 0.6;
+          scoreOp[2] = 1.0;
+        }
     }
-
-
 
 //
 //  NCAA Specific Changes
@@ -403,8 +426,8 @@ if (sport.includes("basketball")) {
           .team { text-align: center; width: 35%;}
           .team img { max-width: 90px; }
           .score { font-size: 3em; text-align: center; }
-          .teamscr { opacity: ${teamScore}; }
-          .opposcr { opacity: ${oppoScore}; }
+          .score1op { opacity: ${scoreOp[1]}; }
+          .score2op { opacity: ${scoreOp[2]}; }
           .divider { font-size: 2.5em; text-align: center; opacity: 0; }
           .name { font-size: 1.4em; margin-bottom: 4px; }
           .rank { font-size:0.8em; display: ${rankDisplay}; }
@@ -414,21 +437,21 @@ if (sport.includes("basketball")) {
         <ha-card>
           <div class="card">
             <div class="title">${title}</div>
-            <img class="team-bg" src="${teamLogoBG}" />
-            <img class="opponent-bg" src="${oppoLogoBG}" />
+            <img class="team-bg" src="${logoBG[1]}" />
+            <img class="opponent-bg" src="${logoBG[2]}" />
             <div class="card-content">
               <div class="team">
-                <img src="${teamLogo}" />
-                <div class="name"><span class="rank">${stateObj.attributes.team_rank}</span> ${stateObj.attributes.team_name}</div>
-                <div class="record">${stateObj.attributes.team_record}</div>
+                <img src="${logo[1]}" />
+                <div class="name"><span class="rank">${rank[1]}</span> ${name[1]}</div>
+                <div class="record">${record[1]}</div>
               </div>
-              <div class="score teamscr">${tScr}</div>
+              <div class="score score1op">${score[1]}</div>
               <div class="divider">&nbsp&nbsp&nbsp</div>
-              <div class="score opposcr">${oScr}</div>
+              <div class="score score2op">${score[2]}</div>
               <div class="team">
-                <img src="${oppoLogo}" />
-                <div class="name"><span class="rank">${stateObj.attributes.opponent_rank}</span> ${stateObj.attributes.opponent_name}</div>
-                <div class="record">${stateObj.attributes.opponent_record}</div>
+                <img src="${logo[2]}" />
+                <div class="name"><span class="rank">${rank[2]}</span> ${name[2]}</div>
+                <div class="record">${record[2]}</div>
               </div>
             </div>
             <div class="status">${finalTerm}</div>
@@ -447,24 +470,24 @@ if (sport.includes("basketball")) {
             .card-content { display: flex; justify-content: space-evenly; align-items: center; text-align: center; position: relative; z-index: 99; }
             .team { text-align: center; width:35%; }
             .team img { max-width: 90px; }
-            .possession, .teamposs, .oppoposs { font-size: 2.5em; text-align: center; opacity: 0; font-weight:900; }
-            .teamposs {opacity: ${teamPoss} !important; }
-            .oppoposs {opacity: ${oppoPoss} !important; }
+            .possession, .possession1, .possession2 { font-size: 2.5em; text-align: center; opacity: 0; font-weight:900; }
+            .possession1 {opacity: ${possessionOp[1]} !important; }
+            .possession2 {opacity: ${possessionOp[2]} !important; }
             .score { font-size: 3em; text-align: center; }
             .divider { font-size: 2.5em; text-align: center; margin: 0 4px; }
             .name { font-size: 1.4em; margin-bottom: 4px; }
             .rank { font-size:0.8em; display: ${rankDisplay}; }
             .line { height: 1px; background-color: var(--primary-text-color); margin:10px 0; }
             .timeouts { margin: 0 auto; width: 70%; display: ${timeoutsDisplay}; }
-            .timeouts div.opponent-to:nth-child(-n + ${oppoTimeouts})  { opacity: 1; }
-            .timeouts div.team-to:nth-child(-n + ${teamTimeouts})  { opacity: 1; }
-            .team-to { height: 6px; border-radius: ${toRadius}px; border: ${clrOut}px solid ${outColor}; width: 20%; background-color: ${teamColor}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
+            .timeouts div.timeouts2:nth-child(-n + ${timeouts[2]})  { opacity: 1; }
+            .timeouts div.timeouts1:nth-child(-n + ${timeouts[1]})  { opacity: 1; }
+            .timeouts1 { height: 6px; border-radius: ${toRadius}px; border: ${clrOut}px solid ${outColor}; width: 20%; background-color: ${color[1]}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
+            .timeouts2 { height: 6px; border-radius: ${toRadius}px; border: ${clrOut}px solid ${outColor}; width: 20%; background-color: ${color[2]}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
             .bases { font-size: 2.5em; text-align: center; font-weight:900; display: ${basesDisplay};}
             .on-first { opacity: ${onFirstOp}; display: inline-block; }
             .on-second { opacity: ${onSecondOp}; display: inline-block; }
             .on-third { opacity: ${onThirdOp}; display: inline-block; }
             .pitcher { opacity: 0.0; display: inline-block; }
-            .opponent-to { height: 6px; border-radius: ${toRadius}px; border: ${clrOut}px solid ${outColor}; width: 20%; background-color: ${oppoColor}; display: inline-block; margin: 0 auto; position: relative; opacity: 0.2; }
             .status { text-align:center; font-size:1.6em; font-weight: 700; }
             .sub1 { font-weight: 700; font-size: 1.2em; margin: 6px 0 2px; }
             .sub1, .sub2, .sub3 { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
@@ -475,45 +498,45 @@ if (sport.includes("basketball")) {
             .down-distance { text-align: right; }
             .play-clock { font-size: 1.4em; text-align: center; }
             .outs { text-align: center; display: ${outsDisplay}; }
-            .probability-text { text-align: center; display: ${probDisplay}; }
-            .prob-flex { width: 100%; display: flex; justify-content: center; margin-top: 4px; }
-            .opponent-probability { width: ${oppoProb}%; background-color: ${oppoColor}; height: 12px; border-radius: 0 ${probRadius}px ${probRadius}px 0; border: ${clrOut}px solid ${outColor}; border-left: 0; transition: all 1s ease-out; }
-            .team-probability { width: ${teamProb}%; background-color: ${teamColor}; height: 12px; border-radius: ${probRadius}px 0 0 ${probRadius}px; border: ${clrOut}px solid ${outColor}; border-right: 0; transition: all 1s ease-out; }
-            .probability-wrapper { display: ${probWrapDisplay}; }
-            .team-percent { flex: 0 0 10px; padding: 0 10px 0 0; }
-            .oppo-percent { flex: 0 0 10px; padding: 0 0 0 10px; text-align: right; }
+            .bar-text { text-align: center; display: ${barDisplay}; }
+            .bar-flex { width: 100%; display: flex; justify-content: center; margin-top: 4px; }
+            .bar2-length { width: ${barLength[2]}%; background-color: ${color[2]}; height: 12px; border-radius: 0 ${probRadius}px ${probRadius}px 0; border: ${clrOut}px solid ${outColor}; border-left: 0; transition: all 1s ease-out; }
+            .bar1-length { width: ${barLength[1]}%; background-color: ${color[1]}; height: 12px; border-radius: ${probRadius}px 0 0 ${probRadius}px; border: ${clrOut}px solid ${outColor}; border-right: 0; transition: all 1s ease-out; }
+            .bar-wrapper { display: ${barWrapDisplay}; }
+            .bar1-label { flex: 0 0 10px; padding: 0 10px 0 0; }
+            .bar2-label { flex: 0 0 10px; padding: 0 0 0 10px; text-align: right; }
             .percent { padding: 0 6px; }
             .post-game { margin: 0 auto; }
           </style>
           <ha-card>
             <div class="card">
             <div class="title">${title}</div>
-            <img class="team-bg" src="${teamLogoBG}" />
-            <img class="opponent-bg" src="${oppoLogoBG}" />
+            <img class="team-bg" src="${logoBG[1]}" />
+            <img class="opponent-bg" src="${logoBG[2]}" />
             <div class="card-content">
               <div class="team">
-                <img src="${teamLogo}" />
-                <div class="name"><span class="rank">${stateObj.attributes.team_rank}</span> ${stateObj.attributes.team_name}</div>
-                <div class="record">${stateObj.attributes.team_record}</div>
+                <img src="${logo[1]}" />
+                <div class="name"><span class="rank">${rank[1]}</span> ${name[1]}</div>
+                <div class="record">${record[1]}</div>
                 <div class="timeouts">
-                  <div class="team-to"></div>
-                  <div class="team-to"></div>
-                  <div class="team-to"></div>
+                  <div class="timeouts1"></div>
+                  <div class="timeouts1"></div>
+                  <div class="timeouts1"></div>
                 </div>
               </div>
-              <div class="teamposs">&bull;</div>
-              <div class="score">${stateObj.attributes.team_score}</div>
+              <div class="possession1">&bull;</div>
+              <div class="score">${score[1]}</div>
               <div class="divider">&nbsp&nbsp&nbsp</div>
-              <div class="score">${stateObj.attributes.opponent_score}</div>
-              <div class="oppoposs">&bull;</div>
+              <div class="score">${score[2]}</div>
+              <div class="possession2">&bull;</div>
               <div class="team">
-                <img src="${oppoLogo}" />
-                <div class="name"><span class="rank">${stateObj.attributes.opponent_rank}</span> ${stateObj.attributes.opponent_name}</div>
-                <div class="record">${stateObj.attributes.opponent_record}</div>
+                <img src="${logo[2]}" />
+                <div class="name"><span class="rank">${rank[2]}</span> ${name[2]}</div>
+                <div class="record">${record[2]}</div>
                 <div class="timeouts">
-                  <div class="opponent-to"></div>
-                  <div class="opponent-to"></div>
-                  <div class="opponent-to"></div>
+                  <div class="timeouts2"></div>
+                  <div class="timeouts2"></div>
+                  <div class="timeouts2"></div>
                 </div>
               </div>
             </div>
@@ -526,28 +549,28 @@ if (sport.includes("basketball")) {
               <div class="pitcher"></div>
               <div class="on-first">&bull;</div>
             </div>
-            <div class="outs">${gameStat3}</div>
+            <div class="outs">${in0}</div>
             <div class="line"></div>
             <div class="sub2">
-              <div class="venue">${context1}</div>
-              <div class="down-distance">${gameStat1}</div>
+              <div class="venue">${venue}</div>
+              <div class="down-distance">${in1}</div>
             </div>
             <div class="sub3">
-              <div class="location">${context2}</div>
-              <div class="network">${gameStat2}</div>
+              <div class="location">${location}</div>
+              <div class="network">${in2}</div>
             </div>
             <div class="line"></div>
             <div class="last-play">
               <p>${lastPlay}</p>
             </div>
-            <div class="probability-text">${gameBar}</div>
-            <div class="probability-wrapper">
-              <div class="team-percent">${teamBarLabel}</div>
-              <div class="prob-flex">
-                <div class="team-probability"></div>
-                <div class="opponent-probability"></div>
+            <div class="bar-text">${gameBar}</div>
+            <div class="bar-wrapper">
+              <div class="bar1-label">${barLabel[1]}</div>
+              <div class="bar-flex">
+                <div class="bar1-length"></div>
+                <div class="bar2-length"></div>
               </div>
-              <div class="oppo-percent">${oppoBarLabel}</div>
+              <div class="bar2-label">${barLabel[2]}</div>
             </div>
           </div>
           </ha-card>
@@ -581,36 +604,36 @@ if (sport.includes("basketball")) {
           <ha-card>
               <div class="card">
               <div class="title">${title}</div>
-              <img class="team-bg" src="${teamLogoBG}" />
-              <img class="opponent-bg" src="${oppoLogoBG}" />
+              <img class="team-bg" src="${logoBG[1]}" />
+              <img class="opponent-bg" src="${logoBG[2]}" />
               <div class="card-content">
                 <div class="team">
-                  <img src="${teamLogo}" />
-                  <div class="name"><span class="rank">${stateObj.attributes.team_rank}</span> ${stateObj.attributes.team_name}</div>
-                  <div class="record">${stateObj.attributes.team_record}</div>
+                  <img src="${logo[1]}" />
+                  <div class="name"><span class="rank">${rank[1]}</span> ${name[1]}</div>
+                  <div class="record">${record[1]}</div>
                 </div>
                 <div class="gamewrapper">
                   <div class="gameday">${gameDay}</div>
                   <div class="gametime">${gameTime}</div>
                 </div>
                 <div class="team">
-                  <img src="${oppoLogo}" />
-                  <div class="name"><span class="rank">${stateObj.attributes.opponent_rank}</span> ${stateObj.attributes.opponent_name}</div>
-                  <div class="record">${stateObj.attributes.opponent_record}</div>
+                  <img src="${logo[2]}" />
+                  <div class="name"><span class="rank">${rank[2]}</span> ${name[2]}</div>
+                  <div class="record">${record[2]}</div>
                 </div>
               </div>
               <div class="line"></div>
               <div class="sub1">
-                <div class="date">${startTerm} ${stateObj.attributes.kickoff_in}</div>
-                <div class="odds">${odds}</div>
+                <div class="date">${startTerm} ${startTime}</div>
+                <div class="odds">${pre1}</div>
               </div>
               <div class="sub2">
-                <div class="venue">${context1}</div>
-                <div class="overunder"> ${overUnder}</div>
+                <div class="venue">${venue}</div>
+                <div class="overunder"> ${pre2}</div>
               </div>
               <div class="sub3">
-                <div class="location">${context2}</div>
-                <div class="network">${stateObj.attributes.tv_network}</div>
+                <div class="location">${location}</div>
+                <div class="network">${pre3}</div>
               </div>
             </div>
             </ha-card>
@@ -631,11 +654,11 @@ if (sport.includes("basketball")) {
         </style>
         <ha-card>
           <div class="card">
-            <img class="team-bg" src="${teamLogoBG}" />
+            <img class="team-bg" src="${logoBG[team]}" />
             <div class="card-content">
               <div class="team">
-                <img src="${teamLogo}" />
-                <div class="name">${stateObj.attributes.team_name}</div>
+                <img src="${logo[team]}" />
+                <div class="name">${name[team]}</div>
               </div>
               <div class="bye">${byeTerm}</div>
             </div>
