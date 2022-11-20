@@ -1,7 +1,6 @@
 """API for TraktTV bound to Home Assistant OAuth."""
-import json
 import logging
-from asyncio import gather
+from asyncio import gather, sleep
 from datetime import datetime
 
 import pytz
@@ -14,6 +13,7 @@ from custom_components.trakt_tv.utils import compute_calendar_args
 
 from ..configuration import Configuration
 from ..const import API_HOST, DOMAIN
+from ..exception import TraktException
 from ..models.kind import BASIC_KINDS, NEXT_TO_WATCH_KINDS, TraktKind
 from ..models.media import Medias
 from ..utils import deserialize_json
@@ -55,12 +55,24 @@ class TraktApi:
             "trakt-api-key": client_id,
         }
 
-        return await self.web_session.request(
+        response = await self.web_session.request(
             method,
             f"{self.host}/{url}",
             **kwargs,
             headers=headers,
         )
+
+        if response.ok:
+            text = await response.text()
+            return deserialize_json(text)
+        elif response.status_code == 429:
+            wait_time = int(response.headers["Retry-After"])
+            await sleep(wait_time)
+            return await self.request(method, url, **kwargs)
+        else:
+            error = f"Can't request {url} with {method} because it returns a {response.status_code} status code."
+            guidance = "If you find this error, please raise an issue at https://github.com/dylandoamaral/trakt-integration/issues."
+            raise TraktException(f"{error}\n{guidance}")
 
     async def fetch_calendar(
         self, path: str, from_date: str, nb_days: int, all_medias: bool
@@ -82,8 +94,7 @@ class TraktApi:
             hidden_items = await self.request(
                 "get", f"users/hidden/{section}?type=show"
             )
-            raw_hidden_items = await hidden_items.json()
-            for hidden_item in raw_hidden_items:
+            for hidden_item in hidden_items:
                 try:
                     trakt_id = hidden_item["show"]["ids"]["trakt"]
                     hidden_shows.append(trakt_id)
@@ -94,8 +105,7 @@ class TraktApi:
                     )
 
         """Then, let's retrieve progress for current user by removing hidden or excluded shows"""
-        response = await self.request("get", f"sync/watched/shows?extended=noseasons")
-        raw_shows = await response.json()
+        raw_shows = await self.request("get", f"sync/watched/shows?extended=noseasons")
         raw_medias = []
         for show in raw_shows:
             try:
@@ -110,16 +120,14 @@ class TraktApi:
                 continue
 
             try:
-                response_progress = await self.fetch_show_progress(ids["trakt"])
-                raw_episode = await response_progress.json()
+                raw_episode = await self.fetch_show_progress(ids["trakt"])
                 if raw_episode.get("next_episode") is not None:
                     if raw_episode["next_episode"].get("season") is not None:
-                        response_episode = await self.fetch_show_informations(
+                        raw_episode_full = await self.fetch_show_informations(
                             ids["trakt"],
                             raw_episode["next_episode"].get("season"),
                             raw_episode["next_episode"].get("number"),
                         )
-                        raw_episode_full = await response_episode.json()
                         show["episode"] = raw_episode_full
                         show["first_aired"] = raw_episode_full["first_aired"]
                         raw_medias.append(show)
@@ -186,14 +194,13 @@ class TraktApi:
                 identifier, all_medias
             )
             calendar_args = compute_calendar_args(days_to_fetch, 33)
-            responses = await gather(
+            data = await gather(
                 *[
                     self.fetch_calendar(path, args[0], args[1], all_medias)
                     for args in calendar_args
                 ]
             )
-            data = await gather(*[response.text() for response in responses])
-            raw_medias = [media for medias in data for media in json.loads(medias)]
+            raw_medias = [media for medias in data for media in medias]
             raw_medias = raw_medias[0:max_medias]
 
         medias = [trakt_kind.value.model.from_trakt(media) for media in raw_medias]
@@ -253,7 +260,7 @@ class TraktApi:
     async def fetch_recommendations(self):
         configuration = Configuration(data=self.hass.data)
         language = configuration.get_language()
-        responses = await gather(
+        data = await gather(
             *[
                 self.fetch_recommendation(
                     kind.value.path,
@@ -262,10 +269,8 @@ class TraktApi:
                 for kind in BASIC_KINDS
             ]
         )
-        data = await gather(*[response.text() for response in responses])
         res = {}
-        for trakt_kind, payload in zip(BASIC_KINDS, data):
-            raw_medias = deserialize_json(payload)
+        for trakt_kind, raw_medias in zip(BASIC_KINDS, data):
             medias = [trakt_kind.value.model.from_trakt(media) for media in raw_medias]
             await gather(*[media.get_more_information(language) for media in medias])
             res[trakt_kind] = Medias(medias)
