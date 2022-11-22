@@ -1,12 +1,14 @@
 import {en} from "./languages/en.js"
 import {en_US} from "./languages/en_US.js"
 import {es} from "./languages/es.js"
+import {es_419} from "./languages/es_419.js"
 import {pt_BR} from "./languages/pt_BR.js"
 
 var languages = {
     en: en,
     en_US: en_US,
     es: es,
+    es_419: es_419,
     pt_BR: pt_BR,
 };
 

@@ -27,10 +27,11 @@ class TeamTrackerCard extends LitElement {
 
     const stateObj = this.hass.states[this._config.entity];
     var sport = stateObj.attributes.sport;
-    if (!(["baseball", "basketball","football","hockey", "soccer", "volleyball", "golf", "mma", "racing", "tennis"].includes(sport))) {
+    if (!(["australian-football", "baseball", "basketball","football","hockey", "soccer", "volleyball", "golf", "mma", "racing", "tennis"].includes(sport))) {
       sport = "default"
     }
 
+    const cardTitle = this._config.card_title;
     const outline = this._config.outline;
     const outlineColor = this._config.outline_color;
     const showLeague = this._config.show_league;
@@ -161,9 +162,9 @@ class TeamTrackerCard extends LitElement {
 //
 
     var byeTerm = t.translate("common.byeTerm");
-    var title = null
+    var title = cardTitle;
     if (showLeague) {
-      title = stateObj.attributes.league
+      title = title || stateObj.attributes.league
     }
 
     logo[team] = stateObj.attributes.team_logo;
@@ -315,9 +316,11 @@ if (sport.includes("hockey")) {
 //
 //  Basketball Specific Changes
 //
-if (sport.includes("basketball")) {
-  //      insert basketball specific changes here
-      }
+    if (sport.includes("basketball")) {
+      timeoutsDisplay = 'none';
+      barDisplay = 'none';
+      barWrapDisplay = "none";
+    }
   
 //
 //  Tennis Specific Changes
@@ -347,7 +350,7 @@ if (sport.includes("basketball")) {
       }
       timeouts[team] = stateObj.attributes.team_sets_won;
       timeouts[oppo] = stateObj.attributes.opponent_sets_won;
-      title = stateObj.attributes.event_name
+      title = title || stateObj.attributes.event_name
 
       timeoutsDisplay = 'inline';
     }
@@ -357,7 +360,7 @@ if (sport.includes("basketball")) {
 //  MMA Specific Changes
 //
     if (sport.includes("mma")) {
-      title = stateObj.attributes.event_name;
+      title = title || stateObj.attributes.event_name;
       timeoutsDisplay = 'none';
       barDisplay = "none";
       barWrapDisplay = "none";
@@ -367,7 +370,7 @@ if (sport.includes("basketball")) {
 //  Racing Specific Changes
 //
     if (sport.includes("racing")) {
-      title = stateObj.attributes.event_name;
+      title = title || stateObj.attributes.event_name;
       if (stateObj.attributes.quarter) {
         pre1 = stateObj.attributes.quarter;
         in1 = stateObj.attributes.quarter;
@@ -387,7 +390,7 @@ if (sport.includes("basketball")) {
 //  Golf Specific Changes
 //
     if (sport.includes("golf")) {
-      title = stateObj.attributes.event_name;
+      title = title || stateObj.attributes.event_name;
       venue = stateObj.attributes.event_name;
       barLength[team] = stateObj.attributes.team_shots_on_target;
       barLength[oppo] = stateObj.attributes.opponent_shots_on_target;

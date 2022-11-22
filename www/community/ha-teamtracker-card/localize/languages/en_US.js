@@ -13,6 +13,16 @@ export const en_US = {
         "tourney128": "Early Rounds",
         "tourney256": "Early Rounds"
     },
+    "australian-football": {
+        "startTerm": "Start",
+        "overUnder": "O/U: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Win Probability",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
     "baseball": {
         "startTerm": "First Pitch",
         "overUnder": "O/U: %s",
