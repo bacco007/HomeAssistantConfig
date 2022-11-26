@@ -1,0 +1,35 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Konfiguracja lokalizacji geograficznej i częstotliwości aktualizacji prognozy.",
+                "data": {
+                    "latitude": "Szerokość geograficzna (-89° do 89°)",
+                    "longitude": "Długość geograficzna (-180° do 180°)",
+                    "elevation": "Wzniesienie (0m do 4000m n.p.m.)",
+                    "timezone_info": "Strefa czasowa w bazie danych TZ",
+                    "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
+                    "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
+                    "seeing_weight": "Widząc wagę do obliczenia stanu",
+                    "transparency_weight": "Waga przezroczystości do obliczania stanu"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "latitude": "Szerokość geograficzna (-89° do 89°)",
+                    "longitude": "Długość geograficzna (-180° do 180°)",
+                    "elevation": "Wzniesienie (0m do 4000m n.p.m.)",
+                    "timezone_info": "Strefa czasowa w bazie danych TZ",
+                    "forecast_interval": "Odstęp czasu między aktualizacjami prognoz (min.)",
+                    "cloudcover_weight": "Waga pokrycia zachmurzenia do obliczania stanu",
+                    "seeing_weight": "Widząc wagę do obliczenia stanu",
+                    "transparency_weight": "Waga przezroczystości do obliczania stanu"
+                }
+            }
+        }
+    }
+}

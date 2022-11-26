@@ -1,0 +1,35 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Configuration of the geographic location, forecast update interval and condition calculation.",
+                "data": {
+                    "latitude": "Latitude (-89° to 89°)",
+                    "longitude": "Longitude (-180° to 180°)",
+                    "elevation": "Elevation (0m to 4000m)",
+                    "timezone_info": "Timezone in TZ database",
+                    "forecast_interval": "Interval between forecast updates (min)",
+                    "cloudcover_weight": "Cloud coverage weight for condition calculation",
+                    "seeing_weight": "Seeing weight for condition calculation",
+                    "transparency_weight": "Transparency weight for condition calculation"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "latitude": "Latitude (-89° to 89°)",
+                    "longitude": "Longitude (-180° to 180°)",
+                    "elevation": "Elevation (0m to 4000m)",
+                    "timezone_info": "Timezone in TZ database",
+                    "forecast_interval": "Interval between forecast updates (min)",
+                    "cloudcover_weight": "Cloud coverage weight for condition calculation",
+                    "seeing_weight": "Seeing weight for condition calculation",
+                    "transparency_weight": "Transparency weight for condition calculation"
+                }
+            }
+        }
+    }
+}

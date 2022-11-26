@@ -1,0 +1,35 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Konfiguration der geografischen Lokation, des Aktualisierungsintervalls und Kalkulation der Beobachtungsqualität",
+                "data": {
+                    "latitude": "Breitengrad (-89° bis 89°)",
+                    "longitude": "Längengrad (-180° bis 180°)",
+                    "elevation": "Höhe über dem Meeresspiegel (0m bis 4000m)",
+                    "timezone_info": "Zeitzone im TZ Datenbankformat",
+                    "forecast_interval": "Aktualisierungsintervall (Min)",
+                    "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
+                    "seeing_weight": "Gewichtung des Seeings",
+                    "transparency_weight": "Gewichtung der Transparenz"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "latitude": "Breitengrad (-89° bis 89°)",
+                    "longitude": "Längengrad (-180° bis 180°)",
+                    "elevation": "Höhe über dem Meeresspiegel (0m bis 4000m)",
+                    "timezone_info": "Zeitzone im TZ Datenbankformat",
+                    "forecast_interval": "Aktualisierungsintervall (Min)",
+                    "cloudcover_weight": "Gewichtung der Wolkenbedeckung",
+                    "seeing_weight": "Gewichtung des Seeings",
+                    "transparency_weight": "Gewichtung der Transparenz"
+                }
+            }
+        }
+    }
+}
