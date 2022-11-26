@@ -281,7 +281,7 @@ sensor:
         entity_picture_template: /local/sportlogos/supercars.png
         value_template: >-
           {%- if state_attr('calendar.ical_supercars', 'message') %}
-            {{ state_attr('calendar.ical_supercars', 'message') | replace('Repco Supercars - ','') }}
+            {{ state_attr('calendar.ical_supercars', 'message') | replace('SUPERCARS: ','') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
@@ -303,7 +303,7 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_supercars', 'message') | replace('Repco Supercars - ','') %}
+            {%- set op = state_attr('calendar.ical_supercars', 'message') | replace('SUPERCARS: ','') %}
             {%- set st = state_attr('calendar.ical_supercars', 'start_time') %}
             {%- if st != None %}
               {{ op }}

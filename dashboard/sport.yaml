@@ -201,14 +201,14 @@ cards:
               entity_part: sensor.ical_nascar_cup_series_event_
               icon: /local/sportlogos/nascarcup.png
               limit: 5
-              replace: dummytext
+              replace: "🏁"
           - template: sport_cal
             type: custom:button-card
             variables:
               entity_part: sensor.ical_nascar_xfinity_series_event_
               icon: /local/sportlogos/nascarxfinity.png
               limit: 5
-              replace: dummytext
+              replace: "🏁"
           - template: sport_cal
             type: custom:button-card
             variables:
@@ -222,7 +222,7 @@ cards:
               entity_part: sensor.ical_new_york_yankees_event_
               icon: /local/sportlogos/yankees.png
               limit: 5
-              replace: dummytext
+              replace: "⚾️"
           - template: sport_cal
             type: custom:button-card
             variables:
@@ -249,7 +249,7 @@ cards:
               entity_part: sensor.ical_supercars_event_
               icon: /local/sportlogos/supercars.png
               limit: 5
-              replace: "Repco Supercars - "
+              replace: "SUPERCARS: "
           - template: sport_cal
             type: custom:button-card
             variables:
@@ -277,21 +277,21 @@ cards:
               entity_part: sensor.ical_sydney_kings_event_
               icon: /local/sportlogos/SydneyKings.png
               limit: 5
-              replace: dummytext
+              replace: "🏀"
           - template: sport_cal
             type: custom:button-card
             variables:
               entity_part: sensor.ical_sydney_sixers_event_
               icon: /local/sportlogos/sydneysixers.png
               limit: 5
-              replace: dummytext
+              replace: "🏏"
           - template: sport_cal
             type: custom:button-card
             variables:
               entity_part: sensor.ical_sydney_sixers_women_event_
               icon: /local/sportlogos/sydneysixers.png
               limit: 5
-              replace: dummytext
+              replace: "🏏"
           - template: sport_cal
             type: custom:button-card
             variables:

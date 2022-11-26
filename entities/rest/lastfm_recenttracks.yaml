@@ -1,0 +1,10 @@
+---
+resource: !secret lastfm_recenttracks_url
+sensor:
+  name: lastfm_user_recenttracks
+  value_template: >
+    {{ value_json.recenttracks.track[0].artist.['#text']}} - {{ value_json.recenttracks.track[0].name }}
+  json_attributes_path: $.recenttracks
+  json_attributes:
+    - track
+scan_interval: 600

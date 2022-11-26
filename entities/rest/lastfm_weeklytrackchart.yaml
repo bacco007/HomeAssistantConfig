@@ -1,0 +1,10 @@
+---
+resource: !secret lastfm_weeklytrackchart_url
+sensor:
+  name: lastfm_user_weeklytrackchart
+  value_template: >
+    {{ value_json.weeklytrackchart.track[0].artist.name}} - {{ value_json.weeklytrackchart.track[0].name }}
+  json_attributes_path: $.weeklytrackchart
+  json_attributes:
+    - track
+scan_interval: 600

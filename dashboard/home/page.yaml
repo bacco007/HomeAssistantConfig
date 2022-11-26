@@ -236,6 +236,14 @@ cards:
                                 --ha-card-box-shadow: 0px;
                                 margin: -8px -4px -4px -16px;
                               }
+              - type: custom:stack-in-card
+                view_layout:
+                  grid-column: span 2
+                cards:
+                  - type: custom:clock-weather-card
+                    entity: weather.east_tamworth
+                    hide_today_section: true
+                    forecast_days: 7
 
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
