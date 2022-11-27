@@ -204,7 +204,7 @@ class UPnPStatusTracker:
 
             if addr.version == 6:
                 split_addr = source_address.split("%")
-                source_address = (split_addr[0], 0, 0, split_addr[1])
+                source_address = (split_addr[0], 0, 0, int(split_addr[1]))
             else:
                 source_address = (addr, 0)
 
@@ -213,11 +213,11 @@ class UPnPStatusTracker:
     async def _search(self, addr, async_callback):
         try:
             await async_search(
-                service_type=ROOT_DEVICE,
+                search_target=ROOT_DEVICE,
                 source=addr,
                 async_callback=async_callback,
             )
-        except OSError as ex:
+        except (OSError, UpnpError) as ex:
             _LOGGER.warning("Unable to search using addr %s: %s", addr, ex)
 
     async def handle_alive(self, headers):

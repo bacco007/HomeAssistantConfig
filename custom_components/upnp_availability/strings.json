@@ -1,6 +1,5 @@
 {
   "config": {
-    "title": "UPnP Availability",
     "step": {
       "confirm": {
         "title": "UPnP Availability",
