@@ -135,7 +135,7 @@ sport_cal:
     card:
       - color: rgba(0, 0, 0, 0.82)
       - background: var(--ha-card-background)
-      - width: 350px
+      # - width: 350px
       - overflow-y: scroll
       - margin: 0px 0.2em 0.5em 0.2em
       - border-radius: var(--ha-card-border-radius, 4px)
@@ -148,3 +148,5 @@ sport_cal:
       - align-items: start
     person:
       - align-self: middle
+  tap_action:
+    action: none
