@@ -303,7 +303,7 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_supercars', 'message') | replace('SUPERCARS: ','') %}
+            {%- set op = state_attr('calendar.ical_supercars', 'message') | replace('Repco Supercars - ','') %}
             {%- set st = state_attr('calendar.ical_supercars', 'start_time') %}
             {%- if st != None %}
               {{ op }}

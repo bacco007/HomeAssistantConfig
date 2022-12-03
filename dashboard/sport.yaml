@@ -169,7 +169,7 @@ cards:
                     entity_part: sensor.ical_indycar_event_
                     icon: /local/sportlogos/indycar.png
                     limit: 5
-                    replace: "IndyCar - "
+                    replace: ""
                 - template: sport_cal
                   type: custom:button-card
                   variables:
