@@ -12,3 +12,8 @@ sensors:
     entity_id: sensor.indoor_average_temperature
     sample_duration: 7200
     max_samples: 120
+  temptrend_tamworth_airport:
+    entity_id: sensor.tamworth_airport_temp
+    friendly_name: Temp Trend - Tamworth Airport
+    max_samples: 60
+    sample_duration: 10800
