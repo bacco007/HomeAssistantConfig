@@ -116,3 +116,8 @@ class UPNPBinarySensor(BinarySensorEntity):
     def extra_state_attributes(self):
         """Provide attributes for display on device card."""
         return self.dev.info
+
+    @property
+    def entity_picture(self) -> str | None:
+        """Return device icon."""
+        return self.dev.icon
