@@ -128,10 +128,6 @@ class Holidays(CalendarEntity, RestoreEntity):
     async def async_added_to_hass(self) -> None:
         """When calendar is added to hassio, add it to calendar."""
         await super().async_added_to_hass()
-        if const.DOMAIN not in self.hass.data:
-            self.hass.data[const.DOMAIN] = {}
-        if const.CALENDAR_PLATFORM not in self.hass.data[const.DOMAIN]:
-            self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM] = {}
         self.hass.data[const.DOMAIN][const.CALENDAR_PLATFORM][self.entity_id] = self
 
         if (state := await self.async_get_last_state()) is not None:

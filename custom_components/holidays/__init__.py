@@ -8,12 +8,20 @@ from typing import Any, Dict
 import holidays  # pylint: disable=import-self
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.typing import ConfigType
 
 from . import const
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
 
 _LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup(hass: HomeAssistant, _: ConfigType) -> bool:
+    """Set up the platform - inicialize data structure."""
+    hass.data.setdefault(const.DOMAIN, {})
+    hass.data[const.DOMAIN].setdefault(const.CALENDAR_PLATFORM, {})
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:

@@ -5,7 +5,6 @@ from collections.abc import Mapping
 from typing import Any, Dict, cast
 
 import holidays
-import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from homeassistant.const import CONF_NAME
@@ -21,11 +20,12 @@ from homeassistant.helpers.schema_config_entry_flow import (
 from . import const, create_holidays
 
 supported_countries: dict = holidays.list_supported_countries()
-country_codes: list = sorted([holiday for holiday in supported_countries])
+sorted_countries: list = sorted([holiday for holiday in supported_countries])
+country_codes = [selector.SelectOptionDict(value=c, label=c) for c in sorted_countries]
 
 
 @callback
-def choose_second_step(options: Dict[str, Any]) -> str:
+async def choose_second_step(options: Dict[str, Any]) -> str:
     """Return next step_id for options flow."""
     subdivs = supported_countries[options.get(const.CONF_COUNTRY)]
     if subdivs:
@@ -39,19 +39,19 @@ def choose_second_step(options: Dict[str, Any]) -> str:
 
 
 @callback
-def choose_third_step(options: Dict[str, Any]) -> str:
+async def choose_third_step(options: Dict[str, Any]) -> str:
     """Return next step_id for options flow."""
-    if const.CONF_HOLIDAY_POP_NAMED in options:
-        # Remove holidays that do not exist
-        hol = create_holidays(
-            [dt_util.now().date().year],
-            options.get(const.CONF_COUNTRY, ""),
-            options.get(const.CONF_SUBDIV, ""),
-            options.get(const.CONF_OBSERVED, True),
-        )
-        for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
-            if pop not in hol or "(Observed)" in pop:
-                del options[pop]
+    # if const.CONF_HOLIDAY_POP_NAMED in options:
+    #     # Remove holidays that do not exist
+    #     hol = create_holidays(
+    #         [dt_util.now().date().year],
+    #         options.get(const.CONF_COUNTRY, ""),
+    #         options.get(const.CONF_SUBDIV, ""),
+    #         options.get(const.CONF_OBSERVED, True),
+    #     )
+    #     for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
+    #         if pop not in list(hol) or "(Observed)" in pop:
+    #             del options[pop]
     return "pop"
 
 
@@ -81,70 +81,96 @@ def optional(
     return vol.Optional(key, description={"suggested_value": suggested_value})
 
 
-def general_options_schema(
-    _,
-    options: Dict[str, Any],
+async def general_options_schema(
+    handler: SchemaConfigFlowHandler | SchemaOptionsFlowHandler,
 ) -> vol.Schema:
     """Generate options schema."""
     return vol.Schema(
         {
             optional(
-                const.CONF_ICON_NORMAL, options, const.DEFAULT_ICON_NORMAL
+                const.CONF_ICON_NORMAL, handler.options, const.DEFAULT_ICON_NORMAL
             ): selector.IconSelector(),
             optional(
-                const.CONF_ICON_TODAY, options, const.DEFAULT_ICON_TODAY
+                const.CONF_ICON_TODAY, handler.options, const.DEFAULT_ICON_TODAY
             ): selector.IconSelector(),
             optional(
-                const.CONF_ICON_TOMORROW, options, const.DEFAULT_ICON_TOMORROW
+                const.CONF_ICON_TOMORROW, handler.options, const.DEFAULT_ICON_TOMORROW
             ): selector.IconSelector(),
-            optional(const.CONF_COUNTRY, options): vol.In(country_codes),
-            optional(const.CONF_OBSERVED, options, True): bool,
+            optional(const.CONF_COUNTRY, handler.options): selector.SelectSelector(
+                selector.SelectSelectorConfig(options=country_codes)
+            ),
+            optional(const.CONF_OBSERVED, handler.options, True): bool,
         }
     )
 
 
-def general_config_schema(
+async def general_config_schema(
     handler: SchemaConfigFlowHandler | SchemaOptionsFlowHandler,
-    options: Dict[str, Any],
 ) -> vol.Schema:
     """Generate config schema."""
     return vol.Schema(
         {
-            optional(CONF_NAME, options): selector.TextSelector(),
-        }
-    ).extend(general_options_schema(handler, options).schema)
-
-
-def subdiv_config_schema(
-    _,
-    options: Dict[str, Any],
-) -> vol.Schema:
-    """Second step."""
-    subdivs = supported_countries[options.get(const.CONF_COUNTRY)]
-    return vol.Schema(
-        {
-            optional(const.CONF_SUBDIV, options): vol.In(subdivs),
+            optional(CONF_NAME, handler.options): selector.TextSelector(),
+            optional(
+                const.CONF_ICON_NORMAL, handler.options, const.DEFAULT_ICON_NORMAL
+            ): selector.IconSelector(),
+            optional(
+                const.CONF_ICON_TODAY, handler.options, const.DEFAULT_ICON_TODAY
+            ): selector.IconSelector(),
+            optional(
+                const.CONF_ICON_TOMORROW, handler.options, const.DEFAULT_ICON_TOMORROW
+            ): selector.IconSelector(),
+            optional(const.CONF_COUNTRY, handler.options): selector.SelectSelector(
+                selector.SelectSelectorConfig(options=country_codes)
+            ),
+            optional(const.CONF_OBSERVED, handler.options, True): bool,
         }
     )
 
 
-def pop_config_schema(
-    _,
-    options: Dict[str, Any],
+async def subdiv_config_schema(
+    handler: SchemaConfigFlowHandler | SchemaOptionsFlowHandler,
+) -> vol.Schema:
+    """Second step."""
+    subdivs = [
+        selector.SelectOptionDict(value=s, label=s)
+        for s in supported_countries[handler.options.get(const.CONF_COUNTRY)]
+    ]
+    return vol.Schema(
+        {
+            optional(const.CONF_SUBDIV, handler.options): selector.SelectSelector(
+                selector.SelectSelectorConfig(options=subdivs)
+            ),
+        }
+    )
+
+
+async def pop_config_schema(
+    handler: SchemaConfigFlowHandler | SchemaOptionsFlowHandler,
 ) -> vol.Schema:
     """Last step."""
     hol = create_holidays(
         [dt_util.now().date().year],
-        options.get(const.CONF_COUNTRY, ""),
-        options.get(const.CONF_SUBDIV, ""),
-        options.get(const.CONF_OBSERVED, True),
+        handler.options.get(const.CONF_COUNTRY, ""),
+        handler.options.get(const.CONF_SUBDIV, ""),
+        handler.options.get(const.CONF_OBSERVED, True),
     )
-    list_holidays = {h: h for h in sorted(hol.values()) if "(Observed)" not in h}
+    list_holidays = [
+        selector.SelectOptionDict(value=h, label=h)
+        for h in sorted(hol.values())
+        if "(Observed)" not in h
+    ]
     return vol.Schema(
         {
-            optional(const.CONF_HOLIDAY_POP_NAMED, options): cv.multi_select(
-                list_holidays
-            ),
+            optional(
+                const.CONF_HOLIDAY_POP_NAMED, handler.options
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=list_holidays,
+                    multiple=True,
+                    mode=selector.SelectSelectorMode.LIST,
+                )
+            )
         }
     )
 
