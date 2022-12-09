@@ -2,12 +2,10 @@
 from __future__ import annotations
 
 import logging
+
 import voluptuous as vol
 
-from .wideq import FEAT_HUMIDITY, FEAT_TARGET_HUMIDITY, DeviceType
-from .wideq.dehumidifier import DeHumidifierDevice
-
-from homeassistant.components.humidifier import HumidifierEntity, HumidifierDeviceClass
+from homeassistant.components.humidifier import HumidifierDeviceClass, HumidifierEntity
 from homeassistant.components.humidifier.const import (
     DEFAULT_MAX_HUMIDITY,
     DEFAULT_MIN_HUMIDITY,
@@ -22,6 +20,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import LGEDevice
 from .const import DOMAIN, LGE_DEVICES, LGE_DISCOVERY_NEW
+from .wideq import FEAT_HUMIDITY, FEAT_TARGET_HUMIDITY, DeviceType
+from .wideq.dehumidifier import DeHumidifierDevice
 
 ATTR_CURRENT_HUMIDITY = "current_humidity"
 ATTR_FAN_MODE = "fan_mode"

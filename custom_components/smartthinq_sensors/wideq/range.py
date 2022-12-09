@@ -3,9 +3,10 @@ import logging
 from typing import Optional
 
 from .const import (
+    BIT_OFF,
+    FEAT_COOKTOP_CENTER_STATE,
     FEAT_COOKTOP_LEFT_FRONT_STATE,
     FEAT_COOKTOP_LEFT_REAR_STATE,
-    FEAT_COOKTOP_CENTER_STATE,
     FEAT_COOKTOP_RIGHT_FRONT_STATE,
     FEAT_COOKTOP_RIGHT_REAR_STATE,
     FEAT_OVEN_LOWER_CURRENT_TEMP,
@@ -17,12 +18,7 @@ from .const import (
     UNIT_TEMP_CELSIUS,
     UNIT_TEMP_FAHRENHEIT,
 )
-from .device import (
-    BIT_OFF,
-    Device,
-    DeviceStatus,
-    UnitTempModes,
-)
+from .device import Device, DeviceStatus, UnitTempModes
 
 OVEN_TEMP_UNIT = {
     "0": UnitTempModes.Fahrenheit,
@@ -58,7 +54,8 @@ class RangeDevice(Device):
 
 
 class RangeStatus(DeviceStatus):
-    """Higher-level information about an range's current status.
+    """
+    Higher-level information about an range's current status.
 
     :param device: The Device instance.
     :param data: JSON data from the API.
@@ -103,52 +100,43 @@ class RangeStatus(DeviceStatus):
 
     @property
     def cooktop_left_front_state(self):
-        """For some cooktops (maybe depending on firmware or model), the
-        five burners do not report individual status. Instead, the 
-        cooktop_left_front reports aggregated status for all burners.
+        """
+        For some cooktops (maybe depending on firmware or model),
+        the five burners do not report individual status.
+        Instead, the cooktop_left_front reports aggregated status for all burners.
         """
         status = self.lookup_enum("LFState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_COOKTOP_LEFT_FRONT_STATE, status
-        )
+        return self._update_feature(FEAT_COOKTOP_LEFT_FRONT_STATE, status)
 
     @property
     def cooktop_left_rear_state(self):
         status = self.lookup_enum("LRState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_COOKTOP_LEFT_REAR_STATE, status
-        )
+        return self._update_feature(FEAT_COOKTOP_LEFT_REAR_STATE, status)
 
     @property
     def cooktop_center_state(self):
         status = self.lookup_enum("CenterState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_COOKTOP_CENTER_STATE, status
-        )
+        return self._update_feature(FEAT_COOKTOP_CENTER_STATE, status)
 
     @property
     def cooktop_right_front_state(self):
         status = self.lookup_enum("RFState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_COOKTOP_RIGHT_FRONT_STATE, status
-        )
+        return self._update_feature(FEAT_COOKTOP_RIGHT_FRONT_STATE, status)
 
     @property
     def cooktop_right_rear_state(self):
         status = self.lookup_enum("RRState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_COOKTOP_RIGHT_REAR_STATE, status
-        )
+        return self._update_feature(FEAT_COOKTOP_RIGHT_REAR_STATE, status)
 
     @property
     def is_oven_on(self):
@@ -160,24 +148,20 @@ class RangeStatus(DeviceStatus):
             if r and r != STATE_OPTIONITEM_OFF:
                 return True
         return False
-    
+
     @property
     def oven_lower_state(self):
         status = self.lookup_enum("LowerOvenState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_OVEN_LOWER_STATE, status
-        )
+        return self._update_feature(FEAT_OVEN_LOWER_STATE, status)
 
     @property
     def oven_upper_state(self):
         status = self.lookup_enum("UpperOvenState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(
-            FEAT_OVEN_UPPER_STATE, status
-        )
+        return self._update_feature(FEAT_OVEN_UPPER_STATE, status)
 
     @property
     def oven_lower_target_temp(self):
@@ -211,9 +195,7 @@ class RangeStatus(DeviceStatus):
         else:
             return None
         status = self._data.get(key)
-        return self._update_feature(
-            FEAT_OVEN_LOWER_CURRENT_TEMP, status, False
-        )
+        return self._update_feature(FEAT_OVEN_LOWER_CURRENT_TEMP, status, False)
 
     @property
     def oven_upper_current_temp(self):
@@ -225,9 +207,7 @@ class RangeStatus(DeviceStatus):
         else:
             return None
         status = self._data.get(key)
-        return self._update_feature(
-            FEAT_OVEN_UPPER_CURRENT_TEMP, status, False
-        )
+        return self._update_feature(FEAT_OVEN_UPPER_CURRENT_TEMP, status, False)
 
     def _update_features(self):
         _ = [
@@ -241,4 +221,3 @@ class RangeStatus(DeviceStatus):
             self.oven_upper_state,
             self.oven_upper_current_temp,
         ]
-        return

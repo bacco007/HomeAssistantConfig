@@ -1,13 +1,9 @@
 """------------------for Dehumidifier"""
-import enum
+from enum import Enum
 import logging
 from typing import Optional
 
-from .const import (
-    FEAT_HUMIDITY,
-    FEAT_TARGET_HUMIDITY,
-    FEAT_WATER_TANK_FULL,
-)
+from .const import FEAT_HUMIDITY, FEAT_TARGET_HUMIDITY, FEAT_WATER_TANK_FULL
 from .core_exceptions import InvalidRequestError
 from .device import Device, DeviceStatus
 
@@ -47,14 +43,14 @@ ADD_FEAT_POLL_INTERVAL = 300  # 5 minutes
 _LOGGER = logging.getLogger(__name__)
 
 
-class DHumOp(enum.Enum):
+class DHumOp(Enum):
     """Whether a device is on or off."""
 
     OFF = "@operation_off"
     ON = "@operation_on"
 
 
-class DHumMode(enum.Enum):
+class DHumMode(Enum):
     """The operation mode for a Dehumidifier device."""
 
     SMART = "@AP_MAIN_MID_OPMODE_SMART_DEHUM_W"
@@ -65,7 +61,7 @@ class DHumMode(enum.Enum):
     IONIZER = "@AP_MAIN_MID_OPMODE_IONIZER_W"
 
 
-class DHumFanSpeed(enum.Enum):
+class DHumFanSpeed(Enum):
     """The fan speed for a Dehumidifier device."""
 
     LOW = "@AP_MAIN_MID_WINDSTRENGTH_DHUM_LOW_W"
@@ -115,7 +111,9 @@ class DeHumidifierDevice(Device):
                 return []
             mapping = self.model_info.value(key).options
             mode_list = [e.value for e in DHumMode]
-            self._supported_op_modes = [DHumMode(o).name for o in mapping.values() if o in mode_list]
+            self._supported_op_modes = [
+                DHumMode(o).name for o in mapping.values() if o in mode_list
+            ]
         return self._supported_op_modes
 
     @property
@@ -128,7 +126,9 @@ class DeHumidifierDevice(Device):
                 return []
             mapping = self.model_info.value(key).options
             mode_list = [e.value for e in DHumFanSpeed]
-            self._supported_fan_speeds = [DHumFanSpeed(o).name for o in mapping.values() if o in mode_list]
+            self._supported_fan_speeds = [
+                DHumFanSpeed(o).name for o in mapping.values() if o in mode_list
+            ]
         return self._supported_fan_speeds
 
     @property
@@ -192,7 +192,7 @@ class DeHumidifierDevice(Device):
         await self.set(keys[0], keys[1], key=keys[2], value=humidity)
 
     async def get_power(self):
-        """Get the instant power usage in watts of the whole unit"""
+        """Get the instant power usage in watts of the whole unit."""
         if not self._current_power_supported:
             return 0
 
@@ -204,7 +204,9 @@ class DeHumidifierDevice(Device):
             self._current_power_supported = False
             return 0
 
-    async def set(self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None):
+    async def set(
+        self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None
+    ):
         """Set a device's control for `key` to `value`."""
         await super().set(
             ctrl_key, command, key=key, value=value, data=data, ctrl_path=ctrl_path

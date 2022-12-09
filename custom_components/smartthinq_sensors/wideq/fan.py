@@ -1,5 +1,5 @@
 """------------------for Fan"""
-import enum
+from enum import Enum
 import logging
 from typing import Optional
 
@@ -21,20 +21,20 @@ CMD_STATE_WIND_STRENGTH = [CTRL_BASIC, "Set", STATE_WIND_STRENGTH]
 _LOGGER = logging.getLogger(__name__)
 
 
-class FanOp(enum.Enum):
+class FanOp(Enum):
     """Whether a device is on or off."""
 
     OFF = "@OFF"
     ON = "@ON"
 
 
-class FanMode(enum.Enum):
+class FanMode(Enum):
     """The operation mode for a Fan device."""
 
     NORMAL = "@FAN_MAIN_OPERATION_MODE_NORMAL_W"
 
 
-class FanSpeed(enum.Enum):
+class FanSpeed(Enum):
     """The fan speed for a Fan device."""
 
     LOWEST_LOW = "@LOWST_LOW"
@@ -55,8 +55,8 @@ class FanDevice(Device):
         self._supported_fan_speeds = None
 
     @property
-    def fan_speeds(self):
-        """Return a list of available fan speeds."""
+    def fan_speeds(self) -> list:
+        """Available fan speeds."""
         if self._supported_fan_speeds is None:
             key = self._get_state_key(SUPPORT_WIND_STRENGTH)
             if not self.model_info.is_enum_type(key):
@@ -64,12 +64,14 @@ class FanDevice(Device):
                 return []
             mapping = self.model_info.value(key).options
             mode_list = [e.value for e in FanSpeed]
-            self._supported_fan_speeds = [FanSpeed(o).name for o in mapping.values() if o in mode_list]
+            self._supported_fan_speeds = [
+                FanSpeed(o).name for o in mapping.values() if o in mode_list
+            ]
         return self._supported_fan_speeds
 
     @property
-    def fan_presets(self):
-        """Return a list of available fan presets."""
+    def fan_presets(self) -> list:
+        """Available fan presets."""
         return []
 
     async def power(self, turn_on):
@@ -100,7 +102,9 @@ class FanDevice(Device):
 
         raise ValueError(f"Invalid fan preset: {preset}")
 
-    async def set(self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None):
+    async def set(
+        self, ctrl_key, command, *, key=None, value=None, data=None, ctrl_path=None
+    ):
         """Set a device's control for `key` to `value`."""
         await super().set(
             ctrl_key, command, key=key, value=value, data=data, ctrl_path=ctrl_path

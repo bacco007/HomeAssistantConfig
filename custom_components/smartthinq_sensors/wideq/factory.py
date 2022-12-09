@@ -1,15 +1,7 @@
-
 from .ac import AirConditionerDevice
 from .airpurifier import AirPurifierDevice
-from .dehumidifier import DeHumidifierDevice
-from .dishwasher import DishWasherDevice
-from .fan import FanDevice
-from .range import RangeDevice
-from .refrigerator import RefrigeratorDevice
-from .styler import StylerDevice
-from .washerDryer import WMDevice
-
 from .const import UNIT_TEMP_CELSIUS
+from .dehumidifier import DeHumidifierDevice
 from .device_info import (
     WM_DEVICE_TYPES,
     DeviceInfo,
@@ -17,6 +9,13 @@ from .device_info import (
     NetworkType,
     PlatformType,
 )
+from .dishwasher import DishWasherDevice
+from .fan import FanDevice
+from .range import RangeDevice
+from .refrigerator import RefrigeratorDevice
+from .styler import StylerDevice
+from .washerDryer import WMDevice
+from .waterheater import WaterHeaterDevice
 
 
 def get_lge_device(client, device: DeviceInfo, temp_unit=UNIT_TEMP_CELSIUS):
@@ -49,5 +48,7 @@ def get_lge_device(client, device: DeviceInfo, temp_unit=UNIT_TEMP_CELSIUS):
         return StylerDevice(client, device)
     if device_type in WM_DEVICE_TYPES:
         return WMDevice(client, device)
+    if device_type == DeviceType.WATER_HEATER:
+        return WaterHeaterDevice(client, device, temp_unit)
 
     return None
