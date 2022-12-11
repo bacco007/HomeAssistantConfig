@@ -15,15 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
       - name: 🚀 Run yamllint
-        uses: frenck/action-yamllint@v1.2.0
+        uses: frenck/action-yamllint@v1.3.1
   remarklint:
     name: 🧹 Remark Lint
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
       - name: 🚀 Run Remark Lint
         uses: "docker://pipelinecomponents/remark-lint:latest"
         continue-on-error: true
@@ -39,12 +39,12 @@ jobs:
         version: ["stable", "beta", "dev"]
     steps:
       - name: ⤵️  Check out configuration from GitHub
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
       - name: ➕  Create dummy files
         run: |
           touch home-assistant.log
       - name: 🚀  Run Home Assistant Configuration Check
-        uses: frenck/action-home-assistant@v1.3
+        uses: frenck/action-home-assistant@v1.4
         with:
           secrets: ./fake_secrets.yaml
           version: "${{ matrix.version }}"
@@ -54,7 +54,7 @@ jobs:
     needs: [yamllint]
     steps:
       - name: ⤵️ Check out configuration from GitHub
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
       - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
