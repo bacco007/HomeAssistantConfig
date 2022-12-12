@@ -1,12 +1,13 @@
 """ Smartthings TV integration """
 
+from asyncio import TimeoutError as AsyncTimeoutError
 from datetime import timedelta
 from enum import Enum
+import json
 import logging
 from typing import Dict, List, Optional
-from aiohttp import ClientSession, ClientConnectionError, ClientResponseError
-from asyncio import TimeoutError as AsyncTimeoutError
-import json
+
+from aiohttp import ClientConnectionError, ClientResponseError, ClientSession
 
 from homeassistant.util import Throttle
 
@@ -51,9 +52,7 @@ def _headers(api_key: str) -> Dict[str, str]:
 
 
 def _command(command: Dict, arguments: Optional[List] = None):
-    cmd = {
-        "commands": [{"component": "main"}]
-    }
+    cmd = {"commands": [{"component": "main"}]}
     cmd["commands"][0].update(command)
     if arguments:
         cmd["commands"][0]["arguments"] = arguments
@@ -241,7 +240,9 @@ class SmartThingsTV:
         result = {}
 
         async with session.get(
-            API_DEVICES, headers=_headers(api_key), raise_for_status=True,
+            API_DEVICES,
+            headers=_headers(api_key),
+            raise_for_status=True,
         ) as resp:
             device_list = await resp.json()
 
@@ -329,7 +330,9 @@ class SmartThingsTV:
 
         # this get the real status of the device
         async with self._session.get(
-            api_device_health, headers=_headers(self._api_key), raise_for_status=True,
+            api_device_health,
+            headers=_headers(self._api_key),
+            raise_for_status=True,
         ) as resp:
             health = await resp.json()
 
@@ -352,7 +355,7 @@ class SmartThingsTV:
         api_device = f"{API_DEVICES}/{device_id}"
         api_device_status = f"{api_device}/states"
         # not used, just for reference
-        api_device_main_status = f"{api_device}/components/main/status"
+        # api_device_main_status = f"{api_device}/components/main/status"
 
         self._prev_state = self._state
 
@@ -377,7 +380,9 @@ class SmartThingsTV:
             return
 
         async with self._session.get(
-            api_device_status, headers=_headers(self._api_key), raise_for_status=True,
+            api_device_status,
+            headers=_headers(self._api_key),
+            raise_for_status=True,
         ) as resp:
             data = await resp.json()
 
@@ -395,13 +400,11 @@ class SmartThingsTV:
 
         # Muted state
         device_muted = dev_data.get("mute", {}).get("value", "")
-        self._muted = (device_muted == "mute")
+        self._muted = device_muted == "mute"
 
         # Sound Mode
         self._sound_mode = dev_data.get("soundMode", {}).get("value")
-        self._sound_mode_list = self._load_json_list(
-            dev_data, "supportedSoundModes"
-        )
+        self._sound_mode_list = self._load_json_list(dev_data, "supportedSoundModes")
 
         # Picture Mode
         self._picture_mode = dev_data.get("pictureMode", {}).get("value")
@@ -410,9 +413,7 @@ class SmartThingsTV:
         )
 
         # Sources and channel
-        self._source_list = self._load_json_list(
-            dev_data, "supportedInputSources"
-        )
+        self._source_list = self._load_json_list(dev_data, "supportedInputSources")
         self._source_list_map = self._load_json_list(
             dev_data, "supportedInputSourcesMap"
         )
@@ -508,12 +509,14 @@ class SmartThingsTV:
 
 
 class InvalidSmartThingsSoundMode(RuntimeError):
-    """ Selected sound mode is invalid. """
-    def __init__(self, *args, **kwargs): # real signature unknown
+    """Selected sound mode is invalid."""
+
+    def __init__(self, *args, **kwargs):  # real signature unknown
         pass
 
 
 class InvalidSmartThingsPictureMode(RuntimeError):
-    """ Selected picture mode is invalid. """
-    def __init__(self, *args, **kwargs): # real signature unknown
+    """Selected picture mode is invalid."""
+
+    def __init__(self, *args, **kwargs):  # real signature unknown
         pass

@@ -1,9 +1,6 @@
-
-import aiofiles
-from aiofiles import os as aiopath
-import aiohttp
+"""Logo implementation for SamsungTV Smart."""
 import asyncio
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from enum import Enum
 import json
 import logging
@@ -13,11 +10,17 @@ import re
 import traceback
 from typing import Optional
 
+import aiofiles
+from aiofiles import os as aiopath
+import aiohttp
+
 from .const import DOMAIN
 
 
 # Logo feature constants
 class LogoOption(Enum):
+    """List of posible logo options."""
+
     Disabled = 1
     WhiteColor = 2
     BlueColor = 3
@@ -102,7 +105,10 @@ class LocalImageUrl:
 
 
 class Logo:
-    """ Class that fetches logos for Samsung TV Tizen. Works with https://github.com/jaruba/channel-logos. """
+    """
+    Class that fetches logos for Samsung TV Tizen.
+    Works with https://github.com/jaruba/channel-logos.
+    """
 
     def __init__(
         self,
@@ -124,13 +130,12 @@ class Logo:
 
         app_path = os.path.dirname(os.path.realpath(__file__))
         self._logo_file_path = os.path.join(app_path, LOGO_FILE)
-        self._logo_file_download_path = (
-            logo_file_download or
-            os.path.join(app_path, LOGO_FILE_DOWNLOAD)
+        self._logo_file_download_path = logo_file_download or os.path.join(
+            app_path, LOGO_FILE_DOWNLOAD
         )
 
     def set_logo_color(self, logo_type: LogoOption):
-        """ Sets the logo color option and image base url if not already set to this option """
+        """Sets the logo color option and image base url if not already set to this option"""
         logo_option = LOGO_OPTIONS_MAPPING[logo_type]
         if self._logo_option and self._logo_option == logo_option:
             return
@@ -149,16 +154,15 @@ class Logo:
             return False
 
         check_time = datetime.utcnow().astimezone()
-        if (
-            self._last_check is not None and
-            self._last_check > check_time-timedelta(days=LOGO_FILE_DAYS_BEFORE_UPDATE)
+        if self._last_check is not None and self._last_check > check_time - timedelta(
+            days=LOGO_FILE_DAYS_BEFORE_UPDATE
         ):
             return False
 
         return True
 
     async def _async_ensure_latest_path_file(self):
-        """ Does check if logo paths file exists and if it does - is it out of date or not."""
+        """Does check if logo paths file exists and if it does - is it out of date or not."""
         if not self.check_requested():
             return
 
@@ -168,7 +172,7 @@ class Logo:
             file_date = datetime.utcfromtimestamp(
                 await aiopath.path.getmtime(self._logo_file_download_path)
             ).astimezone()
-            if file_date > check_time-timedelta(days=LOGO_FILE_DAYS_BEFORE_UPDATE):
+            if file_date > check_time - timedelta(days=LOGO_FILE_DAYS_BEFORE_UPDATE):
                 self._last_check = file_date
                 return
 
@@ -180,7 +184,7 @@ class Logo:
                         response.headers.get("Last-Modified"),
                         "%a, %d %b %Y %X %Z",
                     ).astimezone()
-                    update_file = (url_date > file_date)
+                    update_file = url_date > file_date
             except (aiohttp.ClientError, asyncio.TimeoutError):
                 _LOGGER.warning(
                     "Not able to check for latest paths file for logos from %s%s. "
@@ -252,8 +256,8 @@ class Logo:
         try:
             async with aiofiles.open(logo_file, "r") as f:
                 image_paths = json.loads(await f.read())
-        except:
-            _LOGGER.warning("Failed to read logo paths file %s", logo_file)
+        except Exception as exc:  # pylint: disable=broad-except
+            _LOGGER.warning("Failed to read logo paths file %s: %s", logo_file, exc)
             return
 
         if image_paths:
@@ -267,13 +271,17 @@ class Logo:
         self._logo_cache[media_title] = logo_path
 
     async def async_find_match(self, media_title):
-        """ Finds a match in the logo_paths file for a given media_title """
+        """Finds a match in the logo_paths file for a given media_title"""
         if self._media_image_base_url is None:
-            _LOGGER.debug("Media image base url was not set! Not able to find a matching logo")
+            _LOGGER.debug(
+                "Media image base url was not set! Not able to find a matching logo"
+            )
             return None
 
         if media_title is None:
-            _LOGGER.warning("No media title right now! Not able to find a matching logo")
+            _LOGGER.warning(
+                "No media title right now! Not able to find a matching logo"
+            )
             return None
 
         _LOGGER.debug("Matching media title for %s", media_title)
@@ -374,5 +382,5 @@ def _levenshtein_ratio(s: str, t: str):
                 distance[row - 1][col - 1] + cost,
             )
 
-    ratio = ((len(s) + len(t)) - distance[rows-1][cols-1]) / (len(s) + len(t))
+    ratio = ((len(s) + len(t)) - distance[rows - 1][cols - 1]) / (len(s) + len(t))
     return ratio
