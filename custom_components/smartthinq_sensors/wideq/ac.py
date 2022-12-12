@@ -10,6 +10,7 @@ from .const import (
     FEAT_LIGHTING_DISPLAY,
     FEAT_MODE_AWHP_SILENT,
     FEAT_MODE_JET,
+    FEAT_ROOM_TEMP,
     FEAT_WATER_IN_TEMP,
     FEAT_WATER_OUT_TEMP,
     UNIT_TEMP_CELSIUS,
@@ -39,6 +40,7 @@ STATE_POWER_V1 = "InOutInstantPower"
 SUPPORT_OPERATION_MODE = ["SupportOpMode", "support.airState.opMode"]
 SUPPORT_WIND_STRENGTH = ["SupportWindStrength", "support.airState.windStrength"]
 SUPPORT_RAC_SUBMODE = ["SupportRACSubMode", "support.racSubMode"]
+SUPPORT_DUCT_ZONE = ["SupportDuctZoneType", "support.airState.ductZone.type"]
 SUPPORT_PAC_MODE = ["SupportPACMode", "support.pacMode"]
 
 # AC Section
@@ -220,6 +222,7 @@ class AirConditionerDevice(Device):
         )
         self._is_air_to_water = None
         self._is_water_heater_supported = None
+        self._is_duct_zones_supported = None
         self._supported_operation = None
         self._supported_op_modes = None
         self._supported_fan_speeds = None
@@ -345,6 +348,20 @@ class AirConditionerDevice(Device):
             return False
         return True
 
+    @property
+    def is_duct_zones_supported(self):
+        """Check if device support duct zones."""
+        if self._is_duct_zones_supported is None:
+            self._is_duct_zones_supported = False
+            supp_key = self._get_state_key(SUPPORT_DUCT_ZONE)
+            if not self.model_info.is_enum_type(supp_key):
+                return False
+            mapping = self.model_info.value(supp_key).options
+            zones = [key for key in mapping.keys() if key != "0"]
+            if zones:
+                self._is_duct_zones_supported = True
+        return self._is_duct_zones_supported
+
     def is_duct_zone_enabled(self, zone: str) -> bool:
         """Get if a specific zone is enabled"""
         return zone in self._duct_zones
@@ -401,7 +418,7 @@ class AirConditionerDevice(Device):
         """
 
         # first check if duct is supported
-        if not self._status:
+        if not (self.is_duct_zones_supported and self._status):
             return {}
 
         duct_state = -1
@@ -866,7 +883,7 @@ class AirConditionerStatus(DeviceStatus):
 
     @property
     def fan_speed(self):
-        """Return currrent fan speed."""
+        """Return current fan speed."""
         key = self._get_state_key(STATE_WIND_STRENGTH)
         if (value := self.lookup_enum(key, True)) is None:
             return None
@@ -917,7 +934,8 @@ class AirConditionerStatus(DeviceStatus):
     def current_temp(self):
         """Return current temperature."""
         key = self._get_state_key(STATE_CURRENT_TEMP)
-        return self._str_to_temp(self._data.get(key))
+        value = self._str_to_temp(self._data.get(key))
+        return self._update_feature(FEAT_ROOM_TEMP, value, False)
 
     @property
     def target_temp(self):
@@ -952,7 +970,7 @@ class AirConditionerStatus(DeviceStatus):
 
     @property
     def humidity(self):
-        """Return current humidity"""
+        """Return current humidity."""
         key = self._get_state_key(STATE_HUMIDITY)
         if (value := self.to_int_or_none(self.lookup_range(key))) is None:
             return None
@@ -1068,6 +1086,7 @@ class AirConditionerStatus(DeviceStatus):
 
     def _update_features(self):
         _ = [
+            self.current_temp,
             self.energy_current,
             self.humidity,
             self.mode_jet,
