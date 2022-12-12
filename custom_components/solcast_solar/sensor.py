@@ -10,7 +10,7 @@ from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (ATTR_IDENTIFIERS, ATTR_MANUFACTURER,
                                  ATTR_MODEL, ATTR_NAME, ENERGY_KILO_WATT_HOUR,
-                                 ENERGY_WATT_HOUR)
+                                 ENERGY_WATT_HOUR, POWER_WATT)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import EntityCategory
@@ -34,8 +34,8 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "peak_w_today": SensorEntityDescription(
         key="peak_w_today",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=ENERGY_WATT_HOUR,
+        device_class=SensorDeviceClass.POWER,
+        native_unit_of_measurement=POWER_WATT,
         name="Peak Forecast Today",
         icon="mdi:solar-power",
     ),
@@ -74,8 +74,8 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "peak_w_tomorrow": SensorEntityDescription(
         key="peak_w_tomorrow",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=ENERGY_WATT_HOUR,
+        device_class=SensorDeviceClass.POWER,
+        native_unit_of_measurement=POWER_WATT,
         name="Peak Forecast Tomorrow",
         icon="mdi:solar-power",
     ),
