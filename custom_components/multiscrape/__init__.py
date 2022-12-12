@@ -5,6 +5,7 @@ import os
 from datetime import timedelta
 
 import voluptuous as vol
+from custom_components.multiscrape.const import CONF_SEPARATOR
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_AUTHENTICATION
 from homeassistant.const import CONF_DESCRIPTION
@@ -53,6 +54,7 @@ from .form import FormSubmitter
 from .http import HttpWrapper
 from .schema import CONFIG_SCHEMA  # noqa: F401
 from .scraper import Scraper
+from .util import create_dict_renderer
 from .util import create_renderer
 
 _LOGGER = logging.getLogger(__name__)
@@ -230,7 +232,7 @@ def _create_scrape_http_wrapper(config_name, config, hass, file_manager):
         client,
         file_manager,
         timeout,
-        params=params,
+        params_renderer=create_dict_renderer(hass, params),
         request_headers=headers,
     )
     if username and password:
@@ -251,7 +253,7 @@ def _create_form_submit_http_wrapper(config_name, config, hass, file_manager):
         client,
         file_manager,
         timeout,
-        params=params,
+        params_renderer=create_dict_renderer(hass, params),
         request_headers=headers,
     )
     return http
@@ -313,10 +315,12 @@ def _create_multiscrape_coordinator(
 def _create_scraper(config_name, config, hass, file_manager):
     _LOGGER.debug("%s # Initializing scraper", config_name)
     parser = config.get(CONF_PARSER)
+    separator = config.get(CONF_SEPARATOR)
 
     return Scraper(
         config_name,
         hass,
         file_manager,
         parser,
+        separator,
     )
