@@ -3,3 +3,7 @@
 feedreader:
   urls:
     - https://alerts.home-assistant.io/feed.xml
+    - https://rpilocator.com
+  scan_interval:
+    minutes: 15
+  max_entries: 10
