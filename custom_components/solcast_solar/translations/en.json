@@ -6,6 +6,7 @@
                 "data": {
                     "api_key": "Solcast API key",
                     "resource_id": "Solcast rooftop id",
+                    "const_disableautopoll": "Disable auto API polling",
                     "name": "Name"
                 },
                 "description": "Fill in the data of your solar panels."
@@ -18,6 +19,7 @@
                 "data": {
                     "api_key": "Solcast API key",
                     "resource_id": "Solcast rooftop id",
+                    "const_disableautopoll": "Disable auto API polling",
                     "name": "Name"
                 },
                 "description": "These values allow tweaking the Solcast Integration."

@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.device_registry import async_get as device_registry
 
-from .const import DOMAIN, SOLCAST_URL 
+from .const import DOMAIN, SOLCAST_URL, CONST_DISABLEAUTOPOLL
 from .coordinator import SolcastUpdateCoordinator
 from .solcastapi import ConnectionOptions, SolcastApi
 
@@ -34,7 +34,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await solcast.load_saved_data()
         
         coordinator = SolcastUpdateCoordinator(hass, solcast)
-        await coordinator.setup()
+        autopolldisabled = entry.options[CONST_DISABLEAUTOPOLL]
+        await coordinator.setup(autopolldisabled)
 
         await coordinator.async_config_entry_first_refresh()
         #await _async_migrate_unique_ids(hass, entry, coordinator)
@@ -81,19 +82,20 @@ async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-# async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-#     """Migrate old entry."""
-#     try:
-#         _LOGGER.debug("Solcast Config Migrating from version %s", config_entry.version)
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Migrate old entry."""
+    try:
+        _LOGGER.debug("Solcast Config Migrating from version %s", config_entry.version)
 
-#         if config_entry.version == 1:
-#             new_data = {**config_entry.options}
+        if config_entry.version == 2:
+            #new_data = {**config_entry.options}
+            new_data = {**config_entry.options, CONST_DISABLEAUTOPOLL: False}
 
-#             config_entry.version = 2
-#             hass.config_entries.async_update_entry(config_entry, options=new_data)
+            config_entry.version = 3
+            hass.config_entries.async_update_entry(config_entry, options=new_data)
 
-#         _LOGGER.info("Solcast Config Migration to version %s successful", config_entry.version)
-#         return True
-#     except Exception as err:
-#         _LOGGER.error("async_remove_entry: %s",traceback.format_exc())
-#         return False
+        _LOGGER.info("Solcast Config Migration to version %s successful", config_entry.version)
+        return True
+    except Exception as err:
+        _LOGGER.error("Solcast - async_migrate_entry error: %s",traceback.format_exc())
+        return False

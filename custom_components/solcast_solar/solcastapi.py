@@ -62,6 +62,7 @@ class SolcastApi:
         self._data = dict({'forecasts':[], 'energy': {}, 'api_used':0, 'last_updated': dt.now(timezone.utc).replace(year=2000,month=1,day=1).isoformat()})
         self._api_used = 0
         self._filename = options.file_path
+        self._apiallusedup = False
 
     async def sites_data(self):
         """Request data via the Solcast API."""
@@ -128,7 +129,7 @@ class SolcastApi:
         else:
             await self.http_data()
 
-    def get_api_used_count(self) -> int:
+    def get_api_used_count(self):
         """Return API polling count for this UTC 24hr period"""
         try:
             # sites = len(self._sites)
@@ -142,7 +143,9 @@ class SolcastApi:
             # else:
             #     #odd number of sites.. max 2 sites per api_key.. so max polls for 2 sites
             #     return 50 - int((polls - (polls / sites)))
-            return 50 - self._api_used
+            if self._apiallusedup:
+                return "Exceeded API Allowance"
+            return self._api_used
         except Exception:
             return 50
 
@@ -158,6 +161,7 @@ class SolcastApi:
 
     async def reset_api_counter(self):
         _LOGGER.debug(f"SOLCAST: api reset to zero in reset_api_counter code")
+        self._apiallusedup = False
         self._api_used = 0
 
     def get_rooftop_site_total_today(self, rooftopid = "") -> float:
@@ -278,7 +282,8 @@ class SolcastApi:
 
             for v in g:
                 if v['pv_estimate'] == m:
-                    return v['period_end']
+                    va = v['period_end']
+                    return va.time()
                     #return p.isoformat()
             return None
         except Exception:
@@ -312,7 +317,9 @@ class SolcastApi:
 
             for v in g:
                 if v['pv_estimate'] == m:
-                    return v['period_end']
+                    va = v['period_end']
+                    return va.time()
+                    #return v['period_end']
                     #  return p.isoformat() ??
             return None
         except Exception:

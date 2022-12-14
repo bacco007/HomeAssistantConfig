@@ -34,8 +34,8 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "peak_w_today": SensorEntityDescription(
         key="peak_w_today",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=POWER_WATT,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_WATT_HOUR,
         name="Peak Forecast Today",
         icon="mdi:solar-power",
     ),
@@ -74,8 +74,8 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "peak_w_tomorrow": SensorEntityDescription(
         key="peak_w_tomorrow",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=POWER_WATT,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_WATT_HOUR,
         name="Peak Forecast Tomorrow",
         icon="mdi:solar-power",
     ),
@@ -86,7 +86,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     "api_counter": SensorEntityDescription(
         key="api_counter",
-        name="API Remaining",
+        name="API Used",
         icon="mdi:web-check",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),

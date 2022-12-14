@@ -6,6 +6,8 @@ from typing import Final
 DOMAIN = "solcast_solar"
 SOLCAST_URL = "https://api.solcast.com.au"
 
+CONST_DISABLEAUTOPOLL = "const_disableautopoll"
+
 ATTR_ENTRY_TYPE: Final = "entry_type"
 ENTRY_TYPE_SERVICE: Final = "service"
 

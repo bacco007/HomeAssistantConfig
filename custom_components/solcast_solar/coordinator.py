@@ -69,10 +69,15 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         except Exception as error:
             _LOGGER.error("Solcast - Error resetting past data")
 
-    async def setup(self):
+    async def setup(self, autopolldisabled=False):
         try:
             await get_instance(self._hass).async_add_executor_job(self.gethistory)
-            await self.setup_auto_fetch()
+            if autopolldisabled:
+                _LOGGER.debug("Solcast - Auto poll the solcast API for data is disabled. You must manually setup a call to the service to get new data")
+            else:
+                _LOGGER.debug("Solcast - Registering HA to auto poll the solcast API for data")
+                await self.setup_auto_fetch()
+
             async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
             async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=10, second=15, local=True)
         except Exception as error:
