@@ -346,6 +346,17 @@ sensor:
     entity_id: sensor.e_ink_display_data
     attribute: home_rainfall_year
 
+  # Moon phase
+  - platform: homeassistant
+    entity_id: sensor.moon
+    id: moon_phase
+  - platform: homeassistant
+    entity_id: sensor.moon_rise
+    id: moon_rise
+  - platform: homeassistant
+    entity_id: sensor.moon_set
+    id: moon_set    
+
 font:
   - file:
       type: gfonts
@@ -425,6 +436,8 @@ font:
       - "\U000F059D" # windy
       - "\U000F059E" # windy-variant
       - "\U000F0F38" # exCentereptional
+      - "\U000F1A09" # mdi-triangle-small-down
+      - "\U000F1A0A" # mdi-triangle-small-up      
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons
     size: 40
@@ -553,9 +566,11 @@ display:
         it.printf(x1+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunrise).state.c_str());  
         it.printf(x1, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059B"); 
         it.printf(x1+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunset).state.c_str());        
-        it.print(x2, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-        it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510"); 
-        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(min_temp).state);  
+        it.print(x2, y4, id(din_med), TextAlign::BASELINE_LEFT, "Moon");
+        it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A0A"); 
+        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_rise).state);  
+        it.printf(x2, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A09"); 
+        it.printf(x2+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_set).state);  
         it.print(x3, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");     
         it.printf(x3, y4 + 40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510"); 
         it.printf(x3+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(max_temp).state);  

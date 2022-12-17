@@ -1,0 +1,15 @@
+---
+sensor:
+  - name: Moon Rise
+    icon: "mdi:triangle-small-up"
+    state: >-
+      {% set x = states('sensor.astroweather_moon_next_rising') %}
+
+      {{ x[11:16] }}
+
+  - name: "Moon Set"
+    icon: "mdi:triangle-small-down"
+    state: >-
+      {% set x = states('sensor.astroweather_moon_next_setting') %}
+
+      {{ x[11:16] }}

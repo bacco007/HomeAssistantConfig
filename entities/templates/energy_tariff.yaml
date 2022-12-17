@@ -38,7 +38,7 @@ sensor:
     state_class: measurement
     unit_of_measurement: $/kWh
     state: >
-      0.500
+      0.05
   - name: energy_supply_charge
     unique_id: energy_supply_charge
     device_class: monetary
