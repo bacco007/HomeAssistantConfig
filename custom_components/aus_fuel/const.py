@@ -5,4 +5,4 @@ DOMAIN = "aus_fuel"
 
 SCAN_INTERVAL = timedelta(hours=1)
 
-QUERY_URL = "https://trafficbuddy.com.au/?lat={lat}&lon={long}&distance={dist}"
+QUERY_URL = "https://trafficbuddy.com.au/api/search/prices?lat={lat}&lng={long}&distance={dist}"

@@ -31,18 +31,18 @@ class AusFuelAPI:
         )
         raw_html = requests.get(query).text
         json_data = json.loads(raw_html)
-        self._fuel_prices = json_data["data"]
+        self._fuel_prices = json_data
         return json_data["message"] == "ok"
 
     def get_stations_fuel_types(self) -> list:
         stations = []
         fuel_types = []
-        for entry in self._fuel_prices:
+        for entry in self._fuel_prices["stations"]:
             # Look for a station entry
-            if not "station" in entry:
-                continue
+            # if not "stations" in entry:
+            #     continue
 
-            station = entry["station"]
+            station = entry
             stations.append(
                 {
                     "id": station["name"].replace(" ", "_"),
@@ -61,12 +61,12 @@ class AusFuelAPI:
 
     def get_data(self) -> dict:
         prices = {}
-        for entry in self._fuel_prices:
+        for entry in self._fuel_prices["stations"]:
             # Look for a station entry
-            if not "station" in entry:
-                continue
+            # if not "station" in entry:
+            #     continue
 
-            station = entry["station"]
+            station = entry
             name = station["name"]
             address = station["address"]
             latitude = station["location"]["latitude"]
