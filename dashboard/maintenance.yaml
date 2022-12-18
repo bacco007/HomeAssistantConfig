@@ -13,7 +13,15 @@ layout: !include snippets/layout-page-margin.yaml
 cards:
   - type: "custom:layout-card"
     layout_type: "custom:grid-layout"
-    layout: !include snippets/layout-page-columns.yaml
+    layout:
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(420px, 1fr) [col-end])"
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        "(max-width: 800px)":
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
+          margin: 0
     view_layout:
       grid-area: cc
 
@@ -25,6 +33,7 @@ cards:
           grid-column: 1/-1
         content: >
           # Maintenance
+
           Peanut Hamper is {{ states('vacuum.peanut_hamper') }}{{ iif(
           is_state('binary_sensor.peanut_hamper_bin_full', 'on'), ' and
           needs to be emptied. ', '. ') }} {%- set chore_done =
@@ -287,3 +296,239 @@ cards:
               numeric: true
               reverse: true
             type: custom:auto-entities
+
+      # [Column] Batteries
+
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: HOME ASSISTANT SERVER
+            view_layout:
+              grid-column: 1/-1
+
+          - type: vertical-stack
+            cards:
+              # - type: custom:mushroom-chips-card
+              #   chips:
+              #     # - type: entity
+              #     #   entity: sensor.processor_temperature
+              #     #   icon_color: orange
+              #     # - type: entity
+              #     #   entity: sensor.processor_use
+              #     #   icon_color: blue
+              #     - type: entity
+              #       entity: sensor.memory_use_percent
+              #       icon_color: orange
+              #     - type: entity
+              #       entity: sensor.disk_use_percent_config
+              #       icon_color: deep-purple
+              #     # - type: entity
+              #     #   entity: sensor.network_in_eth0
+              #     #   icon_color: green
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-update-card
+                    entity: update.home_assistant_core_update
+                    name: HA Core
+                    show_buttons_control: true
+                    icon_type: entity-picture
+                  - type: custom:mushroom-template-card
+                    primary: Version Information
+                    secondary: >-
+                      Installed v{{ state_attr('update.home_assistant_core_update',
+                      'installed_version')}}
+
+                      Latest v{{ state_attr('update.home_assistant_core_update',
+                      'latest_version')}}
+                    icon: mdi:package-variant-closed
+                    multiline_secondary: true
+                    fill_container: true
+                    entity: update.home_assistant_core_update
+                    tap_action:
+                      action: more-info
+                    icon_color: |-
+                      {% if is_state('update.home_assistant_core_update', 'on') %}
+                        orange
+                      {% else %}
+                        green
+                      {% endif %}
+                    badge_color: |-
+                      {% if is_state('update.home_assistant_core_update', 'on') %}
+                        red
+                      {% else %}
+                        blue
+                      {% endif %}
+                    badge_icon: |-
+                      {% if is_state('update.home_assistant_core_update', 'on') %}
+                        mdi:help
+                      {% else %}
+                        mdi:check-bold
+                      {% endif %}
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-update-card
+                    entity: update.home_assistant_operating_system_update
+                    name: HA OS
+                    show_buttons_control: true
+                    icon_type: entity-picture
+                  - type: custom:mushroom-template-card
+                    primary: Version Information
+                    secondary: >-
+                      Installed v{{
+                      states('sensor.home_assistant_operating_system_version')}}
+
+                      Latest v{{
+                      states('sensor.home_assistant_operating_system_newest_version')}}
+                    icon: mdi:package-variant-closed
+                    multiline_secondary: true
+                    fill_container: true
+                    entity: update.home_assistant_operating_system_update
+                    tap_action:
+                      action: more-info
+                    icon_color: >-
+                      {% if is_state('update.home_assistant_operating_system_update', 'on')
+                      %}
+                        orange
+                      {% else %}
+                        green
+                      {% endif %}
+                    badge_color: >-
+                      {% if is_state('update.home_assistant_operating_system_update', 'on')
+                      %}
+                        red
+                      {% else %}
+                        blue
+                      {% endif %}
+                    badge_icon: >-
+                      {% if is_state('update.home_assistant_operating_system_update', 'on')
+                      %}
+                        mdi:help
+                      {% else %}
+                        mdi:check-bold
+                      {% endif %}
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-update-card
+                    entity: update.home_assistant_supervisor_update
+                    name: HA Supervisor
+                    show_buttons_control: true
+                    icon_type: entity-picture
+                  - type: custom:mushroom-template-card
+                    primary: Version Information
+                    secondary: >-
+                      Installed v{{ state_attr('update.home_assistant_supervisor_update',
+                      'installed_version')}}
+
+                      Latest v{{ state_attr('update.home_assistant_supervisor_update',
+                      'latest_version')}}
+                    icon: mdi:package-variant-closed
+                    multiline_secondary: true
+                    fill_container: true
+                    entity: update.home_assistant_core_update
+                    tap_action:
+                      action: more-info
+                    icon_color: |-
+                      {% if is_state('update.home_assistant_supervisor_update', 'on') %}
+                        orange
+                      {% else %}
+                        green
+                      {% endif %}
+                    badge_color: |-
+                      {% if is_state('update.home_assistant_supervisor_update', 'on') %}
+                        red
+                      {% else %}
+                        blue
+                      {% endif %}
+                    badge_icon: |-
+                      {% if is_state('update.home_assistant_supervisor_update', 'on') %}
+                        mdi:help
+                      {% else %}
+                        mdi:check-bold
+                      {% endif %}
+
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-title-card
+                title: ZigBee2MQTT
+                subtitle: >-
+                  Installed v{{ states('sensor.zigbee2mqtt_version') }} - Latest v{{
+                  states('sensor.zigbee2mqtt_newest_version') }}
+              # - type: custom:mushroom-chips-card
+              #   chips:
+              #     - type: entity
+              #       entity: binary_sensor.zigbee2mqtt_running
+              #       icon_color: green
+              #     - type: entity
+              #       entity: sensor.zigbee2mqtt_version
+              #       icon_color: green
+              #       icon: mdi:package-variant-closed
+              #     - type: entity
+              #       entity: sensor.zigbee2mqtt_cpu_percent
+              #       icon_color: blue
+              #     - type: entity
+              #       entity: sensor.zigbee2mqtt_memory_percent
+              #       icon_color: orange
+              - type: custom:mushroom-update-card
+                entity: update.zigbee2mqtt_update
+                show_buttons_control: true
+                icon_type: entity-picture
+                layout: horizontal
+
+          - type: vertical-stack
+            cards:
+              - type: custom:mod-card
+                card:
+                  type: custom:mushroom-title-card
+                  title: HACS Updates
+                card_mod:
+                  style:
+                    mushroom-title-card$: |
+                      h1 {
+                        --primary-text-color: var(--secondary-text-color);
+                        --title-font-size: var(--h4-font-size);
+                        --title-font-weight: 500;
+                      }
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    icon: mdi:web
+                    icon_color: blue
+                    content: Changelog
+                    tap_action:
+                      action: url
+                      url_path: https://github.com/hacs/integration/releases
+                  - type: template
+                    entity: update.hacs_update
+                    content: Installed v{{ state_attr('update.hacs_update', 'installed_version') }}
+                    icon_color: green
+                    icon: mdi:package-variant-closed
+                    tap_action:
+                      action: none
+                  - type: template
+                    entity: update.hacs_update
+                    content: Latest v{{ state_attr('update.hacs_update', 'latest_version') }}
+                    icon_color: orange
+                    icon: mdi:package-variant-closed
+                    tap_action:
+                      action: none
+              - type: custom:auto-entities
+                card:
+                  type: vertical-stack
+                card_param: cards
+                filter:
+                  include:
+                    - domain: update
+                      integration: hacs
+                      options:
+                        type: custom:mushroom-update-card
+                        show_buttons_control: true
+                        layout: horizontal
+                        entities:
+                          - this.entity_id
+                sort:
+                  ignore_case: true
+                  method: state
+                  numeric: true
+                  reverse: true
