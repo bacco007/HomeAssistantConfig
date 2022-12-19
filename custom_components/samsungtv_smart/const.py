@@ -22,7 +22,7 @@ class PowerOnMethod(Enum):
 DOMAIN = "samsungtv_smart"
 
 MIN_HA_MAJ_VER = 2022
-MIN_HA_MIN_VER = 10
+MIN_HA_MIN_VER = 11
 __min_ha_version__ = f"{MIN_HA_MAJ_VER}.{MIN_HA_MIN_VER}.0"
 
 DATA_CFG_YAML = "cfg_yaml"
@@ -87,6 +87,8 @@ SERVICE_SET_ART_MODE = "set_art_mode"
 
 SERVICE_TURN_OFF = "turn_off"
 SERVICE_TURN_ON = "turn_on"
+
+SIGNAL_CONFIG_ENTITY = f"{DOMAIN}_config"
 
 STD_APP_LIST = {
     # app_id: smartthings app id (if different and available)
