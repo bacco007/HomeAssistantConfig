@@ -35,23 +35,23 @@ async def choose_second_step(options: Dict[str, Any]) -> str:
         return "subdiv"
     if const.CONF_SUBDIV in options:
         del options[const.CONF_SUBDIV]
-    return choose_third_step(options)
+    return await choose_third_step(options)
 
 
 @callback
 async def choose_third_step(options: Dict[str, Any]) -> str:
     """Return next step_id for options flow."""
-    # if const.CONF_HOLIDAY_POP_NAMED in options:
-    #     # Remove holidays that do not exist
-    #     hol = create_holidays(
-    #         [dt_util.now().date().year],
-    #         options.get(const.CONF_COUNTRY, ""),
-    #         options.get(const.CONF_SUBDIV, ""),
-    #         options.get(const.CONF_OBSERVED, True),
-    #     )
-    #     for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
-    #         if pop not in list(hol) or "(Observed)" in pop:
-    #             del options[pop]
+    if const.CONF_HOLIDAY_POP_NAMED in options:
+        # Remove holidays that do not exist
+        hol = create_holidays(
+            [dt_util.now().date().year],
+            options.get(const.CONF_COUNTRY, ""),
+            options.get(const.CONF_SUBDIV, ""),
+            options.get(const.CONF_OBSERVED, True),
+        )
+        for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
+            if pop not in list(hol) or "(Observed)" in pop:
+                del options[pop]
     return "pop"
 
 
