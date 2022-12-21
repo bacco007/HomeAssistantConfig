@@ -22,3 +22,5 @@ sensor:
         {{ states('sensor.tbsh03_monitordocker_images') | int
           + states('sensor.tbsh1_monitordocker_images') | int
           + states('sensor.pi4srv_monitordocker_images') | int }}
+      containers_updatable: >
+        {{ states | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | selectattr('entity_id','search','update.wud_*') | list | count }}

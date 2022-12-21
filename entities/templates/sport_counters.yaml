@@ -4,7 +4,7 @@ sensor:
     unique_id: stats_sport_upcoming_today
     icon: "mdi:football-australian"
     state: >
-      {{ states|selectattr('entity_id','search','sensor.sport_*')|selectattr("attributes.sortorder", "<=", 0)|list|count|int(default=0) }}
+      {{ states||selectattr("attributes.sortorder", "<=", 0)|list|count|int(default=0) }}
     state_class: measurement
     unit_of_measurement: Events
   - name: stats_sport_upcoming_thisweek
