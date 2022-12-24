@@ -29,7 +29,7 @@ class AusFuelAPI:
         query = QUERY_URL.format(
             lat=self._latitude, long=self._longitude, dist=self._search_meters
         )
-        raw_html = requests.get(query).text
+        raw_html = requests.get(query, verify=False).text
         json_data = json.loads(raw_html)
         self._fuel_prices = json_data
         return json_data["message"] == "ok"
