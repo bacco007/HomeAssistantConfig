@@ -129,6 +129,10 @@ cards:
               grid-column-start: 1
               grid-column-end: -1
 
+          - type: iframe
+            url: !secret waze_url
+            aspect_ratio: 120%
+
           # - type: picture
           #   image: !secret virtualearth_image_path
           #   tap_action:
@@ -138,15 +142,15 @@ cards:
           - type: "custom:decluttering-card"
             template: multi_graph_card
             variables:
-              - title: Driving Time to Union Square
+              - title: Driving Time
               - lower_bound: 0
               - entities:
                   - entity: sensor.here_home_to_work_duration_in_traffic
-                    name: Hicksville
+                    name: Home to Work
                   - entity: sensor.here_tom_to_work_duration_in_traffic
-                    name: Newark
+                    name: Tom to Work
                   - entity: sensor.here_tom_to_home_duration_in_traffic
-                    name: Tappan Zee
+                    name: Tom to Home
                   - entity: sensor.elevation
                     show_legend: false
                     y_axis: secondary
