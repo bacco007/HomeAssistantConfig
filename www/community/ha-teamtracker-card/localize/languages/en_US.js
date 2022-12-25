@@ -11,7 +11,9 @@ export const en_US = {
         "tourney32": "Round of 32",
         "tourney64": "Round of 64",
         "tourney128": "Early Rounds",
-        "tourney256": "Early Rounds"
+        "tourney256": "Early Rounds",
+        "today": "Today",
+        "tomorrow": "Tomorrow"
     },
     "australian-football": {
         "startTerm": "Start",

@@ -26,7 +26,7 @@ class TeamTrackerCard extends LitElement {
     this._config = config;
 
     if (config.debug) {
-      console.info("%c TeamTracker Card \n%c Version 0.5.4    ",
+      console.info("%c TeamTracker Card \n%c Version 0.6.0    ",
         "color: orange; font-weight: bold; background: black",
         "color: white; font-weight: bold; background: dimgray");
         console.info(config);
@@ -74,7 +74,7 @@ class TeamTrackerCard extends LitElement {
     var team = 1;
     var oppo = 2;
     if (((homeSide == "RIGHT") && (stateObj.attributes.team_homeaway == "home")) ||
-        ((homeSide == "LEFT")  && (stateObj.attributes.opponent_homeaway == "home"))) { 
+        ((homeSide == "LEFT")  && (stateObj.attributes.opponent_homeaway == "home"))) {
         team = 2;
         oppo = 1;
     }
@@ -102,21 +102,43 @@ class TeamTrackerCard extends LitElement {
 
     var t = new Translator(lang);
 
-    var dateForm = new Date (stateObj.attributes.date);
-    var gameDay = dateForm.toLocaleDateString(lang, { weekday: 'long' });
-    var gameTime = dateForm.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit' });
+    var gameDate = new Date (stateObj.attributes.date);
+    var gameDateStr = gameDate.toLocaleDateString(lang, { month: 'short', day: '2-digit' });
+
+    var todayDate = new Date();
+    var todayDateStr = todayDate.toLocaleDateString(lang, { month: 'short', day: '2-digit' });
+
+    var tomorrowDate = new Date();
+    tomorrowDate.setDate(todayDate.getDate() + 1);
+    var tomorrowDateStr = tomorrowDate.toLocaleDateString(lang, { month: 'short', day: '2-digit' });
+
+    var nextweekDate = new Date();
+    nextweekDate.setDate(todayDate.getDate() + 6);
+
+    var gameWeekday = gameDate.toLocaleDateString(lang, { weekday: 'long' });
+    if (gameDateStr === todayDateStr) {
+        gameWeekday = t.translate("common.today");
+    }
+    else if (gameDateStr === tomorrowDateStr) {
+        gameWeekday = t.translate("common.tomorrow");
+    }
+    var gameDatePOST = gameDateStr;
+    var gameDatePRE = null;
+    if (gameDate > nextweekDate) {
+        gameDatePRE = gameDateStr;
+    }
+
+    var gameTime = gameDate.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit' });
     if (time_format == "24") {
-      gameTime = dateForm.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', hour12:false });
+      gameTime = gameDate.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', hour12:false });
     }
     if (time_format == "12") {
-      gameTime = dateForm.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', hour12:true });
+      gameTime = gameDate.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', hour12:true });
     }
     if (time_format == "system") {
       var sys_lang = navigator.language || "en"
-      gameTime = dateForm.toLocaleTimeString(sys_lang, { hour: '2-digit', minute:'2-digit' });
+      gameTime = gameDate.toLocaleTimeString(sys_lang, { hour: '2-digit', minute:'2-digit' });
     }
-    var gameMonth = dateForm.toLocaleDateString(lang, { month: 'short' });
-    var gameDate = dateForm.toLocaleDateString(lang, { day: '2-digit' });
     var outColor = outlineColor;
 
     if (outline == true) {
@@ -174,7 +196,7 @@ class TeamTrackerCard extends LitElement {
         </style>
         <ha-card>
           Sensor unavailable: ${this._config.entity}
-        </ha-card> 
+        </ha-card>
       `;
     }
 //
@@ -203,7 +225,7 @@ class TeamTrackerCard extends LitElement {
       logoBG[oppo] = stateObj.attributes.league_logo
     }
 
-    var finalTerm = t.translate("common.finalTerm", "%s", gameMonth + " " + gameDate);
+    var finalTerm = t.translate("common.finalTerm", "%s", gameDatePOST);
     var startTerm = t.translate(sport + ".startTerm");
     var startTime =stateObj.attributes.kickoff_in;
     var venue = stateObj.attributes.venue;
@@ -272,7 +294,7 @@ class TeamTrackerCard extends LitElement {
           notFoundTerm2 = t.translate("common.no_upcoming_games", "%s", lastDateForm.toLocaleDateString(lang))
         }
     }
-    
+
 //
 //  MLB Specific Changes
 //
@@ -348,16 +370,18 @@ if (sport.includes("hockey")) {
       barDisplay = 'none';
       barWrapDisplay = "none";
     }
-  
+
 //
 //  Tennis Specific Changes
 //
     if (sport.includes("tennis")) {
       venue = stateObj.attributes.event_name;
       pre1 = t.translate("common.tourney" + stateObj.attributes.odds)
+      in1 = pre1;
+      finalTerm = t.translate("common.finalTerm", "%s", gameDatePOST  + " (" + pre1 + ")");
+
 //      pre2 = null;
 //      pre3 = null;
-
       gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock);
       barLength[team] = stateObj.attributes.team_score;
       barLength[oppo] = stateObj.attributes.opponent_score;
@@ -401,10 +425,10 @@ if (sport.includes("hockey")) {
       if (stateObj.attributes.quarter) {
         pre1 = stateObj.attributes.quarter;
         in1 = stateObj.attributes.quarter;
-        finalTerm = finalTerm + " (" + stateObj.attributes.quarter + ")";
+        finalTerm = t.translate("common.finalTerm", "%s", gameDatePOST  + " (" + stateObj.attributes.quarter + ")");
       }
       timeoutsDisplay = 'none';
-      
+
       barLength[team] = stateObj.attributes.team_total_shots;
       barLength[oppo] = stateObj.attributes.team_total_shots;
       barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
@@ -451,11 +475,11 @@ if (sport.includes("hockey")) {
     if (stateObj.attributes.league.includes("NCAA")) {
       notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png'
     }
-    
+
     if (stateObj.state == 'POST') {
       return html`
         <style>
-          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; border-radius: var(--ha-card-border-radius, 10px); }
           .title { text-align: center; font-size: 1.2em; font-weight: 500; }
           .team-bg { opacity: 0.08; position: absolute; top: -30%; left: -20%; width: 58%; z-index: 0; }
           .opponent-bg { opacity: 0.08; position: absolute; top: -30%; right: -20%; width: 58%; z-index: 0; }
@@ -503,7 +527,7 @@ if (sport.includes("hockey")) {
     if (stateObj.state == 'IN') {
         return html`
           <style>
-            .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+            .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; border-radius: var(--ha-card-border-radius, 10px); }
             .title { text-align: center; font-size: 1.2em; font-weight: 500; }
             .team-bg { opacity: 0.08; position:absolute; top: -20%; left: -20%; width: 58%; z-index: 0; }
             .opponent-bg { opacity: 0.08; position:absolute; top: -20%; right: -20%; width: 58%; z-index: 0; }
@@ -623,7 +647,7 @@ if (sport.includes("hockey")) {
     if (stateObj.state == 'PRE') {
         return html`
           <style>
-            .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+            .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; border-radius: var(--ha-card-border-radius, 10px); }
             .title { text-align: center; font-size: 1.2em; font-weight: 500; }
             .team-bg { opacity: 0.08; position:absolute; top: -20%; left: -20%; width: 58%; z-index: 0; }
             .opponent-bg { opacity: 0.08; position:absolute; top: -20%; right: -20%; width: 58%; z-index: 0; }
@@ -634,6 +658,7 @@ if (sport.includes("hockey")) {
             .rank { font-size:0.8em; display:${rankDisplay}; }
             .line { height: 1px; background-color: var(--primary-text-color); margin:10px 0; }
             .gameday { font-size: 1.4em; margin-bottom: 4px; }
+            .gamedateshort { font-size: 1.1em; }
             .gametime { font-size: 1.1em; }
             .sub1 { font-weight: 500; font-size: 1.2em; margin: 6px 0 2px; }
             .sub1, .sub2, .sub3 { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
@@ -656,7 +681,8 @@ if (sport.includes("hockey")) {
                   <div class="record">${record[1]}</div>
                 </div>
                 <div class="gamewrapper">
-                  <div class="gameday">${gameDay}</div>
+                  <div class="gameday">${gameWeekday}</div>
+                  <div class="gametime">${gameDatePRE}</div>
                   <div class="gametime">${gameTime}</div>
                 </div>
                 <div class="team">
@@ -686,7 +712,7 @@ if (sport.includes("hockey")) {
     if (stateObj.state == 'BYE') {
       return html`
         <style>
-          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; border-radius: var(--ha-card-border-radius, 10px); }
           .team-bg { opacity: 0.08; position: absolute; top: -20%; left: -30%; width: 75%; z-index: 0; }
           .card-content { display: flex; justify-content: space-evenly; align-items: center; text-align: center; position: relative; z-index: 99; }
           .team { text-align: center; width: 50%; }
@@ -713,7 +739,7 @@ if (sport.includes("hockey")) {
     if (stateObj.state == 'NOT_FOUND') {
       return html`
         <style>
-          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; }
+          .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; border-radius: var(--ha-card-border-radius, 10px); }
           .title { text-align: center; font-size: 1.2em; font-weight: 500; }
           .team-bg { opacity: 0.08; position:absolute; top: -20%; left: -20%; width: 58%; z-index: 0; }
           .card-content { display: flex; justify-content: space-evenly; align-items: center; text-align: center; position: relative; z-index: 99; }
@@ -744,6 +770,7 @@ if (sport.includes("hockey")) {
 
 customElements.define("teamtracker-card", TeamTrackerCard);
 
+//=====
 
 //
 //  Add card to list of Custom Cards in the Card Picker

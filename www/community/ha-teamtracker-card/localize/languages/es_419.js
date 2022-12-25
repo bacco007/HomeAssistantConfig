@@ -11,7 +11,9 @@ export const es_419 = {
         "tourney32": "Ronda de 32",
         "tourney64": "Ronda de 64",
         "tourney128": "Primeras Rondas",
-        "tourney256": "Primeras Rondas"
+        "tourney256": "Primeras Rondas",
+        "today": "Hoy",
+        "tomorrow": "Mañana"
     },
     "australian-football": {
         "startTerm": "Comienzo",

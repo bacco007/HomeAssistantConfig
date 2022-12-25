@@ -3,7 +3,9 @@ export const pt_BR = {
         "api_error": "Erro de API",
         "no_upcoming_games": "Sem próximos jogos %s",
         "finalTerm": "%s - Final",
-        "byeTerm": "DESCANSO"
+        "byeTerm": "DESCANSO",
+        "today": "Hoje",
+        "tomorrow": "Amanhã"
     },
     "baseball": {
         "startTerm": "Começa",
