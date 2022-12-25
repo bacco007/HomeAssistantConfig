@@ -20,9 +20,17 @@ from homeassistant.helpers.entity_registry import (
 )
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .event import (
-    async_process_event,
+from .clear_values import async_clear_values
+from .event import async_process_event
+from .set_values import (
+    async_set_values,
+    async_set_in_values,
 )
+from .set_baseball import async_set_baseball_values
+from .set_hockey import async_set_hockey_values
+from .set_soccer import async_set_soccer_values
+from .set_volleyball import async_set_volleyball_values
+from .utils import async_get_value
 
 from .const import (
     CONF_CONFERENCE_ID,
@@ -51,8 +59,8 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-team_prob = {}
-oppo_prob = {}
+#team_prob = {}
+#oppo_prob = {}
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Load the saved entities."""
@@ -275,23 +283,33 @@ async def async_get_state(config, hass) -> dict:
 
     team_id = config[CONF_TEAM_ID].upper()
 
-    if sport_path in ["golf", "mma", "racing", "tennis"]:
-        values = await async_process_event(sensor_name, data, sport_path, league_id, DEFAULT_LOGO, team_id, lang, url)
-        return values
-    
-    values = await async_clear_states(config)
+    search_key = team_id
+    sport = sport_path
+    found_competitor = False
+
+    values = await async_clear_values()
     values["sport"] = sport_path
     values["league"] = league_id
     values["league_logo"] = DEFAULT_LOGO
     values["team_abbr"] = team_id
     values["state"] = "NOT_FOUND"
+    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+    values["private_fast_refresh"] = False
+
+    if data is None:
+        values["api_message"] = "API error, no data returned"
+        _LOGGER.warn("%s: API did not return any data for team '%s':  %s", sensor_name, team_id, url)
+        return values
+
+#    if sport_path in ["football", "golf", "mma", "racing", "tennis"]:
+    if True:
+        values = await async_process_event(values, sensor_name, data, sport_path, league_id, DEFAULT_LOGO, team_id, lang, url)
+        return values
 
     found_team = False
     if data is not None:
-        try:
-            values["league_logo"] = data["leagues"][0]["logos"][0]["href"]
-        except:
-            values["league_logo"] = DEFAULT_LOGO
+        values["league_logo"] = await async_get_value(data, "leagues", 0, "logos", 0, "href",
+            default=DEFAULT_LOGO)
 
         for event in data["events"]:
             #_LOGGER.debug("%s: Looking at this event: %s" sensor_name, event)
@@ -341,21 +359,8 @@ async def async_get_state(config, hass) -> dict:
 
                 oppo_index = abs((team_index-1))
 
-                values.update(await async_get_universal_event_attributes(event, team_index, oppo_index, lang))
-
-                if values["state"] in ['PRE']: # odds only exist pre-game
-                    values.update(await async_get_pre_event_attributes(event))
-
-                if values["state"] not in ['PRE', 'POST']: # could use status.completed == true as well
-                    values.update(await async_get_in_event_attributes(event, values, team_index, oppo_index))
-                    if sport_path in ["baseball"]:
-                        values.update(await async_get_in_baseball_event_attributes(event, values))
-                    elif sport_path in ["soccer"]:
-                        values.update(await async_get_in_soccer_event_attributes(event, values, team_index, oppo_index))
-                    elif sport_path in ["volleyball"]:
-                        values.update(await async_get_in_volleyball_event_attributes(event, values, team_index, oppo_index))
-                    elif sport_path in ["hockey"]:
-                        values.update(await async_get_in_hockey_event_attributes(event, values, team_index, oppo_index))
+                rc = await async_set_values(values, event, 0, team_index, lang, sensor_name)
+                _LOGGER.debug("%s: post async_set_universal_values() %s", sensor_name, values)
 
                 if values["state"] == "IN":
                     break
@@ -411,414 +416,6 @@ async def async_get_state(config, hass) -> dict:
         elif values["state"] in ['POST', 'BYE']: 
             _LOGGER.debug("%s: Event is over, setting refresh back to 10 minutes.", sensor_name)
             values["private_fast_refresh"] = False
-    else:
-        values["api_message"] = "API error, no data returned"
-        _LOGGER.warn("%s: API did not return any data for team '%s':  %s", sensor_name, team_id, url)
-        values["state"] = 'NOT_FOUND'
-        values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-        values["private_fast_refresh"] = False
+
         
     return values
-
-async def async_clear_states(config) -> dict:
-    """Clear all state attributes"""
-    new_values = {}
-
-    # Reset values
-    new_values = {
-        "sport": None,
-        "league": None,
-        "league_logo": None,
-        "team_abbr": None,
-        "opponent_abbr": None,
-
-        "event_name": None,
-        "date": None,
-        "kickoff_in": None,
-        "venue": None,
-        "location": None,
-        "tv_network": None,
-        "odds": None,
-        "overunder": None,
-
-        "team_name": None,
-        "team_id": None,
-        "team_record": None,
-        "team_rank": None,
-        "team_homeaway": None,
-        "team_logo": None,
-        "team_colors": None,
-        "team_score": None,
-        "team_win_probability": None,
-        "team_timeouts": None,
-
-        "opponent_name": None,
-        "opponent_id": None,
-        "opponent_record": None,
-        "opponent_rank": None,
-        "opponent_homeaway": None,
-        "opponent_logo": None,
-        "opponent_colors": None,
-        "opponent_score": None,
-        "opponent_win_probability": None,
-        "opponent_timeouts": None,
-
-        "quarter": None,
-        "clock": None,
-        "possession": None,
-        "last_play": None,
-        "down_distance_text": None,
-
-        "outs": None,
-        "balls": None,
-        "strikes": None,
-        "on_first": None,
-        "on_second": None,
-        "on_third": None,
-
-        "team_shots_on_target": None,
-        "team_total_shots": None,
-        "opponent_shots_on_target": None,
-        "opponent_total_shots": None,
-
-        "team_sets_won": None,
-        "opponent_sets_won": None,
-
-        "last_update": None,
-        "api_message": None,
-        
-        "private_fast_refresh": False,
-    }
-
-    return new_values
-
-
-async def async_get_universal_event_attributes(event, team_index, oppo_index, lang) -> dict:
-    """Traverse JSON for universal values"""
-    new_values = {}
-
-
-    new_values["state"] = event["status"]["type"]["state"].upper()
-    new_values["event_name"] = event["shortName"]
-    new_values["date"] = event["date"]
-    try:
-        new_values["kickoff_in"] = arrow.get(event["date"]).humanize(locale=lang)
-    except:
-        try:
-            new_values["kickoff_in"] = arrow.get(event["date"]).humanize(locale=lang[:2])
-        except:
-            new_values["kickoff_in"] = arrow.get(event["date"]).humanize()
-    try:
-        new_values["venue"] = event["competitions"][0]["venue"]["fullName"]
-    except:
-        new_values["venue"] = None
-        
-    try:
-        new_values["location"] = "%s, %s" % (event["competitions"][0]["venue"]["address"]["city"], event["competitions"][0]["venue"]["address"]["state"])
-    except:
-        try:
-            new_values["location"] = event["competitions"][0]["venue"]["address"]["city"]
-        except:
-            new_values["location"] = None
-    try:
-        new_values["tv_network"] = event["competitions"][0]["broadcasts"][0]["names"][0]
-    except:
-        new_values["tv_network"] = None
-
-    new_values["team_abbr"] = event["competitions"][0]["competitors"][team_index]["team"]["abbreviation"]
-    new_values["team_id"] = event["competitions"][0]["competitors"][team_index]["team"]["id"]
-    new_values["team_name"] = event["competitions"][0]["competitors"][team_index]["team"]["shortDisplayName"]
-    try:
-        new_values["team_record"] = event["competitions"][0]["competitors"][team_index]["records"][0]["summary"]
-    except:
-        new_values["team_record"] = None
-    try:
-        if (event["competitions"][0]["competitors"][team_index]["curatedRank"]["current"] != 99):
-            new_values["team_rank"] = event["competitions"][0]["competitors"][team_index]["curatedRank"]["current"] 
-    except:
-        new_values["team_rank"] = None
-    new_values["team_homeaway"] = event["competitions"][0]["competitors"][team_index]["homeAway"]
-    try:
-        new_values["team_logo"] = event["competitions"][0]["competitors"][team_index]["team"]["logo"]
-    except:
-        new_values["team_logo"] = DEFAULT_LOGO
-    try:
-        color = '#' + event["competitions"][0]["competitors"][team_index]["team"]["color"]
-    except:
-        if new_values["team_id"] == 'NFC':
-            color = '#013369'
-        elif new_values["team_id"] == 'AFC':
-            color = '#D50A0A'
-        else:
-            color = "#D3D3D3"
-    try:
-        alt_color = '#' + event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]
-    except:
-        alt_color = color
-    new_values["team_colors"] = [color, alt_color]
-    new_values["team_score"] = event["competitions"][0]["competitors"][team_index]["score"]
-    try:
-        new_values["team_score"] = new_values["team_score"] + "(" + event["competitions"][0]["competitors"][team_index]["shootoutScore"] + ")"
-    except:
-        new_values["team_score"] = new_values["team_score"]
-
-    new_values["opponent_abbr"] = event["competitions"][0]["competitors"][oppo_index]["team"]["abbreviation"]
-    new_values["opponent_id"] = event["competitions"][0]["competitors"][oppo_index]["team"]["id"]
-    new_values["opponent_name"] = event["competitions"][0]["competitors"][oppo_index]["team"]["shortDisplayName"]
-    try:
-        new_values["opponent_record"] = event["competitions"][0]["competitors"][oppo_index]["records"][0]["summary"]
-    except:
-        new_values["opponent_record"] = None
-    try:
-        if (event["competitions"][0]["competitors"][oppo_index]["curatedRank"]["current"] != 99):
-            new_values["opponent_rank"] = event["competitions"][0]["competitors"][oppo_index]["curatedRank"]["current"] 
-    except:
-        new_values["opponent_rank"] = None
-    new_values["opponent_homeaway"] = event["competitions"][0]["competitors"][oppo_index]["homeAway"]
-    try:
-        new_values["opponent_logo"] = event["competitions"][0]["competitors"][oppo_index]["team"]["logo"]
-    except:
-        new_values["opponent_logo"] = DEFAULT_LOGO
-    try:
-        color = '#' + event["competitions"][0]["competitors"][oppo_index]["team"]["color"]
-    except:
-        if new_values["team_id"] == 'NFC':
-            color = '#013369'
-        elif new_values["team_id"] == 'AFC':
-            color = '#D50A0A'
-        else:
-            color = "#A9A9A9"
-    try:
-        alt_color = '#' + event["competitions"][0]["competitors"][oppo_index]["team"]["alternateColor"]
-    except:
-        alt_color = color
-    new_values["opponent_colors"] = [color, alt_color]
-    new_values["opponent_score"] = event["competitions"][0]["competitors"][oppo_index]["score"]
-    try:
-        new_values["opponent_score"] = new_values["opponent_score"] + "(" + event["competitions"][0]["competitors"][oppo_index]["shootoutScore"] + ")"
-    except:
-        new_values["opponent_score"] = new_values["opponent_score"]
-
-    new_values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-    new_values["private_fast_refresh"] = False
-
-    return new_values
-
-
-async def async_get_pre_event_attributes(event) -> dict:
-    """Traverse JSON for PRE event values"""
-    new_values = {}
-
-
-    try:
-        new_values["odds"] = event["competitions"][0]["odds"][0]["details"]
-    except:
-        new_values["odds"] = None
-    try:
-        new_values["overunder"] = event["competitions"][0]["odds"][0]["overUnder"]
-    except:
-        new_values["overunder"] = None
-
-    return new_values
-
-
-async def async_get_in_event_attributes(event, old_values, team_index, oppo_index) -> dict:
-    """Get IN event values"""
-    global team_prob
-    global oppo_prob
-    new_values = {}
-
-    prob_key = old_values["league"] + '-' + old_values["team_abbr"] + old_values["opponent_abbr"]
-    if event["competitions"][0]["competitors"][team_index]["homeAway"] == "home":
-        try:
-            new_values["team_timeouts"] = event["competitions"][0]["situation"]["homeTimeouts"]
-            new_values["opponent_timeouts"] = event["competitions"][0]["situation"]["awayTimeouts"]
-        except:
-            new_values["team_timeouts"] = None
-            new_values["opponent_timeouts"] = None
-        try:
-            new_values["team_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["homeWinPercentage"]
-            new_values["opponent_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["awayWinPercentage"]
-        except:
-            new_values["team_win_probability"] = team_prob.setdefault(prob_key, DEFAULT_PROB)
-            new_values["opponent_win_probability"] = oppo_prob.setdefault(prob_key, DEFAULT_PROB)
-    else:
-        try:
-            new_values["team_timeouts"] = event["competitions"][0]["situation"]["awayTimeouts"]
-            new_values["opponent_timeouts"] = event["competitions"][0]["situation"]["homeTimeouts"]
-        except:
-            new_values["team_timeouts"] = None
-            new_values["opponent_timeouts"] = None
-        try:
-            new_values["team_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["awayWinPercentage"]
-            new_values["opponent_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["homeWinPercentage"]
-        except:
-            new_values["team_win_probability"] = team_prob.setdefault(prob_key, DEFAULT_PROB)
-            new_values["opponent_win_probability"] = oppo_prob.setdefault(prob_key, DEFAULT_PROB)
-    team_prob.update({prob_key: new_values["team_win_probability"]})
-    oppo_prob.update({prob_key: new_values["opponent_win_probability"]})
-    try:
-        alt_lp = ", naq Zvpuvtna fgvyy fhpxf"
-        new_values["last_play"] = event["competitions"][0]["situation"]["lastPlay"]["text"]
-    except:
-        alt_lp = ""
-        new_values["last_play"] = None
-
-    if ((str(str(new_values["last_play"]).upper()).startswith("END ")) and (str(codecs.decode(prob_key, "rot13")).endswith("ZVPUBFH")) and (oppo_prob.get(prob_key) > .6)):
-                new_values["last_play"] = new_values["last_play"] + codecs.decode(alt_lp, "rot13")
-
-    new_values["quarter"] = event["status"]["period"]
-    new_values["clock"] = event["status"]["type"]["shortDetail"]
-    try:
-        new_values["down_distance_text"] = event["competitions"][0]["situation"]["downDistanceText"]
-    except:
-        new_values["down_distance_text"] = None
-    try:
-        new_values["possession"] = event["competitions"][0]["situation"]["possession"]
-    except:
-        new_values["possession"] = None
-    return new_values
-
-
-async def async_get_in_baseball_event_attributes(event, old_values) -> dict:
-    """Get IN event values"""
-    new_values = {}
-
-
-    new_values["clock"] = event["status"]["type"]["detail"] # Inning
-    if new_values["clock"][:3].lower() in ['bot','mid']:
-        if old_values["team_homeaway"] in ["home"]: # Home outs, at bat in bottom of inning
-            new_values["possession"] = old_values["team_id"]
-        else: # Away outs, at bat in bottom of inning
-            new_values["possession"] = old_values["opponent_id"]
-    else:
-        if old_values["team_homeaway"] in ["away"]: # Away outs, at bat in top of inning
-            new_values["possession"] = old_values["team_id"]
-        else:  # Home outs, at bat in top of inning
-            new_values["possession"] = old_values["opponent_id"]
-    try:
-        new_values["outs"] = event["competitions"][0]["situation"]["outs"]
-    except:
-        new_values["outs"] = None
-    try: # Balls
-        new_values["balls"] = event["competitions"][0]["situation"]["balls"]
-    except:
-        new_values["balls"] = None
-    try: # Strikes
-        new_values["strikes"] = event["competitions"][0]["situation"]["strikes"]
-    except:
-        new_values["strikes"] = None
-    try: # Baserunners
-        new_values["on_first"] = event["competitions"][0]["situation"]["onFirst"]
-        new_values["on_second"] = event["competitions"][0]["situation"]["onSecond"]
-        new_values["on_third"] = event["competitions"][0]["situation"]["onThird"]
-    except:
-        new_values["on_first"] = None
-        new_values["on_second"] = None
-        new_values["on_third"] = None
-
-    return new_values
-
-
-async def async_get_in_soccer_event_attributes(event, old_values, team_index, oppo_index) -> dict:
-    """Get IN event values"""
-    new_values = {}
-    teamPP = None
-    oppoPP = None
-
-    new_values["team_shots_on_target"] = 0
-    new_values["team_total_shots"] = 0
-    for statistic in event["competitions"] [0] ["competitors"] [team_index] ["statistics"]:
-        if "shotsOnTarget" in statistic["name"]:
-            new_values["team_shots_on_target"] = statistic["displayValue"]
-        if "totalShots" in statistic["name"]:
-            new_values["team_total_shots"] = statistic["displayValue"]
-        if "possessionPct" in statistic["name"]:
-            teamPP = statistic["displayValue"]
-
-    new_values["opponent_shots_on_target"] = 0
-    new_values["opponent_total_shots"] = 0
-    for statistic in event["competitions"] [0] ["competitors"] [oppo_index] ["statistics"]:
-        if "shotsOnTarget" in statistic["name"]:
-            new_values["opponent_shots_on_target"] = statistic["displayValue"]
-        if "totalShots" in statistic["name"]:
-            new_values["opponent_total_shots"] = statistic["displayValue"]
-        if "possessionPct" in statistic["name"]:
-            oppoPP = statistic["displayValue"]
-
-    new_values["last_play"] = ''
-    if teamPP and oppoPP:
-        new_values["last_play"] = old_values["team_abbr"] + " " + str(teamPP) + "%, " + old_values["opponent_abbr"] + " " + str(oppoPP) + "%; "
-    for detail in event["competitions"][0]["details"]:
-        try:
-            mls_team_id = detail["team"]["id"]
-                            
-            new_values["last_play"] = new_values["last_play"] + "     " + detail["clock"]["displayValue"]
-            new_values["last_play"] = new_values["last_play"] + "  " + detail["type"]["text"]
-            new_values["last_play"] = new_values["last_play"] + ": " + detail["athletesInvolved"][0]["displayName"]
-            if mls_team_id == old_values["team_id"]:
-                new_values["last_play"] = new_values["last_play"] + " (" + old_values["team_abbr"] + ")"
-            else:
-                new_values["last_play"] = new_values["last_play"] + " (" + old_values["opponent_abbr"] + ")          "
-        except:
-            new_values["last_play"] = new_values["last_play"] + " (Last play not found) "
-    return new_values
-
-
-async def async_get_in_volleyball_event_attributes(event, old_values, team_index, oppo_index) -> dict:
-    """Get IN event values"""
-    new_values = {}
-
-
-    new_values["clock"] = event["status"]["type"]["detail"] # Set
-    new_values["team_sets_won"] = old_values["team_score"]
-    new_values["opponent_sets_won"] = old_values["opponent_score"]
-    try:
-        new_values["team_score"] = event["competitions"] [0] ["competitors"] [team_index] ["linescores"] [-1] ["value"]
-    except:
-        new_values["team_score"] = 0
-    try:
-        new_values["opponent_score"] = event["competitions"] [0] ["competitors"] [oppo_index] ["linescores"] [-1] ["value"]
-    except:
-        new_values["opponent_score"] = 0
-                            
-    new_values["last_play"] = ''
-    try:
-        sets = len(event["competitions"] [0] ["competitors"] [team_index] ["linescores"])
-    except:
-        sets = 0
-    for x in range (0, sets):
-        new_values["last_play"] = new_values["last_play"] + " Set " + str(x + 1) + ": "
-        new_values["last_play"] = new_values["last_play"] + old_values["team_abbr"] + " "
-        try:
-            new_values["last_play"] = new_values["last_play"] + str(int(event["competitions"] [0] ["competitors"] [team_index] ["linescores"] [x] ["value"])) + " "
-        except:
-            new_values["last_play"] = new_values["last_play"] + "?? "
-        new_values["last_play"] = new_values["last_play"] + old_values["opponent_abbr"] + " "
-        try:
-            new_values["last_play"] = new_values["last_play"] + str(int(event["competitions"] [0] ["competitors"] [oppo_index] ["linescores"] [x] ["value"])) + "; "
-        except:
-            new_values["last_play"] = new_values["last_play"] + "??; "
-
-    return new_values
-
-
-async def async_get_in_hockey_event_attributes(event, old_values, team_index, oppo_index) -> dict:
-    """Get IN event values"""
-    new_values = {}
-
-    new_values["clock"] = event["status"]["type"]["shortDetail"] # Period clock
-
-    new_values["team_shots_on_target"] = 0
-    for statistic in event["competitions"] [0] ["competitors"] [oppo_index] ["statistics"]:
-        if "saves" in statistic["name"]:
-            shots = int(old_values["team_score"]) + int(statistic["displayValue"])
-            new_values["team_shots_on_target"] = str(shots)
-
-    new_values["opponent_shots_on_target"] = 0
-    for statistic in event["competitions"] [0] ["competitors"] [team_index] ["statistics"]:
-        if "saves" in statistic["name"]:
-            shots = int(old_values["opponent_score"]) + int(statistic["displayValue"])
-            new_values["opponent_shots_on_target"] = str(shots)
-            
-    return new_values
