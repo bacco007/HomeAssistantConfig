@@ -35,6 +35,6 @@ DEFAULT_NAME = DOMAIN
 
 # Icons
 DEFAULT_ICON_NORMAL = "mdi:calendar-blank"
-DEFAULT_ICON_TODAY = "mdi:calendar-arrow-right"
-DEFAULT_ICON_TOMORROW = "mdi:calendar-check"
+DEFAULT_ICON_TOMORROW = "mdi:calendar-arrow-right"
+DEFAULT_ICON_TODAY = "mdi:calendar-check"
 ICON = DEFAULT_ICON_NORMAL

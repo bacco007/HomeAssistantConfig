@@ -50,8 +50,8 @@ async def choose_third_step(options: Dict[str, Any]) -> str:
             options.get(const.CONF_OBSERVED, True),
         )
         for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
-            if pop not in list(hol) or "(Observed)" in pop:
-                del options[pop]
+            if pop not in hol.values() or "(Observed)" in pop:
+                options[const.CONF_HOLIDAY_POP_NAMED].remove(pop)
     return "pop"
 
 
