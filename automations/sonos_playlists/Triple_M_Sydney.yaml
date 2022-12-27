@@ -1,0 +1,17 @@
+---
+alias: Sonos - Playlist - Triple M Sydney
+description: Play Triple M Sydney on Sonos
+id: Triple_M_Sydney
+trigger:
+  - platform: webhook
+    webhook_id: sonos_Triple_M_Sydney
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "Triple M Sydney"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "Triple M Sydney"
