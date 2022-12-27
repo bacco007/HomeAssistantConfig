@@ -1,0 +1,44 @@
+---
+id: "influx2entity_misc"
+alias: "InfluxDB to Entity: Misc"
+description: "InfluxDB to Entity: Misc"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/1"
+condition: []
+action:
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "followers")
+          |> filter(fn: (r) => r["entity_id"] == "twitter_followers_bacco007")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: last, createEmpty: true)
+          |> fill(usePrevious: true)
+          |> yield(name: "last")
+      entity_id: sensor.archive_twitter_followers_365day
+      unit_of_measurement: Followers
+      friendly_name: Twitter - Followers - 365 Day
+      icon: "mdi:twitter"
+
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:
+        "Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["_measurement"] == "karma")
+          |> filter(fn: (r) => r["entity_id"] == "reddit_profile_bacco007")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> aggregateWindow(every: 1d, fn: last, createEmpty: true)
+          |> fill(usePrevious: true)
+          |> yield(name: "last")
+      entity_id: sensor.archive_reddit_karma_365day
+      unit_of_measurement: Karma
+      friendly_name: Reddit - Karma - 365 Day
+      icon: "mdi:reddit"

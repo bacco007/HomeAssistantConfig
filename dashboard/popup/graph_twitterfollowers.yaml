@@ -1,0 +1,30 @@
+---
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  hide_header: false
+  data:
+    title: Twitter Followers
+    style: >
+      --popup-min-width: 90vw;
+    content:
+      type: "custom:layout-card"
+      layout_type: "custom:grid-layout"
+      layout:
+        margin: 17px
+      cards:
+        - type: custom:apexcharts-card
+          config_templates:
+            - year_chart
+          apex_config:
+            chart: { height: 350 }
+          series:
+            - entity: sensor.archive_twitter_followers_365day
+              name: Followers
+              data_generator: |
+                let res = [];
+                for (const [key, value] of
+                    Object.entries(entity.attributes)) {
+                    res.push([new Date(key).getTime(), value]);
+                }
+                return res.sort((a, b) => { return a[0] - b[0] });

@@ -457,41 +457,30 @@ cards:
 
           - type: vertical-stack
             cards:
-              - type: custom:mod-card
+              - type: custom:auto-entities
                 card:
-                  type: custom:mushroom-title-card
-                  title: ZigBee2MQTT
-                  subtitle: >-
-                    Installed v{{ states('sensor.zigbee2mqtt_version') }} - Latest v{{
-                    states('sensor.zigbee2mqtt_newest_version') }}
-                card_mod:
-                  style:
-                    mushroom-title-card$: |
-                      h1 {
-                        --primary-text-color: var(--secondary-text-color);
-                        --title-font-size: var(--h4-font-size);
-                        --title-font-weight: 500;
-                      }
-              - type: custom:mushroom-chips-card
-                chips:
-                  - type: entity
-                    entity: binary_sensor.zigbee2mqtt_running
-                    icon_color: green
-                  - type: entity
-                    entity: sensor.zigbee2mqtt_version
-                    icon_color: green
-                    icon: mdi:package-variant-closed
-                  - type: entity
-                    entity: sensor.zigbee2mqtt_cpu_percent
-                    icon_color: blue
-                  - type: entity
-                    entity: sensor.zigbee2mqtt_memory_percent
-                    icon_color: orange
-              - type: custom:mushroom-update-card
-                entity: update.zigbee2mqtt_update
-                show_buttons_control: true
-                icon_type: entity-picture
-                layout: horizontal
+                  type: vertical-stack
+                card_param: cards
+                filter:
+                  include:
+                    - domain: update
+                      integration: hassio
+                      options:
+                        type: custom:mushroom-update-card
+                        show_buttons_control: true
+                        layout: horizontal
+                        collapsible_controls: true
+                        entities:
+                          - this.entity_id
+                  exclude:
+                    - entity_id: update.home_assistant_core_update
+                    - entity_id: update.home_assistant_operating_system_update
+                    - entity_id: update.home_assistant_supervisor_update
+                sort:
+                  ignore_case: true
+                  method: state
+                  numeric: true
+                  reverse: true
 
           - type: vertical-stack
             cards:
