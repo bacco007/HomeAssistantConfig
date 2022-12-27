@@ -47,10 +47,10 @@ async def choose_third_step(options: Dict[str, Any]) -> str:
             [dt_util.now().date().year],
             options.get(const.CONF_COUNTRY, ""),
             options.get(const.CONF_SUBDIV, ""),
-            options.get(const.CONF_OBSERVED, True),
+            False,
         )
         for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
-            if pop not in hol.values() or "(Observed)" in pop:
+            if pop not in hol.values():
                 options[const.CONF_HOLIDAY_POP_NAMED].remove(pop)
     return "pop"
 
@@ -153,12 +153,10 @@ async def pop_config_schema(
         [dt_util.now().date().year],
         handler.options.get(const.CONF_COUNTRY, ""),
         handler.options.get(const.CONF_SUBDIV, ""),
-        handler.options.get(const.CONF_OBSERVED, True),
+        False,
     )
     list_holidays = [
-        selector.SelectOptionDict(value=h, label=h)
-        for h in sorted(hol.values())
-        if "(Observed)" not in h
+        selector.SelectOptionDict(value=h, label=h) for h in sorted(hol.values())
     ]
     return vol.Schema(
         {
