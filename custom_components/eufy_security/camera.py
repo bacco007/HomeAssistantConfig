@@ -129,6 +129,7 @@ async def async_setup_entry(
     platform.async_register_entity_service("ptz_down", {}, "async_ptz_down")
     platform.async_register_entity_service("ptz_left", {}, "async_ptz_left")
     platform.async_register_entity_service("ptz_right", {}, "async_ptz_right")
+    platform.async_register_entity_service("ptz_rotate_360", {}, "async_ptz_rotate_360")
     platform.async_register_entity_service(
         "alarm_trigger_for_camera_with_duration",
         ALARM_TRIGGER_SCHEMA,
@@ -323,6 +324,10 @@ class EufySecurityCamera(Camera, EufySecurityEntity):
         if self.ffmpeg.is_running is True:
             self.stop_ffmpeg()
         self.empty_queue_counter = 0
+        
+    @property
+    def available(self) -> bool:
+        return True
 
     @property
     def state(self) -> str:
