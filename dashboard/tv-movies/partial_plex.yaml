@@ -1,7 +1,7 @@
 ---
 type: "custom:layout-card"
 view_layout:
-  grid-column: 1/-1
+  grid-column: 3/-1
 layout_type: "custom:grid-layout"
 layout:
   grid-template-columns: "repeat(auto-fill, [col-start] minmax(50%, 1fr) [col-end])"
@@ -87,6 +87,23 @@ cards:
               {% endfor %}
               </table>
               </details>
+
+              <details>
+              <summary>Plex - Popular TV</summary>
+
+              <table width="100%">
+              <tr>
+              <th>What?</th>
+              <th>Who?</th>
+              </tr>
+              {% for row in state_attr("sensor.plex_tautulli_populartv", "rows") -%}
+              <tr>
+              <td>{{row.title}}</td>
+              <td>{{row.users_watched}}</td>
+              </tr>
+              {% endfor -%}
+              </table>
+              </details>
   - type: vertical-stack
     view_layout:
       grid-column-start: 2/2
@@ -95,8 +112,89 @@ cards:
         mode: vertical
         cards:
           - type: markdown
-            card_mod: !include ../snippets/style-markdown-table-scroll.yaml
+            card_mod: !include ../snippets/style-markdown-table.yaml
             content: |-
+              <br>
+              <details>
+              <summary>Plex Watch History</summary>
+
+              <table width="100%">
+              <tr>
+              <th>What?</th>
+              <th>Who?</th>
+              <th>When?</th>
+              </tr>
+              {% for row in state_attr("sensor.plex_tautulli_history", "data") -%}
+              <tr>
+              <td>{{row.full_title}}</td>
+              <td>{{row.user}}</td>
+              <td>{{ row.date|timestamp_custom ('%d/%m/%Y %H:%M') }}</td>
+              </tr>
+              {% endfor -%}
+              </table>
+              </details>
+
+              <details>
+              <summary>Plex Watch Stats - TV Shows</summary>
+              <table width="100%">
+              <tr>
+              <th>#</th>
+              <th>Plays</th>
+              <th>Duration</th>
+              <th>Average</th>
+              <th>
+              </tr>
+              {% for row in state_attr("sensor.plex_tautulli_watch_stats_tv", "data") -%}
+              {% set uptime = row.total_time | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}
+              {% set hours = ((uptime) / 3600) | int -%}
+              {% if 0 not in [ row.total_time, row.total_plays ] -%}
+                {% set avetime = row.total_time / row.total_plays -%} {% set avemin = ((avetime % 3600) / 60) | int -%}
+                {% set avehrs = ((avetime) / 3600) | int -%}
+              {% else -%}
+                {% set avetime = 0 -%}{% set avemin = 0 -%}{% set avehrs = 0 -%}
+              {% endif -%}
+              <tr>
+              <td>{{ row.query_days }}D</td>
+              <td>{{ row.total_plays }}</td>
+              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+              <td>{{'%02d' % avehrs}}:{{'%02d' % avemin}}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              </details>
+
+              <details>
+              <summary>Plex Watch Stats - Movies</summary>
+              <table width="100%">
+              <tr>
+              <th>#</th>
+              <th>Plays</th>
+              <th>Duration</th>
+              <th>Average</th>
+              <th>
+              </tr>
+              {% for row in state_attr("sensor.plex_tautulli_watch_stats_movies", "data") -%}
+              {% set uptime = row.total_time | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}
+              {% set hours = ((uptime) / 3600) | int -%}
+              {% if 0 not in [ row.total_time, row.total_plays ] -%}
+                {% set avetime = row.total_time / row.total_plays -%} {% set avemin = ((avetime % 3600) / 60) | int -%}
+                {% set avehrs = ((avetime) / 3600) | int -%}
+              {% else -%}
+                {% set avetime = 0 -%}{% set avemin = 0 -%}{% set avehrs = 0 -%}
+              {% endif -%}
+              <tr>
+              <td>{{ row.query_days }}D</td>
+              <td>{{ row.total_plays }}</td>
+              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+              <td>{{'%02d' % avehrs}}:{{'%02d' % avemin}}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              </details>
+
+              <details>
+              <summary>Plex Recently Added - TV Shows</summary>
+
               <table width="100%">
               <tr>
               <th>Date</th>
@@ -113,24 +211,124 @@ cards:
               </tr>
               {%- endif %}{%endif%}{% endfor %}
               </table>
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:
-          - type: markdown
-            card_mod: !include ../snippets/style-markdown-table-scroll.yaml
-            content: |-
+              </details>
+
+              <details>
+              <summary>Plex Recently Added - Movies</summary>
               <table width="100%">
               <tr>
               <th>Date</th>
-              <th>Movie</th>
+              <th>Detail</th>
               </tr>
-              {%- for item in state_attr('sensor.plex_recently_added_movies', 'data') %}
+              {%- for item in state_attr('sensor.plex_recently_added', 'data') %}
               {%- if item.flag | default('', true) %}
               {%- if item.airdate | default('', true) %}
               {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
               <tr>
               <td>{{ airdate }}</td>
-              <td>{{item.title}}</td>
+              <td>{{item.title}}<br/>
+                <span>{{item.number}}, {{item.episode}}</span></td>
               </tr>
               {%- endif %}{%endif%}{% endfor %}
               </table>
+              </details>
+
+              <details>
+              <summary>Plex Top TV - Last 30 Days</summary>
+              <table width="100%">
+              <tr>
+              <th>Show</th>
+              <th>Total Plays</th>
+              <th>Watch Length</th>
+              <th>Last Play</th>
+              <th>
+              </tr>
+              {%- for item in state_attr('sensor.plex_tautulli_toptv_30days', 'rows') %}
+              {%- set uptime = item.total_duration | int -%}
+              {%- set minutes = ((uptime % 3600) / 60) | int -%}
+              {%- set hours = ((uptime) / 3600) | int -%}
+              {%- set days = (uptime / 86400) | int -%}
+              <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.total_plays }}</td>
+              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              </details>
+
+              <details>
+              <summary>Plex Top TV - By Duration</summary>
+              <table width="100%">
+              <tr>
+              <th>Show</th>
+              <th>Total Plays</th>
+              <th>Watch Length</th>
+              <th>Last Play</th>
+              <th>
+              </tr>
+              {%- for item in state_attr('sensor.plex_tautulli_toptv', 'rows') %}
+              {%- set uptime = item.total_duration | int -%}
+              {%- set minutes = ((uptime % 3600) / 60) | int -%}
+              {%- set hours = ((uptime) / 3600) | int -%}
+              {%- set days = (uptime / 86400) | int -%}
+              <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.total_plays }}</td>
+              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              </details>
+
+              <details>
+              <summary>Plex Top TV - By Eps Watched</summary>
+              <table width="100%">
+              <tr>
+              <th>Show</th>
+              <th>Total Plays</th>
+              <th>Watch Length</th>
+              <th>Last Play</th>
+              <th>
+              </tr>
+              {%- for item in state_attr('sensor.plex_tautulli_toptv_plays', 'rows') %}
+              {%- set uptime = item.total_duration | int -%}
+              {%- set minutes = ((uptime % 3600) / 60) | int -%}
+              {%- set hours = ((uptime) / 3600) | int -%}
+              {%- set days = (uptime / 86400) | int -%}
+              <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.total_plays }}</td>
+              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              </details>
+
+              <details>
+              <summary>Plex Top Movies</summary>
+              <table width="100%">
+              <tr>
+              <th>Movie</th>
+              <th>Total Plays</th>
+              <th>Watch Length</th>
+              <th>Last Play</th>
+              <th>
+              </tr>
+              {%- for item in state_attr('sensor.plex_tautulli_topmovies', 'rows') %}
+              {%- set uptime = item.total_duration | int -%}
+              {%- set minutes = ((uptime % 3600) / 60) | int -%}
+              {%- set hours = ((uptime) / 3600) | int -%}
+              {%- set days = (uptime / 86400) | int -%}
+              <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.total_plays }}</td>
+              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              </details>

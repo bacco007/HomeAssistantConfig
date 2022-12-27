@@ -1,8 +1,8 @@
 ---
-title: TV & Movies
-path: tv-movies
+title: OpenNEM
+path: opennem
 theme: "Fluent Red"
-icon: mdi:television
+icon: mdi:transmission-tower-export
 
 type: "custom:grid-layout"
 layout: !include ../snippets/layout-page-margin.yaml
@@ -13,15 +13,16 @@ cards:
     view_layout:
       grid-area: cc
     layout:
-      grid-template-columns: "repeat(auto-fill, [col-start] minmax(450px, 1fr) [col-end])"
+      grid-template-columns: 20% auto
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
       mediaquery:
         "(max-width: 800px)":
           grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
-
+          margin: 0
     cards:
+      # [Header] Summary
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
         layout: !include ../snippets/layout-page-title.yaml
@@ -31,8 +32,7 @@ cards:
           - type: markdown
             style: !include ../snippets/style-markdown-page-title.yaml
             content: >
-              # TV & Movies
-
+              # OpenNEM
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
             layout:
@@ -50,11 +50,16 @@ cards:
                   entity_temperature: sensor.tempest_st_00056115_temperature
                   entity_weather: weather.east_tamworth_hourly
 
-      # Column 1 - Sonarr
-      - !include partial_sonarr.yaml
+      - type: vertical-stack
+        cards:
+          - !include partial_regions.yaml
+          - !include partial_curgen.yaml
 
-      # Column 2 - Radarr
-      - !include partial_radarr.yaml
-
-      # Column 3 - Plex
-      - !include partial_plex.yaml
+      - type: vertical-stack
+        cards:
+          - !include graph_currentprice.yaml
+          - !include graph_gentype.yaml
+          - !include graph_gentype2.yaml
+          - !include graph_gendemand.yaml
+          - !include graph_allregions_demand.yaml
+          - !include graph_allregions_generation.yaml

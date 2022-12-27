@@ -1,0 +1,151 @@
+---
+title: Alerts
+path: alerts
+icon: mdi:alert-box
+theme: "Fluent Red"
+visible: true
+
+type: "custom:grid-layout"
+layout: !include snippets/layout-page-margin.yaml
+
+cards:
+  - type: "custom:layout-card"
+    layout_type: "custom:grid-layout"
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 20% auto
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        "(max-width: 800px)":
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
+          margin: 0
+    cards:
+      # [Header] Summary
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout: !include snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
+            content: >
+              # Alerts
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              margin: 0
+              padding: 0
+              card_margin: 1px
+            view_layout:
+              place-self: end right
+            cards:
+              - entity: sensor.time
+                template: clock
+                type: custom:button-card
+                variables:
+                  entity_date: sensor.date
+                  entity_temperature: sensor.tempest_st_00056115_temperature
+                  entity_weather: weather.east_tamworth_hourly
+
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Lightning (Blitzortung)
+          - type: custom:stack-in-card
+            mode: vertical
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.blitzortung_lightning_counter
+                    name: Lightning Counter
+              - type: conditional
+                conditions:
+                  - entity: sensor.blitzortung_lightning_counter
+                    state_not: "0"
+                card:
+                  type: entities
+                  entities:
+                    - entity: sensor.lightning_distance_lasthour
+                      name: Lightning Distance
+                      type: custom:multiple-entity-row
+                      icon: mdi:flash-circle
+                      show_state: false
+                      entities:
+                        - attribute: count
+                          name: Num
+                        - attribute: min_value
+                          name: Near
+                        - attribute: max_value
+                          name: Far
+
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: NSW Rural Fire Service
+          - type: custom:stack-in-card
+            mode: vertical
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.fires_near_me
+                    name: RFS Alerts Near Me
+              - type: conditional
+                conditions:
+                  - entity: sensor.fires_near_me
+                    state_not: "0"
+                card:
+                  type: markdown
+                  content: >-
+                    {%- for state in states.geo_location %}
+                      {%- if state.attributes.source=="nsw_rural_fire_service_feed" %}
+                        <ha-icon icon="{{ state.attributes.icon }}"></ha-icon> **{{ state.name }}**
+                        {{ state.attributes.category }}, {{ state.attributes.type }} ({{ state.attributes.size }})
+                        {{ state.attributes.location }}
+                        *Issued: {{ state.attributes.publication_date.strftime("%d/%m/%Y %H:%M") }}*<br/>
+                      {%- endif %}
+                    {%- endfor %}
+
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: GDACS Alerts
+          - type: custom:stack-in-card
+            mode: vertical
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.gdacs_31_08133085871397_150_9416770935059
+                    name: GDACS Alerts Near Me
+              - type: conditional
+                conditions:
+                  - entity: sensor.gdacs_31_08133085871397_150_9416770935059
+                    state_not: "0"
+                card:
+                  type: markdown
+                  content: >-
+                    {%- for state in states.geo_location %}
+                      {%- if state.attributes.source=="gdacs" %}
+                        <ha-icon icon="{{ state.attributes.icon }}"></ha-icon> **<font color="{{ state.attributes.alert_level }}">{{ state.name }}</font>**
+                        {{ state.attributes.description }}
+                        <a href="https://www.gdacs.org/report.aspx?eventtype={{ state.attributes.external_id[:2] }}&eventid={{ state.attributes.external_id[2:255] }}">See detailed report</a>
+                        *Issued: {{ state.attributes.from_date.strftime("%d/%m/%Y %H:%M") }}*<br/>
+                      {%- endif %}
+                    {%- endfor %}
+
+      - type: vertical-stack
+        cards:
+          - type: map
+            auto_fit: true
+            aspect_ratio: 75%
+            entities:
+              - zone.home
+            geo_location_sources:
+              - gdacs
+              - nsw_rural_fire_service_feed
+              - blitzortung

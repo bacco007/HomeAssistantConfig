@@ -347,6 +347,7 @@ cards:
             mediaquery: "(min-width: 1128.1px), (max-width: 800px)"
         cards:
           - !include partial_me.yaml
+          - !include partial_solar.yaml
 
       # Column 3
       - type: "custom:layout-card"
@@ -360,108 +361,8 @@ cards:
           show:
             mediaquery: "(min-width: 1128.1px), (max-width: 800px)"
         cards:
-          - type: "custom:layout-card"
-            layout_type: "custom:grid-layout"
-            layout:
-              grid-template-columns: "repeat(2, 1fr)"
-              grid-template-rows: auto
-              margin: -1
-
-            cards:
-              - type: "custom:button-card"
-                template: header_card
-                variables:
-                  name: SYSTEM
-                  label: More
-                  link: /ui-dashboard/system
-                view_layout:
-                  grid-column: 1/-1
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.ha_update_counter_ha
-                name: HA Updates
-                tap_action: !include ../popup/updates_ha.yaml
-                variables:
-                  aspect_ratio: 2/1
-                state_display: "[[[ return entity.state  ]]]"
-                icon: '[[[ return (entity.state >= 1) ? "mdi:package-variant-closed" : "mdi:package-variant" ]]]'
-                show_units: false
-                styles:
-                  grid:
-                    - background: '[[[ return (entity.state >= 1) ? "rgba(var(--rgb-primary-color),0.35)" : "rgba(var(--rgb-primary-color),0)" ]]]'
-                  card:
-                    - background: var(--ha-card-background)
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.ha_update_counter_hacs
-                name: HACS Updates
-                tap_action: !include ../popup/updates_hacs.yaml
-                variables:
-                  aspect_ratio: 2/1
-                state_display: "[[[ return entity.state  ]]]"
-                icon: '[[[ return (entity.state >= 1) ? "mdi:package-variant-closed" : "mdi:package-variant" ]]]'
-                show_units: false
-                styles:
-                  grid:
-                    - background: '[[[ return (entity.state >= 1) ? "rgba(var(--rgb-primary-color),0.35)" : "rgba(var(--rgb-primary-color),0)" ]]]'
-                  card:
-                    - background: var(--ha-card-background)
-
-              - type: "custom:decluttering-card"
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                      - entity: sensor.watchman_missing_entities
-                  - decimals: 0
-                  - title: Missing Entities
-                  - aspect_ratio: 1.5/1
-
-              - type: "custom:decluttering-card"
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                      - entity: sensor.watchman_missing_services
-                  - decimals: 0
-                  - title: Missing Services
-                  - aspect_ratio: 1.5/1
-
-          - type: "custom:layout-card"
-            layout_type: "custom:grid-layout"
-            layout:
-              grid-template-columns: "repeat(2, 1fr)"
-              grid-template-rows: auto
-              margin: -1
-
-            cards:
-              - type: "custom:button-card"
-                template: header_card
-                variables:
-                  name: DOCKER
-                  label: More
-                  link: /ui-dashboard/docker
-                view_layout:
-                  grid-column: 1/-1
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.stats_docker
-                name: Containers Running
-                variables:
-                  aspect_ratio: 2/1
-                state_display: "[[[ return entity.attributes.containers_running  ]]]"
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.stats_docker
-                name: Containers Stopped
-                variables:
-                  aspect_ratio: 2/1
-                state_display: "[[[ return entity.attributes.containers_stopped  ]]]"
-              - type: "custom:button-card"
-                template: live_tile
-                entity: sensor.stats_docker
-                name: Containers To Update
-                variables:
-                  aspect_ratio: 2/1
-                state_display: "[[[ return entity.attributes.containers_updatable  ]]]"
+          - !include partial_system.yaml
+          - !include partial_docker.yaml
 
       # Column 4
       - type: "custom:layout-card"

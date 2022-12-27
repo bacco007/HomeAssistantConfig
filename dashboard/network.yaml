@@ -417,6 +417,65 @@ cards:
           - type: sensor
             graph: line
             entity: sensor.adguard_average_processing_speed
+          - !include network/adguard/graph_adsblocked.yaml
+          - !include network/adguard/graph_adsblockedpct.yaml
+          - !include network/adguard/graph_procspeed.yaml
+          - type: entities
+            entities:
+              - sensor.adguard_average_processing_speed
+              - sensor.adguard_dns_queries
+              - sensor.adguard_dns_queries_blocked
+              - sensor.adguard_dns_queries_blocked_ratio
+              - sensor.adguard_parental_control_blocked
+              - sensor.adguard_rules_count
+              - sensor.adguard_safe_browsing_blocked
+              - sensor.adguard_safe_searches_enforced
+            title: Stats
+            show_header_toggle: false
+            style: |
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+          - type: entities
+            entities:
+              - switch.adguard_filtering
+              - switch.adguard_parental_control
+              - switch.adguard_protection
+              - switch.adguard_query_log
+              - switch.adguard_safe_browsing
+              - switch.adguard_safe_search
+            title: Switches
+            show_header_toggle: false
+            style: |
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
 
       # [Column] Unison
       - type: vertical-stack

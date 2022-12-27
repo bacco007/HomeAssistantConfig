@@ -13,7 +13,7 @@ cards:
       grid-column-start: 1
       grid-column-end: -1
   - type: entity
-    entity: sensor.sonarr_upcoming
+    entity: sensor.frontpage_sonarr_upcoming_count
     name: Upcoming Episodes
   - type: custom:stack-in-card
     mode: vertical

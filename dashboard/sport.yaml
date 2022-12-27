@@ -52,7 +52,9 @@ cards:
                   entity_weather: weather.east_tamworth_hourly
       - type: custom:tabbed-card
         tabs:
-          - label: Calendar
+          - attributes:
+              label: Calendar
+              icon: mdi:calendar
             card:
               # - type: vertical-stack
               #   cards:
@@ -331,7 +333,9 @@ cards:
                     icon: /local/sportlogos/wrc.png
                     limit: 5
                     replace: "WRC - "
-          - label: TeamTracker
+          - attributes:
+              label: TeamTracker
+              icon: mdi:soccer-field
             card:
               type: custom:auto-entities
               unique: true
@@ -354,3 +358,7 @@ cards:
               sort:
                 method: attribute
                 attribute: date
+          - attributes:
+              label: Formula 1
+              icon: mdi:racing-helmet
+            card: !include sport/formula1.yaml

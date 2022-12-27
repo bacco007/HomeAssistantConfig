@@ -49,7 +49,9 @@ cards:
 
       - type: custom:tabbed-card
         tabs:
-          - label: TBSH1
+          - attributes:
+              icon: mdi:docker
+              label: TBSH1
             card:
               type: custom:auto-entities
               card:
@@ -143,7 +145,9 @@ cards:
                             ]
                           }] }}
 
-          - label: TBSH03
+          - attributes:
+              icon: mdi:docker
+              label: TBSH03
             card:
               type: custom:auto-entities
               card:
@@ -237,7 +241,9 @@ cards:
                             ]
                           }] }}
 
-          - label: PI4SRV
+          - attributes:
+              icon: mdi:docker
+              label: PI4SRV
             card:
               type: custom:auto-entities
               card:

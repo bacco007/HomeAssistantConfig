@@ -13,15 +13,17 @@ cards:
       grid-column-start: 1
       grid-column-end: -1
   - type: entity
-    entity: sensor.radarr_upcoming
-    name: Upcoming Episodes
+    entity: sensor.frontpage_radarr_upcoming_count
+    name: Upcoming Movies
   - type: custom:stack-in-card
     mode: vertical
     cards:
       - type: entities
         card_mod: !include ../snippets/style-entities.yaml
         entities:
-          - entity: sensor.radarr_status
+          - entity: binary_sensor.radarr_health
+            name: Health
+          - entity: sensor.radarr_start_time
           - entity: sensor.radarr_movies
           - entity: sensor.radarr_installed_version
           - entity: sensor.radarr_latest_update

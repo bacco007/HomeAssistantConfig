@@ -24,3 +24,9 @@ sensor:
     league_path: afl
     team_id: SYD
     name: teamtracker_sydneyswans
+  - platform: teamtracker
+    league_id: XXX
+    sport_path: rugby-league
+    league_path: 3
+    team_id: KNI
+    name: teamtracker_newcastleknights
