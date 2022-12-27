@@ -1,3 +1,4 @@
+---
 type: custom:config-template-card
 entities:
   - sensor.opennem_graph_market
