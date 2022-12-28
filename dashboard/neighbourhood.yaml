@@ -182,57 +182,103 @@ cards:
                     styles:
                       text-align: left
 
-          #      - !include cards/traffic-cameras.yaml
+      # [Column] Weather
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: AIR QUALITY
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: custom:stack-in-card
+            cards:
+              - type: entities
+                title: NSW Dept of Environment
+                entities:
+                  - entity: sensor.nsw_air_quality_tamworth
+                    name: Tamworth
+                    type: custom:multiple-entity-row
+                    styles:
+                      white-space: normal
+                    style:
+                      hui-generic-entity-row:
+                        $: |
+                          .info, .info > * {
+                            white-space: normal !important;
+                          }
+                    entities:
+                      - attribute: pm10
+                        name: PM10
+                        unit: AQI
+                      - attribute: pm25
+                        name: PM2.5
+                        unit: AQI
+                    secondary_info:
+                      entity: sensor.nsw_air_quality_tamworth_airpollev
+                  - entity: sensor.nsw_air_quality_tamworth_change_aqi
+                    type: custom:multiple-entity-row
+                    styles:
+                      white-space: normal
+                    style:
+                      hui-generic-entity-row:
+                        $: |
+                          .info, .info > * {
+                            white-space: normal !important;
+                          }
+                    name: Extremes (24hrs)
+                    state_header: 24hr Chg
+                    entities:
+                      - entity: sensor.nsw_air_quality_tamworth_min_aqi
+                        name: Min
+                      - entity: sensor.nsw_air_quality_tamworth_max_aqi
+                        name: Max
+              - !include tamworth/graph_nswaqi.yaml
 
-          # - !include cards/traffic-bridges-and-tunnels.yaml
-
-          - type: entities
-            title: Parking
-            entities:
-              - entity: sensor.nyc_311_alternate_side_parking_0d
-                type: "custom:multiple-entity-row"
-              - entity: sensor.nyc_311_alternate_side_parking_0d
-                type: "custom:multiple-entity-row"
-                show_state: false
-                name: " "
-                icon: none
-                styles:
-                  white-space: normal
-                secondary_info:
-                  attribute: details
-                style:
-                  hui-generic-entity-row:
-                    $: |
-                      .info, .info > * {
-                        white-space: normal !important;
-                      }
-          - type: entities
-            entities:
-              - entity: sensor.nyc_311_alternate_side_parking_1d
-                type: "custom:multiple-entity-row"
-              - entity: sensor.nyc_311_alternate_side_parking_1d
-                type: "custom:multiple-entity-row"
-                show_state: false
-                name: " "
-                icon: none
-                styles:
-                  white-space: normal
-                secondary_info:
-                  attribute: details
-                style:
-                  hui-generic-entity-row:
-                    $: |
-                      .info, .info > * {
-                        white-space: normal !important;
-                      }
-          - type: entities
-            entities:
-              - entity: sensor.nyc_311_alternate_side_parking_2d
-                type: "custom:multiple-entity-row"
-
-          - type: entities
-            entities:
-              - entity: sensor.next_parking_rule_suspension
+          - type: custom:stack-in-card
+            cards:
+              - type: entities
+                title: wAQI
+                entities:
+                  - entity: sensor.waqi_tamworth_north_west_slopes
+                    name: Tamworth
+                    type: custom:multiple-entity-row
+                    styles:
+                      white-space: normal
+                    style:
+                      hui-generic-entity-row:
+                        $: |
+                          .info, .info > * {
+                            white-space: normal !important;
+                          }
+                    entities:
+                      - attribute: pm_10
+                        name: PM10
+                        unit: AQI
+                      - attribute: pm_2_5
+                        name: PM2.5
+                        unit: AQI
+                    secondary_info:
+                      entity: sensor.waqi_tamworth_airpollev
+                  - entity: sensor.waqi_tamworth_change_aqi
+                    type: custom:multiple-entity-row
+                    styles:
+                      white-space: normal
+                    style:
+                      hui-generic-entity-row:
+                        $: |
+                          .info, .info > * {
+                            white-space: normal !important;
+                          }
+                    name: Extremes (24hrs)
+                    state_header: 24hr Chg
+                    entities:
+                      - entity: sensor.waqi_tamworth_min_aqi
+                        name: Min
+                      - entity: sensor.waqi_tamworth_max_aqi
+                        name: Max
+              - !include tamworth/graph_waqi.yaml
 
       # [Column] Weather
       - type: vertical-stack
@@ -282,94 +328,104 @@ cards:
               style: |
                 .content {display: none !important;}
                 .forecast {padding-top: 0 !important;}
-          - type: entities
-            entities:
-              - entity: sun.sun
-                type: "custom:multiple-entity-row"
-                show_state: false
-                secondary_info:
-                  entity: sun.sun
-                entities:
-                  - attribute: next_rising
-                    format: relative
-                    name: SUNRISE
-                    styles:
-                      text-align: left
-                  - attribute: next_setting
-                    format: relative
-                    name: SUNSET
-                    styles:
-                      text-align: left
 
-              - type: section
-              - binary_sensor.protection_window
-              - type: custom:multiple-entity-row
-                entity: sensor.current_uv_index
-                secondary_info:
-                  entity: sensor.current_uv_level
-              - sensor.max_uv_index
-              - sensor.current_ozone_level
-              - type: custom:fold-entity-row
-                head:
-                  type: section
-                  label: Safe Exposure Times
+      # [Column] Weather
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card
+            variables:
+              name: SUN, MOON & UV
+              label: More
+              arrow: "mdi:arrow-top-right"
+              action: url
+              link: https://weather.bom.gov.au/location/r67r4u3-east-tamworth
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: custom:stack-in-card
+            cards:
+              - type: entities
+                title: Sun & Moon
                 entities:
+                  - entity: sun.sun
+                    type: "custom:multiple-entity-row"
+                    show_state: false
+                    secondary_info:
+                      entity: sun.sun
+                    entities:
+                      - attribute: next_rising
+                        format: relative
+                        name: SUNRISE
+                        styles:
+                          text-align: left
+                      - attribute: next_setting
+                        format: relative
+                        name: SUNSET
+                        styles:
+                          text-align: left
+                  - type: custom:fold-entity-row
+                    head: sensor.sun_state
+                    entities:
+                      - sensor.sun_solarangle
+                      - sensor.sun_nextrising
+                      - sensor.sun_nextdawn
+                      - sensor.sun_nextnoon
+                      - sensor.sun_nextdusk
+                      - sensor.sun_nextsetting
+                      - sensor.sun_nextmidnight
+                      - type: section
+                      - sensor.solar_midnight
+                      - sensor.astronomical_dawn
+                      - sensor.nautical_dawn
+                      - sensor.dawn
+                      - sensor.sunrise
+                      - sensor.solar_noon
+                      - sensor.sunset
+                      - sensor.dusk
+                      - sensor.nautical_dusk
+                      - sensor.astronomical_dusk
+                      - type: section
+                      - sensor.daylight
+                      - sensor.civil_daylight
+                      - sensor.nautical_daylight
+                      - sensor.astronomical_daylight
+                      - sensor.night
+                      - sensor.civil_night
+                      - sensor.nautical_night
+                      - sensor.astronomical_night
+                      - type: section
+                      - sensor.elevation
+                      - sensor.max_elevation
+                  - entity: sensor.moon
+              - type: custom:sun-card
+                style: |
+                  .sun-card-title {
+                    display: none;
+                  }
+                showAzimuth: true
+                showElevation: true
+                timeFormat: 24h
+                title: ""
+
+          - type: custom:stack-in-card
+            cards:
+              - type: entities
+                title: UV
+                entities:
+                  - binary_sensor.protection_window
+                  - type: custom:multiple-entity-row
+                    entity: sensor.current_uv_index
+                    secondary_info:
+                      entity: sensor.current_uv_level
+                  - sensor.max_uv_index
+                  - sensor.current_ozone_level
                   - sensor.skin_type_1_safe_exposure_time
                   - sensor.skin_type_2_safe_exposure_time
                   - sensor.skin_type_3_safe_exposure_time
                   - sensor.skin_type_4_safe_exposure_time
                   - sensor.skin_type_5_safe_exposure_time
-
-              - entity: sensor.moon
-
-      # # [Column] Notices
-      # - type: vertical-stack
-      #   cards:
-      #     - type: "custom:button-card"
-      #       template: header_card
-      #       variables:
-      #         name: NOTICES
-      #         label: Notify NYC
-      #         arrow: "mdi:arrow-top-right"
-      #         action: url
-      #         link: "https://twitter.com/NotifyNYC"
-      #       view_layout:
-      #         grid-column-start: 1
-      #         grid-column-end: -1
-      #     - type: "custom:list-card"
-      #       entity: sensor.notify_nyc
-      #       feed_attribute: entries
-      #       columns:
-      #         - title: ""
-      #           field: title
-      #           style:
-      #             - display: block
-      #             - font-weight: 500
-      #             - font-size: var(--h4-font-size)
-      #             - xwhite-space: nowrap
-      #             - padding: 16px 0 2px
-      #           regex: (?<=- ).*
-      #         - title: ""
-      #           field: published
-      #           style:
-      #             - display: block
-      #             - font-size: var(--h6-font-size)
-      #             - padding: 0 0 4px
-      #             - opacity: 0.5
-      #             - text-transform: uppercase
-      #         - title: ""
-      #           field: summary
-      #           style:
-      #             - display: block
-      #             - padding: 0
-      #           regex: (?<=.*\.\s\n+)(.|\n)*(?=\n+To view this message)
-      #       style: >
-      #         xha-card { background: none; }
-      #         table tbody:first-child { display: none; }
-      #         tbody tr:nth-child(odd), tbody tr:nth-child(even) {
-      #         background: none; }
-      # # [Column] Gas
-      # - !include secret/neighborhood-gas.yaml
+              - !include tamworth/graph_uvindex.yaml
 
       # # [Column] Fuel
       - type: "custom:layout-card"

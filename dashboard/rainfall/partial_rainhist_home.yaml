@@ -1,0 +1,48 @@
+---
+type: markdown
+title: Rain History - Home (Rolling)
+card_mod: !include ../snippets/style-markdown-table.yaml
+content: |-
+  <table width="100%">
+  <tr>
+  <th>Name</th>
+  <th>When?</th>
+  <th>Avg</th>
+  <th>Max</th>
+  <th>Min</th>
+  <th>Total</th>
+  <th>
+  </tr>
+  <tr>
+  <td>{{state_attr('sensor.weatherstats_rain_home', 'friendly_name')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home', 'countstring')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home', 'average')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home', 'highest')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home', 'lowest')}}</td>
+  <td>{{ states("sensor.weatherstats_rain_home") }}</td>
+  </tr>
+  <tr>
+  <td>{{state_attr('sensor.weatherstats_rain_home_week', 'friendly_name')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_week', 'countstring')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_week', 'average')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_week', 'highest')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_week', 'lowest')}}</td>
+  <td>{{ states("sensor.weatherstats_rain_home_week") }}</td>
+  </tr>
+  <tr>
+  <td>{{state_attr('sensor.weatherstats_rain_home_prevweek', 'friendly_name')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_prevweek', 'countstring')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_prevweek', 'average')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_prevweek', 'highest')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_prevweek', 'lowest')}}</td>
+  <td>{{ states("sensor.weatherstats_rain_home_prevweek") }}</td>
+  </tr>
+  <tr>
+  <td>{{state_attr('sensor.weatherstats_rain_home_month', 'friendly_name')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_month', 'countstring')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_month', 'average')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_month', 'highest')}}</td>
+  <td>{{state_attr('sensor.weatherstats_rain_home_month', 'lowest')}}</td>
+  <td>{{ states("sensor.weatherstats_rain_home_month") }}</td>
+  </tr>
+  </table>

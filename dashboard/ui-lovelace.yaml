@@ -4,6 +4,7 @@ title: Dashboard
 views:
   - !include home/page.yaml
   - !include weather.yaml
+  - !include rainfall/page.yaml
   - !include me.yaml
   - !include astrometrics.yaml
   - !include energy.yaml
@@ -12,7 +13,6 @@ views:
   - !include media2.yaml
   - !include neighbourhood.yaml
   - !include network.yaml
-  - !include nowplaying.yaml
   - !include temp.yaml
   - !include docker.yaml
   - !include tv-movies/page.yaml

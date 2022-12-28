@@ -18,6 +18,7 @@ action:
           |> filter(fn: (r) => r["_measurement"] == "kWh")
           |> filter(fn: (r) => r["entity_id"] == "sungrowsolar_daily_power_yields")
           |> filter(fn: (r) => r["_field"] == "value")
+          |> drop(columns: ["friendly_name"])
           |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
           |> fill(usePrevious: true)
           |> yield(name: "max")

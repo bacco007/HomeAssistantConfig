@@ -1,12 +1,11 @@
 ---
-title: OpenNEM
-path: opennem
+title: Rainfall
+path: rainfall
 theme: "Fluent Red"
-icon: mdi:transmission-tower-export
+icon: mdi:weather-rainy
 
 type: "custom:grid-layout"
 layout: !include ../snippets/layout-page-margin.yaml
-
 cards:
   - type: "custom:layout-card"
     layout_type: "custom:grid-layout"
@@ -32,7 +31,7 @@ cards:
           - type: markdown
             style: !include ../snippets/style-markdown-page-title.yaml
             content: >
-              # OpenNEM
+              # Rainfall
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
             layout:
@@ -52,14 +51,13 @@ cards:
 
       - type: vertical-stack
         cards:
-          - !include partial_regions.yaml
-          - !include partial_curgen.yaml
+          - !include partial_rainhist_airport.yaml
+          - !include partial_rainhist_home.yaml
 
       - type: vertical-stack
         cards:
-          - !include graph_currentprice.yaml
-          - !include graph_gentype.yaml
-          - !include graph_gentype2.yaml
-          - !include graph_gendemand.yaml
-          - !include graph_allregions_demand.yaml
-          - !include graph_allregions_generation.yaml
+          - !include graph_rainfall365days.yaml
+          - !include graph_intensity.yaml
+          # - !include partial_intensity_last.yaml
+          # - !include partial_intensity_7days.yaml
+          # - !include partial_intensity_year.yaml

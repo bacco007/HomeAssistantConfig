@@ -15,7 +15,7 @@ recorder:
     entities:
       - sun.sun
       - sensor.ha_uptime_hours
-      - binary_sensor.iss
+      - sensor.iss
       - sensor.iss_location
       - sensor.date_time
       - sensor.radarr_movies

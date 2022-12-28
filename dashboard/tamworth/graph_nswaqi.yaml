@@ -4,8 +4,8 @@ graph_span: 72h
 span:
   end: hour
 header:
-  show: true
-  title: "wAQI (72 Hours)"
+  show: false
+  title: "NSW AQI (72 Hours)"
   show_states: true
   colorize_states: true
 
@@ -37,37 +37,33 @@ apex_config:
       type: "datetime",
       labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
     }
-  yaxis: { max: 350, min: 0 }
+  yaxis: { max: 200, min: 0 }
   annotations:
     positions: back
     yaxis:
-      - y: 50
+      - y: 34
         y2: 0
         strokeDashArray: 0
-        fillColor: green
-      - y: 100
-        y2: 50
+        fillColor: "#31add3"
+      - y: 67
+        y2: 34
         strokeDashArray: 0
-        fillColor: yellow
-      - y: 150
+        fillColor: "#99b964"
+      - y: 67
         y2: 100
         strokeDashArray: 0
-        fillColor: orange
-      - y: 150
-        y2: 200
+        fillColor: "#ec783a"
+      - y: 100
+        y2: 150
         strokeDashArray: 0
-        fillColor: red
-      - y: 300
-        y2: 200
+        fillColor: "#782d49"
+      - y: 200
+        y2: 150
         strokeDashArray: 0
-        fillColor: purple
-      - y: 350
-        y2: 300
-        strokeDashArray: 0
-        fillColor: maroon
+        fillColor: "#d04730"
 
 series:
-  - entity: sensor.waqi_tamworth_north_west_slopes
+  - entity: sensor.nsw_air_quality_tamworth
     type: area
     name: Air Quality
     # extend_to_end: false

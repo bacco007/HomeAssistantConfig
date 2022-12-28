@@ -34,67 +34,6 @@ cards:
         content: >
           # Maintenance
 
-          Peanut Hamper is {{ states('vacuum.peanut_hamper') }}{{ iif(
-          is_state('binary_sensor.peanut_hamper_bin_full', 'on'), ' and
-          needs to be emptied. ', '. ') }} {%- set chore_done =
-          namespace(entities=[]) -%}
-          {%- set chore_todo = namespace(entities=[]) -%}
-          {%- set chore_overdue = namespace(entities=[]) -%}
-          {%- for chore in expand('group.chores') -%}
-            {%- if (chore.state != 'unknown') -%}
-              {%- set input = chore.entity_id|regex_replace(find='input_button', replace='input_text') -%}
-              {%- set diff = ( as_timestamp(now()) - as_timestamp(chore.state) ) / 60 / 60 / 24 %}
-              {%- set due = states(input)|float(-1) -%}
-              {%- if (diff < 1) and (as_datetime(chore.state).day == now().day) -%}{%- set chore_done.entities = chore_done.entities + [chore.entity_id] -%}{%- endif -%}
-              {%- if due > 0 -%}
-                {%- if (due < diff) -%}{%- set chore_overdue.entities = chore_overdue.entities + [chore.entity_id] -%}{%- else -%}
-                  {%- if (due < diff + (due / 4)) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}
-                {%- endif -%}
-              {%- endif -%}
-            {%- endif %}
-          {%- endfor -%}
-          There are {{ chore_done.entities|length }} chores done, {{
-          chore_todo.entities|length }} to do soon, and {{
-          chore_overdue.entities|length }} overdue.
-      # [Column] My Machines
-      - type: vertical-stack
-        cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: MY MACHINES
-            view_layout:
-              grid-column: 1/-1
-
-          - type: horizontal-stack
-            cards:
-              - type: "custom:vacuum-card"
-                entity: vacuum.peanut_hamper
-                image: default
-                show_toolbar: true
-                show_status: true
-                compact_view: false
-                card_mod:
-                  style: >
-                    .preview {font-size: var(--body-font-size); font-weight:
-                    normal;} .metadata {position: absolute; top: 0;
-                    text-align: left; padding: 0 16px;} .vacuum-name
-                    {font-size: var(--card-title-font-size) !important;
-                    font-weight: 500 !important;} .status {justify-content:
-                    flex-start !important;} .status-text {margin-left: 0
-                    !important;} ha-card .header {padding-top: 0 !important;
-                    height: auto !important;} .battery {padding: 12px 16px
-                    !important;} .stats-block {text-align: left !important;
-                    padding: 8px 16px;} .vacuum {filter: invert(1);} ha-card
-                    {--vc-background: none; --vc-spacing: 16px;} .tips
-                    {flex-direction: row-reverse;} .toolbar {background:
-                    none !important;}
-
-          - type: entities
-            entities:
-              - entity: sensor.pure_hot_cool_link_filter_life
-            title: Bedroom Dyson Pure
-
       # [Column] Watchman
       - type: vertical-stack
         cards:
@@ -106,6 +45,7 @@ cards:
               grid-column: 1/-1
 
           - type: markdown
+            card_mod: !include snippets/style-markdown-table.yaml
             content: >-
               <h2> <ha-icon icon='mdi:shield-half-full'></ha-icon> Watchman report<h2>
               <h3>Missing Entities: {{ states.sensor.watchman_missing_entities.state }} </h3>
@@ -126,13 +66,7 @@ cards:
               </tr>
               {% endfor -%}
               </table>
-            card_mod:
-              style:
-                ha-markdown:
-                  $: |
-                    ha-markdown-element:first-of-type hr{
-                      border-color: #303030;
-                    }
+
           - type: markdown
             content: >-
               <h2 class="some"> <ha-icon icon='mdi:shield-half-full'></ha-icon> Watchman report<h2>

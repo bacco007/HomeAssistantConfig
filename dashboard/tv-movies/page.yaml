@@ -10,17 +10,13 @@ layout: !include ../snippets/layout-page-margin.yaml
 cards:
   - type: "custom:layout-card"
     layout_type: "custom:grid-layout"
-    view_layout:
-      grid-area: cc
     layout:
-      grid-template-columns: "repeat(auto-fill, [col-start] minmax(450px, 1fr) [col-end])"
+      grid-template-columns: auto
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
-      mediaquery:
-        "(max-width: 800px)":
-          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
-
+    view_layout:
+      grid-area: cc
     cards:
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
@@ -51,10 +47,16 @@ cards:
                   entity_weather: weather.east_tamworth_hourly
 
       # Column 1 - Sonarr
-      - !include partial_sonarr.yaml
-
-      # Column 2 - Radarr
-      - !include partial_radarr.yaml
+      - type: vertical-stack
+        cards:
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout: !include ../snippets/layout-page-columns.yaml
+            cards:
+              - !include partial_sonarr.yaml
+              - !include partial_radarr.yaml
 
       # Column 3 - Plex
-      - !include partial_plex.yaml
+      - type: vertical-stack
+        cards:
+          - !include partial_plex.yaml

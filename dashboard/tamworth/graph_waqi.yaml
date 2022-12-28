@@ -4,8 +4,8 @@ graph_span: 72h
 span:
   end: hour
 header:
-  show: true
-  title: "UV Index (72 Hours)"
+  show: false
+  title: "wAQI (72 Hours)"
   show_states: true
   colorize_states: true
 
@@ -37,47 +37,42 @@ apex_config:
       type: "datetime",
       labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
     }
-
-  yaxis: { max: 15, min: 0 }
+  yaxis: { max: 350, min: 0 }
   annotations:
     positions: back
     yaxis:
-      - y: 2.5
+      - y: 50
         y2: 0
         strokeDashArray: 0
-        fillColor: "#558B2F"
-      - y: 5.5
-        y2: 2.5
+        fillColor: green
+      - y: 100
+        y2: 50
         strokeDashArray: 0
-        fillColor: "#F9A825"
-      - y: 7.5
-        y2: 5.5
+        fillColor: yellow
+      - y: 150
+        y2: 100
         strokeDashArray: 0
-        fillColor: "#EF6C00"
-      - y: 10.5
-        y2: 7.5
+        fillColor: orange
+      - y: 150
+        y2: 200
         strokeDashArray: 0
-        fillColor: "#B71C1C"
-      - y: 15
-        y2: 10.5
+        fillColor: red
+      - y: 300
+        y2: 200
         strokeDashArray: 0
-        fillColor: "#6A1B9A"
+        fillColor: purple
+      - y: 350
+        y2: 300
+        strokeDashArray: 0
+        fillColor: maroon
+
 series:
-  - entity: sensor.current_uv_index
+  - entity: sensor.waqi_tamworth_north_west_slopes
     type: area
-    name: UV Index
+    name: Air Quality
     # extend_to_end: false
     curve: smooth
     color: black
-    group_by:
-      func: last
-      duration: 1h
-  - entity: sensor.tempest_st_00056115_uv_index
-    type: area
-    name: Outside UVI
-    # extend_to_end: false
-    curve: smooth
-    color: red
     group_by:
       func: last
       duration: 1h

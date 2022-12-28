@@ -18,8 +18,9 @@ action:
           |> filter(fn: (r) => r["_measurement"] == "%")
           |> filter(fn: (r) => r["entity_id"] == "waternsw_chaffey_dam_storage")
           |> filter(fn: (r) => r["_field"] == "value")
+          |> drop(columns: ["friendly_name"])
           |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
-          |> fill(value: 0.0)
+          |> fill(usePrevious: true
           |> yield(name: "max")
       entity_id: sensor.archive_waternsw_chaffeydam_30day
       unit_of_measurement: "%"
@@ -34,8 +35,9 @@ action:
           |> filter(fn: (r) => r["_measurement"] == "%")
           |> filter(fn: (r) => r["entity_id"] == "waternsw_keepit_dam_storage")
           |> filter(fn: (r) => r["_field"] == "value")
+          |> drop(columns: ["friendly_name"])
           |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
-          |> fill(value: 0.0)
+          |> fill(usePrevious: true)
           |> yield(name: "max")
       entity_id: sensor.archive_waternsw_keepitdam_30day
       unit_of_measurement: "%"
@@ -50,8 +52,9 @@ action:
           |> filter(fn: (r) => r["_measurement"] == "%")
           |> filter(fn: (r) => r["entity_id"] == "waternsw_split_rock_dam_storage")
           |> filter(fn: (r) => r["_field"] == "value")
+          |> drop(columns: ["friendly_name"])
           |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
-          |> fill(value: 0.0)
+          |> fill(usePrevious: true)
           |> yield(name: "max")
       entity_id: sensor.archive_waternsw_splitrockdam_30day
       unit_of_measurement: "%"

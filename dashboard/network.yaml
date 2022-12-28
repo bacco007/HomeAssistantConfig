@@ -36,6 +36,7 @@ cards:
           - type: markdown
             content: >
               # Network
+
               The Internet is {{ states('binary_sensor.ping_cloudflare') }}
               and {{ states('sensor.asuswrt_devices_connected') }} devices
               are connected.{%- if states('sensor.speedtest_download') !=

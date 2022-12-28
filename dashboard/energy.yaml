@@ -36,61 +36,22 @@ cards:
             style: !include snippets/style-markdown-page-title.yaml
             content: >
               # Energy
-              You have {{ expand('group.all_on_off')|length }} switches and
-              {{
-              expand('group.all_on_off')|selectattr('state','equalto','on')|list|length
-              }} of them are turned on. The amount of carbon you generated today will require about
-              {{ (states('sensor.total_energy_use_daily') | float / 1000 * 0.223232 * 10) | int / 10 }}
-              trees to sequester for a year.
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
             layout:
-              grid-template-columns: 600px
-              mediaquery:
-                "(max-width: 800px)":
-                  grid-template-columns: 100%
+              margin: 0
+              padding: 0
+              card_margin: 1px
             view_layout:
-              place-self: center start
+              place-self: end right
             cards:
-              - type: "custom:swipe-card"
-                parameters:
-                  breakpointBase: container
-                  enabled: true
-                  slidesPerView: 1.66
-                  breakpoints:
-                    "600":
-                      enabled: false
-                      slidesPerView: 3
-                cards:
-                  - type: "custom:mushroom-entity-card"
-                    entity: group.all_on_off
-                    name: All Switches ↗
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: more-info
-
-                  - type: "custom:mushroom-template-card"
-                    primary: CO₂ Intensity ↗
-                    secondary: >
-                      {{ states('sensor.co2_intensity') + 'g (' +
-                      states('sensor.grid_fossil_fuel_percentage') + '%)' }}
-                    icon: "mdi:home-lightning-bolt"
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: "https://app.electricitymap.org/zone/US-NY-NYIS"
-
-                  - type: "custom:mushroom-template-card"
-                    primary: ConEdison ↗
-                    icon: "mdi:transmission-tower"
-                    icon_color: pink
-                    style: "ha-card {background: none;}"
-                    tap_action:
-                      action: url
-                      url_path: >-
-                        https://www.coned.com/en/accounts-billing/dashboard?tab1=billingandusage-1&tab2=sectionEnergyBillingUsage-1&tab3=sectionEnergyHistory-2
+              - entity: sensor.time
+                template: clock
+                type: custom:button-card
+                variables:
+                  entity_date: sensor.date
+                  entity_temperature: sensor.tempest_st_00056115_temperature
+                  entity_weather: weather.east_tamworth_hourly
 
       # [Row] Summary + Totals
       - type: "custom:layout-card"
@@ -105,199 +66,162 @@ cards:
           - type: "custom:button-card"
             template: header_card_no_link
             variables:
-              name: SUMMARY
+              name: LIVE DATA
             view_layout:
               grid-column: 1/-1
 
           - type: vertical-stack
             in_card: true
             cards:
-              - type: entity
-                entity: sensor.total_energy_use
-                name: Current Total
-                icon: "mdi:lightning-bolt"
-              - type: history-graph
-                hours_to_show: 48
-                entities:
-                  - entity: sensor.total_energy_use
-                card_mod:
-                  style:
-                    .: |
-                      ha-card { overflow: hidden; }
-                      .content {
-                        margin: 4px -13px -8px -66px !important;
-                        padding: 0 0 12px 0 !important;
-                        overflow: hidden;
-                        filter: hue-rotate( calc( var(--hue-primary-color) - 215deg) ) saturate(2) opacity(.66)
-                      }
-                    state-history-charts$state-history-chart-line$ha-chart-base$:
-                      |
-                      .chartLegend { display: none;}
-          - type: vertical-stack
-            cards:
-              - type: horizontal-stack
-                cards:
-                  - type: entity
-                    entity: sensor.total_energy_use_daily_max
-                    name: Yesterday
-                    icon: none
-                  - type: entity
-                    entity: sensor.total_energy_use_hourly_max
-                    name: Last Hour
-                    icon: "mdi:home-lightning-bolt"
-              - type: "custom:mini-graph-card"
-                name: Daily Total
-                show:
-                  graph: bar
-                  icon: false
-                height: 150
-                hours_to_show: 168
-                aggregate_func: max
-                group_by: date
-                bar_spacing: 48
-                unit: Wh
-                update_interval: 30000
-                line_color: "rgba(var(--rgb-primary-color), .5)"
-                lower_bound: 0
-                upper_bound: ~0
-                entities:
-                  - entity: sensor.total_energy_use_daily
-                    name: Total Energy Consumption
-                card_mod:
-                  style: >
-                    ha-card {border-bottom: 1px solid
-                    rgba(var(--rgb-primary-text-color),.1);} .header {
-                      padding-bottom: 0;
-                      margin-top: -8px;
-                    } .name > span {
-                      font-size: var(--body-font-size) !important;
-                      font-weight: normal !important;
-                      max-height: none !important;
-                      opacity: 1 !important;
-                    } .states {
-                      margin-top: -8px;
-                    } .state__value {
-                      font-size: var(--h1-font-size) !important;
-                      font-weight: 100 !important;
-                      padding: 8px 0;
-                    } .state__uom {
-                      font-size: var(--h6-font-size) !important;
-                      text-transform: uppercase;
-                      margin-bottom: 2px !important;
-                      padding: 8px 0;
-                    } .state__time {
-                      font-size: var(--h6-font-size) !important;
-                      font-weight: normal !important;
-                      letter-spacing: normal !important;
-                    } .graph__legend {
-                      font-size: var(--h6-font-size) !important;
-                      font-weight: normal !important;
-                      justify-content: flex-start !important;
-                      padding-left: 8px !important;
-                      letter-spacing: normal !important;
-                    } .graph__legend__item {
-                      margin: 0 8px !important;
-                    } .icon {
-                      margin-top: 12px;
-                    }
-            in_card: true
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_load_power
+                  - decimals: 3
+                  - title: House Load
+                  - icon: "mdi:home-lightning-bolt"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
 
           - type: vertical-stack
             in_card: true
             cards:
-              - type: "custom:apexcharts-card"
-                header:
-                  show: true
-                  title: Energy Usage Share
-                chart_type: donut
-                layout: minimal
-                update_interval: 10sec
-                series:
-                  - entity: sensor.astralplane_plug_smartenergy_metering
-                    name: Astralplane
-                  - entity: sensor.dorothy_plug_smartenergy_metering
-                    name: Dorothy
-                  - entity: sensor.dorothy_devices_plug_smartenergy_metering
-                    name: Dorothy Devices
-                  - entity: sensor.quattro_plug_smartenergy_metering
-                    name: Quattro
-                  - entity: sensor.terpsichora_plug_smartenergy_metering
-                    name: Terpsichora
-                  - entity: sensor.valhalla_plug_smartenergy_metering
-                    name: Valhalla
-                  - entity: sensor.makery_plug_smartenergy_metering
-                    name: Makery
-                  - entity: sensor.kitchen_microwave_plug_smartenergy_metering
-                    name: Kitchen Microwave
-                  - entity: sensor.kitchen_fridge_plug_smartenergy_metering
-                    name: Kitchen Fridge
-                  - entity: sensor.kitchen_aerogardens_plug_smartenergy_metering
-                    name: Kitchen Aerogardens
-                  - entity: sensor.kitchen_counter_kettle_current_consumption
-                    name: Kitchen Kettle
-                  - entity: sensor.bedroom_air_conditioner_plug_smartenergy_metering
-                    name: Bedroom AC
-                  - entity: sensor.bedroom_devices_plug_smartenergy_metering
-                    name: Bedroom Devices
-                  - entity: sensor.living_room_air_conditioner_plug_smartenergy_metering
-                    name: Living Room AC
-                  - entity: sensor.living_room_projector_plug_smartenergy_metering
-                    name: Living Room Projector
-                  - entity: sensor.unaccounted_lights_energy_use
-                    name: Other Lights
-                apex_config:
-                  chart:
-                    height: 500px
-                    fontFamily: "Segoe UI, SegoeUI, sans-serif"
-                    offsetY: -20
-                    pie:
-                      donut:
-                        label:
-                          show: true
-                  title:
-                    style:
-                      fontSize: 12px
-                      color: var(--primary-text-color)
-                  legend:
-                    formatter: |
-                      EVAL:function(seriesName, opts) {
-                        return seriesName
-                      }
-                    position: right
-                    fontSize: 12
-                    fontFamily: "Segoe UI, SegoeUI, sans-serif"
-                    fontWeight: normal
-                    markers:
-                      width: 8
-                      height: 8
-                    itemMargin:
-                      horizontal: 0
-                  dataLabels:
-                    formatter: >
-                      EVAL:function(value, { seriesIndex, dataPointIndex, w
-                      }) {
-                        return Math.round(value * 10) / 10 + '%'
-                      }
-                    style:
-                      fontSize: 10
-                      fontFamily: "Segoe UI, SegoeUI, sans-serif"
-                      fontWeight: 500
-                    dropShadow:
-                      enabled: false
-                  tooltip:
-                    style:
-                      fontSize: 12px
-                      fontFamily: "Segoe UI, SegoeUI, sans-serif"
-                style: |
-                  #header__title {
-                    font-size: var(--body-font-size) !important;
-                    font-weight: normal !important;
-                    color: var(--primary-text-color) !important;
-                    margin-top: 8px;
-                  }
-                  #graph-wrapper {
-                    padding-top: 32px;
-                  }
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_solar_production
+                  - decimals: 3
+                  - title: Solar Production
+                  - icon: "mdi:solar-panel"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_import_from_grid
+                  - decimals: 3
+                  - title: Import from Grid
+                  - icon: "mdi:transmission-tower-export"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_export_to_grid
+                  - decimals: 3
+                  - title: Export to Grid
+                  - icon: "mdi:transmission-tower-import"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: 0
+          grid-template-columns: "repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])"
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: DAILY DATA
+            view_layout:
+              grid-column: 1/-1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_daily_direct_energy_consumption
+                  - decimals: 1
+                  - title: Direct Solar Consumption
+                  - icon: "mdi:home-lightning-bolt"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_daily_power_yields
+                  - decimals: 1
+                  - title: Solar Production
+                  - icon: "mdi:solar-panel"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_daily_import_energy
+                  - decimals: 1
+                  - title: Import from Grid
+                  - icon: "mdi:transmission-tower-export"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+
+                variables:
+                  - points_per_hour: 12
+                  - hours_to_show: 24
+                  - entities:
+                      - entity: sensor.sungrowsolar_daily_export_energy
+                  - decimals: 1
+                  - title: Export to Grid
+                  - icon: "mdi:transmission-tower-import"
+                  - line_width: 2
+                  - aspect_ratio: 2.5/1
+
       # [Column] Workspace
       - type: "custom:layout-card"
         layout_type: "custom:grid-layout"
