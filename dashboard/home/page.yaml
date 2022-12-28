@@ -18,11 +18,11 @@ layout:
       grid-template-areas: |
         ". cc ." ". . ."
 
-    "(min-width: 1200px)":
+    "(min-width: 1440px)":
       grid-template-columns: 0 auto 0
       grid-template-areas: |
         ". cc ."
-      grid-column-gap: 32px
+      grid-column-gap: 16px
 
 cards:
   - type: "custom:layout-card"
@@ -57,7 +57,7 @@ cards:
           margin: 0
 
         # iPad Pro
-        "(max-width: 1366px) and (max-height: 1366px)":
+        "(max-width: 1440px)":
           grid-template-columns: 1fr 1fr 1fr
           grid-template-areas: |
             "h h h"

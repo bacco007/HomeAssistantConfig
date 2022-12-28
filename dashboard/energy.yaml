@@ -77,8 +77,8 @@ cards:
                 template: mini_graph_tile
 
                 variables:
-                  - points_per_hour: 12
-                  - hours_to_show: 24
+                  - points_per_hour: 24
+                  - hours_to_show: 1
                   - entities:
                       - entity: sensor.sungrowsolar_load_power
                   - decimals: 3
@@ -94,8 +94,8 @@ cards:
                 template: mini_graph_tile
 
                 variables:
-                  - points_per_hour: 12
-                  - hours_to_show: 24
+                  - points_per_hour: 24
+                  - hours_to_show: 1
                   - entities:
                       - entity: sensor.sungrowsolar_solar_production
                   - decimals: 3
@@ -111,8 +111,8 @@ cards:
                 template: mini_graph_tile
 
                 variables:
-                  - points_per_hour: 12
-                  - hours_to_show: 24
+                  - points_per_hour: 24
+                  - hours_to_show: 1
                   - entities:
                       - entity: sensor.sungrowsolar_import_from_grid
                   - decimals: 3
@@ -128,8 +128,8 @@ cards:
                 template: mini_graph_tile
 
                 variables:
-                  - points_per_hour: 12
-                  - hours_to_show: 24
+                  - points_per_hour: 24
+                  - hours_to_show: 1
                   - entities:
                       - entity: sensor.sungrowsolar_export_to_grid
                   - decimals: 3
@@ -150,7 +150,7 @@ cards:
           - type: "custom:button-card"
             template: header_card_no_link
             variables:
-              name: DAILY DATA
+              name: HOURLY DATA
             view_layout:
               grid-column: 1/-1
 
@@ -221,6 +221,40 @@ cards:
                   - icon: "mdi:transmission-tower-import"
                   - line_width: 2
                   - aspect_ratio: 2.5/1
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: 0
+          grid-template-columns: 100%
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: DAILY DATA
+            view_layout:
+              grid-column: 1/-1
+          - !include energy/graph_production.yaml
+
+      - type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          margin: 0
+          grid-template-columns: 100%
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -1
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: YEARLY DATA
+            view_layout:
+              grid-column: 1/-1
+          - !include energy/graph_yield_year.yaml
 
       # [Column] Workspace
       - type: "custom:layout-card"

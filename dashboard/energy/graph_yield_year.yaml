@@ -1,0 +1,80 @@
+type: "custom:apexcharts-card"
+header:
+  title: Solar Yield - Last 365 Days
+  show: false
+  show_states: false
+config_templates:
+  - year_chart
+apex_config:
+  chart:
+    type: "area"
+    height: 300,
+    zoom:
+      type: x
+      enabled: true
+      autoScaleYaxis: true
+    toolbar:
+      show: true
+      autoSelected: zoom
+      tools:
+        zoom: true
+        zoomin: false
+        zoomout: false
+        pan: false
+        reset: true
+  stroke: { show: true, lineCap: "square", dashArray: [0] }
+  dataLabels: { enabled: true }
+  legend: { show: false }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+  yaxis:
+    - seriesName: "Yield"
+      title:
+        text: "Generation (kWh)"
+      min: 0
+      decimalsInFloat: 0
+series:
+  - entity: sensor.archive_solar_yield_365day
+    name: Yield
+    type: area
+    # extend_to_end: false
+    stroke_width: 2
+    unit: "kWh"
+    show:
+      extremas: true
+    data_generator: |
+      let res = [];
+      for (const [key, value] of
+          Object.entries(entity.attributes)) {
+          res.push([new Date(key).getTime(), value]);
+      }
+      return res.sort((a, b) => { return a[0] - b[0] });
+  - entity: sensor.archive_solar_yield_365day_avg
+    name: 7d Avg
+    type: area
+    # extend_to_end: false
+    stroke_width: 1.25
+    unit: "kWh"
+    data_generator: |
+      let res = [];
+      for (const [key, value] of
+          Object.entries(entity.attributes)) {
+          res.push([new Date(key).getTime(), value]);
+      }
+      return res.sort((a, b) => { return a[0] - b[0] });
+graph_span: 365days
+all_series_config:
+  type: line
+  group_by:
+    func: last
+    duration: 1d

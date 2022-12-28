@@ -230,7 +230,7 @@ year_chart:
       dashArray: 2,2
   card_mod:
     style: >
-      #graph {margin-left: -36px; margin-top: -16px;}
+      #graph {margin-left: -20px; margin-top: -2px;}
       .apexcharts-yaxis-label { font-family: var(--font-stack) !important;
         font-size: var(--h6-font-size) !important;
         opacity: 0.15;}
