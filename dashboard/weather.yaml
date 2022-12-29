@@ -227,6 +227,45 @@ cards:
                   th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase; padding-top: 0 !important; }
                   th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
                   xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5) !important; }
+
+          - type: markdown
+            title: Weather Obs
+            card_mod: !include snippets/style-markdown-table.yaml
+            content: |-
+              <table width="100%">
+              <tr>
+              <th>Name</th>
+              <th>Temp</th>
+              <th>Humid</th>
+              <th>Rainfall</th>
+              <th>
+              </tr>
+              <tr>
+              <td>Me</td>
+              <td>{{states('sensor.tempest_st_00056115_temperature')}}°C</td>
+              <td>{{states('sensor.tempest_st_00056115_humidity')}}%</td>
+              <td>{{states('sensor.tempest_st_00056115_rain_today')}}mm</td>
+              </tr>
+              <tr>
+              <td>Aidan</td>
+              <td>{{states('sensor.weather_aidan_temp')}}°C</td>
+              <td>{{states('sensor.weather_aidan_humidity')}}%</td>
+              <td>{{states('sensor.weather_aidan_rain')}}mm</td>
+              </tr>
+              <tr>
+              <td>Lachy</td>
+              <td>{{states('sensor.wunder_lachy_temperature')}}°C</td>
+              <td>{{states('sensor.wunder_lachy_humidity')}}%</td>
+              <td>{{states('sensor.wunder_lachy_rainfall')}}mm</td>
+              </tr>
+              <tr>
+              <td>Nicko</td>
+              <td>{{states('sensor.wunder_nicko_temperature')}}°C</td>
+              <td>{{states('sensor.wunder_nicko_humidity')}}%</td>
+              <td>{{states('sensor.wunder_nicko_rainfall')}}mm</td>
+              </tr>
+              </table>
+
       # [Column] Temperature
       - type: vertical-stack
         cards:

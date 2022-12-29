@@ -1,0 +1,74 @@
+---
+sensor:
+  - name: wunder_lachy_temperature
+    unique_id: wunder_lachy_temperature
+    unit_of_measurement: "°C"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_lachy', 'observations')[0]['metric']['temp']}}
+    attributes:
+      device_class: temperature
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_lachy', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_lachy_humidity
+    unique_id: wunder_lachy_humidity
+    unit_of_measurement: "%"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_lachy', 'observations')[0]['humidity']}}
+    attributes:
+      device_class: humidity
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_lachy', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_lachy_pressure
+    unique_id: wunder_lachy_pressure
+    unit_of_measurement: "hPa"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_lachy', 'observations')[0]['metric']['pressure']}}
+    attributes:
+      device_class: pressure
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_lachy', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_lachy_rainfall
+    unique_id: wunder_lachy_rainfall
+    unit_of_measurement: "mm"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_lachy', 'observations')[0]['metric']['precipTotal']}}
+    attributes:
+      device_class: precipitation
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_lachy', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_nicko_temperature
+    unique_id: wunder_nicko_temperature
+    unit_of_measurement: "°C"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_nicko', 'observations')[0]['metric']['temp']}}
+    attributes:
+      device_class: temperature
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_nicko', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_nicko_humidity
+    unique_id: wunder_nicko_humidity
+    unit_of_measurement: "%"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_nicko', 'observations')[0]['humidity']}}
+    attributes:
+      device_class: humidity
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_nicko', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_nicko_pressure
+    unique_id: wunder_nicko_pressure
+    unit_of_measurement: "hPa"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_nicko', 'observations')[0]['metric']['pressure']}}
+    attributes:
+      device_class: pressure
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_nicko', 'observations')[0]['obsTimeUtc'])}}
+  - name: wunder_nicko_rainfall
+    unique_id: wunder_nicko_rainfall
+    unit_of_measurement: "mm"
+    state: >-
+      {{ state_attr('sensor.wunder_raw_nicko', 'observations')[0]['metric']['precipTotal']}}
+    attributes:
+      device_class: precipitation
+      obsDate: >-
+        {{ as_datetime(state_attr('sensor.wunder_raw_nicko', 'observations')[0]['obsTimeUtc'])}}

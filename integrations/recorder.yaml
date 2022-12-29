@@ -11,6 +11,7 @@ recorder:
       - sensor.unifi_gateway_wan_uptimeavail_stats
       - sensor.unifi_networkstats_connected_devices
       - sensor.unifi_networkstats_switchap
+      - sensor.load_power
   exclude:
     entities:
       - sun.sun
@@ -44,7 +45,6 @@ recorder:
       - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*
-      - sensor.*monitordocker*
       - sensor.sport_*
       - sensor.*_uptime
       - sensor.pvetbsh*

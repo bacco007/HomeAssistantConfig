@@ -451,7 +451,7 @@ cards:
                     state_display: "[[[ return entity.attributes.days ]]]"
                     show_units: false
                     variables:
-                      aspect_ratio: 1.5/1
+                      aspect_ratio: 2/1
                     styles:
                       grid:
                         - background: |

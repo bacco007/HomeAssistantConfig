@@ -1,48 +1,71 @@
 ---
 homeassistant:
-  customize:
+  customize_glob:
     package.node_anchors:
       customize: &customize
         package: "fuel"
         icon: mdi:fuel
 
-    sensor.fuelcheck_caltex_tamworth_orana_p98:
-      friendly_name: Ampol Amplify 98 (WhiteSt)
-      <<: *customize
-
-    sensor.fuelcheck_caltex_tamworth_p98_2:
-      friendly_name: Ampol Amplify 98 (GoonooGoonooRd)
-      <<: *customize
-
-    sensor.fuelcheck_caltex_tamworth_p98:
-      friendly_name: Ampol Amplify 98 (GunnedahRd)
-      <<: *customize
-
-    sensor.fuelcheck_caltex_woolworths_tamworth_p98:
-      friendly_name: Ampol Amplify 98 (BridgeSt)
+    "sensor.fuelcheck_*":
       <<: *customize
 
 sensor:
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
-    fuel_types: P98
+    fuel_types:
+      - U91
+      - E10
+      - P98
+      - P95
     station_id: 16921
-    # Caltex White Stret
+    # Ampol White Stret
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
-    fuel_types: P98
+    fuel_types:
+      - U91
+      - E10
+      - P98
+      - P95
     station_id: 573
-    # Caltex Bridge St
+    # EG Ampol Bridge St
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
-    fuel_types: P98
+    fuel_types:
+      - U91
+      - E10
+      - P98
+      - P95
     station_id: 18350
-    # Caltex Gunnedah Rd
+    # Ampol Gunnedah Rd
 
   - platform: nsw_fuel_station
     entity_namespace: fuelcheck
-    fuel_types: P98
+    fuel_types:
+      - U91
+      - E10
+      - P98
+      - P95
     station_id: 1543
-    # Caltex Goonoo Goonoo Road
+    # Ampol Goonoo Goonoo Road
+
+  - platform: nsw_fuel_station
+    entity_namespace: fuelcheck
+    fuel_types:
+      - U91
+      - E10
+      - P98
+      - P95
+    station_id: 16919
+    # Ampol Moonbi
+
+  - platform: nsw_fuel_station
+    entity_namespace: fuelcheck
+    fuel_types:
+      - U91
+      - E10
+      - P98
+      - P95
+    station_id: 18593
+    # Ampol Barraba
