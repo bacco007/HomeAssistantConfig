@@ -78,31 +78,35 @@ card:
           text: "kW"
     stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
   series:
-    - entity: sensor.sungrowsolar_solar_production
+    - entity: sensor.active_generation
       name: Solar Generation
       stroke_width: 3
       extend_to: now
+      transform: "return x / 1000;"
       group_by:
-        func: max
+        func: last
         duration: 5min
-    - entity: sensor.sungrowsolar_load_power
+    - entity: sensor.load_power
       name: House Consumption
       extend_to: now
+      transform: "return x / 1000;"
       group_by:
-        func: max
+        func: last
         duration: 5min
-    - entity: sensor.sungrowsolar_export_to_grid
+    - entity: sensor.active_export_to_grid
       name: Grid
       extend_to: now
+      transform: "return x / 1000;"
+      invert: true
       group_by:
-        func: max
+        func: last
         duration: 5min
     - entity: sensor.solcast_forecast_average_30min
       name: Forecast (Past)
       fill_raw: last
       extend_to: now
     - entity: sensor.solcast_forecast
-      name: Forecast (Future)
+      name: Forecast
       show:
         in_header: false
       data_generator: |

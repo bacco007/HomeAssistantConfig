@@ -13,6 +13,13 @@ influxdb:
   tags_attributes:
     - friendly_name
   default_measurement: units
+  include:
+    entities:
+      - sensor.untappd_checked
+      - sensor.untappd_followings
+      - sensor.untappd_friends
+      - sensor.untappd_total_badges
+      - sensor.untappd_total_beers
   exclude:
     domains:
       - anniversaries

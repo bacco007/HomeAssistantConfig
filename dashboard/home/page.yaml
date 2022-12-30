@@ -537,6 +537,15 @@ cards:
                   - decimals: 2
                   - aspect_ratio: 1.5/1
 
+              - type: "custom:decluttering-card"
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.stats_livetraffic
+                  - title: Live Traffic Incidents
+                  - decimals: 0
+                  - aspect_ratio: 1.5/1
+
           - type: "custom:layout-card"
             layout_type: "custom:grid-layout"
             layout:

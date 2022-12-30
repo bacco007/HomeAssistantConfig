@@ -1,24 +1,22 @@
 ---
 sensor:
-  - platform: template
-    sensors:
-      devices_with_low_battery:
-        friendly_name: "Devices with Low Battery"
-        unit_of_measurement: devices
-        value_template: >-
-          {%- set ignore_entities = [] %}
-          {{ states.sensor
-            | selectattr('entity_id', 'match', '.*battery.*')
-            | rejectattr('entity_id', 'in', ignore_entities)
-            | map(attribute='state')
-            | reject('in', ['unknown', 'unavailable'])
-            | map('int', -1) | select('le', 30)
-            | select('ge', 0)
-            | list | count
-          }}
-        icon_template: >-
-          {%- if is_state('sensor.devices_with_low_battery', '0') %}
-            mdi:battery-check
-          {%- else %}
-            mdi:battery-alert
-          {%- endif %}
+  - name: "Devices with Low Battery"
+    unique_id: devices_with_low_battery
+    unit_of_measurement: devices
+    state: >-
+      {%- set ignore_entities = [] %}
+      {{ states.sensor
+        | selectattr('entity_id', 'match', '.*battery.*')
+        | rejectattr('entity_id', 'in', ignore_entities)
+        | map(attribute='state')
+        | reject('in', ['unknown', 'unavailable'])
+        | map('int', -1) | select('le', 30)
+        | select('ge', 0)
+        | list | count
+      }}
+    icon: >-
+      {%- if is_state('sensor.devices_with_low_battery', '0') %}
+        mdi:battery-check
+      {%- else %}
+        mdi:battery-alert
+      {%- endif %}

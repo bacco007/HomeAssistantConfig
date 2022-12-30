@@ -1,0 +1,30 @@
+---
+sensor:
+  - name: stats_livetraffic
+    unique_id: stats_livetraffic
+    icon: mdi:car-multiple
+    state: >
+      {{ states('sensor.getdata_livetrafficnsw_majorevents') | int
+        + states('sensor.getdata_livetrafficnsw_incidents') | int
+        + states('sensor.getdata_livetrafficnsw_incidentslga') | int
+        + states('sensor.getdata_livetrafficnsw_roadwork') | int
+        + states('sensor.getdata_livetrafficnsw_flood') | int
+        + states('sensor.getdata_livetrafficnsw_fire') | int
+        + states('sensor.getdata_livetrafficnsw_alpine') | int }}
+    state_class: measurement
+    unit_of_measurement: Incidents
+    attributes:
+      alpine: >
+        {{ states('sensor.getdata_livetrafficnsw_alpine') | int }}
+      fire: >
+        {{ states('sensor.getdata_livetrafficnsw_fire') | int }}
+      flood: >
+        {{ states('sensor.getdata_livetrafficnsw_flood') | int }}
+      incidents: >
+        {{ states('sensor.getdata_livetrafficnsw_incidents') | int }}
+      incidents_lga: >
+        {{ states('sensor.getdata_livetrafficnsw_incidentslga') | int }}
+      majorevents: >
+        {{ states('sensor.getdata_livetrafficnsw_majorevents') | int }}
+      roadwork: >
+        {{ states('sensor.getdata_livetrafficnsw_roadwork') | int }}

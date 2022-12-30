@@ -1,0 +1,68 @@
+---
+sensor:
+  - name: untappd_badge
+    unique_id: untappd_badge
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_badge_bacco007.attributes.badge }} (Level {{ states.sensor.untappd_last_badge_bacco007.attributes.level }})
+    picture: >
+      {{ states.sensor.untappd_last_badge_bacco007.attributes.entity_picture }}
+    attributes:
+      description: >
+        {{ states.sensor.untappd_last_badge_bacco007.attributes.description }}
+
+  - name: untappd_beer
+    unique_id: untappd_beer
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_check_in_bacco007.attributes.beer }} ({{ states.sensor.untappd_last_check_in_bacco007.attributes.abv }})
+
+  - name: untappd_followings
+    unique_id: untappd_followings
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_check_in_bacco007.attributes.followings }}
+    picture: >
+      https://www.shareicon.net/data/32x32/2016/09/23/833751_people_512x512.png
+    unit_of_measurement: "Follows"
+    state_class: measurement
+
+  - name: untappd_friends
+    unique_id: untappd_friends
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_check_in_bacco007.attributes.friends }}
+    picture: >
+      https://www.shareicon.net/data/32x32/2016/09/23/833751_people_512x512.png
+    unit_of_measurement: "Friends"
+    state_class: measurement
+
+  - name: untappd_checked
+    unique_id: untappd_checked
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_check_in_bacco007.attributes.checkins }}
+    picture: >
+      https://www.shareicon.net/data/128x128/2015/05/30/46550_check_32x32.png
+    unit_of_measurement: "Checkins"
+    state_class: measurement
+
+  - name: untappd_total_beers
+    unique_id: untappd_total_beers
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_check_in_bacco007.attributes.total_beers }}
+    picture: >
+      https://www.shareicon.net/data/32x32/2016/09/26/834858_drink_512x512.png
+    unit_of_measurement: "Beers"
+    state_class: measurement
+
+  - name: untappd_total_badges
+    unique_id: untappd_total_badges
+    icon: si:untappd
+    state: >
+      {{ states.sensor.untappd_last_check_in_bacco007.attributes.total_badges }}
+    picture: >
+      https://www.shareicon.net/data/32x32/2016/07/10/794103_miscellaneous_512x512.png
+    unit_of_measurement: "Badges"
+    state_class: measurement

@@ -5,7 +5,6 @@ import pytz
 import requests
 from requests.exceptions import HTTPError
 
-
 @service
 def getdata_untappd_project52(
     entity_id=None,
@@ -17,14 +16,38 @@ def getdata_untappd_project52(
     icon="mdi:untappd",
 ):
 
+    def build_url():
+        url = (
+                BASEURL
+                + CONF_USER
+                + "?client_id="
+                + CLIENT_ID
+                + "&client_secret="
+                + CLIENT_SECRET
+                + "&sort="
+                + CONF_SORT
+                + "&limit="
+                + CONF_LIMIT
+                + "&offset="
+                + CONF_OFFSET
+                + "&startdate=" + datetime.strftime(CONF_STARTDATE,"%Y%m%d") + "&enddate=" + datetime.strftime(CONF_ENDDATE,"%Y%m%d")
+        )
+        return url
+
     BASEURL = "https://api.untappd.com/v4/user/beers/"
+    CLIENT_ID = "1CF20E6CFC7C38CDF4A19B25046246B326511D74"
+    CLIENT_SECRET = "8B1F6AB3E84ACA936B194F15051FB03E3D2582E1"
     CONF_STARTDATE = datetime(year=datetime.now().year, month=1, day=1, tzinfo=pytz.UTC)
     CONF_ENDDATE = datetime.now()
+    CONF_OFFSET = offset
+    CONF_LIMIT = limit
     CONF_CHECKIN_CNT = 0
     CONF_LAST_CNT = 1
     CONF_AVGRATING = 0
     CONF_MAXRATING = 0
     CONF_MINRATING = 10
+    CONF_USER = user
+    CONF_SORT = sort
     DATA = []
     attributes = {}
 
@@ -37,24 +60,7 @@ def getdata_untappd_project52(
         return
 
     while CONF_LAST_CNT >= 1:
-        URL = (
-            BASEURL
-            + user
-            + "?client_id="
-            + get_config("clientid")
-            + "&client_secret="
-            + get_config("clientsecret")
-            + "&sort="
-            + sort
-            + "&limit="
-            + limit
-            + "&offset="
-            + offset
-            + "&startdate="
-            + datetime.strftime(CONF_STARTDATE, "%Y%m%d")
-            + "&enddate="
-            + datetime.strftime(CONF_ENDDATE, "%Y%m%d")
-        )
+        URL = build_url()
         # log.error(URL)
         r = task.executor(requests.get, URL)
         rd = r.json()
@@ -63,7 +69,7 @@ def getdata_untappd_project52(
             beer_data = rd["response"]["beers"]["items"]
             CONF_CHECKIN_CNT += len(beer_data)
             CONF_LAST_CNT = len(beer_data)
-            offset = str(int(offset) + 50)
+            CONF_OFFSET = str(int(CONF_OFFSET)+50)
             x = 0
             for beer in beer_data:
                 date_firstcheckin = datetime.strptime(

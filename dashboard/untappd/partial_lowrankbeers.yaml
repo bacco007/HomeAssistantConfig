@@ -1,0 +1,16 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:flex-table-card
+    title: Lowest Ranked Beers
+    #style: !include ../../1_Templates/style_entities.yaml
+    clickable: false
+    #css: !include ../../1_Templates/style_flextable.yaml
+    entities:
+      include: sensor.untappd_beers_ratelow
+    # max_rows: 10
+    columns:
+      - { data: data, modify: x.beer_name, name: "Beer" }
+      - { data: data, modify: x.brewery, name: "Brewery" }
+      - { data: data, modify: x.rating, name: "Rating" }
+      - { data: data, modify: x.count, name: "Count" }
