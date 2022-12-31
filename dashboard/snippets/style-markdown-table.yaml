@@ -9,3 +9,4 @@ style:
     th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); white-space: nowrap; }
     xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5) !important; }
     span {font-size: smaller;}
+    td.cal {vertical-align: middle !important;}

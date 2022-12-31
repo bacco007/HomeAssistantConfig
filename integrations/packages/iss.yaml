@@ -67,19 +67,6 @@ sensor:
 
   - platform: template
     sensors:
-      iss_peopleinspace:
-        friendly_name: "People in Space"
-        value_template: '{{ states.binary_sensor.iss.attributes["number_of_people_in_space"] }}'
-      iss_location:
-        friendly_name: "ISS Location"
-        icon_template: "mdi:satellite-variant"
-        value_template: "{{ states.binary_sensor.iss.state }}"
-        attribute_templates:
-          latitude: >
-            {{ state_attr('binary_sensor.iss', 'latitude')|float(default=0) }}
-          longitude: >
-            {{ state_attr('binary_sensor.iss', 'longitude')|float(default=0) }}
-
       iss_duration:
         friendly_name: "Visible for"
         value_template: "{{ states('input_number.iss_duration') | int }}"

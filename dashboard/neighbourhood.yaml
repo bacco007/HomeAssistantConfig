@@ -2,6 +2,7 @@
 title: Tamworth
 path: tamworth
 theme: "Fluent Red"
+icon: mdi:map-marker-account-outline
 
 type: "custom:grid-layout"
 layout: !include snippets/layout-page-margin.yaml

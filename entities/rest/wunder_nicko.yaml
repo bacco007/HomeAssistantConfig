@@ -1,5 +1,5 @@
 ---
-resource: !secret wunder_nicko
+resource: !secret wunder_nicko_url
 sensor:
   name: wunder_raw_nicko
   value_template: >

@@ -6,6 +6,7 @@
 title: Energy
 path: "energy"
 theme: "Fluent Red"
+icon: mdi:solar-power-variant
 
 type: "custom:grid-layout"
 layout: !include snippets/layout-page-margin.yaml

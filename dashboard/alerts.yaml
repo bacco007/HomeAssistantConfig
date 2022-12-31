@@ -19,8 +19,8 @@ cards:
       grid-column-gap: 32px
       margin: -1px
       mediaquery:
-        "(max-width: 800px)":
-          grid-template-columns: "repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])"
+        "(max-width: 1400px)":
+          grid-template-columns: 400px auto
           margin: 0
     cards:
       # [Header] Summary

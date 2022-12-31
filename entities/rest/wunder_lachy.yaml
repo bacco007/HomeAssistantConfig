@@ -1,5 +1,5 @@
 ---
-resource: !secret wunder_lachy
+resource: !secret wunder_lachy_url
 sensor:
   name: wunder_raw_lachy
   value_template: >

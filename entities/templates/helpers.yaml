@@ -23,3 +23,50 @@ sensor:
       {{ ['January','February','March','April','May','June','July','August','September','October','November','December'][now().month-1] }}
     attributes:
       friendly_name: Month Name
+
+  - name: helper_daysremaininginmonth
+    unique_id: helper_daysremaininginmonth
+    icon: mdi:calendar-today
+    unit_of_measurement: Days
+    state: >
+      {%- set this = now().replace(hour=0).replace(minute=0).replace(second=0).replace(microsecond=0) %}
+      {%- set next = this.month + 1 if this.month + 1 <= 12 else 1 %}
+      {%- set last = this.replace(year=this.year + 1, month=1, day=1) if now().month == 12 else this.replace(month=next, day=1) %}
+      {{ (last.date() - this.date()).days - 1 }}
+    attributes:
+      friendly_name: Days Remaining in Month
+
+  - name: helper_dayspassedinmonth
+    unique_id: helper_dayspassedinmonth
+    icon: mdi:calendar-today
+    unit_of_measurement: Days
+    state: >
+      {%- set this = now().replace(hour=0).replace(minute=0).replace(second=0).replace(microsecond=0) %}
+      {%- set next = this.month + 1 if this.month + 1 <= 12 else 1 %}
+      {%- set first = this.replace(day=1) %}
+      {{ (this.date() - first.date()).days }}
+    attributes:
+      friendly_name: Days Passed in Month
+
+  - name: helper_daysremaininginyear
+    unique_id: helper_daysremaininginyear
+    icon: mdi:calendar-today
+    unit_of_measurement: Days
+    state: >
+      {%- set this = now().replace(hour=0).replace(minute=0).replace(second=0).replace(microsecond=0) %}
+      {%- set next = this.year + 1 %}
+      {%- set last = this.replace(year=next, month=1, day=1) %}
+      {{ (last.date() - this.date()).days }}
+    attributes:
+      friendly_name: Days Remaining in Year
+
+  - name: helper_dayspassedinyear
+    unique_id: helper_dayspassedinyear
+    icon: mdi:calendar-today
+    unit_of_measurement: Days
+    state: >
+      {%- set this = now().replace(hour=0).replace(minute=0).replace(second=0).replace(microsecond=0) %}
+      {%- set first = this.replace(month=1, day=1) %}
+      {{ (this.date() - first.date()).days }}
+    attributes:
+      friendly_name: Days Passed in Year

@@ -1,19 +1,23 @@
 ---
-type: custom:stack-in-card
-cards:
-  - type: custom:flex-table-card
-    title: Recent Beers (Distinct)
-    # style: !include ../../1_Templates/style_entities.yaml
-    clickable: false
-    # css: !include ../../1_Templates/style_flextable.yaml
-    entities:
-      include: sensor.untappd_beers_date
-    # max_rows: 10
-    columns:
-      - { data: data, modify: x.beer_name, name: "Beer" }
-      - { data: data, modify: x.brewery, name: "Brewery" }
-      - { data: data, modify: x.beer_style, name: "Style" }
-      - { data: data, modify: x.rating, name: "Rating" }
-      - { data: data, modify: x.count, name: "Count" }
-      - { data: data, modify: x.first_checkin, name: "1st" }
-      - { data: data, modify: x.recent_checkin, name: "Latest" }
+type: markdown
+title: Recent Beers (Distinct)
+card_mod: !include ../snippets/style-markdown-table.yaml
+content: |-
+  <table width="100%">
+  <tr>
+  <th>Beer</th>
+  <th>Style</th>
+  <th>Rating</th>
+  <th>Count</th>
+  <th>Checkin</th>
+  </tr>
+  {%- for item in state_attr('sensor.untappd_beers_date', 'data') %}
+  <tr>
+  <td>{{ item.beer_name }}<br/><i>{{ item.brewery }}</i></td>
+  <td>{{ item.beer_style }}</td>
+  <td>{{ item.rating|float }}/5</td>
+  <td>{{ item.count }}</td>
+  <td>1st: {{ item.first_checkin }}<br/>Latest: {{ item.first_checkin }}</td>
+  </tr>
+  {%- endfor %}
+  </table>
