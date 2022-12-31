@@ -104,25 +104,28 @@ def getdata_livetrafficnsw(
             else:
                 org = "Transport Management Centre"
 
-            OUTPUT_DATA.append(
-                {
-                    "id": rec["id"],
-                    "coord": str(coord[1]) + ", " + str(coord[0]),
-                    "dist_km": str(round(distance_to_locn,2)),
-                    "displayname": rec["properties"]["displayName"],
-                    "starttime": starttime,
-                    "endtime": endtime,
-                    "lastupdatetime": lastupdatetime,
-                    "incidenttype": rec["properties"]["incidentKind"],
-                    "additionalinfo": rec["properties"]["additionalInfo"],
-                    "advice": ', '.join(advice_concat),
-                    "road": ' '.join(roaddet),
-                    "suburb": suburb,
-                    "periods": periods,
-                    "otheradvice": remove_html_tags(rec["properties"]["otherAdvice"]),
-                    "reportingorg": org,
-                }
-            )
+            if rec["properties"]["ended"] == True:
+                pass
+            else:
+                OUTPUT_DATA.append(
+                    {
+                        "id": rec["id"],
+                        "coord": str(coord[1]) + ", " + str(coord[0]),
+                        "dist_km": str(round(distance_to_locn,2)),
+                        "displayname": rec["properties"]["displayName"],
+                        "starttime": starttime,
+                        "endtime": endtime,
+                        "lastupdatetime": lastupdatetime,
+                        "incidenttype": rec["properties"]["incidentKind"],
+                        "additionalinfo": rec["properties"]["additionalInfo"],
+                        "advice": ', '.join(advice_concat),
+                        "road": ' '.join(roaddet),
+                        "suburb": suburb,
+                        "periods": periods,
+                        "otheradvice": remove_html_tags(rec["properties"]["otherAdvice"]),
+                        "reportingorg": org,
+                    }
+                )
     countval = len(OUTPUT_DATA)
 
     attributes = {}

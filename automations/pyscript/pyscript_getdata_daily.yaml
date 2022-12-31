@@ -6,7 +6,7 @@ trigger:
   - platform: homeassistant
     event: start
   - platform: time_pattern
-    hours: "/6"
+    hours: "/3"
 condition: []
 action:
   - service: pyscript.getdata_f1driverstandings
