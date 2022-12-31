@@ -1,8 +1,9 @@
 """------------------for DishWasher"""
-import logging
-from typing import Optional
+from __future__ import annotations
 
-from .const import (
+import logging
+
+from ..const import (
     FEAT_AUTODOOR,
     FEAT_CHILDLOCK,
     FEAT_DELAYSTART,
@@ -21,7 +22,9 @@ from .const import (
     FEAT_TUBCLEAN_COUNT,
     STATE_OPTIONITEM_NONE,
 )
-from .device import Device, DeviceStatus
+from ..core_async import ClientAsync
+from ..device import Device, DeviceStatus
+from ..device_info import DeviceInfo
 
 STATE_DISHWASHER_POWER_OFF = "@DW_STATE_POWER_OFF_W"
 STATE_DISHWASHER_END = [
@@ -56,17 +59,17 @@ _LOGGER = logging.getLogger(__name__)
 class DishWasherDevice(Device):
     """A higher-level interface for a dishwasher."""
 
-    def __init__(self, client, device):
-        super().__init__(client, device, DishWasherStatus(self, None))
+    def __init__(self, client: ClientAsync, device_info: DeviceInfo):
+        super().__init__(client, device_info, DishWasherStatus(self))
 
     def reset_status(self):
-        self._status = DishWasherStatus(self, None)
+        self._status = DishWasherStatus(self)
         return self._status
 
-    async def poll(self) -> Optional["DishWasherStatus"]:
+    async def poll(self) -> DishWasherStatus | None:
         """Poll the device's current state."""
 
-        res = await self.device_poll("dishwasher")
+        res = await self._device_poll("dishwasher")
         if not res:
             return None
 
@@ -82,7 +85,7 @@ class DishWasherStatus(DeviceStatus):
     :param data: JSON data from the API.
     """
 
-    def __init__(self, device, data):
+    def __init__(self, device: DishWasherDevice, data: dict | None = None):
         """Initialize device status."""
         super().__init__(device, data)
         self._run_state = None
@@ -173,42 +176,42 @@ class DishWasherStatus(DeviceStatus):
     def initialtime_hour(self):
         """Return hour initial time."""
         if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("initialTimeHour"))
+            return self.int_or_none(self._data.get("initialTimeHour"))
         return self._data.get("Initial_Time_H")
 
     @property
     def initialtime_min(self):
         """Return minute initial time."""
         if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("initialTimeMinute"))
+            return self.int_or_none(self._data.get("initialTimeMinute"))
         return self._data.get("Initial_Time_M")
 
     @property
     def remaintime_hour(self):
         """Return hour remaining time."""
         if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("remainTimeHour"))
+            return self.int_or_none(self._data.get("remainTimeHour"))
         return self._data.get("Remain_Time_H")
 
     @property
     def remaintime_min(self):
         """Return minute remaining time."""
         if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("remainTimeMinute"))
+            return self.int_or_none(self._data.get("remainTimeMinute"))
         return self._data.get("Remain_Time_M")
 
     @property
     def reservetime_hour(self):
         """Return hour reserved time."""
         if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("reserveTimeHour"))
+            return self.int_or_none(self._data.get("reserveTimeHour"))
         return self._data.get("Reserve_Time_H")
 
     @property
     def reservetime_min(self):
         """Return minute reserved time."""
         if self.is_info_v2:
-            return DeviceStatus.int_or_none(self._data.get("reserveTimeMinute"))
+            return self.int_or_none(self._data.get("reserveTimeMinute"))
         return self._data.get("Reserve_Time_M")
 
     @property

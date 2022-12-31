@@ -1,4 +1,5 @@
 """Model Info Classes used to map LG ThinQ device model's capabilities."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -51,7 +52,7 @@ class ModelInfo(ABC):
 
     @property
     @abstractmethod
-    def is_info_v2(self):
+    def is_info_v2(self) -> bool:
         """Return the type of 'model_info' represented."""
 
     def as_dict(self):
@@ -74,7 +75,7 @@ class ModelInfo(ABC):
         """Return the value type for a specific value key."""
 
     @abstractmethod
-    def value_exist(self, name):
+    def value_exist(self, name) -> bool:
         """Check if a value key exist inside model info."""
 
     @abstractmethod
@@ -181,7 +182,7 @@ class ModelInfoV1(ModelInfo):
         self._bit_keys = {}
 
     @property
-    def is_info_v2(self):
+    def is_info_v2(self) -> bool:
         """Return the type of 'model_info' represented."""
         return False
 
@@ -206,7 +207,7 @@ class ModelInfoV1(ModelInfo):
             return self._get_data_type(value)
         return None
 
-    def value_exist(self, name):
+    def value_exist(self, name) -> bool:
         """Check if a value key exist inside model info."""
         return name in self._data["Value"]
 
@@ -469,7 +470,7 @@ class ModelInfoV2(ModelInfo):
         return "MonitoringValue" in model_data
 
     @property
-    def is_info_v2(self):
+    def is_info_v2(self) -> bool:
         """Return the type of 'model_info' represented."""
         return True
 
@@ -494,7 +495,7 @@ class ModelInfoV2(ModelInfo):
             return self._get_data_type(value)
         return None
 
-    def value_exist(self, name):
+    def value_exist(self, name) -> bool:
         """Check if a value key exist inside model info."""
         return name in self._data["MonitoringValue"]
 
@@ -627,7 +628,7 @@ class ModelInfoV2AC(ModelInfoV1):
         self._has_monitoring = "Monitoring" in data
 
     @property
-    def is_info_v2(self):
+    def is_info_v2(self) -> bool:
         """Return the type of 'model_info' represented."""
         return True
 

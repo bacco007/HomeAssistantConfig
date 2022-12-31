@@ -12,7 +12,7 @@ import json
 import logging
 import os
 import ssl
-from typing import Any, Generator, Optional
+from typing import Any, Optional
 from urllib.parse import (
     ParseResult,
     parse_qs,
@@ -31,7 +31,7 @@ import xmltodict
 from . import core_exceptions as exc
 from .const import DEFAULT_COUNTRY, DEFAULT_LANGUAGE, DEFAULT_TIMEOUT
 from .core_util import add_end_slash, as_list, gen_uuid
-from .device_info import DeviceInfo
+from .device_info import KEY_DEVICE_ID, DeviceInfo
 
 # The core version
 CORE_VERSION = "coreAsync"
@@ -541,7 +541,7 @@ class CoreAsync:
         if LOG_AUTH_INFO:
             _LOGGER.debug("auth_user_login - token_data: %s", token_data)
 
-        if token_data["status"] != 1:
+        if token_data.get("status", -1) != 1:
             raise exc.TokenError()
 
         return token_data
@@ -573,11 +573,11 @@ class CoreAsync:
         ) as resp:
             res_data = await resp.json()
 
-        if res_data["status"] != 1 or "account" not in res_data:
+        if res_data.get("status", -1) != 1 or "account" not in res_data:
             _LOGGER.error("get_user_number: invalid response: %s", res_data)
             raise exc.AuthenticationError("Failed to retrieve User Number")
         if LOG_AUTH_INFO:
-            _LOGGER.debug(res_data)
+            _LOGGER.debug("Get user number: %s", res_data)
 
         return res_data["account"]["userNo"]
 
@@ -818,7 +818,7 @@ class Auth:
             id_type = parse_result.get("user_id_type", "")
 
             if not (username and thirdparty_token) or id_type not in THIRD_PART_LOGIN:
-                return {}
+                raise exc.AuthenticationError("Invalid third part login info")
 
             try:
                 if not gateway:
@@ -832,33 +832,23 @@ class Auth:
                         "third_party": THIRD_PART_LOGIN[id_type],
                     },
                 )
-            except Exception:  # pylint: disable=broad-except
-                return {}
-
+            except exc.AuthenticationError:
+                raise
+            except Exception as ex:
+                raise exc.AuthenticationError("Third part login failed") from ex
             url_info = _oauth_info_from_result(token_info)
 
-        return await Auth._oauth_info_from_result(url_info, core)
+        result = await Auth._oauth_info_from_result(url_info, core)
+        if not result:
+            raise exc.AuthenticationError("Url login failed")
 
-    @classmethod
-    async def from_url(cls, gateway: Gateway, url: str) -> Auth | None:
-        """Create an authentication using an OAuth callback URL."""
-        oauth_info = await cls.oauth_info_from_url(url, gateway.core, gateway=gateway)
-        if not oauth_info:
-            return None
+        return result
 
-        return cls(
-            gateway,
-            oauth_info["refresh_token"],
-            oauth_info["access_token"],
-            oauth_info["token_validity"],
-            oauth_info["user_number"],
-        )
-
-    @classmethod
-    async def from_user_login(
-        cls, gateway: Gateway, username: str, password: str
-    ) -> Auth:
-        """Perform authentication, returning a new Auth object."""
+    @staticmethod
+    async def oauth_info_from_user_login(
+        username: str, password: str, gateway: Gateway
+    ) -> dict:
+        """Return authentication info using username and password."""
         hash_pwd = hashlib.sha512()
         hash_pwd.update(password.encode("utf8"))
         try:
@@ -873,19 +863,46 @@ class Auth:
         except Exception as ex:
             raise exc.AuthenticationError("User login failed") from ex
 
-        result_info = _oauth_info_from_result(token_info)
-        if not (result := await cls._oauth_info_from_result(result_info, gateway.core)):
+        login_info = _oauth_info_from_result(token_info)
+        result = await Auth._oauth_info_from_result(login_info, gateway.core)
+        if not result:
             raise exc.AuthenticationError("User login failed")
 
-        refresh_token = result["refresh_token"]
-        access_token = result["access_token"]
-        token_validity = result.get("token_validity")
-        if not (user_number := result.get("user_number")):
-            user_number = await gateway.core.get_user_number(
-                access_token, oauth_url=result.get("oauth_url")
-            )
+        return result
 
-        return cls(gateway, refresh_token, access_token, token_validity, user_number)
+    @classmethod
+    async def from_url(cls, gateway: Gateway, url: str) -> Auth | None:
+        """Create an authentication using an OAuth callback URL."""
+        oauth_info = await cls.oauth_info_from_url(url, gateway.core, gateway=gateway)
+        if not oauth_info:
+            return None
+
+        auth = cls(
+            gateway,
+            oauth_info["refresh_token"],
+            oauth_info["access_token"],
+            oauth_info["token_validity"],
+            oauth_info["user_number"],
+        )
+        return await auth.refresh()
+
+    @classmethod
+    async def from_user_login(
+        cls, gateway: Gateway, username: str, password: str
+    ) -> Auth:
+        """Perform authentication, returning a new Auth object."""
+        oauth_info = await cls.oauth_info_from_user_login(username, password, gateway)
+        if not oauth_info:
+            return None
+
+        auth = cls(
+            gateway,
+            oauth_info["refresh_token"],
+            oauth_info["access_token"],
+            oauth_info["token_validity"],
+            oauth_info["user_number"],
+        )
+        return await auth.refresh()
 
     def start_session(self):
         """
@@ -1133,7 +1150,7 @@ class Session:
 
         return res
 
-    async def set_device_v2_controls(
+    async def device_v2_controls(
         self,
         device_id,
         ctrl_key,
@@ -1232,7 +1249,7 @@ class ClientAsync:
         # enable emulation mode for debug / test
         self._emulation = enable_emulation
 
-    def _inject_thinq2_device(self):
+    def _load_emul_devices(self):
         """This is used only for debug."""
         data_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "deviceV2.txt"
@@ -1240,19 +1257,21 @@ class ClientAsync:
         try:
             with open(data_file, "r") as f:
                 device_v2 = json.load(f)
-        except FileNotFoundError:
-            return
-        for d in device_v2:
-            self._devices.append(d)
-            _LOGGER.debug("Injected debug device: %s", d)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return None
+        return device_v2
 
     async def _load_devices(self, force_update: bool = False):
         """Load dict with available devices."""
         if self._session and (self._devices is None or force_update):
-            self._devices = await self._session.get_devices()
+            new_devices = await self._session.get_devices()
             if self.emulation:
                 # for debug
-                self._inject_thinq2_device()
+                if emul_device := self._load_emul_devices():
+                    new_devices.extend(emul_device)
+            self._devices = {
+                d[KEY_DEVICE_ID]: d for d in new_devices if KEY_DEVICE_ID in d
+            }
 
     @property
     def api_version(self):
@@ -1279,11 +1298,19 @@ class ClientAsync:
         return bool(self._devices)
 
     @property
-    def devices(self) -> Generator[DeviceInfo, None, None] | None:
-        """DeviceInfo objects describing the user's devices."""
+    def devices(self) -> list[DeviceInfo] | None:
+        """Return list of DeviceInfo objects describing the user's devices."""
         if self._devices is None:
             return None
-        return (DeviceInfo(d) for d in self._devices)
+        return [DeviceInfo(d) for d in self._devices.values()]
+
+    def get_device(self, device_id: str) -> DeviceInfo | None:
+        """Return a DeviceInfo object by device ID or None if the device id does not exist."""
+        if not self._devices:
+            return None
+        if device_id in self._devices:
+            return DeviceInfo(self._devices[device_id])
+        return None
 
     @property
     def emulation(self) -> bool:
@@ -1313,18 +1340,6 @@ class ClientAsync:
             await self._load_devices(True)
             self._last_device_update = call_time
 
-    def get_device(self, device_id) -> DeviceInfo | None:
-        """
-        Look up a DeviceInfo object by device ID.
-        Return None if the device does not exist.
-        """
-        if not self._devices:
-            return None
-        for device in self.devices:
-            if device.id == device_id:
-                return device
-        return None
-
     async def refresh(self, refresh_gateway=False) -> None:
         """Refresh client connection."""
         if refresh_gateway:
@@ -1342,7 +1357,7 @@ class ClientAsync:
             await self.refresh()
 
     @classmethod
-    async def from_login(
+    async def from_user_login(
         cls,
         username: str,
         password: str,
@@ -1361,18 +1376,24 @@ class ClientAsync:
         to reload the gateway servers and restart the session.
         """
 
-        gateway = await Gateway.discover(
-            CoreAsync(country, language, oauth_url=oauth_url, session=aiohttp_session)
+        core = CoreAsync(
+            country, language, oauth_url=oauth_url, session=aiohttp_session
         )
-        auth = await Auth.from_user_login(gateway, username, password)
-        client = cls(
-            auth=auth,
-            country=country,
-            language=language,
-            enable_emulation=enable_emulation,
-        )
-        client._session = auth.start_session()
-        await client._load_devices()
+        try:
+            gateway = await Gateway.discover(core)
+            auth = await Auth.from_user_login(gateway, username, password)
+            client = cls(
+                auth=auth,
+                country=country,
+                language=language,
+                enable_emulation=enable_emulation,
+            )
+            client._session = auth.start_session()
+            await client._load_devices()
+        except Exception:  # pylint: disable=broad-except
+            await core.close()
+            raise
+
         return client
 
     @classmethod
@@ -1394,17 +1415,23 @@ class ClientAsync:
         to reload the gateway servers and restart the session.
         """
 
-        gateway = await Gateway.discover(
-            CoreAsync(country, language, oauth_url=oauth_url, session=aiohttp_session)
+        core = CoreAsync(
+            country, language, oauth_url=oauth_url, session=aiohttp_session
         )
-        auth = Auth(gateway, refresh_token)
-        client = cls(
-            auth=auth,
-            country=country,
-            language=language,
-            enable_emulation=enable_emulation,
-        )
-        await client.refresh()
+        try:
+            gateway = await Gateway.discover(core)
+            auth = Auth(gateway, refresh_token)
+            client = cls(
+                auth=auth,
+                country=country,
+                language=language,
+                enable_emulation=enable_emulation,
+            )
+            await client.refresh()
+        except Exception:  # pylint: disable=broad-except
+            await core.close()
+            raise
+
         return client
 
     @staticmethod
@@ -1415,10 +1442,12 @@ class ClientAsync:
         aiohttp_session: aiohttp.ClientSession | None = None,
     ) -> str:
         """Return an url to use to login in a browser."""
-        gateway = await Gateway.discover(
-            CoreAsync(country, language, session=aiohttp_session)
-        )
-        await gateway.close()
+        core = CoreAsync(country, language, session=aiohttp_session)
+        try:
+            gateway = await Gateway.discover(core)
+        finally:
+            await core.close()
+
         return gateway.oauth_login_url()
 
     @staticmethod
@@ -1431,8 +1460,30 @@ class ClientAsync:
     ) -> dict:
         """Return authentication info from an OAuth callback URL."""
         core = CoreAsync(country, language, session=aiohttp_session)
-        result = await Auth.oauth_info_from_url(url, core)
-        await core.close()
+        try:
+            result = await Auth.oauth_info_from_url(url, core)
+        finally:
+            await core.close()
+
+        return result
+
+    @staticmethod
+    async def oauth_info_from_user_login(
+        username: str,
+        password: str,
+        country: str = DEFAULT_COUNTRY,
+        language: str = DEFAULT_LANGUAGE,
+        *,
+        aiohttp_session: aiohttp.ClientSession | None = None,
+    ) -> dict:
+        """Return authentication info from an OAuth callback URL."""
+        core = CoreAsync(country, language, session=aiohttp_session)
+        try:
+            gateway = await Gateway.discover(core)
+            result = await Auth.oauth_info_from_user_login(username, password, gateway)
+        finally:
+            await core.close()
+
         return result
 
     async def _load_json_info(self, info_url: str):
