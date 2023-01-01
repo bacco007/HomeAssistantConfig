@@ -10,9 +10,11 @@ trigger:
       - sensor.lastfm_user_toptracks
       - sensor.lastfm_user_topalbums
       - sensor.lastfm_user_weeklytrackchart
+      - sensor.lastfm_user_monthlytrackchart
 
 sensor:
   - name: Last.fm Top Artists
+    icon: si:lastfm
     state: >
       {{ state_attr('sensor.lastfm_user_topartists', 'artist')[0].name }} ({{ state_attr('sensor.lastfm_user_topartists', 'artist')[0].playcount }} Plays)
     attributes:
@@ -100,6 +102,26 @@ sensor:
         {{ state_attr('sensor.lastfm_user_toptracks', 'track')[8].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[8].name }}
       track_10: >
         {{ state_attr('sensor.lastfm_user_toptracks', 'track')[9].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[9].name }}
+      track_11: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[10].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[10].name }}
+      track_12: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[11].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[11].name }}
+      track_13: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[12].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[12].name }}
+      track_14: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[13].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[13].name }}
+      track_15: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[14].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[14].name }}
+      track_16: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[15].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[15].name }}
+      track_17: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[16].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[16].name }}
+      track_18: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[17].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[17].name }}
+      track_19: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[18].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[18].name }}
+      track_20: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[19].artist.name }} - {{ state_attr('sensor.lastfm_user_toptracks', 'track')[19].name }}
       track_1_playcount: >
         {{ state_attr('sensor.lastfm_user_toptracks', 'track')[0].playcount }}
       track_2_playcount: >
@@ -120,6 +142,26 @@ sensor:
         {{ state_attr('sensor.lastfm_user_toptracks', 'track')[8].playcount }}
       track_10_playcount: >
         {{ state_attr('sensor.lastfm_user_toptracks', 'track')[9].playcount }}
+      track_11_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[10].playcount }}
+      track_12_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[11].playcount }}
+      track_13_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[12].playcount }}
+      track_14_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[13].playcount }}
+      track_15_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[14].playcount }}
+      track_16_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[15].playcount }}
+      track_17_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[16].playcount }}
+      track_18_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[17].playcount }}
+      track_19_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[18].playcount }}
+      track_20_playcount: >
+        {{ state_attr('sensor.lastfm_user_toptracks', 'track')[19].playcount }}
   - name: Last.fm Top Albums
     state: >
       {{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].name }} ({{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].playcount }} Plays)
@@ -206,28 +248,48 @@ sensor:
         {{ state_attr('sensor.lastfm_user_topalbums', 'album')[9].url }}
   - name: Last.fm Weekly Track Chart
     state: >
-      {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }} ({{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].playcount }} Plays)
+      {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].artist.name}} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }} ({{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].playcount }} Plays)
     attributes:
       track_1: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }}
       track_2: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[1].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[1].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[1].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[1].name }}
       track_3: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[2].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[2].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[2].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[2].name }}
       track_4: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[3].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[3].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[3].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[3].name }}
       track_5: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[4].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[4].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[4].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[4].name }}
       track_6: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[5].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[5].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[5].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[5].name }}
       track_7: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[6].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[6].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[6].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[6].name }}
       track_8: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[7].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[7].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[7].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[7].name }}
       track_9: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[8].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[8].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[8].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[8].name }}
       track_10: >
-        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[9].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[9].name }}
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[9].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[9].name }}
+      track_11: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[10].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[10].name }}
+      track_12: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[11].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[11].name }}
+      track_13: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[12].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[12].name }}
+      track_14: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[13].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[13].name }}
+      track_15: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[14].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[14].name }}
+      track_16: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[15].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[15].name }}
+      track_17: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[16].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[16].name }}
+      track_18: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[17].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[17].name }}
+      track_19: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[18].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[18].name }}
+      track_20: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[19].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[19].name }}
       track_1_playcount: >
         {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].playcount }}
       track_2_playcount: >
@@ -248,6 +310,27 @@ sensor:
         {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[8].playcount }}
       track_10_playcount: >
         {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[9].playcount }}
+      track_11_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[10].playcount }}
+      track_12_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[11].playcount }}
+      track_13_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[12].playcount }}
+      track_14_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[13].playcount }}
+      track_15_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[14].playcount }}
+      track_16_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[15].playcount }}
+      track_17_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[16].playcount }}
+      track_18_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[17].playcount }}
+      track_19_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[18].playcount }}
+      track_20_playcount: >
+        {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[19].playcount }}
+
   - name: Last.fm Recent Tracks
     state: >
       {{ state_attr('sensor.lastfm_user_recenttracks', 'track')[0].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_recenttracks', 'track')[0].name }}
@@ -272,3 +355,87 @@ sensor:
         {{ state_attr('sensor.lastfm_user_recenttracks', 'track')[8].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_recenttracks', 'track')[8].name }}
       track_10: >
         {{ state_attr('sensor.lastfm_user_recenttracks', 'track')[9].artist['#text'] }} - {{ state_attr('sensor.lastfm_user_recenttracks', 'track')[9].name }}
+  - name: Last.fm Monthly Track Chart
+    state: >
+      {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].artist.name}} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }} ({{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].playcount }} Plays)
+    attributes:
+      track_1: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }}
+      track_2: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[1].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[1].name }}
+      track_3: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[2].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[2].name }}
+      track_4: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[3].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[3].name }}
+      track_5: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[4].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[4].name }}
+      track_6: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[5].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[5].name }}
+      track_7: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[6].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[6].name }}
+      track_8: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[7].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[7].name }}
+      track_9: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[8].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[8].name }}
+      track_10: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[9].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[9].name }}
+      track_11: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[10].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[10].name }}
+      track_12: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[11].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[11].name }}
+      track_13: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[12].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[12].name }}
+      track_14: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[13].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[13].name }}
+      track_15: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[14].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[14].name }}
+      track_16: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[15].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[15].name }}
+      track_17: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[16].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[16].name }}
+      track_18: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[17].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[17].name }}
+      track_19: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[18].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[18].name }}
+      track_20: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[19].artist.name }} - {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[19].name }}
+      track_1_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].playcount }}
+      track_2_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[1].playcount }}
+      track_3_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[2].playcount }}
+      track_4_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[3].playcount }}
+      track_5_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[4].playcount }}
+      track_6_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[5].playcount }}
+      track_7_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[6].playcount }}
+      track_8_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[7].playcount }}
+      track_9_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[8].playcount }}
+      track_10_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[9].playcount }}
+      track_11_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[10].playcount }}
+      track_12_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[11].playcount }}
+      track_13_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[12].playcount }}
+      track_14_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[13].playcount }}
+      track_15_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[14].playcount }}
+      track_16_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[15].playcount }}
+      track_17_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[16].playcount }}
+      track_18_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[17].playcount }}
+      track_19_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[18].playcount }}
+      track_20_playcount: >
+        {{ state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[19].playcount }}

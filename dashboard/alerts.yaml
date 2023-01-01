@@ -71,10 +71,10 @@ cards:
                 card:
                   type: entities
                   entities:
-                    - entity: sensor.lightning_distance_lasthour
+                    - entity: sensor.lightning_distance_lasthour_2
                       name: Lightning Distance
                       type: custom:multiple-entity-row
-                      icon: mdi:flash-circle
+                      icon: mdi:lightning-bolt-circle
                       show_state: false
                       entities:
                         - attribute: count

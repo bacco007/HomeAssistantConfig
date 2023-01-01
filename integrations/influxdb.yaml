@@ -38,7 +38,6 @@ influxdb:
     entities:
       - sun.sun
       - sensor.ha_uptime_hours
-      - sensor.iss_location
       - sensor.iss
       - sensor.date_time
       - sensor.radarr_movies

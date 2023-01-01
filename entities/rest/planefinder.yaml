@@ -1,0 +1,14 @@
+---
+resource: http://192.168.1.65:30053/ajax/aircraft
+sensor:
+  name: flighttracker_planefinder_aircraft
+  value_template: >
+    {{ value_json.aircraft }}
+  json_attributes_path: $.aircraft
+  json_attributes:
+    - callsign
+    - reg
+    - flightno
+    - route
+    - type
+scan_interval: 10

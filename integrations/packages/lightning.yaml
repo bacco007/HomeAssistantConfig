@@ -1,18 +1,18 @@
 ---
 sensor:
-  - platform: statistics
+  - platform: average
     name: lightning_counter_lasthour
-    entity_id: sensor.blitzortung_lightning_counter
-    sampling_size: 1000
-    state_characteristic: mean
-    max_age:
+    unique_id: lightning_counter_lasthour
+    entities:
+      - sensor.blitzortung_lightning_counter
+    duration:
       hours: 1
-  - platform: statistics
+  - platform: average
     name: lightning_distance_lasthour
-    entity_id: sensor.blitzortung_lightning_distance
-    state_characteristic: mean
-    sampling_size: 1000
-    max_age:
+    unique_id: lightning_distance_lasthour
+    entities:
+      - sensor.blitzortung_lightning_distance
+    duration:
       hours: 1
   - platform: template
     sensors:

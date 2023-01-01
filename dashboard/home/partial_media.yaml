@@ -33,8 +33,10 @@ cards:
               - entity: sensor.lastfm_user_playcount
           - title: Last.fm
           - icon: "mdi:music"
-          - hours_to_show: 48
+          - hours_to_show: 168
+          - points_per_hour: 4
           - aspect_ratio: 2.5/1
+          - line_width: 2
           - tap_action: !include ../popup/graph_lastfmplaycount.yaml
         view_layout:
           grid-column: 1/-1

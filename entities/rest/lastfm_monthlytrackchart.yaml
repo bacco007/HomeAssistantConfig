@@ -1,7 +1,7 @@
 ---
-resource: !secret lastfm_weeklytrackchart_url
+resource: !secret lastfm_monthlytrackchart_url
 sensor:
-  name: lastfm_user_weeklytrackchart
+  name: lastfm_user_monthlytrackchart
   value_template: >
     {{ value_json.toptracks.track[0].artist.name}} - {{ value_json.toptracks.track[0].name }}
   json_attributes_path: $.toptracks

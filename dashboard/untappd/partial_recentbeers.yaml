@@ -13,9 +13,9 @@ content: |-
   </tr>
   {%- for item in state_attr('sensor.untappd_beers_date', 'data') %}
   <tr>
-  <td>{{ item.beer_name }}<br/><i>{{ item.brewery }}</i></td>
-  <td>{{ item.beer_style }}</td>
-  <td>{{ item.rating|float }}/5</td>
+  <td>{{ item.beer_name }}<br/><i>{{ item.brewery }}, {{item.brewery_country}}</i></td>
+  <td>{{ item.beer_style }}</br>{{item.beer_abv}}%</td>
+  <td>Me: {{ item.rating|float }}/5<br/>Everyone: {{item.beer_rating|float|round(2)}}</td>
   <td>{{ item.count }}</td>
   <td>1st: {{ item.first_checkin }}<br/>Latest: {{ item.first_checkin }}</td>
   </tr>

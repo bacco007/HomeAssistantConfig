@@ -334,6 +334,123 @@ cards:
                     limit: 5
                     replace: "WRC - "
           - attributes:
+              label: Competition Calendars
+              icon: mdi:calendar
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(auto-fill, [col-start] minmax(500px, 1fr) [col-end])"
+                grid-template-rows: auto
+                grid-column-gap: 16px
+                margin: -1px
+
+              cards:
+                - type: custom:atomic-calendar-revive
+                  name: AFL
+                  maxDaysToShow: 365
+                  enableModeChange: true
+                  showWeekDay: true
+                  firstDayOfWeek: 1
+                  refreshInterval: 600
+                  showMonth: true
+                  showCurrentEventLine: false
+                  showDate: false
+                  sortByStartTime: true
+                  showDeclined: true
+                  showRelativeTime: true
+                  showMultiDay: false
+                  showMultiDayEventParts: true
+                  hideDuplicates: true
+                  showLastCalendarWeek: false
+                  calShowDescription: true
+                  disableCalLink: false
+                  disableCalLocationLink: false
+                  disableCalEventLink: false
+                  dimFinishedEvents: true
+                  showProgressBar: false
+                  showDescription: false
+                  entities:
+                    - entity: calendar.ical_afl_all_teams
+                - type: custom:atomic-calendar-revive
+                  name: NRL
+                  maxDaysToShow: 365
+                  enableModeChange: true
+                  showWeekDay: true
+                  firstDayOfWeek: 1
+                  refreshInterval: 600
+                  showMonth: true
+                  showCurrentEventLine: false
+                  showDate: false
+                  sortByStartTime: true
+                  showDeclined: true
+                  showRelativeTime: true
+                  showMultiDay: false
+                  showMultiDayEventParts: true
+                  hideDuplicates: true
+                  showLastCalendarWeek: false
+                  calShowDescription: true
+                  disableCalLink: false
+                  disableCalLocationLink: false
+                  disableCalEventLink: false
+                  dimFinishedEvents: true
+                  showProgressBar: false
+                  showDescription: false
+                  entities:
+                    - entity: calendar.ical_nrl_all_teams
+                - type: custom:atomic-calendar-revive
+                  name: International Cricket
+                  maxDaysToShow: 365
+                  enableModeChange: true
+                  showWeekDay: true
+                  firstDayOfWeek: 1
+                  refreshInterval: 600
+                  showMonth: true
+                  showCurrentEventLine: false
+                  showDate: false
+                  sortByStartTime: true
+                  showDeclined: true
+                  showRelativeTime: true
+                  showMultiDay: false
+                  showMultiDayEventParts: true
+                  hideDuplicates: true
+                  showLastCalendarWeek: false
+                  calShowDescription: true
+                  disableCalLink: false
+                  disableCalLocationLink: false
+                  disableCalEventLink: false
+                  dimFinishedEvents: true
+                  showProgressBar: false
+                  showDescription: false
+                  entities:
+                    - entity: calendar.ical_international_cricket_mens
+                - type: custom:atomic-calendar-revive
+                  name: International Rugby
+                  maxDaysToShow: 365
+                  enableModeChange: true
+                  showWeekDay: true
+                  firstDayOfWeek: 1
+                  refreshInterval: 600
+                  showMonth: true
+                  showCurrentEventLine: false
+                  showDate: false
+                  sortByStartTime: true
+                  showDeclined: true
+                  showRelativeTime: true
+                  showMultiDay: false
+                  showMultiDayEventParts: true
+                  hideDuplicates: true
+                  showLastCalendarWeek: false
+                  calShowDescription: true
+                  disableCalLink: false
+                  disableCalLocationLink: false
+                  disableCalEventLink: false
+                  dimFinishedEvents: true
+                  showProgressBar: false
+                  showDescription: false
+                  entities:
+                    - entity: calendar.ical_international_rugby_all_teams
+          - attributes:
               label: TeamTracker
               icon: mdi:soccer-field
             card:

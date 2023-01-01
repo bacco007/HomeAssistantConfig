@@ -7,6 +7,12 @@ sensor:
     attributes:
       friendly_name: >
         {%- set release = state_attr('calendar.home_assistant_devs','message') %}
-        {{ release }}
+        {%- if release == 'Home Assistant Core Beta Release' %}
+          Beta Core Release
+        {%- elif release == 'Home Assistant Core Release' %}
+          Core Release
+        {%- else %}
+          {{ release }}
+        {%- endif %}
       icon: mdi:dev-to
       device_class: timestamp
