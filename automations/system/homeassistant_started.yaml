@@ -5,7 +5,7 @@ trigger:
   - platform: homeassistant
     event: start
 action:
-  - service: notify.slack
+  - service: notify.tbsmarthome
     data_template:
       message: "Home Assistant Started"
       target: "#tbsmarthome"

@@ -49,8 +49,10 @@ sequence:
         notify.mobile_app_tbiphone13pro
       {% elif who == 'tom_all' %}
         notify.thomas_all
-      # {% elif who == 'slack' %}
-      #   notify.slack
+      {% elif who == 'slack' %}
+        notify.tbsmarthome
+      {% else %}
+        notify.tbsmarthome
       {% endif %}
     data:
       title: "{{ title | default }}"
