@@ -220,14 +220,13 @@ cards:
               <th>Date</th>
               <th>Detail</th>
               </tr>
-              {%- for item in state_attr('sensor.plex_recently_added', 'data') %}
+              {%- for item in state_attr('sensor.plex_recently_added_movies', 'data') %}
               {%- if item.flag | default('', true) %}
               {%- if item.airdate | default('', true) %}
               {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
               <tr>
               <td>{{ airdate }}</td>
-              <td>{{item.title}}<br/>
-                <span>{{item.number}}, {{item.episode}}</span></td>
+              <td>{{item.title}}<br/></td>
               </tr>
               {%- endif %}{%endif%}{% endfor %}
               </table>
