@@ -54,7 +54,7 @@ from homeassistant.util.async_ import run_callback_threadsafe
 
 from .api.samsungws import ArtModeStatus, SamsungTVWS
 from .api.smartthings import SmartThingsTV, STStatus
-from .api.upnp import upnp
+from .api.upnp import SamsungUPnP
 from .const import (
     CONF_APP_LAUNCH_METHOD,
     CONF_APP_LIST,
@@ -130,6 +130,7 @@ ST_APP_SEPARATOR = "/"
 ST_UPDATE_TIMEOUT = 5
 
 YT_APP_IDS = ("111299001912", "9Ur5IzDKqV.TizenYouTube")
+YT_VIDEO_QS = "v"
 
 MAX_CONTROLLED_ENTITY = 4
 
@@ -344,7 +345,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._ws.register_new_token_callback(new_token_callback)
 
         # upnp initialization
-        self._upnp = upnp(host=self._host, session=session)
+        self._upnp = SamsungUPnP(host=self._host, session=session)
 
         # smartthings initialization
         self._st = None
@@ -684,7 +685,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             return
 
         app_load_method = AppLoadMethod(
-            self._get_option(CONF_APP_LOAD_METHOD, AppLoadMethod.Default.value)
+            self._get_option(CONF_APP_LOAD_METHOD, AppLoadMethod.All.value)
         )
 
         # app_list is a list of dict
@@ -1537,11 +1538,11 @@ class SamsungTVDevice(MediaPlayerEntity):
             return None
 
         url_query = parse_qs(url_parsed.query)
-        if b"v" not in url_query:
+        if YT_VIDEO_QS not in url_query:
             _LOGGER.debug("Youtube video ID not found")
             return None
 
-        video_id = str(url_query[b"v"][0])
+        video_id = url_query[YT_VIDEO_QS][0]
         _LOGGER.debug("Youtube video ID: %s", video_id)
         return video_id
 

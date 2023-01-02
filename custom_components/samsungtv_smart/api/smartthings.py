@@ -60,12 +60,16 @@ def _command(command: Dict, arguments: Optional[List] = None):
 
 
 class STStatus(Enum):
+    """Represent SmartThings status."""
+
     STATE_OFF = 0
     STATE_ON = 1
     STATE_UNKNOWN = 2
 
 
 class SmartThingsTV:
+    """Class to read status for TV registered in SmartThings cloud."""
+
     def __init__(
         self,
         api_key: str,
@@ -73,7 +77,6 @@ class SmartThingsTV:
         use_channel_info: bool = True,
         session: Optional[ClientSession] = None,
     ):
-
         """Initialize SmartThingsTV."""
         self._api_key = api_key
         self._device_id = device_id
@@ -106,7 +109,7 @@ class SmartThingsTV:
     def __enter__(self):
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ext_type, ext_value, ext_traceback):
         pass
 
     @property
@@ -511,12 +514,6 @@ class SmartThingsTV:
 class InvalidSmartThingsSoundMode(RuntimeError):
     """Selected sound mode is invalid."""
 
-    def __init__(self, *args, **kwargs):  # real signature unknown
-        pass
-
 
 class InvalidSmartThingsPictureMode(RuntimeError):
     """Selected picture mode is invalid."""
-
-    def __init__(self, *args, **kwargs):  # real signature unknown
-        pass

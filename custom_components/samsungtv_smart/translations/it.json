@@ -54,7 +54,7 @@
                     "logo_option": "Visualizza il logo per sorgenti, apps e canali conosciuti",
                     "use_local_logo": "Permetti l'uso delle immagini logo locali",
                     "power_on_method": "Metodo usato per accendere la TV",
-                    "show_adv_opt": "Mostra opzioni avanzate"
+                    "show_adv_opt": "Mostra menu opzioni"
                 }
             },
             "menu": {
@@ -63,7 +63,7 @@
                     "adv_opt": "Opzioni avanzate",
                     "app_list": "Configurazione lista applicazioni",
                     "channel_list": "Configurazione lista canali",
-                    "init": "Torna alle opzioni di base",
+                    "init": "Opzioni standard",
                     "save_exit": "Salva le opzioni ed esci",
                     "source_list": "Configurazione lista sorgenti",
                     "sync_ent": "Configurazione entità collegate"

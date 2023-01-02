@@ -54,7 +54,7 @@
                     "logo_option": "Display a logo for known sources, apps and channels",
                     "use_local_logo": "Allow use of local logo images",
                     "power_on_method": "Method used to turn on TV",
-                    "show_adv_opt": "Show advanced options"
+                    "show_adv_opt": "Show options menu"
                 }
             },
             "menu": {
@@ -63,7 +63,7 @@
                     "adv_opt": "Advanced options",
                     "app_list": "Applications list configuration",
                     "channel_list": "Channels list configuration",
-                    "init": "Back to basic options",
+                    "init": "Standard options",
                     "save_exit": "Save options and exit",
                     "source_list": "Sources list configuration",
                     "sync_ent": "Synched entities configuration"

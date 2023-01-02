@@ -38,7 +38,7 @@ import uuid
 import requests
 import websocket
 
-from . import shortcuts
+from .shortcuts import SamsungTVShortcuts
 
 DEFAULT_POWER_ON_DELAY = 120
 MIN_APP_SCAN_INTERVAL = 10
@@ -116,27 +116,21 @@ class Ping:
 
     def _ping_socket(self, port):
         """Check if port is available and return True if success."""
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(PING_TIMEOUT - 1)
-            return s.connect_ex((self._ip_address, port)) == 0
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(PING_TIMEOUT - 1)
+            return sock.connect_ex((self._ip_address, port)) == 0
 
 
 class ConnectionFailure(Exception):
     """Error during connection."""
 
-    pass
-
 
 class ResponseError(Exception):
     """Error in response."""
 
-    pass
-
 
 class HttpApiError(Exception):
     """Error using HTTP API."""
-
-    pass
 
 
 class App:
@@ -224,7 +218,7 @@ class SamsungTVWS:
             try:
                 if ping.ping(port):
                     return port
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 _LOGGING.debug("Failed to ping device using port %s", port)
 
         return None
@@ -260,7 +254,7 @@ class SamsungTVWS:
             try:
                 with open(self.token_file, "r") as token_file:
                     return token_file.readline()
-            except Exception as exc:
+            except Exception as exc:  # pylint: disable=broad-except
                 _LOGGING.error("Failed to read TV token file: %s", str(exc))
                 return ""
         return self.token
@@ -283,6 +277,7 @@ class SamsungTVWS:
     def _ws_send(
         self, command, key_press_delay=None, *, use_control=False, ws_socket=None
     ):
+        """Send a command using the appropriate websocket."""
         using_remote = False
         if not use_control:
             if self._ws_remote:
@@ -322,6 +317,7 @@ class SamsungTVWS:
         return True
 
     def _rest_request(self, target, method="GET"):
+        """Send a rest command using http protocol."""
         url = _format_rest_url(self.host, target)
         try:
             if method == "POST":
@@ -332,24 +328,28 @@ class SamsungTVWS:
                 return requests.delete(url, timeout=self.timeout)
             else:
                 return requests.get(url, timeout=self.timeout)
-        except requests.ConnectionError:
-            raise HttpApiError("TV unreachable or feature not supported on this model.")
+        except requests.ConnectionError as exc:
+            raise HttpApiError(
+                "TV unreachable or feature not supported on this model."
+            ) from exc
 
     @staticmethod
     def _process_api_response(response, *, raise_error=True):
+        """Process response received by TV via websocket channel."""
         try:
             return json.loads(response)
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as exc:
             _LOGGING.debug(
                 "Failed to parse response from TV. response text: %s", response
             )
             if raise_error:
                 raise ResponseError(
                     "Failed to parse response from TV. Maybe feature not supported on this model"
-                )
+                ) from exc
         return response
 
     def _check_conn_id(self, resp_data):
+        """Check if returned connection id from WS server is valid for this TV."""
         if not resp_data:
             return False
 
@@ -376,6 +376,7 @@ class SamsungTVWS:
         ws_app.run_forever(sslopt=sslopt, ping_interval=ping_interval)
 
     def _client_remote_thread(self):
+        """Start the main client WS thread that connect to the remote TV."""
         if self._ws_remote:
             return
 
@@ -403,15 +404,17 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungRemote terminated")
 
     def _on_ping_remote(self, _, payload):
+        """Manage ping message received by remote WS connection."""
         _LOGGING.debug("Received WS remote ping %s, sending pong", payload)
         self._last_ping = datetime.utcnow()
         if self._ws_remote.sock:
             try:
                 self._ws_remote.sock.pong(payload)
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-except
                 _LOGGING.warning("WS remote send_pong failed, %s", ex)
 
     def _on_message_remote(self, _, message):
+        """Manage messages received by remote WS connection."""
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         event = response.get("event")
@@ -440,6 +443,7 @@ class SamsungTVWS:
             self.get_running_app(force_scan=True)
 
     def _request_apps_list(self):
+        """Request to the TV the list of installed apps."""
         _LOGGING.debug("Request app list")
         self._ws_send(
             {
@@ -450,6 +454,7 @@ class SamsungTVWS:
         )
 
     def _handle_installed_app(self, response):
+        """Manage the list of installed apps received from the TV."""
         list_app = response.get("data", {}).get("data")
         installed_app = {}
         for app_info in list_app:
@@ -460,6 +465,7 @@ class SamsungTVWS:
         self._installed_app = installed_app
 
     def _client_control_thread(self):
+        """Start the client control WS thread used to manage running apps."""
         if self._ws_control:
             return
 
@@ -484,15 +490,17 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungControl terminated")
 
     def _on_ping_control(self, _, payload):
+        """Manage ping message received by control WS channel."""
         _LOGGING.debug("Received WS control ping %s, sending pong", payload)
         self._last_control_ping = datetime.utcnow()
         if self._ws_control.sock:
             try:
                 self._ws_control.sock.pong(payload)
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-except
                 _LOGGING.warning("WS control send_pong failed, %s", ex)
 
     def _on_message_control(self, _, message):
+        """Manage messages received by control WS channel."""
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         result = response.get("result")
@@ -517,6 +525,7 @@ class SamsungTVWS:
             self._handle_installed_app(response)
 
     def _set_running_app(self, response):
+        """Set the current running app based on received message."""
         app_id = response.get("id")
         if not app_id:
             return
@@ -542,6 +551,7 @@ class SamsungTVWS:
             self._running_app = app_id
 
     def _manage_control_err(self, response):
+        """Manage errors from control WS channel."""
         app_id = response.get("id")
         if not app_id:
             return
@@ -560,6 +570,7 @@ class SamsungTVWS:
             #     self._app_type[app_id] = 4
 
     def _get_app_status(self, app_id, app_type):
+        """Send a message to control WS channel to get the app status."""
         _LOGGING.debug("Get app status: AppID: %s, AppType: %s", app_id, app_type)
 
         # if app_type == 4:
@@ -582,6 +593,7 @@ class SamsungTVWS:
         )
 
     def _client_art_thread(self):
+        """Start the client art WS thread used to manage art mode status."""
         if self._ws_art:
             return
 
@@ -606,15 +618,17 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungArt terminated")
 
     def _on_ping_art(self, _, payload):
+        """Manage ping message received by art WS channel."""
         _LOGGING.debug("Received WS art ping %s, sending pong", payload)
         self._last_art_ping = datetime.utcnow()
         if self._ws_art.sock:
             try:
                 self._ws_art.sock.pong(payload)
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-except
                 _LOGGING.warning("WS art send_pong failed: %s", ex)
 
     def _on_message_art(self, _, message):
+        """Manage messages received by art WS channel."""
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         event = response.get("event")
@@ -638,6 +652,7 @@ class SamsungTVWS:
             self._handle_artmode_status(response)
 
     def _get_artmode_status(self):
+        """Detect current art mode based on received message."""
         _LOGGING.debug("Sending get_art_status")
         msg_data = {
             "request": "get_artmode_status",
@@ -658,6 +673,7 @@ class SamsungTVWS:
         )
 
     def _handle_artmode_status(self, response):
+        """Handle received art mode status."""
         data_str = response.get("data")
         if not data_str:
             return
@@ -695,18 +711,22 @@ class SamsungTVWS:
 
     @property
     def is_connected(self):
+        """Return if WS connection is open."""
         return self._is_connected
 
     @property
     def artmode_status(self):
+        """Return current art mode status."""
         return self._artmode_status
 
     @property
     def installed_app(self):
+        """Return a list of installed apps."""
         return self._installed_app
 
     @property
     def running_app(self):
+        """Return current running app."""
         return self._running_app
 
     def ping_device(self, port=0):
@@ -737,6 +757,7 @@ class SamsungTVWS:
         return result
 
     def _check_art_mode(self):
+        """Check current art mode and start related control thread if required."""
         if self._artmode_status == ArtModeStatus.Unsupported:
             return
         if self._ws_art:
@@ -748,16 +769,18 @@ class SamsungTVWS:
             self.start_client(start_all=True)
 
     def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
+        """Set a power on request status and save the time of the rquest."""
         self._power_on_requested = True
         self._power_on_requested_time = datetime.utcnow()
         self._power_on_artmode = set_art_mode
         self._power_on_delay = max(power_on_delay, 0) or DEFAULT_POWER_ON_DELAY
 
     def set_power_off_request(self):
+        """Remove a previous power on request."""
         self._power_on_requested = False
 
     def get_running_app(self, *, force_scan=False):
-
+        """Query current running app using control channel."""
         if not self._ws_control:
             return
 
@@ -794,7 +817,7 @@ class SamsungTVWS:
         if self._client_remote is None or not self._client_remote.is_alive():
             self._client_remote = Thread(target=self._client_remote_thread)
             self._client_remote.name = "SamsungRemote"
-            self._client_remote.setDaemon(True)
+            self._client_remote.daemon = True
             self._client_remote.start()
 
             return
@@ -803,7 +826,7 @@ class SamsungTVWS:
             if self._client_control is None or not self._client_control.is_alive():
                 self._client_control = Thread(target=self._client_control_thread)
                 self._client_control.name = "SamsungControl"
-                self._client_control.setDaemon(True)
+                self._client_control.daemon = True
                 self._client_control.start()
 
             if self._client_art_supported > 0 and (
@@ -814,14 +837,16 @@ class SamsungTVWS:
                     self._client_art_supported = 0
                 self._client_art = Thread(target=self._client_art_thread)
                 self._client_art.name = "SamsungArt"
-                self._client_art.setDaemon(True)
+                self._client_art.daemon = True
                 self._client_art.start()
 
     def stop_client(self):
+        """Stop the ws remote client thread."""
         if self._ws_remote:
             self._ws_remote.close()
 
     def open(self):
+        """Open a WS client connection with the TV."""
         if self.connection is not None:
             return self.connection
 
@@ -834,7 +859,7 @@ class SamsungTVWS:
         completed = False
         response = ""
 
-        for iteration in range(3):
+        for _ in range(3):
             response = self._process_api_response(connection.recv())
             _LOGGING.debug(response)
             event = response.get("event", "-")
@@ -856,12 +881,14 @@ class SamsungTVWS:
         return connection
 
     def close(self):
+        """Close WS connection."""
         if self.connection:
             self.connection.close()
             _LOGGING.debug("Connection closed.")
         self.connection = None
 
     def send_key(self, key, key_press_delay=None, cmd="Click"):
+        """Send a key to the TV using appropriate WS connection."""
         _LOGGING.debug("Sending key %s", key)
         return self._ws_send(
             {
@@ -877,12 +904,14 @@ class SamsungTVWS:
         )
 
     def hold_key(self, key, seconds):
+        """Send a key to the TV and keep it pressed for specific number of seconds"""
         if self.send_key(key, key_press_delay=0, cmd="Press"):
             time.sleep(seconds)
             return self.send_key(key, key_press_delay=0, cmd="Release")
         return False
 
     def send_text(self, text, send_delay=None):
+        """Send a text string to the TV."""
         if not text:
             return False
 
@@ -912,6 +941,7 @@ class SamsungTVWS:
         return False
 
     def move_cursor(self, x, y, duration=0):
+        """Move the cursor in the TV to specific coordinate."""
         self._ws_send(
             {
                 "method": "ms.remote.control",
@@ -925,7 +955,7 @@ class SamsungTVWS:
         )
 
     def run_app(self, app_id, action_type="", meta_tag="", *, use_remote=False):
-
+        """Launch an app using appropriate WS channel."""
         if not action_type:
             app = self._installed_app.get(app_id)
             if app:
@@ -974,33 +1004,40 @@ class SamsungTVWS:
         )
 
     def open_browser(self, url):
+        """Launche the browser app on the TV."""
         _LOGGING.debug("Opening url in browser %s", url)
         return self.run_app("org.tizen.browser", TYPE_NATIVE_LAUNCH, url)
 
     def rest_device_info(self):
+        """Get device info using rest api call."""
         _LOGGING.debug("Get device info via rest api")
         response = self._rest_request("")
         return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_status(self, app_id):
+        """Get app status using rest api call."""
         _LOGGING.debug("Get app %s status via rest api", app_id)
         response = self._rest_request("applications/" + app_id)
         return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_run(self, app_id):
+        """Run an app using rest api call."""
         _LOGGING.debug("Run app %s via rest api", app_id)
         response = self._rest_request("applications/" + app_id, "POST")
         return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_close(self, app_id):
+        """Close an app using rest api call."""
         _LOGGING.debug("Close app %s via rest api", app_id)
         response = self._rest_request("applications/" + app_id, "DELETE")
         return self._process_api_response(response.text, raise_error=False)
 
     def rest_app_install(self, app_id):
+        """Install a new app using rest api call."""
         _LOGGING.debug("Install app %s via rest api", app_id)
         response = self._rest_request("applications/" + app_id, "PUT")
         return self._process_api_response(response.text, raise_error=False)
 
     def shortcuts(self):
-        return shortcuts.SamsungTVShortcuts(self)
+        """Return a list of available shortcuts."""
+        return SamsungTVShortcuts(self)

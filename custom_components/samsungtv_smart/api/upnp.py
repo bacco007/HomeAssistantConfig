@@ -1,4 +1,5 @@
-# Smartthings TV integration#
+"""Smartthings TV integration UPnP implementation."""
+
 import logging
 from typing import Optional
 import xml.etree.ElementTree as ET
@@ -11,8 +12,11 @@ DEFAULT_TIMEOUT = 0.2
 _LOGGER = logging.getLogger(__name__)
 
 
-class upnp:
+class SamsungUPnP:
+    """UPnP implementation for Samsung TV."""
+
     def __init__(self, host, session: Optional[ClientSession] = None):
+        """Initialize the class."""
         self._host = host
         self._connected = False
         if session:
@@ -22,9 +26,10 @@ class upnp:
             self._session = ClientSession()
             self._managed_session = True
 
-    async def _SOAPrequest(
+    async def _soap_request(
         self, action, arguments, protocole, *, timeout=DEFAULT_TIMEOUT
     ):
+        """Send a SOAP request to the TV."""
         headers = {
             "SOAPAction": f'"urn:schemas-upnp-org:service:{protocole}:1#{action}"',
             "content-type": "text/xml",
@@ -48,7 +53,7 @@ class upnp:
                 ) as resp:
                     response = await resp.content.read()
                     self._connected = True
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-except
             _LOGGER.debug(exc)
             self._connected = False
             return None
@@ -57,14 +62,17 @@ class upnp:
 
     @property
     def connected(self):
+        """Return if connected to Samsung TV."""
         return self._connected
 
     async def async_disconnect(self):
+        """Disconnect from TV and close session."""
         if self._managed_session:
             await self._session.close()
 
     async def async_get_volume(self):
-        response = await self._SOAPrequest(
+        """Return volume status."""
+        response = await self._soap_request(
             "GetVolume", "<Channel>Master</Channel>", "RenderingControl"
         )
         if response is None:
@@ -77,14 +85,16 @@ class upnp:
         return volume
 
     async def async_set_volume(self, volume):
-        await self._SOAPrequest(
+        """Set the volume level."""
+        await self._soap_request(
             "SetVolume",
             f"<Channel>Master</Channel><DesiredVolume>{volume}</DesiredVolume>",
             "RenderingControl",
         )
 
     async def async_get_mute(self):
-        response = await self._SOAPrequest(
+        """Return mute status."""
+        response = await self._soap_request(
             "GetMute", "<Channel>Master</Channel>", "RenderingControl"
         )
         if response is None:
@@ -102,7 +112,7 @@ class upnp:
         """Set media to playback and play it."""
 
         if (
-            await self._SOAPrequest(
+            await self._soap_request(
                 "SetAVTransportURI",
                 f"<CurrentURI>{url}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>",
                 "AVTransport",
@@ -112,9 +122,9 @@ class upnp:
         ):
             return False
 
-        await self._SOAPrequest("Play", "<Speed>1</Speed>", "AVTransport")
+        await self._soap_request("Play", "<Speed>1</Speed>", "AVTransport")
         return True
 
     async def async_play(self):
         """Play media that was already set as current."""
-        await self._SOAPrequest("Play", "<Speed>1</Speed>", "AVTransport")
+        await self._soap_request("Play", "<Speed>1</Speed>", "AVTransport")
