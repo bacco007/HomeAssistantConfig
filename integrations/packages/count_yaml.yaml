@@ -3,7 +3,11 @@ sensor:
   - platform: command_line
     name: "Count YAML Files"
     command: " find /config/ -name '*.yaml' | wc -l"
+    unique_id: count_yaml_files
+    unit_of_measurement: Files
   # Count YAML Lines
   - platform: command_line
     name: "Count YAML Lines"
     command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
+    unit_of_measurement: Lines
+    unique_id: count_yaml_lines

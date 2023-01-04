@@ -7,6 +7,7 @@ sensor:
         unique_id: count_all_entities
         friendly_name: "All Entities"
         icon_template: mdi:code-tags
+        unit_of_measurement: Count
         value_template: >
           {{ states | count | int(default=0) }}
 
@@ -14,6 +15,7 @@ sensor:
         unique_id: count_all_domains
         friendly_name: "Domains in Use"
         icon_template: mdi:domain
+        unit_of_measurement: Count
         value_template: >
           {%- for d in states | groupby('domain') %}
           {%- if loop.first %}
@@ -25,6 +27,7 @@ sensor:
       count_alarm_control_panels:
         friendly_name: "Alarm Control Panels"
         icon_template: mdi:alarm-panel
+        unit_of_measurement: Count
         value_template: >
           {{ states.alarm_control_panel | list | length | int(default=0) }}
 
@@ -32,6 +35,7 @@ sensor:
       count_automations:
         friendly_name: "Automations"
         icon_template: mdi:robot
+        unit_of_measurement: Count
         value_template: >
           {{ states.automation | list | length | int(default=0) }}
 
@@ -39,6 +43,7 @@ sensor:
       count_binary_sensors:
         friendly_name: "Binary Sensors"
         icon_template: mdi:checkbox-multiple-marked-circle
+        unit_of_measurement: Count
         value_template: >
           {{ states.binary_sensor | list | length | int(default=0) }}
 
@@ -46,6 +51,7 @@ sensor:
       count_buttons:
         friendly_name: "Buttons"
         icon_template: mdi:gesture-tap-button
+        unit_of_measurement: Count
         value_template: >
           {{ states.button | list | length | int(default=0) }}
 
@@ -53,6 +59,7 @@ sensor:
       count_calendars:
         friendly_name: "Calendars"
         icon_template: mdi:calendar
+        unit_of_measurement: Count
         value_template: >
           {{ states.calendar | list | length | int(default=0) }}
 
@@ -60,6 +67,7 @@ sensor:
       count_cameras:
         friendly_name: "Cameras"
         icon_template: mdi:cctv
+        unit_of_measurement: Count
         value_template: >
           {{ states.camera | list | length | int(default=0) }}
 
@@ -67,6 +75,7 @@ sensor:
       count_climate:
         friendly_name: "Climate"
         icon_template: mdi:home-thermometer
+        unit_of_measurement: Count
         value_template: >
           {{ states.climate | list | length | int(default=0) }}
 
@@ -74,6 +83,7 @@ sensor:
       count_counters:
         friendly_name: "Counters"
         icon_template: mdi:counter
+        unit_of_measurement: Count
         value_template: >
           {{ states.counter | list | length | int(default=0) }}
 
@@ -81,6 +91,7 @@ sensor:
       count_device_trackers:
         friendly_name: "Devices"
         icon_template: mdi:cellphone-link
+        unit_of_measurement: Count
         value_template: >
           {{ states.device_tracker | list | length | int(default=0) }}
 
@@ -88,6 +99,7 @@ sensor:
       count_fans:
         friendly_name: "Fans"
         icon_template: mdi:fan
+        unit_of_measurement: Count
         value_template: >
           {{ states.fan | list | length | int(default=0) }}
 
@@ -95,6 +107,7 @@ sensor:
       count_geolocation:
         friendly_name: "Geo Locations"
         icon_template: mdi:map-plus
+        unit_of_measurement: Count
         value_template: >
           {{ states.geo_location | list | length | int(default=0) }}
 
@@ -102,6 +115,7 @@ sensor:
       count_groups:
         friendly_name: "Groups"
         icon_template: mdi:group
+        unit_of_measurement: Count
         value_template: >
           {{ states.group | list | length | int(default=0) }}
 
@@ -109,6 +123,7 @@ sensor:
       count_input_booleans:
         friendly_name: "Input Booleans"
         icon_template: mdi:toggle-switch
+        unit_of_measurement: Count
         value_template: >
           {{ states.input_boolean | list | length | int(default=0) }}
 
@@ -116,6 +131,7 @@ sensor:
       count_input_datetimes:
         friendly_name: "Input Date Times"
         icon_template: mdi:calendar
+        unit_of_measurement: Count
         value_template: >
           {{ states.input_datetime | list | length | int(default=0) }}
 
@@ -123,6 +139,7 @@ sensor:
       count_input_numbers:
         friendly_name: "Input Numbers"
         icon_template: mdi:numeric
+        unit_of_measurement: Count
         value_template: >
           {{ states.input_number | list | length | int(default=0) }}
 
@@ -130,6 +147,7 @@ sensor:
       count_input_selects:
         friendly_name: "Input Selects"
         icon_template: mdi:format-align-justify
+        unit_of_measurement: Count
         value_template: >
           {{ states.input_select | list | length | int(default=0) }}
 
@@ -144,6 +162,7 @@ sensor:
       count_lights:
         friendly_name: "Lights"
         icon_template: mdi:lightbulb-on
+        unit_of_measurement: Count
         value_template: >
           {{ states.light | list | length | int(default=0) }}
 
@@ -151,6 +170,7 @@ sensor:
       count_mediaplayers:
         friendly_name: "Media Players"
         icon_template: mdi:cast-connected
+        unit_of_measurement: Count
         value_template: >
           {{ states.media_player | list | length | int(default=0) }}
 
@@ -158,12 +178,14 @@ sensor:
       count_numbers:
         friendly_name: "Numbers"
         icon_template: mdi:numeric
+        unit_of_measurement: Count
         value_template: >
           {{ states.number | list | length | int(default=0) }}
 
       # ----- Count Persistent Notifications
       count_persistent_notifications:
         friendly_name: "Persistent Notifications"
+        unit_of_measurement: Count
         icon_template: mdi:bell
         value_template: >
           {{ states.persistent_notification | list | length | int(default=0) }}
@@ -172,6 +194,7 @@ sensor:
       count_persons:
         friendly_name: "Persons"
         icon_template: mdi:account-multiple
+        unit_of_measurement: Count
         value_template: >
           {{ states.person | list | length | int(default=0) }}
 
@@ -179,6 +202,7 @@ sensor:
       count_remotes:
         friendly_name: "Remotes"
         icon_template: mdi:remote
+        unit_of_measurement: Count
         value_template: >
           {{ states.remote | list | length | int(default=0) }}
 
@@ -186,6 +210,7 @@ sensor:
       count_scripts:
         friendly_name: "Scripts"
         icon_template: mdi:script-text-outline
+        unit_of_measurement: Count
         value_template: >
           {{ states.script | list | length | int(default=0) }}
 
@@ -193,6 +218,7 @@ sensor:
       count_selects:
         friendly_name: "Selects"
         icon_template: mdi:select-all
+        unit_of_measurement: Count
         value_template: >
           {{ states.select | list | length | int(default=0) }}
 
@@ -200,6 +226,7 @@ sensor:
       count_sensors:
         friendly_name: "Sensors"
         icon_template: mdi:pulse
+        unit_of_measurement: Count
         value_template: >
           {{ states.sensor | list | length | int(default=0) }}
 
@@ -207,6 +234,7 @@ sensor:
       count_suns:
         friendly_name: "Suns"
         icon_template: mdi:weather-sunny-alert
+        unit_of_measurement: Count
         value_template: >
           {{ states.sun | list | length | int(default=0) }}
 
@@ -214,6 +242,7 @@ sensor:
       count_switches:
         friendly_name: "Switches"
         icon_template: mdi:power-socket-au
+        unit_of_measurement: Count
         value_template: >
           {{ states.switch | list | length | int(default=0) }}
 
@@ -221,6 +250,7 @@ sensor:
       count_weathers:
         friendly_name: "Weathers"
         icon_template: mdi:weather-cloudy-alert
+        unit_of_measurement: Count
         value_template: >
           {{ states.weather | list | length | int(default=0) }}
 
@@ -228,5 +258,6 @@ sensor:
       count_zones:
         friendly_name: "Zones"
         icon_template: mdi:map-marker-radius
+        unit_of_measurement: Count
         value_template: >
           {{ states.zone | list | length | int(default=0) }}

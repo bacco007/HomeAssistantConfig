@@ -13,6 +13,14 @@ esphome:
     priority: 200.0
     then:
       - component.update: eink_display
+      - wait_until:
+          condition:
+            lambda: "return id(data_updated) == true;"
+            # Wait a bit longer so all the items are received
+      - delay: 5s
+      - logger.log: "Initial sensor data received: Refreshing display..."
+      - lambda: "id(initial_data_received) = true;"
+      - script.execute: update_screen
 
 esp32:
   board: esp32dev
@@ -64,7 +72,15 @@ globals:
   - id: recorded_display_refresh
     type: int
     restore_value: yes
-    initial_value: '0'    
+    initial_value: "0"
+
+script:
+  - id: update_screen
+    then:
+      - lambda: "id(data_updated) = false;"
+      - component.update: eink_display
+      - lambda: "id(recorded_display_refresh) += 1;"
+      - lambda: "id(display_last_update).publish_state(id(ntp).now().timestamp);"
 
 time:
   - platform: homeassistant
@@ -75,7 +91,8 @@ time:
           - component.update: sunset
           - logger.log: Time has been set and is valid!
     on_time:
-      - seconds: 30
+      - seconds: 0
+        minutes: /1
         then:
           - if:
               condition:
@@ -89,6 +106,7 @@ time:
                 - lambda: 'id(display_last_update).publish_state(id(ntp).now().timestamp);'                
               else:
                 - logger.log: "No sensors updated - skipping display refresh."
+
 sun:
   latitude: !secret home_latitude
   longitude: !secret home_longitude
@@ -103,8 +121,7 @@ button:
     icon: "mdi:update"
     entity_category: config
     on_press:
-      then:
-        - component.update: eink_display
+      - script.execute: update_screen
 
 switch:
   - platform: gpio
@@ -190,7 +207,6 @@ text_sensor:
     entity_id: sensor.e_ink_display_data
     attribute: media_playing_title
     id: media_title
-
     on_value:
       then:
         - lambda: "id(data_updated) = true;"
@@ -238,17 +254,27 @@ text_sensor:
     on_value:
       then:
         - lambda: "id(data_updated) = true;"
+  # Moon phase
+  - platform: homeassistant
+    entity_id: sensor.moon
+    id: moon_phase
+  - platform: homeassistant
+    entity_id: sensor.moon_rise
+    id: moon_rise
+  - platform: homeassistant
+    entity_id: sensor.moon_set
+    id: moon_set
 
 sensor:
   - platform: template
-    name: "${esp_name} Last Update"
+    name: "${esp_name} Display Last Update"
     device_class: timestamp
     entity_category: "diagnostic"
     id: display_last_update
 
   - platform: template
     name: "${esp_name} Recorded Display Refresh"
-    lambda: 'return id(recorded_display_refresh);'
+    lambda: "return id(recorded_display_refresh);"
     accuracy_decimals: 0
     unit_of_measurement: "Refreshs"
     state_class: "total_increasing"
@@ -346,17 +372,6 @@ sensor:
     entity_id: sensor.e_ink_display_data
     attribute: home_rainfall_year
 
-  # Moon phase
-  - platform: homeassistant
-    entity_id: sensor.moon
-    id: moon_phase
-  - platform: homeassistant
-    entity_id: sensor.moon_rise
-    id: moon_rise
-  - platform: homeassistant
-    entity_id: sensor.moon_set
-    id: moon_set    
-
 font:
   - file:
       type: gfonts
@@ -437,7 +452,7 @@ font:
       - "\U000F059E" # windy-variant
       - "\U000F0F38" # exCentereptional
       - "\U000F1A09" # mdi-triangle-small-down
-      - "\U000F1A0A" # mdi-triangle-small-up      
+      - "\U000F1A0A" # mdi-triangle-small-up
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons
     size: 40
@@ -521,7 +536,7 @@ display:
         auto playing = id(media_status).state == "playing";
         auto paused = id(media_status).state == "paused";
         auto mediaIcon = playbackStatusToIcon(playing, paused);
-        it.printf(x1, y1+70, id(font_icons), TextAlign::BASELINE_LEFT, mediaIcon.c_str()); 
+        it.printf(x1, y1+70, id(font_icons), TextAlign::BASELINE_LEFT, mediaIcon.c_str());
         if (playing || paused) {
           it.printf(x1+45, y1+55, id(din_med), TextAlign::BASELINE_LEFT, "%s", id(media_artist).state.c_str());
           it.printf(x1+45, y1+75, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(media_title).state.c_str());
@@ -535,45 +550,45 @@ display:
 
         it.print(x1, y2, id(din_med), COLOR_RED, TextAlign::BASELINE_LEFT, "Current Temp");
         it.printf(x1-5, y2+65, id(font_icons_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "\U000F050F");
-        it.printf(x1+45, y2+55, id(text_current_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "%.1f°C", id(temperature).state); 
+        it.printf(x1+45, y2+55, id(text_current_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "%.1f°C", id(temperature).state);
         it.print(x2, y2, id(din_med), TextAlign::BASELINE_LEFT, "Temp Today");
-        it.printf(x2, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E03"); 
-        it.printf(x2+45, y2+32, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(max_temp).state);  
-        it.printf(x2, y2+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E02"); 
-        it.printf(x2+45, y2+72, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(min_temp).state);         
-        it.print(x3, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");  
-        it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Rainfall"); 
+        it.printf(x2, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E03");
+        it.printf(x2+45, y2+32, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(max_temp).state);
+        it.printf(x2, y2+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E02");
+        it.printf(x2+45, y2+72, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(min_temp).state);
+        it.print(x3, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
+        it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Rainfall");
         it.printf(x4, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0597");
-        it.printf(x4+45, y2+30, id(text_20), TextAlign::BASELINE_LEFT, "T: %.2fmm", id(rainfall).state);  
-        it.printf(x4+45, y2+50, id(text_20), TextAlign::BASELINE_LEFT, "W: %.2fmm", id(rainfall_week).state);  
-        it.printf(x4+45, y2+70, id(text_20), TextAlign::BASELINE_LEFT, "M: %.2fmm", id(rainfall_month).state);  
-        it.printf(x4+45, y2+90, id(text_20), TextAlign::BASELINE_LEFT, "Y: %.2fmm", id(rainfall_year).state);       
+        it.printf(x4+45, y2+30, id(text_20), TextAlign::BASELINE_LEFT, "T: %.2fmm", id(rainfall).state);
+        it.printf(x4+45, y2+50, id(text_20), TextAlign::BASELINE_LEFT, "W: %.2fmm", id(rainfall_week).state);
+        it.printf(x4+45, y2+70, id(text_20), TextAlign::BASELINE_LEFT, "M: %.2fmm", id(rainfall_month).state);
+        it.printf(x4+45, y2+90, id(text_20), TextAlign::BASELINE_LEFT, "Y: %.2fmm", id(rainfall_year).state);
 
         it.print(x1, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
         it.print(x2, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-        it.print(x3, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading"); 
+        it.print(x3, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
 
-        it.print(x4, y3, id(din_med), TextAlign::BASELINE_LEFT, "Forecast");  
-        it.printf(x4+5, y3+25, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast1).state.c_str());  
-        it.printf(x4+5, y3+50, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast2).state.c_str());  
-        it.printf(x4+5, y3+75, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast3).state.c_str());   
-        it.printf(x4+5, y3+100, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast4).state.c_str());   
-        it.printf(x4+5, y3+125, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast5).state.c_str());  
+        it.print(x4, y3, id(din_med), TextAlign::BASELINE_LEFT, "Forecast");
+        it.printf(x4+5, y3+25, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast1).state.c_str());
+        it.printf(x4+5, y3+50, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast2).state.c_str());
+        it.printf(x4+5, y3+75, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast3).state.c_str());
+        it.printf(x4+5, y3+100, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast4).state.c_str());
+        it.printf(x4+5, y3+125, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast5).state.c_str());
         it.printf(x4+5, y3+150, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast6).state.c_str());
 
         it.print(x1, y4, id(din_med), TextAlign::BASELINE_LEFT, "Sun");
-        it.printf(x1, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059C"); 
-        it.printf(x1+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunrise).state.c_str());  
-        it.printf(x1, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059B"); 
-        it.printf(x1+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunset).state.c_str());        
+        it.printf(x1, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059C");
+        it.printf(x1+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunrise).state.c_str());
+        it.printf(x1, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059B");
+        it.printf(x1+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunset).state.c_str());
         it.print(x2, y4, id(din_med), TextAlign::BASELINE_LEFT, "Moon");
-        it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A0A"); 
-        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_rise).state);  
-        it.printf(x2, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A09"); 
-        it.printf(x2+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_set).state);  
-        it.print(x3, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");     
-        it.printf(x3, y4 + 40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510"); 
-        it.printf(x3+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(max_temp).state);  
+        it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A0A");
+        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_rise).state);
+        it.printf(x2, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A09");
+        it.printf(x2+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_set).state);
+        it.print(x3, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
+        it.printf(x3, y4 + 40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510");
+        it.printf(x3+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(max_temp).state);
 
         // Footer
         it.filled_rectangle(0, yres-30, xres, yres);
