@@ -16,11 +16,15 @@ class ConstructorsSensor(FormulaOneSensor):
 
         now = dt.now()
         constructors = f1.constructor_standings(season=now.year).json
+        if constructors['MRData']['total'] == "0":
+            data = []
+        else:
+            data = constructors['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings']
 
         # # Merge all attributes to a single dict.
         all_attr = {
             'last_update': now,
-            'data': constructors['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings']
+            'data': data
         }
 
         return all_attr

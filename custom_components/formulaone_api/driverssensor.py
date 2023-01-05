@@ -16,11 +16,16 @@ class DriversSensor(FormulaOneSensor):
 
         now = dt.now()        
         drivers = f1.driver_standings(season=now.year).json
+        if drivers['MRData']['total'] == "0":
+            data = []
+        else:
+            data = drivers['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings']
+
 
         # # Merge all attributes to a single dict.
         all_attr = {
             'last_update': now,
-            'data': drivers['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings']
+            'data': data
         }
 
         return all_attr
