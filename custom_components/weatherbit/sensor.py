@@ -56,10 +56,10 @@ from .const import (
     ATTR_FORECAST_CLOUDINESS,
     ATTR_FORECAST_SNOW,
     ATTR_FORECAST_WEATHER_TEXT,
-    DEVICE_CLASS_LOCAL_BEAUFORT,
-    DEVICE_CLASS_LOCAL_UV_DESCRIPTION,
-    DEVICE_CLASS_LOCAL_WIND_CARDINAL,
     DOMAIN,
+    TRANSLATION_BEAUFORT,
+    TRANSLATION_CARDINAL,
+    TRANSLATION_UV_DESCRIPTION,
 )
 from .entity import WeatherbitEntity
 from .models import WeatherBitEntryData
@@ -76,6 +76,9 @@ class WeatherBitRequiredKeysMixin:
     extra_attributes: bool | None = None
     day_index: int | None = None
     is_forecast_item: bool | None = False
+
+
+#    translation_key: str | None = None
 
 
 @dataclass
@@ -161,7 +164,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Wind Speed (km/h)",
         icon="mdi:weather-windy-variant",
         device_class=SensorDeviceClass.SPEED,
-        native_unit_of_measurement="km/h",
+        native_unit_of_measurement=UnitOfSpeed.KILOMETERS_PER_HOUR,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
@@ -171,7 +174,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         name="Wind Speed (knots)",
         icon="mdi:tailwind",
         device_class=SensorDeviceClass.SPEED,
-        native_unit_of_measurement="knots",
+        native_unit_of_measurement=UnitOfSpeed.KNOTS,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
@@ -189,7 +192,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="wind_cdir",
         name="Wind Cardinal",
         icon="mdi:compass",
-        device_class=DEVICE_CLASS_LOCAL_WIND_CARDINAL,
+        translation_key=TRANSLATION_CARDINAL,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -249,7 +252,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="uv_description",
         name="UV Description",
         icon="mdi:weather-sunny-alert",
-        device_class=DEVICE_CLASS_LOCAL_UV_DESCRIPTION,
+        translation_key=TRANSLATION_UV_DESCRIPTION,
         unit_type="none",
         extra_attributes=False,
     ),
@@ -257,7 +260,6 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="aqi",
         name="Air Quality Index",
         device_class=SensorDeviceClass.AQI,
-        native_unit_of_measurement="AQI",
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         extra_attributes=False,
@@ -283,7 +285,7 @@ SENSOR_TYPES: tuple[WeatherBitSensorEntityDescription, ...] = (
         key="beaufort_text",
         name="Beaufort Description",
         icon="mdi:windsock",
-        device_class=DEVICE_CLASS_LOCAL_BEAUFORT,
+        translation_key=TRANSLATION_BEAUFORT,
         unit_type="none",
         extra_attributes=False,
     ),

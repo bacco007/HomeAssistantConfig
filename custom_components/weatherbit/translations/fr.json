@@ -26,5 +26,56 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "beaufort": {
+                "state": {
+                    "calm": "Calme",
+                    "light_air": "Très légère brise",
+                    "light_breeze": "Légère brise",
+                    "gentle_breeze": "Petite brise",
+                    "moderate_breeze": "Jolie brise",
+                    "fresh_breeze": "Bonne brise",
+                    "strong_breeze": "Vent frais",
+                    "moderate_gale": "Grand frais",
+                    "fresh_gale": "Coup de vent",
+                    "strong_gale": "Fort coup de vent",
+                    "storm": "Tempête",
+                    "violent_storm": "Violente tempête",
+                    "hurricane": "Ouragan"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNE",
+                    "ne": "NE",
+                    "ene": "ENE",
+                    "e": "E",
+                    "ese": "ESE",
+                    "se": "SE",
+                    "sse": "SSE",
+                    "s": "S",
+                    "ssw": "SSO",
+                    "sw": "SO",
+                    "wsw": "OSO",
+                    "w": "O",
+                    "wnw": "ONO",
+                    "nw": "NO",
+                    "nnw": "NNO"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Extrême",
+                    "very-high": "Très haut",
+                    "high": "Haut",
+                    "moderate": "Modéré",
+                    "low": "Bas",
+                    "none": "Sans lumière"
+                }
+            }
+        }
     }
 }

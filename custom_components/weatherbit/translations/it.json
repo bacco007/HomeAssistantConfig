@@ -1,17 +1,18 @@
 {
     "config": {
         "error": {
-            "name_exists": "Asukoht on juba määratud. Vali uus asukoht",
-            "connection_error": "Ei saanud Weatherbit-iga ühendust. Kontrolli API võtit."
+            "name_exists": "Location already setup. Choose other coordinates.",
+            "connection_error": "Something went wrong when trying to connect to WeatherBit.",
+            "invalid_api_key": "The WeatherBit API Key is invalid."
         },
         "step": {
             "user": {
                 "data": {
-                    "latitude": "Laius",
-                    "longitude": "Pikkus",
-                    "api_key": "Weatherbit API võti"
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                    "api_key": "Weatherbit API Key"
                 },
-                "title": "Weatherbit andmete asukoht"
+                "title": "Setup a WeatherBit location"
             }
         }
     },
@@ -30,19 +31,19 @@
         "sensor": {
             "beaufort": {
                 "state": {
-                    "calm": "Calm",
-                    "light_air": "Light Air",
-                    "light_breeze": "Light Breeze",
-                    "gentle_breeze": "Gentle Breeze",
-                    "moderate_breeze": "Moderate Breeze",
-                    "fresh_breeze": "Fresh Breeze",
-                    "strong_breeze": "Strong Breeze",
-                    "moderate_gale": "Moderate Gale",
-                    "fresh_gale": "Fresh Gale",
-                    "strong_gale": "Strong Gale",
-                    "storm": "Storm",
-                    "violent_storm": "Violent Storm",
-                    "hurricane": "Hurricane"
+                    "calm": "Calma",
+                    "light_air": "Bava di vento",
+                    "light_breeze": "Brezza leggera",
+                    "gentle_breeze": "Brezza tesa",
+                    "moderate_breeze": "Vento moderato",
+                    "fresh_breeze": "Vento teso",
+                    "strong_breeze": "Vento fresco",
+                    "moderate_gale": "Vento forte",
+                    "fresh_gale": "Burrasca",
+                    "strong_gale": "Burrasca forte",
+                    "storm": "Tempesta",
+                    "violent_storm": "Tempesta violenta",
+                    "hurricane": "Uragano"
                 }
             },
             "wind_cardinal": {
@@ -67,12 +68,12 @@
             },
             "uv_description": {
                 "state": {
-                    "extreme": "Extreme",
-                    "very-high": "Very High",
-                    "high": "High",
-                    "moderate": "Moderate",
-                    "low": "Low",
-                    "none": "No Light"
+                    "extreme": "Estremo",
+                    "very-high": "Molto Elevato",
+                    "high": "Elevato",
+                    "moderate": "Moderato",
+                    "low": "Basso",
+                    "none": "Nessuno"
                 }
             }
         }

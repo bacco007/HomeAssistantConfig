@@ -26,5 +26,56 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "beaufort": {
+                "state": {
+                    "calm": "Stil",
+                    "light_air": "Flauw en stil",
+                    "light_breeze": "Zwak",
+                    "gentle_breeze": "Matig, lichte bries",
+                    "moderate_breeze": "Matig, flauwe bries",
+                    "fresh_breeze": "Vrij krachtig",
+                    "strong_breeze": "Krachtig",
+                    "moderate_gale": "Harde wind",
+                    "fresh_gale": "Stormachtig",
+                    "strong_gale": "Storm",
+                    "storm": "Zware storm",
+                    "violent_storm": "Zeer zware storm",
+                    "hurricane": "Orkaan"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNO",
+                    "ne": "NO",
+                    "ene": "ONO",
+                    "e": "O",
+                    "ese": "OZO",
+                    "se": "ZO",
+                    "sse": "ZZO",
+                    "s": "Z",
+                    "ssw": "ZZW",
+                    "sw": "ZW",
+                    "wsw": "WZW",
+                    "w": "W",
+                    "wnw": "WNW",
+                    "nw": "NW",
+                    "nnw": "NNW"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Extreem",
+                    "very-high": "Zeer sterk",
+                    "high": "Sterk",
+                    "moderate": "Matig",
+                    "low": "Zwak",
+                    "none": "Geen"
+                }
+            }
+        }
     }
 }

@@ -26,5 +26,56 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "beaufort": {
+                "state": {
+                    "calm": "Stille",
+                    "light_air": "Næsten Stille",
+                    "light_breeze": "Svag Vind",
+                    "gentle_breeze": "Let Vind",
+                    "moderate_breeze": "Jævn Vind",
+                    "fresh_breeze": "Frisk Vind",
+                    "strong_breeze": "Hård Vind",
+                    "moderate_gale": "Stiv Kuling",
+                    "fresh_gale": "Hård Kuling",
+                    "strong_gale": "Stormende Kuling",
+                    "storm": "Storm",
+                    "violent_storm": "Stærk Storm",
+                    "hurricane": "Orkan"
+                }
+            },
+            "wind_cardinal": {
+                "state": {
+                    "n": "N",
+                    "nne": "NNØ",
+                    "ne": "NØ",
+                    "ene": "ØNØ",
+                    "e": "Ø",
+                    "ese": "ØSØ",
+                    "se": "SØ",
+                    "sse": "SSØ",
+                    "s": "S",
+                    "ssw": "SSV",
+                    "sw": "SV",
+                    "wsw": "VSV",
+                    "w": "V",
+                    "wnw": "VNV",
+                    "nw": "NV",
+                    "nnw": "NNV"
+                }
+            },
+            "uv_description": {
+                "state": {
+                    "extreme": "Ekstrem høj",
+                    "very-high": "Meget høj",
+                    "high": "Høj",
+                    "moderate": "Moderat",
+                    "low": "Lav",
+                    "none": "Ingen lys"
+                }
+            }
+        }
     }
 }
