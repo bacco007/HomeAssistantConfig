@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from enum import Enum, auto
 import logging
 
@@ -22,6 +21,8 @@ from .eufy_security_api.metadata import Metadata
 from .eufy_security_api.util import get_child_value
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
+
+KEYPAD_OFF_CODE = 6
 
 
 class CurrentModeToState(Enum):
@@ -59,7 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     """Setup alarm control panel entities."""
     coordinator: EufySecurityDataUpdateCoordinator = hass.data[DOMAIN][COORDINATOR]
     product_properties = []
-    for product in coordinator.api.stations.values():
+    for product in coordinator.stations.values():
         if product.has(MessageField.GUARD_MODE.value) is True:
             product_properties.append(product.metadata[MessageField.CURRENT_MODE.value])
 
@@ -77,6 +78,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     platform.async_register_entity_service("geofence", {}, "geofence")
     platform.async_register_entity_service("schedule", {}, "schedule")
     platform.async_register_entity_service("chime", Schema.CHIME_SERVICE_SCHEMA.value, "chime")
+    platform.async_register_entity_service("reboot", {}, "async_reboot")
 
 
 class EufySecurityAlarmControlPanel(AlarmControlPanelEntity, EufySecurityEntity):
@@ -146,6 +148,10 @@ class EufySecurityAlarmControlPanel(AlarmControlPanelEntity, EufySecurityEntity)
         """chime on alarm control panel"""
         await self.product.chime(ringtone)
 
+    async def reboot(self) -> None:
+        """reboot"""
+        await self.product.reboot()
+
     @property
     def state(self):
         alarm_delayed = get_child_value(self.product.properties, "alarmDelay", 0)
@@ -155,6 +161,8 @@ class EufySecurityAlarmControlPanel(AlarmControlPanelEntity, EufySecurityEntity)
         if triggered is True:
             return CurrentModeToStateValue.TRIGGERED.value
         current_mode = get_child_value(self.product.properties, self.metadata.name, -1)
+        if current_mode == KEYPAD_OFF_CODE:
+            return CurrentModeToStateValue[CurrentModeToState.DISARMED].value
         if current_mode in CUSTOM_CODES:
             position = CUSTOM_CODES.index(current_mode)
             if position == 0:
