@@ -102,8 +102,8 @@ time:
                 - logger.log: "Sensor data updated: Refreshing display..."
                 - component.update: eink_display
                 - lambda: "id(data_updated) = false;"
-                - lambda: 'id(recorded_display_refresh) += 1;'
-                - lambda: 'id(display_last_update).publish_state(id(ntp).now().timestamp);'                
+                - lambda: "id(recorded_display_refresh) += 1;"
+                - lambda: "id(display_last_update).publish_state(id(ntp).now().timestamp);"
               else:
                 - logger.log: "No sensors updated - skipping display refresh."
 
@@ -276,7 +276,7 @@ sensor:
     name: "${esp_name} Recorded Display Refresh"
     lambda: "return id(recorded_display_refresh);"
     accuracy_decimals: 0
-    unit_of_measurement: "Refreshs"
+    unit_of_measurement: "Refreshes"
     state_class: "total_increasing"
     entity_category: "diagnostic"
 
@@ -284,6 +284,7 @@ sensor:
     id: sensor_wifi_signal
     name: "${esp_name} WiFi"
     entity_category: "diagnostic"
+    unit_of_measurement: "dBm"
     update_interval: 60s
     on_value:
       - component.update: sensor_wifi_signal_percentage
@@ -451,8 +452,6 @@ font:
       - "\U000F059D" # windy
       - "\U000F059E" # windy-variant
       - "\U000F0F38" # exCentereptional
-      - "\U000F1A09" # mdi-triangle-small-down
-      - "\U000F1A0A" # mdi-triangle-small-up
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons
     size: 40
@@ -470,6 +469,8 @@ font:
       - "\U000F040A" # play
       - "\U000F03E4" # pause
       - "\U000F0597" # rainy
+      - "\U000F1A09" # mdi-triangle-small-down
+      - "\U000F1A0A" # mdi-triangle-small-up
   - file: "fonts/materialdesignicons-webfont.ttf"
     id: font_icons_temp
     size: 50
