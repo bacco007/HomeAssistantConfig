@@ -65,10 +65,12 @@ DEFAULT_NAME = "team_tracker"
 DEFAULT_PROB = 0.0
 DEFAULT_SPORT_PATH = "sport_not_found"
 DEFAULT_TIMEOUT = 120
+DEFAULT_LAST_UPDATE = "2022-02-02 02:02:02-05:00"
+DEFAULT_KICKOFF_IN = "{test} days"
 
 # Misc
 TEAM_ID = ""
-VERSION = "v0.6.0"
+VERSION = "v0.6.1"
 ISSUE_URL = "https://github.com/vasqued2/ha-teamtracker"
 DOMAIN = "teamtracker"
 PLATFORM = "sensor"

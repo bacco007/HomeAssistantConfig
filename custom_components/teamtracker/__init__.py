@@ -1,11 +1,12 @@
 """ TeamTracker Team Status """
 import asyncio
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import arrow
 import json
 import codecs
 import locale
+import os
 
 import aiohttp
 import aiofiles
@@ -42,6 +43,8 @@ from .const import (
     COORDINATOR,
     DEFAULT_CONFERENCE_ID,
     DEFAULT_TIMEOUT,
+    DEFAULT_KICKOFF_IN,
+    DEFAULT_LAST_UPDATE,
     DEFAULT_LEAGUE,
     DEFAULT_LOGO,
     DEFAULT_LEAGUE_PATH,
@@ -162,6 +165,10 @@ async def async_migrate_entry(hass, config_entry):
 class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching TeamTracker data."""
 
+    data_cache = {}
+    last_update = {}
+    c_cache = {}
+
     def __init__(self, hass, config, the_timeout: int):
         """Initialize."""
         self.interval = timedelta(minutes=10)
@@ -174,12 +181,16 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
 
         super().__init__(hass, _LOGGER, name=self.name, update_interval=self.interval)
 
-
+#
+#  Top-level method called from HA to update data for all teamtracker sensors
+#
     async def _async_update_data(self):
-        """Fetch data"""
+        file_override = False
+
         async with timeout(self.timeout):
             try:
-                data = await update_game(self.config, self.hass)
+                data = await self.async_update_game_data(self.config, self.hass)
+
                 # update the interval based on flag
                 if data["private_fast_refresh"] == True:
                     self.update_interval = timedelta(seconds=5)
@@ -188,234 +199,169 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
             except Exception as error:
                 raise UpdateFailed(error) from error
             return data
-        
-
-async def update_game(config, hass) -> dict:
-    """Fetch new state data for the sensor.
-    This is the only method that should fetch new data for Home Assistant.
-    """
-
-    data = await async_get_state(config, hass)
-    return data
-
-
-async def async_get_state(config, hass) -> dict:
-    """Query API for status."""
-
-    values = {}
-    prev_values = {}
-    headers = {"User-Agent": USER_AGENT, "Accept": "application/ld+json"}
-    sensor_name = config[CONF_NAME]
-
-    data = None
-    file_override = False
-    first_date = (date.today() - timedelta(days = 1)).strftime("%Y-%m-%dT%H:%MZ")
-    last_date =  (date.today() + timedelta(days = 5)).strftime("%Y-%m-%dT%H:%MZ")
 
 #
+#  Update game data from data_cache or the API (if expired)
+#
+    async def async_update_game_data(self, config, hass) -> dict:
+
+        sensor_name = config[CONF_NAME]
+        sport_path = config[CONF_SPORT_PATH]
+        league_path = config[CONF_LEAGUE_PATH]
+        conference_id = config[CONF_CONFERENCE_ID]
+
+        lang, enc = locale.getlocale()
+        lang = lang or "en_US"
+        enc = enc or "UTF-8"
+
+        try:
+            for t in hass.data["frontend_storage"]:
+                for k, v in t.items():
+                    if "dict" in str(type(v)):
+                        lang = value["language"]["language"]
+        except:
+            lang = lang 
+
+        key = sport_path + ":" + league_path + ":" + conference_id
+
+#
+#  Use cache if not expired
+#
+        if key in self.data_cache:
+            expiration = datetime.fromisoformat(self.last_update[key]) + self.update_interval
+            now = datetime.now(timezone.utc)
+                
+            time_diff = now - expiration
+
+            if now < expiration:
+                data = self.data_cache[key]
+                values = await self.async_update_values(config, hass, data, lang)
+                if values["api_message"]:
+                    values["api_message"] = "Cached data: " + values["api_message"]
+                else:
+                    values["api_message"] = "Cached data"
+                return values
+
+#
+#  Call the API
 #  Get the language based on the locale
 #    Then override it if there is a value in frontend_storage for the selected language
 #      (it usually takes about a minute after reboot for frontend_storage to be populated)
 #
 
-    lang, enc = locale.getlocale()
-    lang = lang or "en_US"
-    enc = enc or "UTF-8"
+        data, file_override = await self.async_call_api(config, hass, lang)
+        values = await self.async_update_values(config, hass, data, lang)
+        self.data_cache[key] = data
+        self.last_update[key] = values["last_update"]
 
-    for t in hass.data["frontend_storage"]:
-        for key, value in t.items():
-            if "dict" in str(type(value)):
-                try:
-                    lang = value["language"]["language"]
-                except:
-                    lang = lang 
+        if (file_override):
+            path = "/share/tt/results/" + sensor_name + ".json"
+            if not os.path.exists(path):
+                _LOGGER.debug("%s: Creating results file '%s'", sensor_name, path)
+                values["last_update"] = DEFAULT_LAST_UPDATE # set to fixed time for compares
+                values["kickoff_in"] = DEFAULT_KICKOFF_IN
+                with open(path, 'w') as convert_file:
+                    convert_file.write(json.dumps(values, indent=4))
 
-    league_id = config[CONF_LEAGUE_ID].upper()
-    sport_path = config[CONF_SPORT_PATH]
-    league_path = config[CONF_LEAGUE_PATH]
-    url_parms = "?lang=" + lang[:2]
+        return values
 
-    d1 = (date.today() - timedelta(days = 1)).strftime("%Y%m%d")
-    d2 = (date.today() + timedelta(days = 5)).strftime("%Y%m%d")
-    url_parms = url_parms + "&dates=" + d1 + "-" + d2
+#
+#  Call the API (or file override) and get the data returned by it
+#
+    async def async_call_api(self, config, hass, lang) -> dict:
+        """Query API for status."""
 
-    if CONF_CONFERENCE_ID in config.keys():
-            if (len(config[CONF_CONFERENCE_ID]) > 0):
-                url_parms = url_parms + "&groups=" + config[CONF_CONFERENCE_ID]
-                if (config[CONF_CONFERENCE_ID] == '9999'):
-                    file_override = True
-    team_id = config[CONF_TEAM_ID].upper()
-    url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
+        headers = {"User-Agent": USER_AGENT, "Accept": "application/ld+json"}
+        sensor_name = config[CONF_NAME]
+
+        data = None
+        file_override = False
+
+        league_id = config[CONF_LEAGUE_ID].upper()
+        sport_path = config[CONF_SPORT_PATH]
+        league_path = config[CONF_LEAGUE_PATH]
+        url_parms = "?lang=" + lang[:2]
+
+        d1 = (date.today() - timedelta(days = 1)).strftime("%Y%m%d")
+        d2 = (date.today() + timedelta(days = 5)).strftime("%Y%m%d")
+        url_parms = url_parms + "&dates=" + d1 + "-" + d2
+
+        if CONF_CONFERENCE_ID in config.keys():
+                if (len(config[CONF_CONFERENCE_ID]) > 0):
+                    url_parms = url_parms + "&groups=" + config[CONF_CONFERENCE_ID]
+                    if (config[CONF_CONFERENCE_ID] == '9999'):
+                        file_override = True
+        team_id = config[CONF_TEAM_ID].upper()
+        url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
     
-    if (file_override):
-        _LOGGER.debug("%s: Overriding API for '%s'", sensor_name, team_id)
-        async with aiofiles.open('/share/tt/test.json', mode='r') as f:
-            contents = await f.read()
-        data = json.loads(contents)
-    else:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=headers) as r:
-                _LOGGER.debug("%s: Getting state for '%s' from %s", sensor_name, team_id, url)
-                if r.status == 200:
-                    data = await r.json()
-
-        num_events = 0
-        if data is not None:
-            try:
-                num_events = len(data["events"])
-            except:
-                num_events = 0
-
-        if num_events == 0:
-            url_parms = "?lang=" + lang[:2]
-            if CONF_CONFERENCE_ID in config.keys():
-                    if (len(config[CONF_CONFERENCE_ID]) > 0):
-                        url_parms = url_parms + "&groups=" + config[CONF_CONFERENCE_ID]
-                        if (config[CONF_CONFERENCE_ID] == '9999'):
-                            file_override = True
-            url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
-
+        if (file_override):
+            _LOGGER.debug("%s: Overriding API for '%s'", sensor_name, team_id)
+            async with aiofiles.open('/share/tt/test.json', mode='r') as f:
+                contents = await f.read()
+            data = json.loads(contents)
+        else:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=headers) as r:
-                    _LOGGER.debug("%s: Getting state without date constraint for '%s' from %s", sensor_name, team_id, url)
+                    _LOGGER.debug("%s: Getting state for '%s' from %s", sensor_name, team_id, url)
                     if r.status == 200:
                         data = await r.json()
 
-    team_id = config[CONF_TEAM_ID].upper()
+            num_events = 0
+            if data is not None:
+                try:
+                    num_events = len(data["events"])
+                except:
+                    num_events = 0
 
-    search_key = team_id
-    sport = sport_path
-    found_competitor = False
+            if num_events == 0:
+                url_parms = "?lang=" + lang[:2]
+                if CONF_CONFERENCE_ID in config.keys():
+                        if (len(config[CONF_CONFERENCE_ID]) > 0):
+                            url_parms = url_parms + "&groups=" + config[CONF_CONFERENCE_ID]
+                            if (config[CONF_CONFERENCE_ID] == '9999'):
+                                file_override = True
+                url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
 
-    values = await async_clear_values()
-    values["sport"] = sport_path
-    values["league"] = league_id
-    values["league_logo"] = DEFAULT_LOGO
-    values["team_abbr"] = team_id
-    values["state"] = "NOT_FOUND"
-    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-    values["private_fast_refresh"] = False
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers) as r:
+                        _LOGGER.debug("%s: Getting state without date constraint for '%s' from %s", sensor_name, team_id, url)
+                        if r.status == 200:
+                            data = await r.json()
 
-    if data is None:
-        values["api_message"] = "API error, no data returned"
-        _LOGGER.warn("%s: API did not return any data for team '%s':  %s", sensor_name, team_id, url)
+        return data, file_override
+
+#
+#  Return values based on the data passed into method
+#
+    async def async_update_values(self, config, hass, data, lang) -> dict:
+        values = {}
+        prev_values = {}
+        sensor_name = config[CONF_NAME]
+
+        league_id = config[CONF_LEAGUE_ID].upper()
+        sport_path = config[CONF_SPORT_PATH]
+        league_path = config[CONF_LEAGUE_PATH]
+
+        team_id = config[CONF_TEAM_ID].upper()
+
+        search_key = team_id
+        sport = sport_path
+        found_competitor = False
+
+        values = await async_clear_values()
+        values["sport"] = sport_path
+        values["league"] = league_id
+        values["league_logo"] = DEFAULT_LOGO
+        values["team_abbr"] = team_id
+        values["state"] = "NOT_FOUND"
+        values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
+        values["private_fast_refresh"] = False
+
+        if data is None:
+            values["api_message"] = "API error, no data returned"
+            _LOGGER.warn("%s: API did not return any data for team '%s'", sensor_name, team_id)
+            return values
+
+        values = await async_process_event(values, sensor_name, data, sport_path, league_id, DEFAULT_LOGO, team_id, lang)
+
         return values
-
-#    if sport_path in ["football", "golf", "mma", "racing", "tennis"]:
-    if True:
-        values = await async_process_event(values, sensor_name, data, sport_path, league_id, DEFAULT_LOGO, team_id, lang, url)
-        return values
-
-    found_team = False
-    if data is not None:
-        values["league_logo"] = await async_get_value(data, "leagues", 0, "logos", 0, "href",
-            default=DEFAULT_LOGO)
-
-        for event in data["events"]:
-            #_LOGGER.debug("%s: Looking at this event: %s" sensor_name, event)
-            try:
-                sn = event["shortName"]
-            except:
-                sn = ""
-                _LOGGER.debug("%s: This is an ill-formed event, it does not have a short name: %s", sensor_name, event)
-            try:
-                t0 = event["competitions"][0]["competitors"][0]["team"]["abbreviation"]
-            except:
-                t0 = ""
-            try:
-                t1 = event["competitions"][0]["competitors"][1]["team"]["abbreviation"]
-            except:
-                t1 = ""
-            try:
-                if (last_date < event["date"]):
-                    last_date = event["date"]
-            except:
-                last_date = last_date
-            try:
-                if (event["date"] < first_date):
-                    first_date = event["date"]
-            except:
-                first_date = first_date
-
-            if sn.startswith(team_id + ' ') or sn.endswith(' ' + team_id) or t0 == team_id or t1 == team_id:
-                found_team = True
-                prev_values = values.copy()
-
-                _LOGGER.debug("%s: Found event for %s; parsing data.", sensor_name, team_id)
-
-                if t0 == team_id:
-                    team_index = 0
-                elif t1 == team_id:
-                    team_index = 1
-                else:
-                    if sn.startswith(team_id + ' '): # Lazy, but assumes first team in short_name is always team_index 1.
-                        team_index = 1
-                        values["api_message"] = "Unmatched team_id '" + team_id + "' (lang=en), using team_abbr '" + t1 + "' (lang=" + lang + ")"
-                        _LOGGER.warn("%s: Sensor created with team_id '%s' (lang=en).  Using team_abbr '%s' (lang=%s).  Recreate sensor using team_abbr for best performance.", sensor_name, team_id, t1, lang)
-                    else:
-                        team_index = 0
-                        values["api_message"] = "Unmatched team_id '" + team_id + "' (lang=en), using team_abbr '" + t0 + "' (lang=" + lang + ")"
-                        _LOGGER.warn("%s: Sensor created with team_id '%s' (lang=en).  Using team_abbr '%s' (lang=%s).  Recreate sensor using team_abbr for best performance.", sensor_name, team_id, t0, lang)
-
-                oppo_index = abs((team_index-1))
-
-                rc = await async_set_values(values, event, 0, team_index, lang, sensor_name)
-                _LOGGER.debug("%s: post async_set_universal_values() %s", sensor_name, values)
-
-                if values["state"] == "IN":
-                    break
-
-                if ((values["state"] == "PRE") and (abs((arrow.get(values["date"])-arrow.now()).total_seconds()) < 1200)):
-                    break
-
-                if prev_values["state"] == "POST":
-                    if values["state"] == "PRE": # Use POST if PRE is more than 18 hours in future
-                        if (abs((arrow.get(values["date"])-arrow.now()).total_seconds()) > 64800):
-                            values = prev_values
-                    elif values["state"] == "POST": # use POST w/ latest date
-                        if (arrow.get(prev_values["date"]) > arrow.get(values["date"])):
-                            values = prev_values
-                if prev_values["state"] == "PRE":
-                    if values["state"] == "PRE":  # use PRE w/ earliest date
-                        if (arrow.get(prev_values["date"]) < arrow.get(values["date"])):
-                            values = prev_values
-                    elif values["state"] == "POST": # Use PRE if less than 18 hours in future
-                        if (abs((arrow.get(prev_values["date"])-arrow.now()).total_seconds()) < 64800):
-                            values = prev_values
-
-        # Never found the team. Either a bye or a post-season condition
-        if not found_team:
-            _LOGGER.debug("%s: Did not find a game for team '%s'. Checking if it's a bye week.", sensor_name, team_id)
-            found_bye = False
-            try: # look for byes in regular season
-                for bye_team in data["week"]["teamsOnBye"]:
-                    if team_id.lower() == bye_team["abbreviation"].lower():
-                        _LOGGER.debug("%s: Bye week confirmed.", sensor_name)
-                        found_bye = True
-                        values["team_abbr"] = bye_team["abbreviation"]
-                        values["team_name"] = bye_team["shortDisplayName"]
-                        values["team_logo"] = bye_team["logo"]
-                        values["state"] = 'BYE'
-                        values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-                if found_bye == False:
-                    values["api_message"] = "No game scheduled for '" + team_id + "' between " + first_date + " and " + last_date
-                    _LOGGER.debug("%s: Competitor information '%s' not returned by API: %s", sensor_name, team_id, url)
-                    values["state"] = 'NOT_FOUND'
-                    values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-            except:
-                values["api_message"] = "No game scheduled for '" + team_id + "' between " + first_date + " and " + last_date
-                _LOGGER.debug("$s: Competitor information '%s' not returned by API: %s", sensor_name, team_id, url)
-                values["state"] = 'NOT_FOUND'
-                values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
-        if values["state"] == 'PRE' and (abs((arrow.get(values["date"])-arrow.now()).total_seconds()) < 1200):
-            _LOGGER.debug("%s: Event is within 20 minutes, setting refresh rate to 5 seconds.", sensor_name)
-            values["private_fast_refresh"] = True
-        elif values["state"] == 'IN':
-            _LOGGER.debug("%s: Event in progress, setting refresh rate to 5 seconds.", sensor_name)
-            values["private_fast_refresh"] = True
-        elif values["state"] in ['POST', 'BYE']: 
-            _LOGGER.debug("%s: Event is over, setting refresh back to 10 minutes.", sensor_name)
-            values["private_fast_refresh"] = False
-
-        
-    return values
