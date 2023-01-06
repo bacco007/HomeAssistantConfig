@@ -26,7 +26,7 @@ class TeamTrackerCard extends LitElement {
     this._config = config;
 
     if (config.debug) {
-      console.info("%c TeamTracker Card \n%c Version 0.6.0    ",
+      console.info("%c TeamTracker Card \n%c Version 0.6.1    ",
         "color: orange; font-weight: bold; background: black",
         "color: white; font-weight: bold; background: dimgray");
         console.info(config);
@@ -46,7 +46,7 @@ class TeamTrackerCard extends LitElement {
 
     const stateObj = this.hass.states[this._config.entity];
     var sport = stateObj.attributes.sport;
-    if (!(["australian-football", "baseball", "basketball","football","hockey", "soccer", "volleyball", "golf", "mma", "racing", "tennis"].includes(sport))) {
+    if (!(["australian-football", "baseball", "basketball", "cricket", "football","hockey", "soccer", "volleyball", "golf", "mma", "racing", "tennis"].includes(sport))) {
       sport = "default"
     }
 
@@ -65,6 +65,7 @@ class TeamTrackerCard extends LitElement {
     var record = [];
     var score = [];
     var scoreOp = [];
+    var scoreSize = "3em";
     var barLabel= [];
     var barLength = [];
     var color = [];
@@ -225,7 +226,7 @@ class TeamTrackerCard extends LitElement {
       logoBG[oppo] = stateObj.attributes.league_logo
     }
 
-    var finalTerm = t.translate("common.finalTerm", "%s", gameDatePOST);
+    var finalTerm = stateObj.attributes.clock + " - " + gameDatePOST;
     var startTerm = t.translate(sport + ".startTerm");
     var startTime =stateObj.attributes.kickoff_in;
     var venue = stateObj.attributes.venue;
@@ -378,7 +379,7 @@ if (sport.includes("hockey")) {
       venue = stateObj.attributes.event_name;
       pre1 = t.translate("common.tourney" + stateObj.attributes.odds)
       in1 = pre1;
-      finalTerm = t.translate("common.finalTerm", "%s", gameDatePOST  + " (" + pre1 + ")");
+      finalTerm = stateObj.attributes.clock + " - " + gameDatePOST  + " (" + pre1 + ")";
 
 //      pre2 = null;
 //      pre3 = null;
@@ -425,7 +426,7 @@ if (sport.includes("hockey")) {
       if (stateObj.attributes.quarter) {
         pre1 = stateObj.attributes.quarter;
         in1 = stateObj.attributes.quarter;
-        finalTerm = t.translate("common.finalTerm", "%s", gameDatePOST  + " (" + stateObj.attributes.quarter + ")");
+        stateObj.attributes.clock + " - " + gameDatePOST  + " (" + stateObj.attributes.quarter + ")";
       }
       timeoutsDisplay = 'none';
 
@@ -437,9 +438,13 @@ if (sport.includes("hockey")) {
       if (stateObj.attributes.league.includes("NASCAR")) {
         logo[team] = null;
         logo[oppo] = null;
-        initials[team] = name[team].split(" ").map((n)=>n[0]).join("");
-        initials[oppo] = name[oppo].split(" ").map((n)=>n[0]).join("");
-        initialsDisplay = 'inline';
+        initials[team] = "";
+        initials[oppo] = "";
+        if (name[team] && name[oppo]) {
+          initials[team] = name[team].split(" ").map((n)=>n[0]).join("");
+          initials[oppo] = name[oppo].split(" ").map((n)=>n[0]).join("");
+          initialsDisplay = 'inline';
+        }
       }
     }
 
@@ -470,11 +475,76 @@ if (sport.includes("hockey")) {
     }
 
 //
+//  Cricket Specific Changes
+//
+    if (sport.includes("cricket")) {
+        var runs = [];
+        var subscores = [];
+
+        timeoutsDisplay = 'none';
+        barDisplay = "none";
+        barWrapDisplay = "none";  
+
+        in1 = stateObj.attributes.odds;
+        in2 = stateObj.attributes.quarter;
+
+        if (score != []) {
+            if (score[1] || score[2]) {
+                subscores[1] = score[1].split("(");
+                subscores[2] = score[2].split("(");
+
+                score[1] = subscores[1][0];
+                score[2] = subscores[2][0];
+
+                if (subscores[1].length > 1) {
+                    record[1] = "(" + subscores[1][1];
+                }
+                if (subscores[2].length > 1) {
+                    record[2] = "(" + subscores[2][1];
+                }
+                runs[1] = score[1].split("/");
+                runs[2] = score[2].split("/");
+
+                if (Number(runs[1][0]) > Number(runs[2][0])) {
+                    scoreOp[1] = 1.0;
+                    scoreOp[2] = 0.6;
+                }
+                if (Number(runs[1][0]) < Number(runs[2][0])) {
+                    scoreOp[1] = 0.6;
+                    scoreOp[2] = 1.0;
+                }
+            }
+        }
+    }
+
+
+//
 //  NCAA Specific Changes
 //
     if (stateObj.attributes.league.includes("NCAA")) {
       notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png'
     }
+
+//
+//  Reduce score font size if needed
+//
+
+    if (Math.max(String(score[1]).length, String(score[2]).length) > 4) {
+        scoreSize = "2em"
+    }
+
+    if (this._config.debug) {
+        var lastUpdate = new Date (stateObj.attributes.last_update);
+        var updateTime = lastUpdate.toLocaleTimeString(lang, { hour: '2-digit', minute:'2-digit', second:'2-digit'});
+
+        title = this._config.entity + " " + title + "(";
+        if (stateObj.attributes.api_message) {
+          title = title + stateObj.attributes.api_message[0];
+        }
+        title = title + updateTime + ")";
+    }
+
+
 
     if (stateObj.state == 'POST') {
       return html`
@@ -487,7 +557,7 @@ if (sport.includes("hockey")) {
           .team { text-align: center; width: 35%;}
           .team img { max-width: 90px; }
           .circle { display:${initialsDisplay}; width: 90px; height: 90px; padding: 10px; line-height: 90px; border: 2px solid gray; border-radius: 50%; font-size: 40px; color: white; text-align: center; background: black }
-          .score { font-size: 3em; text-align: center; }
+          .score { font-size: ${scoreSize}; text-align: center; line-height: 1; }
           .score1op { opacity: ${scoreOp[1]}; }
           .score2op { opacity: ${scoreOp[2]}; }
           .divider { font-size: 2.5em; text-align: center; opacity: 0; }
@@ -538,7 +608,7 @@ if (sport.includes("hockey")) {
             .possession, .possession1, .possession2 { font-size: 2.5em; text-align: center; opacity: 0; font-weight:900; }
             .possession1 {opacity: ${possessionOp[1]} !important; }
             .possession2 {opacity: ${possessionOp[2]} !important; }
-            .score { font-size: 3em; text-align: center; }
+            .score { font-size: ${scoreSize}; text-align: center; }
             .divider { font-size: 2.5em; text-align: center; margin: 0 4px; }
             .name { font-size: 1.4em; margin-bottom: 4px; }
             .rank { font-size:0.8em; display: ${rankDisplay}; }

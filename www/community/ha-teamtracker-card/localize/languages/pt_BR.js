@@ -27,6 +27,16 @@ export const pt_BR = {
         "teamBarLabel": "%s%",
         "oppoBarLabel": "%s%"
     },
+    "cricket": {
+        "startTerm": "Começa",
+        "overUnder": "Mais/Menos: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Probabilidade de Vitória",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
     "football": {
         "startTerm": "Começa",
         "overUnder": "Mais/Menos: %s",

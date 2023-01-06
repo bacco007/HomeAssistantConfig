@@ -45,6 +45,16 @@ export const es = {
         "teamBarLabel": "%s%",
         "oppoBarLabel": "%s%"
     },
+    "cricket": {
+        "startTerm": "Comienzo",
+        "overUnder": "Más/Menos: %s",
+        "gameStat1": "%s",
+        "gameStat2": "%s",
+        "gameStat3": "",
+        "gameBar": "Probabilidad de Ganar",
+        "teamBarLabel": "%s%",
+        "oppoBarLabel": "%s%"
+    },
     "football": {
         "startTerm": "Comienzo",
         "overUnder": "Más/Menos: %s",
