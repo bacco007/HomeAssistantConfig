@@ -19,7 +19,12 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import LGEDevice
 from .const import DOMAIN, LGE_DEVICES, LGE_DISCOVERY_NEW
-from .wideq import FEAT_HOT_WATER_TEMP, UNIT_TEMP_FAHRENHEIT, DeviceType
+from .wideq import (
+    AirConditionerFeatures,
+    DeviceType,
+    TemperatureUnit,
+    WaterHeaterFeatures,
+)
 from .wideq.devices.ac import AWHP_MAX_TEMP, AWHP_MIN_TEMP, AirConditionerDevice
 from .wideq.devices.waterheater import (
     DEFAULT_MAX_TEMP as WH_MAX_TEMP,
@@ -138,7 +143,7 @@ class LGEWHWaterHeater(LGEWaterHeater):
     @property
     def temperature_unit(self) -> str:
         """Return the unit of measurement used by the platform."""
-        if self._device.temperature_unit == UNIT_TEMP_FAHRENHEIT:
+        if self._device.temperature_unit == TemperatureUnit.FAHRENHEIT:
             return UnitOfTemperature.FAHRENHEIT
         return UnitOfTemperature.CELSIUS
 
@@ -176,7 +181,7 @@ class LGEWHWaterHeater(LGEWaterHeater):
     @property
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self._api.state.device_features.get(FEAT_HOT_WATER_TEMP)
+        return self._api.state.device_features.get(WaterHeaterFeatures.HOT_WATER_TEMP)
 
     @property
     def target_temperature(self) -> float | None:
@@ -214,7 +219,7 @@ class LGEACWaterHeater(LGEWaterHeater):
     @property
     def temperature_unit(self) -> str:
         """Return the unit of measurement used by the platform."""
-        if self._device.temperature_unit == UNIT_TEMP_FAHRENHEIT:
+        if self._device.temperature_unit == TemperatureUnit.FAHRENHEIT:
             return UnitOfTemperature.FAHRENHEIT
         return UnitOfTemperature.CELSIUS
 
@@ -243,7 +248,9 @@ class LGEACWaterHeater(LGEWaterHeater):
     @property
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self._api.state.device_features.get(FEAT_HOT_WATER_TEMP)
+        return self._api.state.device_features.get(
+            AirConditionerFeatures.HOT_WATER_TEMP
+        )
 
     @property
     def target_temperature(self) -> float | None:

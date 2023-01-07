@@ -1,38 +1,19 @@
 """------------------for Oven"""
 from __future__ import annotations
 
-import logging
-
-from ..const import (
-    BIT_OFF,
-    FEAT_COOKTOP_CENTER_STATE,
-    FEAT_COOKTOP_LEFT_FRONT_STATE,
-    FEAT_COOKTOP_LEFT_REAR_STATE,
-    FEAT_COOKTOP_RIGHT_FRONT_STATE,
-    FEAT_COOKTOP_RIGHT_REAR_STATE,
-    FEAT_OVEN_LOWER_CURRENT_TEMP,
-    FEAT_OVEN_LOWER_STATE,
-    FEAT_OVEN_UPPER_CURRENT_TEMP,
-    FEAT_OVEN_UPPER_STATE,
-    STATE_OPTIONITEM_NONE,
-    STATE_OPTIONITEM_OFF,
-    UNIT_TEMP_CELSIUS,
-    UNIT_TEMP_FAHRENHEIT,
-)
+from ..const import BIT_OFF, RangeFeatures, StateOptions, TemperatureUnit
 from ..core_async import ClientAsync
-from ..device import Device, DeviceStatus, UnitTempModes
+from ..device import Device, DeviceStatus
 from ..device_info import DeviceInfo
 
 OVEN_TEMP_UNIT = {
-    "0": UnitTempModes.Fahrenheit,
-    "1": UnitTempModes.Celsius,
-    "FAHRENHEIT": UnitTempModes.Fahrenheit,
-    "CELSIUS": UnitTempModes.Celsius,
+    "0": TemperatureUnit.FAHRENHEIT,
+    "1": TemperatureUnit.CELSIUS,
+    "FAHRENHEIT": TemperatureUnit.FAHRENHEIT,
+    "CELSIUS": TemperatureUnit.CELSIUS,
 }
 
 ITEM_STATE_OFF = "@OV_STATE_INITIAL_W"
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class RangeDevice(Device):
@@ -74,11 +55,11 @@ class RangeStatus(DeviceStatus):
         if not self._oven_temp_unit:
             oven_temp_unit = self.lookup_enum("MonTempUnit")
             if not oven_temp_unit:
-                self._oven_temp_unit = STATE_OPTIONITEM_NONE
+                self._oven_temp_unit = StateOptions.NONE
             else:
-                self._oven_temp_unit = (
-                    OVEN_TEMP_UNIT.get(oven_temp_unit, UnitTempModes.Celsius)
-                ).value
+                self._oven_temp_unit = OVEN_TEMP_UNIT.get(
+                    oven_temp_unit, TemperatureUnit.CELSIUS
+                )
         return self._oven_temp_unit
 
     @property
@@ -102,7 +83,7 @@ class RangeStatus(DeviceStatus):
             self.cooktop_right_rear_state,
         ]
         for res in result:
-            if res and res != STATE_OPTIONITEM_OFF:
+            if res and res != StateOptions.OFF:
                 return True
         return False
 
@@ -115,7 +96,7 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("LFState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_COOKTOP_LEFT_FRONT_STATE, status)
+        return self._update_feature(RangeFeatures.COOKTOP_LEFT_FRONT_STATE, status)
 
     @property
     def cooktop_left_rear_state(self):
@@ -123,7 +104,7 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("LRState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_COOKTOP_LEFT_REAR_STATE, status)
+        return self._update_feature(RangeFeatures.COOKTOP_LEFT_REAR_STATE, status)
 
     @property
     def cooktop_center_state(self):
@@ -131,7 +112,7 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("CenterState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_COOKTOP_CENTER_STATE, status)
+        return self._update_feature(RangeFeatures.COOKTOP_CENTER_STATE, status)
 
     @property
     def cooktop_right_front_state(self):
@@ -139,7 +120,7 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("RFState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_COOKTOP_RIGHT_FRONT_STATE, status)
+        return self._update_feature(RangeFeatures.COOKTOP_RIGHT_FRONT_STATE, status)
 
     @property
     def cooktop_right_rear_state(self):
@@ -147,7 +128,7 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("RRState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_COOKTOP_RIGHT_REAR_STATE, status)
+        return self._update_feature(RangeFeatures.COOKTOP_RIGHT_REAR_STATE, status)
 
     @property
     def is_oven_on(self):
@@ -157,7 +138,7 @@ class RangeStatus(DeviceStatus):
             self.oven_upper_state,
         ]
         for res in result:
-            if res and res != STATE_OPTIONITEM_OFF:
+            if res and res != StateOptions.OFF:
                 return True
         return False
 
@@ -167,7 +148,7 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("LowerOvenState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_OVEN_LOWER_STATE, status)
+        return self._update_feature(RangeFeatures.OVEN_LOWER_STATE, status)
 
     @property
     def oven_upper_state(self):
@@ -175,15 +156,15 @@ class RangeStatus(DeviceStatus):
         status = self.lookup_enum("UpperOvenState")
         if status and status == ITEM_STATE_OFF:
             status = BIT_OFF
-        return self._update_feature(FEAT_OVEN_UPPER_STATE, status)
+        return self._update_feature(RangeFeatures.OVEN_UPPER_STATE, status)
 
     @property
     def oven_lower_target_temp(self):
         """Return oven lower target temperature."""
         unit = self.oven_temp_unit
-        if unit == UNIT_TEMP_FAHRENHEIT:
+        if unit == TemperatureUnit.FAHRENHEIT:
             key = "LowerTargetTemp_F"
-        elif unit == UNIT_TEMP_CELSIUS:
+        elif unit == TemperatureUnit.CELSIUS:
             key = "LowerTargetTemp_C"
         else:
             return None
@@ -193,9 +174,9 @@ class RangeStatus(DeviceStatus):
     def oven_upper_target_temp(self):
         """Return oven upper target temperature."""
         unit = self.oven_temp_unit
-        if unit == UNIT_TEMP_FAHRENHEIT:
+        if unit == TemperatureUnit.FAHRENHEIT:
             key = "UpperTargetTemp_F"
-        elif unit == UNIT_TEMP_CELSIUS:
+        elif unit == TemperatureUnit.CELSIUS:
             key = "UpperTargetTemp_C"
         else:
             return None
@@ -205,27 +186,31 @@ class RangeStatus(DeviceStatus):
     def oven_lower_current_temp(self):
         """Return oven lower current temperature."""
         unit = self.oven_temp_unit
-        if unit == UNIT_TEMP_FAHRENHEIT:
+        if unit == TemperatureUnit.FAHRENHEIT:
             key = "LowerCookTemp_F"
-        elif unit == UNIT_TEMP_CELSIUS:
+        elif unit == TemperatureUnit.CELSIUS:
             key = "LowerCookTemp_C"
         else:
             return None
         status = self._data.get(key)
-        return self._update_feature(FEAT_OVEN_LOWER_CURRENT_TEMP, status, False)
+        return self._update_feature(
+            RangeFeatures.OVEN_LOWER_CURRENT_TEMP, status, False
+        )
 
     @property
     def oven_upper_current_temp(self):
         """Return oven upper current temperature."""
         unit = self.oven_temp_unit
-        if unit == UNIT_TEMP_FAHRENHEIT:
+        if unit == TemperatureUnit.FAHRENHEIT:
             key = "UpperCookTemp_F"
-        elif unit == UNIT_TEMP_CELSIUS:
+        elif unit == TemperatureUnit.CELSIUS:
             key = "UpperCookTemp_C"
         else:
             return None
         status = self._data.get(key)
-        return self._update_feature(FEAT_OVEN_UPPER_CURRENT_TEMP, status, False)
+        return self._update_feature(
+            RangeFeatures.OVEN_UPPER_CURRENT_TEMP, status, False
+        )
 
     def _update_features(self):
         _ = [

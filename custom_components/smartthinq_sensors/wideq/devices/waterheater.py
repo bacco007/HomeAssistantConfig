@@ -3,12 +3,7 @@ from __future__ import annotations
 
 from enum import Enum
 
-from ..const import (
-    FEAT_ENERGY_CURRENT,
-    FEAT_HOT_WATER_TEMP,
-    UNIT_TEMP_CELSIUS,
-    UNIT_TEMP_FAHRENHEIT,
-)
+from ..const import TemperatureUnit, WaterHeaterFeatures
 from ..core_async import ClientAsync
 from ..core_exceptions import InvalidRequestError
 from ..core_util import TempUnitConversion
@@ -41,8 +36,6 @@ TEMP_STEP_HALF = 0.5
 
 ADD_FEAT_POLL_INTERVAL = 300  # 5 minutes
 
-# _LOGGER = logging.getLogger(__name__)
-
 
 class ACOp(Enum):
     """Whether a device is on or off."""
@@ -67,14 +60,17 @@ class WaterHeaterDevice(Device):
     """A higher-level interface for a Water Heater."""
 
     def __init__(
-        self, client: ClientAsync, device_info: DeviceInfo, temp_unit=UNIT_TEMP_CELSIUS
+        self,
+        client: ClientAsync,
+        device_info: DeviceInfo,
+        temp_unit=TemperatureUnit.CELSIUS,
     ):
         """Initialize WaterHeaterDevice object."""
         super().__init__(client, device_info, WaterHeaterStatus(self))
         self._temperature_unit = (
-            UNIT_TEMP_FAHRENHEIT
-            if temp_unit == UNIT_TEMP_FAHRENHEIT
-            else UNIT_TEMP_CELSIUS
+            TemperatureUnit.FAHRENHEIT
+            if temp_unit == TemperatureUnit.FAHRENHEIT
+            else TemperatureUnit.CELSIUS
         )
         self._supported_op_modes = None
         self._temperature_range = None
@@ -87,13 +83,13 @@ class WaterHeaterDevice(Device):
 
     def _f2c(self, value):
         """Convert Fahrenheit to Celsius temperatures for this device if required."""
-        if self._temperature_unit == UNIT_TEMP_CELSIUS:
+        if self._temperature_unit == TemperatureUnit.CELSIUS:
             return value
         return self._unit_conv.f2c(value, self.model_info)
 
     def conv_temp_unit(self, value):
         """Convert Celsius to Fahrenheit temperatures for this device if required."""
-        if self._temperature_unit == UNIT_TEMP_CELSIUS:
+        if self._temperature_unit == TemperatureUnit.CELSIUS:
             return float(value)
         return self._unit_conv.c2f(value, self.model_info)
 
@@ -296,7 +292,7 @@ class WaterHeaterStatus(DeviceStatus):
         """Return current temperature."""
         key = self._get_state_key(STATE_CURRENT_TEMP)
         value = self._str_to_temp(self._data.get(key))
-        return self._update_feature(FEAT_HOT_WATER_TEMP, value, False)
+        return self._update_feature(WaterHeaterFeatures.HOT_WATER_TEMP, value, False)
 
     @property
     def target_temp(self):
@@ -314,7 +310,7 @@ class WaterHeaterStatus(DeviceStatus):
             new_value = self.to_int_or_none(value)
             if new_value and new_value <= 50:
                 value = 5.0
-        return self._update_feature(FEAT_ENERGY_CURRENT, value, False)
+        return self._update_feature(WaterHeaterFeatures.ENERGY_CURRENT, value, False)
 
     def _update_features(self):
         _ = [
