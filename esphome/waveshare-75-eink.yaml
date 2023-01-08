@@ -92,7 +92,7 @@ time:
           - logger.log: Time has been set and is valid!
     on_time:
       - seconds: 0
-        minutes: /1
+        minutes: /5
         then:
           - if:
               condition:
@@ -506,6 +506,7 @@ display:
     id: eink_display
     update_interval: never
     reset_duration: 2ms
+    rotation: 180
     lambda: |-
       int xres = it.get_width();
       int yres = it.get_height();
@@ -584,9 +585,9 @@ display:
         it.printf(x1+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunset).state.c_str());
         it.print(x2, y4, id(din_med), TextAlign::BASELINE_LEFT, "Moon");
         it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A0A");
-        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_rise).state);
+        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(moon_rise).state.c_str());
         it.printf(x2, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A09");
-        it.printf(x2+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(moon_set).state);
+        it.printf(x2+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(moon_set).state.c_str());
         it.print(x3, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
         it.printf(x3, y4 + 40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510");
         it.printf(x3+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(max_temp).state);

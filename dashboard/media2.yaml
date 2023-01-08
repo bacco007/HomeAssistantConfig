@@ -99,7 +99,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: up
                     style:
                       top: 23.5%
@@ -113,7 +113,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: down
                     style:
                       top: 62%
@@ -127,7 +127,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: left
                     style:
                       top: 42.6%
@@ -141,7 +141,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: right
                     style:
                       top: 42.6%
@@ -155,7 +155,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: select
                     style:
                       top: 42.4%
@@ -169,13 +169,13 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: top_menu
                     hold_action:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: home_hold
                     style:
                       top: 80%
@@ -202,7 +202,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: menu
                     style:
                       top: 85.5%
@@ -216,7 +216,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: volume_up
                     style:
                       top: 80%
@@ -230,7 +230,7 @@ cards:
                       action: call-service
                       service: remote.send_command
                       service_data:
-                        entity_id: remote.apple_tv_bedroom
+                        entity_id: remote.bedroom_apple_tv
                         command: volume_down
                     style:
                       top: 91%
@@ -249,8 +249,9 @@ cards:
               - type: entities
                 title: Inputs
                 entities:
-                  - media_player.apple_tv_bedroom
-                  - media_player.homepod_mini_bedroom
+                  - media_player.bedroom_apple_tv
+                  - media_player.homepod_mini_bedroom_left
+                  - media_player.homepod_mini_bedroom_right
                   - media_player.nvidia_shield_bedroom_2
 
               - type: entities

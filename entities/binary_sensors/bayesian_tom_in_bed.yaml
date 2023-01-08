@@ -40,12 +40,12 @@ observations:
     prob_given_false: 0
     platform: "state"
     to_state: "below_horizon"
-  - entity_id: media_player.apple_tv_bedroom
+  - entity_id: media_player.bedroom_apple_tv
     prob_given_true: 0.1
     prob_given_false: 0.05
     platform: state
     to_state: playing
-  - entity_id: media_player.apple_tv_bedroom
+  - entity_id: media_player.bedroom_apple_tv
     prob_given_true: 0.1
     prob_given_false: 0.05
     platform: state

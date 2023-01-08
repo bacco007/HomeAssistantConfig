@@ -154,6 +154,13 @@ cards:
                 - template: sport_cal
                   type: custom:button-card
                   variables:
+                    entity_part: sensor.ical_gt_world_challenge_asia_event_
+                    icon: /local/sportlogos/gtwc-asia.png
+                    limit: 5
+                    replace: "Formula E - "
+                - template: sport_cal
+                  type: custom:button-card
+                  variables:
                     entity_part: sensor.ical_igtc_event_
                     icon: /local/sportlogos/icgtc.png
                     limit: 5

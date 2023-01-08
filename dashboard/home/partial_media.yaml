@@ -74,15 +74,23 @@ cards:
           - type: "custom:button-card"
             template:
               - live_tile_media_player
-            entity: media_player.homepod_mini_bedroom
+            entity: media_player.homepod_mini_bedroom_left
             icon: "mdi:album"
-            name: Homepod Mini
+            name: Homepod Mini (Left)
             variables:
               aspect_ratio: 3/1
           - type: "custom:button-card"
             template:
               - live_tile_media_player
-            entity: media_player.apple_tv_bedroom
+            entity: media_player.homepod_mini_bedroom_right
+            icon: "mdi:album"
+            name: Homepod Mini (Right)
+            variables:
+              aspect_ratio: 3/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.bedroom_apple_tv
             icon: "ios:tv-circle-fill"
             name: Apple TV
             variables:

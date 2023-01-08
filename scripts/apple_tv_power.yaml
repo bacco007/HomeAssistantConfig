@@ -9,8 +9,8 @@ sequence:
         - home_hold
         - select
     target:
-      entity_id: remote.apple_tv_bedroom
+      entity_id: remote.bedroom_apple_tv
   - service: media_player.toggle
     data: {}
     target:
-      entity_id: media_player.apple_tv_bedroom
+      entity_id: media_player.bedroom_apple_tv
