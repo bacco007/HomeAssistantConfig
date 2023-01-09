@@ -14,6 +14,7 @@ from homeassistant.const import CONF_NAME, SERVICE_RELOAD
 from homeassistant.core import Event, HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import discovery
+from homeassistant.helpers.entity_registry import RegistryEntry, async_migrate_entries
 from homeassistant.helpers.reload import async_reload_integration_platforms
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.loader import async_get_integration
@@ -28,6 +29,8 @@ from .sensor import (
     CONF_POLL,
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSOR,
+    LegacySensorType,
+    SensorType,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -77,6 +80,29 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_listener()
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
+
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+    """Migrate old entry."""
+    _LOGGER.debug("Migrating from version %s", config_entry.version)
+
+    if config_entry.version == 1:
+
+        def update_unique_id(entry: RegistryEntry):
+            """Update unique_id of changed sensor names"""
+            if LegacySensorType.THERMAL_PERCEPTION in entry.unique_id:
+                return {"new_unique_id": entry.unique_id.replace(LegacySensorType.THERMAL_PERCEPTION, SensorType.DEW_POINT_PERCEPTION)}
+            if LegacySensorType.SIMMER_INDEX in entry.unique_id:
+                return {"new_unique_id": entry.unique_id.replace(LegacySensorType.SIMMER_INDEX, SensorType.SUMMER_SIMMER_INDEX)}
+            if LegacySensorType.SIMMER_ZONE in entry.unique_id:
+                return {"new_unique_id": entry.unique_id.replace(LegacySensorType.SIMMER_ZONE, SensorType.SUMMER_SIMMER_PERCEPTION)}
+
+        await async_migrate_entries(hass, config_entry.entry_id, update_unique_id)
+        config_entry.version = 2
+
+    _LOGGER.info("Migration to version %s successful", config_entry.version)
+
+    return True
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
