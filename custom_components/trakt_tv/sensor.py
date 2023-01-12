@@ -74,6 +74,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class TraktSensor(Entity):
     """Representation of a trakt sensor."""
 
+    _attr_has_entity_name = True
+
     def __init__(
         self,
         hass,
@@ -127,18 +129,23 @@ class TraktSensor(Entity):
 
     @property
     def icon(self):
-        """Return the unit of measurement."""
+        """Return the icon to use in the frontend, if any."""
         return self.mdi_icon
 
     @property
     def unit_of_measurement(self):
-        """Return the unit of measurement."""
+        """Return the unit of measurement of this entity, if any."""
         return self.trakt_kind.value.path.split("/")[0]
 
     @property
     def extra_state_attributes(self):
         """Return the state attributes of the sensor."""
         return {"data": self.data}
+
+    @property
+    def has_entity_name(self) -> bool:
+        """Return if the name of the entity is describing only the entity itself."""
+        return True
 
     async def async_update(self):
         """Request coordinator to update data."""
