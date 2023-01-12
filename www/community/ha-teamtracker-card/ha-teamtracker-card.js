@@ -26,7 +26,7 @@ class TeamTrackerCard extends LitElement {
     this._config = config;
 
     if (config.debug) {
-      console.info("%c TeamTracker Card \n%c Version 0.6.1    ",
+      console.info("%c TeamTracker Card \n%c Version 0.6.2    ",
         "color: orange; font-weight: bold; background: black",
         "color: white; font-weight: bold; background: dimgray");
         console.info(config);
@@ -478,8 +478,11 @@ if (sport.includes("hockey")) {
 //  Cricket Specific Changes
 //
     if (sport.includes("cricket")) {
+        var runs_substring = [];
         var runs = [];
+        var total_runs = [];
         var subscores = [];
+        var i = 0;
 
         timeoutsDisplay = 'none';
         barDisplay = "none";
@@ -502,16 +505,36 @@ if (sport.includes("hockey")) {
                 if (subscores[2].length > 1) {
                     record[2] = "(" + subscores[2][1];
                 }
-                runs[1] = score[1].split("/");
-                runs[2] = score[2].split("/");
 
-                if (Number(runs[1][0]) > Number(runs[2][0])) {
-                    scoreOp[1] = 1.0;
-                    scoreOp[2] = 0.6;
-                }
-                if (Number(runs[1][0]) < Number(runs[2][0])) {
-                    scoreOp[1] = 0.6;
-                    scoreOp[2] = 1.0;
+                if (stateObj.state == 'POST') {
+                    runs_substring[1] = score[1].split("/");
+                    runs_substring[2] = score[2].split("/");
+
+                    runs[1] = runs_substring[1][0].split("&");
+                    runs[2] = runs_substring[2][0].split("&");
+
+                    total_runs[1] = 0;
+                    total_runs[2] = 0;
+
+                    i = 0;
+                    while (i < runs[1].length) {
+                        total_runs[1] = total_runs[1] + Number(runs[1][i]);
+                        i = i + 1;
+                    }
+                    i = 0;
+                    while (i < runs[2].length) {
+                        total_runs[2] = total_runs[2] + Number(runs[2][i]);
+                        i = i + 1;
+                    }
+
+                    if (total_runs[1] > total_runs[2]) {
+                        scoreOp[1] = 1.0;
+                        scoreOp[2] = 0.6;
+                    }
+                    if (total_runs[1] < total_runs[2]) {
+                        scoreOp[1] = 0.6;
+                        scoreOp[2] = 1.0;
+                    }
                 }
             }
         }
