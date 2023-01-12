@@ -1,6 +1,7 @@
 # API
 URL_HEAD = "http://site.api.espn.com/apis/site/v2/sports/"
 URL_TAIL = "/scoreboard"
+API_LIMIT = 25
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
 
 LEAGUE_LIST = [
@@ -37,11 +38,13 @@ SPORT_LIST = [
     ["australian-football", "mdi:football-australian"],
     ["baseball", "mdi:baseball"],
     ["basketball", "mdi:basketball"],
+    ["cricket", "mdi:cricket"],
     ["football", "mdi:football"],
     ["golf", "mdi:golf-tee"],
     ["hockey", "mdi:hockey-puck"],
     ["mma", "mdi:karate"],
     ["racing", "mdi:flag-checkered"],
+    ["rugby", "mdi:rugby"],
     ["soccer", "mdi:soccer"],
     ["tennis", "mdi:tennis"],
     ["volleyball", "mdi:volleyball"]
@@ -70,7 +73,7 @@ DEFAULT_KICKOFF_IN = "{test} days"
 
 # Misc
 TEAM_ID = ""
-VERSION = "v0.6.1"
+VERSION = "v0.6.2"
 ISSUE_URL = "https://github.com/vasqued2/ha-teamtracker"
 DOMAIN = "teamtracker"
 PLATFORM = "sensor"
