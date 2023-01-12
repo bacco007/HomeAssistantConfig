@@ -5,7 +5,7 @@
   "documentation": "https://github.com/rytilahti/homeassistant-upnp-availability/",
   "issue_tracker": "https://github.com/rytilahti/homeassistant-upnp-availability/issues",
   "requirements": [
-    "async_upnp_client>=0.32"
+    "async_upnp_client>=0.33"
   ],
   "dependencies": ["network"],
   "version": "0.0.3",

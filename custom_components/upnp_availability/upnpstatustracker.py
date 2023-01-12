@@ -306,9 +306,9 @@ class UPnPStatusTracker:
 
         for srcip in self.source_addresses:
             self.listeners[srcip] = listener = SsdpAdvertisementListener(
-                on_alive=self.handle_alive,
-                on_byebye=self.handle_bye,
-                on_update=self.handle_update,
+                async_on_alive=self.handle_alive,
+                async_on_byebye=self.handle_bye,
+                async_on_update=self.handle_update,
             )
             await listener.async_start()
 
