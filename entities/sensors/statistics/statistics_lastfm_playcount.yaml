@@ -1,0 +1,9 @@
+---
+platform: statistics
+name: statistics_lastfm_playcount
+unique_id: statistics_lastfm_playcount
+entity_id: sensor.lastfm_user_playcount
+state_characteristic: change
+precision: 0
+max_age:
+  hours: 24
