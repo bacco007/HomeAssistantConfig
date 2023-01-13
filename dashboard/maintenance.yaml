@@ -472,3 +472,39 @@ cards:
                   method: state
                   numeric: true
                   reverse: true
+
+      # [Column] Watchman
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: WATCHMAN
+            view_layout:
+              grid-column: 1/-1
+
+          - type: custom:atomic-calendar-revive
+            maxDaysToShow: 90
+            enableModeChange: true
+            showWeekDay: true
+            firstDayOfWeek: 1
+            refreshInterval: 600
+            showMonth: true
+            showCurrentEventLine: false
+            showDate: false
+            sortByStartTime: true
+            showDeclined: true
+            showRelativeTime: false
+            showMultiDay: false
+            showMultiDayEventParts: true
+            hideDuplicates: true
+            showLastCalendarWeek: false
+            calShowDescription: false
+            disableCalLink: false
+            disableCalLocationLink: false
+            disableCalEventLink: false
+            dimFinishedEvents: true
+            showProgressBar: false
+            showDescription: false
+            entities:
+              - entity: calendar.home_assistant_devs

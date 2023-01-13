@@ -336,6 +336,13 @@ cards:
                 - template: sport_cal
                   type: custom:button-card
                   variables:
+                    entity_part: sensor.ical_worldsbk_event_
+                    icon: /local/sportlogos/worldsbk.png
+                    limit: 5
+                    replace: "WSBK - "
+                - template: sport_cal
+                  type: custom:button-card
+                  variables:
                     entity_part: sensor.ical_wrc_event_
                     icon: /local/sportlogos/wrc.png
                     limit: 5
