@@ -1,0 +1,29 @@
+---
+sensor:
+  - unique_id: day_phase
+    name: "Day Phase"
+    icon: mdi:sun-clock
+    state: >
+      {%- set time = now() %}
+      {%- set isDaylight = states.sun.sun.state == "above_horizon" %}
+      {%- set isWeekday = time.isoweekday() <= 5 %}
+      {%- set t0000 = time.replace(hour=0).replace(minute=0).replace(second=0) %}
+      {%- set t0600 = t0000.replace(hour=6) %}
+      {%- set t0800 = t0000.replace(hour=8) %}
+      {%- set t1200 = t0000.replace(hour=12) %}
+      {%- set t1600 = t0000.replace(hour=16) %}
+      {%- set t1900 = t0000.replace(hour=19) %}
+      {%- set t2100 = t0000.replace(hour=21) %}
+      {%- set t2200 = t0000.replace(hour=22) %}
+      {%- if t0600 <= time and time < t0800 and isWeekday %}
+        Morning
+      {%- elif (t0600 <= time and time < t1600)
+          or (t0600 <= time and time < t1900 and isWeekday)
+          or (t0600 <= time and time < t2100 and isDaylight)
+      %}
+        Day
+      {%- elif t1600 <= time and time < t2200 %}
+        Evening
+      {%- else %}
+        Night
+      {%- endif %}

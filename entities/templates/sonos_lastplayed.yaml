@@ -1,0 +1,17 @@
+---
+trigger:
+  - platform: state
+    entity_id: media_player.office_sonos
+    attribute: media_title
+sensor:
+  - name: Office Sonos Recent Tracks
+    state: "{{ now().timestamp() | timestamp_custom() }}"
+    attributes:
+      tracks: >
+        {% set current = this.attributes.get('tracks', []) %}
+        {% set new = [{
+            "artist": trigger.to_state.attributes.media_artist,
+            "title": trigger.to_state.attributes.media_title,
+            "time": now().isoformat() }]
+            if is_state('media_player.office_sonos', 'playing') else [] %}
+        {{ (new + current)[:5] }}

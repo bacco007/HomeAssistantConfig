@@ -49,6 +49,101 @@ cards:
                   entity_date: sensor.date
                   entity_temperature: sensor.tempest_st_00056115_temperature
                   entity_weather: weather.east_tamworth_hourly
+
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: >-
+              {{ state_attr(entity, "friendly_name") }}
+            multiline_secondary: true
+            secondary: >-
+              {{ state_attr(entity, "nextevent") }} ({{ state_attr(entity, "nexttime") }})
+
+              {{ state_attr(entity, "nexteventafter") }}
+            entity: sensor.sport_manu
+            badge_icon: >-
+              {%- if is_state_attr(entity, 'nexttime', 'On Now!') %}
+              mdi:clock
+              {%- endif %}
+            picture: >-
+              {{ state_attr(entity, "entity_picture") }}
+            badge_color: green
+            tap_action: none
+            card_mod:
+              style:
+                mushroom-state-info$: |
+                  .primary {
+                    font-size: 16px !important;
+                    white-space: normal !important;
+                  }
+                  .secondary {
+                    font-size: 15px !important;
+                  }
+                .: |
+                  ha-card {
+                    background: none !important;
+                    --ha-card-box-shadow: 0px;
+                    transform: translate3d(0,0,0);
+                    -webkit-transform: translate3d(0,0,0);
+                    --ha-card-border-width: 0;
+                    background: url( {{ state_attr(config.entity, "entity_picture") }} ), linear-gradient(to left, transparent, rgb(var(--rgb-card-background-color))50%) center no-repeat;
+                  }
+                  ha-card::before {
+                    transform: translate3d(0,0,0);
+                    -webkit-transform: translate3d(0,0,0);
+                    content: "";
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    background: url( {{ state_attr(config.entity, "entity_picture") }} ) center no-repeat;
+                    filter: blur(150px) saturate(400%);
+                    background-size: 0% 100%;
+                  }
+
+          - type: "custom:auto-entities"
+            sort:
+              method: attribute
+              attribute: sortorder
+            card_param: cards
+            filter:
+              template: >-
+                {% for s in states|selectattr('entity_id','search','sensor.sport_') | selectattr("attributes.sortorder", "!=", 999) | sort(attribute="attributes.sortorder")  -%}
+                  {{
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "{{ state_attr(entity, \"friendly_name\") }}",
+                      "multiline_secondary": true,
+                      "secondary": "{{ state_attr(entity, \"nextevent\") }} ({{ state_attr(entity, \"nexttime\") }})\n{{ state_attr(entity, \"location\") }}",
+                      "entity": s.entity_id,
+                      "badge_icon": "{%- if is_state_attr(entity, 'nexttime', 'On Now!') %} mdi:clock {%- endif %}",
+                      "picture": "{{ state_attr(entity, \"entity_picture\") }}",
+                      "badge_color": "green",
+                      "tap_action": "none",
+                      "card_mod": {
+                        "style": {
+                          "mushroom-state-info$": ".primary {\n  font-size: 16px !important;\n  white-space: normal !important;\n}\n",
+                          ".": "ha-card {\n  background: none !important;\n  --ha-card-box-shadow: 0px;\n}\n"
+                        }
+                      }
+                    }
+                  }},
+                {%- endfor %}
+            show_empty: false
+            card:
+              type: "custom:swipe-card"
+              parameters:
+                direction: vertical
+                autoHeight: true
+                height: 112
+                effect: cube
+                autoplay:
+                  delay: 2000
+                cubeEffect:
+                  - slideShadows: false
+            view_layout:
+              grid-column: 1/-1
+              grid-row: 3/4
+
       - type: custom:stack-in-card
         mode: vertical
         cards:

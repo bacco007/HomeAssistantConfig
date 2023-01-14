@@ -7,17 +7,17 @@ sensor:
         friendly_name: Manchester United
         entity_picture_template: /local/sportlogos/manu.png
         value_template: >-
-          {%- if state_attr('calendar.ical_manchester_united', 'message') %}
-            {{ state_attr('calendar.ical_manchester_united', 'message') }}
+          {%- if state_attr('sensor.ical_manchester_united_event_0', 'summary') %}
+            {{ state_attr('sensor.ical_manchester_united_event_0', 'summary') }}
           {%- else %}
             Nothing Scheduled
           {%- endif %}
         attribute_templates:
           nexttime: >-
-            {%- if is_state('calendar.ical_manchester_united', 'on') %}
+            {%- if state_attr('sensor.ical_manchester_united_event_0', 'eta') <= 0 %}
               On Now!
             {%- else %}
-              {%- set st = state_attr('calendar.ical_manchester_united', 'start_time') %}
+              {%- set st = state_attr('sensor.ical_manchester_united_event_0', 'start') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                 {%- if diff > 6 %}
@@ -30,25 +30,40 @@ sensor:
               {%- endif %}
             {%- endif %}
           nextevent: >-
-            {%- set op = state_attr('calendar.ical_manchester_united', 'message') %}
-            {%- set st = state_attr('calendar.ical_manchester_united', 'start_time') %}
+            {%- set op = state_attr('sensor.ical_manchester_united_event_0', 'summary') %}
+            {%- set st = state_attr('sensor.ical_manchester_united_event_0', 'start') %}
             {%- if st != None %}
               {{ op }}
             {%- else %}
               No Game Scheduled
             {%- endif %}
           nextlocation: >-
-            {%- set op = state_attr('calendar.ical_manchester_united', 'location') %}
+            {%- set op = state_attr('sensor.ical_manchester_united_event_0', 'location') %}
             {%- if op != None %}
               {{ op }}
             {%- else %}
               No Location Noted
             {%- endif %}
+          nexteventafter: >-
+            {%- set op = state_attr('sensor.ical_manchester_united_event_1', 'summary') %}
+            {%- set st = state_attr('sensor.ical_manchester_united_event_1', 'start') %}
+            {%- set et = state_attr('sensor.ical_manchester_united_event_1', 'eta') %}
+            {%- if st != None %}
+                {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+                {%- if diff > 6 %}
+                  {%- set nt = diff + " Days" %}
+                {%- else %}
+                  {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+                {%- endif %}
+              {{ op }} ({{ nt }})
+            {%- else %}
+              No Game Scheduled
+            {%- endif %}
           sortorder: >-
-            {%- if is_state('calendar.ical_manchester_united', 'on') %}
+            {%- if is_state_attr('sensor.ical_manchester_united_event_0', 'eta', '0') %}
               0.0
             {%- else %}
-              {%- set st = state_attr('calendar.ical_manchester_united', 'start_time') %}
+              {%- set st = state_attr('sensor.ical_manchester_united_event_0', 'start') %}
               {%- if st != None %}
                 {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
                   {{ diff }}.0
