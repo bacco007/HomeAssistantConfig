@@ -343,6 +343,72 @@ cards:
                       background: none;
                     }
 
+          - type: horizontal-stack
+            cards:
+              - type: custom:stack-in-card
+                cards:
+                  - type: custom:gap-card
+                    height: 2
+                  - type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      grid-template-columns: auto 33px
+                      margin: "-4px -4px -8px -4px;"
+                    cards:
+                      - type: custom:mushroom-template-card
+                        entity: ""
+                        primary: LGA Incidents
+                        secondary: >
+                          {% if is_state('sensor.getdata_livetrafficnsw_incidentslga','') %} Inget
+                          bortkopplat {%else%}  Enheter är bortkopplade {% endif %}
+                        icon: >
+                          {% if is_state('sensor.getdata_livetrafficnsw_incidentslga','') %}
+                          mdi:check-circle {%else%}  mdi:alert-circle {% endif %}
+                        icon_color: >
+                          {% if is_state('sensor.getdata_livetrafficnsw_incidentslga','') %} grey {%else%}
+                          red {% endif %}
+                        fill_container: false
+                        multiline_secondary: false
+                        card_mod:
+                          style: |
+                            ha-card {
+                              background: none;
+                              --ha-card-border-width: 0;
+                            }
+                      - type: custom:mushroom-template-card
+                        entity: input_boolean.mushroom_unavailable_card
+                        icon: >-
+                          {{ 'mdi:chevron-up' if is_state(entity, 'on') else
+                          'mdi:chevron-down' }}
+                        icon_color: black
+                        hold_action:
+                          action: none
+                        card_mod:
+                          style: |
+                            ha-card {
+                              align-items: flex-end;
+                              background: none;
+                              --ha-card-border-width: 0;
+                            }
+                            mushroom-shape-icon {
+                              --shape-color: none !important;
+                            }
+                  - type: conditional
+                    conditions:
+                      - entity: input_boolean.mushroom_unavailable_card
+                        state: "on"
+                    card:
+                      type: custom:stack-in-card
+                      cards:
+                        - type: markdown
+                          content: |
+                            {{states('sensor.getdata_livetrafficnsw_incidentslga')}}
+                      card_mod: null
+                      style: |
+                        ha-card {
+                        --ha-card-border-width: 0;
+                        }
+
           - type: "custom:auto-entities"
             sort:
               method: attribute
