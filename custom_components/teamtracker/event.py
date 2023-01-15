@@ -63,7 +63,7 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
                 competitor = await async_get_value(competition, "competitors", team_index)
                 matched_index = -1
                 if competitor["type"] == "team":
-                    if search_key == await async_get_value(competitor, "team", "abbreviation", default=""):
+                    if search_key == await async_get_value(competitor, "team", "abbreviation", default="") or (search_key == "*"):
                         matched_index = team_index
                         _LOGGER.debug("%s: Found competition for '%s' in team abbreviation; parsing data.", sensor_name, search_key)
                     else: # Abbreviations in event_name can be different than team_abbr so try that too
@@ -131,12 +131,13 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
             _LOGGER.debug("%s: async_process_event() No competitions for this event: %s", sensor_name, await async_get_value(event, "shortName", default="{shortName}"))
 
     if found_competitor == False:
+        first_date = (date.today() - timedelta(days = 1)).strftime("%Y-%m-%dT%H:%MZ")
+        last_date =  (date.today() + timedelta(days = 5)).strftime("%Y-%m-%dT%H:%MZ")
+
         if limit_hit:
-            values["api_message"] = "API_LIMIT hit.  No competition found for '" + team_id + "'"
-            _LOGGER.debug("%s: API_LIMIT(%s) hit.  No competitor information '%s' returned by API", sensor_name, API_LIMIT, search_key)
+            values["api_message"] = "API_LIMIT hit.  No competition found for '" + team_id + "' between " + first_date + " and " + last_date
+            _LOGGER.debug("%s: API_LIMIT hit (%s).  No competitor information '%s' returned by API", sensor_name, API_LIMIT, search_key)
         else:
-            first_date = (date.today() - timedelta(days = 1)).strftime("%Y-%m-%dT%H:%MZ")
-            last_date =  (date.today() + timedelta(days = 5)).strftime("%Y-%m-%dT%H:%MZ")
             values["api_message"] = "No competition scheduled for '" + team_id + "' between " + first_date + " and " + last_date
             _LOGGER.debug("%s: No competitor information '%s' returned by API", sensor_name, search_key)
 

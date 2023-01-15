@@ -275,7 +275,7 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
         league_id = config[CONF_LEAGUE_ID].upper()
         sport_path = config[CONF_SPORT_PATH]
         league_path = config[CONF_LEAGUE_PATH]
-        url_parms = "?lang=" + lang[:2] + "?limit=" + str(API_LIMIT)
+        url_parms = "?lang=" + lang[:2] + "&limit=" + str(API_LIMIT)
 
         d1 = (date.today() - timedelta(days = 1)).strftime("%Y%m%d")
         d2 = (date.today() + timedelta(days = 5)).strftime("%Y%m%d")
