@@ -1,0 +1,90 @@
+---
+sensor:
+{%- set list = states|selectattr('entity_id','search','calendar.ical_')|list %}
+{%- for l in list %}
+{%- set ent_id = l.entity_id | replace('calendar.', 'sensor.') + "_event_0" %}
+{%- set ent_id2 = ent_id | replace('_event_0', '_event_1') %}
+{%- set ent_name = l.attributes.friendly_name %}
+  {{"# " + ent_name }}
+  - name: sport_{{ent_name | lower | replace(" ","_") | replace("(","") | replace(")","") }}
+    unique_id: sport_{{ent_name | lower | replace(" ","_") | replace("(","") | replace(")","") }}
+    icon: "mdi:football-australian"
+    picture: /local/sportlogos/{{ent_name | lower | replace(" ","_") | replace("(","") | replace(")","") }}.png
+    state: >-
+      {%- raw %}
+      {%- if state_attr("{% endraw %}{{ent_id}}{% raw %}", 'summary') %}
+        {{ state_attr("{% endraw %}{{ent_id}}{% raw %}", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+      {%- endraw %}
+    attributes:
+      nexttime: >-
+        {%- raw %}
+        {%- if state_attr("{% endraw %}{{ent_id}}{% raw %}", 'eta') <= 0 %}
+          On Now!
+        {%- else %}
+          {%- set st = state_attr("{% endraw %}{{ent_id}}{% raw %}", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              In {{ diff }} Days
+            {%- else %}
+              {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+            {%- endif %}
+          {%- else %}
+            No Time
+          {%- endif %}
+        {%- endif %}
+        {%- endraw %}
+      nextevent: >-
+        {%- raw %}
+        {%- set op = state_attr("{% endraw %}{{ent_id}}{% raw %}", 'summary') %}
+        {%- set st = state_attr("{% endraw %}{{ent_id}}{% raw %}", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+        {%- endraw %}
+      nextlocation: >-
+        {%- raw %}
+        {%- set op = state_attr("{% endraw %}{{ent_id}}{% raw %}", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+        {%- endraw %}
+      nexteventafter: >-
+        {%- raw %}
+        {%- set op = state_attr("{% endraw %}{{ent_id2}}{% raw %}", 'summary') %}
+        {%- set st = state_attr("{% endraw %}{{ent_id2}}{% raw %}", 'start') %}
+        {%- set et = state_attr("{% endraw %}{{ent_id2}}{% raw %}", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+        {%- endraw %}
+      sortorder: >-
+        {%- raw %}
+        {%- if is_state_attr("{% endraw %}{{ent_id}}{% raw %}", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("{% endraw %}{{ent_id}}{% raw %}", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+        {%- endraw %}
+{% endfor %}

@@ -1,0 +1,20 @@
+---
+id: notifications_restore
+alias: "Notifications: Restore"
+initial_state: true
+trigger:
+  - platform: mqtt
+    topic: home-assistant/notifications/+
+condition:
+  - condition: template
+    value_template: >-
+      {{ trigger.payload != '' and state_attr("persistent_notification." + trigger.payload_json.notification_id | replace("-","_"),"message") != trigger.payload_json.message }}
+action:
+  - service: persistent_notification.create
+    data:
+      title: >-
+        {{ trigger.payload_json.title }}
+      message: >-
+        {{ trigger.payload_json.message }}
+      notification_id: >-
+        {{ trigger.payload_json.notification_id }}

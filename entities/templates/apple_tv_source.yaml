@@ -1,0 +1,11 @@
+---
+sensor:
+  - name: apple_tv_source
+    unique_id: apple_tv_source
+    icon: >-
+      phu:apple-tv-box
+    state: >-
+      {%- set dev = 'media_player.bedroom_apple_tv' %}
+      {{ is_state(dev, 'idle') | iif("Not Playing", state_attr(dev, 'app_name')|default("Not Playing", true)) }}
+    attributes:
+      friendly_name: Bedroom Apple TV Source

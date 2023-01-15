@@ -1,0 +1,16 @@
+---
+id: notifications_remove_on_dismiss
+alias: "Notifications: Remove on Dismiss"
+mode: parallel
+initial_state: true
+trigger:
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: persistent_notification
+      service: dismiss
+action:
+  - service: mqtt.publish
+    data:
+      topic: "home-assistant/notifications/{{ trigger.event.data.service_data.notification_id }}"
+      retain: true

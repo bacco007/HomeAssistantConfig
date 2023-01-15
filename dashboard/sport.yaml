@@ -147,6 +147,20 @@ cards:
                 - template: sport_cal
                   type: custom:button-card
                   variables:
+                    entity_part: sensor.ical_formula_2_event_
+                    icon: /local/sportlogos/f2.png
+                    limit: 5
+                    replace: "F2 - "
+                - template: sport_cal
+                  type: custom:button-card
+                  variables:
+                    entity_part: sensor.ical_formula_3_event_
+                    icon: /local/sportlogos/f3.png
+                    limit: 5
+                    replace: "F3 - "
+                - template: sport_cal
+                  type: custom:button-card
+                  variables:
                     entity_part: sensor.ical_formula_e_event_
                     icon: /local/sportlogos/formulae.png
                     limit: 5

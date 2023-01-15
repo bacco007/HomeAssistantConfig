@@ -1,0 +1,3235 @@
+---
+sensor:
+  # AFL (All Teams)
+  - name: sport_afl_all_teams
+    unique_id: sport_afl_all_teams
+    icon: "mdi:football-australian"
+    picture: /local/sportlogos/afl_all_teams.png
+    state: >-
+      {%- if state_attr("sensor.ical_afl_all_teams_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_afl_all_teams_event_0", 'summary').split(" - ")[0] }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: AFL (All Teams)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_afl_all_teams_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_afl_all_teams_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_afl_all_teams_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_afl_all_teams_event_0", 'summary').split(" - ")[0] %}
+        {%- set st = state_attr("sensor.ical_afl_all_teams_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_afl_all_teams_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_afl_all_teams_event_1", 'summary').split(" - ")[0] %}
+        {%- set st = state_attr("sensor.ical_afl_all_teams_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_afl_all_teams_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_afl_all_teams_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_afl_all_teams_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Anaheim Ducks
+  - name: sport_anaheim_ducks
+    unique_id: sport_anaheim_ducks
+    icon: mdi:hockey-puck
+    picture: /local/sportlogos/anaheim_ducks.svg
+    state: >-
+      {%- if state_attr("sensor.ical_anaheim_ducks_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_anaheim_ducks_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Anaheim Ducks
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_anaheim_ducks_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_anaheim_ducks_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_anaheim_ducks_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_anaheim_ducks_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_anaheim_ducks_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_anaheim_ducks_event_0", 'location').split(', ')[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_anaheim_ducks_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_anaheim_ducks_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_anaheim_ducks_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }}({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_anaheim_ducks_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_anaheim_ducks_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Australia (Cricket)
+  - name: sport_australia_cricket
+    unique_id: sport_australia_cricket
+    icon: "mdi:cricket"
+    picture: /local/sportlogos/australia_cricket.png
+    state: >-
+      {%- if state_attr("sensor.ical_australia_cricket_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_australia_cricket_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Australia (Cricket)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_australia_cricket_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_australia_cricket_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_australia_cricket_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_australia_cricket_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_australia_cricket_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_australia_cricket_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_australia_cricket_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_australia_cricket_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_australia_cricket_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_australia_cricket_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_australia_cricket_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Australia (Cricket) Women
+  - name: sport_australia_cricket_women
+    unique_id: sport_australia_cricket_women
+    icon: "mdi:cricket"
+    picture: /local/sportlogos/australia_cricket_women.png
+    state: >-
+      {%- if state_attr("sensor.ical_australia_cricket_women_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_australia_cricket_women_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Australia (Cricket) Women
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_australia_cricket_women_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_australia_cricket_women_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_australia_cricket_women_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_australia_cricket_women_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_australia_cricket_women_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_australia_cricket_women_event_0", 'location').title() %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_australia_cricket_women_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_australia_cricket_women_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_australia_cricket_women_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_australia_cricket_women_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_australia_cricket_women_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # BTCC
+  - name: sport_btcc
+    unique_id: sport_btcc
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/btcc.png
+    state: >-
+      {%- if state_attr("sensor.ical_btcc_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_btcc_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: BTCC
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_btcc_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_btcc_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_btcc_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_btcc_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_btcc_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_btcc_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_btcc_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_btcc_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_btcc_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_btcc_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_btcc_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # DTM
+  - name: sport_dtm
+    unique_id: sport_dtm
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/dtm.png
+    state: >-
+      {%- if state_attr("sensor.ical_dtm_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_dtm_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: DTM
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_dtm_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_dtm_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_dtm_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_dtm_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_dtm_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_dtm_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_dtm_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_dtm_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_dtm_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_dtm_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_dtm_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Extreme E
+  - name: sport_extreme_e
+    unique_id: sport_extreme_e
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/extreme_e.png
+    state: >-
+      {%- if state_attr("sensor.ical_extreme_e_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_extreme_e_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Extreme E
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_extreme_e_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_extreme_e_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_extreme_e_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_extreme_e_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_extreme_e_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_extreme_e_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_extreme_e_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_extreme_e_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_extreme_e_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_extreme_e_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_extreme_e_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # F1
+  - name: sport_f1
+    unique_id: sport_f1
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/f1.png
+    state: >-
+      {%- if state_attr("sensor.ical_f1_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_f1_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Formula 1
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_f1_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_f1_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_f1_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_f1_event_0", 'summary').title() %}
+        {%- set st = state_attr("sensor.ical_f1_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_f1_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_f1_event_1", 'summary').title() %}
+        {%- set st = state_attr("sensor.ical_f1_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_f1_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_f1_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_f1_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Formula 2
+  - name: sport_formula_2
+    unique_id: sport_formula_2
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/formula_2.png
+    state: >-
+      {%- if state_attr("sensor.ical_formula_2_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_formula_2_event_0", 'summary') | replace("F2 - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Formula 2
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_formula_2_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_formula_2_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_formula_2_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_formula_2_event_0", 'summary') | replace("F2 - ","") %}
+        {%- set st = state_attr("sensor.ical_formula_2_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_formula_2_event_0", 'location').split(', ')[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_formula_2_event_1", 'summary') | replace("F2 - ","") %}
+        {%- set st = state_attr("sensor.ical_formula_2_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_formula_2_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_formula_2_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_formula_2_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Formula 3
+  - name: sport_formula_3
+    unique_id: sport_formula_3
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/formula_3.png
+    state: >-
+      {%- if state_attr("sensor.ical_formula_3_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_formula_3_event_0", 'summary') | replace("F3 - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Formula 3
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_formula_3_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_formula_3_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_formula_3_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_formula_3_event_0", 'summary') | replace("F3 - ","") %}
+        {%- set st = state_attr("sensor.ical_formula_3_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_formula_3_event_0", 'location').split(", ",1)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_formula_3_event_1", 'summary') | replace("F3 - ","") %}
+        {%- set st = state_attr("sensor.ical_formula_3_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_formula_3_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_formula_3_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_formula_3_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Formula E
+  - name: sport_formula_e
+    unique_id: sport_formula_e
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/formula_e.png
+    state: >-
+      {%- if state_attr("sensor.ical_formula_e_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_formula_e_event_0", 'summary') | replace("Formula E - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Formula E
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_formula_e_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_formula_e_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_formula_e_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_formula_e_event_0", 'summary') | replace("Formula E - ","")  %}
+        {%- set st = state_attr("sensor.ical_formula_e_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_formula_e_event_0", 'location').split(", ",1)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_formula_e_event_1", 'summary') | replace("Formula E - ","")  %}
+        {%- set st = state_attr("sensor.ical_formula_e_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_formula_e_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_formula_e_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_formula_e_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # GT World Challenge Asia
+  - name: sport_gt_world_challenge_asia
+    unique_id: sport_gt_world_challenge_asia
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/gt_world_challenge_asia.png
+    state: >-
+      {%- if state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: GT World Challenge Asia
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # IGTC
+  - name: sport_igtc
+    unique_id: sport_igtc
+    icon: "mdi:car-sportsigtc"
+    picture: /local/sportlogos/igtc.png
+    state: >-
+      {%- if state_attr("sensor.ical_igtc_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_igtc_event_0", 'summary') | replace("IGTC - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: IGTC
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_igtc_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_igtc_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_igtc_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_igtc_event_0", 'summary') | replace("IGTC - ","") %}
+        {%- set st = state_attr("sensor.ical_igtc_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_igtc_event_0", 'location').split(", ",2)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_igtc_event_1", 'summary') | replace("IGTC - ","") %}
+        {%- set st = state_attr("sensor.ical_igtc_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_igtc_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_igtc_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_igtc_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # IMSA
+  - name: sport_imsa
+    unique_id: sport_imsa
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/imsa.png
+    state: >-
+      {%- if state_attr("sensor.ical_imsa_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_imsa_event_0", 'summary') | replace("IMSA WeatherTech Championship - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: IMSA
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_imsa_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_imsa_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_imsa_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_imsa_event_0", 'summary') | replace("IMSA WeatherTech Championship - ","") %}
+        {%- set st = state_attr("sensor.ical_imsa_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_imsa_event_0", 'location').split(", ",2)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_imsa_event_1", 'summary') | replace("IMSA WeatherTech Championship - ","") %}
+        {%- set st = state_attr("sensor.ical_imsa_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_imsa_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_imsa_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_imsa_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # IndyCar
+  - name: sport_indycar
+    unique_id: sport_indycar
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/indycar.png
+    state: >-
+      {%- if state_attr("sensor.ical_indycar_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_indycar_event_0", 'summary')[5:]|trim}}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: IndyCar
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_indycar_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_indycar_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_indycar_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_indycar_event_0", 'summary')[5:] %}
+        {%- set st = state_attr("sensor.ical_indycar_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_indycar_event_0", 'summary')[5:] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_indycar_event_1", 'summary')[5:] %}
+        {%- set st = state_attr("sensor.ical_indycar_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_indycar_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_indycar_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_indycar_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # International Cricket (Mens)
+  - name: sport_international_cricket_mens
+    unique_id: sport_international_cricket_mens
+    icon: "mdi:cricket"
+    picture: /local/sportlogos/international_cricket_mens.png
+    state: >-
+      {%- if state_attr("sensor.ical_international_cricket_mens_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_international_cricket_mens_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: International Cricket (Mens)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_international_cricket_mens_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_international_cricket_mens_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_international_cricket_mens_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_international_cricket_mens_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_international_cricket_mens_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_international_cricket_mens_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_international_cricket_mens_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_international_cricket_mens_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_international_cricket_mens_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_international_cricket_mens_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_international_cricket_mens_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # International Rugby (All Teams)
+  - name: sport_international_rugby_all_teams
+    unique_id: sport_international_rugby_all_teams
+    icon: "mdi:football"
+    picture: /local/sportlogos/international_rugby_all_teams.png
+    state: >-
+      {%- if state_attr("sensor.ical_international_rugby_all_teams_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_international_rugby_all_teams_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: International Rugby (All Teams)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_international_rugby_all_teams_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_international_rugby_all_teams_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_international_rugby_all_teams_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_international_rugby_all_teams_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_international_rugby_all_teams_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_international_rugby_all_teams_event_0", 'location').split(", ",2)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_international_rugby_all_teams_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_international_rugby_all_teams_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_international_rugby_all_teams_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_international_rugby_all_teams_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_international_rugby_all_teams_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Manchester United
+  - name: sport_manchester_united
+    unique_id: sport_manchester_united
+    icon: "mdi:soccer"
+    picture: /local/sportlogos/manchester_united.png
+    state: >-
+      {%- if state_attr("sensor.ical_manchester_united_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_manchester_united_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Manchester United
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_manchester_united_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_manchester_united_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_manchester_united_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_manchester_united_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_manchester_united_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_manchester_united_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_manchester_united_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_manchester_united_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_manchester_united_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_manchester_united_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_manchester_united_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Misc Motorsport
+  - name: sport_misc_motorsport
+    unique_id: sport_misc_motorsport
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/misc_motorsport.png
+    state: >-
+      {%- if state_attr("sensor.ical_misc_motorsport_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_misc_motorsport_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Misc Motorsports
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_misc_motorsport_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_misc_motorsport_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_misc_motorsport_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_misc_motorsport_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_misc_motorsport_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_misc_motorsport_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_misc_motorsport_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_misc_motorsport_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_misc_motorsport_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_misc_motorsport_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_misc_motorsport_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # MotoGP
+  - name: sport_motogp
+    unique_id: sport_motogp
+    icon: "mdi:motorbike"
+    picture: /local/sportlogos/motogp.png
+    state: >-
+      {%- if state_attr("sensor.ical_motogp_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_motogp_event_0", 'summary')|replace("MotoGP - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: MotoGP
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_motogp_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_motogp_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_motogp_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_motogp_event_0", 'summary')|replace("MotoGP - ","") %}
+        {%- set st = state_attr("sensor.ical_motogp_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_motogp_event_0", 'location').split(", ",2)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_motogp_event_1", 'summary')|replace("MotoGP - ","") %}
+        {%- set st = state_attr("sensor.ical_motogp_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_motogp_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_motogp_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_motogp_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Nascar Cup Series
+  - name: sport_nascar_cup_series
+    unique_id: sport_nascar_cup_series
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/nascar_cup_series.png
+    state: >-
+      {%- if state_attr("sensor.ical_nascar_cup_series_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_nascar_cup_series_event_0", 'summary')|replace("🏁 ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Nascar Cup Series
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_nascar_cup_series_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_nascar_cup_series_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_nascar_cup_series_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_nascar_cup_series_event_0", 'summary')|replace("🏁 ","")  %}
+        {%- set st = state_attr("sensor.ical_nascar_cup_series_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_nascar_cup_series_event_0", 'location')| replace("NASCAR Cup Series at ","") | replace(". Watch now on FOX. Tap for race details, viewing information and more!","") %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_nascar_cup_series_event_1", 'summary')|replace("🏁 ","")  %}
+        {%- set st = state_attr("sensor.ical_nascar_cup_series_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_nascar_cup_series_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_nascar_cup_series_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_nascar_cup_series_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Nascar Xfinity Series
+  - name: sport_nascar_xfinity_series
+    unique_id: sport_nascar_xfinity_series
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/nascar_xfinity_series.png
+    state: >-
+      {%- if state_attr("sensor.ical_nascar_xfinity_series_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_nascar_xfinity_series_event_0", 'summary')|replace("🏁 ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Nascar Xfinity Series
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_nascar_xfinity_series_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_nascar_xfinity_series_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_nascar_xfinity_series_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_nascar_xfinity_series_event_0", 'summary')|replace("🏁 ","") %}
+        {%- set st = state_attr("sensor.ical_nascar_xfinity_series_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_nascar_xfinity_series_event_0", 'location')| replace("NASCAR Xfinity Series at ","") | replace(". Watch now on FS1. Tap for race details, viewing information and more!","") %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_nascar_xfinity_series_event_1", 'summary')|replace("🏁 ","") %}
+        {%- set st = state_attr("sensor.ical_nascar_xfinity_series_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_nascar_xfinity_series_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_nascar_xfinity_series_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_nascar_xfinity_series_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # New England Patriots
+  - name: sport_new_england_patriots
+    unique_id: sport_new_england_patriots
+    icon: "mdi:football-helmet"
+    picture: /local/sportlogos/new_england_patriots.png
+    state: >-
+      {%- if state_attr("sensor.ical_new_england_patriots_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_new_england_patriots_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: New England Patriots
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_new_england_patriots_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_new_england_patriots_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_new_england_patriots_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_new_england_patriots_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_new_england_patriots_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_new_england_patriots_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_new_england_patriots_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_new_england_patriots_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_new_england_patriots_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_new_england_patriots_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_new_england_patriots_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # New York Yankees
+  - name: sport_new_york_yankees
+    unique_id: sport_new_york_yankees
+    icon: "mdi:baseball-bat"
+    picture: /local/sportlogos/new_york_yankees.png
+    state: >-
+      {%- if state_attr("sensor.ical_new_york_yankees_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_new_york_yankees_event_0", 'summary') | replace("⚾️ ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: New York Yankees
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_new_york_yankees_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_new_york_yankees_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_new_york_yankees_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_new_york_yankees_event_0", 'summary') | replace("⚾️ ","") %}
+        {%- set st = state_attr("sensor.ical_new_york_yankees_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_new_york_yankees_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_new_york_yankees_event_1", 'summary') | replace("⚾️ ","") %}
+        {%- set st = state_attr("sensor.ical_new_york_yankees_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_new_york_yankees_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_new_york_yankees_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_new_york_yankees_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Newcastle Knights
+  - name: sport_newcastle_knights
+    unique_id: sport_newcastle_knights
+    icon: "mdi:football"
+    picture: /local/sportlogos/newcastle_knights.svg
+    state: >-
+      {%- if state_attr("sensor.ical_newcastle_knights_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_newcastle_knights_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Newcastle Knights
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_newcastle_knights_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_newcastle_knights_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_newcastle_knights_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_newcastle_knights_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_newcastle_knights_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_newcastle_knights_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_newcastle_knights_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_newcastle_knights_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_newcastle_knights_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_newcastle_knights_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_newcastle_knights_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # NRL (All Teams)
+  - name: sport_nrl_all_teams
+    unique_id: sport_nrl_all_teams
+    icon: "mdi:football"
+    picture: /local/sportlogos/nrl_all_teams.png
+    state: >-
+      {%- if state_attr("sensor.ical_nrl_all_teams_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_nrl_all_teams_event_0", 'summary').split(" - ",2)[0] }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: NRL (All Teams)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_nrl_all_teams_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_nrl_all_teams_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_nrl_all_teams_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_nrl_all_teams_event_0", 'summary').split(" - ",2)[0] %}
+        {%- set st = state_attr("sensor.ical_nrl_all_teams_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_nrl_all_teams_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_nrl_all_teams_event_1", 'summary').split(" - ",2)[0] %}
+        {%- set st = state_attr("sensor.ical_nrl_all_teams_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_nrl_all_teams_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_nrl_all_teams_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_nrl_all_teams_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # NSW Waratahs
+  - name: sport_nsw_waratahs
+    unique_id: sport_nsw_waratahs
+    icon: "mdi:football"
+    picture: /local/sportlogos/nsw_waratahs.png
+    state: >-
+      {%- if state_attr("sensor.ical_nsw_waratahs_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_nsw_waratahs_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: NSW Waratahs
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_nsw_waratahs_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_nsw_waratahs_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_nsw_waratahs_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_nsw_waratahs_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_nsw_waratahs_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_nsw_waratahs_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_nsw_waratahs_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_nsw_waratahs_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_nsw_waratahs_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_nsw_waratahs_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_nsw_waratahs_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Socceroos
+  - name: sport_socceroos
+    unique_id: sport_socceroos
+    icon: "mdi:soccer"
+    picture: /local/sportlogos/socceroos.png
+    state: >-
+      {%- if state_attr("sensor.ical_socceroos_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_socceroos_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Socceroos
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_socceroos_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_socceroos_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_socceroos_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_socceroos_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_socceroos_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_socceroos_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_socceroos_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_socceroos_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_socceroos_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_socceroos_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_socceroos_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Supercars
+  - name: sport_supercars
+    unique_id: sport_supercars
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/supercars.png
+    state: >-
+      {%- if state_attr("sensor.ical_supercars_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_supercars_event_0", 'summary') | replace("SUPERCARS: ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Supercars
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_supercars_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_supercars_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_supercars_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_supercars_event_0", 'summary') | replace("SUPERCARS: ","") %}
+        {%- set st = state_attr("sensor.ical_supercars_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_supercars_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_supercars_event_1", 'summary') | replace("SUPERCARS: ","") %}
+        {%- set st = state_attr("sensor.ical_supercars_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_supercars_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_supercars_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_supercars_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Swifts
+  - name: sport_swifts
+    unique_id: sport_swifts
+    icon: "mdi:handball"
+    picture: /local/sportlogos/swifts.png
+    state: >-
+      {%- if state_attr("sensor.ical_swifts_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_swifts_event_0", 'summary').split(" - ",2)[0] }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Swifts
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_swifts_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_swifts_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_swifts_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_swifts_event_0", 'summary').split(" - ",2)[0] %}
+        {%- set st = state_attr("sensor.ical_swifts_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_swifts_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_swifts_event_1", 'summary').split(" - ",2)[0] %}
+        {%- set st = state_attr("sensor.ical_swifts_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_swifts_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_swifts_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_swifts_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney FC
+  - name: sport_sydney_fc
+    unique_id: sport_sydney_fc
+    icon: "mdi:soccer"
+    picture: /local/sportlogos/sydney_fc.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_fc_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_fc_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney FC
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_fc_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_fc_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_fc_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_fc_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_fc_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_fc_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_fc_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_fc_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_fc_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_fc_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_fc_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney FC Women
+  - name: sport_sydney_fc_women
+    unique_id: sport_sydney_fc_women
+    icon: "mdi:soccer"
+    picture: /local/sportlogos/sydney_fc_women.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_fc_women_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_fc_women_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney FC Women
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_fc_women_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_fc_women_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_fc_women_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_fc_women_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_fc_women_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_fc_women_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_fc_women_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_fc_women_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_fc_women_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_fc_women_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_fc_women_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney Kings
+  - name: sport_sydney_kings
+    unique_id: sport_sydney_kings
+    icon: "mdi:basketball"
+    picture: /local/sportlogos/sydney_kings.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_kings_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_kings_event_0", 'summary')|replace("🏀","",2)|trim }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney Kings
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_kings_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_kings_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_kings_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_kings_event_0", 'summary')|replace("🏀","",2)|trim   %}
+        {%- set st = state_attr("sensor.ical_sydney_kings_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_kings_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_kings_event_1", 'summary')|replace("🏀","",2)|trim  %}
+        {%- set st = state_attr("sensor.ical_sydney_kings_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_kings_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_kings_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_kings_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney Sixers
+  - name: sport_sydney_sixers
+    unique_id: sport_sydney_sixers
+    icon: "mdi:cricket"
+    picture: /local/sportlogos/sydney_sixers.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_sixers_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_sixers_event_0", 'summary') | replace("🏏 ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney Sixers
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_sixers_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_sixers_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_sixers_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_sixers_event_0", 'summary') | replace("🏏 ","") %}
+        {%- set st = state_attr("sensor.ical_sydney_sixers_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_sixers_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_sixers_event_1", 'summary') | replace("🏏 ","") %}
+        {%- set st = state_attr("sensor.ical_sydney_sixers_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_sixers_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_sixers_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_sixers_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney Sixers Women
+  - name: sport_sydney_sixers_women
+    unique_id: sport_sydney_sixers_women
+    icon: "mdi:cricket"
+    picture: /local/sportlogos/sydney_sixers_women.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_sixers_women_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_sixers_women_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney Sixers Women
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_sixers_women_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_sixers_women_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_sixers_women_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_sixers_women_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_sixers_women_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_sixers_women_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_sixers_women_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_sixers_women_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_sixers_women_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_sixers_women_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_sixers_women_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney Swans
+  - name: sport_sydney_swans
+    unique_id: sport_sydney_swans
+    icon: "mdi:football-australian"
+    picture: /local/sportlogos/sydney_swans.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_swans_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_swans_event_0", 'summary').split(" - ",2)[0] }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney Swans
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_swans_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_swans_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_swans_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_event_0", 'summary').split(" - ",2)[0]  %}
+        {%- set st = state_attr("sensor.ical_sydney_swans_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_event_1", 'summary').split(" - ",2)[0]  %}
+        {%- set st = state_attr("sensor.ical_sydney_swans_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_swans_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_swans_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_swans_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney Swans AFLW
+  - name: sport_sydney_swans_aflw
+    unique_id: sport_sydney_swans_aflw
+    icon: "mdi:football-australian"
+    picture: /local/sportlogos/sydney_swans_aflw.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_swans_aflw_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_swans_aflw_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney Swans AFLW
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_swans_aflw_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_swans_aflw_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_swans_aflw_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_aflw_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_swans_aflw_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_aflw_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_aflw_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_swans_aflw_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_swans_aflw_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_swans_aflw_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_swans_aflw_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Sydney Swans (VFL)
+  - name: sport_sydney_swans_vfl
+    unique_id: sport_sydney_swans_vfl
+    icon: "mdi:football-australian"
+    picture: /local/sportlogos/sydney_swans_vfl.png
+    state: >-
+      {%- if state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Sydney Swans (VFL)
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_sydney_swans_vfl_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_sydney_swans_vfl_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # Wallabies
+  - name: sport_wallabies
+    unique_id: sport_wallabies
+    icon: "mdi:football"
+    picture: /local/sportlogos/wallabies.png
+    state: >-
+      {%- if state_attr("sensor.ical_wallabies_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_wallabies_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: Wallabies
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_wallabies_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_wallabies_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_wallabies_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_wallabies_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_wallabies_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_wallabies_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_wallabies_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_wallabies_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_wallabies_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Game Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_wallabies_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_wallabies_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # WEC
+  - name: sport_wec
+    unique_id: sport_wec
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/wec.png
+    state: >-
+      {%- if state_attr("sensor.ical_wec_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_wec_event_0", 'summary')|replace('FIA WEC - ',"")}}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: WEC
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_wec_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_wec_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_wec_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_wec_event_0", 'summary')|replace('FIA WEC - ',"") %}
+        {%- set st = state_attr("sensor.ical_wec_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_wec_event_0", 'location').split(", ",2)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_wec_event_1", 'summary')|replace('FIA WEC - ',"") %}
+        {%- set st = state_attr("sensor.ical_wec_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_wec_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_wec_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_wec_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # WorldSBK
+  - name: sport_worldsbk
+    unique_id: sport_worldsbk
+    icon: "mdi:motorbike"
+    picture: /local/sportlogos/worldsbk.png
+    state: >-
+      {%- if state_attr("sensor.ical_worldsbk_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_worldsbk_event_0", 'summary') | replace("WSBK - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: WorldSBK
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_worldsbk_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_worldsbk_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_worldsbk_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_worldsbk_event_0", 'summary') | replace("WSBK - ","")  %}
+        {%- set st = state_attr("sensor.ical_worldsbk_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_worldsbk_event_0", 'location').split(", ",2)[0] %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_worldsbk_event_1", 'summary') | replace("WSBK - ","")  %}
+        {%- set st = state_attr("sensor.ical_worldsbk_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_worldsbk_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_worldsbk_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_worldsbk_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # WRC
+  - name: sport_wrc
+    unique_id: sport_wrc
+    icon: "mdi:car-sport"
+    picture: /local/sportlogos/wrc.svg
+    state: >-
+      {%- if state_attr("sensor.ical_wrc_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_wrc_event_0", 'summary')|replace("WRC - ","") }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: WRC
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_wrc_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_wrc_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_wrc_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_wrc_event_0", 'summary')|replace("WRC - ","")  %}
+        {%- set st = state_attr("sensor.ical_wrc_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_wrc_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_wrc_event_1", 'summary')|replace("WRC - ","")  %}
+        {%- set st = state_attr("sensor.ical_wrc_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_wrc_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_wrc_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_wrc_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
