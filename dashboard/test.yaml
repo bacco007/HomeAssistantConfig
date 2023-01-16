@@ -80,16 +80,21 @@ cards:
                     font-size: 15px !important;
                   }
                 .: |
+                  ha-card:before {
+                    content: "";
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    right: 5px;
+                    background: url( {{ state_attr(config.entity, "entity_picture") }} ) center no-repeat, linear-gradient(to left, transparent, rgb(var(--rgb-card-background-color)) 50%);
+                    background-repeat: no-repeat;
+                    background-size: auto 100%, cover;
+                    background-position: right;
+                    background-blend-mode: saturation;
+                    filter: opacity(0.25);
+                  }
                   ha-card {
-                    # background: none !important;
-                    --ha-card-box-shadow: 0px;
-                    transform: translate3d(0,0,0);
-                    -webkit-transform: translate3d(0,0,0);
-                    --ha-card-border-width: 0;
-                    # background: url( {{ state_attr(config.entity, "entity_picture") }} ) center no-repeat, linear-gradient(to left, transparent, rgb(var(--rgb-card-background-color)) 50%);
-                    # background-repeat: no-repeat;
-                    # background-size: 20%;
-                    # background-position: right;
+                    background: none;
                   }
 
           - type: sensor
@@ -431,7 +436,7 @@ cards:
                       "card_mod": {
                         "style": {
                           "mushroom-state-info$": ".primary {\n  font-size: 16px !important;\n  white-space: normal !important;\n}\n.secondary {\n  font-size: 15px !important;\n}\n",
-                          ".": "ha-card {\n  background: none !important;\n  --ha-card-box-shadow: 0px;\n}\n"
+                          ".": "ha-card:before {\n  content: \"\";\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, \"entity_picture\") }} ) center no-repeat, linear-gradient(to left, transparent, rgb(var(--rgb-card-background-color)) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background: none;\n}\n"
                         }
                       }
                     }

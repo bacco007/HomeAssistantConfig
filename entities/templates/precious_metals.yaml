@@ -1,0 +1,17 @@
+---
+sensor:
+  - name: Precious Metals (AUD)
+    unique_id: precious_metals_aud
+    icon: mdi:gold
+    unit_of_measurement: "$"
+    state: >-
+      {{'%.2f'|format((states('sensor.open_exchange_rates_usd_aud')|round(4))/(states('sensor.open_exchange_rates_usd_xau')|round(4)))}}
+    attributes:
+      gold: >-
+        {{'%.2f'|format((states('sensor.open_exchange_rates_usd_aud')|round(4))/(states('sensor.open_exchange_rates_usd_xau')|round(4)))}}
+      palladium: >-
+        {{'%.2f'|format((states('sensor.open_exchange_rates_usd_aud')|round(4))/(states('sensor.open_exchange_rates_usd_xpd')|round(4)))}}
+      platinum: >-
+        {{'%.2f'|format((states('sensor.open_exchange_rates_usd_aud')|round(4))/(states('sensor.open_exchange_rates_usd_xpt')|round(4)))}}
+      silver: >-
+        {{'%.2f'|format((states('sensor.open_exchange_rates_usd_aud')|round(4))/(states('sensor.open_exchange_rates_usd_xag')|round(4)))}}
