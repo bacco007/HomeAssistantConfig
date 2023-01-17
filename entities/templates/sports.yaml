@@ -3158,10 +3158,10 @@ sensor:
         {%- endif %}
 
   # WRC
-  - name: sport_wrc
+  - name: WRC
     unique_id: sport_wrc
     icon: "mdi:car-sport"
-    picture: /local/sportlogos/wrc.svg
+    picture: /local/sportlogos/wrc.png
     state: >-
       {%- if state_attr("sensor.ical_wrc_event_0", 'summary') %}
         {{ state_attr("sensor.ical_wrc_event_0", 'summary')|replace("WRC - ","") }}
