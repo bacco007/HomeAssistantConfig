@@ -43,14 +43,17 @@ async def choose_third_step(options: Dict[str, Any]) -> str:
     """Return next step_id for options flow."""
     if const.CONF_HOLIDAY_POP_NAMED in options:
         # Remove holidays that do not exist
+        this_year = dt_util.now().date().year
+        years = [this_year - 1, this_year, this_year + 1]
         hol = create_holidays(
-            [dt_util.now().date().year],
+            years,
             options.get(const.CONF_COUNTRY, ""),
             options.get(const.CONF_SUBDIV, ""),
             False,
         )
+        holiday_names = list(dict.fromkeys(hol.values()))
         for pop in options[const.CONF_HOLIDAY_POP_NAMED]:
-            if pop not in hol.values():
+            if pop not in holiday_names:
                 options[const.CONF_HOLIDAY_POP_NAMED].remove(pop)
     return "pop"
 
@@ -149,15 +152,16 @@ async def pop_config_schema(
     handler: SchemaConfigFlowHandler | SchemaOptionsFlowHandler,
 ) -> vol.Schema:
     """Last step."""
+    this_year = dt_util.now().date().year
+    years = [this_year - 1, this_year, this_year + 1]
     hol = create_holidays(
-        [dt_util.now().date().year],
+        years,
         handler.options.get(const.CONF_COUNTRY, ""),
         handler.options.get(const.CONF_SUBDIV, ""),
         False,
     )
-    list_holidays = [
-        selector.SelectOptionDict(value=h, label=h) for h in sorted(hol.values())
-    ]
+    holiday_names = sorted(list(dict.fromkeys(hol.values())))
+    list_holidays = [selector.SelectOptionDict(value=h, label=h) for h in holiday_names]
     return vol.Schema(
         {
             optional(

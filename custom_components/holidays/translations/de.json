@@ -1,0 +1,72 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Feiertage (1/2)",
+                "description": "Geben Sie den Namen der Entität ein und konfigurieren Sie die Parameter. Mehr Infos unter https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Friendly Name",
+                    "icon_normal": "Icon (mdi:calendar-blank) - optional",
+                    "icon_tomorrow": "Icon Abholung morgen (mdi:calendar-arrow-right) - optional",
+                    "icon_today": "Icon Abholung heute (mdi:calendar-check) - optional",
+                    "country": "Land",
+                    "observed": "Überwacht (optional)"
+                }
+            },
+            "subdiv": {
+                "title": "Feiertage - (1½/2)",
+                "description": "Mehr Infos unter https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Feiertage - Untergliederung"
+                }
+            },
+            "pop": {
+                "title": "Feiertage - (2/2)",
+                "description": "Mehr Infos unter https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Feiertage ignorieren (Liste) - optional"
+                }
+            }
+        },
+        "error": {
+            "value": "Ungültiger Wert. Bitte überprüfen Sie Ihre Eingabe!",
+            "icon": "Icons sollten in der Form 'Präfix:Name' angegeben werden."
+        },
+        "abort": {
+            "single_instance_allowed": "Es ist nur eine einzige Konfiguration von Holidays zulässig."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Feiertage (1/2)",
+                "description": "Geben Sie den Namen der Entität ein und konfigurieren Sie die Parameter. Mehr Infos unter https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Icon (mdi:calendar-blank) - optional",
+                    "icon_tomorrow": "Icon Abfuhr morgen (mdi:calendar-arrow-right) - optional",
+                    "icon_today": "Icon Abfuhr heute (mdi:calendar-check) - optional",
+                    "country": "Land",
+                    "observed": "Überwacht (optional)"
+                }
+            },
+            "subdiv": {
+                "title": "Feiertage - (1½/2)",
+                "description": "Mehr Infos unter https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Feiertage - Untergliederung"
+                }
+            },
+            "pop": {
+                "title": "Feiertage - (2/2)",
+                "description": "Mehr Infos unter https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Feiertage ignorieren (Liste) - optional"
+                }
+            }
+        },
+        "error": {
+            "value": "Ungültiger Wert. Bitte überprüfen Sie Ihre Eingabe!",
+            "icon": "Icons sollten in der Form 'Präfix:Name' angegeben werden."
+        }
+    }
+}

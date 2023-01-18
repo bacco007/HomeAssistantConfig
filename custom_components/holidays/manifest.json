@@ -1,7 +1,7 @@
 {
   "domain": "holidays",
   "name": "Holidays",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "documentation": "https://github.com/bruxy70/Holidays/",
   "issue_tracker": "https://github.com/bruxy70/Holidays/issues",
   "iot_class": "calculated",
