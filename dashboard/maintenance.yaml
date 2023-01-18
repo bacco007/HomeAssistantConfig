@@ -14,7 +14,7 @@ cards:
   - type: "custom:layout-card"
     layout_type: "custom:grid-layout"
     layout:
-      grid-template-columns: "repeat(auto-fill, [col-start] minmax(420px, 1fr) [col-end])"
+      grid-template-columns: "repeat(auto-fill, [col-start] minmax(450px, 1fr) [col-end])"
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
@@ -508,3 +508,134 @@ cards:
             showDescription: false
             entities:
               - entity: calendar.home_assistant_devs
+
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: HOME ASSISTANT SERVER
+            view_layout:
+              grid-column: 1/-1
+
+          - type: vertical-stack
+            cards:
+              - type: entities
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-style: none;
+                      background: none;
+                      --mush-title-padding: 0px 0px 0px;
+                    }
+                    div.card-content {
+                      padding-bottom: 0px
+                    }
+                entities:
+                  - type: custom:mushroom-title-card
+                    title: Add-ons
+                    subtitle: >-
+                      {{ integration_entities('Supervisor') | map('device_id') | unique |
+                      list | length }} Add-ons installed
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  card_mod:
+                    style: |
+                      ha-card {
+                        border-style: none;
+                        background: none;
+                        --mush-title-font-size: 20px;
+                        --mush-title-padding: 0px 5px 0px;
+                      }
+                      h1.card-header{
+                        padding: 6px 16px 0px;
+                      }
+                      div.card-content {
+                        padding-top: 0px
+                      }
+                filter:
+                  template: >
+                    {%- set dev = namespace() %} {%- set dev.name = '' %} {%- set
+                    dev.running = '' %} {%- set dev.newest_version = '' %} {%- set
+                    dev.version = '' %} {%- set dev.cpu_percent = '' %} {%- set
+                    dev.memory_percent = '' %} {%- set dev.update = '' %}
+
+                    {%- for devid in (integration_entities('Supervisor') | map('device_id')
+                    | unique) %}
+                      {%- set dev.name = device_attr(devid, "name") %}
+                      {%- for ent in device_entities(devid) %}
+                        {%- if (ent.find("running") | int>=0) %}
+                          {%- set dev.running = ent %}
+                        {%- endif %}
+                        {%- if (ent.find("newest_version") | int>=0) %}
+                          {%- set dev.newest_version = ent %}
+                        {%- endif %}
+                        {%- if (ent.find("version") | int>=0) %}
+                          {%- set dev.version = ent %}
+                        {%- endif %}
+                        {%- if (ent.find("cpu_percent") | int>=0) %}
+                          {%- set dev.cpu_percent = ent %}
+                        {%- endif %}
+                        {%- if (ent.find("memory_percent") | int>=0) %}
+                          {%- set dev.memory_percent = ent %}
+                        {%- endif %}
+                        {%- if (ent.find("update") | int>=0) %}
+                          {%- set dev.update = ent %}
+                        {%- endif %}
+                      {%- endfor %}
+                      {%- if dev.version > '' %}
+                        {{-
+                          { 'type': 'section'
+                          }
+                        }},
+                        {{-
+                          { 'type': 'custom:mushroom-title-card',
+                            'title': dev.name
+                          }
+                        }},
+                        {{-
+                          { 'type': 'custom:mushroom-chips-card',
+                            'chips': [
+                              {
+                                'type': 'entity',
+                                'entity': dev.running,
+                                'icon_color': 'green'
+                              },
+                              {
+                                'type': 'entity',
+                                'entity': dev.version,
+                                'icon_color': 'green',
+                                'icon': 'mdi:package-variant-closed-check'
+                              },
+                              {
+                                'type': 'entity',
+                                'entity': dev.newest_version,
+                                'icon_color': 'purple',
+                                'icon': 'mdi:package-variant'
+                              },
+                              {
+                                'type': 'entity',
+                                'entity': dev.cpu_percent,
+                                'icon_color': 'blue'
+                              },
+                              {
+                                'type': 'entity',
+                                'entity': dev.memory_percent,
+                                'icon_color': 'orange'
+                              },
+                            ]
+                          }
+                        }},
+                        {{-
+                          { 'type': 'custom:mushroom-update-card',
+                            'entity': dev.update,
+                            'name': dev.name,
+                            'show_buttons_control': true,
+                            'collapsible_controls': false,
+                            'icon_type': 'entity-picture',
+                            'layout': 'horizontal'
+                          }
+                        }},
+                      {%- endif %}
+                    {%- endfor %}
