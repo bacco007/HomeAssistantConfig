@@ -3,7 +3,7 @@ type: "custom:layout-card"
 layout_type: "custom:grid-layout"
 layout:
   margin: 0
-  grid-template-columns: "repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])"
+  grid-template-columns: "repeat(auto-fill, [col-start] minmax(420px, 1fr) [col-end])"
 view_layout:
   grid-column-start: 1
   grid-column-end: -1
@@ -16,7 +16,6 @@ cards:
           name: Next Race
       - type: custom:formulaone-card
         card_type: next_race
-        sensor: sensor.formula_one_sensor_races
         date_locale: au
 
   - type: vertical-stack
@@ -27,7 +26,6 @@ cards:
           name: Last Race
       - type: custom:formulaone-card
         card_type: last_result
-        sensor: sensor.formula_one_sensor_last_result
         date_locale: au
 
   - type: vertical-stack
@@ -38,7 +36,16 @@ cards:
           name: Schedule
       - type: custom:formulaone-card
         card_type: schedule
-        sensor: sensor.formula_one_sensor_races
+        date_locale: au
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: header_card_no_link
+        variables:
+          name: Last Race
+      - type: custom:formulaone-card
+        card_type: results
         date_locale: au
 
   - type: vertical-stack
@@ -49,7 +56,6 @@ cards:
           name: Constructor Standings
       - type: custom:formulaone-card
         card_type: constructor_standings
-        sensor: sensor.formula_one_sensor_constructors
 
   - type: vertical-stack
     cards:
@@ -59,4 +65,6 @@ cards:
           name: Driver Standings
       - type: custom:formulaone-card
         card_type: driver_standings
-        sensor: sensor.formula_one_sensor_drivers
+        standings:
+          show_flag: true
+          show_team: true
