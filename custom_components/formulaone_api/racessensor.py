@@ -37,7 +37,6 @@ class RacesSensor(FormulaOneSensor):
             'next_race': next_race,
             'data': races['MRData']['RaceTable']['Races']
         }
-
         return all_attr
 
     def set_state(self):
@@ -53,5 +52,4 @@ class RacesSensor(FormulaOneSensor):
             self._state = 'Scheduled'
 
         self._state_attributes = all_attr
-
         return self._state

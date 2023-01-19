@@ -22,7 +22,6 @@ _LOGGER = logging.getLogger(__name__)
 
 __version__ = '0.8.1'
 
-
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_ID, default=0): cv.positive_int,
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -39,4 +38,3 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities([ConstructorsSensor(name, scan_interval, hass)])
     add_entities([DriversSensor(name, scan_interval, hass)])
     add_entities([LastResultSensor(name, scan_interval, hass)])
-        

@@ -1,7 +1,7 @@
 from custom_components.formulaone_api.const import DEFAULT_SCAN_INTERVAL
 from homeassistant.helpers.event import track_point_in_time
 from homeassistant.helpers.entity import Entity
-from datetime import datetime as dt 
+from datetime import datetime as dt
 
 class FormulaOneSensor(Entity):
     """Representation of a Formula One sensor."""
