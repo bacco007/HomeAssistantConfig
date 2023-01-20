@@ -4,23 +4,23 @@ sensor:
     unique_id: stats_docker
     icon: mdi:docker
     state: >
-      {{ states('sensor.tbsh03_monitordocker_containers_total') | int
-        + states('sensor.tbsh1_monitordocker_containers_total') | int
-        + states('sensor.pi4srv_monitordocker_containers_total') | int }}
+      {{ states('sensor.tbsh03_monitordocker_containers_total') | int(default=0)
+        + states('sensor.tbsh1_monitordocker_containers_total') | int(default=0)
+        + states('sensor.pi4srv_monitordocker_containers_total') | int(default=0)}}
     state_class: measurement
     unit_of_measurement: Containers
     attributes:
       containers_running: >
-        {{ states('sensor.tbsh03_monitordocker_containers_running') | int
-          + states('sensor.tbsh1_monitordocker_containers_running') | int
-          + states('sensor.pi4srv_monitordocker_containers_running') | int }}
+        {{ states('sensor.tbsh03_monitordocker_containers_running') | int(default=0)
+          + states('sensor.tbsh1_monitordocker_containers_running') | int(default=0)
+          + states('sensor.pi4srv_monitordocker_containers_running') | int(default=0) }}
       containers_stopped: >
-        {{ states('sensor.tbsh03_monitordocker_containers_stopped') | int
-          + states('sensor.tbsh1_monitordocker_containers_stopped') | int
-          + states('sensor.pi4srv_monitordocker_containers_stopped') | int }}
+        {{ states('sensor.tbsh03_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.tbsh1_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.pi4srv_monitordocker_containers_stopped') | int(default=0) }}
       images: >
-        {{ states('sensor.tbsh03_monitordocker_images') | int
-          + states('sensor.tbsh1_monitordocker_images') | int
-          + states('sensor.pi4srv_monitordocker_images') | int }}
+        {{ states('sensor.tbsh03_monitordocker_images') | int(default=0)
+          + states('sensor.tbsh1_monitordocker_images') | int(default=0)
+          + states('sensor.pi4srv_monitordocker_images') | int(default=0) }}
       containers_updatable: >
         {{ states | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | selectattr('entity_id','search','update.wud_*') | list | count }}
