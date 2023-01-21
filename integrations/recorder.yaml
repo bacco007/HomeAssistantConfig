@@ -68,6 +68,7 @@ recorder:
       - sensor.space_*
       - sensor.plex_tautulli*
       - sensor.*_upcoming_media
+      - sensor.plane_overhead_detail*
     domains:
       - anniversaries
       - automation

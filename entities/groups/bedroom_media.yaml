@@ -1,6 +1,0 @@
----
-bedroom_media:
-  name: Bedroom - Media
-  entities:
-    - media_player.apple_tv_bedroom
-    - media_player.nvidia_shield

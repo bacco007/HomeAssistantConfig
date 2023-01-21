@@ -17,7 +17,7 @@ content: |-
   <td>{{ item.beer_style }}</br>{{item.beer_abv}}%</td>
   <td>Me: {{ item.rating|float }}/5<br/>Everyone: {{item.beer_rating|float|round(2)}}</td>
   <td>{{ item.count }}</td>
-  <td>1st: {{ item.first_checkin }}<br/>Latest: {{ item.first_checkin }}</td>
+  <td>1st: {{ item.first_checkin }}<br/>Latest: {{ item.recent_checkin }}</td>
   </tr>
   {%- endfor %}
   </table>

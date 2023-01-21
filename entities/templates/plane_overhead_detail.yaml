@@ -1,0 +1,14 @@
+---
+sensor:
+  - name: plane_overhead_detail_origin_airport
+    unique_id: plane_overhead_detail_origin_airport
+    icon: >-
+      mdi:airplane-alert
+    state: >-
+      {{ state_attr("sensor.plane_overhead_detail","origin_airport")}}
+  - name: plane_overhead_detail_dest_airport
+    unique_id: plane_overhead_detail_dest_airport
+    icon: >-
+      mdi:airplane-alert
+    state: >-
+      {{ state_attr("sensor.plane_overhead_detail","destination_airport")}}

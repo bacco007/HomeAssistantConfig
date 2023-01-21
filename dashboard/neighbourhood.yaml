@@ -859,71 +859,83 @@ cards:
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
-          - type: entities
-            entities:
-              - entity: sensor.opensky_flight_in_vicinity
-                type: "custom:multiple-entity-row"
-                secondary_info:
-                  attribute: movement
-                  hide_unavailable: true
-          - type: conditional
-            conditions:
-              - entity: sensor.opensky_flight_in_vicinity
-                state_not: "off"
-            card:
-              type: vertical-stack
-              cards:
-                - type: entities
-                  entities:
-                    - entity: sensor.opensky_flight_friendly_name
-                      type: "custom:multiple-entity-row"
-                      name: " "
-                      show_state: false
-                      secondary_info:
-                        entity: sensor.opensky_flight_friendly_name
-                - type: horizontal-stack
-                  cards:
-                    - type: vertical-stack
-                      cards:
-                        - type: entity
-                          entity: sensor.opensky_origin_airport_code
-                          name: Origin
-                        - show_name: false
-                          show_icon: false
-                          show_state: true
-                          type: glance
-                          entities:
-                            - entity: sensor.opensky_origin_city
-                              card_mod:
-                                style: |
-                                  div {text-align: left;}
-                          style: |
-                            .entity {padding: 0 !important; margin: -16px 0}
-                    - type: vertical-stack
-                      cards:
-                        - type: entity
-                          entity: sensor.opensky_destination_airport_code
-                          name: Destination
-                        - show_name: false
-                          show_icon: false
-                          show_state: true
-                          type: glance
-                          entities:
-                            - entity: sensor.opensky_destination_city
-                              card_mod:
-                                style: |
-                                  div {text-align: left;}
-                          style: |
-                            .entity {padding: 0 !important; margin: -16px 0}
-                - type: entities
-                  entities:
-                    - entity: sensor.opensky_flight_in_vicinity
-                      type: "custom:multiple-entity-row"
-                      name: " "
-                      secondary_info:
-                        attribute: movement
-                      show_state: false
+          - type: custom:stack-in-card
+            cards:
+              - type: entities
+                style: |
+                  #states {
+                    padding-top: 0px !important;
+                    padding-bottom: 0px !important;
+                  }
+                entities:
+                  - type: custom:card-templater
+                    entities:
+                      - sensor.plane_overhead_detail
+                    card:
+                      type: entities
+                      style: |
+                        #states {
+                          padding-top: 5px !important;
+                          padding-bottom: 0px !important;
+                          padding-left: 0px !important;
+                          padding-right: 0px !important;
+                        }
                       entities:
-                        - attribute: altitude
-                          name: Altitude
-              in_card: true
+                        - entity: sensor.plane_overhead_detail
+                          name_template: |
+                            {{ state_attr("sensor.plane_overhead_detail", "aircraft_owner") }}
+                          type: "custom:multiple-entity-row"
+                          show_state: true
+                          secondary_info:
+                            name: "Aircraft:"
+                            attribute: aircraft
+              - type: horizontal-stack
+                cards:
+                  - type: vertical-stack
+                    cards:
+                      - type: entity
+                        entity: sensor.plane_overhead_detail
+                        attribute: origin_airport_code
+                        name: Origin
+                        style: |
+                          ha-card .header {
+                            padding-top: 0px; !important;
+                          }
+                          ha-card .info {
+                            padding-bottom: 0px; !important;
+                          }
+                      - show_name: false
+                        show_icon: false
+                        show_state: true
+                        type: glance
+                        entities:
+                          - entity: sensor.plane_overhead_detail_origin_airport
+                            card_mod:
+                              style: |
+                                div {text-align: left;}
+                        style: |
+                          .entity {padding: 0 !important; margin: -16px 0}
+                  - type: vertical-stack
+                    cards:
+                      - type: entity
+                        entity: sensor.plane_overhead_detail
+                        attribute: destination_airport_code
+                        name: Destination
+                        style: |
+                          ha-card .header {
+                            padding-top: 0px; !important;
+                          }
+                          ha-card .info {
+                            padding-bottom: 0px; !important;
+                          }
+                      - show_name: false
+                        show_icon: false
+                        show_state: true
+                        type: glance
+                        entities:
+                          - entity: sensor.plane_overhead_detail_dest_airport
+                            card_mod:
+                              style: |
+                                div {text-align: left;}
+                        style: |
+                          .entity {padding: 0 !important; margin: -16px 0}

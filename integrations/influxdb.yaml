@@ -87,3 +87,4 @@ influxdb:
       - sensor.zha*
       - sensor.plex_tautulli*
       - sensor.watchman*
+      - sensor.plane_overhead_detail*

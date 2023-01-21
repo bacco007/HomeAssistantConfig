@@ -1,5 +1,4 @@
 ---
 ignored_unavailable_entities:
   entities:
-    - binary_sensor.updater
     - sensor.unavailable_entities

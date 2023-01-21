@@ -694,7 +694,7 @@ cards:
                         margin: -4px -7px;
                       }
               - type: custom:mushroom-template-card
-                entity: sensor.yahoofinance_aex
+                entity: sensor.yahoofinance_audusd_x
                 primary: "{{states(entity)}}"
                 secondary: |
                   {% if state_attr(entity, 'trending') == "up" %}+{% endif
@@ -928,7 +928,7 @@ cards:
               start: day
             apex_config:
               chart:
-                height: 150px
+                height: 200px
               legend:
                 show: false
               stroke:
@@ -959,6 +959,7 @@ cards:
                   tickAmount: 2
             series:
               - entity: sensor.load_power
+                transform: "return x / 1000;"
                 name: Power
                 yaxis_id: first
                 show:
@@ -970,11 +971,12 @@ cards:
                 color_threshold:
                   - value: 0
                     color: "#228B22"
-                  - value: 0.1
+                  - value: 1
                     color: "#d35400"
-                  - value: 1.5
+                  - value: 3
                     color: "#c0392b"
               - entity: sensor.active_generation
+                transform: "return x / 1000;"
                 name: Solar
                 yaxis_id: second
                 type: area

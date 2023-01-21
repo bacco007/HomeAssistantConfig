@@ -1,6 +1,0 @@
----
-office_media:
-  name: Office - Media
-  entities:
-    - media_player.office_sonos
-    - media_player.spotify_thomas_baxter

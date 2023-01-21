@@ -29,7 +29,7 @@ cards:
 
   - type: "custom:button-card"
     template: live_tile
-    entity: sensor.untapped_project52
+    entity: sensor.untappd_project52
     state_display: >-
       [[[ return states["sensor.untappd_project52"].attributes.target ]]]
     name: >-
