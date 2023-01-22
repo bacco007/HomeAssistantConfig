@@ -6,7 +6,7 @@ views:
   - !include weather.yaml
   - !include rainfall/page.yaml
   - !include me.yaml
-  - !include astrometrics.yaml
+  # - !include astrometrics.yaml
   - !include energy.yaml
   - !include lights.yaml
   - !include maintenance.yaml

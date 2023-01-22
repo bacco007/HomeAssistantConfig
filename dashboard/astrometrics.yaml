@@ -259,7 +259,7 @@ cards:
                 show_icon: false
                 show_state: true
                 show_label: true
-                name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " + moment(entity.attributes.date).subtract(5, "h").fromNow() ]]]'
+                name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " ]]]'
                 state_display: '[[[ return entity.attributes.summary.split(": ")[1] ]]]'
                 label: "[[[ return entity.attributes.potential_impacts ]]]"
                 styles:
@@ -699,7 +699,7 @@ cards:
                     title: Astronomy Events
                     show_empty: false
                     calendars:
-                      - calendar.astronomy_calendar
+                      - calendar.ical_astronomy_calendar
                     calendar_days_back: 7
                     calendar_days_forward: 30
                     scrollbars_enabled: false

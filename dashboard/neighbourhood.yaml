@@ -163,146 +163,77 @@ cards:
                     line_width: 1
                     color: "rgba(255,255,255,.25)"
 
+      # [Column] Traffic
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card
+            variables:
+              name: LIVE TRAFFIC NSW
+              label: Website
+              arrow: "mdi:arrow-top-right"
+              action: url
+              link: "https://www.livetraffic.com"
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
           - type: custom:stack-in-card
             cards:
               - type: entities
-                title: Live Traffic
                 entities:
-                  - sensor.stats_livetraffic
-              - type: markdown
-                card_mod: !include snippets/style-markdown-table.yaml
-                content: |-
-                  <details>
-                  <summary><ha-icon icon="mdi:snowflake-alert"></ha-icon> Live Traffic - Alpine ({{states('sensor.getdata_livetrafficnsw_alpine')}} Incidents)</summary>
+                  - entity: sensor.stats_livetraffic
+                    name: Incident Count
 
-                  {% if states('sensor.getdata_livetrafficnsw_alpine') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_alpine', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
+                  - type: custom:apexcharts-card
+                    graph_span: 7d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      stroke_width: 2
+                      opacity: 0.3
+                      type: area
+                      # extend_to_end: false
+                      group_by:
+                        func: last
+                        duration: 1h
+                    series:
+                      # - entity: sensor.stats_livetraffic
+                      #   name: Total
+                      - entity: sensor.stats_livetraffic
+                        attribute: alpine
+                        name: Alpine
+                      - entity: sensor.stats_livetraffic
+                        attribute: fire
+                        name: Fire
+                      - entity: sensor.stats_livetraffic
+                        attribute: flood
+                        name: Flood
+                      - entity: sensor.stats_livetraffic
+                        attribute: incidents
+                        name: Incidents
+                      - entity: sensor.stats_livetraffic
+                        attribute: incidentslga
+                        name: Incidents (LGA)
+                      - entity: sensor.stats_livetraffic
+                        attribute: majorevents
+                        name: Major Events
+                      - entity: sensor.stats_livetraffic
+                        attribute: roadwork
+                        name: Roadwork
 
-                  <details>
-                  <summary><ha-icon icon="mdi:fire-alert"></ha-icon> Live Traffic - Fire ({{states('sensor.getdata_livetrafficnsw_fire')}} Incidents)</summary>
-
-                  {% if states('sensor.getdata_livetrafficnsw_fire') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_fire', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
-
-                  <details>
-                  <summary><ha-icon icon="mdi:home-flood"></ha-icon> Live Traffic - Flood ({{states('sensor.getdata_livetrafficnsw_flood')}} Incidents)</summary>
-
-                  {% if states('sensor.getdata_livetrafficnsw_flood') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_flood', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
-
-                  <details>
-                  <summary><ha-icon icon="mdi:road-variant"></ha-icon> Live Traffic - Incidents ({{states('sensor.getdata_livetrafficnsw_incidents')}} Incidents)</summary>
-
-                  {% if states('sensor.getdata_livetrafficnsw_incidents') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_incidents', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
-
-                  <details>
-                  <summary><ha-icon icon="mdi:road-variant"></ha-icon> Live Traffic - Incidents LGA ({{states('sensor.getdata_livetrafficnsw_incidentslga')}} Incidents)</summary>
-
-                  {% if states('sensor.getdata_livetrafficnsw_incidentslga') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_incidentslga', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
-
-                  <details>
-                  <summary><ha-icon icon="mdi:party-popper"></ha-icon> Live Traffic - Major Events ({{states('sensor.getdata_livetrafficnsw_majorevents')}} Incidents)</summary>
-
-                  {% if states('sensor.getdata_livetrafficnsw_majorevents') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_majorevents', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
-
-                  <details>
-                  <summary><ha-icon icon="mdi:dump-truck"></ha-icon> Live Traffic - Roadwork ({{states('sensor.getdata_livetrafficnsw_roadwork')}} Incidents)</summary>
-
-                  {% if states('sensor.getdata_livetrafficnsw_roadwork') == "0" %}
-                  No Incidents Recorded
-                  {%- else %}
-                  {%- for item in state_attr('sensor.getdata_livetrafficnsw_roadwork', 'data')|sort(attribute='starttime') %}
-                  **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
-                  {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
-                  Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
-                  Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
-                  {% endfor %}
-                  </table>
-                  {%- endif %}
-                  </details>
-
-          - type: entities
-            entities:
-              - entity: sensor.waze_travel_time
-                type: "custom:multiple-entity-row"
-                name: Driving to
-                show_state: false
-                entities:
-                  - entity: sensor.waze_travel_time_to_hicksville
-                    name: HICKSVILLE
-                    styles:
-                      text-align: left
-                  - entity: sensor.waze_travel_time_to_newark
-                    name: NEWARK
-                    styles:
-                      text-align: left
-                  - entity: sensor.waze_travel_time_to_tappan_zee
-                    name: TAPPAN ZEE
-                    styles:
-                      text-align: left
+              - !include tamworth/livetraffic/alpine.yaml
+              - !include tamworth/livetraffic/fire.yaml
+              - !include tamworth/livetraffic/flood.yaml
+              - !include tamworth/livetraffic/incidents.yaml
+              - !include tamworth/livetraffic/incidentslga.yaml
+              - !include tamworth/livetraffic/majorevents.yaml
+              - !include tamworth/livetraffic/roadwork.yaml
 
       # [Column] Weather
       - type: vertical-stack

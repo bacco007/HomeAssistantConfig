@@ -52,411 +52,13 @@ cards:
 
       - type: vertical-stack
         cards:
-          - type: custom:mushroom-template-card
-            primary: >-
-              {{ state_attr(entity, "friendly_name") }}
-            multiline_secondary: true
-            secondary: >-
-              {{ state_attr(entity, "nextevent") }} ({{ state_attr(entity, "nexttime") }})
-
-              {{ state_attr(entity, "nexteventafter") }}
-            entity: sensor.sport_manchester_united
-            badge_icon: >-
-              {%- if is_state_attr(entity, 'nexttime', 'On Now!') %}
-              mdi:clock
-              {%- endif %}
-            icon: >-
-              {{ state_attr(entity, "icon") }}
-            badge_color: green
-            tap_action: none
-            card_mod:
-              style:
-                mushroom-state-info$: |
-                  .primary {
-                    font-size: 16px !important;
-                    white-space: normal !important;
-                  }
-                  .secondary {
-                    font-size: 15px !important;
-                  }
-                .: |
-                  ha-card:before {
-                    content: "";
-                    position: absolute;
-                    height: 100%;
-                    width: 100%;
-                    right: 5px;
-                    background: url( {{ state_attr(config.entity, "entity_picture") }} ) center no-repeat, linear-gradient(to left, transparent, rgb(var(--rgb-card-background-color)) 50%);
-                    background-repeat: no-repeat;
-                    background-size: auto 100%, cover;
-                    background-position: right;
-                    background-blend-mode: saturation;
-                    filter: opacity(0.25);
-                  }
-                  ha-card {
-                    background: none;
-                  }
-
           - type: sensor
             entity: sensor.yahoofinance_aapl
             graph: line
             detail: 1
             hours_to_show: 72
-            # card_mod:
-            #   class: tile
-
-          - type: custom:stack-in-card
-            cards:
-              - type: custom:mushroom-template-card
-                entity: ""
-                primary: Run speedtest
-                secondary: ""
-                multiline_secondary: true
-                icon: mdi:wifi-refresh
-                icon_color: grey
-                tap_action:
-                  action: call-service
-                  service: speedtestdotnet.speedtest
-                  data: {}
-                  target: {}
-              - type: custom:mushroom-template-card
-                card_mod:
-                  style: |
-                    ha-card {
-                      margin: -25px 12px 0px 12px;
-                      border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
-                    }
-              - type: custom:stack-in-card
-                mode: horizontal
-                cards:
-                  - type: vertical-stack
-                    cards:
-                      - type: custom:apexcharts-card
-                        chart_type: radialBar
-                        experimental:
-                          color_threshold: true
-                        series:
-                          - entity: sensor.speedtest_download
-                            color_threshold:
-                              - value: 5
-                                color: rgb(244, 67, 54)
-                              - value: 7.5
-                                color: rgb(255, 87, 34)
-                              - value: 10
-                                color: rgb(255, 152, 0)
-                              - value: 12.5
-                                color: rgb(255, 193, 7)
-                              - value: 15
-                                color: rgb(255, 235, 59)
-                              - value: 17.5
-                                color: rgb(205, 220, 57)
-                              - value: 20
-                                color: rgb(129, 915, 74)
-                              - value: 25
-                                color: rgb(76, 175, 80)
-                              - value: 30
-                                color: rgb(78, 175, 80)
-                            max: 30
-                            show:
-                              legend_value: false
-                        apex_config:
-                          plotOptions:
-                            radialBar:
-                              offsetY: 0
-                              startAngle: -108
-                              endAngle: 108
-                              hollow:
-                                size: 80%
-                              dataLabels:
-                                name:
-                                  show: false
-                                value:
-                                  show: false
-                              track:
-                                strokeWidth: 70%
-                                margin: 0
-                          fill:
-                            type: gradient
-                          legend:
-                            show: false
-                          chart:
-                            height: 130
-                        card_mod:
-                          style: |
-                            ha-card {
-                              box-shadow: none;
-                              background: none;
-                            }
-                      - type: custom:mushroom-template-card
-                        entity: sensor.speedtest_download
-                        primary: |
-                          {{states('sensor.speedtest_download')|round(1)}} Mbps
-                        secondary: Download
-                        icon: mdi:download
-                        icon_color: |-
-                          {% set value = states('sensor.speedtest_download') | int %}
-                          {% if value < 5.0 %}
-                            red
-                          {% elif value < 7.5 %}
-                            deep-orange
-                          {% elif value < 10.0 %}
-                            orange
-                          {% elif value < 12.5 %}
-                            amber
-                          {% elif value < 15.0 %}
-                            yellow
-                          {% elif value < 17.5 %}
-                            lime
-                          {% elif value < 20.0 %}
-                            light-green
-                          {% elif value < 22.5 %}
-                            green
-                          {% else %}
-                            green
-                          {% endif %}
-                        layout: vertical
-                        card_mod:
-                          style: |
-                            ha-card {
-                              margin-top: -65px;
-                              margin-left: auto;
-                              margin-right: auto;
-                              margin-bottom: 2px;
-                              box-shadow: none;
-                              background: none;
-                            }
-                  - type: vertical-stack
-                    cards:
-                      - type: custom:apexcharts-card
-                        chart_type: radialBar
-                        experimental:
-                          color_threshold: true
-                        series:
-                          - entity: sensor.speedtest_upload
-                            color_threshold:
-                              - value: 0.5
-                                color: rgb(244, 67, 54)
-                              - value: 1
-                                color: rgb(255, 87, 34)
-                              - value: 1.5
-                                color: rgb(255, 152, 0)
-                              - value: 2
-                                color: rgb(255, 193, 7)
-                              - value: 2.5
-                                color: rgb(255, 235, 59)
-                              - value: 3
-                                color: rgb(205, 220, 57)
-                              - value: 3.5
-                                color: rgb(129, 915, 74)
-                              - value: 4
-                                color: rgb(76, 175, 80)
-                              - value: 5
-                                color: rgb(78, 175, 80)
-                            max: 5
-                            show:
-                              legend_value: false
-                        apex_config:
-                          plotOptions:
-                            radialBar:
-                              offsetY: 0
-                              startAngle: -108
-                              endAngle: 108
-                              hollow:
-                                size: 80%
-                              dataLabels:
-                                name:
-                                  show: false
-                                value:
-                                  show: false
-                              track:
-                                strokeWidth: 70%
-                                margin: 0
-                          fill:
-                            type: gradient
-                          legend:
-                            show: false
-                          chart:
-                            height: 130
-                        card_mod:
-                          style: |
-                            ha-card {
-                              box-shadow: none;
-                              background: none;
-                            }
-                      - type: custom:mushroom-template-card
-                        entity: sensor.speedtest_upload
-                        primary: |
-                          {{states('sensor.speedtest_upload')|round(1)}} Mbps
-                        secondary: Upload
-                        icon: mdi:upload
-                        icon_color: |-
-                          {% set value = states('sensor.speedtest_upload') | int %}
-                          {% if value < 0.5 %}
-                            red
-                          {% elif value < 1 %}
-                            deep-orange
-                          {% elif value < 2 %}
-                            orange
-                          {% elif value < 3 %}
-                            amber
-                          {% elif value < 3.5 %}
-                            yellow
-                          {% elif value < 4 %}
-                            lime
-                          {% elif value < 4.5 %}
-                            light-green
-                          {% elif value < 5 %}
-                            green
-                          {% else %}
-                            green
-                          {% endif %}
-                        layout: vertical
-                        card_mod:
-                          style: |
-                            ha-card {
-                              margin-top: -65px;
-                              margin-left: auto;
-                              margin-right: auto;
-                              margin-bottom: 2px;
-                              box-shadow: none;
-                              background: none;
-                            }
-                  - type: vertical-stack
-                    cards:
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.speedtest_ping
-                        primary_info: state
-                        secondary_info: name
-                        name: Ping
-                        icon_color: teal
-                        icon: mdi:wan
-                        layout: vertical
-                        card_mod:
-                          style: |
-                            ha-card {
-                              margin-top: 20px;
-                              margin-left: auto;
-                              margin-right: auto;
-                              margin-bottom: 2px;
-                              box-shadow: none;
-                              background: none;
-                            }
-                card_mod:
-                  style: |
-                    ha-card {
-                      box-shadow: none;
-                      background: none;
-                    }
-
-          - type: horizontal-stack
-            cards:
-              - type: custom:stack-in-card
-                cards:
-                  - type: custom:gap-card
-                    height: 2
-                  - type: custom:layout-card
-                    layout_type: custom:grid-layout
-                    layout:
-                      grid-template-columns: auto 33px
-                      margin: "-4px -4px -8px -4px;"
-                    cards:
-                      - type: custom:mushroom-template-card
-                        entity: ""
-                        primary: LGA Incidents
-                        secondary: >
-                          {% if is_state('sensor.getdata_livetrafficnsw_incidentslga','') %} Inget
-                          bortkopplat {%else%}  Enheter är bortkopplade {% endif %}
-                        icon: >
-                          {% if is_state('sensor.getdata_livetrafficnsw_incidentslga','') %}
-                          mdi:check-circle {%else%}  mdi:alert-circle {% endif %}
-                        icon_color: >
-                          {% if is_state('sensor.getdata_livetrafficnsw_incidentslga','') %} grey {%else%}
-                          red {% endif %}
-                        fill_container: false
-                        multiline_secondary: false
-                        card_mod:
-                          style: |
-                            ha-card {
-                              background: none;
-                              --ha-card-border-width: 0;
-                            }
-                      - type: custom:mushroom-template-card
-                        entity: input_boolean.mushroom_unavailable_card
-                        icon: >-
-                          {{ 'mdi:chevron-up' if is_state(entity, 'on') else
-                          'mdi:chevron-down' }}
-                        icon_color: black
-                        hold_action:
-                          action: none
-                        card_mod:
-                          style: |
-                            ha-card {
-                              align-items: flex-end;
-                              background: none;
-                              --ha-card-border-width: 0;
-                            }
-                            mushroom-shape-icon {
-                              --shape-color: none !important;
-                            }
-                  - type: conditional
-                    conditions:
-                      - entity: input_boolean.mushroom_unavailable_card
-                        state: "on"
-                    card:
-                      type: custom:stack-in-card
-                      cards:
-                        - type: markdown
-                          content: |
-                            {{states('sensor.getdata_livetrafficnsw_incidentslga')}}
-                      card_mod: null
-                      style: |
-                        ha-card {
-                        --ha-card-border-width: 0;
-                        }
-
-          - type: "custom:auto-entities"
-            sort:
-              method: attribute
-              attribute: sortorder
-            card_param: cards
-            filter:
-              template: >-
-                {% for s in states|selectattr('entity_id','search','sensor.sport_') | selectattr("attributes.sortorder", "!=", 999) | sort(attribute="attributes.sortorder")  -%}
-                  {{
-                    {
-                      "type": "custom:mushroom-template-card",
-                      "primary": "{{ state_attr(entity, \"friendly_name\") }}",
-                      "multiline_secondary": true,
-                      "secondary": "{{ state_attr(entity, \"nextevent\") }} ({{ state_attr(entity, \"nexttime\") }})\n{{ state_attr(entity, \"nexteventafter\") }}",
-                      "entity": s.entity_id,
-                      "badge_icon": "{%- if is_state_attr(entity, 'nexttime', 'On Now!') %} mdi:clock {%- endif %}",
-                      "picture": "{{ state_attr(entity, \"entity_picture\") }}",
-                      "badge_color": "green",
-                      "tap_action": "none",
-                      "card_mod": {
-                        "style": {
-                          "mushroom-state-info$": ".primary {\n  font-size: 16px !important;\n  white-space: normal !important;\n}\n.secondary {\n  font-size: 15px !important;\n}\n",
-                          ".": "ha-card:before {\n  content: \"\";\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, \"entity_picture\") }} ) center no-repeat, linear-gradient(to left, transparent, rgb(var(--rgb-card-background-color)) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background: none;\n}\n"
-                        }
-                      }
-                    }
-                  }},
-                {%- endfor %}
-            show_empty: false
-            card:
-              type: "custom:swipe-card"
-              parameters:
-                direction: vertical
-                autoHeight: true
-                height: 112
-                effect: cube
-                autoplay:
-                  delay: 2000
-                cubeEffect:
-                  - slideShadows: false
-            view_layout:
-              grid-column: 1/-1
-              grid-row: 3/4
+            card_mod:
+              class: tile
 
       - type: custom:stack-in-card
         mode: vertical
@@ -665,6 +267,8 @@ cards:
 
       - type: custom:stack-in-card
         mode: vertical
+        keep:
+          outer_padding: true
         cards:
           - type: custom:layout-card
             layout_type: grid
@@ -673,7 +277,7 @@ cards:
               grid-gap: 0px;
             cards:
               - type: custom:mushroom-template-card
-                entity: sensor.yahoofinance_aex
+                entity: sensor.yahoofinance_audusd_x
                 primary: ^AEX
                 secondary: "{{state_attr(entity, 'friendly_name')}}"
                 icon: mdi:currency-eur
@@ -715,7 +319,7 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  margin: -25px 0px 0px 66px;
+                  margin: -25px 12px 0px 12px;
                   border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
                 }
           - type: custom:layout-card
@@ -763,6 +367,8 @@ cards:
 
       - type: custom:stack-in-card
         mode: vertical
+        keep:
+          outer_padding: true
         cards:
           - type: custom:layout-card
             layout_type: grid
@@ -771,9 +377,9 @@ cards:
               grid-gap: 0px;
             cards:
               - type: custom:mushroom-template-card
-                entity: sensor.fuelcheck_ampol_tamworth_orana_e10
+                entity: sensor.tamworth_fuel_average_e10
                 primary: E10
-                secondary: ""
+                secondary: "Max: {{state_attr(entity, 'max')}}c/L - Min: {{state_attr(entity, 'min')}}c/L"
                 icon: mdi:gas-station
                 icon_color: orange
                 card_mod:
@@ -785,9 +391,8 @@ cards:
                       padding-bottom: 5px !important;
                     }
               - type: custom:mushroom-template-card
-                entity: sensor.fuelcheck_ampol_tamworth_orana_e10
+                entity: sensor.tamworth_fuel_average_e10
                 primary: "{{states(entity)}}c/L"
-                secondary: ""
                 card_mod:
                   style:
                     mushroom-state-info$: |
@@ -805,7 +410,7 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  margin: -25px 0px 0px 66px;
+                  margin: -25px 12px 0px 12px;
                   border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
                 }
           - type: custom:layout-card
@@ -815,9 +420,9 @@ cards:
               grid-gap: 0px;
             cards:
               - type: custom:mushroom-template-card
-                entity: sensor.fuelcheck_ampol_tamworth_orana_u91
+                entity: sensor.tamworth_fuel_average_ulp91
                 primary: U91
-                secondary: ""
+                secondary: "Max: {{state_attr(entity, 'max')}}c/L - Min: {{state_attr(entity, 'min')}}c/L"
                 icon: mdi:gas-station
                 icon_color: orange
                 card_mod:
@@ -829,7 +434,7 @@ cards:
                       padding-bottom: 5px !important;
                     }
               - type: custom:mushroom-template-card
-                entity: sensor.fuelcheck_ampol_tamworth_orana_u91
+                entity: sensor.tamworth_fuel_average_ulp91
                 primary: "{{states(entity)}}c/L"
                 secondary: ""
                 card_mod:
@@ -849,7 +454,7 @@ cards:
             card_mod:
               style: |
                 ha-card {
-                  margin: -25px 0px 0px 66px;
+                  margin: -25px 12px 0px 12px;
                   border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
                 }
           - type: custom:layout-card
@@ -859,9 +464,9 @@ cards:
               grid-gap: 0px;
             cards:
               - type: custom:mushroom-template-card
-                entity: sensor.fuelcheck_ampol_tamworth_orana_p95
+                entity: sensor.tamworth_fuel_average_ulp95
                 primary: P95
-                secondary: ""
+                secondary: "Max: {{state_attr(entity, 'max')}}c/L - Min: {{state_attr(entity, 'min')}}c/L"
                 icon: mdi:gas-station
                 icon_color: orange
                 card_mod:
@@ -873,7 +478,51 @@ cards:
                       padding-bottom: 5px !important;
                     }
               - type: custom:mushroom-template-card
-                entity: sensor.fuelcheck_ampol_tamworth_orana_p95
+                entity: sensor.tamworth_fuel_average_ulp95
+                primary: "{{states(entity)}}c/L"
+                secondary: ""
+                card_mod:
+                  style:
+                    mushroom-state-info$: |
+                      * {
+                        text-align: end;
+                      }
+                    .: |
+                      ha-card {
+                        margin: 6px 2px -6px 0px;
+                        box-shadow: none;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                      }
+          - type: custom:mushroom-template-card
+            card_mod:
+              style: |
+                ha-card {
+                  margin: -25px 12px 0px 12px;
+                  border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
+                }
+          - type: custom:layout-card
+            layout_type: grid
+            layout:
+              grid-template-columns: 70% 30%
+              grid-gap: 0px;
+            cards:
+              - type: custom:mushroom-template-card
+                entity: sensor.tamworth_fuel_average_ulp98
+                primary: P98
+                secondary: "Max: {{state_attr(entity, 'max')}}c/L - Min: {{state_attr(entity, 'min')}}c/L"
+                icon: mdi:gas-station
+                icon_color: orange
+                card_mod:
+                  style: |
+                    ha-card {
+                      box-shadow: none;
+                      margin: -4px -7px;
+                      padding-top: 5px !important;
+                      padding-bottom: 5px !important;
+                    }
+              - type: custom:mushroom-template-card
+                entity: sensor.tamworth_fuel_average_ulp98
                 primary: "{{states(entity)}}c/L"
                 secondary: ""
                 card_mod:

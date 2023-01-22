@@ -1,0 +1,148 @@
+---
+type: custom:apexcharts-card
+config_templates:
+  - environment_chart
+apex_config:
+  chart: { height: 500 }
+  dataLabels:
+    formatter: |
+      EVAL:function(value, { seriesIndex, dataPointIndex, w }) {
+        if (dataPointIndex == w.config.series[seriesIndex].data.length - 2) {
+          return Math.round( value * 10 ) / 10 + "°C - " + w.config.series[seriesIndex].name  // + " " + dataPointIndex + " " + w.config.series[seriesIndex].data.length
+        } else { return '' }
+      }
+series:
+  # - entity: sensor.elevation
+  #   color: var(--primary-text-color)
+  #   opacity: .2
+  #   stroke_width: .5
+  #   yaxis_id: sun
+  #   unit: °
+  #   show:
+  #     legend_value: false
+
+  # - entity: sensor.elevation
+  #   color: var(--primary-text-color)
+  #   opacity: .2
+  #   stroke_width: .5
+  #   yaxis_id: sun
+  #   unit: °
+  #   data_generator: |
+  #     const now = new Date();
+  #     const data = [[now.getTime() - 172800000, 0], [now.getTime(), 0], [now.getTime() + 86400000, 0]];
+  #     return data;
+
+  - entity: sensor.tamworth_airport_temp
+    type: area
+    name: Airport
+    yaxis_id: main
+    stroke_width: .5
+    color: gray
+    opacity: .1
+    show:
+      datalabels: true
+      extremas: true
+    group_by:
+      func: last
+      duration: 30min
+
+  - entity: sensor.tempest_st_00056115_temperature
+    name: Outside
+    stroke_width: .5
+    color: gray
+    yaxis_id: main
+    opacity: .5
+    group_by:
+      func: last
+      duration: 30min
+    show:
+      datalabels: true
+      extremas: true
+
+  - entity: sensor.zha_bedroom_temperature
+    name: Bedroom
+    stroke_width: 1
+    yaxis_id: main
+    color: hotpink
+    show:
+      datalabels: true
+    group_by:
+      func: last
+      duration: 30min
+
+  - entity: sensor.zha_office_temperature
+    name: Office
+    stroke_width: 1
+    yaxis_id: main
+    color: orange
+    show:
+      datalabels: true
+    group_by:
+      func: last
+      duration: 30min
+
+  - entity: sensor.zha_lounge_weather_temperature
+    name: Lounge
+    stroke_width: 1
+    color: green
+    yaxis_id: main
+    show:
+      datalabels: true
+    group_by:
+      func: last
+      duration: 30min
+
+  # - entity: sensor.living_room_air_purifier_temperature
+  #   name: Living Room
+  #   stroke_width: 1
+  #   color: green
+  #   yaxis_id: main
+  #   show:
+  #     datalabels: true
+  #   group_by:
+  #     func: last
+  #     duration: 30min
+
+  # - entity: sensor.living_room_hue_sensor_temperature
+  #   name: Living Room Hue
+  #   stroke_width: 1
+  #   color: green
+  #   yaxis_id: main
+  #   show:
+  #     datalabels: true
+  #   group_by:
+  #     func: last
+  #     duration: 30min
+
+  - entity: sensor.indoor_average_temperature
+    name: Indoor Avg
+    yaxis_id: main
+    color: "var(--primary-color)"
+    show:
+      datalabels: true
+      extremas: true
+    group_by:
+      func: last
+      duration: 30min
+
+  # - entity: sensor.indoor_temperature_legal_limit
+  #   name: Legal Limit
+  #   color: var(--primary-text-color)
+  #   yaxis_id: main
+
+  - entity: weather.east_tamworth_hourly
+    type: area
+    name: Forecast
+    attribute: temperature
+    yaxis_id: main
+    stroke_width: .5
+    curve: straight
+    color: var(--primary-text-color)
+    opacity: .1
+    data_generator: |
+      const now = new Date();
+      const data = [[now.getTime(), entity.attributes.temperature]];
+      for(let i = 0; i <= 12; i++) {
+        data.push([new Date(entity.attributes.forecast[i].datetime).getTime() + i * 1000 * 60 * 60, entity.attributes.forecast[i].temperature] );
+      }
+      return data.reverse();

@@ -17,7 +17,6 @@ recorder:
       - sun.sun
       - sensor.ha_uptime_hours
       - sensor.iss
-      - sensor.iss_location
       - sensor.date_time
       - sensor.radarr_movies
       - sensor.unavailable_entities
@@ -69,6 +68,8 @@ recorder:
       - sensor.plex_tautulli*
       - sensor.*_upcoming_media
       - sensor.plane_overhead_detail*
+      - sensor.iss*
+      - sensor.international_space_station*
     domains:
       - anniversaries
       - automation

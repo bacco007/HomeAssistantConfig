@@ -47,7 +47,7 @@ cards:
           - type: markdown
             card_mod: !include snippets/style-markdown-table.yaml
             content: >-
-              <h2> <ha-icon icon='mdi:shield-half-full'></ha-icon> Watchman report<h2>
+              <h2> <ha-icon icon='mdi:shield-half-full'></ha-icon> Watchman Entities Report<h2>
               <h3>Missing Entities: {{ states.sensor.watchman_missing_entities.state }} </h3>
               <table width="100%">
               <tr>
@@ -69,13 +69,21 @@ cards:
 
           - type: markdown
             content: >-
-              <h2 class="some"> <ha-icon icon='mdi:shield-half-full'></ha-icon> Watchman report<h2>
-              <h3> Missing Services: {{ states.sensor.watchman_missing_services.state }} </h3>
-              {%- for item in state_attr("sensor.watchman_missing_services", "services") %}
-              <hr><table><tr> <td>  <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
-              <a title="{{item.occurrences}}">{{item.occurrences}}</a>
-              </td></tr></table>
-              {%- endfor %}
+              <h2> <ha-icon icon='mdi:shield-half-full'></ha-icon> Watchman Services Report<h2>
+              <h3>Missing Services: {{ states.sensor.watchman_missing_services.state }} </h3>
+              <table width="100%">
+              <tr>
+              <th></th>
+              <th>Entity</th>
+              <th>Where?</th>
+              </tr>
+              {% for item in state_attr("sensor.watchman_missing_services", "entities") -%}
+              <tr>
+              <td><ha-icon icon='mdi:cloud-alert'></ha-icon></td>
+              <td>{{ item.id }}</td>
+              <td>{{item.occurrences}}<td>
+              </tr>
+              {% endfor -%}
             card_mod:
               style:
                 ha-markdown:

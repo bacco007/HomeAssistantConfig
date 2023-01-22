@@ -5,8 +5,11 @@ trigger:
     attribute: media_title
 sensor:
   - name: Office Sonos Recent Tracks
+    unique_id: office_sonos_recent_tracks
     state: "{{ now().timestamp() | timestamp_custom() }}"
     attributes:
+      last_update: >
+        {{ now().timestamp() | timestamp_custom() }}
       tracks: >
         {% set current = this.attributes.get('tracks', []) %}
         {% set new = [{
@@ -14,4 +17,4 @@ sensor:
             "title": trigger.to_state.attributes.media_title,
             "time": now().isoformat() }]
             if is_state('media_player.office_sonos', 'playing') else [] %}
-        {{ (new + current)[:5] }}
+        {{ (new + current)[:10] }}

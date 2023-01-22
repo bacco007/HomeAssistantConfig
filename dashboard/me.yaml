@@ -1367,3 +1367,33 @@ cards:
                         - entity: sensor.last_fm_monthly_track_chart
                           attribute: track_10_playcount
                           name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_10}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_11_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_11}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_12_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_12}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_13_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_13}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_14_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_14}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_15_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_15}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_16_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_16}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_17_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_17}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_18_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_18}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_19_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_19}
+                        - entity: sensor.last_fm_monthly_track_chart
+                          attribute: track_20_playcount
+                          name: ${states['sensor.last_fm_monthly_track_chart'].attributes.track_20}

@@ -1,0 +1,71 @@
+---
+type: horizontal-stack
+cards:
+  - type: custom:stack-in-card
+    cards:
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: auto 33px
+          margin: "-4px -4px -8px -4px;"
+        cards:
+          - type: custom:mushroom-template-card
+            entity: ""
+            primary: Live Traffic - Roadwork
+            secondary: >
+              {{states('sensor.getdata_livetrafficnsw_roadwork')}} Incidents
+            icon: mdi:dump-truck
+            icon_color: >
+              {% if states('sensor.getdata_livetrafficnsw_roadwork') == "0" %} grey {%else%}
+              red {% endif %}
+            fill_container: false
+            multiline_secondary: false
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                  --ha-card-border-width: 0;
+                }
+          - type: custom:mushroom-template-card
+            entity: input_boolean.helper_frontend_livetraffic_roadwork
+            icon: >-
+              {{ 'mdi:chevron-up' if is_state(entity, 'on') else
+              'mdi:chevron-down' }}
+            icon_color: black
+            hold_action:
+              action: none
+            card_mod:
+              style: |
+                ha-card {
+                  align-items: flex-end;
+                  background: none;
+                  --ha-card-border-width: 0;
+                }
+                mushroom-shape-icon {
+                  --shape-color: none !important;
+                }
+      - type: conditional
+        conditions:
+          - entity: input_boolean.helper_frontend_livetraffic_roadwork
+            state: "on"
+        card:
+          type: custom:stack-in-card
+          cards:
+            - type: markdown
+              content: |
+                {% if states('sensor.getdata_livetrafficnsw_roadwork') == "0" %}
+                No Incidents Recorded
+                {%- else %}
+                {%- for item in state_attr('sensor.getdata_livetrafficnsw_roadwork', 'data')|sort(attribute='starttime') %}
+                **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
+                {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
+                Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
+                Last Update: {{ item.lastupdatetime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}
+                {% endfor %}
+                </table>
+                {%- endif %}
+          card_mod: null
+          style: |
+            ha-card {
+            --ha-card-border-width: 0;
+            }

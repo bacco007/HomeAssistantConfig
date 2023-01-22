@@ -189,7 +189,7 @@ cards:
                       action: call-service
                       service: media_player.media_play_pause
                       service_data:
-                        entity_id: media_player.apple_tv_bedroom
+                        entity_id: media_player.bedroom_apple_tv
                     style:
                       top: 91%
                       left: 15.5%
