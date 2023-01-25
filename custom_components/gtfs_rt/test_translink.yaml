@@ -1,0 +1,7 @@
+trip_update_url: 'https://gtfsrt.api.translink.com.au/api/realtime/SEQ/TripUpdates'
+vehicle_position_url: 'https://gtfsrt.api.translink.com.au/api/realtime/SEQ/VehiclePositions'
+route_delimiter: '-'
+departures:
+- name: 'Ferny Grove Train'
+  route: BNFG
+  stopid: '600195'
