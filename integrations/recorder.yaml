@@ -12,6 +12,7 @@ recorder:
       - sensor.unifi_networkstats_connected_devices
       - sensor.unifi_networkstats_switchap
       - sensor.load_power
+      - sensor.tamhospital_waitingtime
   exclude:
     entities:
       - sun.sun

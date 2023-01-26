@@ -103,62 +103,24 @@ cards:
             view_layout:
               grid-column: 1/-1
 
-          - type: "custom:auto-entities"
-            filter:
-              include:
-                - group: group.chore_plants
-                  options:
-                    type: "custom:button-card"
-                    template: chore_card
-            card:
-              type: entities
-              title: Plants
+          - type: entities
+            title: "Unavailable Entities"
+            show_header_toggle: false
+            entities:
+              - type: custom:auto-entities
+                show_empty: true
+                unique: true
+                filter:
+                  template: "{{ state_attr('sensor.unavailable_entities','entity_id') }}"
+                sort:
+                  method: state
+                card:
+                  type: custom:fold-entity-row
+                  padding: 0
+                  head:
+                    entity: sensor.unavailable_entities
 
-          - type: "custom:auto-entities"
-            filter:
-              include:
-                - group: group.chore_kitchen
-                  options:
-                    type: "custom:button-card"
-                    template: chore_card
-            card:
-              type: entities
-              title: Kitchen
-
-          - type: "custom:auto-entities"
-            filter:
-              include:
-                - group: group.chore_bathroom
-                  options:
-                    type: "custom:button-card"
-                    template: chore_card
-            card:
-              type: entities
-              title: Bathroom
-
-          - type: "custom:auto-entities"
-            filter:
-              include:
-                - group: group.chore_living_room
-                  options:
-                    type: "custom:button-card"
-                    template: chore_card
-            card:
-              type: entities
-              title: Living Room
-
-          - type: "custom:auto-entities"
-            filter:
-              include:
-                - group: group.chore_personal
-                  options:
-                    type: "custom:button-card"
-                    template: chore_card
-            card:
-              type: entities
-              title: Personal
-
-      # [Column] Batteries
+                  # [Column] Batteries
 
       - type: vertical-stack
         cards:

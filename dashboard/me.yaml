@@ -114,20 +114,20 @@ cards:
             template: header_card_no_link
             variables:
               name: ON THE LINE
-          - type: "custom:decluttering-card"
-            template: mini_graph_tile
+          # - type: "custom:decluttering-card"
+          #   template: mini_graph_tile
 
-            variables:
-              - points_per_hour: 1
-              - hours_to_show: 240
-              - entities:
-                  - entity: sensor.twitter_followers_bacco007
-              - decimals: 0
-              - title: Twitter (@bacco007)
-              - icon: "mdi:twitter"
-              - line_width: 2
-              - aspect_ratio: 2/1
-              - tap_action: !include popup/graph_twitterfollowers.yaml
+          #   variables:
+          #     - points_per_hour: 1
+          #     - hours_to_show: 240
+          #     - entities:
+          #         - entity: sensor.twitter_followers_bacco007
+          #     - decimals: 0
+          #     - title: Twitter (@bacco007)
+          #     - icon: "mdi:twitter"
+          #     - line_width: 2
+          #     - aspect_ratio: 2/1
+          #     - tap_action: !include popup/graph_twitterfollowers.yaml
           - type: "custom:decluttering-card"
             template: mini_graph_tile
 

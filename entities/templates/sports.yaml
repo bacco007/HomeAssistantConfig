@@ -924,6 +924,83 @@ sensor:
           {%- endif %}
         {%- endif %}
 
+  # GT World Challenge Australia
+  - name: sport_gt_world_challenge_australia
+    unique_id: sport_gt_world_challenge_australia
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/gt_world_challenge_australia.png
+    state: >-
+      {%- if state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: GT World Challenge Australia
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_australia_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_gt_world_challenge_australia_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_gt_world_challenge_australia_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_gt_world_challenge_australia_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
   # IGTC
   - name: sport_igtc
     unique_id: sport_igtc
@@ -2918,6 +2995,83 @@ sensor:
           0.0
         {%- else %}
           {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'start') %}
+          {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+              {{ diff }}.0
+          {%- else %}
+            999.0
+          {%- endif %}
+        {%- endif %}
+
+  # TCR Australia
+  - name: sport_tcr_australia
+    unique_id: sport_tcr_australia
+    icon: "mdi:car-sports"
+    picture: /local/sportlogos/tcr_australia.png
+    state: >-
+      {%- if state_attr("sensor.ical_tcr_australia_event_0", 'summary') %}
+        {{ state_attr("sensor.ical_tcr_australia_event_0", 'summary') }}
+      {%- else %}
+        Nothing Scheduled
+      {%- endif %}
+    attributes:
+      friendly_name: TCR Australia
+      nexttime: >-
+        {%- set st = state_attr("sensor.ical_tcr_australia_event_0", 'eta') %}
+        {%- if st != None %}
+          {%- if state_attr("sensor.ical_tcr_australia_event_0", 'eta') <= 0 %}
+            On Now!
+          {%- else %}
+            {%- set st = state_attr("sensor.ical_tcr_australia_event_0", 'start') %}
+            {%- if st != None %}
+              {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int/60/1440) | round (0) %}
+              {%- if diff > 6 %}
+                In {{ diff }} Days
+              {%- else %}
+                {{ as_timestamp(st) | timestamp_custom("%a %H:%M") }}
+              {%- endif %}
+            {%- else %}
+              No Time
+            {%- endif %}
+          {%- endif %}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextevent: >-
+        {%- set op = state_attr("sensor.ical_tcr_australia_event_0", 'summary') %}
+        {%- set st = state_attr("sensor.ical_tcr_australia_event_0", 'start') %}
+        {%- if st != None %}
+          {{ op }}
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      nextlocation: >-
+        {%- set op = state_attr("sensor.ical_tcr_australia_event_0", 'location') %}
+        {%- if op != None %}
+          {{ op }}
+        {%- else %}
+          No Location Noted
+        {%- endif %}
+      nexteventafter: >-
+        {%- set op = state_attr("sensor.ical_tcr_australia_event_1", 'summary') %}
+        {%- set st = state_attr("sensor.ical_tcr_australia_event_1", 'start') %}
+        {%- set et = state_attr("sensor.ical_tcr_australia_event_1", 'eta') %}
+        {%- if st != None %}
+            {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
+            {%- if diff > 6 %}
+              {%- set nt = "In " + diff|string + " Days" %}
+            {%- else %}
+              {%- set nt = as_timestamp(st) | timestamp_custom("%a %H:%M") %}
+            {%- endif %}
+          {{ op }} ({{ nt }})
+        {%- else %}
+          No Round Scheduled
+        {%- endif %}
+      sortorder: >-
+        {%- if is_state_attr("sensor.ical_tcr_australia_event_0", 'eta', '0') %}
+          0.0
+        {%- else %}
+          {%- set st = state_attr("sensor.ical_tcr_australia_event_0", 'start') %}
           {%- if st != None %}
             {%- set diff = ((as_timestamp(st)-as_timestamp(now())) | int /60/1440) | round (0) %}
               {{ diff }}.0

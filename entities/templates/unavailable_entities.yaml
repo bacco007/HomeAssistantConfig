@@ -7,16 +7,16 @@ sensor:
     icon: "{{ 'mdi:alert-circle' if states('sensor.unavailable_entities')|int(0) > 0 else 'mdi:check-circle' }}"
     unit_of_measurement: entities
     state: >
-      {% if state_attr('sensor.unavailable_entities','entity_id') != none %}
+      {%- if state_attr('sensor.unavailable_entities','entity_id') != none %}
         {{ state_attr('sensor.unavailable_entities','entity_id')|count }}
-      {% endif %}
+      {%- endif %}
     attributes:
       entity_id: >
-        {% if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
-          {% set ignore_seconds = 60 %}
-          {% set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {% set entities = states|rejectattr('domain','in',['group','button','media_player','device_tracker','camera'])|selectattr('state','in',['unavailable','unknown','none'])|list %}
-          {% set buttons = states.button|selectattr('state','eq','unavailable')|list %}
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set entities = states|rejectattr('domain','in',['group','button','media_player','device_tracker','camera'])|selectattr('state','in',['unavailable','unknown','none'])|list %}
+          {%- set buttons = states.button|selectattr('state','eq','unavailable')|list %}
           {{ (entities + buttons)
             |rejectattr('entity_id','in',state_attr('group.ignored_unavailable_entities','entity_id'))
             |rejectattr('entity_id','search','east_tamworth_')
@@ -26,6 +26,19 @@ sensor:
             |rejectattr('entity_id','search','waternsw_')
             |rejectattr('entity_id','search','_iss_')
             |rejectattr('entity_id','search','skin_type_')
+            |rejectattr('entity_id','search','update.')
+            |rejectattr('entity_id','search','weatherflow_.')
+            |rejectattr('entity_id','search','solcast_.')
+            |rejectattr('entity_id','in',expand(integration_entities('browser_mod'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('gdacs'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('github'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('glances'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('hassio'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('openuv'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('utility_meter'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('waqi'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('tautulli'))|map(attribute='entity_id')|list)
+            |rejectattr('entity_id','in',expand(integration_entities('here_travel_time'))|map(attribute='entity_id')|list)
             |rejectattr('last_changed','ge',ignore_ts)
             |map(attribute='entity_id')|list }}
-        {% endif %}
+        {%- endif %}

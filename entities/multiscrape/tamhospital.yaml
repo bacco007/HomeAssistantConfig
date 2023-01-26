@@ -1,0 +1,25 @@
+---
+- name: Tamworth Hospital Waiting Scraper
+  resource: https://ws-spsl-ext-non-auth.webapp.health.nsw.gov.au/rted/api/GetHospitalDetails/179
+  verify_ssl: false
+  sensor:
+    - unique_id: tamhospital_waitingtime
+      name: Tamworth Hospital Emergency Waiting Time
+      icon: mdi:hospital-building
+      value_template: >
+        {{ value_json.waitingDetails[0].waitCount }}
+      attributes:
+        - name: Last Update
+          value_template: >
+            {{ as_timestamp(value_json.waitingDetails[0].lastUpdatedDate) | timestamp_custom('%Y-%m-%dT%H:%M:%S+00:00', True) }}
+        - name: Capacity
+          value_template: >
+            {{ value_json.bedDetails[0].bedCapacity }}
+        - name: Usual Patients
+          value_template: >
+            {{ value_json.historicalDetails[0].statisticValue }}
+        - name: Usual Patients Start Time
+          value_template: >
+            {{ value_json.historicalDetails[0].hourOfDay }}:00
+      unit_of_measurement: Patients
+      state_class: measurement

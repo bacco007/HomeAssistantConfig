@@ -870,3 +870,81 @@ cards:
                                 div {text-align: left;}
                         style: |
                           .entity {padding: 0 !important; margin: -16px 0}
+
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: HOSPITAL
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: vertical
+                cards:
+                  - type: entities
+                    style: |
+                      .card-header {
+                        padding: 5px 16px;
+                        font-size: 18px;
+                        font-weight: 700 !important;
+                      }
+                      .card-content div {
+                          margin: 0 !important;
+                      }
+                      #states {
+                        padding-top: 0px !important;
+                        padding-bottom: 0px !important;
+                      }
+                      .secondary {
+                        color: darkgray !important;
+                        margin-left: 2px !important;
+                      }
+                    entities:
+                      - entity: sensor.tamhospital_waitingtime
+                        name: No. Waiting
+                  - type: custom:apexcharts-card
+                    graph_span: 1d
+                    span:
+                      end: day
+                    header:
+                      show: false
+                    apex_config:
+                      chart:
+                        height: 250px
+                    all_series_config:
+                      #stroke_width: 2
+                      opacity: 0.3
+                      extend_to: now
+                      #type: area
+                      # group_by:
+                      #   func: last
+                      #   duration: 1h
+                    series:
+                      - entity: sensor.tamhospital_waitingtime
+                        name: Current
+                        stroke_width: 3.5
+                        type: area
+                        color: "#FF4400"
+                        opacity: 0.08
+                        show:
+                          extremas: true
+                      - entity: sensor.tamhospital_waitingtime
+                        attribute: usual_patients
+                        name: Usual Waiting
+                        stroke_width: 2.5
+                        type: line
+                        color: "#ffa600"
+                      - entity: sensor.tamhospital_waitingtime
+                        attribute: capacity
+                        name: Capacity
+                        stroke_width: 0
+                        type: area
+                        opacity: 0.1
+                        color: "#039be5"
+                        group_by:
+                          func: last
+                          duration: 1h
