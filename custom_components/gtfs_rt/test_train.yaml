@@ -1,0 +1,15 @@
+trip_update_url: https://api.transport.nsw.gov.au/v1/gtfs/realtime/nswtrains
+vehicle_position_url: https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/nswtrains
+api_key: apikey jEZy5GJ0PWuw8j0G4YkrqZQdEczG1bZsJUDz
+route_delimiter: "."
+departures:
+  - name: Xplorer to Tamworth
+    route: "4T.T.NP23"
+    stopid: "234012"
+    icon: mdi:train
+    service_type: train
+  - name: Xplorer to Sydney
+    route: "4T.T.NP24"
+    stopid: "234012"
+    icon: mdi:train
+    service_type: train
