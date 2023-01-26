@@ -916,10 +916,10 @@ cards:
                       chart:
                         height: 250px
                     all_series_config:
-                      #stroke_width: 2
+                      # stroke_width: 2
                       opacity: 0.3
                       extend_to: now
-                      #type: area
+                      # type: area
                       # group_by:
                       #   func: last
                       #   duration: 1h
