@@ -227,5 +227,5 @@ cards:
                 attribute: date
           - attributes:
               label: Formula 1
-              icon: mdi:racing-helmet
+              icon: phu:f1
             card: !include sport/formula1.yaml

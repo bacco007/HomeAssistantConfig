@@ -1,0 +1,18 @@
+---
+sensor:
+  - name: Geocoded Thomas
+    unique_id: geocoded_thomas
+    state: >
+      {% if is_state("person.thomas_baxter", "not_home") -%}
+        {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Thoroughfare }}, {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Locality }}
+      {% elif is_state("person.thomas_baxter", "home") -%}
+        {{ states.person.thomas_baxter.state | title }}
+      {%- else -%}
+        {{ states.person.thomas_baxter.state}}
+      {%- endif %}
+    attributes:
+      location: >
+        {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Thoroughfare }}, {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Locality }}
+      geolocation: >
+        {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Location[0] | round(5) }}, {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Location[1] | round(5) }}
+    icon: mdi:map-marker

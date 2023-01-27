@@ -18,6 +18,10 @@ cards:
         title: Next Race
         ddate_locale: au
         image_clickable: true
+      - type: custom:formulaone-card
+        card_type: last_result
+        title: Last Race
+        ddate_locale: au
   - type: vertical-stack
     cards:
       - type: custom:tabbed-card
@@ -41,6 +45,8 @@ cards:
           - card:
               type: custom:formulaone-card
               card_type: constructor_standings
+              standings:
+                show_teamlogo: true
             attributes:
               icon: mdi:car-brake-abs
           - card:
@@ -49,6 +55,7 @@ cards:
               standings:
                 show_flag: true
                 show_team: true
+                show_teamlogo: true
             attributes:
               icon: mdi:racing-helmet
   # - type: vertical-stack
