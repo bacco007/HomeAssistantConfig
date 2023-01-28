@@ -6,11 +6,11 @@ api_key: !secret tfnsw_apikey2
 departures:
   - name: Xplorer to Tamworth
     route: "4T.T.NP23"
-    stopid: "234012"
+    stopid: "2340108"
     icon: mdi:train
     service_type: train
   - name: Xplorer to Sydney
     route: "4T.T.NP24"
-    stopid: "234012"
+    stopid: "2340108"
     icon: mdi:train
     service_type: train

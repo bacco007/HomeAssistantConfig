@@ -23,6 +23,7 @@ sensor:
     unique_id: energy_timeofuse_tariff
     device_class: monetary
     state_class: measurement
+    icon: mdi:cash-plus
     unit_of_measurement: $/kWh
     state: >
       {%- if states('sensor.energy_timeofuse_tariff_type') in ("Peak") %}
@@ -36,6 +37,7 @@ sensor:
     unique_id: energy_solar_tariff
     device_class: monetary
     state_class: measurement
+    icon: mdi:cash-plus
     unit_of_measurement: $/kWh
     state: >
       0.05
@@ -43,6 +45,7 @@ sensor:
     unique_id: energy_supply_charge
     device_class: monetary
     state_class: measurement
+    icon: mdi:cash-plus
     unit_of_measurement: $/Day
     state: >
       1.4700

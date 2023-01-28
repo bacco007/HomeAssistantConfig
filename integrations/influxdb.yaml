@@ -48,6 +48,8 @@ influxdb:
       - sensor.udm_unifios
       - sensor.adsb_aircraft_tracked
       - sensor.e_ink_display_data
+      - sensor.sungrowsolar_alldata
+      - binary_sensor.espresense_bedroom
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
@@ -88,3 +90,10 @@ influxdb:
       - sensor.plex_tautulli*
       - sensor.watchman*
       - sensor.plane_overhead_detail*
+      - sensor.mqtt_total*
+      - sensor.mqtt_uptime*
+      - sensor.mqtt_load*
+      - sensor.mqtt_total*
+      - sensor.teamtracker*
+      - sensor.flighttracker_planeoverhead*
+      - sensor.formula_one*

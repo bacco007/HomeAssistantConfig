@@ -719,6 +719,89 @@ cards:
                       sort:
                         method: friendly_name
 
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:mushroom-template-card
+            primary: HA Server
+            secondary: "Uptime: {{ states('sensor.systemuptime') }}"
+            icon: mdi:server-network
+            tap_action: none
+            icon_color: |
+              {% if states('sensor.cpu_temperature') | int > 80 %}
+                red
+              {% elif states('sensor.cpu_temperature') | int > 70 %}
+                orange
+              {% elif states('sensor.cpu_temperature') | int > 60 %}
+                yellow
+              {% else %}
+                green
+              {% endif %}
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                entity: sensor.cpu_temperature
+                content: "{{ states(entity) }} °C"
+                icon: mdi:thermometer
+                icon_color: |
+                  {% if states('sensor.cpu_temperature') | int > 80 %}
+                    red
+                  {% elif states('sensor.cpu_temperature') | int > 70 %}
+                    orange
+                  {% elif states('sensor.cpu_temperature') | int > 60 %}
+                    yellow
+                  {% else %}
+                    green
+                  {% endif %}
+                tap_action: none
+              - type: template
+                entity: sensor.processor_use
+                content: "{{ states(entity) }} %"
+                icon_color: |
+                  {% if states('sensor.processor_use') | int > 80 %}
+                    red
+                  {% elif states('sensor.processor_use') | int > 70 %}
+                    orange
+                  {% elif states('sensor.processor_use') | int > 60 %}
+                    yellow
+                  {% else %}
+                    green
+                  {% endif %}
+                tap_action: none
+                icon: mdi:cpu-64-bit
+              - type: template
+                entity: sensor.memory_use_percent
+                content: "{{ states(entity) }} %"
+                icon: mdi:memory
+                icon_color: |
+                  {% if states('sensor.memory_use_percent') | int > 80 %}
+                    red
+                  {% elif states('sensor.memory_use_percent') | int > 70 %}
+                    orange
+                  {% elif states('sensor.memory_use_percent') | int > 60 %}
+                    yellow
+                  {% else %}
+                    green
+                  {% endif %}
+                tap_action: none
+              - type: template
+                entity: sensor.disk_use_percent
+                content: "{{ states(entity) }} %"
+                icon: mdi:harddisk
+                icon_color: |
+                  {% if states('sensor.disk_use_percent') | int > 80 %}
+                    red
+                  {% elif states('sensor.disk_use_percent') | int > 70 %}
+                    orange
+                  {% elif states('sensor.disk_use_percent') | int > 60 %}
+                    yellow
+                  {% else %}
+                    green
+                  {% endif %}
+                tap_action: none
+              - type: entity
+                entity: sensor.ha_db_size
+            alignment: end
+
       - type: custom:mushroom-chips-card
         chips:
           - type: template

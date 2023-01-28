@@ -7,7 +7,7 @@ delete from states where created < curdate()-7;
 delete from events where created < curdate()-7;
 
 delete from events where event_id not in (select event_id from states);
- 
+
 optimize table events;
 optimize table states;
 
@@ -45,7 +45,7 @@ GROUP BY verrijkt.entity_id
 ORDER BY size DESC
 limit 20;
 
-SELECT 
+SELECT
     JSON_VALUE(event_data, '$.entity_id') AS entity_id,
     COUNT(*) AS cnt
 FROM events
@@ -74,7 +74,7 @@ SELECT entity_id, SUM(LENGTH(event_data)) size, COUNT(*) count, SUM(LENGTH(event
 FROM step3
 GROUP BY entity_id
 ORDER BY size DESC;
- 
+
 SELECT
     table_name AS `Table Name`,
 	table_rows AS `Row Count`,

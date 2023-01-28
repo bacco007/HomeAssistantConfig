@@ -35,6 +35,8 @@ recorder:
       - sensor.lastfm_user_topalbums
       - sensor.lastfm_user_topartists
       - sensor.lastfm_user_toptracks
+      - sensor.sungrowsolar_alldata
+      - binary_sensor.espresense_bedroom
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -71,6 +73,13 @@ recorder:
       - sensor.plane_overhead_detail*
       - sensor.iss*
       - sensor.international_space_station*
+      - sensor.mqtt_total*
+      - sensor.mqtt_uptime*
+      - sensor.mqtt_load*
+      - sensor.mqtt_total*
+      - sensor.teamtracker*
+      - sensor.flighttracker_planeoverhead*
+      - sensor.formula_one*
     domains:
       - anniversaries
       - automation

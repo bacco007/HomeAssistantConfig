@@ -565,7 +565,7 @@ cards:
 
               - type: "custom:button-card"
                 template: live_tile
-                entity: sensor.flighttracker_planeoverhead
+                entity: sensor.plane_overhead
                 name: Closest Plane
                 # tap_action: !include ../popup/updates_ha.yaml
                 variables:
