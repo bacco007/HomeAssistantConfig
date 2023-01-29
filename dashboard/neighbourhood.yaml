@@ -53,7 +53,7 @@ cards:
           - type: "custom:button-card"
             template: header_card
             variables:
-              name: FIRE DANGER
+              name: FIRE DANGER (NEXT 4 DAYS)
               label: NSW RFS
               arrow: "mdi:arrow-top-right"
               action: url
@@ -140,28 +140,40 @@ cards:
           #     action: url
           #     url_path: !secret googlemaps_path
 
-          - type: "custom:decluttering-card"
-            template: multi_graph_card
-            variables:
-              - title: Driving Time
-              - lower_bound: 0
-              - entities:
-                  - entity: sensor.here_home_to_work_duration_in_traffic
-                    name: Home to Work
-                  - entity: sensor.here_tom_to_work_duration_in_traffic
-                    name: Tom to Work
-                  - entity: sensor.here_tom_to_home_duration_in_traffic
-                    name: Tom to Home
-                  - entity: sensor.elevation
-                    show_legend: false
-                    y_axis: secondary
-                    show_line: false
-                    show_points: false
-                    show_labels: false
-                    show_labels_secondary: false
-                    show_indicator: false
-                    line_width: 1
-                    color: "rgba(255,255,255,.25)"
+          - type: custom:apexcharts-card
+            config_templates: chart_style
+            graph_span: 7d
+            span:
+              end: day
+            header:
+              show: true
+              title: Driving Time
+              show_states: true
+              colorize_states: true
+            apex_config:
+              height: 300px
+            all_series_config:
+              stroke_width: 2
+              opacity: 0.3
+              type: area
+              curve: stepline
+              extend_to: now
+              group_by:
+                func: last
+                duration: 30m
+            series:
+              - entity: sensor.here_home_to_work_duration_in_traffic
+                name: Home to Work
+                show:
+                  legend_value: false
+              - entity: sensor.here_tom_to_work_duration_in_traffic
+                name: Tom to Work
+                show:
+                  legend_value: false
+              - entity: sensor.here_tom_to_home_duration_in_traffic
+                name: Tom to Home
+                show:
+                  legend_value: false
 
       # [Column] Traffic
       - type: vertical-stack
@@ -194,10 +206,12 @@ cards:
                     apex_config:
                       chart:
                         height: 250px
+                        stacked: true
                     all_series_config:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
+                      curve: stepline
                       # extend_to_end: false
                       group_by:
                         func: last
@@ -208,24 +222,38 @@ cards:
                       - entity: sensor.stats_livetraffic
                         attribute: alpine
                         name: Alpine
+                        show:
+                          legend_value: false
                       - entity: sensor.stats_livetraffic
                         attribute: fire
                         name: Fire
+                        show:
+                          legend_value: false
                       - entity: sensor.stats_livetraffic
                         attribute: flood
                         name: Flood
+                        show:
+                          legend_value: false
                       - entity: sensor.stats_livetraffic
                         attribute: incidents
                         name: Incidents
+                        show:
+                          legend_value: false
                       - entity: sensor.stats_livetraffic
-                        attribute: incidentslga
+                        attribute: incidents_lga
                         name: Incidents (LGA)
+                        show:
+                          legend_value: false
                       - entity: sensor.stats_livetraffic
                         attribute: majorevents
                         name: Major Events
+                        show:
+                          legend_value: false
                       - entity: sensor.stats_livetraffic
                         attribute: roadwork
                         name: Roadwork
+                        show:
+                          legend_value: false
 
               - !include tamworth/livetraffic/alpine.yaml
               - !include tamworth/livetraffic/fire.yaml
@@ -555,6 +583,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
+                      curve: stepline
                       # extend_to_end: false
                       group_by:
                         func: last
@@ -624,6 +653,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
+                      curve: stepline
                       # extend_to_end: false
                       group_by:
                         func: last
@@ -695,6 +725,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
+                      curve: stepline
                       # extend_to_end: false
                       group_by:
                         func: last
@@ -766,6 +797,7 @@ cards:
                       stroke_width: 2
                       opacity: 0.3
                       type: area
+                      curve: stepline
                       # extend_to_end: false
                       group_by:
                         func: last
@@ -908,10 +940,15 @@ cards:
                         name: No. Waiting
                   - type: custom:apexcharts-card
                     graph_span: 1d
+                    now:
+                      show: true
+                      color: red
                     span:
                       end: day
                     header:
-                      show: false
+                      show: true
+                      show_states: true
+                      colorize_states: true
                     apex_config:
                       chart:
                         height: 250px
@@ -923,6 +960,9 @@ cards:
                       # group_by:
                       #   func: last
                       #   duration: 1h
+                    yaxis:
+                      - decimals: 0
+                        align_to: 5
                     series:
                       - entity: sensor.tamhospital_waitingtime
                         name: Current
@@ -930,21 +970,31 @@ cards:
                         type: area
                         color: "#FF4400"
                         opacity: 0.08
+                        group_by:
+                          func: last
+                          duration: 10m
                         show:
                           extremas: true
+                          legend_value: false
                       - entity: sensor.tamhospital_waitingtime
                         attribute: usual_patients
                         name: Usual Waiting
                         stroke_width: 2.5
-                        type: line
+                        curve: stepline
                         color: "#ffa600"
+                        show:
+                          legend_value: false
                       - entity: sensor.tamhospital_waitingtime
                         attribute: capacity
                         name: Capacity
                         stroke_width: 0
                         type: area
+                        curve: stepline
                         opacity: 0.1
                         color: "#039be5"
+                        show:
+                          in_header: false
+                          legend_value: false
                         group_by:
                           func: last
                           duration: 1h

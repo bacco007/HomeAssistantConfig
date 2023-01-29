@@ -948,3 +948,151 @@ cards:
                 3% { clip-path: polygon(1% 1%, 0% 99%, 99% 100%, 99% 62%, 68% 62%, 62% 44%, 76% 34%, 100% 34%, 99% 0%); }
                 14% { clip-path: polygon(1% 1%, 0% 99%, 99% 100%, 100% 25%, 51% 45%, 38% 34%, 36% 0); }
               }
+
+      - type: custom:stack-in-card
+        cards:
+          - type: grid
+            square: false
+            columns: 3
+            cards:
+              - type: custom:stack-in-card
+                cards:
+                  - type: custom:apexcharts-card
+                    chart_type: radialBar
+                    series:
+                      - entity: sensor.processor_use
+                        color: rgb(76, 175, 80)
+                        max: 100
+                        show:
+                          legend_value: false
+                    apex_config:
+                      plotOptions:
+                        radialBar:
+                          offsetY: 0
+                          startAngle: -108
+                          endAngle: 108
+                          hollow:
+                            size: 65%
+                          dataLabels:
+                            name:
+                              show: false
+                            value:
+                              show: false
+                          track:
+                            strokeWidth: 80%
+                            margin: 0
+                      legend:
+                        show: false
+                      chart:
+                        height: 170px
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.processor_use
+                    primary_info: name
+                    secondary_info: state
+                    name: Core
+                    icon_color: green
+                    layout: vertical
+                    card_mod:
+                      style: |
+                        ha-card {
+                          top: -63px;
+                        }
+                card_mod:
+                  style: |
+                    ha-card {
+                      height: 158px;
+                    }
+              - type: custom:stack-in-card
+                cards:
+                  - type: custom:apexcharts-card
+                    chart_type: radialBar
+                    series:
+                      - entity: sensor.memory_use_percent
+                        color: rgb(33, 150, 243)
+                        max: 100
+                        show:
+                          legend_value: false
+                    apex_config:
+                      plotOptions:
+                        radialBar:
+                          offsetY: 0
+                          startAngle: -108
+                          endAngle: 108
+                          hollow:
+                            size: 65%
+                          dataLabels:
+                            name:
+                              show: false
+                            value:
+                              show: false
+                          track:
+                            strokeWidth: 80%
+                            margin: 0
+                      legend:
+                        show: false
+                      chart:
+                        height: 170px
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.memory_use_percent
+                    primary_info: name
+                    secondary_info: state
+                    name: Memory
+                    icon_color: blue
+                    layout: vertical
+                    card_mod:
+                      style: |
+                        ha-card {
+                          top: -63px;
+                        }
+                card_mod:
+                  style: |
+                    ha-card {
+                      height: 158px;
+                    }
+              - type: custom:stack-in-card
+                cards:
+                  - type: custom:apexcharts-card
+                    chart_type: radialBar
+                    series:
+                      - entity: sensor.disk_use_percent
+                        color: rgb(233, 30, 99)
+                        max: 100
+                        show:
+                          legend_value: false
+                    apex_config:
+                      plotOptions:
+                        radialBar:
+                          offsetY: 0
+                          startAngle: -108
+                          endAngle: 108
+                          hollow:
+                            size: 65%
+                          dataLabels:
+                            name:
+                              show: false
+                            value:
+                              show: false
+                          track:
+                            strokeWidth: 80%
+                            margin: 0
+                      legend:
+                        show: false
+                      chart:
+                        height: 170px
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.disk_use_percent
+                    primary_info: name
+                    secondary_info: state
+                    name: Disk
+                    icon_color: pink
+                    layout: vertical
+                    card_mod:
+                      style: |
+                        ha-card {
+                          top: -63px;
+                        }
+                card_mod:
+                  style: |
+                    ha-card {
+                      height: 158px;
+                    }
