@@ -54,6 +54,29 @@ wifi:
     ssid: ${esp_name} Fallback"
     password: !secret ap_password
 
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+  discovery: true
+  discovery_retain: true
+  discovery_unique_id_generator: mac
+  discovery_object_id_generator: device_name
+  birth_message:
+    topic: esp/wavesharedisplay
+    payload: online
+  will_message:
+    topic: esp/wavesharedisplay
+    payload: offline
+  shutdown_message:
+    topic: esp/wavesharedisplay
+    payload: offline
+  on_message:
+    - topic: esp/displayupdate
+      payload: 'ON'
+      then:
+      - component.update: eink_display
+
 captive_portal:
 
 web_server:

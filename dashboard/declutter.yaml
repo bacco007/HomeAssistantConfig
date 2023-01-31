@@ -462,3 +462,93 @@ metro_media_player_page:
             .player { padding-top: 0 !important; color: rgb(255,255,255)
             !important;} mwc-linear-progress { --mdc-theme-primary:
             inherit !important; }
+
+docker_uptime_card:
+  card:
+    type: custom:stack-in-card
+    mode: horizontal
+    cards:
+      - type: custom:mushroom-template-card
+        entity: "[[switch_entity]]"
+        primary: "[[name]]"
+        icon_color: |
+          {% if is_state(config.entity, 'on') %}
+            #7BCFA9
+          {% else %}
+            #ED9D97
+          {% endif %}
+        badge_icon: |
+          {% if is_state('[[update_entity]]', 'on') %}
+            mdi:update
+          {% elif is_state('[[update_entity]]', 'unknown')  %}
+            mdi:help
+          {% else %}
+            disabled
+          {% endif %}
+        badge_color: |
+          {% if is_state('[[update_entity]]', 'on') %}
+            disabled
+          {% elif is_state('[[update_entity]]', 'unknown')  %}
+            orange
+          {% else %}
+            transparent
+          {% endif %}
+        name: "[[name]]"
+        icon: "[[icon]]"
+        fill_container: true
+        layout: horizontal
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .primary {
+                font-size: 15px !important;
+                position: relative;
+                top: -10px;
+                left: 0px;
+                overflow: visible !important;
+                color: var(primary-text-color);
+                font-weight: bold;
+                text-overflow: ellipsis;
+              }
+              .primary:after {
+                content: "{{ states(config.entity) }}";
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                {% if is_state(config.entity, 'on') %}
+                  color: #0F9D58
+                {% else %}
+                  color: #DB4437
+                {% endif %}
+                # font-weight: bolder;
+                border-radius: 50%;
+                top: 5px;
+                left: 115px;
+                width: 16px;
+                height: 16px;
+                font-size: 14px;
+              }
+      - type: custom:uptime-card
+        entity: "[[uptime_entity]]"
+        hours_to_show: 48
+        alignment:
+          tooltip_first: true
+        show:
+          footer: false
+          header: false
+          status: false
+        bar:
+          height: 20
+          round: 5
+          spacing: 10
+          amount: 10
+        card_mod:
+          style: |
+            ha-card {
+              position: relative;
+              top: 10px;
+              left: -55%;
+              overflow: visible !important;
+              width: 150%;
+            }

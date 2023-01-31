@@ -52,6 +52,22 @@ cards:
 
       - type: vertical-stack
         cards:
+          - type: custom:decluttering-card
+            template: docker_uptime_card
+            variables:
+              - name: Sonarr
+              - icon: phu:sonarr
+              - switch_entity: switch.tbsh1_monitordocker_sonarr
+              - update_entity: update.wud_container_local_sonarr
+              - uptime_entity: binary_sensor.uptimekuma_service_external_sonarr
+          - type: custom:decluttering-card
+            template: docker_uptime_card
+            variables:
+              - name: Prowlarr
+              - icon: mdi:magnify-expand
+              - switch_entity: switch.tbsh1_monitordocker_prowlarr
+              - update_entity: update.wud_container_local_prowlarr
+              - uptime_entity: binary_sensor.uptimekuma_docker_tbsh1_prowlarr
           - type: sensor
             entity: sensor.yahoofinance_aapl
             graph: line
@@ -71,35 +87,43 @@ cards:
           - type: custom:stack-in-card
             mode: horizontal
             cards:
-              - type: custom:mushroom-template-card
-                entity: sensor.tbsh1_monitordocker_transmission
-                layout: horizontal
-                primary: Container Status
-                tap_action:
-                  action: more-info
-                secondary: >-
-                  {% if is_state('sensor.tbsh1_monitordocker_transmission','running') %}
-                    Running
-                  {% else %}
-                    Stopped
-                  {% endif %}
-                icon: >-
-                  {% if is_state('sensor.tbsh1_monitordocker_transmission','running') %}
-                    mdi:check-circle
-                  {% else %}
-                    mdi:circle-outline
-                  {% endif %}
-                icon_color: >-
-                  {% if is_state('sensor.tbsh1_monitordocker_transmission','running') %}
-                    green
-                  {% else %}
-                    red
-                  {% endif %}
-                card_mod:
-                  style: |
-                    ha-card {
-                      padding-top: 5px !important;
-                    }
+              - type: custom:decluttering-card
+                template: docker_uptime_card
+                variables:
+                  - name: Prowlarr
+                  - icon: mdi:magnify-expand
+                  - switch_entity: switch.tbsh1_monitordocker_prowlarr
+                  - update_entity: update.wud_container_local_prowlarr
+                  - uptime_entity: binary_sensor.uptimekuma_docker_tbsh1_prowlarr
+              # - type: custom:mushroom-template-card
+              #   entity: sensor.tbsh1_monitordocker_transmission
+              #   layout: horizontal
+              #   primary: Container Status
+              #   tap_action:
+              #     action: more-info
+              #   secondary: >-
+              #     {% if is_state('sensor.tbsh1_monitordocker_transmission','running') %}
+              #       Running
+              #     {% else %}
+              #       Stopped
+              #     {% endif %}
+              #   icon: >-
+              #     {% if is_state('sensor.tbsh1_monitordocker_transmission','running') %}
+              #       mdi:check-circle
+              #     {% else %}
+              #       mdi:circle-outline
+              #     {% endif %}
+              #   icon_color: >-
+              #     {% if is_state('sensor.tbsh1_monitordocker_transmission','running') %}
+              #       green
+              #     {% else %}
+              #       red
+              #     {% endif %}
+              #   card_mod:
+              #     style: |
+              #       ha-card {
+              #         padding-top: 5px !important;
+              #       }
               - type: custom:mushroom-template-card
                 entity: sensor.tbsh1_monitordocker_transmission
                 layout: horizontal
