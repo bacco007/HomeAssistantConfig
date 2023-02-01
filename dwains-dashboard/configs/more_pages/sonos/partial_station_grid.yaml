@@ -95,6 +95,36 @@ cards:
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
+    name: 93.5 Triple M Dubbo
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/93_5_Triple_M_Dubbo.png
+    aspect_ratio: 1/1
+    triggers_update: all
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == '93.5 Triple M Dubbo')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == '93.5 Triple M Dubbo')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_93_5_Triple_M_Dubbo
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
     name: ABC New England North West
     show_name: false
     show_entity_picture: true
@@ -662,6 +692,36 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_BBC_World_Service_News
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: Capital London
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/Capital_London.png
+    aspect_ratio: 1/1
+    triggers_update: all
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'Capital London')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'Capital London')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_Capital_London
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
@@ -1472,6 +1532,96 @@ cards:
       service: automation.trigger
       service_data:
         entity_id: automation.sonos_playlist_Triple_M_Hard_n_Heavy_Sydney
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: TripleM 2000s
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/TripleM_2000s.png
+    aspect_ratio: 1/1
+    triggers_update: all
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'TripleM 2000s')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'TripleM 2000s')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_TripleM_2000s
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: TripleM Greatest Hits Digital
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/TripleM_Greatest_Hits_Digital.png
+    aspect_ratio: 1/1
+    triggers_update: all
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'TripleM Greatest Hits Digital')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'TripleM Greatest Hits Digital')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_TripleM_Greatest_Hits_Digital
+  - type: custom:button-card
+    entity: media_player.office_sonos
+    show_state: false
+    name: TripleM Soft Rock Digital
+    show_name: false
+    show_entity_picture: true
+    entity_picture: ../local/radioicons/TripleM_Soft_Rock_Digital.png
+    aspect_ratio: 1/1
+    triggers_update: all
+    styles:
+      entity_picture:
+        - width: 80%
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'TripleM Soft Rock Digital')
+                return 'null';
+              return 'grayscale(100%)';
+            ]]]
+      card:
+        - filter: >
+            [[[
+              if (states['input_text.sonos_playlist_playing'].state == 'TripleM Soft Rock Digital')
+                return 'null';
+              return 'opacity(50%)';
+            ]]]
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      service_data:
+        entity_id: automation.sonos_playlist_TripleM_Soft_Rock_Digital
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false

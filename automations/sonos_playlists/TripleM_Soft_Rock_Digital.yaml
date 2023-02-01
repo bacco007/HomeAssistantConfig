@@ -1,0 +1,17 @@
+---
+alias: Sonos - Playlist - TripleM Soft Rock Digital
+description: Play TripleM Soft Rock Digital on Sonos
+id: TripleM_Soft_Rock_Digital
+trigger:
+  - platform: webhook
+    webhook_id: sonos_TripleM_Soft_Rock_Digital
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "TripleM Soft Rock Digital"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "TripleM Soft Rock Digital"

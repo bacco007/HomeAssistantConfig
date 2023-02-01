@@ -1,0 +1,17 @@
+---
+alias: Sonos - Playlist - TripleM Greatest Hits Digital
+description: Play TripleM Greatest Hits Digital on Sonos
+id: TripleM_Greatest_Hits_Digital
+trigger:
+  - platform: webhook
+    webhook_id: sonos_TripleM_Greatest_Hits_Digital
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "TripleM Greatest Hits Digital"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "TripleM Greatest Hits Digital"
