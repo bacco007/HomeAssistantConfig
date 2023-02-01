@@ -1,24 +1,26 @@
+""" Home Assistant sensor processing """
+
 import logging
-import uuid
 
 import voluptuous as vol
+
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
-from . import TeamTrackerDataUpdateCoordinator
 
+from . import TeamTrackerDataUpdateCoordinator
 from .const import (
     ATTRIBUTION,
     CONF_CONFERENCE_ID,
     CONF_LEAGUE_ID,
     CONF_LEAGUE_PATH,
     CONF_SPORT_PATH,
-    CONF_TIMEOUT,
     CONF_TEAM_ID,
+    CONF_TIMEOUT,
     COORDINATOR,
     DEFAULT_CONFERENCE_ID,
     DEFAULT_ICON,
@@ -46,16 +48,17 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Configuration from yaml"""
 
     _LOGGER.debug("%s: Setting up sensor from YAML", config[CONF_NAME])
 
     league_id = config[CONF_LEAGUE_ID].upper()
-    for x in range(len(LEAGUE_LIST)):
-        if LEAGUE_LIST[x][0] == league_id:
-            config.update({CONF_SPORT_PATH: LEAGUE_LIST[x][1]})
-            config.update({CONF_LEAGUE_PATH: LEAGUE_LIST[x][2]})
+    for league in LEAGUE_LIST:
+        if league[0] == league_id:
+            config.update({CONF_SPORT_PATH: league[1]})
+            config.update({CONF_LEAGUE_PATH: league[2]})
 
     if DOMAIN not in hass.data.keys():
         hass.data.setdefault(DOMAIN, {})
@@ -93,13 +96,17 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         """Initialize the sensor."""
         super().__init__(hass.data[DOMAIN][entry.entry_id][COORDINATOR])
 
-        sport = entry.data[CONF_SPORT_PATH]
+        sport_path = entry.data[CONF_SPORT_PATH]
         icon = DEFAULT_ICON
-        for x in range(len(SPORT_LIST)):
-            if SPORT_LIST[x][0] == sport:
-                icon = SPORT_LIST[x][1]
+        for sport in SPORT_LIST:
+            if sport[0] == sport_path:
+                icon = sport[1]
         if icon == DEFAULT_ICON:
-            _LOGGER.debug("%s:  Setting up sensor from YAML.  Sport '%s' not found.", entry.data[CONF_NAME], sport)
+            _LOGGER.debug(
+                "%s:  Setting up sensor from YAML.  Sport '%s' not found.",
+                entry.data[CONF_NAME],
+                sport,
+            )
 
         self.coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
         self._config = entry
@@ -168,7 +175,6 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._last_update = None
         self._api_message = None
 
-
     @property
     def unique_id(self):
         """
@@ -191,10 +197,11 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         """Return the state of the sensor."""
         if self.coordinator.data is None:
             return None
-        elif "state" in self.coordinator.data.keys():
+
+        if "state" in self.coordinator.data.keys():
             return self.coordinator.data["state"]
-        else:
-            return None
+
+        return None
 
     @property
     def extra_state_attributes(self):
@@ -228,7 +235,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs["team_homeaway"] = self.coordinator.data["team_homeaway"]
         attrs["team_logo"] = self.coordinator.data["team_logo"]
         attrs["team_colors"] = self.coordinator.data["team_colors"]
-#        attrs["team_colors_rbg"] = self.colors2rgb(self.coordinator.data["team_colors"])
+        #        attrs["team_colors_rbg"] = self.colors2rgb(self.coordinator.data["team_colors"])
         attrs["team_score"] = self.coordinator.data["team_score"]
         attrs["team_win_probability"] = self.coordinator.data["team_win_probability"]
         attrs["team_timeouts"] = self.coordinator.data["team_timeouts"]
@@ -240,9 +247,11 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs["opponent_homeaway"] = self.coordinator.data["opponent_homeaway"]
         attrs["opponent_logo"] = self.coordinator.data["opponent_logo"]
         attrs["opponent_colors"] = self.coordinator.data["opponent_colors"]
-#        attrs["opponent_colors_rgb"] = self.colors2rgb(self.coordinator.data["opponent_colors"])
+        #        attrs["opponent_colors_rgb"] = self.colors2rgb(self.coordinator.data["opponent_colors"])
         attrs["opponent_score"] = self.coordinator.data["opponent_score"]
-        attrs["opponent_win_probability"] = self.coordinator.data["opponent_win_probability"]
+        attrs["opponent_win_probability"] = self.coordinator.data[
+            "opponent_win_probability"
+        ]
         attrs["opponent_timeouts"] = self.coordinator.data["opponent_timeouts"]
 
         attrs["quarter"] = self.coordinator.data["quarter"]
@@ -260,7 +269,9 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
 
         attrs["team_shots_on_target"] = self.coordinator.data["team_shots_on_target"]
         attrs["team_total_shots"] = self.coordinator.data["team_total_shots"]
-        attrs["opponent_shots_on_target"] = self.coordinator.data["opponent_shots_on_target"]
+        attrs["opponent_shots_on_target"] = self.coordinator.data[
+            "opponent_shots_on_target"
+        ]
         attrs["opponent_total_shots"] = self.coordinator.data["opponent_total_shots"]
 
         attrs["team_sets_won"] = self.coordinator.data["team_sets_won"]
@@ -275,16 +286,3 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
     def available(self) -> bool:
         """Return if entity is available."""
         return self.coordinator.last_update_success
-
-
-    def colors2rgb(self, colors) -> tuple:
-        if colors is None:
-            return None
-        color_list = []
-        color_list.append(list(self.hex_to_rgb(colors[0])))
-        color_list.append(list(self.hex_to_rgb(colors[1])))
-        return color_list
-
-    def hex_to_rgb(self, hexa) -> tuple:
-        hexa = hexa.lstrip("#")
-        return tuple(int(hexa[i : i + 2], 16) for i in (0, 2, 4))

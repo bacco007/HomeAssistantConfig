@@ -1,5 +1,9 @@
+""" Miscellaneous Utilities """
+
 import logging
+
 _LOGGER = logging.getLogger(__name__)
+
 
 #
 # Traverse json and return the value at the end of the chain of keys.
@@ -8,10 +12,12 @@ _LOGGER = logging.getLogger(__name__)
 #    default - default value to be returned if a key is missing
 #
 async def async_get_value(json, *keys, default=None):
+    """Traverse the json using keys to return the associated value, or default if invalid keys"""
+
     j = json
     try:
         for k in keys:
             j = j[k]
-        return(j)
+        return j
     except:
-        return(default)
+        return default
