@@ -70,6 +70,7 @@ watchman_report.txt
 file.log
 solcast.json
 rtsp*
+sonos_playlist.yaml
 
 
 node-red/*

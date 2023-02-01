@@ -17,9 +17,13 @@ soco = zone_list[0]
 favorites = soco.music_library.get_sonos_favorites()
 
 ### INPUT_SELECT ###
-# f = open("../entities/input_selects/sonos_playlist.yaml", "w")
-# f.write("---")
-# f.write("\n")
+f = open("sonos_playlist.yaml", "w")
+f.write("---")
+f.write("\n")
+for fav in favorites:
+    title = fav.title
+    titleClean = make_safe_filename(title)
+    f.write(title + ": ../local/radioicons/" + titleClean + ".png" + "\n")
 # f.write("sonosplaylist:" + "\n")
 # f.write("  name: Playlist Selection" + "\n")
 # f.write("  options:" + "\n")
@@ -32,7 +36,7 @@ favorites = soco.music_library.get_sonos_favorites()
 # f.write('  initial: "-- Select --"' + "\n")
 
 # f.write('  icon: "mdi:music-box-outline"' + "\n")
-# f.close()
+f.close()
 
 ### GRID ###
 f = open("dwains-dashboard/configs/more_pages/sonos/partial_station_grid.yaml", "w")

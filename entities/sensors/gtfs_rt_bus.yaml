@@ -4,18 +4,23 @@ trip_update_url: https://api.transport.nsw.gov.au/v1/gtfs/realtime/regionbuses/n
 vehicle_position_url: https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/regionbuses/newenglandnorthwest
 api_key: !secret tfnsw_apikey2
 departures:
-  - name: Bus - Home
+  - name: Bus - Home - 431
     route: "5961_5961_431"
     stopid: "2340301"
     icon: mdi:bus
     service_type: bus
-  - name: Bus - Home
-    route: "5961_5961_431"
-    stopid: "23401425"
+  - name: Bus - Home - 430
+    route: "5961_5961_430"
+    stopid: "2340301"
     icon: mdi:bus
     service_type: bus
-  - name: Bus - Work
+  - name: Bus - Work - 431
     route: "5961_5961_431"
-    stopid: "234081"
+    stopid: "2340286"
+    icon: mdi:bus
+    service_type: bus
+  - name: Bus - Work - 430
+    route: "5961_5961_430"
+    stopid: "2340286"
     icon: mdi:bus
     service_type: bus
