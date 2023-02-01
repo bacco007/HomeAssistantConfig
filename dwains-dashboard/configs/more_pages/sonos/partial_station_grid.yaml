@@ -1475,36 +1475,6 @@ cards:
   - type: custom:button-card
     entity: media_player.office_sonos
     show_state: false
-    name: Triple M Sydney
-    show_name: false
-    show_entity_picture: true
-    entity_picture: ../local/radioicons/Triple_M_Sydney.png
-    aspect_ratio: 1/1
-    triggers_update: all
-    styles:
-      entity_picture:
-        - width: 80%
-        - filter: >
-            [[[
-              if (states['input_text.sonos_playlist_playing'].state == 'Triple M Sydney')
-                return 'null';
-              return 'grayscale(100%)';
-            ]]]
-      card:
-        - filter: >
-            [[[
-              if (states['input_text.sonos_playlist_playing'].state == 'Triple M Sydney')
-                return 'null';
-              return 'opacity(50%)';
-            ]]]
-    tap_action:
-      action: call-service
-      service: automation.trigger
-      service_data:
-        entity_id: automation.sonos_playlist_Triple_M_Sydney
-  - type: custom:button-card
-    entity: media_player.office_sonos
-    show_state: false
     name: Virgin Radio Anthems UK
     show_name: false
     show_entity_picture: true
