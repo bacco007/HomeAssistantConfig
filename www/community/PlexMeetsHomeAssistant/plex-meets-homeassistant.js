@@ -22499,15 +22499,39 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                 this.searchInputElem.style.display = 'none';
             }
             if (this.card) {
-                const marginRight = 10; // needs to be equal to .container margin right
-                const areaSize = this.card.offsetWidth - parseInt(this.card.style.paddingRight, 10) - parseInt(this.card.style.paddingLeft, 10);
+                const getAreaSize = () => {
+                    if (this.card) {
+                        return (this.card.getBoundingClientRect().width -
+                            parseInt(this.card.style.paddingRight, 10) -
+                            parseInt(this.card.style.paddingLeft, 10));
+                    }
+                    return 0;
+                };
+                const areaSize = getAreaSize();
                 const postersInRow = Math.floor(areaSize / this.minWidth);
                 if (areaSize > 0) {
+                    const episodesInRow = Math.floor(areaSize / this.minEpisodeWidth);
+                    // Todo: remove this hack and calculate properly // needs to be equal to .container margin right
+                    let marginRight = 11;
+                    if (postersInRow > 7) {
+                        marginRight = 10.3;
+                    }
+                    else if (postersInRow > 3) {
+                        marginRight = 10.7;
+                    }
                     CSS_STYLE.width = areaSize / postersInRow - marginRight;
                     CSS_STYLE.height = CSS_STYLE.width * CSS_STYLE.ratio;
-                    const episodesInRow = Math.floor(areaSize / this.minEpisodeWidth);
                     CSS_STYLE.episodeWidth = Math.floor(areaSize / episodesInRow - marginRight);
                     CSS_STYLE.episodeHeight = Math.round(CSS_STYLE.episodeWidth * CSS_STYLE.episodeRatio);
+                    // hack to make sure cards width is always calculated properly, todo solve better in the future
+                    setTimeout(() => {
+                        if (this.card) {
+                            const newAreaSize = getAreaSize();
+                            if (newAreaSize !== areaSize) {
+                                this.renderPage();
+                            }
+                        }
+                    }, 1);
                 }
                 else if (this.renderPageRetries < 10) {
                     // sometimes it loop forever, todo: properly fix!
@@ -23656,6 +23680,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             }
             const container = document.createElement('div');
             container.className = 'plexMeetsContainer';
+            // console.log(CSS_STYLE);
             container.style.width = `${CSS_STYLE.width}px`;
             if (this.displayTitleMain || this.displaySubtitleMain) {
                 container.style.marginBottom = '10px';
