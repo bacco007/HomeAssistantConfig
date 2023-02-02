@@ -384,7 +384,6 @@ class SamsungTVInfo:
             return RESULT_NOT_SUCCESSFUL
 
         for port in (8001, 8002):
-
             try:
                 _LOGGER.info(
                     "Try to configure SamsungTV %s using port %s",
@@ -482,7 +481,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     if DOMAIN in config:
         entries_list = hass.config_entries.async_entries(DOMAIN)
         for entry_config in config[DOMAIN]:
-
             # get ip address
             ip_address = entry_config[CONF_HOST]
 

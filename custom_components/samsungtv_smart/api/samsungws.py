@@ -44,7 +44,8 @@ import websocket
 from .shortcuts import SamsungTVShortcuts
 
 DEFAULT_POWER_ON_DELAY = 120
-MIN_APP_SCAN_INTERVAL = 10
+MIN_APP_SCAN_INTERVAL = 9
+MAX_APP_VALIDITY_SEC = 60
 MAX_WS_PING_INTERVAL = 10
 PING_TIMEOUT = 3
 TYPE_DEEP_LINK = "DEEP_LINK"
@@ -55,6 +56,7 @@ _WS_ENDPOINT_APP_CONTROL = "/api/v2"
 _WS_ENDPOINT_ART = "/api/v2/channels/com.samsung.art-app"
 _WS_LOG_NAME = "websocket"
 
+_LOG_PING_PONG = False
 _LOGGING = logging.getLogger(__name__)
 
 
@@ -97,6 +99,13 @@ def _process_api_response(response, *, raise_error=True):
                 "Failed to parse response from TV. Maybe feature not supported on this model"
             ) from exc
     return response
+
+
+def _log_ping_pong(msg, *args):
+    """Log ping pong message if enabled."""
+    if not _LOG_PING_PONG:
+        return
+    _LOGGING.debug(msg=msg, args=args)
 
 
 class Ping:
@@ -268,7 +277,6 @@ class SamsungTVWS:
         self._app_type = {}
         self._sync_lock = Lock()
         self._last_app_scan = datetime.min
-        self._is_connected = False
 
         self._ping_thread = None
         self._ping_thread_run = False
@@ -276,10 +284,12 @@ class SamsungTVWS:
         self._ws_remote = None
         self._client_remote = None
         self._last_ping = datetime.min
+        self._is_connected = False
 
         self._ws_control = None
         self._client_control = None
         self._last_control_ping = datetime.min
+        self._is_control_connected = False
 
         self._ws_art = None
         self._client_art = None
@@ -377,7 +387,13 @@ class SamsungTVWS:
             self._new_token_callback()
 
     def _ws_send(
-        self, command, key_press_delay=None, *, use_control=False, ws_socket=None
+        self,
+        command,
+        key_press_delay=None,
+        *,
+        use_control=False,
+        ws_socket=None,
+        raise_on_closed=False,
     ):
         """Send a command using the appropriate websocket."""
         using_remote = False
@@ -397,6 +413,8 @@ class SamsungTVWS:
         try:
             connection.send(payload)
         except websocket.WebSocketConnectionClosedException:
+            if raise_on_closed:
+                raise
             _LOGGING.warning("_ws_send: connection is closed, send command failed")
             if using_remote or use_control:
                 _LOGGING.info("_ws_send: try to restart communication threads")
@@ -495,7 +513,7 @@ class SamsungTVWS:
 
     def _on_ping_remote(self, _, payload):
         """Manage ping message received by remote WS connection."""
-        _LOGGING.debug("Received WS remote ping %s, sending pong", payload)
+        _log_ping_pong("Received WS remote ping %s, sending pong", payload)
         self._last_ping = datetime.utcnow()
         if self._ws_remote.sock:
             try:
@@ -532,7 +550,7 @@ class SamsungTVWS:
             self._handle_installed_app(response)
         elif event == "ed.edenTV.update":
             _LOGGING.debug("Message remote: received edenTV")
-            self.get_running_app(force_scan=True)
+            self._get_running_app(force_scan=True)
 
     def _request_apps_list(self):
         """Request to the TV the list of installed apps."""
@@ -577,6 +595,7 @@ class SamsungTVWS:
         # we set ping interval (1 hour) only to enable multi-threading mode
         # on socket. TV do not answer to ping but send ping to client
         self._run_forever(self._ws_control, sslopt=sslopt, ping_interval=3600)
+        self._is_control_connected = False
         self._ws_control.close()
         self._ws_control = None
         self._running_app_changed = None
@@ -584,7 +603,7 @@ class SamsungTVWS:
 
     def _on_ping_control(self, _, payload):
         """Manage ping message received by control WS channel."""
-        _LOGGING.debug("Received WS control ping %s, sending pong", payload)
+        _log_ping_pong("Received WS control ping %s, sending pong", payload)
         self._last_control_ping = datetime.utcnow()
         if self._ws_control.sock:
             try:
@@ -612,7 +631,8 @@ class SamsungTVWS:
             if not self._check_conn_id(conn_data):
                 return
             _LOGGING.debug("Message control: received connect")
-            self.get_running_app()
+            self._is_control_connected = True
+            self._get_running_app()
         elif event == "ed.installedApp.get":
             _LOGGING.debug("Message control: received installedApp")
             self._handle_installed_app(response)
@@ -628,8 +648,9 @@ class SamsungTVWS:
         elif (is_running := result.get("visible")) is None:
             return
 
-        self._last_running_scan = datetime.utcnow()
-        self._running_apps[app_id] = self._last_running_scan
+        call_time = datetime.utcnow()
+        self._last_running_scan = call_time
+        self._running_apps[app_id] = call_time
         if self._running_app:
             if is_running and app_id != self._running_app:
                 _LOGGING.debug("app running: %s", app_id)
@@ -670,24 +691,27 @@ class SamsungTVWS:
         """Send a message to control WS channel to get the app status."""
         _LOGGING.debug("Get app status: AppID: %s, AppType: %s", app_id, app_type)
 
-        # if app_type == 4:
-        #     method = "ms.webapplication.get"
-        # else:
-        #     method = "ms.application.get"
+        if not (self._ws_control and self._is_control_connected):
+            return
 
         if app_type == 4:  # app type 4 always return not found error
             return
+
         method = "ms.application.get"
-        self._ws_send(
-            {
-                "id": app_id,
-                "method": method,
-                "params": {"id": app_id},
-            },
-            key_press_delay=0,
-            use_control=True,
-            ws_socket=self._ws_control,
-        )
+        try:
+            self._ws_send(
+                {
+                    "id": app_id,
+                    "method": method,
+                    "params": {"id": app_id},
+                },
+                key_press_delay=0,
+                use_control=True,
+                ws_socket=self._ws_control,
+                raise_on_closed=True,
+            )
+        except websocket.WebSocketConnectionClosedException:
+            _LOGGING.debug("Get app status aborted: connection closed")
 
     def _client_art_thread(self):
         """Start the client art WS thread used to manage art mode status."""
@@ -716,7 +740,7 @@ class SamsungTVWS:
 
     def _on_ping_art(self, _, payload):
         """Manage ping message received by art WS channel."""
-        _LOGGING.debug("Received WS art ping %s, sending pong", payload)
+        _log_ping_pong("Received WS art ping %s, sending pong", payload)
         self._last_art_ping = datetime.utcnow()
         if self._ws_art.sock:
             try:
@@ -832,7 +856,8 @@ class SamsungTVWS:
             return True
         if (last_seen := self._running_apps.get(app_id)) is None:
             return None
-        if (self._last_running_scan - last_seen).total_seconds() >= 60:
+        app_age = (self._last_running_scan - last_seen).total_seconds()
+        if app_age >= MAX_APP_VALIDITY_SEC:
             self._running_apps.pop(app_id)
             return None
         return False
@@ -862,6 +887,7 @@ class SamsungTVWS:
                     self._artmode_status = ArtModeStatus.Unavailable
             else:
                 self._check_art_mode()
+                self._get_running_app()
                 self._notify_app_change()
 
         if self._power_on_requested:
@@ -893,28 +919,16 @@ class SamsungTVWS:
             self._running_app_changed = False
             self._status_callback()
 
-    def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
-        """Set a power on request status and save the time of the rquest."""
-        self._power_on_requested = True
-        self._power_on_requested_time = datetime.utcnow()
-        self._power_on_artmode = set_art_mode
-        self._power_on_delay = max(power_on_delay, 0) or DEFAULT_POWER_ON_DELAY
-
-    def set_power_off_request(self):
-        """Remove a previous power on request."""
-        self._power_on_requested = False
-
-    def get_running_app(self, *, force_scan=False):
+    def _get_running_app(self, *, force_scan=False):
         """Query current running app using control channel."""
-        if not self._ws_control:
+        if not (self._ws_control and self._is_control_connected):
             return
 
+        scan_interval = 1 if force_scan else MIN_APP_SCAN_INTERVAL
         with self._sync_lock:
             call_time = datetime.utcnow()
             difference = (call_time - self._last_app_scan).total_seconds()
-            if (
-                difference < MIN_APP_SCAN_INTERVAL and not force_scan
-            ) or difference < 1:
+            if difference < scan_interval:
                 return
             self._last_app_scan = call_time
 
@@ -935,6 +949,17 @@ class SamsungTVWS:
 
         for app in app_to_check.values():
             self._get_app_status(app.app_id, app.app_type)
+
+    def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
+        """Set a power on request status and save the time of the rquest."""
+        self._power_on_requested = True
+        self._power_on_requested_time = datetime.utcnow()
+        self._power_on_artmode = set_art_mode
+        self._power_on_delay = max(power_on_delay, 0) or DEFAULT_POWER_ON_DELAY
+
+    def set_power_off_request(self):
+        """Remove a previous power on request."""
+        self._power_on_requested = False
 
     def start_poll(self):
         """Start polling the TV for status."""
@@ -975,7 +1000,6 @@ class SamsungTVWS:
             if self._client_art_supported > 0 and (
                 self._client_art is None or not self._client_art.is_alive()
             ):
-
                 if self._client_art_supported > 1:
                     self._client_art_supported = 0
                 self._client_art = Thread(target=self._client_art_thread)

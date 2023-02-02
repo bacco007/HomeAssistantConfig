@@ -501,7 +501,6 @@ class SamsungTVDevice(MediaPlayerEntity):
     async def _update_volume_info(self):
         """Update the volume info."""
         if self._state == MediaPlayerState.ON:
-
             # if self._st and self._setvolumebyst:
             #     self._attr_volume_level = self._st.volume
             #     self._attr_is_volume_muted = self._st.muted
@@ -547,7 +546,6 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         st_running_app = None
         if self._app_list is not None:
-
             for app, app_id in self._app_list.items():
                 if app_running := self._ws.is_app_running(app_id):
                     self._running_app = app
