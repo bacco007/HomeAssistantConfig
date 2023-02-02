@@ -80,6 +80,8 @@ recorder:
       - sensor.teamtracker*
       - sensor.flighttracker_planeoverhead*
       - sensor.formula_one*
+      - sensor.haserver*
+      - sensor.adsb_message_rate
     domains:
       - anniversaries
       - automation
@@ -94,6 +96,12 @@ recorder:
       - weblink
       - zone
       - weather
+      - input_boolean
+      - input_select
+      - input_number
+      - input_text
+      - input_datetime
+      - update
     event_types:
       - service_removed
       - service_executed
@@ -113,3 +121,12 @@ recorder:
       - transmission_removed_torrent
       - transmission_downloaded_torrent
       - transmission_started_torrent
+      - dwains_dashboard_reload
+      - ios.became_active
+      - ios.entered_background
+      - ios.finished_launching
+      - lovelace_updated
+      - nodered
+      - pyscript_running
+      - persistent_notifications_updated
+      - recorder_5min_statistics_generated

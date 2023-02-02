@@ -9,7 +9,10 @@ condition:
   - condition: time
     weekday:
       - sun
+      - tue
+      - thu
 action:
   - service: recorder.purge
     data:
+      apply_filter: true
       repack: true

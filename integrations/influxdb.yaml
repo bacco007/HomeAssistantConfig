@@ -35,6 +35,11 @@ influxdb:
       - switch
       - weblink
       - zone
+      - input_boolean
+      - input_select
+      - input_number
+      - input_text
+      - input_datetime
     entities:
       - sun.sun
       - sensor.ha_uptime_hours
@@ -97,3 +102,5 @@ influxdb:
       - sensor.teamtracker*
       - sensor.flighttracker_planeoverhead*
       - sensor.formula_one*
+      - sensor.haserver*
+      - sensor.adsb_message_rate
