@@ -614,6 +614,12 @@ cards:
                 borderColor: "#00000030"
                 strokeDashArray: 4
                 position: back
+              yaxis:
+                forceNiceScale: true
+                decimals: 2
+                min: 0.0
+                max: |
+                  EVAL: function(max) { return max }
             experimental:
               color_threshold: true
             header:
@@ -622,12 +628,7 @@ cards:
               colorize_states: true
             yaxis:
               - id: first
-                decimals: 1
-                apex_config:
-                  tickAmount: 2
-              - id: second
-                opposite: true
-                decimals: 0
+                decimals: 2
                 apex_config:
                   tickAmount: 2
             series:
@@ -651,7 +652,6 @@ cards:
               - entity: sensor.active_generation
                 transform: "return x / 1000;"
                 name: Solar
-                yaxis_id: second
                 type: area
                 curve: smooth
                 opacity: 0.2
