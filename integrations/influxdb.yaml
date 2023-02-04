@@ -40,6 +40,7 @@ influxdb:
       - input_number
       - input_text
       - input_datetime
+      - update
     entities:
       - sun.sun
       - sensor.ha_uptime_hours
@@ -48,13 +49,24 @@ influxdb:
       - sensor.radarr_movies
       - sensor.unavailable_entities
       - weather.dark_sky
-      - sensor.launch_library
       - sensor.adsb_fa_feeder
+      - sensor.internet_time
+      - weather.east_tamworth_hourly
       - sensor.udm_unifios
+      - sensor.sungrowsolar_runtime
+      - sensor.sungrowsolar_runtime
+      - sensor.jdownloader_tbsmarthome_links
+      - sensor.jdownloader_tbsmarthome_packages
       - sensor.adsb_aircraft_tracked
       - sensor.e_ink_display_data
+      - sensor.lastfm_user_topalbums
+      - sensor.lastfm_user_topartists
+      - sensor.lastfm_user_toptracks
       - sensor.sungrowsolar_alldata
       - binary_sensor.espresense_bedroom
+      - sensor.adsb_message_rate
+      - sensor.hub_hb_00045437_status
+      - sensor.plane_overhead
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
@@ -76,6 +88,7 @@ influxdb:
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
+      - sensor.tbsh1*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
@@ -90,6 +103,7 @@ influxdb:
       - weather.climacell*
       - sensor.untappd*
       - sensor.climacell*
+      - sensor.iss*
       - sensor.international_space_station*
       - sensor.zha*
       - sensor.plex_tautulli*
@@ -103,4 +117,15 @@ influxdb:
       - sensor.flighttracker_planeoverhead*
       - sensor.formula_one*
       - sensor.haserver*
-      - sensor.adsb_message_rate
+      - sensor.node_*
+      - sensor.b7158737*
+      - sensor.pve_ha_*
+      - sensor.watchman_*
+      - update.*
+      - sensor.waveshare_75_ink*
+      - sensor.washer*
+      - sensor.noaa*
+      - sensor.ical*
+      - sensor.homeassistant_*
+      - sensor.*_thermal_comfort_*
+      - sensor.adaptive_lighting*

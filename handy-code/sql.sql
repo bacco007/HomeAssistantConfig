@@ -27,7 +27,7 @@ FROM
 GROUP BY
  entity_id
 ORDER BY COUNT(entity_id) DESC
-LIMIT 20;
+LIMIT 40;
 
 SELECT
  event_type,

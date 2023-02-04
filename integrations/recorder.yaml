@@ -13,6 +13,8 @@ recorder:
       - sensor.unifi_networkstats_switchap
       - sensor.load_power
       - sensor.tamhospital_waitingtime
+    entity_globs:
+      - sensor.tbsh1_monitordocker*
   exclude:
     entities:
       - sun.sun
@@ -37,6 +39,9 @@ recorder:
       - sensor.lastfm_user_toptracks
       - sensor.sungrowsolar_alldata
       - binary_sensor.espresense_bedroom
+      - sensor.adsb_message_rate
+      - sensor.hub_hb_00045437_status
+      - sensor.plane_overhead
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -57,6 +62,7 @@ recorder:
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
+      - sensor.tbsh1*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
@@ -81,7 +87,18 @@ recorder:
       - sensor.flighttracker_planeoverhead*
       - sensor.formula_one*
       - sensor.haserver*
-      - sensor.adsb_message_rate
+      - sensor.node_*
+      - sensor.b7158737*
+      - sensor.pve_ha_*
+      - sensor.watchman_*
+      - update.*
+      - sensor.waveshare_75_ink*
+      - sensor.washer*
+      - sensor.noaa*
+      - sensor.ical*
+      - sensor.homeassistant_*
+      - sensor.*_thermal_comfort_*
+      - binary_sensor.ping*
     domains:
       - anniversaries
       - automation
@@ -102,6 +119,7 @@ recorder:
       - input_text
       - input_datetime
       - update
+      - media_player
     event_types:
       - service_removed
       - service_executed

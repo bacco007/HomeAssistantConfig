@@ -19,7 +19,7 @@ logger:
     custom_components.monitor_docker.helpers: fatal
     custom_components.google_fit: debug
     custom_components.aio_geojson_query: debug
-    custom_components.gtfs_rt: debug
+    # custom_components.gtfs_rt: debug
 
   filters:
     homeassistant:

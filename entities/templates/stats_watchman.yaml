@@ -1,0 +1,15 @@
+---
+sensor:
+  - name: stats_watchman
+    unique_id: stats_watchman
+    icon: mdi:shield-half-full
+    state: >
+      {{ states('sensor.watchman_missing_entities') | int
+        + states('sensor.watchman_missing_services') | int }}
+    state_class: measurement
+    unit_of_measurement: items
+    attributes:
+      entities: >
+        {{ states('sensor.watchman_missing_entities') | int }}
+      services: >
+        {{ states('sensor.watchman_missing_services') | int }}
