@@ -10,7 +10,8 @@ cards:
   - type: "custom:button-card"
     template: header_card
     variables:
-      name: DOCKER
+      name: |
+        <ha-icon style='--mdc-icon-size: var(--h4-font-size)' icon='mdi:docker'></ha-icon> DOCKER
       label: More
       link: /ui-dashboard/docker
     view_layout:

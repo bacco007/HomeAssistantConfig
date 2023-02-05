@@ -13,8 +13,8 @@ recorder:
       - sensor.unifi_networkstats_switchap
       - sensor.load_power
       - sensor.tamhospital_waitingtime
-    entity_globs:
-      - sensor.tbsh1_monitordocker*
+    # entity_globs:
+    #   - sensor.tbsh1_monitordocker*
   exclude:
     entities:
       - sun.sun
@@ -37,6 +37,9 @@ recorder:
       - sensor.lastfm_user_topalbums
       - sensor.lastfm_user_topartists
       - sensor.lastfm_user_toptracks
+      - sensor.lastfm_user_monthlytrackchart
+      - sensor.lastfm_user_recenttracks
+      - sensor.lastfm_user_weeklytrackchart
       - sensor.sungrowsolar_alldata
       - binary_sensor.espresense_bedroom
       - sensor.adsb_message_rate
@@ -62,7 +65,7 @@ recorder:
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
-      - sensor.tbsh1*
+      # - sensor.tbsh1*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
@@ -91,14 +94,22 @@ recorder:
       - sensor.b7158737*
       - sensor.pve_ha_*
       - sensor.watchman_*
-      - update.*
-      - sensor.waveshare_75_ink*
+      - sensor.waveshare_75_eink*
       - sensor.washer*
       - sensor.noaa*
       - sensor.ical*
       - sensor.homeassistant_*
       - sensor.*_thermal_comfort_*
       - binary_sensor.ping*
+      - binary_sensor.node_pvetbsh*
+      - binary_sensor.node_pve*
+      - binary_sensor.pve*
+      - sensor.anniversary*
+      - sensor.gdacs*
+      - sensor.daylight_savings*
+      - sensor.frontpage_*
+      - sensor.helper_*
+      - sensor.espresense_*
     domains:
       - anniversaries
       - automation
@@ -120,6 +131,7 @@ recorder:
       - input_datetime
       - update
       - media_player
+      - button
     event_types:
       - service_removed
       - service_executed

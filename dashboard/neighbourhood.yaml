@@ -998,3 +998,5 @@ cards:
                         group_by:
                           func: last
                           duration: 1h
+
+      - !include tamworth/dams.yaml

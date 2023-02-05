@@ -20,7 +20,7 @@ action:
           |> filter(fn: (r) => r["_field"] == "value")
           |> drop(columns: ["friendly_name"])
           |> aggregateWindow(every: 1d, fn: max, createEmpty: true)
-          |> fill(usePrevious: true
+          |> fill(usePrevious: true)
           |> yield(name: "max")
       entity_id: sensor.archive_waternsw_chaffeydam_30day
       unit_of_measurement: "%"

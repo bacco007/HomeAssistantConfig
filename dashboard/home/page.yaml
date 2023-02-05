@@ -362,7 +362,7 @@ cards:
           show:
             mediaquery: "(min-width: 1128.1px), (max-width: 800px)"
         cards:
-          - !include partial_system.yaml
+          - !include partial_homeassistant.yaml
           - !include partial_docker.yaml
 
       # Column 4

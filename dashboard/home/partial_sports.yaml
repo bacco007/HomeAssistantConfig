@@ -11,7 +11,8 @@ cards:
   - type: "custom:button-card"
     template: header_card
     variables:
-      name: UPCOMING SPORT
+      name: |
+        <ha-icon style='--mdc-icon-size: var(--h4-font-size)' icon='mdi:football-australia'></ha-icon> UPCOMING SPORT
       label: More
       link: /ui-dashboard/sport
     view_layout:

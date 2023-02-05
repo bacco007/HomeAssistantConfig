@@ -1,0 +1,383 @@
+type: vertical-stack
+cards:
+  - type: "custom:button-card"
+    template: header_card_no_link
+    variables:
+      name: WATERNSW DAMS
+    view_layout:
+      grid-column-start: 1
+      grid-column-end: -1
+  - type: vertical-stack
+    cards:
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: entities
+            style: |
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - type: custom:fold-entity-row
+                head:
+                  entity: sensor.waternsw_chaffey_dam_storage
+                  name: Chaffey Dam
+                entities:
+                  - entity: sensor.waternsw_chaffey_dam
+                    name: Dam Stats
+                    type: custom:multiple-entity-row
+                    show_state: false
+                    entities:
+                      - attribute: spillway_level
+                        name: S/W Lev
+                        unit: " "
+                      - attribute: dead_water_level
+                        name: D/W Level
+                        unit: " "
+                      - attribute: capacity
+                        name: "Capacity (ML)"
+                        unit: " "
+                  - entity: sensor.waternsw_chaffey_dam_storage
+                    name: Current Storage %
+                  - entity: sensor.waternsw_chaffey_dam_volume
+                    name: Current Volume
+                  - entity: sensor.waternsw_chaffey_dam_water_level
+                    name: Current Water Level
+                  - entity: sensor.waternsw_chaffey_dam_rainfall
+                    name: Rainfall (24hrs)
+                  - entity: sensor.waternsw_chaffey_dam_net_inflow_24hrs
+                    name: Net Inflow (24hrs)
+                  - entity: sensor.waternsw_chaffey_dam_releases_24hrs
+                    name: Releases (24hrs)
+                  - entity: sensor.waternsw_chaffey_dam_evaporation_24hrs
+                    name: Evaporation (24hrs)
+          - type: custom:apexcharts-card
+            graph_span: 7d
+            header:
+              show: false
+              # title: "Chaffey Dam"
+              show_states: true
+              colorize_states: true
+            span:
+              end: hour
+              ## offset: -23h
+            apex_config:
+              chart: { type: "area", height: 200 }
+              stroke: { show: true, width: 3, curve: smooth }
+              legend: { show: false }
+              dataLabels: { enabled: false }
+              xaxis:
+                {
+                  type: "datetime",
+                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+                }
+              yaxis: { decimalsInFloat: 0 }
+              fill:
+                {
+                  type: "gradient",
+                  gradient:
+                    {
+                      shadeIntensity: 1,
+                      inverseColors: false,
+                      opacityFrom: 0.45,
+                      opacityTo: 0.05,
+                      stops: [20, 100, 100, 100],
+                    },
+                }
+            series:
+              - entity: sensor.waternsw_chaffey_dam_storage
+                name: "Chaffey Dam"
+                type: area
+                fill_raw: last
+                group_by:
+                  func: avg
+                  duration: 6h
+
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: entities
+            style: |
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - type: custom:fold-entity-row
+                head:
+                  entity: sensor.waternsw_split_rock_dam_storage
+                  name: Split Rock Dam
+                entities:
+                  - entity: sensor.waternsw_split_rock_dam
+                    name: Dam Stats
+                    type: custom:multiple-entity-row
+                    show_state: false
+                    entities:
+                      - attribute: spillway_level
+                        name: S/W Lev
+                        unit: " "
+                      - attribute: dead_water_level
+                        name: D/W Level
+                        unit: " "
+                      - attribute: capacity
+                        name: "Capacity (ML)"
+                        unit: " "
+                  - entity: sensor.waternsw_split_rock_dam_storage
+                    name: Current Storage %
+                  - entity: sensor.waternsw_split_rock_dam_volume
+                    name: Current Volume
+                  - entity: sensor.waternsw_split_rock_dam_water_level
+                    name: Current Water Level
+                  - entity: sensor.waternsw_split_rock_dam_rainfall
+                    name: Rainfall (24hrs)
+                  - entity: sensor.waternsw_split_rock_dam_net_inflow_24hrs
+                    name: Net Inflow (24hrs)
+                  - entity: sensor.waternsw_split_rock_dam_releases_24hrs
+                    name: Releases (24hrs)
+                  - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
+                    name: Evaporation (24hrs)
+          - type: custom:apexcharts-card
+            graph_span: 7d
+            header:
+              show: false
+              # title: "Split Rock Dam"
+              show_states: true
+              colorize_states: true
+            span:
+              end: hour
+              ## offset: -23h
+            apex_config:
+              chart: { type: "area", height: 200 }
+              stroke: { show: true, width: 3, curve: smooth }
+              legend: { show: false }
+              dataLabels: { enabled: false }
+              xaxis:
+                {
+                  type: "datetime",
+                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+                }
+              yaxis: { decimalsInFloat: 0 }
+              fill:
+                {
+                  type: "gradient",
+                  gradient:
+                    {
+                      shadeIntensity: 1,
+                      inverseColors: false,
+                      opacityFrom: 0.45,
+                      opacityTo: 0.05,
+                      stops: [20, 100, 100, 100],
+                    },
+                }
+            series:
+              - entity: sensor.waternsw_split_rock_dam_storage
+                name: "Split Rock Dam"
+                type: area
+                fill_raw: last
+                group_by:
+                  func: avg
+                  duration: 6h
+
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: entities
+            style: |
+              .card-header {
+                padding: 5px 16px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+              .card-content div {
+                  margin: 0 !important;
+              }
+              #states {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+              }
+              .secondary {
+                color: darkgray !important;
+                margin-left: 2px !important;
+              }
+            entities:
+              - type: custom:fold-entity-row
+                head:
+                  entity: sensor.waternsw_keepit_dam_storage
+                  name: Keepit Dam
+                entities:
+                  - entity: sensor.waternsw_keepit_dam
+                    name: Dam Stats
+                    type: custom:multiple-entity-row
+                    show_state: false
+                    entities:
+                      - attribute: spillway_level
+                        name: S/W Lev
+                        unit: " "
+                      - attribute: dead_water_level
+                        name: D/W Level
+                        unit: " "
+                      - attribute: capacity
+                        name: "Capacity (ML)"
+                        unit: " "
+                  - entity: sensor.waternsw_keepit_dam_storage
+                    name: Current Storage %
+                  - entity: sensor.waternsw_keepit_dam_volume
+                    name: Current Volume
+                  - entity: sensor.waternsw_keepit_dam_water_level
+                    name: Current Water Level
+                  - entity: sensor.waternsw_keepit_dam_rainfall
+                    name: Rainfall (24hrs)
+                  - entity: sensor.waternsw_keepit_dam_net_inflow_24hrs
+                    name: Net Inflow (24hrs)
+                  - entity: sensor.waternsw_keepit_dam_releases_24hrs
+                    name: Releases (24hrs)
+                  - entity: sensor.waternsw_keepit_dam_evaporation_24hrs
+                    name: Evaporation (24hrs)
+          - type: custom:apexcharts-card
+            graph_span: 7d
+            header:
+              show: false
+              # title: "Keepit Dam"
+              show_states: true
+              colorize_states: true
+            span:
+              end: hour
+              ## offset: -23h
+            apex_config:
+              chart: { type: "area", height: 200 }
+              stroke: { show: true, width: 3, curve: smooth }
+              legend: { show: false }
+              dataLabels: { enabled: false }
+              xaxis:
+                {
+                  type: "datetime",
+                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+                }
+              yaxis: { decimalsInFloat: 0 }
+              fill:
+                {
+                  type: "gradient",
+                  gradient:
+                    {
+                      shadeIntensity: 1,
+                      inverseColors: false,
+                      opacityFrom: 0.45,
+                      opacityTo: 0.05,
+                      stops: [20, 100, 100, 100],
+                    },
+                }
+            series:
+              - entity: sensor.waternsw_keepit_dam_storage
+                name: "Keepit Dam"
+                type: area
+                fill_raw: last
+                group_by:
+                  func: avg
+                  duration: 6h
+
+      - type: "custom:apexcharts-card"
+        header:
+          title: Dams - Last 365 Days
+          show: true
+          show_states: false
+        apex_config:
+          chart: { type: "area", height: 300 }
+          stroke: { show: true, lineCap: "square" }
+          dataLabels: { enabled: true }
+          legend: { show: false }
+          fill:
+            {
+              type: "gradient",
+              gradient:
+                {
+                  shadeIntensity: 1,
+                  inverseColors: false,
+                  opacityFrom: 0.45,
+                  opacityTo: 0.05,
+                  stops: [20, 100, 100, 100],
+                },
+            }
+          yaxis:
+            - seriesName: "High"
+              decimalsInFloat: 0
+              title:
+                text: "Dam Storage (%)"
+              min: 0
+              max: 100
+        series:
+          - entity: sensor.archive_waternsw_chaffeydam_30day
+            name: Chaffey Dam
+            type: area
+            # extend_to_end: false
+            stroke_width: 3
+            unit: "%"
+            show:
+              extremas: true
+            data_generator: |
+              let res = [];
+              for (const [key, value] of
+                  Object.entries(entity.attributes)) {
+                  res.push([new Date(key).getTime(), value]);
+              }
+              return res.sort((a, b) => { return a[0] - b[0] });
+          - entity: sensor.archive_waternsw_keepitdam_30day
+            name: Keepit Dam
+            type: area
+            # extend_to_end: false
+            stroke_width: 3
+            unit: "%"
+            show:
+              extremas: true
+            data_generator: |
+              let res = [];
+              for (const [key, value] of
+                  Object.entries(entity.attributes)) {
+                  res.push([new Date(key).getTime(), value]);
+              }
+              return res.sort((a, b) => { return a[0] - b[0] });
+          - entity: sensor.archive_waternsw_splitrockdam_30day
+            name: Split Rock Dam
+            type: area
+            # extend_to_end: false
+            stroke_width: 3
+            unit: "%"
+            show:
+              extremas: true
+            data_generator: |
+              let res = [];
+              for (const [key, value] of
+                  Object.entries(entity.attributes)) {
+                  res.push([new Date(key).getTime(), value]);
+              }
+              return res.sort((a, b) => { return a[0] - b[0] });
+        graph_span: 365days
+        all_series_config:
+          type: line
+          group_by:
+            func: sum
+            duration: 1d
