@@ -1,15 +1,4 @@
 ---
-sensor:
-  - platform: integration
-    source: sensor.sungrowsolar_solar_production
-    name: SungrowSolar Solar Production (kWh)
-  - platform: integration
-    source: sensor.sungrowsolar_return_to_grid
-    name: SungrowSolar Returned to Grid (kWh)
-  - platform: integration
-    source: sensor.sungrowsolar_import_from_grid
-    name: SungrowSolar Grid Consumption (kWh)
-
 template:
   - sensor:
       - name: "sungrowsolar_solar_production"

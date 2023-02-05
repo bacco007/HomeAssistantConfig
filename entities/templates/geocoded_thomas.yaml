@@ -7,6 +7,8 @@ sensor:
         {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Thoroughfare }}, {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Locality }}
       {% elif is_state("person.thomas_baxter", "home") -%}
         {{ states.person.thomas_baxter.state | title }}
+      {%- elif is_state("person.thomas_baxter", "trc") -%}
+        Work
       {%- else -%}
         {{ states.person.thomas_baxter.state}}
       {%- endif %}
@@ -15,4 +17,11 @@ sensor:
         {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Thoroughfare }}, {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Locality }}
       geolocation: >
         {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Location[0] | round(5) }}, {{ states.sensor.tbiphone13pro_geocoded_location.attributes.Location[1] | round(5) }}
-    icon: mdi:map-marker
+    icon: >
+      {% if is_state("person.thomas_baxter", "not_home") -%}
+        mdi:map-marker
+      {% elif is_state("person.thomas_baxter", "home") -%}
+        mdi:home
+      {%- elif is_state("person.thomas_baxter", "trc") -%}
+        mdi:office-building
+      {%- endif %}
