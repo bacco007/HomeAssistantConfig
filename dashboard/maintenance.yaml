@@ -346,6 +346,29 @@ cards:
                         mdi:check-bold
                       {% endif %}
 
+              - type: custom:apexcharts-card
+                config_templates: chart_style
+                graph_span: 7d
+                span:
+                  end: day
+                header:
+                  show: true
+                  title: Database Size
+                  show_states: true
+                  colorize_states: true
+                apex_config:
+                  height: 300px
+                all_series_config:
+                  stroke_width: 2
+                  opacity: 0.3
+                  type: area
+                  curve: stepline
+                  extend_to: now
+                  group_by:
+                    func: last
+                series:
+                  - entity: sensor.ha_db_size
+
       - type: vertical-stack
         cards:
           - type: "custom:button-card"
@@ -380,146 +403,136 @@ cards:
                     icon: mdi:package-variant-closed
                     tap_action:
                       action: none
-              - type: custom:stack-in-card
-                cards:
-                  - type: custom:layout-card
-                    layout_type: custom:grid-layout
-                    layout:
-                      grid-template-columns: auto 42px
-                      margin: "-4px -4px -8px -4px;"
-                    cards:
-                      - type: custom:mushroom-template-card
-                        icon: mdi:update
-                        primary: HACS - Updates
-                        secondary: >
-                          Count: {{expand(integration_entities('hacs')) | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | list | count }}
-                        card_mod:
-                          style: |
-                            ha-card {
-                              background: none;
-                              --ha-card-box-shadow: 0px;
-                            }
-                      - type: custom:mushroom-template-card
-                        entity: input_boolean.helper_frontend_hacs_updates
-                        primary: ""
-                        secondary: ""
-                        icon: >-
-                          {{ 'mdi:chevron-up' if is_state(entity, 'on') else 'mdi:chevron-down'
-                          }}
-                        icon_color: disabled
-                        hold_action:
-                          action: none
-                        card_mod:
-                          style: |
-                            ha-card {
-                              align-items: flex-end;
-                              background: none;
-                              --ha-card-box-shadow: 0px;
-                            }
-                            mushroom-shape-icon {
-                              --shape-color: none !important;
-                            }
-                  - type: conditional
-                    conditions:
-                      - entity: input_boolean.helper_frontend_hacs_updates
-                        state: "on"
-                    card:
-                      type: custom:auto-entities
-                      filter:
-                        include:
-                          - domain: update
-                            integration: hacs
-                            state: "on"
-                            options:
-                              type: custom:mushroom-update-card
-                              show_buttons_control: true
-                              layout: horizontal
-                              entities:
-                                - this.entity_id
-                              card_mod:
-                                style: |
-                                  ha-card {
-                                    background: none;
-                                    padding: 4px 16px !important;
-                                    --ha-card-box-shadow: 0px;
-                                  }
-                      card:
-                        type: custom:layout-card
-                        cards: []
-                        layout_type: masonry
-                      sort:
-                        ignore_case: true
-                        method: name
-              - type: custom:stack-in-card
-                cards:
-                  - type: custom:layout-card
-                    layout_type: custom:grid-layout
-                    layout:
-                      grid-template-columns: auto 42px
-                      margin: "-4px -4px -8px -4px;"
-                    cards:
-                      - type: custom:mushroom-template-card
-                        icon: mdi:update
-                        primary: HACS - No Updates
-                        secondary: >
-                          Count: {{expand(integration_entities('hacs')) | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'off') | list | count }}
-                        card_mod:
-                          style: |
-                            ha-card {
-                              background: none;
-                              --ha-card-box-shadow: 0px;
-                            }
-                      - type: custom:mushroom-template-card
-                        entity: input_boolean.helper_frontend_hacs_noupdates
-                        primary: ""
-                        secondary: ""
-                        icon: >-
-                          {{ 'mdi:chevron-up' if is_state(entity, 'on') else 'mdi:chevron-down'
-                          }}
-                        icon_color: disabled
-                        hold_action:
-                          action: none
-                        card_mod:
-                          style: |
-                            ha-card {
-                              align-items: flex-end;
-                              background: none;
-                              --ha-card-box-shadow: 0px;
-                            }
-                            mushroom-shape-icon {
-                              --shape-color: none !important;
-                            }
-                  - type: conditional
-                    conditions:
-                      - entity: input_boolean.helper_frontend_hacs_noupdates
-                        state: "on"
-                    card:
-                      type: custom:auto-entities
-                      filter:
-                        include:
-                          - domain: update
-                            integration: hacs
-                            state: "off"
-                            options:
-                              type: custom:mushroom-update-card
-                              show_buttons_control: true
-                              layout: horizontal
-                              entities:
-                                - this.entity_id
-                              card_mod:
-                                style: |
-                                  ha-card {
-                                    background: none;
-                                    padding: 4px 16px !important;
-                                    --ha-card-box-shadow: 0px;
-                                  }
-                      card:
-                        type: custom:layout-card
-                        cards: []
-                        layout_type: masonry
-                      sort:
-                        ignore_case: true
-                        method: name
+              - type: entities
+                card_mod:
+                  style:
+                    fold-entity-row$: |
+                      ha-icon {
+                        background: none !important;
+                        margin-right: 24px !important;
+                        --toggle-icon-width: 21px !important;
+                        color: rgb(var(--rgb-disabled-color));
+                      }
+                    .: |
+                      .card-content {
+                        padding: 0;
+                      }
+                entities:
+                  - type: custom:fold-entity-row
+                    head:
+                      type: custom:mushroom-template-card
+                      icon: mdi:update
+                      primary: HACS - Updates
+                      secondary: >
+                        Count: {{expand(integration_entities('hacs')) | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | list | count }}
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: none;
+                            --ha-card-box-shadow: 0px;
+                          }
+                      icon_color: orange
+                      tap_action:
+                        action: toggle
+                    padding: 0
+                    entities:
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - domain: update
+                              integration: hacs
+                              state: "on"
+                              options:
+                                type: custom:mushroom-update-card
+                                show_buttons_control: true
+                                layout: horizontal
+                                entities:
+                                  - this.entity_id
+                                card_mod:
+                                  style: |
+                                    ha-card {
+                                      background: none;
+                                      padding: 4px 16px !important;
+                                      --ha-card-box-shadow: 0px;
+                                    }
+                        card:
+                          type: custom:layout-card
+                          cards: []
+                          layout_type: masonry
+                        sort:
+                          method: friendly_name
+                    card_mod:
+                      style: |
+                        :host {
+                          --ha-card-border-width: 0;
+                          --ha-card-background: none;
+                          --ha-card-box-shadow: 0;
+                        }
+              - type: entities
+                card_mod:
+                  style:
+                    fold-entity-row$: |
+                      ha-icon {
+                        background: none !important;
+                        margin-right: 24px !important;
+                        --toggle-icon-width: 21px !important;
+                        color: rgb(var(--rgb-disabled-color));
+                      }
+                    .: |
+                      .card-content {
+                        padding: 0;
+                      }
+                entities:
+                  - type: custom:fold-entity-row
+                    head:
+                      type: custom:mushroom-template-card
+                      icon: mdi:update
+                      primary: HACS - No Updates
+                      secondary: >
+                        Count: {{expand(integration_entities('hacs')) | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'off') | list | count }}
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: none;
+                            --ha-card-box-shadow: 0px;
+                          }
+                      icon_color: green
+                      tap_action:
+                        action: toggle
+                    padding: 0
+                    entities:
+                      - type: custom:auto-entities
+                        filter:
+                          include:
+                            - domain: update
+                              integration: hacs
+                              state: "off"
+                              options:
+                                type: custom:mushroom-update-card
+                                show_buttons_control: true
+                                layout: horizontal
+                                entities:
+                                  - this.entity_id
+                                card_mod:
+                                  style: |
+                                    ha-card {
+                                      background: none;
+                                      padding: 4px 16px !important;
+                                      --ha-card-box-shadow: 0px;
+                                    }
+                        card:
+                          type: custom:layout-card
+                          cards: []
+                          layout_type: masonry
+                        sort:
+                          method: friendly_name
+                    card_mod:
+                      style: |
+                        :host {
+                          --ha-card-border-width: 0;
+                          --ha-card-background: none;
+                          --ha-card-box-shadow: 0;
+                        }
 
       # [Column] Watchman
       - type: vertical-stack

@@ -13,7 +13,7 @@ views:
   - !include media2.yaml
   - !include neighbourhood.yaml
   - !include network.yaml
-  - !include temp.yaml
+  # - !include temp.yaml
   - !include docker.yaml
   - !include tv-movies/page.yaml
   - !include sport.yaml

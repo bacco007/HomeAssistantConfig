@@ -45,6 +45,9 @@ recorder:
       - sensor.adsb_message_rate
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
+      - sensor.uptime_sensor
+      - sensor.sonarr_commands
+      - sensor.systemuptime
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
