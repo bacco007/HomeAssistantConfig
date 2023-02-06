@@ -1,4 +1,4 @@
-noctis:  
+noctis:
 
   # Fonts
   primary-font-family: 'Raleway,sans-serif'
@@ -12,7 +12,7 @@ noctis:
   ha-card-header-font-family: "var(--primary-font-family)"
 
   # Text
-  text-color: '#ffffff' 
+  text-color: '#ffffff'
   primary-text-color: 'var(--text-color)'
   text-primary-color: 'var(--text-color)'
   secondary-text-color: "#BAC0C6"
@@ -38,7 +38,7 @@ noctis:
   input-hover-line-color: 'var(--primary-color)'
   code-editor-background-color: '#222c40'
   codemirror-property: 'var(--accent-color)'
-  
+
   # Main Colors
   app-header-background-color: '#242e42'
   header-height: 48px
@@ -48,10 +48,10 @@ noctis:
   # Background
   background-color: '#242e42'
   primary-background-color: 'var(--background-color)'
-  background-color-2: '#20293c' 
+  background-color-2: '#20293c'
   secondary-background-color: 'none'
   markdown-code-background-color: 'var(--background-color)'
-  
+
   # Card
   card-background-color: 'var(--ha-card-background)'
   ha-card-background: 'rgba(43,55,78,1)' #'linear-gradient(145deg, #273246, #2e3b53)'
@@ -168,7 +168,7 @@ noctis:
   label-badge-yellow: 'rgba(222,176,107,1)'
 
   paper-input-container-focus-color: 'var(--accent-color)'
-  
+
   # Custom Header
   ch-background: 'var(--background-color)'
   ch-active-tab-color: 'var(--accent-color)'
@@ -189,21 +189,21 @@ noctis:
   ################################################################################
 
 
-  # card-mod-theme: noctis
-  
-  # card-mod-more-info-yaml: |
-  #   $: |
-  #     .mdc-dialog .mdc-dialog__scrim {
-  #       backdrop-filter: blur(15px);
-  #       -webkit-backdrop-filter: blur(15px);
-  #       background: rgba(0,0,0,.6);
-  #     } 
-  #     .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-  #       box-shadow: none !important;
-  #       border-radius: var(--ha-card-border-radius);
-  #     }
-  #   .: |
-  #     :host {
-  #       --ha-card-box-shadow: none;
-  #     }
-    
+  card-mod-theme: noctis
+
+  card-mod-more-info-yaml: |
+    $: |
+      .mdc-dialog .mdc-dialog__scrim {
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        background: rgba(0,0,0,.6);
+      }
+      .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+        box-shadow: none !important;
+        border-radius: var(--ha-card-border-radius);
+      }
+    .: |
+      :host {
+        --ha-card-box-shadow: none;
+      }
+
