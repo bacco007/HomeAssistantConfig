@@ -9,3 +9,10 @@ lovelace:
       title: Dashboard
       filename: dashboard/ui-lovelace.yaml
       mode: yaml
+    mobile-dashboard:
+      require_admin: false
+      show_in_sidebar: true
+      icon: mdi:google-downasaur
+      title: Mobile
+      filename: dashboard/mobile-ui-lovelace.yaml
+      mode: yaml

@@ -1,7 +1,7 @@
 ---
 title: Upcoming Sport
 path: sport
-theme: "Fluent Red"
+theme: "noctis"
 icon: mdi:football-australian
 
 type: "custom:grid-layout"
