@@ -1,0 +1,46 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-chips-card
+    alignment: justify
+    chips:
+      # - type: menu
+      - type: back
+      - type: weather
+        entity: weather.weatherflow_current
+        show_temperature: true
+        tap_action:
+          action: navigate
+          navigation_path: ""
+      - type: template
+        card_mod:
+          style: |
+            ha-card {
+              {% set phase = states('sensor.moon') %}
+              --chip-background: url( '/local/moon_phases/{{ phase }}.png' ) no-repeat center center;
+            }
+      - type: entity
+        entity: person.thomas_baxter
+        double_tap_action:
+          action: more-info
+        content_info: none
+        use_entity_picture: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+
+  - type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      margin: "-15px 0px 0px 0px;"
+    cards:
+      - type: custom:mushroom-title-card
+        alignment: center
+        title: |-
+          {% set time = now().hour %}
+          {% if time <= 5 %} {{'💧'}}  Good night!
+          {% elif time <= 10 %} {{'💧'}} Good morning!
+          {% elif time <= 17 %} {{'💧'}} Good afternoon!
+          {% else %} {{'💧'}} Good evening!
+          {% endif %}
