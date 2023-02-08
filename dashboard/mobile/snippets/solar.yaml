@@ -44,7 +44,17 @@ cards:
   - type: custom:power-flow-card
     entities:
       consumption: sensor.load_power
-      grid: sensor.active_import_from_grid
+      grid:
+        consumption: sensor.active_import_from_grid
+        production: sensor.active_export_to_grid
       solar: sensor.active_generation
-    dashboard_link: /energy
     watt_threshold: 999
+  - type: custom:power-flow-card
+    entities:
+      consumption: sensor.daily_direct_energy_consumption
+      grid:
+        consumption: sensor.daily_import_from_grid
+        production: sensor.daily_export_to_grid
+      solar: sensor.daily_generation
+    watt_threshold: 999
+    dashboard_link: /energy

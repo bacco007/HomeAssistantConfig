@@ -1,5 +1,5 @@
 ---
-#theme: noctis
+theme: noctis
 title: Home
 path: home
 badges: []
@@ -10,6 +10,28 @@ cards:
     cards:
       - !include ../home/partial_docker.yaml
       - !include ../home/partial_me.yaml
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            ha-card {
+              background: none;
+              box-shadow: none;
+            }
+        cards:
+          - type: custom:mushroom-template-card
+            icon: mdi:flask
+            icon_color: red
+            layout: vertical
+            tap_action:
+              action: navigate
+              navigation_path: lab
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            secondary: Lab
+            multiline_secondary: false
       - type: custom:vertical-stack-in-card
         cards:
           - type: custom:mushroom-template-card

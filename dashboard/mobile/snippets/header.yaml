@@ -12,23 +12,25 @@ cards:
         tap_action:
           action: navigate
           navigation_path: ""
-      - type: template
-        card_mod:
-          style: |
-            ha-card {
-              {% set phase = states('sensor.moon') %}
-              --chip-background: url( '/local/moon_phases/{{ phase }}.png' ) no-repeat center center;
-            }
+      # - type: template
+      #   card_mod:
+      #     style: |
+      #       ha-card {
+      #         {% set phase = states('sensor.moon') %}
+      #         --chip-background: url( '/local/moon_phases/{{ phase }}.png' ) no-repeat center center;
+      #       }
       - type: entity
         entity: person.thomas_baxter
-        double_tap_action:
-          action: more-info
         content_info: none
         use_entity_picture: true
-        tap_action:
-          action: more-info
-        hold_action:
-          action: more-info
+        tap_action: !include popup_thomas.yaml
+        # card_mod:
+        #   style: |
+        #     ha-card {
+        #         --chip-background: rgba(var(--rgb-state-person-home), 0.4);
+        #         margin-top: 5px;
+        #         margin-bottom: 10px;
+        #     }
 
   - type: custom:layout-card
     layout_type: custom:grid-layout
@@ -44,3 +46,5 @@ cards:
           {% elif time <= 17 %} {{'💧'}} Good afternoon!
           {% else %} {{'💧'}} Good evening!
           {% endif %}
+        subtitle: |-
+          Testing
