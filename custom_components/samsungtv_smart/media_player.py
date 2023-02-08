@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime, timedelta
+from enum import Enum
 import logging
 from socket import error as socketError
 from time import sleep
@@ -236,6 +237,14 @@ def _get_default_app_info(app_id):
     return None, None, None
 
 
+class ArtModeSupport(Enum):
+    """Define ArtMode support lever."""
+
+    UNSUPPORTED = 0
+    PARTIAL = 1
+    FULL = 2
+
+
 class SamsungTVDevice(MediaPlayerEntity):
     """Representation of a Samsung TV."""
 
@@ -352,6 +361,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             )
 
         self._st_error_count = 0
+        self._st_last_exc = None
         self._setvolumebyst = False
 
         # logo control initializzation
@@ -732,7 +742,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             return False
         return True
 
-    def _log_st_error(self, st_error):
+    def _log_st_error(self, st_error: bool):
         """Log start or end problem in ST communication"""
         if self._st_error_count == 0 and not st_error:
             return
@@ -743,11 +753,20 @@ class SamsungTVDevice(MediaPlayerEntity):
 
             self._st_error_count += 1
             if self._st_error_count == MAX_ST_ERROR_COUNT:
-                _LOGGER.error(
-                    "%s - Error refreshing from SmartThings."
-                    " Check connection status with TV on the phone App",
-                    self.entity_id,
-                )
+                msg_chk = "Check connection status with TV on the phone App"
+                if self._st_last_exc is not None:
+                    _LOGGER.error(
+                        "%s - Error refreshing from SmartThings. %s. Error: %s",
+                        self.entity_id,
+                        msg_chk,
+                        self._st_last_exc,
+                    )
+                else:
+                    _LOGGER.warning(
+                        "%s - SmartThings report TV is off but status detected is on. %s",
+                        self.entity_id,
+                        msg_chk,
+                    )
             return
 
         if self._st_error_count >= MAX_ST_ERROR_COUNT:
@@ -774,28 +793,31 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._device_info = {}
 
     @Throttle(MIN_TIME_BETWEEN_ST_UPDATE)
-    async def _async_st_update(self, **kwargs):
+    async def _async_st_update(self, **kwargs) -> bool | None:
         """Update SmartThings state of device."""
-        if self._st:
-            try:
-                async with async_timeout.timeout(ST_UPDATE_TIMEOUT):
-                    await self._st.async_device_update(self._use_channel_info)
-            except (
-                asyncio.TimeoutError,
-                ClientConnectionError,
-                ClientResponseError,
-            ) as ex:
-                _LOGGER.debug("%s - SmartThings error: [%s]", self.entity_id, ex)
-                return False
+        try:
+            async with async_timeout.timeout(ST_UPDATE_TIMEOUT):
+                await self._st.async_device_update(self._use_channel_info)
+        except (
+            asyncio.TimeoutError,
+            ClientConnectionError,
+            ClientResponseError,
+        ) as exc:
+            _LOGGER.debug("%s - SmartThings error: [%s]", self.entity_id, exc)
+            self._st_last_exc = exc
+            return False
+
+        self._st_last_exc = None
         return True
 
     async def async_update(self):
         """Update state of device."""
 
         # Required to get source and media title
-        st_error = False
-        if (st_update := await self._async_st_update()) is not None:
-            st_error = not st_update
+        st_error: bool | None = None
+        if self._st:
+            if (st_update := await self._async_st_update()) is not None:
+                st_error = not st_update
 
         result = self._check_status()
         if not self._started_up or not result:
@@ -819,10 +841,10 @@ class SamsungTVDevice(MediaPlayerEntity):
                         )
                     result = False
 
-        if result and self._st:
-            if self._st.state != STStatus.STATE_ON:
-                st_error = True
-        self._log_st_error(st_error)
+        if st_error is not None:
+            if result and not st_error:
+                st_error = self._st.state != STStatus.STATE_ON
+            self._log_st_error(st_error)
 
         self._state = MediaPlayerState.ON if result else MediaPlayerState.OFF
         self._started_up = True
@@ -1140,6 +1162,15 @@ class SamsungTVDevice(MediaPlayerEntity):
             return self._st.sound_mode_list or None
         return None
 
+    @property
+    def support_art_mode(self) -> ArtModeSupport:
+        """Return if art mode is supported."""
+        if self._ws.artmode_status != ArtModeStatus.Unsupported:
+            return ArtModeSupport.FULL
+        if self._get_device_spec("FrameTVSupport") == "true":
+            return ArtModeSupport.PARTIAL
+        return ArtModeSupport.UNSUPPORTED
+
     def _send_wol_packet(self, wol_repeat=None):
         """Send a WOL packet to turn on the TV."""
         if not self._mac:
@@ -1228,11 +1259,10 @@ class SamsungTVDevice(MediaPlayerEntity):
         """Turn the media player on setting in art mode."""
         if (
             self._state == MediaPlayerState.ON
-            and self._ws.artmode_status == ArtModeStatus.Unsupported
-            and self._get_device_spec("FrameTVSupport") == "true"
+            and self.support_art_mode == ArtModeSupport.PARTIAL
         ):
             await self.async_send_command("KEY_POWER")
-        else:
+        elif self.support_art_mode == ArtModeSupport.FULL:
             await self._async_turn_on(True)
 
     def _turn_off(self):
@@ -1244,10 +1274,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         cmd_power_art = "KEY_POWER"
         self._ws.set_power_off_request()
         if self._state == MediaPlayerState.ON:
-            if (
-                self._ws.artmode_status == ArtModeStatus.Unsupported
-                and self._get_device_spec("FrameTVSupport") != "true"
-            ):
+            if self.support_art_mode == ArtModeSupport.UNSUPPORTED:
                 self.send_command(cmd_power_off)
             else:
                 self.send_command(f"{cmd_power_art},3000")
@@ -1270,7 +1297,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         """Toggle the power on the media player."""
         if (
             self.state == MediaPlayerState.ON
-            and self._ws.artmode_status != ArtModeStatus.Unsupported
+            and self.support_art_mode != ArtModeSupport.UNSUPPORTED
         ):
             if self._get_option(CONF_TOGGLE_ART_MODE, False):
                 await self.async_set_art_mode()
