@@ -11,7 +11,6 @@ import logging
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
-    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
@@ -103,7 +102,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     _waiting_on_conversion = False
 
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_device_class = None
 
     def __init__(
         self,
