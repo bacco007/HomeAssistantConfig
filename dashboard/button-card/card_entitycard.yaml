@@ -1,0 +1,243 @@
+---
+card_entitycard:
+  variables:
+    entity_1:
+      entity_id: null
+      icon: "[[[ return entity.attributes.icon ]]]"
+      name: "[[[ return entity.attributes.friendly_name ]]]"
+      entity: "[[[ return entity.entity ]]]"
+    entity_2:
+      entity_id: null
+      icon: "[[[ return entity.attributes.icon ]]]"
+      name: "[[[ return entity.attributes.friendly_name ]]]"
+    icon: null
+    name: null
+    background: null
+    graph: null
+  show_label: false
+  show_name: false
+  show_icon: false
+  show_state: false
+  show_entity: false
+  styles:
+    card:
+      - overflow: visible
+      - border-radius: 15px
+      - padding: 0px
+      - background: "[[[ return variables.background ]]]"
+      - box-shadow: 0px 5px 8px 0px rgba(0,0,0,0.1)
+    grid:
+      - grid-template-rows: 1fr
+      - grid-template-columns: 1fr min-content
+      - grid-template-areas: '"item1 item2"'
+  custom_fields:
+    item1:
+      card:
+        type: custom:button-card
+        entity: "[[[ return entity.entity_id ]]]"
+        tap_action: none
+        show_icon: false
+        show_label: false
+        show_name: false
+        styles:
+          custom_fields:
+            name:
+              - align-self: end
+              - justify-self: start
+            state:
+              - align-self: center
+              - justify-self: start
+            graph:
+              - align-self: end
+              - justify-self: start
+          grid:
+            - grid-template-areas: '"name" "state" "graph'
+            - grid-template-columns: max-content
+            - grid-template-rows: 1fr 1fr 2fr
+          card:
+            - box-shadow: none
+            - border-radius: 15px
+            - padding: 0px
+            - place-self: center start
+            - background: none
+            - z-index: 1
+            - overflow: hidden
+        custom_fields:
+          name:
+            card:
+              type: custom:button-card
+              entity: "[[[ return entity.entity_id ]]]"
+              tap_action: none
+              show_icon: false
+              show_label: false
+              show_name: false
+              show_state: false
+              custom_fields:
+                name: "[[[ return variables.name ]]]"
+              styles:
+                custom_fields:
+                  name:
+                    - font-weight: normal
+                    - font-size: 16px
+                    - color: "#000000"
+                card:
+                  - box-shadow: none
+                  - padding: 0px 0px 0px 20px
+                  - margin: 0px
+                  - border-radius: 0px
+                  - background: none
+          state:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.ulm_custom_card_entitycard_entity1 ]]]"
+              tap_action: none
+              show_icon: false
+              show_label: false
+              show_name: false
+              show_state: false
+              styles:
+                grid:
+                  - grid-template-areas: "'item1 item2'"
+                  - grid-template-columns: 1fr 1fr
+                  - grid-template-rows: 1fr
+                  - column-gap: 6px
+                card:
+                  - place-self: start
+                  - box-shadow: none
+                  - padding: 4px 0px 4px 20px
+                  - margin: 0px
+                  - border-radius: 0px
+                  - background: none
+              custom_fields:
+                item1:
+                  card:
+                    type: custom:button-card
+                    entity: "[[[ return variables.entity_1 ]]]"
+                    tap_action: none
+                    show_icon: false
+                    show_label: false
+                    show_name: false
+                    show_state: true
+                    styles:
+                      state:
+                        - font-weight: bold
+                        - font-size: 24px
+                        - place-self: start
+                        - color: |
+                            [[[
+                              if(variables.icon == 'sun'){
+                                return "#F7C934";
+                              } if(variables.icon == 'water') {
+                                return "#33A3FF";
+                              } else {
+                                return "#430E7C";
+                              }
+                            ]]]
+                      card:
+                        - box-shadow: none
+                        - border-radius: 0px
+                        - background: none
+                item2:
+                  card:
+                    type: custom:button-card
+                    entity: "[[[ return variables.entity_2 ]]]"
+                    tap_action: none
+                    show_icon: false
+                    show_label: false
+                    show_name: false
+                    show_state: true
+                    styles:
+                      state:
+                        - font-weight: normal
+                        - font-size: 24px
+                        - color: "#000000"
+                        - opacity: 25%
+                        - place-self: end start;
+                      card:
+                        - box-shadow: none
+                        - border-radius: 0px
+                        - background: none
+                        - place-self: end start;
+          graph:
+            card:
+              type: custom:mini-graph-card
+              entities:
+                - "[[[ return variables.graph ]]]"
+              points_per_hour: 1
+              line_color: |
+                [[[
+                  if(variables.icon == 'sun'){
+                    return "#F7C934";
+                  } if(variables.icon == 'water') {
+                    return "#33A3FF";
+                  } else {
+                    return "#430E7C";
+                  }
+                ]]]
+              show:
+                icon: false
+                name: false
+                state: false
+                fill: true
+              styles:
+                card:
+                  - padding: 0px 0px 0px 20px
+              style: |
+                ha-card {
+                  box-shadow: none;
+                  padding: 0px;
+                  background: none;
+                  border-radius: 0;
+                  width: 100%;
+                  -webkit-mask-image: -webkit-gradient(linear, left center, right center, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+                }
+    item2:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables.entity_1 ]]]"
+        tap_action: none
+        show_icon: false
+        show_label: false
+        show_name: false
+        styles:
+          grid:
+            - position: relative
+          custom_fields:
+            icon_1:
+              - position: absolute
+              - transform: translate(-50%, -50%)
+              - left: "-40px"
+              - top: "-50px"
+            icon_2:
+              - position: absolute
+              - transform: translate(-50%, -50%)
+              - left: "-100px"
+              - top: 20px
+          card:
+            - box-shadow: none
+            - height: 100%
+            - width: 100%
+            - overflow: visible
+            - background: none
+            - z-index: 2
+        custom_fields:
+          icon_1: |
+            [[[
+              if(variables.icon == 'sun'){
+                return '<ha-icon icon="mdi:weather-sunny" style="width: 50px; color: #F7C934;"></ha-icon>';
+              } if(variables.icon == 'water') {
+                return '<ha-icon icon="mdi:water-outline" style="width: 50px; color: #33A3FF;"></ha-icon>';
+              } else {
+                return '<ha-icon icon="mdi:flash-outline" style="width: 50px; color: #430E7C;"></ha-icon>';
+              }
+            ]]]
+          icon_2: |
+            [[[
+              if(variables.icon == 'sun'){
+                return '<ha-icon icon="mdi:weather-sunny" style="width: 125px; color: #F7C934;"></ha-icon>';
+              } if(variables.icon == 'water') {
+                return '<ha-icon icon="mdi:water-outline" style="width: 125px; color: #33A3FF;"></ha-icon>';
+              } else {
+                return '<ha-icon icon="mdi:flash-outline" style="width: 125px; color: #430E7C;"></ha-icon>';
+              }
+            ]]]

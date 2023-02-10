@@ -464,6 +464,7 @@ cards:
         tap_action:
           action: toggle
       - !include snippets/solar.yaml
+      - !include ../network/snippets/network_conn_devices.yaml
       - type: custom:mushroom-title-card
         title: Rooms
       - type: vertical-stack
