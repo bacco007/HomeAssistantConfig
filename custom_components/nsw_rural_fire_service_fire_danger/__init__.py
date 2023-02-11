@@ -55,10 +55,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         return True
 
     conf = config[DOMAIN]
-    district_name = conf.get[CONF_DISTRICT_NAME]
-    data_feed = conf[CONF_DATA_FEED]
-    scan_interval = conf[CONF_SCAN_INTERVAL]
-    convert_no_rating = conf[CONF_CONVERT_NO_RATING]
+    district_name = conf[CONF_DISTRICT_NAME]
+    data_feed = conf.get(CONF_DATA_FEED, DEFAULT_DATA_FEED)
+    convert_no_rating = conf.get(CONF_CONVERT_NO_RATING, DEFAULT_CONVERT_NO_RATING)
+    scan_interval = conf.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     identifier = f"{district_name}"
     if identifier in configured_instances(hass):
         return True

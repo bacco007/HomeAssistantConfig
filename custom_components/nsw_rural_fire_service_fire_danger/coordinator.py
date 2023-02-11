@@ -171,14 +171,19 @@ class NswRfsFireDangerExtendedFeedCoordinator(NswRfsFireDangerFeedCoordinator):
                                     for key in JSON_SENSOR_ATTRIBUTES:
                                         if key in district:
                                             text_value = district.get(key)
-                                            conversion = JSON_SENSOR_ATTRIBUTES[key][1]
-                                            if conversion:
-                                                text_value = conversion(
-                                                    text_value, self._convert_no_rating
-                                                )
-                                            attributes[
-                                                JSON_SENSOR_ATTRIBUTES[key][0]
-                                            ] = text_value
+                                            # Don't process empty strings.
+                                            if text_value:
+                                                conversion = JSON_SENSOR_ATTRIBUTES[
+                                                    key
+                                                ][1]
+                                                if conversion:
+                                                    text_value = conversion(
+                                                        text_value,
+                                                        self._convert_no_rating,
+                                                    )
+                                                attributes[
+                                                    JSON_SENSOR_ATTRIBUTES[key][0]
+                                                ] = text_value
                                     break
             except ValueError:
                 _LOGGER.warning("REST result could not be parsed as JSON")

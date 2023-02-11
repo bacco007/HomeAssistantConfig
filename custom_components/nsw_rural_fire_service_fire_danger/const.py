@@ -27,7 +27,7 @@ XML_NAME: Final = "Name"
 XML_SENSOR_ATTRIBUTES: Final = {
     # <XML Key>: [<Display Name>, <Conversion Function>]
     "RegionNumber": ["region_number", lambda x, y: int(x)],
-    "Councils": ["councils", lambda x, y: x.split(";")],
+    "Councils": ["councils", lambda x, y: [z.strip() for z in x.split(";")]],
     "DangerLevelToday": [
         "danger_level_today",
         lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
@@ -45,7 +45,7 @@ JSON_FIRE_WEATHER_AREA_RATINGS = "fireWeatherAreaRatings"
 JSON_SENSOR_ATTRIBUTES: Final = {
     # <JSON Key>: [<Display Name>, <Conversion Function>]
     "areaId": ["region_number", lambda x, y: int(x)],
-    "areaCouncils": ["councils", lambda x, y: x.split(";")],
+    "areaCouncils": ["councils", lambda x, y: [z.strip() for z in x.split(";")]],
     "ratingToday": [
         "danger_level_today",
         lambda x, y: x.lower().capitalize() if x != "NONE" or not y else "No Rating",
