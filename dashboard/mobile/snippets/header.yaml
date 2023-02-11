@@ -1,92 +1,49 @@
 ---
 # lovelace_gen
-type: custom:vertical-stack-in-card
+type: custom:stack-in-card
+mode: horizontal
 cards:
-  - type: custom:layout-card
-    layout_type: custom:grid-layout
-    layout:
-      grid-template-columns: 80px auto
-      grid-template-rows: auto
-      margin: 0
-      padding: 5px
-    cards:
-      - type: custom:mushroom-chips-card
-        chips:
-          - type: back
-          - type: template
-            icon: mdi:home
-            tap_action:
-              action: navigate
-              navigation_path: /mobile-dashboard
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: back
         card_mod:
           style: |
             ha-card {
-              background-color: rgba(255, 255, 255, 0.5) !important;
-              border-radius: var(--ha-card-border-radius, 12px) !important;
-              --chip-box-shadow: none;
-              --chip-background: none;
-              --chip-spacing: 0;
+              --chip-padding: 0 0 0 0.30em;
             }
-      - type: custom:mushroom-chips-card
-        chips:
-          - type: weather
-            entity: weather.weatherflow_current
-            tap_action:
-              action: navigate
-              navigation_path: ""
-            show_temperature: true
-          # - type: template
-          #   card_mod:
-          #     style: |
-          #       ha-card {
-          #         {% set phase = states('sensor.moon') %}
-          #         --chip-background: url( '/local/moon_phases/{{ phase }}.png' ) no-repeat center center;
-          #       }
-          - type: entity
-            entity: person.thomas_baxter
-            content_info: none
-            use_entity_picture: true
-        alignment: end
-        card_mod:
-          style: |
-            ha-card {
-              background-color: rgba(255, 255, 255, 0.5) !important;
-              border-radius: var(--ha-card-border-radius, 12px) !important;
-              --chip-box-shadow: none;
-              --chip-background: none;
-              --chip-spacing: 0;
-            }
-  - type: custom:mushroom-template-card
-    primary: >
-      {{ title }}
-    secondary: >
-      {{ secondary }}
-    icon: mdi:home
-    fill_container: true
-    tap_action:
-      action: none
-    hold_action:
-      action: none
-    icon_color: red
-    # secondary: |-
-    #   {% set time = now().hour %}
-    #   {% if time <= 5 %} {{'💧'}}  Good night!
-    #   {% elif time <= 10 %} {{'💧'}} Good morning!
-    #   {% elif time <= 17 %} {{'💧'}} Good afternoon!
-    #   {% else %} {{'💧'}} Good evening!
-    #   {% endif %}
-    card_mod:
-      style: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-          padding: 0px 16px 8px !important;
-        }
-        :host {
-          --mush-card-primary-font-size: 1.2rem;
-        }
-card_mod:
-  style: |
-    ha-card {
-      background: rgba(var(--rgb-red-color), 0.2);
-    }
+      - type: template
+        icon: mdi:home
+        tap_action:
+          action: navigate
+          navigation_path: mobile-dashboard
+      - type: template
+        icon: mdi:lan
+        tap_action:
+          action: navigate
+          navigation_path: network
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: weather
+        entity: weather.weatherflow_current
+        tap_action:
+          action: navigate
+          navigation_path: weather
+        show_temperature: true
+      - type: entity
+        entity: person.thomas_baxter
+        content_info: none
+        use_entity_picture: true
+        tap_action: !include popup_thomas.yaml
+      - type: conditional
+        conditions:
+          - entity: switch.adguard_protection
+            state: "on"
+        chip:
+          type: template
+          icon_color: disabled
+          icon: mdi:shield-check
+    alignment: end
+style: |
+  ha-card {
+    border-radius: 10px;
+  }

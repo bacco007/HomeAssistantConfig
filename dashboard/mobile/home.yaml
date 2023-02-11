@@ -5,6 +5,33 @@ path: home
 badges: []
 cards:
   - !include snippets/header.yaml
+  - type: custom:mushroom-template-card
+    primary: >
+      Home
+    icon: mdi:home
+    fill_container: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    icon_color: red
+    secondary: |-
+      {% set time = now().hour %}
+      {% if time <= 5 %} {{'💧'}}  Good night!
+      {% elif time <= 10 %} {{'💧'}} Good morning!
+      {% elif time <= 17 %} {{'💧'}} Good afternoon!
+      {% else %} {{'💧'}} Good evening!
+      {% endif %}
+    card_mod:
+      style: |
+        ha-card {
+          background: none;
+          box-shadow: none;
+          padding: 0px 16px 8px !important;
+        }
+        :host {
+          --mush-card-primary-font-size: 1.2rem;
+        }
 
   - type: vertical-stack
     cards:
@@ -20,7 +47,20 @@ cards:
             }
         cards:
           - type: custom:mushroom-template-card
-            icon: mdi:flask
+            icon: mdi:solar-power-variant
+            icon_color: orange
+            layout: vertical
+            tap_action:
+              action: navigate
+              navigation_path: solar
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            secondary: Solar
+            multiline_secondary: false
+          - type: custom:mushroom-template-card
+            icon: mdi:football-australian
             icon_color: red
             layout: vertical
             tap_action:
@@ -30,7 +70,7 @@ cards:
               action: none
             double_tap_action:
               action: none
-            secondary: Lab
+            secondary: Sport
             multiline_secondary: false
       - type: custom:vertical-stack-in-card
         cards:
@@ -463,7 +503,7 @@ cards:
         entity: input_boolean.guest_mode
         tap_action:
           action: toggle
-      - !include snippets/solar.yaml
+
       - !include ../network/snippets/network_conn_devices.yaml
       - type: custom:mushroom-title-card
         title: Rooms
