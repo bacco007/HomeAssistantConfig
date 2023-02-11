@@ -1,22 +1,24 @@
 """Sensor platform for temperature_feels_like."""
+from collections.abc import Callable
 import logging
 import math
-from typing import Callable, List, Optional
+from typing import List, Optional
 
 import voluptuous as vol
+
 from homeassistant.components.climate import (
     ATTR_CURRENT_HUMIDITY,
     ATTR_CURRENT_TEMPERATURE,
+    DOMAIN as CLIMATE,
 )
-from homeassistant.components.climate import DOMAIN as CLIMATE
 from homeassistant.components.group import expand_entity_ids
 from homeassistant.components.recorder.models import LazyState
 from homeassistant.components.weather import (
     ATTR_WEATHER_HUMIDITY,
     ATTR_WEATHER_TEMPERATURE,
     ATTR_WEATHER_WIND_SPEED,
+    DOMAIN as WEATHER,
 )
-from homeassistant.components.weather import DOMAIN as WEATHER
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_UNIT_OF_MEASUREMENT,
@@ -39,13 +41,16 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_state_change
 from homeassistant.helpers.typing import ConfigType
-from homeassistant.util.temperature import convert as convert_temperature
-from homeassistant.util.unit_system import TEMPERATURE_UNITS
+from homeassistant.util.unit_conversion import TemperatureConverter
+from homeassistant.util.unit_system import METRIC_SYSTEM, TEMPERATURE_UNITS
 
 from .const import (
     ATTR_HUMIDITY_SOURCE,
+    ATTR_HUMIDITY_SOURCE_VALUE,
     ATTR_TEMPERATURE_SOURCE,
+    ATTR_TEMPERATURE_SOURCE_VALUE,
     ATTR_WIND_SPEED_SOURCE,
+    ATTR_WIND_SPEED_SOURCE_VALUE,
     STARTUP_MESSAGE,
 )
 
@@ -105,6 +110,9 @@ class TemperatureFeelingSensor(Entity):
         self._temp = None
         self._humd = None
         self._wind = None
+        self._temp_val = None
+        self._humd_val = None
+        self._wind_val = None
 
     @property
     def unique_id(self):
@@ -148,8 +156,11 @@ class TemperatureFeelingSensor(Entity):
         """Return the state attributes."""
         return {
             ATTR_TEMPERATURE_SOURCE: self._temp,
+            ATTR_TEMPERATURE_SOURCE_VALUE: self._temp_val,
             ATTR_HUMIDITY_SOURCE: self._humd,
+            ATTR_HUMIDITY_SOURCE_VALUE: self._humd_val,
             ATTR_WIND_SPEED_SOURCE: self._wind,
+            ATTR_WIND_SPEED_SOURCE_VALUE: self._wind_val,
         }
 
     async def async_added_to_hass(self):
@@ -167,7 +178,7 @@ class TemperatureFeelingSensor(Entity):
             """Update entity on startup."""
             entities = set()
             for entity_id in self._sources:
-                state = self.hass.states.get(entity_id)  # type: LazyState
+                state: LazyState = self.hass.states.get(entity_id)
                 domain = split_entity_id(state.entity_id)[0]
                 device_class = state.attributes.get(ATTR_DEVICE_CLASS)
                 unit_of_measurement = state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
@@ -199,7 +210,7 @@ class TemperatureFeelingSensor(Entity):
                     entities.add(entity_id)
 
             if not self._name:
-                state = self.hass.states.get(self._temp)  # type: LazyState
+                state: LazyState = self.hass.states.get(self._temp)
                 self._name = state.name
                 if self._name.lower().find("temperature") < 0:
                     self._name += " Temperature"
@@ -225,7 +236,7 @@ class TemperatureFeelingSensor(Entity):
         """Get temperature value (in °C) from entity."""
         if entity_id is None:
             return None
-        state = self.hass.states.get(entity_id)  # type: LazyState
+        state: LazyState = self.hass.states.get(entity_id)
         if state is None:
             return None
 
@@ -244,7 +255,7 @@ class TemperatureFeelingSensor(Entity):
             return None
 
         try:
-            temperature = convert_temperature(
+            temperature = TemperatureConverter.convert(
                 float(temperature), entity_unit, TEMP_CELSIUS
             )
         except ValueError as exc:
@@ -257,7 +268,7 @@ class TemperatureFeelingSensor(Entity):
         """Get humidity value from entity."""
         if entity_id is None:
             return None
-        state = self.hass.states.get(entity_id)  # type: LazyState
+        state: LazyState = self.hass.states.get(entity_id)
         if state is None:
             return None
 
@@ -278,7 +289,7 @@ class TemperatureFeelingSensor(Entity):
         """Get wind speed value from entity."""
         if entity_id is None:
             return 0.0
-        state = self.hass.states.get(entity_id)  # type: LazyState
+        state: LazyState = self.hass.states.get(entity_id)
         if state is None:
             return 0.0
 
@@ -287,7 +298,7 @@ class TemperatureFeelingSensor(Entity):
             wind_speed = state.attributes.get(ATTR_WEATHER_WIND_SPEED)
             entity_unit = (
                 SPEED_KILOMETERS_PER_HOUR
-                if self.hass.config.units.is_metric
+                if self.hass.config.units is METRIC_SYSTEM
                 else SPEED_MILES_PER_HOUR
             )
         else:
@@ -304,9 +315,9 @@ class TemperatureFeelingSensor(Entity):
 
     async def async_update(self):
         """Update sensor state."""
-        temp = self._get_temperature(self._temp)  # °C
-        humd = self._get_humidity(self._humd)  # %
-        wind = self._get_wind_speed(self._wind)  # m/s
+        self._temp_val = temp = self._get_temperature(self._temp)  # °C
+        self._humd_val = humd = self._get_humidity(self._humd)  # %
+        self._wind_val = wind = self._get_wind_speed(self._wind)  # m/s
 
         _LOGGER.debug("Temp: %s °C  Hum: %s %%  Wind: %s m/s", temp, humd, wind)
 
@@ -326,7 +337,10 @@ class TemperatureFeelingSensor(Entity):
         e_value = humd * 0.06105 * math.exp((17.27 * temp) / (237.7 + temp))
         feeling = temp + 0.348 * e_value - 0.7 * wind - 4.25
         self._state = round(
-            convert_temperature(feeling, TEMP_CELSIUS, self.unit_of_measurement), 1
+            TemperatureConverter.convert(
+                feeling, TEMP_CELSIUS, self.unit_of_measurement
+            ),
+            1,
         )
         _LOGGER.debug(
             "New sensor state is %s %s", self._state, self.unit_of_measurement
