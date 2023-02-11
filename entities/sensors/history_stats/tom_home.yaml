@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: historystats_tom_home
+entity_id: person.thomas_baxter
+state: "home"
+type: time
+start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+end: "{{ now() }}"

@@ -1,4 +1,5 @@
 ---
+# lovelace_gen
 type: custom:vertical-stack-in-card
 cards:
   - type: custom:layout-card
@@ -16,7 +17,7 @@ cards:
             icon: mdi:home
             tap_action:
               action: navigate
-              navigation_path: /lovelace
+              navigation_path: /mobile-dashboard
         card_mod:
           style: |
             ha-card {
@@ -56,7 +57,10 @@ cards:
               --chip-spacing: 0;
             }
   - type: custom:mushroom-template-card
-    primary: Home
+    primary: >
+      {{ title }}
+    secondary: >
+      {{ secondary }}
     icon: mdi:home
     fill_container: true
     tap_action:
@@ -64,13 +68,13 @@ cards:
     hold_action:
       action: none
     icon_color: red
-    secondary: |-
-      {% set time = now().hour %}
-      {% if time <= 5 %} {{'💧'}}  Good night!
-      {% elif time <= 10 %} {{'💧'}} Good morning!
-      {% elif time <= 17 %} {{'💧'}} Good afternoon!
-      {% else %} {{'💧'}} Good evening!
-      {% endif %}
+    # secondary: |-
+    #   {% set time = now().hour %}
+    #   {% if time <= 5 %} {{'💧'}}  Good night!
+    #   {% elif time <= 10 %} {{'💧'}} Good morning!
+    #   {% elif time <= 17 %} {{'💧'}} Good afternoon!
+    #   {% else %} {{'💧'}} Good evening!
+    #   {% endif %}
     card_mod:
       style: |
         ha-card {

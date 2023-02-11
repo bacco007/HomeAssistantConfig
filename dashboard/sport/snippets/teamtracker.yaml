@@ -1,0 +1,21 @@
+---
+type: custom:auto-entities
+unique: true
+show_empty: false
+card:
+  type: custom:layout-card
+  layout_type: masonry
+card_param: cards
+filter:
+  template: |
+    {%- for team in integration_entities("teamtracker") -%}
+      {%- if states(team) != "NOT_FOUND" -%}
+        {{{"type": "custom:teamtracker-card",
+          "entity": team }}},
+      {%- endif -%}
+    {%- endfor -%}
+  exclude:
+    - entity_id: "*team_tracker*"
+sort:
+  method: attribute
+  attribute: date

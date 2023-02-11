@@ -25,7 +25,7 @@ cards:
             layout: vertical
             tap_action:
               action: navigate
-              navigation_path: lab
+              navigation_path: sport
             hold_action:
               action: none
             double_tap_action:

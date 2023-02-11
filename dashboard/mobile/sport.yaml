@@ -1,0 +1,34 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:football-australian
+subview: true
+path: sport
+title: Sport
+badges: []
+cards:
+  - !include
+    - snippets/header.yaml
+    - title: Sport
+      subtitle: Sport Sport Sport Sport
+
+  - type: vertical-stack
+    cards:
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          "--mdc-theme-primary": green
+          "--mdc-tab-text-label-color-default": grey
+        tabs:
+          - attributes:
+              label: Calendar
+              icon: mdi:calendar
+              isMinWidthIndicator: true
+              stacked: true
+            card: !include ../sport/snippets/calendar.yaml
+          - attributes:
+              label: Team Tracker
+              icon: mdi:soccer-field
+              isMinWidthIndicator: true
+              stacked: true
+            card: !include ../sport/snippets/teamtracker.yaml

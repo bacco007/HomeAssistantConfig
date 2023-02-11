@@ -7,6 +7,7 @@ decluttering_templates: !include declutter.yaml
 apexcharts_card_templates: !include apexcharts.yaml
 views:
   - !include mobile/home.yaml
+  - !include mobile/sport.yaml
   - theme: Metro Red
     icon: mdi:sofa
     subview: true
