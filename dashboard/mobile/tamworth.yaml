@@ -1,0 +1,80 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:city
+subview: true
+path: tamworth
+title: Tamworth
+badges: []
+cards:
+  - !include snippets/header.yaml
+
+  - type: custom:mushroom-template-card
+    primary: >
+      Tamworth
+    icon: mdi:city
+    fill_container: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    icon_color: red
+    secondary: |-
+      Yo!
+    card_mod:
+      style: |
+        ha-card {
+          background: none;
+          box-shadow: none;
+          padding: 0px 16px 8px !important;
+        }
+        :host {
+          --mush-card-primary-font-size: 1.2rem;
+        }
+
+  - type: vertical-stack
+    cards:
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          --mdc-theme-primary: var(--label-badge-blue)
+          --mdc-tab-text-label-color-default: var(--label-badge-red)
+        tabs:
+          - attributes:
+              label: Live Traffic
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../tamworth/snippets/livetraffic.yaml
+                - !include ../tamworth/livetraffic/alpine.yaml
+                - !include ../tamworth/livetraffic/fire.yaml
+                - !include ../tamworth/livetraffic/flood.yaml
+                - !include ../tamworth/livetraffic/incidents.yaml
+                - !include ../tamworth/livetraffic/incidentslga.yaml
+                - !include ../tamworth/livetraffic/majorevents.yaml
+                - !include ../tamworth/livetraffic/roadwork.yaml
+          - attributes:
+              label: Fuel
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../tamworth/snippets/fuel_u95.yaml
+                - !include ../tamworth/snippets/fuel_u98.yaml
+                - !include ../tamworth/snippets/fuel_u91.yaml
+                - !include ../tamworth/snippets/fuel_e10.yaml
+          - attributes:
+              label: Hospital
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../tamworth/snippets/hospital.yaml
+          - attributes:
+              label: Dams
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../tamworth/dams.yaml

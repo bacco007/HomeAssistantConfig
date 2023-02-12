@@ -1,0 +1,54 @@
+---
+type: entities
+title: Sun & Moon
+entities:
+  - entity: sun.sun
+    type: "custom:multiple-entity-row"
+    show_state: false
+    secondary_info:
+      entity: sun.sun
+    entities:
+      - attribute: next_rising
+        format: relative
+        name: SUNRISE
+        styles:
+          text-align: left
+      - attribute: next_setting
+        format: relative
+        name: SUNSET
+        styles:
+          text-align: left
+  - type: custom:fold-entity-row
+    head: sensor.sun_state
+    entities:
+      - sensor.sun_solarangle
+      - sensor.sun_nextrising
+      - sensor.sun_nextdawn
+      - sensor.sun_nextnoon
+      - sensor.sun_nextdusk
+      - sensor.sun_nextsetting
+      - sensor.sun_nextmidnight
+      - type: section
+      - sensor.solar_midnight
+      - sensor.astronomical_dawn
+      - sensor.nautical_dawn
+      - sensor.dawn
+      - sensor.sunrise
+      - sensor.solar_noon
+      - sensor.sunset
+      - sensor.dusk
+      - sensor.nautical_dusk
+      - sensor.astronomical_dusk
+      - type: section
+      - sensor.daylight
+      - sensor.civil_daylight
+      - sensor.nautical_daylight
+      - sensor.astronomical_daylight
+      - sensor.night
+      - sensor.civil_night
+      - sensor.nautical_night
+      - sensor.astronomical_night
+      - type: section
+      - sensor.elevation
+      - sensor.max_elevation
+  - entity: sensor.moon

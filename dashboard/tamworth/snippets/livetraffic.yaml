@@ -1,0 +1,63 @@
+---
+type: entities
+entities:
+  - entity: sensor.stats_livetraffic
+    name: Incident Count
+
+  - type: custom:apexcharts-card
+    graph_span: 7d
+    span:
+      end: day
+    header:
+      show: false
+    apex_config:
+      chart:
+        height: 250px
+        stacked: true
+    all_series_config:
+      stroke_width: 2
+      opacity: 0.3
+      type: area
+      curve: stepline
+      # extend_to_end: false
+      group_by:
+        func: last
+        duration: 1h
+    series:
+      # - entity: sensor.stats_livetraffic
+      #   name: Total
+      - entity: sensor.stats_livetraffic
+        attribute: alpine
+        name: Alpine
+        show:
+          legend_value: false
+      - entity: sensor.stats_livetraffic
+        attribute: fire
+        name: Fire
+        show:
+          legend_value: false
+      - entity: sensor.stats_livetraffic
+        attribute: flood
+        name: Flood
+        show:
+          legend_value: false
+      - entity: sensor.stats_livetraffic
+        attribute: incidents
+        name: Incidents
+        show:
+          legend_value: false
+      - entity: sensor.stats_livetraffic
+        attribute: incidents_lga
+        name: Incidents (LGA)
+        show:
+          legend_value: false
+      - entity: sensor.stats_livetraffic
+        attribute: majorevents
+        name: Major Events
+        show:
+          legend_value: false
+      - entity: sensor.stats_livetraffic
+        attribute: roadwork
+        name: Roadwork
+        show:
+          legend_value: false

@@ -42,6 +42,7 @@ cards:
           }
     alignment: justify
   - type: custom:power-flow-card
+    title: Live Action
     entities:
       consumption: sensor.load_power
       grid:
@@ -50,6 +51,7 @@ cards:
       solar: sensor.active_generation
     watt_threshold: 999
   - type: custom:power-flow-card
+    title: Today
     entities:
       consumption: sensor.daily_direct_energy_consumption
       grid:

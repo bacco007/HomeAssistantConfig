@@ -1,0 +1,98 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: entities
+    style: |
+      .card-header {
+        padding: 5px 16px;
+        font-size: 18px;
+        font-weight: 700 !important;
+      }
+      .card-content div {
+          margin: 0 !important;
+      }
+      #states {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+      .secondary {
+        color: darkgray !important;
+        margin-left: 2px !important;
+      }
+    entities:
+      - entity: sensor.tamhospital_waitingtime
+        name: No. Waiting
+  - type: custom:apexcharts-card
+    graph_span: 1d
+    now:
+      show: true
+      color: red
+    span:
+      end: day
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+    apex_config:
+      chart:
+        height: 250px
+    all_series_config:
+      # stroke_width: 2
+      opacity: 0.3
+      extend_to: now
+      # type: area
+      # group_by:
+      #   func: last
+      #   duration: 1h
+    yaxis:
+      - decimals: 0
+        align_to: 5
+    series:
+      - entity: sensor.tamhospital_waitingtime
+        name: Current
+        stroke_width: 3.5
+        type: area
+        color: "#FF4400"
+        opacity: 0.08
+        group_by:
+          func: last
+          duration: 10m
+        show:
+          extremas: true
+          legend_value: false
+      - entity: sensor.tamhospital_waitingtime
+        name: Yesterday
+        offset: "-1d"
+        stroke_width: 2.5
+        type: area
+        color: lightgrey
+        opacity: 0.08
+        group_by:
+          func: last
+          duration: 10m
+        show:
+          extremas: true
+          legend_value: false
+      - entity: sensor.tamhospital_waitingtime
+        attribute: usual_patients
+        name: Usual Waiting
+        stroke_width: 2.5
+        curve: stepline
+        color: "#ffa600"
+        show:
+          legend_value: false
+      - entity: sensor.tamhospital_waitingtime
+        attribute: capacity
+        name: Capacity
+        stroke_width: 0
+        type: area
+        curve: stepline
+        opacity: 0.1
+        color: "#039be5"
+        show:
+          in_header: false
+          legend_value: false
+        group_by:
+          func: last
+          duration: 1h

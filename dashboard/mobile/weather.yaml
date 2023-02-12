@@ -1,0 +1,101 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:weather-cloudy-alert
+subview: true
+path: weather
+title: Weather
+badges: []
+cards:
+  - !include snippets/header.yaml
+
+  - type: custom:mushroom-template-card
+    primary: >
+      Weather
+    icon: mdi:weather-cloudy-alert
+    fill_container: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    icon_color: red
+    secondary: |-
+      Yo!
+    card_mod:
+      style: |
+        ha-card {
+          background: none;
+          box-shadow: none;
+          padding: 0px 16px 8px !important;
+        }
+        :host {
+          --mush-card-primary-font-size: 1.2rem;
+        }
+
+  - type: vertical-stack
+    cards:
+      - !include ../weather/snippets/forecast_hour_day.yaml
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          --mdc-theme-primary: var(--label-badge-blue)
+          --mdc-tab-text-label-color-default: var(--label-badge-red)
+        tabs:
+          - attributes:
+              label: Radar
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - type: "custom:bom-radar-card"
+                  frame_count: 25
+                  center_latitude: "-31.09"
+                  center_longitude: "150.93"
+                  marker_latitude: "-31.09"
+                  marker_longitude: "150.93"
+                  show_marker: true
+                  show_range: true
+                  show_zoom: true
+                  show_recenter: true
+                  show_playback: true
+                  extra_labels: true
+                  show_radar_coverage: true
+                  show_radar_location: true
+                  zoom_level: "8"
+          - attributes:
+              label: Sun / UV
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - type: custom:stack-in-card
+                  cards:
+                    - !include ../tamworth/snippets/sun_moon.yaml
+                    - type: custom:sun-card
+                      style: |
+                        .sun-card-title {
+                          display: none;
+                        }
+                      showAzimuth: true
+                      showElevation: true
+                      timeFormat: 24h
+                      title: ""
+                - type: custom:stack-in-card
+                  cards:
+                    - !include ../tamworth/snippets/uv.yaml
+                    - !include ../tamworth/graph_uvindex.yaml
+          - attributes:
+              label: Air Quality
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - type: custom:stack-in-card
+                  cards:
+                    - !include ../tamworth/snippets/aqi_nswdpe.yaml
+                    - !include ../tamworth/graph_nswaqi.yaml
+
+                - type: custom:stack-in-card
+                  cards:
+                    - !include ../tamworth/snippets/aqi_waqi.yaml
+                    - !include ../tamworth/graph_waqi.yaml

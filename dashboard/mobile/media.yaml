@@ -1,0 +1,54 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:television
+subview: true
+path: tv-movies
+title: Media
+badges: []
+cards:
+  - !include snippets/header.yaml
+
+  - type: custom:mushroom-template-card
+    primary: >
+      TV & Movies
+    icon: mdi:television
+    fill_container: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    icon_color: red
+    secondary: |-
+      Yo!
+    card_mod:
+      style: |
+        ha-card {
+          background: none;
+          box-shadow: none;
+          padding: 0px 16px 8px !important;
+        }
+        :host {
+          --mush-card-primary-font-size: 1.2rem;
+        }
+
+  - type: vertical-stack
+    cards:
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          --mdc-theme-primary: var(--label-badge-blue)
+          --mdc-tab-text-label-color-default: var(--label-badge-red)
+        tabs:
+          - attributes:
+              label: Sonarr
+              isMinWidthIndicator: true
+            card: !include ../tv-movies/partial_sonarr.yaml
+          - attributes:
+              label: Radarr
+              isMinWidthIndicator: true
+            card: !include ../tv-movies/partial_radarr.yaml
+          - attributes:
+              label: Plex
+              isMinWidthIndicator: true
+            card: !include ../tv-movies/partial_plex.yaml

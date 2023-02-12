@@ -1,0 +1,41 @@
+---
+type: entities
+title: NSW Dept of Environment
+entities:
+  - entity: sensor.nsw_air_quality_tamworth
+    name: Tamworth
+    type: custom:multiple-entity-row
+    styles:
+      white-space: normal
+    style:
+      hui-generic-entity-row:
+        $: |
+          .info, .info > * {
+            white-space: normal !important;
+          }
+    entities:
+      - attribute: pm10
+        name: PM10
+        unit: AQI
+      - attribute: pm25
+        name: PM2.5
+        unit: AQI
+    secondary_info:
+      entity: sensor.nsw_air_quality_tamworth_airpollev
+  - entity: sensor.nsw_air_quality_tamworth_change_aqi
+    type: custom:multiple-entity-row
+    styles:
+      white-space: normal
+    style:
+      hui-generic-entity-row:
+        $: |
+          .info, .info > * {
+            white-space: normal !important;
+          }
+    name: Extremes (24hrs)
+    state_header: 24hr Chg
+    entities:
+      - entity: sensor.nsw_air_quality_tamworth_min_aqi
+        name: Min
+      - entity: sensor.nsw_air_quality_tamworth_max_aqi
+        name: Max

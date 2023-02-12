@@ -35,3 +35,5 @@ cards:
   - type: vertical-stack
     cards:
       - !include snippets/solar.yaml
+      - !include ../energy/graph_production.yaml
+      - !include ../energy/graph_yield_year.yaml

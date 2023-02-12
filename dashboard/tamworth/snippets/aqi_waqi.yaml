@@ -1,0 +1,41 @@
+---
+type: entities
+title: wAQI
+entities:
+  - entity: sensor.waqi_tamworth_north_west_slopes
+    name: Tamworth
+    type: custom:multiple-entity-row
+    styles:
+      white-space: normal
+    style:
+      hui-generic-entity-row:
+        $: |
+          .info, .info > * {
+            white-space: normal !important;
+          }
+    entities:
+      - attribute: pm_10
+        name: PM10
+        unit: AQI
+      - attribute: pm_2_5
+        name: PM2.5
+        unit: AQI
+    secondary_info:
+      entity: sensor.waqi_tamworth_airpollev
+  - entity: sensor.waqi_tamworth_change_aqi
+    type: custom:multiple-entity-row
+    styles:
+      white-space: normal
+    style:
+      hui-generic-entity-row:
+        $: |
+          .info, .info > * {
+            white-space: normal !important;
+          }
+    name: Extremes (24hrs)
+    state_header: 24hr Chg
+    entities:
+      - entity: sensor.waqi_tamworth_min_aqi
+        name: Min
+      - entity: sensor.waqi_tamworth_max_aqi
+        name: Max

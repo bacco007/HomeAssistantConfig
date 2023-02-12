@@ -1,0 +1,72 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:stack-in-card
+    mode: vertical
+    cards:
+      - type: entities
+        title: Unleaded 91
+        style: |
+          .card-header {
+            padding: 5px 16px;
+            font-size: 18px;
+            font-weight: 700 !important;
+          }
+          .card-content div {
+              margin: 0 !important;
+          }
+          #states {
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+          }
+          .secondary {
+            color: darkgray !important;
+            margin-left: 2px !important;
+          }
+        entities:
+          - entity: sensor.tamworth_fuel_average_ulp91
+            name: Unleaded 91 (Tamworth Average)
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: "*u91*"
+                  options:
+                    secondary_info: last-changed
+              exclude:
+                - entity_id: sensor.tamworth_fuel_average_ulp91
+                - entity_id: sensor.archive_*
+                - domain: automation
+            sort:
+              method: state
+            card:
+              type: custom:fold-entity-row
+              head:
+                label: Individual Service Stations
+                type: section
+      - type: custom:apexcharts-card
+        graph_span: 7d
+        span:
+          end: day
+        header:
+          show: false
+        apex_config:
+          chart:
+            height: 250px
+        all_series_config:
+          stroke_width: 2
+          opacity: 0.3
+          type: area
+          curve: stepline
+          # extend_to_end: false
+          group_by:
+            func: last
+            duration: 1h
+        series:
+          - entity: sensor.tamworth_fuel_average_ulp91
+            name: Average
+          - entity: sensor.tamworth_fuel_average_ulp91
+            attribute: max
+            name: Max
+          - entity: sensor.tamworth_fuel_average_ulp91
+            attribute: min
+            name: Min

@@ -6,6 +6,10 @@ header:
   show_states: false
 config_templates:
   - year_chart
+experimental:
+  brush: true
+brush:
+  selection_span: 30d
 apex_config:
   chart:
     type: "area"
@@ -50,9 +54,11 @@ series:
     type: area
     # extend_to_end: false
     stroke_width: 2
+    color: orange
     unit: "kWh"
     show:
       extremas: true
+      in_brush: true
     data_generator: |
       let res = [];
       for (const [key, value] of
@@ -65,7 +71,10 @@ series:
     type: area
     # extend_to_end: false
     stroke_width: 1.25
+    color: blue
     unit: "kWh"
+    show:
+      in_brush: false
     data_generator: |
       let res = [];
       for (const [key, value] of
