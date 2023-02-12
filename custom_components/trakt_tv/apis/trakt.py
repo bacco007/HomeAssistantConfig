@@ -62,17 +62,22 @@ class TraktApi:
             headers=headers,
         )
 
-        if response.ok:
-            text = await response.text()
-            return deserialize_json(text)
-        elif response.status_code == 429:
-            wait_time = int(response.headers["Retry-After"])
-            await sleep(wait_time)
-            return await self.request(method, url, **kwargs)
-        else:
-            error = f"Can't request {url} with {method} because it returns a {response.status_code} status code."
-            guidance = "If you find this error, please raise an issue at https://github.com/dylandoamaral/trakt-integration/issues."
-            raise TraktException(f"{error}\n{guidance}")
+        async with response:
+            if response.ok:
+                text = await response.text()
+                return deserialize_json(text)
+            elif response.status == 429:
+                wait_time = int(response.headers["Retry-After"])
+                await sleep(wait_time)
+                return await self.request(method, url, **kwargs)
+            elif response.status in [502, 503, 504]:
+                await sleep(30)
+                return await self.request(method, url, **kwargs)
+            else:
+                content = await response.text()
+                error = f"Can't request {url} with {method} because it returns a {response.status} status code with content {content}."
+                guidance = "If you find this error, please raise an issue at https://github.com/dylandoamaral/trakt-integration/issues."
+                raise TraktException(f"{error}\n{guidance}")
 
     async def fetch_calendar(
         self, path: str, from_date: str, nb_days: int, all_medias: bool
