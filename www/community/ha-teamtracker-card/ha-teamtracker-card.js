@@ -26,7 +26,7 @@ class TeamTrackerCard extends LitElement {
     this._config = config;
 
     if (config.debug) {
-      console.info("%c TeamTracker Card \n%c Version 0.6.2    ",
+      console.info("%c TeamTracker Card \n%c Version 0.7.0    ",
         "color: orange; font-weight: bold; background: black",
         "color: white; font-weight: bold; background: dimgray");
         console.info(config);
@@ -54,7 +54,7 @@ class TeamTrackerCard extends LitElement {
     const outline = this._config.outline;
     const outlineColor = this._config.outline_color;
     const showLeague = this._config.show_league;
-    const showTicker = this._config.show_ticker;
+//    const showTicker = this._config.show_ticker;
     var homeSide = String(this._config.home_side).toUpperCase();
 
     var logoBG = [];
@@ -91,8 +91,6 @@ class TeamTrackerCard extends LitElement {
     score[team] = stateObj.attributes.team_score;
     score[oppo] = stateObj.attributes.opponent_score;
 
-    var lang = this.hass.selectedLanguage || this.hass.language  || navigator.language || "en"
-
     var time_format = "language";
     try {
       time_format = this.hass.locale["time_format"] || "language";
@@ -100,8 +98,6 @@ class TeamTrackerCard extends LitElement {
     catch (e) {
       time_format = "language"
     }
-
-    var t = new Translator(lang);
 
     var gameDate = new Date (stateObj.attributes.date);
     var gameDateStr = gameDate.toLocaleDateString(lang, { month: 'short', day: '2-digit' });
@@ -140,20 +136,19 @@ class TeamTrackerCard extends LitElement {
       var sys_lang = navigator.language || "en"
       gameTime = gameDate.toLocaleTimeString(sys_lang, { hour: '2-digit', minute:'2-digit' });
     }
+
+    var clrOut = 0;
+    var toRadius = 3;
+    var probRadius = 6;
     var outColor = outlineColor;
 
     if (outline == true) {
-      var clrOut = 1;
-      var toRadius = 4;
-      var probRadius = 7;
-    }
-    if (!this._config.outline || outline == false){
-      var clrOut = 0;
-      var toRadius = 3;
-      var probRadius = 6;
+      clrOut = 1;
+      toRadius = 4;
+      probRadius = 7;
     }
     if (!this._config.outline_color) {
-      var outColor = '#ffffff';
+      outColor = '#ffffff';
     }
 
     scoreOp[1] = 1;
@@ -299,23 +294,17 @@ class TeamTrackerCard extends LitElement {
 //
 //  MLB Specific Changes
 //
+    var onFirstOp = 0.2;
+    var onSecondOp = 0.2;
+    var onThirdOp = 0.2;
     if (stateObj.attributes.on_first) {
-      var onFirstOp = 1;
-    }
-    else {
-      var onFirstOp = 0.2;
+      onFirstOp = 1;
     }
     if (stateObj.attributes.on_second) {
-      var onSecondOp = 1;
-    }
-    else {
-      var onSecondOp = 0.2;
+      onSecondOp = 1;
     }
     if (stateObj.attributes.on_third) {
-      var onThirdOp = 1;
-    }
-    else {
-      var onThirdOp = 0.2;
+      onThirdOp = 1;
     }
     if (sport.includes("baseball")) {
       in1 = t.translate("baseball.gameStat1", "%s", String(stateObj.attributes.balls));
