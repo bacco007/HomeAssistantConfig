@@ -82,7 +82,7 @@ API2_ERRORS = {
     "0106": exc.NotConnectedError,
     "0100": exc.FailedRequestError,
     "0110": exc.InvalidCredentialError,
-    "9999": exc.NotConnectedError,  # This come as "other errors", we manage as not connected.
+    # "9999": exc.NotConnectedError,  # This come as "other errors", we manage as not connected.
     9000: exc.InvalidRequestError,  # Surprisingly, an integer (not a string).
 }
 
@@ -95,6 +95,8 @@ MIN_TIME_BETWEEN_UPDATE = 25
 _LG_SSL_CIPHERS = (
     "DEFAULT:!aNULL:!eNULL:!MD5:!3DES:!DES:!RC4:!IDEA:!SEED:!aDSS:!SRP:!PSK"
 )
+
+_LOCAL_LANG_FILE = "local_lang_pack.json"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -150,7 +152,7 @@ class CoreAsync:
         Parameters:
             country: ThinQ account country
             language: ThinQ account language
-            timeout: the http timeout (default = 10 sec.)
+            timeout: the http timeout (default = 15 sec.)
             session: the AioHttp session to use (if None a new session is created)
         """
 
@@ -342,10 +344,10 @@ class CoreAsync:
             if "resultCode" in result:
                 code = result["resultCode"]
                 if code != "0000":
+                    message = result.get("result", "ThinQ APIv2 error")
                     if code in API2_ERRORS:
-                        raise API2_ERRORS[code]()
-                    message = result.get("result", "error")
-                    raise exc.APIError(code, message)
+                        raise API2_ERRORS[code](message)
+                    raise exc.APIError(message, code)
 
             return result
 
@@ -356,10 +358,10 @@ class CoreAsync:
         if "returnCd" in msg:
             code = msg["returnCd"]
             if code != "0000":
+                message = msg.get("returnMsg", "ThinQ APIv1 error")
                 if code in API2_ERRORS:
-                    raise API2_ERRORS[code]()
-                message = msg["returnMsg"]
-                raise exc.APIError(code, message)
+                    raise API2_ERRORS[code](message)
+                raise exc.APIError(message, code)
 
         return msg
 
@@ -1242,6 +1244,7 @@ class ClientAsync:
         # responses.
         self._model_url_info: dict[str, Any] = {}
         self._common_lang_pack = None
+        self._local_lang_pack = None
 
         # Locale information used to discover a gateway, if necessary.
         self._country = country
@@ -1527,6 +1530,28 @@ class ClientAsync:
                 await self._load_json_info(self._session.common_lang_pack_url)
             ).get("pack", {})
         return self._common_lang_pack
+
+    def local_lang_pack(self) -> dict[str, str]:
+        """Load JSON local lang pack from local."""
+        if self._local_lang_pack is not None:
+            return self._local_lang_pack
+
+        result = {}
+        data_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), _LOCAL_LANG_FILE
+        )
+        try:
+            with open(data_file, "r", encoding="utf-8") as lang_file:
+                lang_pack = json.load(lang_file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            self._local_lang_pack = {}
+            return {}
+        if self._language in lang_pack:
+            result = lang_pack[self._language]
+        else:
+            result = lang_pack.get(DEFAULT_LANGUAGE, {})
+        self._local_lang_pack = result
+        return result
 
     async def model_url_info(self, url, device=None):
         """

@@ -20,6 +20,8 @@ from .core_async import ClientAsync
 from .device_info import DeviceInfo, PlatformType
 from .model_info import ModelInfo
 
+LANG_PACK = "pack"
+
 LABEL_BIT_OFF = "@CP_OFF_EN_W"
 LABEL_BIT_ON = "@CP_ON_EN_W"
 
@@ -73,7 +75,7 @@ class Monitor:
         self._device_descr = device_info.name
         self._work_id: str | None = None
         self._monitor_start_time: datetime | None = None
-        self._disconnected = True
+        self._disconnected = self._platform_type == PlatformType.THINQ1
         self._has_error = False
         self._invalid_credential_count = 0
 
@@ -82,7 +84,7 @@ class Monitor:
     ) -> None:
         """Log and raise error with different level depending on condition."""
         log_lev = logging.DEBUG
-        self._disconnected = True
+        self._disconnected = self._platform_type == PlatformType.THINQ1
         if not_logged and Monitor._client_connected:
             Monitor._client_connected = False
             self._has_error = True
@@ -112,7 +114,7 @@ class Monitor:
             if Monitor._client_connected:
                 await self._client.refresh_auth()
                 return True
-            self._disconnected = True
+            self._disconnected = self._platform_type == PlatformType.THINQ1
             return await self._refresh_client()
 
     async def _refresh_client(self) -> bool:
@@ -157,6 +159,7 @@ class Monitor:
                     state = await self.poll(query_device)
 
             except core_exc.NotConnectedError:
+                # This exceptions occurs when APIv1 device is turned off
                 if self._has_error:
                     _LOGGER.info(
                         "Connection is now available - Device: %s", self._device_descr
@@ -165,8 +168,9 @@ class Monitor:
                 _LOGGER.debug(
                     "Status not available. Device %s not connected", self._device_descr
                 )
-                self._disconnected = True
-                raise
+                if iteration >= 1:  # just retry 2 times
+                    raise
+                continue
 
             except core_exc.DeviceNotFound:
                 self._raise_error(
@@ -271,9 +275,8 @@ class Monitor:
         """Stop monitor for ThinQ1 device."""
         if not self._work_id:
             return
-        work_id = self._work_id
+        await self._client.session.monitor_stop(self._device_id, self._work_id)
         self._work_id = None
-        await self._client.session.monitor_stop(self._device_id, work_id)
 
     async def poll(self, query_device=False) -> Any | None:
         """
@@ -376,6 +379,7 @@ class Device:
         self._model_info: ModelInfo | None = None
         self._model_lang_pack = None
         self._product_lang_pack = None
+        self._local_lang_pack = None
         self._should_poll = device_info.platform_type == PlatformType.THINQ1
         self._mon = Monitor(client, device_info)
         self._control_set = 0
@@ -458,6 +462,10 @@ class Device:
             self._product_lang_pack = await self._client.model_url_info(
                 self._device_info.product_lang_pack_url
             )
+
+        # load local language pack
+        if self._local_lang_pack is None:
+            self._local_lang_pack = self._client.local_lang_pack()
 
         return True
 
@@ -747,9 +755,13 @@ class Device:
 
         text_value = LOCAL_LANG_PACK.get(enum_name)
         if not text_value and self._model_lang_pack:
-            text_value = self._model_lang_pack.get("pack", {}).get(enum_name)
+            if LANG_PACK in self._model_lang_pack:
+                text_value = self._model_lang_pack[LANG_PACK].get(enum_name)
         if not text_value and self._product_lang_pack:
-            text_value = self._product_lang_pack.get("pack", {}).get(enum_name)
+            if LANG_PACK in self._product_lang_pack:
+                text_value = self._product_lang_pack[LANG_PACK].get(enum_name)
+        if not text_value and self._local_lang_pack:
+            text_value = self._local_lang_pack.get(enum_name)
         if not text_value:
             text_value = enum_name
 
