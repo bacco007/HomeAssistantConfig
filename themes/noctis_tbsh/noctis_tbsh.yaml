@@ -1,6 +1,17 @@
 noctis_tbsh:
+  card-mod-root-yaml: |
+    .: |
+      @media only screen and (max-width: 600px) {
+          app-header {
+            display: none;
+            opacity: 0;
+          }
+      }
+
   # Fonts
-  primary-font-family: "Raleway,sans-serif"
+  # primary-font-family: "Raleway,sans-serif"
+  primary-font-stack: &font-stack "Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
+  display-font-stack: &display-font-stack "Segoe UI Variable Static Display, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
@@ -47,9 +58,11 @@ noctis_tbsh:
   # Background
   background-color: "#242e42"
   primary-background-color: "var(--background-color)"
-  background-color-2: "#20293c"
+  #background-color-2: '#20293c'
+  background-color-2: "#2e4a74" #'#1d2330'
   secondary-background-color: "none"
   markdown-code-background-color: "var(--background-color)"
+  #opacity: "0"
 
   # Card
   card-background-color: "var(--ha-card-background)"
