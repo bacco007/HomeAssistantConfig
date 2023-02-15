@@ -223,3 +223,21 @@ sensor:
         value_template: >
           {{ ((state_attr('sensor.daylight', 'today') - state_attr('sensor.daylight', 'yesterday')) * 3600) | round(0) }}
         icon_template: mdi:weather-sunny
+      sun_daylightpct_remain:
+        friendly_name: Daylight Percent Remaining
+        value_template: >
+          {%- set total = state_attr('sensor.daylight', 'today') %}
+          {%- set used = (now() -  state_attr('sensor.sunrise', 'today')).total_seconds() / 3600 %}
+          {{  100 * ((total - used)/total ) | round(2, 0) }}
+        icon_template: >-
+          {% if is_state('sun.sun', 'above_horizon') %}
+            mdi:weather-sunny
+          {% else %}
+            mdi:weather-night
+          {% endif %}
+        unit_of_measurement: "%"
+        # state_class: measurement
+        # availability: >
+        #   {{ ['sensor.daylight', 'sensor.sunrise']
+        #   | select('is_state', ['unavailable', 'unknown'])
+        #   | list | count > 0 }}

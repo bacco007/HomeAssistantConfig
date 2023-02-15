@@ -1,11 +1,13 @@
 ---
 type: custom:config-template-card
 entities:
-  - sensor.sunrise
   - sensor.sunset
+  - sensor.solar_noon
+  - sensor.sunrise
 card:
   type: custom:apexcharts-card
   graph_span: 24h
+  update_interval: 10mins
   header:
     show: false
     show_states: true
@@ -30,15 +32,21 @@ card:
   apex_config:
     annotations:
       xaxis:
-        - x: "${new Date(states['sensor.sunrise'].state).getTime()}"
+        - x: ${new Date(states['sensor.sunrise'].state).getTime()}
+          label:
+            text: Sunrise ☉
+            borderWidth: 0
+            style:
+              background: "#0000"
+        - x: ${new Date(states['sensor.solar_noon'].state).getTime()}
           label:
             text: ☼
             borderWidth: 0
             style:
               background: "#0000"
-        - x: "${new Date(states['sensor.sunset'].state).getTime()}"
+        - x: ${new Date(states['sensor.sunset'].state).getTime()}
           label:
-            text: ☾
+            text: Sunset ☾
             borderWidth: 0
             style:
               background: "#0000"
@@ -69,6 +77,8 @@ card:
       {
         type: "datetime",
         labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+        forceNiceScale: true,
+        decimalsInFloat: false,
       }
     yaxis:
       - seriesName: "kW"
