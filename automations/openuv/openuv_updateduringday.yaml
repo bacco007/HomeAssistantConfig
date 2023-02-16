@@ -3,7 +3,7 @@ alias: OpenUV - Update During Day
 id: 003780ee-c3a1-475a-b54f-8f2ef3a5c2dcß
 trigger:
   - platform: time_pattern
-    minutes: "/15"
+    minutes: "/20"
 condition:
   - condition: sun
     after: sunrise
@@ -21,6 +21,4 @@ action:
   service: homeassistant.update_entity
   target:
     entity_id:
-      # Update both UV and protection window data:
-      - binary_sensor.protection_window
       - sensor.current_uv_index

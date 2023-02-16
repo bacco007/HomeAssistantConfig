@@ -7,3 +7,5 @@ province: NSW
 workdays: [mon, tue, wed, thu, fri]
 excludes: [sat, sun, holiday]
 days_offset: 1
+remove_holidays:
+  - "Bank Holiday"

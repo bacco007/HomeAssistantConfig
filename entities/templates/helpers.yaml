@@ -16,6 +16,13 @@ sensor:
     attributes:
       friendly_name: Day of Month
 
+  - name: helper_daymonthstring
+    unique_id: helper_daymonthstring
+    state: >
+      {%- set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+      {%- set days = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th','30th','31st' ] %}
+      {{ days[now().day-1] | string + ' ' + months[now().month-1]}}
+
   - name: helper_monthname
     unique_id: helper_monthname
     icon: mdi:calendar

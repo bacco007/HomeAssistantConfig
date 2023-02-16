@@ -6,3 +6,5 @@ country: AU
 province: NSW
 workdays: [mon, tue, wed, thu, fri]
 excludes: [sat, sun, holiday]
+remove_holidays:
+  - "Bank Holiday"
