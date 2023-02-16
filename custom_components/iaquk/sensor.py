@@ -1,7 +1,8 @@
 """Sensor platform to calculate IAQ UK index."""
 
+from collections.abc import Mapping
 import logging
-from typing import Any, Final, Mapping, Optional
+from typing import Any, Final, Optional
 
 from homeassistant.components.sensor import (
     ENTITY_ID_FORMAT,

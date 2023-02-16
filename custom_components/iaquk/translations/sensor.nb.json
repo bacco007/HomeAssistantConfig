@@ -1,0 +1,11 @@
+{
+  "state": {
+    "iaquk__level": {
+      "Excellent": "Utmerket",
+      "Good": "God",
+      "Fair": "Passelig",
+      "Poor": "Dårlig",
+      "Inadequate": "Svært dårlig"
+    }
+  }
+}

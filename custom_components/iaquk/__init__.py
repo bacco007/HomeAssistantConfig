@@ -1,5 +1,4 @@
-"""
-Component to calculate IAQ UK index.
+"""Component to calculate IAQ UK index.
 
 For more details about this component, please refer to
 https://github.com/Limych/ha-iaquk
@@ -8,8 +7,8 @@ https://github.com/Limych/ha-iaquk
 import logging
 from typing import Any, Dict, Final, List, Optional, Union
 
-import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+
 from homeassistant.components.sensor import DOMAIN as SENSOR
 from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
@@ -26,6 +25,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import State, callback
 from homeassistant.helpers import discovery
+import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import async_track_state_change
 from homeassistant.util.temperature import convert as convert_temperature
 
@@ -160,6 +160,7 @@ class Iaquk:
 
     def async_added_to_hass(self):
         """Register callbacks."""
+
         # pylint: disable=unused-argument
         @callback
         def sensor_state_listener(entity, old_state, new_state):
@@ -245,6 +246,7 @@ class Iaquk:
         indexes = {}
         for src in self._sources:
             try:
+                # pylint: disable=unnecessary-dunder-call
                 idx = self.__getattribute__(f"_{src}_index")
                 _LOGGER.debug("[%s] %s_index=%s", self._entity_id, src, idx)
                 if idx is not None:
