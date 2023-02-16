@@ -8,9 +8,35 @@ noctis_tbsh:
           }
       }
 
+  # Colors
+  #Aurora
+  aurora-red: "#bf616a"
+  aurora-blue: "#5e81ac"
+  aurora-green: "#a3be8c"
+  aurora-yellow: "#ebcb8b"
+  aurora-orange: "#d08770"
+  aurora-pink: "#b48ead"
+
+  #Frost
+  frost-green: "#8fbcbb"
+  frost-sky-blue: "#88c0d0"
+  frost-cadet-blue: "#81a1c1"
+  frost-steel-blue: "#5e81ac"
+
+  #Snow Storm
+  snow-dark: "#d8dee9"
+  snow-medium: "#e5e9f0"
+  snow-light: "#eceff4"
+
+  #Polar Night
+  polar-dark-gray: "#2e3440"
+  polar-bright-gray: "#3B4252"
+  polar-river-gray: "#434c5e"
+  polar-light-gray: "#4c566a"
+
   # Fonts
   # primary-font-family: "Raleway,sans-serif"
-  primary-font-stack: &font-stack "Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
+  primary-font-family: &font-stack "Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
   display-font-stack: &display-font-stack "Segoe UI Variable Static Display, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
@@ -30,12 +56,11 @@ noctis_tbsh:
   text-medium-color: "#80828A"
   disabled-text-color: "#626569"
   primary-color: "var(--accent-color)"
-  text-light-primary-color: "var(--text-color)"
 
   # Text Fields an Dropdown
-  mdc-text-field-fill-color: "#2e3b53"
+  mdc-text-field-fill-color: "var(--background-color)"
   mdc-text-field-ink-color: "var(--text-color)"
-  mdc-select-fill-color: "#2e3b53"
+  mdc-select-fill-color: "var(--background-color)"
   mdc-text-field-label-ink-color: "var(--secondary-text-color)"
   input-fill-color: "var(--background-color)"
   input-ink-color: "var(--text-color)"
@@ -52,8 +77,9 @@ noctis_tbsh:
   # Main Colors
   app-header-background-color: "#242e42"
   header-height: 48px
-  accent-color: "#1A89F5"
+  accent-color: "#4089ed"
   accent-medium-color: "var(--accent-color)"
+  #entities-divider-color: '#2e4a74'
 
   # Background
   background-color: "#242e42"
@@ -66,12 +92,20 @@ noctis_tbsh:
 
   # Card
   card-background-color: "var(--ha-card-background)"
-  ha-card-background: "rgba(43,55,78,1)" #'linear-gradient(145deg, #273246, #2e3b53)'
-  ha-card-box-shadow: "3px 3px 13px -6px rgba(17,35,52,1)"
-  ha-card-border-radius: "5px"
-  border-radius: "5px"
-  ha-card-border-color: "rgba(0,0,0,0)"
-  ha-card-border-width: "0"
+  ha-card-background: "#1d2330" #'rgba(43,55,78,1)' #'linear-gradient(145deg, #273246, #2e3b53)'
+  ha-card-box-shadow: "none" #'3px 3px 13px -6px rgba(17,35,52,1)'
+  ha-card-border-radius: "28px"
+  ha-card-border-style: "none !important"
+  ha-card-border-width: "none !important"
+  ha-card-border-color: "none !important"
+  #   ha-card-background-position: "50% 360%"
+  #   ha-card-background-size: "140% 0%"
+  #   ha-card-transition: "background 0s"
+  #   background-position: "50% 360%"
+  #   background-size: "140% 0%"
+  border-color: "none"
+  grid-card-gap: "14px"
+  border-style: "none !important"
 
   # Dialog
   ha-dialog-border-radius: "5px"
@@ -148,6 +182,12 @@ noctis_tbsh:
   paper-slider-pin-color: "var(--background-color-2)"
   paper-slider-active-color: "var(--accent-color)"
   paper-slider-container-color: "var(--background-color-2)"
+  #paper-slider-knob-height: '20px'
+  #paper-progress-height: '12px'
+  #paper-slider-height: '12px'
+  #paper-slider-border-radius: '12px'
+  #ha-slider-border-radius: '12px'
+  #ha-slider-background: 'blue'
 
   # Toggle:
   paper-toggle-button-checked-bar-color: "var(--accent-color)"
@@ -165,7 +205,6 @@ noctis_tbsh:
   # Popups
   more-info-header-background: "var(--secondary-background-color)"
   paper-dialog-background-color: "var(--background-color)" #'rgba(47,59,82,0.4)'
-  popup-border-radius: "5px"
 
   # Tables
   table-row-background-color: "var(--background-color)"
@@ -203,16 +242,82 @@ noctis_tbsh:
 
   card-mod-more-info-yaml: |
     $: |
-      .mdc-dialog .mdc-dialog__scrim {
+     .mdc-dialog .mdc-dialog__scrim {
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
         background: rgba(0,0,0,.6);
-      }
-      .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+     }
+     .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
         box-shadow: none !important;
         border-radius: var(--ha-card-border-radius);
-      }
+     }
     .: |
-      :host {
+     :host {
         --ha-card-box-shadow: none;
-      }
+     }
+  card-mod-view-yaml: |
+    hui-sidebar-view:
+      $: |
+        @media only screen and (min-width: 768px) {
+            .container {
+              max-width: 520px;
+              margin: auto !important;
+              width: -webkit-fill-available;
+            }
+        }
+        #wrapper: |
+          $: |
+            #progressContainer {
+                border-radius: 14px !important;
+        }
+        # .container::before {
+        #   content: '';
+        #   width: 100%;
+        #   height: 100%;
+        #   background: black;
+        #   opacity: 0;
+        #   position: absolute;
+        #   z-index: 10000;
+        # }
+      .: |
+        "#view>hui-view>hui-sidebar-view$#main>hui-card-options:nth-child(7)>vertical-stack-in-card$ha-card>div>hui-horizontal-stack-card$#root>hui-grid-card$#root>hui-entities-card$#states>div:nth-child(4)>slider-entity-row$div>ha-slider$#sliderBar$#progressContainer" {
+            border-radius: 14px !important;
+        }
+
+  card-mod-card: |
+    ha-card {
+      transition: none;
+      #background-position: 50% 360%;
+      #background-size: 140% 0%;
+      border-style: none !important;
+    }
+
+    # ha-card > div > hui-horizontal-stack-card:
+    #   $: |
+    #     #root > hui-grid-card:
+    #       $: |
+    #         #root > hui-entities-card:
+    #           $: |
+    #             #states > div:nth-child(4) > slider-entity-row:
+    #             $: |
+    #               div > ha-slider:
+    #                 $: |
+    #                   #sliderBar:
+    #                     $: |
+    #                       #progressContainer {
+    #                         border-radius: 14px !important;
+    #                       }
+
+#   card-mod-slider-yaml: |
+#     first$second$: |
+#       #progressContainer {
+#         border-radius: 14px !important;
+#       }
+
+#   card-mod-view-yaml: |
+
+#         hui-sidebar-view {
+#           max-width: 520px;
+#           margin: auto;
+#           width: -webkit-fill-available;
+#         }
