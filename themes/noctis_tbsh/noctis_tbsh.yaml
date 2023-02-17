@@ -34,6 +34,14 @@ noctis_tbsh:
   polar-river-gray: "#434c5e"
   polar-light-gray: "#4c566a"
 
+  # Mushroom
+  mush-rgb-red: "191, 97, 106"
+  mush-rgb-blue: "94, 129, 172"
+  mush-rgb-green: "163, 190, 140"
+  mush-rgb-yellow: "235, 203, 139"
+  mush-rgb-orange: "208, 134, 112"
+  mush-rgb-pink: "180, 142, 173"
+
   # Fonts
   # primary-font-family: "Raleway,sans-serif"
   primary-font-family: &font-stack "Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
