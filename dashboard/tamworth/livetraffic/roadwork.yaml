@@ -56,7 +56,7 @@ cards:
                 {% if states('sensor.getdata_livetrafficnsw_roadwork') == "0" %}
                 No Incidents Recorded
                 {%- else %}
-                {%- for item in state_attr('sensor.getdata_livetrafficnsw_roadwork', 'data')|sort(attribute='starttime') %}
+                {%- for item in |sort(attribute='starttime') %}
                 **{{ item.incidenttype }}: {{ item.displayname }}, {{ item.road }} {{ item.suburb}} ({{item.dist_km}}km away)**
                 {{ item.advice }}; {{ item.additionalinfo }}; {{item.periods }}
                 Start: {{ item.starttime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}, End: {%- if item.endtime == 0 %} None Recorded {%- else %} {{ item.endtime | int | timestamp_custom ('%H:%M, %d/%m/%Y') }}{% endif %}
