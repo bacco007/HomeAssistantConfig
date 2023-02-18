@@ -27,6 +27,7 @@ from homeassistant.helpers.typing import StateType
 
 from .const import (
     ATTR_DESCRIPTION,
+    CONCENTRATION_GRAMS_PER_CUBIC_METER,
     DOMAIN,
     TRANSLATION_KEY_BEAUFORT,
     TRANSLATION_KEY_PRECIP_INTENSITY,
@@ -100,7 +101,7 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         key="absolute_humidity",
         name="Absolute Humidity",
         icon="mdi:water",
-        native_unit_of_measurement="g/m^3",
+        native_unit_of_measurement=CONCENTRATION_GRAMS_PER_CUBIC_METER,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_type="none",
         tempest_sensor=None,

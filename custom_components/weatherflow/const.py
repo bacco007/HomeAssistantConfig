@@ -7,6 +7,8 @@ ATTR_FORECAST_FEELS_LIKE = "feels_like"
 ATTR_FORECAST_WIND_GUST = "wind_gust"
 ATTR_FORECAST_UV = "uv_index"
 
+CONCENTRATION_GRAMS_PER_CUBIC_METER = "g/m³"
+
 CONDITION_CLASSES = {
     "clear-night": ["clear-night"],
     "cloudy": ["cloudy"],
