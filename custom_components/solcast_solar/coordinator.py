@@ -176,7 +176,17 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         elif key == "forecast_next_hour":
             return self.solcast.get_forecast_next_hour()
         elif key == "total_kwh_forecast_tomorrow":
-            return self.solcast.get_total_kwh_forecast_tomorrow()
+            return self.solcast.get_total_kwh_forecast_furture_for_day(1) 
+        elif key == "total_kwh_forecast_d3":
+            return self.solcast.get_total_kwh_forecast_furture_for_day(2)
+        elif key == "total_kwh_forecast_d4":
+            return self.solcast.get_total_kwh_forecast_furture_for_day(3)
+        elif key == "total_kwh_forecast_d5":
+            return self.solcast.get_total_kwh_forecast_furture_for_day(4)
+        elif key == "total_kwh_forecast_d6":
+            return self.solcast.get_total_kwh_forecast_furture_for_day(5)
+        elif key == "total_kwh_forecast_d7":
+            return self.solcast.get_total_kwh_forecast_furture_for_day(6)
         elif key == "peak_w_tomorrow":
             return self.solcast.get_peak_w_tomorrow()
         elif key == "peak_w_time_tomorrow":
@@ -195,7 +205,17 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         if key == "total_kwh_forecast_today":
             return self.solcast.get_forecast_today()
         elif key == "total_kwh_forecast_tomorrow":
-            return self.solcast.get_forecast_tomorrow()
+            return self.solcast.get_forecast_future_day(1)
+        elif key == "total_kwh_forecast_d3":
+            return self.solcast.get_forecast_future_day(2)
+        elif key == "total_kwh_forecast_d4":
+            return self.solcast.get_forecast_future_day(3)
+        elif key == "total_kwh_forecast_d5":
+            return self.solcast.get_forecast_future_day(4)
+        elif key == "total_kwh_forecast_d6":
+            return self.solcast.get_forecast_future_day(5)
+        elif key == "total_kwh_forecast_d7":
+            return self.solcast.get_forecast_future_day(6)
 
         #just in case
         return None

@@ -97,6 +97,41 @@ SENSORS: dict[str, SensorEntityDescription] = {
         icon="mdi:clock",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    "total_kwh_forecast_d3": SensorEntityDescription(
+        key="total_kwh_forecast_d3",
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        name="Forecast D3",
+        icon="mdi:solar-power",
+    ),
+    "total_kwh_forecast_d4": SensorEntityDescription(
+        key="total_kwh_forecast_d4",
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        name="Forecast D4",
+        icon="mdi:solar-power",
+    ),
+    "total_kwh_forecast_d5": SensorEntityDescription(
+        key="total_kwh_forecast_d5",
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        name="Forecast D5",
+        icon="mdi:solar-power",
+    ),
+    "total_kwh_forecast_d6": SensorEntityDescription(
+        key="total_kwh_forecast_d6",
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        name="Forecast D6",
+        icon="mdi:solar-power",
+    ),
+    "total_kwh_forecast_d7": SensorEntityDescription(
+        key="total_kwh_forecast_d7",
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        name="Forecast D7",
+        icon="mdi:solar-power",
+    ),
 }
 
 
@@ -121,7 +156,7 @@ async def async_setup_entry(
                 icon="mdi:home",
                 device_class=SensorDeviceClass.ENERGY,
                 native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-                entity_category=EntityCategory.DIAGNOSTIC,
+                entity_category=EntityCategory.CONFIG,
             )
         sen = RooftopSensor(coordinator, k,entry)
         entities.append(sen)
