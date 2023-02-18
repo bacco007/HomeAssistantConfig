@@ -78,7 +78,7 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                     self._proxmox_client.build_client
                 )
 
-            except proxmoxer.backends.https.AuthenticationError:
+            except proxmoxer.AuthenticationError:
                 errors[CONF_USERNAME] = "auth_error"
             except SSLError:
                 errors[CONF_VERIFY_SSL] = "ssl_rejection"
@@ -181,22 +181,28 @@ class ProxmoxOptionsFlowHandler(config_entries.OptionsFlow):
                         vol.Required(CONF_NODE): node,
                         vol.Optional(CONF_QEMU, default=old_qemu): cv.multi_select(
                             {
-                                str(
-                                    qemu[ID]
-                                ): f"{qemu[ID]} {qemu['name'] if 'name' in qemu else None}"
-                                for qemu in await self.hass.async_add_executor_job(
-                                    proxmox.nodes(node).qemu.get
-                                )
+                                **dict.fromkeys(old_qemu),
+                                **{
+                                    str(
+                                        qemu[ID]
+                                    ): f"{qemu[ID]} {qemu['name'] if 'name' in qemu else None}"
+                                    for qemu in await self.hass.async_add_executor_job(
+                                        proxmox.nodes(node).qemu.get
+                                    )
+                                }
                             }
                         ),
                         vol.Optional(CONF_LXC, default=old_lxc): cv.multi_select(
                             {
-                                str(
-                                    lxc[ID]
-                                ): f"{lxc[ID]} {lxc['name'] if 'name' in lxc else None}"
-                                for lxc in await self.hass.async_add_executor_job(
-                                    proxmox.nodes(node).lxc.get
-                                )
+                                **dict.fromkeys(old_lxc),
+                                **{
+                                    str(
+                                        lxc[ID]
+                                    ): f"{lxc[ID]} {lxc['name'] if 'name' in lxc else None}"
+                                    for lxc in await self.hass.async_add_executor_job(
+                                        proxmox.nodes(node).lxc.get
+                                    )
+                                }
                             }
                         ),
                     }
@@ -385,7 +391,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         try:
             await self.hass.async_add_executor_job(proxmox_client.build_client)
-        except proxmoxer.backends.https.AuthenticationError:
+        except proxmoxer.AuthenticationError:
             errors[CONF_USERNAME] = "auth_error"
             async_create_issue(
                 async_get_hass(),
@@ -546,7 +552,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self._proxmox_client.build_client
                 )
 
-            except proxmoxer.backends.https.AuthenticationError:
+            except proxmoxer.AuthenticationError:
                 errors[CONF_USERNAME] = "auth_error"
             except SSLError:
                 errors[CONF_BASE] = "ssl_rejection"
@@ -639,7 +645,7 @@ class ProxmoxVEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         self._proxmox_client.build_client
                     )
 
-                except proxmoxer.backends.https.AuthenticationError:
+                except proxmoxer.AuthenticationError:
                     errors[CONF_USERNAME] = "auth_error"
                 except SSLError:
                     errors[CONF_VERIFY_SSL] = "ssl_rejection"
