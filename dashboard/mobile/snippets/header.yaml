@@ -1,49 +1,178 @@
 ---
-# lovelace_gen
-type: custom:stack-in-card
-mode: horizontal
+type: vertical-stack
 cards:
-  - type: custom:mushroom-chips-card
-    chips:
-      - type: back
-        card_mod:
-          style: |
-            ha-card {
-              --chip-padding: 0 0 0 0.30em;
-            }
-      - type: template
-        icon: mdi:home
-        tap_action:
-          action: navigate
-          navigation_path: mobile-dashboard
-      - type: template
-        icon: mdi:lan
-        tap_action:
-          action: navigate
-          navigation_path: network
-  - type: custom:mushroom-chips-card
-    chips:
-      - type: weather
-        entity: weather.weatherflow_current
-        tap_action:
-          action: navigate
-          navigation_path: weather
-        show_temperature: true
-      - type: entity
-        entity: person.thomas_baxter
-        content_info: none
-        use_entity_picture: true
-        tap_action: !include popup_thomas.yaml
-      - type: conditional
-        conditions:
-          - entity: switch.adguard_protection
-            state: "on"
-        chip:
-          type: template
-          icon_color: disabled
-          icon: mdi:shield-check
-    alignment: end
-style: |
-  ha-card {
-    border-radius: 10px;
-  }
+  - type: custom:paper-buttons-row
+    styles:
+      justify-content: space-between
+      margin-left: 20px
+      margin-right: 20px
+      background: none
+    buttons:
+      - name: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
+        styles:
+          name:
+            font-weight: 300
+            font-size: 40px
+            letter-spacing: "-1px"
+            margin-left: 2px
+            position: relative
+            left: "-10px"
+            color: var(--snow-dark)
+          button:
+            pointer-events: none
+      - layout: name_state
+        name: "{{ states('sensor.helper_dayofweek') }}"
+        state: "{{ states('sensor.helper_daymonthstring') }}"
+        styles:
+          button:
+            width: 200px
+            height: 32px
+            pointer-events: none
+            position: relative
+            color: var(--snow-dark)
+          name:
+            position: absolute
+            left: "-10px"
+            top: 0
+            font-weight: 400
+            white-space: nowrap
+          state:
+            position: absolute
+            left: "-10px"
+            bottom: 0
+            font-weight: 600
+            white-space: nowrap
+      - name: "{{ state_attr('weather.east_tamworth_hourly','temperature') }}°C"
+        icon: mdi:thermometer
+        layout: icon|name
+        styles:
+          name:
+            font-size: 18px
+            margin-left: "-2px"
+          button:
+            pointer-events: none
+            color: var(--snow-dark)
+      - name: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
+        icon: mdi:home-thermometer
+        layout: icon|name
+        styles:
+          name:
+            font-size: 18px
+            margin-left: 2px
+          button:
+            pointer-events: none
+            margin-right: "-6px"
+            color: var(--snow-dark)
+  - type: entities
+    entities:
+      - type: custom:paper-buttons-row
+        buttons:
+          - entity: person.thomas_baxter
+            layout: icon
+            image: "{{ state_attr(config.entity, 'entity_picture') }}"
+            name: "{{ state_attr(config.entity, 'friendly_name') }}"
+            style:
+              button:
+                width: 42px
+                height: 42px
+                background-color: >-
+                  var( --ha-card-background, var(--card-background-color, white)
+                  );
+                border-radius: 100%
+                color: var(--snow-dark)
+              icon:
+                width: 35px
+                height: 35px
+                margin-top: 0
+              name:
+                margin-top: 20px
+          - layout: icon
+            icon: mdi:home
+            name: Home
+            tap_action:
+              action: navigate
+              navigation_path: mobile-dashboard
+            style:
+              button:
+                width: 42px
+                height: 42px
+                background-color: >-
+                  var( --ha-card-background, var(--card-background-color, white)
+                  );
+                border-radius: 100%
+                color: var(--snow-dark)
+              icon:
+                margin-top: 0
+              name:
+                margin-top: 20px
+          - layout: icon
+            icon: mdi:lan
+            name: Network
+            tap_action:
+              action: navigate
+              navigation_path: /mobile-dashboard/network
+            style:
+              button:
+                width: 42px
+                height: 42px
+                color: var(--snow-dark)
+              icon:
+                margin-top: 0
+              name:
+                margin-top: 20px
+          - icon: mdi:video
+            layout: icon
+            name: Sécurité
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/securite
+            style:
+              button:
+                width: 42px
+                height: 42px
+                color: var(--snow-dark)
+              icon:
+                margin-top: 0
+              name:
+                margin-top: 20px
+          - layout: icon
+            icon: mdi:cog
+            name: Réglages
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/reglages
+            style:
+              button:
+                width: 42px
+                height: 42px
+                color: var(--snow-dark)
+              icon:
+                margin-top: 0
+              name:
+                margin-top: 20px
+        style: |
+          div.flex-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -16px !important;
+
+          }
+    style: |
+      ha-card {
+
+        background: none !important;
+        margin-left: 20px;
+        margin-right: 20px;
+        border-radius: 26px;
+      }
+      ha-card:before {
+        content: '';
+        display: block;
+        background: var( --ha-card-background, var(--card-background-color, white) );
+        position: absolute;
+        right: 0;
+        width: 76%;
+        height: 54px;
+        border-radius: 26px;
+      }
