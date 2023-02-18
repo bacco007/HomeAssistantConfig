@@ -161,8 +161,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     await _async_get_or_create_nvr_device_in_registry(hass, entry, station_data)
-
-    hass.config_entries.async_setup_platforms(entry, WEATHERBIT_PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, WEATHERBIT_PLATFORMS)
 
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
 
