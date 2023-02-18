@@ -4,15 +4,15 @@ cards:
   - type: custom:paper-buttons-row
     styles:
       justify-content: space-between
-      margin-left: 20px
-      margin-right: 20px
+      margin-left: 10px
+      margin-right: 10px
       background: none
     buttons:
       - name: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
         styles:
           name:
             font-weight: 300
-            font-size: 40px
+            font-size: 30px
             letter-spacing: "-1px"
             margin-left: 2px
             position: relative
@@ -47,7 +47,7 @@ cards:
         layout: icon|name
         styles:
           name:
-            font-size: 18px
+            font-size: 14px
             margin-left: "-2px"
           button:
             pointer-events: none
@@ -57,7 +57,7 @@ cards:
         layout: icon|name
         styles:
           name:
-            font-size: 18px
+            font-size: 14px
             margin-left: 2px
           button:
             pointer-events: none
