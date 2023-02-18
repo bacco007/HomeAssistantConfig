@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from enum import IntEnum
+from enum import Enum, IntEnum, auto
 import logging
 from math import asin, cos, exp, radians, sin
 import re
@@ -26,6 +27,23 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
+)
+from homeassistant.components.weather import (
+    ATTR_CONDITION_CLEAR_NIGHT,
+    ATTR_CONDITION_CLOUDY,
+    ATTR_CONDITION_EXCEPTIONAL,
+    ATTR_CONDITION_FOG,
+    ATTR_CONDITION_HAIL,
+    ATTR_CONDITION_LIGHTNING,
+    ATTR_CONDITION_LIGHTNING_RAINY,
+    ATTR_CONDITION_PARTLYCLOUDY,
+    ATTR_CONDITION_POURING,
+    ATTR_CONDITION_RAINY,
+    ATTR_CONDITION_SNOWY,
+    ATTR_CONDITION_SNOWY_RAINY,
+    ATTR_CONDITION_SUNNY,
+    ATTR_CONDITION_WINDY,
+    ATTR_CONDITION_WINDY_VARIANT,
 )
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
@@ -54,100 +72,58 @@ DEFAULT_FALLBACK = 10
 
 CONF_FALLBACK = "fallback"
 
-DARKSKY_PATTERN = r"(?i).*dark\s*sky.*"
-DARKSKY_MAPPING = (
-    (10, ("hail", "lightning")),
-    (5, ("fog", "rainy", "snowy", "snowy-rainy")),
-    (3, ("cloudy",)),
-    (2, ("partlycloudy",)),
-    (1, ("clear-night", "sunny", "windy")),
-)
-MET_PATTERN = r".*met\.no.*"
-MET_MAPPING = (
-    (10, ("lightning-rainy", "pouring")),
-    (5, ("fog", "rainy", "snowy", "snowy-rainy")),
-    (3, ("cloudy",)),
-    (2, ("partlycloudy",)),
-    (1, ("clear-night", "sunny")),
-)
-AW_PATTERN = r"(?i).*accuweather.*"
-AW_MAPPING = (
-    (10, ("lightning", "lightning-rainy", "pouring")),
+# Standard sk to conditions mapping
+
+MAPPING = (
+    (
+        10,
+        (
+            ATTR_CONDITION_LIGHTNING,
+            ATTR_CONDITION_LIGHTNING_RAINY,
+            ATTR_CONDITION_POURING,
+        ),
+    ),
     (
         5,
         (
-            "cloudy",
-            "fog",
-            "rainy",
-            "snowy",
-            "snowy-rainy",
-            "hail",
-            "exceptional",
-            "windy",
+            ATTR_CONDITION_CLOUDY,
+            ATTR_CONDITION_FOG,
+            ATTR_CONDITION_RAINY,
+            ATTR_CONDITION_SNOWY,
+            ATTR_CONDITION_SNOWY_RAINY,
+            ATTR_CONDITION_HAIL,
+            ATTR_CONDITION_EXCEPTIONAL,
         ),
     ),
-    (3, ("mostlycloudy",)),
-    (2, ("partlycloudy",)),
-    (1, ("sunny", "clear-night")),
-)
-ECOBEE_PATTERN = r"(?i).*ecobee.*"
-ECOBEE_MAPPING = (
-    (10, ("pouring", "snowy-heavy", "lightning-rainy")),
-    (5, ("cloudy", "fog", "rainy", "snowy", "snowy-rainy", "hail", "windy", "tornado")),
-    (2, ("partlycloudy", "hazy")),
-    (1, ("sunny",)),
-)
-OWM_PATTERN = r"(?i).*openweathermap.*"
-OWM_MAPPING = (
-    (10, ("lightning", "lightning-rainy", "pouring")),
-    (
-        5,
-        (
-            "cloudy",
-            "fog",
-            "rainy",
-            "snowy",
-            "snowy-rainy",
-            "hail",
-            "exceptional",
-            "windy",
-            "windy-variant",
-        ),
-    ),
-    (2, ("partlycloudy",)),
-    (1, ("sunny", "clear-night")),
-)
-BR_PATTERN = r"(?i).*buienradar.*"
-BR_MAPPING = (
-    (10, ("lightning", "lightning-rainy", "pouring")),
-    (
-        5,
-        (
-            "cloudy",
-            "fog",
-            "rainy",
-            "snowy",
-            "snowy-rainy",
-        ),
-    ),
-    (2, ("partlycloudy",)),
-    (1, ("sunny",)),
+    (2, (ATTR_CONDITION_PARTLYCLOUDY, ATTR_CONDITION_WINDY_VARIANT)),
+    (1, (ATTR_CONDITION_SUNNY, ATTR_CONDITION_CLEAR_NIGHT, ATTR_CONDITION_WINDY)),
 )
 
-ATTRIBUTION_TO_MAPPING = (
-    (DARKSKY_PATTERN, DARKSKY_MAPPING),
-    (MET_PATTERN, MET_MAPPING),
-    (AW_PATTERN, AW_MAPPING),
-    (ECOBEE_PATTERN, ECOBEE_MAPPING),
-    (OWM_PATTERN, OWM_MAPPING),
-    (BR_PATTERN, BR_MAPPING),
+# Weather sources that require special treatment
+
+AW_PATTERN = re.compile(r"(?i).*accuweather.*")
+AW_MAPPING = ((3, ("mostlycloudy",)),)
+
+DARKSKY_PATTERN = re.compile(r"(?i).*dark\s*sky.*")
+
+ECOBEE_PATTERN = re.compile(r"(?i).*ecobee.*")
+ECOBEE_MAPPING = (
+    (10, ("snowy-heavy",)),
+    (5, ("tornado",)),
+    (2, ("hazy",)),
 )
+
+ADDITIONAL_MAPPINGS = ((AW_PATTERN, AW_MAPPING), (ECOBEE_PATTERN, ECOBEE_MAPPING))
 
 _LOGGER = logging.getLogger(__name__)
 
-MODE_NORMAL = "normal"
-MODE_SIMPLE = "simple"
-MODES = (MODE_NORMAL, MODE_SIMPLE)
+
+class Mode(Enum):
+    """Illuminance mode."""
+
+    normal = auto()
+    simple = auto()
+
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -156,7 +132,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
             cv.time_period, vol.Range(min=MIN_SCAN_INTERVAL)
         ),
         vol.Required(CONF_ENTITY_ID): cv.entity_id,
-        vol.Optional(CONF_MODE, default=MODE_NORMAL): vol.In(MODES),
+        vol.Optional(CONF_MODE, default=Mode.normal.name): cv.enum(Mode),
         vol.Optional(CONF_FALLBACK, default=DEFAULT_FALLBACK): vol.All(
             vol.Coerce(float), vol.Range(1, 10)
         ),
@@ -167,6 +143,15 @@ _20_MIN = timedelta(minutes=20)
 _40_MIN = timedelta(minutes=40)
 
 Num = Union[float, int]
+
+
+@dataclass
+class IlluminanceSensorEntityDescription(SensorEntityDescription):
+    """Illuminance sensor entity description."""
+
+    weather_entity: str | None = None
+    mode: Mode | None = None
+    fallback: float | None = None
 
 
 async def async_setup_platform(
@@ -185,7 +170,18 @@ async def async_setup_platform(
         get_loc_elev()
         hass.bus.async_listen(EVENT_CORE_CONFIG_UPDATE, get_loc_elev)
 
-    async_add_entities([IlluminanceSensor(config)], True)
+    entity_description = IlluminanceSensorEntityDescription(
+        DOMAIN,
+        device_class=SensorDeviceClass.ILLUMINANCE,
+        name=config[CONF_NAME],
+        native_unit_of_measurement=LIGHT_LUX,
+        state_class=SensorStateClass.MEASUREMENT,
+        weather_entity=cast(str, config[CONF_ENTITY_ID]),
+        mode=cast(Mode, config[CONF_MODE]),
+        fallback=cast(float, config[CONF_FALLBACK]),
+    )
+
+    async_add_entities([IlluminanceSensor(entity_description)], True)
 
 
 def _illumiance(elev: Num) -> float:
@@ -218,6 +214,7 @@ class EntityStatus(IntEnum):
 class IlluminanceSensor(SensorEntity):
     """Illuminance sensor."""
 
+    entity_description: IlluminanceSensorEntityDescription
     _entity_status = EntityStatus.NOT_SEEN
     _sk_mapping: Sequence[tuple[Num, Sequence[str]]] | None = None
     _cd_mapping: Mapping[str, str | None] | None = None
@@ -226,20 +223,25 @@ class IlluminanceSensor(SensorEntity):
     _warned = False
     _sun_data: tuple[date, tuple[datetime, datetime, datetime, datetime]] | None = None
 
-    def __init__(self, config: ConfigType) -> None:
+    def __init__(self, entity_description: IlluminanceSensorEntityDescription) -> None:
         """Initialize sensor."""
-        name = config[CONF_NAME]
-        self.entity_description = SensorEntityDescription(
-            DOMAIN,
-            device_class=SensorDeviceClass.ILLUMINANCE,
-            name=name,
-            native_unit_of_measurement=LIGHT_LUX,
-            state_class=SensorStateClass.MEASUREMENT,
-        )
-        self._attr_unique_id = name
-        self._entity_id: str = config[CONF_ENTITY_ID]
-        self._mode: str = config[CONF_MODE]
-        self._fallback: float = config[CONF_FALLBACK]
+        self.entity_description = entity_description
+        self._attr_unique_id = entity_description.name
+
+    @property
+    def weather_entity(self) -> str:
+        """Input weather entity ID."""
+        return cast(str, self.entity_description.weather_entity)
+
+    @property
+    def mode(self) -> Mode:
+        """Illuminance calculation mode."""
+        return cast(Mode, self.entity_description.mode)
+
+    @property
+    def fallback(self) -> float:
+        """Fallback illuminance divisor."""
+        return cast(float, self.entity_description.fallback)
 
     @callback
     def add_to_platform_start(
@@ -255,7 +257,7 @@ class IlluminanceSensor(SensorEntity):
 
         # Now that parent method has been called, self.hass has been initialized.
 
-        self._get_divisor_from_weather_data(hass.states.get(self._entity_id))
+        self._get_divisor_from_weather_data(hass.states.get(self.weather_entity))
 
         @callback
         def sensor_state_listener(event: Event) -> None:
@@ -273,7 +275,9 @@ class IlluminanceSensor(SensorEntity):
 
         # When source entity changes check to see if we should update.
         self.async_on_remove(
-            async_track_state_change_event(hass, self._entity_id, sensor_state_listener)
+            async_track_state_change_event(
+                hass, self.weather_entity, sensor_state_listener
+            )
         )
 
     async def async_update(self) -> None:
@@ -308,7 +312,7 @@ class IlluminanceSensor(SensorEntity):
 
         # Use fallback unless divisor can be successfully determined from weather data.
         self._cond_desc = "without weather data"
-        self._sk = self._fallback
+        self._sk = self.fallback
 
         if self._entity_status == EntityStatus.BAD:
             return
@@ -328,27 +332,18 @@ class IlluminanceSensor(SensorEntity):
                     _LOGGER.info(
                         "%s: Supported sensor %s: cloud coverage",
                         self.name,
-                        self._entity_id,
+                        self.weather_entity,
                     )
                 except ValueError:
                     attribution = cast(
                         Union[str, None], entity_state.attributes.get(ATTR_ATTRIBUTION)
                     )
                     self._get_mappings(attribution, entity_state.domain)
-                    if self._entity_status == EntityStatus.BAD:
-                        _LOGGER.error(
-                            "%s: Unsupported sensor %s: %s is %s",
-                            self.name,
-                            self._entity_id,
-                            ATTR_ATTRIBUTION,
-                            attribution,
-                        )
-                        return
                     if self._entity_status == EntityStatus.OK_CONDITION:
                         _LOGGER.info(
                             "%s: Supported sensor %s: %s is %s",
                             self.name,
-                            self._entity_id,
+                            self.weather_entity,
                             ATTR_ATTRIBUTION,
                             attribution,
                         )
@@ -359,7 +354,7 @@ class IlluminanceSensor(SensorEntity):
                         "%s: Unsupported sensor %s: "
                         "not a number, no %s attribute, or doesn't exist",
                         self.name,
-                        self._entity_id,
+                        self.weather_entity,
                         ATTR_ATTRIBUTION,
                     )
                     self._entity_status = EntityStatus.BAD
@@ -412,19 +407,17 @@ class IlluminanceSensor(SensorEntity):
             self._entity_status = EntityStatus.NO_ATTRIBUTION
             return
 
-        for pat, mapping in ATTRIBUTION_TO_MAPPING:
-            if re.fullmatch(pat, attribution):
-                self._sk_mapping = mapping
-                if pat == DARKSKY_PATTERN and domain == SENSOR_DOMAIN:
-                    self._cd_mapping = DSW_MAP_CONDITION
-                self._entity_status = EntityStatus.OK_CONDITION
-                return
-
-        self._entity_status = EntityStatus.BAD
+        self._sk_mapping = MAPPING
+        for pat, mapping in ADDITIONAL_MAPPINGS:
+            if pat.fullmatch(attribution):
+                self._sk_mapping += mapping
+        if DARKSKY_PATTERN.fullmatch(attribution) and domain == SENSOR_DOMAIN:
+            self._cd_mapping = DSW_MAP_CONDITION
+        self._entity_status = EntityStatus.OK_CONDITION
 
     def _calculate_illuminance(self, now: datetime) -> Num:
         """Calculate sunny illuminance."""
-        if self._mode == MODE_NORMAL:
+        if self.mode is Mode.normal:
             return _illumiance(cast(Num, self._astral_event("solar_elevation", now)))
 
         sun_factor = self._sun_factor(now)
