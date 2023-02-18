@@ -102,10 +102,10 @@ noctis_tbsh:
   card-background-color: "var(--ha-card-background)"
   ha-card-background: "#1d2330" #'rgba(43,55,78,1)' #'linear-gradient(145deg, #273246, #2e3b53)'
   ha-card-box-shadow: "none" #'3px 3px 13px -6px rgba(17,35,52,1)'
-  ha-card-border-radius: "28px"
+  ha-card-border-radius: "5px"
   ha-card-border-style: "none !important"
-  ha-card-border-width: "none !important"
-  ha-card-border-color: "none !important"
+  ha-card-border-width: "0 !important"
+  ha-card-border-color: "rgba(0,0,0,0) !important"
   #   ha-card-background-position: "50% 360%"
   #   ha-card-background-size: "140% 0%"
   #   ha-card-transition: "background 0s"
