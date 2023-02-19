@@ -9,12 +9,6 @@ trigger:
     hours: "/3"
 condition: []
 action:
-  - service: pyscript.getdata_f1driverstandings
-    data:
-      icon: "mdi:racing-helmet"
-  - service: pyscript.getdata_f1constructorstandings
-    data:
-      icon: "mdi:racing-helmet"
   - service: pyscript.getdata_afldraw
     data:
       icon: "mdi:football-australian"

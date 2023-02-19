@@ -63,7 +63,7 @@ cards:
             pointer-events: none
             margin-right: "-6px"
             color: var(--snow-dark)
-  - type: entities
+    # - type: entities
     entities:
       - type: custom:paper-buttons-row
         buttons:
@@ -176,3 +176,139 @@ cards:
         height: 54px;
         border-radius: 26px;
       }
+  - type: custom:mushroom-chips-card
+    card_mod:
+      style: |
+        ha-card: {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+    chips:
+      - type: template
+        icon: mdi:home
+        icon_color: red
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-dashboard
+        card_mod:
+          style: |
+            ha-card {
+              --chip-background: rgba(var(--rgb-red), 0.2);
+            }
+      - type: template
+        icon: mdi:trash-can
+        icon_color: |
+          {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+            yellow
+          {%- else %}
+            green
+          {%- endif %}
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+                --chip-background: rgba(var(--rgb-yellow), 0.2);
+              {%- else %}
+                --chip-background: rgba(var(--rgb-green), 0.2);
+              {%- endif %}
+            }
+            ha-card:after {
+              {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+              content: "{{ state_attr('sensor.binday_recycling', 'days') }}";
+              {%- else %}
+              content: "{{ state_attr('sensor.binday_greenwaste', 'days') }}";
+              {%- endif %}
+              position: absolute;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background: red;
+              color: white;
+              font-weight: bolder;
+              border-radius: 50%;
+              top: -6px;
+              right: -6px;
+              width: 16px;
+              height: 16px;
+              font-size: 11px;
+            }
+      - type: template
+        icon: mdi:power-plug
+        icon_color: green
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              --chip-background: rgba(var(--rgb-green), 0.2);
+            }
+      - type: template
+        icon: mdi:shield-home
+        icon_color: purple
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              --chip-background: rgba(var(--rgb-purple), 0.2);
+            }
+      - type: template
+        icon: mdi:home-assistant
+        icon_color: teal
+        tap_action:
+          action: navigate
+          navigation_path: homeassistant
+        card_mod:
+          style: |
+            ha-card {
+              --chip-background: rgba(var(--rgb-teal), 0.2);
+            }
+            ha-card:after {
+              content: "{{ states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int  }}";
+              position: absolute;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background: rgb(var(--rgb-orange));
+              color: var(--card-background-color);
+              font-weight: bolder;
+              border-radius: 50%;
+              top: -5px;
+              right: -5px;
+              width: 16px;
+              height: 16px;
+              font-size: 11px;
+            }
+      - type: template
+        entity: light.all_lights
+        icon: mdi:lightbulb
+        icon_color: amber
+        card_mod:
+          style: |
+            ha-card:after {
+              content: "{{ expand(states.light.all_lights) | selectattr( 'state', 'eq', 'on') | list | count }}";
+              position: absolute;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background: rgb(var(--rgb-orange));
+              color: var(--card-background-color);
+              font-weight: bolder;
+              border-radius: 50%;
+              top: -5px;
+              right: -5px;
+              width: 16px;
+              height: 16px;
+              font-size: 11px;
+            }
+      - type: template
+        icon: mdi:cog
+      - type: entity
+        entity: person.thomas_baxter
+        content_info: none
+        use_entity_picture: true
+        tap_action: !include popup_thomas.yaml
+
+    alignment: justify

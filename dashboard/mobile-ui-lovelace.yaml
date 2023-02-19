@@ -7,6 +7,8 @@ decluttering_templates: !include declutter.yaml
 apexcharts_card_templates: !include apexcharts.yaml
 views:
   - !include mobile/home.yaml
+  - !include mobile/homeassistant.yaml
+  - !include mobile/me.yaml
   - !include mobile/media.yaml
   - !include mobile/network.yaml
   - !include mobile/solar.yaml

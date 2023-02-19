@@ -4,215 +4,86 @@ browser_mod:
   service: browser_mod.popup
   hide_header: false
   data:
-    title: Thomas
+    title: Popup
+    style: |
+      --popup-padding-x: 0px;
+      --popup-padding-y: 0px;
     content:
-      type: custom:stack-in-card
-      cards:
-        - square: false
-          columns: 2
-          type: grid
-          cards:
-            - type: custom:mushroom-entity-card
-              entity: person.thomas_baxter
-              use_entity_picture: true
-              secondary_info: last-changed
-              tap_action:
-                action: none
-              hold_action:
-                action: none
-              double_tap_action:
-                action: none
-              card_mod:
-                style: |
-                  ha-card {
-                    margin-top: 8px;
-                    margin-left: 10px;
-                    background: none;
-                    --ha-card-box-shadow: 0px;
-                  }
-            - type: custom:mushroom-template-card
-              primary: "{{ states(entity) | capitalize }}"
-              secondary: '{{ state_attr(entity, "location") }}'
-              icon: ""
-              entity: sensor.geocoded_thomas
-              tap_action:
-                action: none
-              hold_action:
-                action: none
-              double_tap_action:
-                action: none
-              layout: vertical
-              fill_container: true
-              card_mod:
-                style: |
-                  ha-card {
-                    margin-top: 8px;
-                    margin-right: 10px;
-                    background: none;
-                    --ha-card-box-shadow: 0px;
-                    align-items: flex-end;
-                  }
-                  mushroom-state-info  {
-                    text-align: right
-                  }
-        - type: history-graph
-          entities:
-            - entity: person.thomas_baxter
-              name: " "
-          hours_to_show: 24
-          refresh_interval: 1
+      type: entities
+      card_mod:
+        style: |
+          ha-card {
+            margin: 0 !important;
+          }
+      entities:
+        - type: custom:mushroom-entity-card
+          entity: person.thomas_baxter
+          use_entity_picture: true
+          secondary_info: last-changed
+          tap_action:
+            action: none
+          hold_action:
+            action: none
+          double_tap_action:
+            action: none
           card_mod:
             style: |
               ha-card {
                 background: none;
-                margin-top: -15px;
-                margin-bottom: -15px;
-                margin-left: -5px;
-                margin-right: 10px;
                 --ha-card-box-shadow: 0px;
+                border: 0;
               }
-        - type: entities
+        - entity: sensor.historystats_tom_away
+          type: custom:multiple-entity-row
+          name: Location Stats
+          state_header: Away
+          secondary_info: Last 24 Hours
           entities:
             - entity: sensor.historystats_tom_home
-              type: custom:multiple-entity-row
-              name: Location History
-              state_header: Home
-              secondary_info: Last 24 Hours
-              entities:
-                - entity: sensor.historystats_tom_away
-                  name: Away
-                - entity: sensor.historystats_tom_work
-                  name: Work
-        - type: horizontal-stack
-          cards:
-            - type: custom:mushroom-template-card
-              primary: "{{ states(entity) }}%"
-              secondary: '{{ states("sensor.tbiphone13pro_battery_state") }}'
-              icon: >
-                {% set battery_level = (states(entity) | int / 10) | round(0) | int *
-                10 %}
-
-                {% if is_state('binary_sensor.tbiphone13pro_is_charging', 'on' ) %}
-                  {% if battery_level > 0 %}
-                    mdi:battery-charging-{{ battery_level }}
-                  {% else %}
-                    mdi:battery-charging-outline
-                  {% endif %}
-                {% else %}
-                  {% if battery_level == 100 %}
-                    mdi:battery
-                  {% elif battery_level > 0 %}
-                    mdi:battery-{{ battery_level }}
-                  {% else %}
-                    mdi:battery-alert-variant-outline
-                  {% endif %}
-                {% endif %}
-              icon_color: |-
-                {% set battery_level = states(entity) | int %}
-                {% if battery_level > 90 %}
-                  green
-                {% elif battery_level > 60 %}
-                  light-green
-                {% elif battery_level > 50 %}
-                  lime
-                {% elif battery_level > 40 %}
-                  yellow
-                {% elif battery_level > 30 %}
-                  amber
-                {% elif battery_level > 20 %}
-                  orange
-                {% elif battery_level > 10 %}
-                  deep-orange
-                {% else %}
-                  red
-                {% endif %}
-              entity: sensor.tbiphone13pro_battery_level
-              layout: vertical
-              tap_action:
-                action: none
-              hold_action:
-                action: none
-              double_tap_action:
-                action: none
-              card_mod:
-                style: |
-                  ha-card {
-                    background: none;
-                    --ha-card-box-shadow: 0px;
-                    height: 117px !important;
-                    justify-content: start !important;
-                  }
-            - type: custom:mushroom-template-card
-              primary: "{{ states(entity) }}"
-              secondary: >-
-                {% set signal_level =
-                states('sensor.tbiphone13pro_wifi_signal_strength') | int %} {% if
-                signal_level != -1 %}
-                  {{ signal_level }} dBm
-                {% endif %}
-              icon: >-
-                {% set signal_level =
-                states('sensor.tbiphone13pro_wifi_signal_strength') | int | abs %} {%
-                if signal_level > 90 %}
-                  mdi:wifi-strength-outline
-                {% elif signal_level > 80 %}
-                  mdi:wifi-strength-1
-                {% elif signal_level > 70 %}
-                  mdi:wifi-strength-2
-                {% elif signal_level > 60 %}
-                  mdi:wifi-strength-3
-                {% elif signal_level > 1 %}
-                  mdi:wifi-strength-4
-                {% else %}
-                  mdi:wifi-strength-off
-                {% endif %}
-              entity: sensor.tbiphone13pro_wifi_connection
-              layout: vertical
-              fill_container: false
-              icon_color: blue
-              tap_action:
-                action: none
-              hold_action:
-                action: none
-              double_tap_action:
-                action: none
-              card_mod:
-                style: |
-                  ha-card {
-                    background: none;
-                    --ha-card-box-shadow: 0px;
-                    height: 117px !important;
-                    justify-content: start !important;
-                  }
-        - type: custom:mushroom-template-card
-          primary: Find Phone
-          secondary: ""
-          icon: mdi:target
-          layout: horizontal
-          icon_color: red
-          tap_action:
-            action: call-service
-            service: notify.mobile_app_tbiphone13pro
-            data:
-              message: Ringing phone...
-              title: Find Phone
-              data:
-                ttl: 0
-                importance: high
-                priority: high
-                tag: Find
-                channel: alarm_stream
-            target: {}
-          card_mod:
-            style: |
-              ha-card {
-                # width: 155px;
-                margin-left: auto;
-                margin-right: auto;
-                background: rgba(var(--rgb-red), 0.1);
-                margin-bottom: 12px !important;
-              }
-        - type: map
+              name: Home
+            - entity: sensor.historystats_tom_work
+              name: Work
+        - type: section
+        - entity: sensor.tbiphone13pro_battery_level
+          type: custom:multiple-entity-row
+          name: Mobile Phone
+          state_header: Battery
           entities:
-            - entity: person.thomas_baxter
-          hours_to_show: 24
+            - entity: sensor.tbiphone13pro_activity
+              name: Activity
+        - type: section
+        - entity: sensor.tbiphone13pro_geocoded_location
+          type: custom:multiple-entity-row
+          name: Location
+          styles:
+            text-align: right
+        - type: section
+        - type: custom:vertical-stack-in-card
+          cards:
+            - type: history-graph
+              entities:
+                - entity: person.thomas_baxter
+                  name: " "
+              hours_to_show: 24
+              refresh_interval: 0
+              style: |
+                ha-card {
+                  background: none;
+                  margin-top: -15px;
+                  margin-bottom: -15px;
+                  margin-left: -5px;
+                  margin-right: 10px;
+                  --ha-card-box-shadow: 0px;
+                }
+            - type: map
+              entities:
+                - entity: person.thomas_baxter
+              hours_to_show: 24
+              style: |
+                ha-card {
+                  border-radius: 28px !important;
+                }
+      style: |
+        ha-card {
+          margin: 14px 20px 28px !important;
+        }

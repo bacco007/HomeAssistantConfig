@@ -1,0 +1,52 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:home-assistant
+subview: true
+path: homeassistant
+title: Home Assistant
+badges: []
+cards:
+  - !include snippets/header.yaml
+
+  - type: vertical-stack
+    cards:
+      - !include ../homeassistant/snippets/ha_versions.yaml
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          --mdc-theme-primary: var(--label-badge-blue)
+          --mdc-tab-text-label-color-default: var(--label-badge-red)
+        tabs:
+          - attributes:
+              label: Watchman
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../homeassistant/snippets/watchman_entities.yaml
+                - !include ../homeassistant/snippets/watchman_services.yaml
+                - !include ../homeassistant/snippets/unavailable.yaml
+          - attributes:
+              label: Stats
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../homeassistant/snippets/graph_dbsize.yaml
+                - !include ../homeassistant/snippets/graph_countyamlfiles.yaml
+                - !include ../homeassistant/snippets/graph_countyamllines.yaml
+          - attributes:
+              label: HACS
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../homeassistant/snippets/hacs_updates.yaml
+          - attributes:
+              label: Addons
+              isMinWidthIndicator: true
+            card:
+              type: vertical-stack
+              cards:
+                - !include ../homeassistant/snippets/addons.yaml

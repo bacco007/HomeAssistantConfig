@@ -1,0 +1,42 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.count_yaml_files
+    primary_info: state
+    secondary_info: name
+    fill_container: true
+    name: Count YAML Files
+    icon: mdi:file
+    icon_color: orange
+  - type: custom:apexcharts-card
+    graph_span: 7d
+    span:
+      end: day
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    apex_config:
+      chart:
+        height: 200
+      legend:
+        show: false
+      yaxis:
+        forceNiceScale: true
+        decimalsInFloat: false
+    all_series_config:
+      extend_to: false
+      group_by:
+        func: last
+        duration: 6h
+    series:
+      - entity: sensor.count_yaml_files
+        yaxis_id: lines
+        stroke_width: 4
+        color: var(--aurora-orange)
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }

@@ -1,0 +1,54 @@
+---
+type: entities
+show_header_toggle: false
+entities:
+  - type: custom:auto-entities
+    show_empty: true
+    unique: true
+    filter:
+      template: "{{ state_attr('sensor.unavailable_entities','entity_id') }}"
+    sort:
+      method: state
+    card:
+      type: custom:fold-entity-row
+      head:
+        type: custom:mushroom-template-card
+        entity: sensor.unavailable_entities
+        name: Unavailable Entities
+        icon: mdi:trophy-broken
+        primary: |
+          {{ state_attr(entity, 'friendly_name') }}
+        secondary: >
+          {{ states(entity) }} Entities
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: 0;
+            }
+            mushroom-card {
+              margin: -5px -13px 0 -4px;
+            }
+      padding: 0
+      card_mod:
+        class: content
+        style: |
+          ha-card {
+            border: 0;
+            box-shadow: 0;
+          }
+          #states {
+            padding-top: 1.2em;
+            padding-bottom: 0em;
+          }
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+      border: 0;
+      box-shadow: 0;
+    }
+    #states {
+      padding-top: 1.2em;
+      padding-bottom: 0em;
+    }

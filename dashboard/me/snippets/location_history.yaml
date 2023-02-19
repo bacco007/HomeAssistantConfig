@@ -1,0 +1,162 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:stack-in-card
+    mode: horizontal
+    card_mod:
+      style: |
+        ha-card {
+          border: 0;
+          box-shadow: none;
+          background: none;
+        }
+    cards:
+      - type: custom:mushroom-template-card
+        secondary: Home
+        primary: |
+          {{ states(config.entity) }} Hrs
+        layout: horizontal
+        icon: mdi:bed
+        entity: sensor.historystats_tom_home
+        icon_color: red
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+            }
+      - type: custom:mushroom-template-card
+        secondary: Work
+        primary: |
+          {{ states(config.entity) }} Hrs
+        layout: horizontal
+        icon: mdi:briefcase
+        entity: sensor.historystats_tom_work
+        icon_color: green
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+            }
+      - type: custom:mushroom-template-card
+        secondary: Away
+        primary: |
+          {{ states(config.entity) }} Hrs
+        layout: horizontal
+        icon: mdi:map-marker
+        entity: sensor.historystats_tom_away
+        icon_color: blue
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+            }
+  - type: custom:tabbed-card
+    options: {}
+    styles:
+      "--mdc-theme-primary": var(--aurora-red)
+      "--mdc-tab-text-label-color-default": var(--aurora-red)
+    tabs:
+      - attributes:
+          label: 7 Days
+          isMinWidthIndicator: true
+        card:
+          type: custom:apexcharts-card
+          graph_span: 7d
+          span:
+            end: day
+          header:
+            show: false
+            show_states: true
+            colorize_states: true
+          apex_config:
+            chart:
+              height: 300
+              stacked: true
+            xaxis:
+              type: datetime
+              labels:
+                datetimeFormatter:
+                  month: ddd
+                  day: ddd
+            yaxis:
+              decimalsInFloat: 0
+              title:
+                text: Hours
+          all_series_config:
+            stroke_width: 3
+            opacity: 0.15
+            type: area
+            curve: smooth
+            extend_to: now
+            group_by:
+              func: last
+              duration: 1d
+          series:
+            - entity: sensor.historystats_tom_home
+              name: Home
+              color: var(--aurora-red)
+            - entity: sensor.historystats_tom_work
+              name: Work
+              color: var(--aurora-green)
+            - entity: sensor.historystats_tom_away
+              name: Away
+              color: var(--aurora-blue)
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+              }
+      - attributes:
+          label: Today
+          isMinWidthIndicator: true
+        card:
+          type: custom:apexcharts-card
+          graph_span: 1d
+          span:
+            end: day
+          header:
+            show: false
+            show_states: true
+            colorize_states: true
+          chart_type: pie
+          apex_config:
+            chart:
+              height: 300
+          all_series_config:
+            stroke_width: 2
+            opacity: 0.4
+            type: area
+            curve: smooth
+            extend_to: now
+            group_by:
+              func: last
+              duration: 1d
+          series:
+            - entity: sensor.historystats_tom_home
+              name: Home
+              color: var(--aurora-red)
+            - entity: sensor.historystats_tom_work
+              name: Work
+              color: var(--aurora-green)
+            - entity: sensor.historystats_tom_away
+              name: Away
+              color: var(--aurora-blue)
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+              }
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }

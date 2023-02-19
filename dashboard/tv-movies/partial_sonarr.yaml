@@ -12,9 +12,17 @@ cards:
     view_layout:
       grid-column-start: 1
       grid-column-end: -1
-  - type: entity
+  - type: custom:mushroom-entity-card
     entity: sensor.frontpage_sonarr_upcoming_count
     name: Upcoming Episodes
+    primary_info: state
+    secondary_info: name
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
   - type: custom:stack-in-card
     mode: vertical
     cards:

@@ -1,0 +1,66 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.anniversary_datetracking_mybirthday
+    primary_info: state
+    secondary_info: name
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+
+  - type: custom:mushroom-entity-card
+    entity: sensor.anniversary_days_on_earth
+    primary_info: state
+    secondary_info: name
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+
+  - type: custom:mushroom-entity-card
+    entity: sensor.anniversary_datetracking_myworkbirthday
+    primary_info: state
+    secondary_info: name
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+
+  - type: custom:mushroom-entity-card
+    entity: sensor.anniversary_days_at_work
+    primary_info: state
+    secondary_info: name
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+    filter:
+      include:
+        - entity_id: sensor.anniversary*
+          options:
+            type: custom:multiple-entity-row
+            secondary_info:
+              attribute: date
+              format: date
+      exclude:
+        - entity_id: sensor.anniversary_days_at_work
+        - entity_id: sensor.anniversary_days_on_earth
+    sort:
+      method: attribute
+      attribute: weeks_remaining
+      reverse: false
+      numeric: true
