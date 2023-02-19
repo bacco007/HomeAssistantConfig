@@ -28,11 +28,9 @@ cards:
       - type: custom:mushroom-template-card
         primary: Version Information
         secondary: >-
-          Installed v{{ state_attr('update.home_assistant_core_update',
-          'installed_version')}}
+          Installed v{{ state_attr('update.home_assistant_core_update', 'installed_version')}}
 
-          Latest v{{ state_attr('update.home_assistant_core_update',
-          'latest_version')}}
+          Latest v{{ state_attr('update.home_assistant_core_update', 'latest_version')}}
         icon: mdi:package-variant-closed
         multiline_secondary: true
         fill_container: true
@@ -79,22 +77,19 @@ cards:
         tap_action:
           action: more-info
         icon_color: >-
-          {% if is_state('update.home_assistant_operating_system_update', 'on')
-          %}
+          {% if is_state('update.home_assistant_operating_system_update', 'on') %}
             orange
           {% else %}
             green
           {% endif %}
         badge_color: >-
-          {% if is_state('update.home_assistant_operating_system_update', 'on')
-          %}
+          {% if is_state('update.home_assistant_operating_system_update', 'on') %}
             red
           {% else %}
             blue
           {% endif %}
         badge_icon: >-
-          {% if is_state('update.home_assistant_operating_system_update', 'on')
-          %}
+          {% if is_state('update.home_assistant_operating_system_update', 'on') %}
             mdi:help
           {% else %}
             mdi:check-bold
@@ -109,11 +104,9 @@ cards:
       - type: custom:mushroom-template-card
         primary: Version Information
         secondary: >-
-          Installed v{{ state_attr('update.home_assistant_supervisor_update',
-          'installed_version')}}
+          Installed v{{ state_attr('update.home_assistant_supervisor_update', 'installed_version')}}
 
-          Latest v{{ state_attr('update.home_assistant_supervisor_update',
-          'latest_version')}}
+          Latest v{{ state_attr('update.home_assistant_supervisor_update', 'latest_version')}}
         icon: mdi:package-variant-closed
         multiline_secondary: true
         fill_container: true
