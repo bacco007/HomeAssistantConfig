@@ -16,7 +16,7 @@ def getdata_nrlladder(
         log.error("getdata_nrlladder: No Entity ID provided")
         return
 
-    URL = "https://www.nrl.com/ladder/data?competition=111&season=2022"
+    URL = "https://www.nrl.com/ladder/data?competition=111"
 
     try:
         r = task.executor(requests.get, URL)
@@ -31,21 +31,29 @@ def getdata_nrlladder(
     LADDER = []
     c = 1
     for key in data["positions"]:
-        if "next" in key:
-            if key["next"]["isBye"] == "true":
-                nextgame = "Bye"
-            else:
-                nextgame = key["next"]["nickname"]
-        else:
-            nextgame = "None Noted"
+        # if "next" in key:
+        #     if key["next"]["isBye"] == "true":
+        #         nextgame = "Bye"
+        #     else:
+        #         nextgame = key["next"]["nickname"]
+        # else:
+        #     nextgame = "None Noted"
         LADDER.append(
             {
                 "position": c,
                 "team": key["teamNickname"],
+                "logo": "https://www.nrl.com/.theme/" + key["theme"]["key"] + "/badge.svg",
+                "played": key["stats"]["played"],
+                "wins": key["stats"]["wins"],
+                "drawn": key["stats"]["drawn"],
+                "lost": key["stats"]["lost"],
+                "byes": key["stats"]["byes"],
                 "points": key["stats"]["points"],
+                "for": key["stats"]["points for"],
+                "against": key["stats"]["points against"],
                 "difference": key["stats"]["points difference"],
                 "form": key["stats"]["streak"],
-                "nextgame": nextgame,
+                # "nextgame": nextgame,
             }
         )
         c = c + 1

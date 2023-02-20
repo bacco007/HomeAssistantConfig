@@ -67,6 +67,7 @@ influxdb:
       - sensor.adsb_message_rate
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
+      - sensor.unknown_unavailable_none_entities
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
@@ -129,3 +130,4 @@ influxdb:
       - sensor.homeassistant_*
       - sensor.*_thermal_comfort_*
       - sensor.adaptive_lighting*
+      - sensor.scoreboard_*

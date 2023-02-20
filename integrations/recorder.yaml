@@ -48,6 +48,7 @@ recorder:
       - sensor.uptime_sensor
       - sensor.sonarr_commands
       - sensor.systemuptime
+      - sensor.unknown_unavailable_none_entities
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -113,6 +114,7 @@ recorder:
       - sensor.frontpage_*
       - sensor.helper_*
       - sensor.espresense_*
+      - sensor.scoreboard_*
     domains:
       - anniversaries
       - automation

@@ -1,0 +1,64 @@
+blueprint:
+  name: Zigbee/ZWave battery sensor or switch has gone offline BETA TEST
+  description: Report any Zigbee or ZWave device, or any type of switch, as gone offline.
+    BETA TEST
+  domain: automation
+  input:
+    time:
+      name: Time to test on
+      description: Test is run at configured time
+      default: '10:00:00'
+      selector:
+        time: {}
+    day:
+      name: Weekday to test on
+      description: 'Test is run at configured time either everyday (0) or on a given
+        weekday (1: Monday ... 7: Sunday)'
+      default: 0
+      selector:
+        number:
+          min: 0.0
+          max: 7.0
+          mode: slider
+          step: 1.0
+    exclude:
+      name: Excluded Sensors
+      description: Battery sensors (e.g. smartphone) to exclude from detection. Only
+        entities are supported, devices must be expanded!
+      default:
+        entity_id: []
+      selector:
+        target:
+          entity:
+            device_class: battery
+    actions:
+      name: Actions
+      description: Notifications or similar to be run. {{sensors}} is replaced with
+        the names of sensors being low on battery.
+      selector:
+        action: {}
+  source_url: https://gist.github.com/Tahutipai/c163b1e0a1df1610f0da3a5e2a6ee803
+variables:
+  day: !input day
+  exclude: !input exclude
+  sensors: "{% set result = namespace(sensors=[]) %} {% for state in states.sensor
+    | selectattr('attributes.device_class', 'defined') | selectattr('attributes.device_class',
+    '==', 'battery') %}\n  {% if \"unavailable\" in state | string  and not state.entity_id
+    in exclude.entity_id %}\n    {% set result.sensors = result.sensors + [state.name]
+    %}\n  {% endif %}\n{% endfor %} {% for state in states.binary_sensor | selectattr('attributes.device_class',
+    'defined') | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if
+    \"unavailable\" in state | string and not state.entity_id in exclude.entity_id
+    %}\n    {% set result.sensors = result.sensors + [state.name] %}\n  {% endif %}\n{%
+    endfor %} {% for state in states.switch | selectattr('state','eq','unavailable')
+    %}    \n  {% if state.entity_id not in exclude.entity_id %}\n    {% set result.sensors
+    = result.sensors + [state.name] %}   \n  {% endif %}\n{% endfor %}   {{result.sensors|join(',
+    ')}}"
+trigger:
+- platform: time
+  at: !input time
+condition:
+- '{{ sensors != '''' and (day | int == 0 or day | int == now().isoweekday()) }}'
+action:
+- choose: []
+  default: !input actions
+mode: single

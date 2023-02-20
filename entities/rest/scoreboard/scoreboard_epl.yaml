@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/soccer/eng.1/standings
+sensor:
+  name: scoreboard_epl
+  value_template: "{{ now() }}"
+  json_attributes_path: "$['children'][0]['standings']"
+  json_attributes:
+    - entries
+scan_interval: 21600

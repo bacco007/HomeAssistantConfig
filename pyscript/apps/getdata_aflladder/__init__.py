@@ -16,7 +16,7 @@ def getdata_aflladder(
         log.error("getdata_aflladder: No Entity ID provided")
         return
 
-    URL = "https://aflapi.afl.com.au/afl/v2/compseasons/43/ladders"
+    URL = "https://aflapi.afl.com.au/afl/v2/compseasons/52/ladders"
     TEAM = "Sydney Swans"
 
     try:
@@ -33,7 +33,14 @@ def getdata_aflladder(
     data = data["ladders"]
     for key in data[0]["entries"]:
         team = key["team"]["name"]
+        logo_club = key["team"]["abbreviation"].lower()
         position = key["position"]
+        played = key["played"]
+        wins = key["thisSeasonRecord"]["winLossRecord"]["wins"]
+        drawn = key["thisSeasonRecord"]["winLossRecord"]["draws"]
+        lost = key["thisSeasonRecord"]["winLossRecord"]["losses"]
+        pointsfor = key["pointsFor"]
+        pointsagainst = key["pointsAgainst"]
         points = key["thisSeasonRecord"]["aggregatePoints"]
         percent = key["thisSeasonRecord"]["percentage"]
         #form = key["form"]
@@ -45,8 +52,15 @@ def getdata_aflladder(
         LADDER.append(
             {
                 "position": position,
+                "logo": "https://www.afl.com.au/resources/v4.4.17/i/svg-output/icons.svg#icn-aflc-" + logo_club,
                 "team": team,
+                "played": played,
+                "wins": wins,
+                "drawn": drawn,
+                "lost": lost,
                 "points": points,
+                "for": pointsfor,
+                "against": pointsagainst,
                 "percent": percent,
                 "form": form,
                 "nextgame": nextop,

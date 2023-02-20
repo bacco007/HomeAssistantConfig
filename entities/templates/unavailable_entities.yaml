@@ -42,3 +42,53 @@ sensor:
             |rejectattr('last_changed','ge',ignore_ts)
             |map(attribute='entity_id')|list }}
         {%- endif %}
+
+  - name: "Unknown/Unavailable/None Entities"
+    unique_id: unk_una_none_entities
+    icon: "{{ 'mdi:alert-circle' if states('sensor.unknown_unavailable_none_entities')|int(0) > 0 else 'mdi:check-circle' }}"
+    unit_of_measurement: entities
+    state: >
+      {{ states|selectattr('state','in',['unavailable','unknown','none'])|list|length }}
+    attributes:
+      unknown: >
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set unknown = states|selectattr('state','eq','unknown')|map(attribute='entity_id')|list %}
+          {{ unknown|list }}
+        {%- endif %}
+      unknown_count: >
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set unknown = states|selectattr('state','eq','unknown')|map(attribute='entity_id')|list %}
+          {{ unknown|count }}
+        {%- endif %}
+      unavailable: >
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set unknown = states|selectattr('state','eq','unavailable')|map(attribute='entity_id')|list %}
+          {{ unknown|list }}
+        {%- endif %}
+      unavailable_count: >
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set unknown = states|selectattr('state','eq','unavailable')|map(attribute='entity_id')|list %}
+          {{ unknown|count }}
+        {%- endif %}
+      none: >
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set unknown = states|selectattr('state','eq','none')|map(attribute='entity_id')|list %}
+          {{ unknown|list }}
+        {%- endif %}
+      none_count: >
+        {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
+          {%- set ignore_seconds = 60 %}
+          {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+          {%- set unknown = states|selectattr('state','eq','none')|map(attribute='entity_id')|list %}
+          {{ unknown|count }}
+        {%- endif %}
