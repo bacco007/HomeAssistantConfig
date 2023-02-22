@@ -37,8 +37,9 @@ cards:
       - type: custom:tabbed-card
         options: {}
         styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
+          "--mdc-theme-primary": unset
+          "--mdc-tab-text-label-color-default": var(--secondary-text-color)
+          "--mdc-tab-color-default": var(--paper-item-icon-color)
         tabs:
           - attributes:
               label: Live Traffic
