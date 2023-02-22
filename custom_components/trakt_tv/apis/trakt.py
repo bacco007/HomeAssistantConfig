@@ -43,7 +43,22 @@ class TraktApi:
 
         return self.oauth_session.token["access_token"]
 
-    async def request(self, method, url, **kwargs) -> ClientResponse:
+    async def retry_request(self, wait_time, response, method, url, retry, **kwargs):
+        """Retry a request {retry} times before logging an error and raising an exception."""
+        content = await response.text()
+        error = f"Can't request {url} with {method} because it returns a {response.status} status code with content {content}."
+
+        if retry > 0:
+            retry = retry - 1
+            guidance = f"Retrying at least {retry} times."
+            LOGGER.warn(f"{error} {guidance}")
+            await sleep(wait_time)
+            return await self.request(method, url, retry, **kwargs)
+        else:
+            guidance = f"Too many retries, if you find this error, please raise an issue at https://github.com/dylandoamaral/trakt-integration/issues."
+            raise TraktException(f"{error} {guidance}")
+
+    async def request(self, method, url, retry=5, **kwargs) -> ClientResponse:
         """Make a request."""
         access_token = await self.async_get_access_token()
         client_id = self.hass.data[DOMAIN]["configuration"]["client_id"]
@@ -68,16 +83,11 @@ class TraktApi:
                 return deserialize_json(text)
             elif response.status == 429:
                 wait_time = int(response.headers["Retry-After"])
-                await sleep(wait_time)
-                return await self.request(method, url, **kwargs)
-            elif response.status in [502, 503, 504]:
-                await sleep(30)
-                return await self.request(method, url, **kwargs)
+                await self.retry_request(
+                    wait_time, response, method, url, retry, **kwargs
+                )
             else:
-                content = await response.text()
-                error = f"Can't request {url} with {method} because it returns a {response.status} status code with content {content}."
-                guidance = "If you find this error, please raise an issue at https://github.com/dylandoamaral/trakt-integration/issues."
-                raise TraktException(f"{error}\n{guidance}")
+                await self.retry_request(30, response, method, url, retry, **kwargs)
 
     async def fetch_calendar(
         self, path: str, from_date: str, nb_days: int, all_medias: bool
