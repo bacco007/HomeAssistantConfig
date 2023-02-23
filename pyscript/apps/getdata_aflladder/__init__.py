@@ -18,7 +18,7 @@ def getdata_aflladder(
 
     URL = "https://aflapi.afl.com.au/afl/v2/compseasons/52/ladders"
     TEAM = "Sydney Swans"
-`   `
+
     try:
         r = task.executor(requests.get, URL)
         r.raise_for_status()

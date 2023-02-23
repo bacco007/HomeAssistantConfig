@@ -27,3 +27,13 @@
       notify_device: 9e09ff6838383746ba31fe9914a10e47
       cm4_mmc: MMC
       cm4_wifi: With Wifi
+- id: '1677136443948'
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: -kHDzn1rrxpQEtTEeL5dr0Cn8
+  condition: []
+  action:
+  - service: browser_mod.refresh
+    data: {}
+  mode: single

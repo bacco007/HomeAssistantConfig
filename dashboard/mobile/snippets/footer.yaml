@@ -1,0 +1,22 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:mushroom-chips-card
+    card_mod:
+      style: |
+        ha-card: {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+    chips:
+      - type: template
+        icon: mdi:home
+        icon_color: red
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-dashboard
+        card_mod:
+          style: |
+            ha-card {
+              --chip-background: rgba(var(--rgb-red), 0.2);
+            }
