@@ -11,6 +11,7 @@ views:
   - !include mobile/me.yaml
   - !include mobile/media.yaml
   - !include mobile/network.yaml
+  - !include mobile/news.yaml
   - !include mobile/solar.yaml
   - !include mobile/sport.yaml
   - !include mobile/tamworth.yaml

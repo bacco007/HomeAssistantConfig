@@ -1,0 +1,12 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:news
+subview: true
+path: news
+title: News
+badges: []
+cards:
+  - !include snippets/header.yaml
+  - !include ../news/snippets/stocks.yaml
+  - !include ../news/snippets/exchange_rates.yaml

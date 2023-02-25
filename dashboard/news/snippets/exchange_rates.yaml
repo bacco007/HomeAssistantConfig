@@ -1,0 +1,180 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: grid
+    square: false
+    columns: 1
+    cards:
+      - type: custom:mushroom-template-card
+        primary: Exchange Rates
+        icon: mdi:currency-usd
+        icon_color: blue
+        fill_container: true
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audeur_x
+        primary: "{{state_attr(entity, 'symbol')}}"
+        secondary: "{{state_attr(entity, 'friendly_name')}}"
+        icon: '{{state_attr(entity,"icon")}}'
+        icon_color: |
+          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audeur_x
+        primary: |
+          {% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}
+        tap_action:
+          action: more-info
+        secondary: |
+          {% if state_attr(entity, 'trending') == "up" %}+{% endif
+          %}{{state_attr(entity,'regularMarketChangePercent')}}%
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              * {
+                text-align: end;
+              }
+            .: |
+              ha-card {
+                margin: 3px 8px 0px 0px;
+                border: 0;
+                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+              }
+  - type: custom:mushroom-template-card
+    card_mod:
+      style: |
+        ha-card {
+          margin: -25px 0px 0px 66px;
+          border: 0;
+          border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
+        }
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audgbp_x
+        primary: "{{state_attr(entity, 'symbol')}}"
+        secondary: "{{state_attr(entity, 'friendly_name')}}"
+        icon: '{{state_attr(entity,"icon")}}'
+        icon_color: |
+          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audgbp_x
+        primary: |
+          {% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}
+        tap_action:
+          action: more-info
+        secondary: |
+          {% if state_attr(entity, 'trending') == "up" %}+{% endif
+          %}{{state_attr(entity,'regularMarketChangePercent')}}%
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              * {
+                text-align: end;
+              }
+            .: |
+              ha-card {
+                margin: 3px 8px 0px 0px;
+                border: 0;
+                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+              }
+  - type: custom:mushroom-template-card
+    card_mod:
+      style: |
+        ha-card {
+          margin: -25px 0px 0px 66px;
+          border: 0;
+          border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
+        }
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audnzd_x
+        primary: "{{state_attr(entity, 'symbol')}}"
+        secondary: "{{state_attr(entity, 'friendly_name')}}"
+        icon: '{{state_attr(entity,"icon")}}'
+        icon_color: |
+          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audnzd_x
+        primary: |
+          {% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}
+        tap_action:
+          action: more-info
+        secondary: |
+          {% if state_attr(entity, 'trending') == "up" %}+{% endif
+          %}{{state_attr(entity,'regularMarketChangePercent')}}%
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              * {
+                text-align: end;
+              }
+            .: |
+              ha-card {
+                margin: 3px 8px 0px 0px;
+                border: 0;
+                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+              }
+  - type: custom:mushroom-template-card
+    card_mod:
+      style: |
+        ha-card {
+          margin: -25px 0px 0px 66px;
+          border: 0;
+          border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
+        }
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audusd_x
+        primary: "{{state_attr(entity, 'symbol')}}"
+        secondary: "{{state_attr(entity, 'friendly_name')}}"
+        icon: '{{state_attr(entity,"icon")}}'
+        icon_color: |
+          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.yahoofinance_audusd_x
+        primary: |
+          {% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}
+        tap_action:
+          action: more-info
+        secondary: |
+          {% if state_attr(entity, 'trending') == "up" %}+{% endif
+          %}{{state_attr(entity,'regularMarketChangePercent')}}%
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              * {
+                text-align: end;
+              }
+            .: |
+              ha-card {
+                margin: 3px 8px 0px 0px;
+                border: 0;
+                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+              }

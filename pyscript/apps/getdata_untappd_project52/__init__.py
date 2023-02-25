@@ -6,15 +6,7 @@ import requests
 from requests.exceptions import HTTPError
 
 @service
-def getdata_untappd_project52(
-    entity_id=None,
-    user=None,
-    sort="date",
-    limit="50",
-    offset="0",
-    unit_of_measurement="beers",
-    icon="mdi:untappd",
-):
+def getdata_untappd_project52():
 
     def build_url():
         url = (
@@ -34,30 +26,42 @@ def getdata_untappd_project52(
         )
         return url
 
+    def countOccurrence(a):
+        k = {}
+        for j in a:
+            if j in k:
+                k[j] +=1
+            else:
+                k[j] =1
+        return k
+
     BASEURL = "https://api.untappd.com/v4/user/beers/"
     CLIENT_ID = "1CF20E6CFC7C38CDF4A19B25046246B326511D74"
     CLIENT_SECRET = "8B1F6AB3E84ACA936B194F15051FB03E3D2582E1"
-    CONF_STARTDATE = datetime(year=datetime.now().year, month=1, day=1, tzinfo=pytz.UTC)
-    CONF_ENDDATE = datetime.now()
-    CONF_OFFSET = offset
-    CONF_LIMIT = limit
+    CONF_USER = "bacco007"
+    CONF_SORT = "sort"
+    CONF_LIMIT = "50"
+    CONF_OFFSET = "0"
     CONF_CHECKIN_CNT = 0
     CONF_LAST_CNT = 1
     CONF_AVGRATING = 0
     CONF_MAXRATING = 0
     CONF_MINRATING = 10
-    CONF_USER = user
-    CONF_SORT = sort
+    CONF_AVGRATING_52 = 0
+    CONF_MAXRATING_52 = 0
+    CONF_MINRATING_52 = 10
+    CONF_STARTDATE = datetime(year = 2016, month=1, day=22, tzinfo=pytz.UTC)
+    CONF_STARTYEAR = datetime(year = datetime.now().year, month=1, day=1, tzinfo=pytz.UTC)
+    CONF_ENDDATE = datetime.now()
     DATA = []
-    attributes = {}
-
-    if entity_id is None:
-        log.error("No Entity ID Provided")
-        return
-
-    if user is None:
-        log.error("No User Provided")
-        return
+    DATA_52 = []
+    BREWERY = []
+    BREWERY_COUNTRY = []
+    BEER_STYLE = []
+    BEER_NAME = []
+    RATING_COUNT = []
+    ABV_COUNT = []
+    BEER_COUNT = {}
 
     while CONF_LAST_CNT >= 1:
         URL = build_url()
@@ -78,62 +82,227 @@ def getdata_untappd_project52(
                 date_recentcheckin = datetime.strptime(
                     [beer][0]["recent_created_at"], "%a, %d %b %Y %H:%M:%S %z"
                 )
-                if date_firstcheckin >= CONF_STARTDATE:
-                    DATA.append(
-                        {
-                            "beer_name": [beer][0]["beer"]["beer_name"],
-                            "beer_style": [beer][0]["beer"]["beer_style"],
-                            "beer_abv": [beer][0]["beer"]["beer_abv"],
-                            "beer_ibu": [beer][0]["beer"]["beer_ibu"],
-                            "beer_rating": [beer][0]["beer"]["rating_score"],
-                            "brewery": [beer][0]["brewery"]["brewery_name"],
-                            "brewery_country": [beer][0]["brewery"]["country_name"],
-                            "rating": [beer][0]["rating_score"],
-                            "count": [beer][0]["count"],
-                            "first_checkin": datetime.strftime(date_firstcheckin, "%a %-d %b %Y"),
-                            "recent_checkin": datetime.strftime(
-                                date_recentcheckin, "%a %-d %b %Y"
-                            ),
-                        }
-                    )
-                    CONF_AVGRATING += float([beer][0]["rating_score"])
-                    if float([beer][0]["rating_score"]) > CONF_MAXRATING:
-                        CONF_MAXRATING = float([beer][0]["rating_score"])
-                    if float([beer][0]["rating_score"]) < CONF_MINRATING:
-                        CONF_MINRATING = float([beer][0]["rating_score"])
-                x = x + 1
+                DATA.append({
+                                "beer_name": [beer][0]["beer"]["beer_name"],
+                                "beer_style": [beer][0]["beer"]["beer_style"],
+                                "beer_abv": [beer][0]["beer"]["beer_abv"],
+                                "beer_ibu": [beer][0]["beer"]["beer_ibu"],
+                                "beer_rating": [beer][0]["beer"]["rating_score"],
+                                "beer_label": [beer][0]["beer"]["beer_label"],
+                                "brewery": [beer][0]["brewery"]["brewery_name"],
+                                "brewery_country": [beer][0]["brewery"]["country_name"],
+                                "rating": [beer][0]["rating_score"],
+                                "count": [beer][0]["count"],
+                                "first_checkin": datetime.strftime(date_firstcheckin, "%a %-d %b %Y"),
+                                "recent_checkin": datetime.strftime(date_recentcheckin, "%a %-d %b %Y"),
+                })
+                if date_firstcheckin >= CONF_STARTYEAR:
+                    DATA_52.append({
+                                    "beer_name": [beer][0]["beer"]["beer_name"],
+                                    "beer_style": [beer][0]["beer"]["beer_style"],
+                                    "beer_abv": [beer][0]["beer"]["beer_abv"],
+                                    "beer_ibu": [beer][0]["beer"]["beer_ibu"],
+                                    "beer_rating": [beer][0]["beer"]["rating_score"],
+                                    "beer_label": [beer][0]["beer"]["beer_label"],
+                                    "brewery": [beer][0]["brewery"]["brewery_name"],
+                                    "brewery_country": [beer][0]["brewery"]["country_name"],
+                                    "rating": [beer][0]["rating_score"],
+                                    "count": [beer][0]["count"],
+                                    "first_checkin": datetime.strftime(date_firstcheckin, "%a %-d %b %Y"),
+                                    "recent_checkin": datetime.strftime(date_recentcheckin, "%a %-d %b %Y"),
+                    })
+                    CONF_AVGRATING_52 += float([beer][0]["rating_score"])
+                    if float([beer][0]["rating_score"]) > CONF_MAXRATING_52:
+                        CONF_MAXRATING_52 = float([beer][0]["rating_score"])
+                    if float([beer][0]["rating_score"]) < CONF_MINRATING_52:
+                        CONF_MINRATING_52 = float([beer][0]["rating_score"])
+                BEER_BREWERY = [beer][0]["brewery"]["brewery_name"] + " - " + [beer][0]["beer"]["beer_name"]
+                BEER_NAME.append(BEER_BREWERY)
+                BEER_STYLE.append([beer][0]["beer"]["beer_style"])
+                BREWERY.append([beer][0]["brewery"]["brewery_name"])
+                BREWERY_COUNTRY.append([beer][0]["brewery"]["country_name"])
+                BEER_COUNT[BEER_BREWERY] = BEER_COUNT.get(BEER_BREWERY,[beer][0]["count"])
+                RATING_COUNT.append([beer][0]["rating_score"])
+                ABV_COUNT.append([beer][0]["beer"]["beer_abv"])
+                CONF_AVGRATING += float([beer][0]["rating_score"])
+                if float([beer][0]["rating_score"]) > CONF_MAXRATING:
+                    CONF_MAXRATING = float([beer][0]["rating_score"])
+                if float([beer][0]["rating_score"]) < CONF_MINRATING:
+                    CONF_MINRATING = float([beer][0]["rating_score"])
+                x = x + 1;
         else:
             log.error("Untappd_Project52: Error!")
             CONF_LAST_CNT = 0
 
-    ATTR_COUNT = len(DATA)
-
-    if unit_of_measurement:
-        attributes["unit_of_measurement"] = unit_of_measurement
-
-    attributes["friendly_name"] = "Untappd: Project 52"
-
-    if icon:
-        attributes["icon"] = icon
-
-    attributes["data"] = DATA
-    attributes["count"] = ATTR_COUNT
-    attributes["target"] = 52 - ATTR_COUNT
+    ATTR_TARGET = 52 - len(DATA_52)
+    ATTR_STARTDATE = datetime.strftime(CONF_STARTDATE,"%d/%m/%Y")
+    ATTR_ENDDATE = datetime.strftime(CONF_ENDDATE,"%d/%m/%Y")
     try:
-        avgrat = round(CONF_AVGRATING / ATTR_COUNT, 2)
+        CONF_AVGRATING = round(CONF_AVGRATING/len(DATA),2)
     except:
-        avgrat = 0.0
-    attributes["rating_average"] = avgrat
-    attributes["rating_minimum"] = CONF_MINRATING
+        CONF_AVGRATING = 0.0
+    try:
+        CONF_AVGRATING_52 = round(CONF_AVGRATING_52/len(DATA_52),2)
+    except:
+        CONF_AVGRATING_52 = 0.0
     if CONF_MINRATING == 10:
-        minrat = 0
+        CONF_MINRATING = 0
     else:
-        minrat = CONF_MINRATING
-    attributes["rating_maximum"] = CONF_MAXRATING
-    attributes["datefrom"] = datetime.strftime(CONF_STARTDATE, "%d/%m/%Y")
-    attributes["datend"] = datetime.strftime(CONF_ENDDATE, "%d/%m/%Y")
-    state.set(entity_id, value=ATTR_COUNT, new_attributes=attributes)
+        CONF_MINRATING = CONF_MINRATING
+    if CONF_MINRATING_52 == 10:
+        CONF_MINRATING_52 = 0
+    else:
+        CONF_MINRATING_52 = CONF_MINRATING_52
 
+    ATTR_BEER = DATA
+    ATTR_BEER_52 = DATA_52
+    ATTR_STATS_BREWERY = []
+    for x in sorted(countOccurrence(BREWERY).items(), key=lambda x: x[1], reverse=True):
+        ATTR_STATS_BREWERY.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+    ATTR_STATS_BREWERY_COUNTRY = []
+    for x in sorted(countOccurrence(BREWERY_COUNTRY).items(), key=lambda x: x[1], reverse=True):
+        ATTR_STATS_BREWERY_COUNTRY.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+    ATTR_STATS_BEERSTYLE = []
+    for x in sorted(countOccurrence(BEER_STYLE).items(), key=lambda x: x[1], reverse=True):
+        ATTR_STATS_BEERSTYLE.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+    ATTR_STATS_BEERNAME = []
+    for x in sorted(countOccurrence(BEER_NAME).items(), key=lambda x: x[1], reverse=True):
+        ATTR_STATS_BEERNAME.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+    ATTR_STATS_RATING = []
+    for x in sorted(countOccurrence(RATING_COUNT).items(), key=lambda x: float(x[0])):
+        ATTR_STATS_RATING.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+    ATTR_STATS_ABV = []
+    for x in sorted(countOccurrence(ABV_COUNT).items(), key=lambda x: float(x[0])):
+        ATTR_STATS_ABV.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+    ATTR_STATS_BEER_COUNT = []
+    for x in sorted(BEER_COUNT.items(), key=lambda x: x[1], reverse=True):
+        ATTR_STATS_BEER_COUNT.append({
+                    "item": x[0],
+                    "count": x[1],
+        })
+
+    # Project 52
+    attributes_project52 = {}
+    attributes_project52["data"] = ATTR_BEER_52
+    attributes_project52["count"] = len(DATA_52)
+    attributes_project52["target"] = ATTR_TARGET
+    attributes_project52["rating_average"] = CONF_AVGRATING_52
+    attributes_project52["rating_minimum"] = CONF_MINRATING_52
+    attributes_project52["rating_maximum"] = CONF_MAXRATING_52
+    attributes_project52["datefrom"] = datetime.strftime(CONF_STARTYEAR, "%d/%m/%Y")
+    attributes_project52["datend"] = datetime.strftime(CONF_ENDDATE, "%d/%m/%Y")
+    attributes_project52["icon"] = "mdi:untappd"
+    attributes_project52["unit_of_measurement"] = "beers"
+    attributes_project52["friendly_name"] = "Untappd: Project 52"
+    state.set("sensor.untappd_project_52", value=len(DATA_52), new_attributes=attributes_project52)
+
+    # Stats by Brewery
+    attributes_brewery = {}
+    attributes_brewery["data"] = ATTR_STATS_BREWERY
+    attributes_brewery["count"] = ATTR_STATS_BREWERY[0]['count']
+    attributes_brewery["icon"] = "mdi:untappd"
+    attributes_brewery["unit_of_measurement"] = "beers"
+    attributes_brewery["friendly_name"] = "Untappd: Stats by Brewery"
+    state.set("sensor.untappd_stats_by_brewery", value=len(ATTR_STATS_BREWERY), new_attributes=attributes_brewery)
+
+    # Stats by Brewery Country
+    attributes_brewerycountry = {}
+    attributes_brewerycountry["data"] = ATTR_STATS_BREWERY_COUNTRY
+    attributes_brewerycountry["count"] = ATTR_STATS_BREWERY_COUNTRY[0]['count']
+    attributes_brewerycountry["icon"] = "mdi:untappd"
+    attributes_brewerycountry["unit_of_measurement"] = "beers"
+    attributes_brewerycountry["friendly_name"] = "Untappd: Stats by Brewery Country"
+    state.set("sensor.untappd_stats_by_brewerycountry", value=len(ATTR_STATS_BREWERY_COUNTRY), new_attributes=attributes_brewerycountry)
+
+    # Stats by Beer Style
+    attributes_beerstyle = {}
+    attributes_beerstyle["data"] = ATTR_STATS_BEERSTYLE
+    attributes_beerstyle["count"] = ATTR_STATS_BEERSTYLE[0]['count']
+    attributes_beerstyle["icon"] = "mdi:untappd"
+    attributes_beerstyle["unit_of_measurement"] = "beers"
+    attributes_beerstyle["friendly_name"] = "Untappd: Stats by Beer Style"
+    state.set("sensor.untappd_stats_by_beerstyle", value=len(ATTR_STATS_BEERSTYLE), new_attributes=attributes_beerstyle)
+
+    # Stats by Beer Rating
+    attributes_beerrating = {}
+    attributes_beerrating["data"] = ATTR_STATS_RATING
+    attributes_beerrating["count"] = len(ATTR_STATS_RATING)
+    attributes_beerrating["icon"] = "mdi:untappd"
+    attributes_beerrating["unit_of_measurement"] = "beers"
+    attributes_beerrating["friendly_name"] = "Untappd: Stats by Beer Rating"
+    state.set("sensor.untappd_stats_by_beerrating", value=len(ATTR_STATS_RATING), new_attributes=attributes_beerrating)
+
+    # Stats by Beer ABV
+    attributes_beerabv = {}
+    attributes_beerabv["data"] = ATTR_STATS_ABV
+    attributes_beerabv["count"] = len(ATTR_STATS_ABV)
+    attributes_beerabv["icon"] = "mdi:untappd"
+    attributes_beerabv["unit_of_measurement"] = "beers"
+    attributes_beerabv["friendly_name"] = "Untappd: Stats by Beer ABV"
+    state.set("sensor.untappd_stats_by_beerabv", value=len(ATTR_STATS_ABV), new_attributes=attributes_beerabv)
+
+    # Stats by Beer Check-in Count
+    attributes_beercheckincnt = {}
+    attributes_beercheckincnt["data"] = ATTR_STATS_BEER_COUNT
+    attributes_beercheckincnt["count"] = ATTR_STATS_BEER_COUNT[0]['count']
+    attributes_beercheckincnt["icon"] = "mdi:untappd"
+    attributes_beercheckincnt["unit_of_measurement"] = "beers"
+    attributes_beercheckincnt["friendly_name"] = "Untappd: Stats by Beer Check-in Count"
+    state.set("sensor.untappd_stats_by_beercheckincnt", value=len(ATTR_STATS_BEER_COUNT), new_attributes=attributes_beercheckincnt)
+
+    # Recent Beers
+    attributes_recentbeers = {}
+    attributes_recentbeers["data"] = ATTR_BEER[:25]
+    attributes_recentbeers["count"] = len(ATTR_BEER[:25])
+    attributes_recentbeers["icon"] = "mdi:untappd"
+    attributes_recentbeers["unit_of_measurement"] = "beers"
+    attributes_recentbeers["friendly_name"] = "Untappd: Recent Beers"
+    state.set("sensor.untappd_recent_beers", value=len(ATTR_BEER[:25]), new_attributes=attributes_recentbeers)
+
+    # Highest Rated Beers
+    attributes_highestratedbeers = {}
+    attributes_highestratedbeers["data"] = sorted(ATTR_BEER, key=lambda x: x["rating"], reverse=True)[:25]
+    attributes_highestratedbeers["count"] = len(sorted(ATTR_BEER, key=lambda x: x["rating"], reverse=True)[:25])
+    attributes_highestratedbeers["icon"] = "mdi:untappd"
+    attributes_highestratedbeers["unit_of_measurement"] = "beers"
+    attributes_highestratedbeers["friendly_name"] = "Untappd: Highest Rated Beers"
+    state.set("sensor.untappd_highest_rated_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["rating"], reverse=True)[:25]), new_attributes=attributes_highestratedbeers)
+
+    # Lowest Rated Beers
+    attributes_lowestratedbeers = {}
+    attributes_lowestratedbeers["data"] = sorted(ATTR_BEER, key=lambda x: x["rating"], reverse=False)[:25]
+    attributes_lowestratedbeers["count"] = len(sorted(ATTR_BEER, key=lambda x: x["rating"], reverse=False)[:25])
+    attributes_lowestratedbeers["icon"] = "mdi:untappd"
+    attributes_lowestratedbeers["unit_of_measurement"] = "beers"
+    attributes_lowestratedbeers["friendly_name"] = "Untappd: Lowest Rated Beers"
+    state.set("sensor.untappd_lowest_rated_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["rating"], reverse=False)[:25]), new_attributes=attributes_lowestratedbeers)
+
+    # Most Checked In Beers
+    attributes_mostcheckedinbeers = {}
+    attributes_mostcheckedinbeers["data"] = sorted(ATTR_BEER, key=lambda x: x["count"], reverse=True)[:25]
+    attributes_mostcheckedinbeers["count"] = len(sorted(ATTR_BEER, key=lambda x: x["count"], reverse=True)[:25])
+    attributes_mostcheckedinbeers["icon"] = "mdi:untappd"
+    attributes_mostcheckedinbeers["unit_of_measurement"] = "beers"
+    attributes_mostcheckedinbeers["friendly_name"] = "Untappd: Most Checked In Beers"
+    state.set("sensor.untappd_most_checked_in_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["count"], reverse=True)[:25]), new_attributes=attributes_mostcheckedinbeers)
 
 def get_config(name):
     value = pyscript.app_config.get(name)
