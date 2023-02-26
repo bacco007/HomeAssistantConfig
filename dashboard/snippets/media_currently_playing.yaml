@@ -217,7 +217,6 @@ card:
                 /* Remove background because it is applied to popup */
                 --ha-card-background: none;
 
-
               }
         card_mod:
           style:
