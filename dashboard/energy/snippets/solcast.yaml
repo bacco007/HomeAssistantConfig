@@ -1,0 +1,59 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none;
+          }
+      primary: Solcast Solar Forecasting
+      secondary: |
+        Today: {{ states('sensor.solcast_brisbanestreet') }} kWh
+      icon: mdi:solar-panel-large
+      icon_color: orange
+      tap_action:
+        action: toggle
+    padding: 0
+    entities:
+      - type: custom:auto-entities
+        card_param: cards
+        filter:
+          include:
+            - integration: solcast_solar
+              options:
+                type: custom:mushroom-entity-card
+                card_mod:
+                  style: |
+                    ha-card {
+                      margin: -8px 0px 0px 0px;
+                      box-shadow: none;
+                    }
+                icon_color: orange
+                tap_action:
+                  action: none
+        card:
+          type: grid
+          columns: 1
+          square: false
+          card_mod:
+            style: |
+              ha-card {
+                margin: -8px 0px 0px 0px;
+                box-shadow: none;
+              }
+        sort:
+          method: friendly_name

@@ -1,22 +1,20 @@
 ---
-type: vertical-stack
-cards:
-  - type: custom:mushroom-chips-card
-    card_mod:
-      style: |
-        ha-card: {
-          margin-left: 10px;
-          margin-right: 10px;
-        }
-    chips:
-      - type: template
-        icon: mdi:home
-        icon_color: red
-        tap_action:
-          action: navigate
-          navigation_path: /mobile-dashboard
-        card_mod:
-          style: |
-            ha-card {
-              --chip-background: rgba(var(--rgb-red), 0.2);
-            }
+type: custom:mushroom-chips-card
+chips:
+  - type: template
+    icon: mdi:refresh
+    tap_action:
+      action: call-service
+      service: browser_mod.refresh
+      data: {}
+      target: {}
+    icon_color: green
+  - type: template
+    tap_action:
+      action: call-service
+      service: homeassistant.reload_all
+      data: {}
+      target: {}
+    icon: mdi:reload-alert
+    icon_color: red
+alignment: end

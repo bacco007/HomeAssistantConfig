@@ -1,0 +1,108 @@
+---
+type: custom:apexcharts-card
+graph_span: 7d
+update_interval: 10mins
+header:
+  show: false
+span:
+  start: day
+all_series_config:
+  stroke_width: 2
+  type: line
+  curve: smooth
+  unit: kW
+apex_config:
+  tooltip:
+    x:
+      format: "ddd dd MMM - HH:mm"
+  legend:
+    show: false
+  grid:
+    borderColor: "#7B7B7B"
+  chart:
+    height: 300
+    foreColor: "#7B7B7B"
+    zoom:
+      type: x
+      enabled: true
+      autoScaleYaxis: true
+    toolbar:
+      show: true
+      autoSelected: zoom
+      tools:
+        zoom: true
+        zoomin: false
+        zoomout: false
+        pan: false
+        reset: true
+  xaxis:
+    {
+      type: "datetime",
+      labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+      forceNiceScale: true,
+      decimalsInFloat: false,
+    }
+  yaxis:
+    - seriesName: "kW"
+      decimalsInFloat: 0
+      # max: 5
+      title:
+        text: "kW"
+  stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
+series:
+  - entity: sensor.solcast_forecast_today
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });
+  - entity: sensor.solcast_forecast_tomorrow
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });
+  - entity: sensor.solcast_forecast_d3
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });
+  - entity: sensor.solcast_forecast_d4
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });
+  - entity: sensor.solcast_forecast_d5
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });
+  - entity: sensor.solcast_forecast_d6
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });
+  - entity: sensor.solcast_forecast_d7
+    color: "#FFFFFF"
+    show:
+      in_header: false
+    data_generator: |
+      return entity.attributes.forecast.map((entry) => {
+        return [new Date(entry.period_start), entry.pv_estimate];
+      });

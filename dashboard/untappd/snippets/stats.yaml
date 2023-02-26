@@ -1,0 +1,268 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:mushroom-template-card
+    primary: Latest Check-In
+    secondary: >-
+      {{state_attr('sensor.untappd_last_check_in_bacco007', 'brewery')}} -
+      {{state_attr('sensor.untappd_last_check_in_bacco007', 'beer')}}
+      ({{state_attr('sensor.untappd_last_check_in_bacco007', 'abv')}})
+    icon: mdi:beer
+    entity: sensor.untappd_last_check_in_bacco007
+    icon_color: green
+    fill_container: true
+    badge_color: |-
+      abv: 4.3%
+      beer: Pickle Beer
+      brewery: Garage Project
+  - type: custom:mushroom-template-card
+    primary: Latest Badge
+    secondary: "{{states(entity)}}"
+    icon: si:untappd
+    icon_color: green
+    entity: sensor.untappd_badge
+    fill_container: true
+    badge_color: ""
+    picture: "{{state_attr(entity, 'entity_picture')}}"
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          primary: Most Check-ins (by Beer)
+          secondary: >
+            {{
+            state_attr('sensor.untappd_stats_by_beercheckincnt','data')[0]['item']
+            }}, {{
+            state_attr('sensor.untappd_stats_by_beercheckincnt','data')[0]['count']}}
+            Check-ins
+          icon: mdi:beer
+          icon_color: green
+          fill_container: true
+          multiline_secondary: false
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: markdown
+            card_mod:
+              style: |
+                ha-card.type-markdown {
+                  box-shadow: none;
+                  border-top: 1px groove var(--divider-color);
+                  overflow-y: scroll;
+                  height: 300px;
+                }
+                ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
+            content: >
+              {% set prev = namespace(count=false) %} {% for item in
+              state_attr('sensor.untappd_stats_by_beercheckincnt','data') %} {%
+              if item.count %} {% if item.count != prev.count %}
+
+              <b><u>{{ item.count }} Check-ins</b></u>
+
+              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
+              endif %}
+
+              {% endfor %}
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          primary: Most Check-ins (by Brewery)
+          secondary: >
+            {{ state_attr('sensor.untappd_stats_by_brewery','data')[0]['item']
+            }}, {{
+            state_attr('sensor.untappd_stats_by_brewery','data')[0]['count']}}
+            Check-ins
+          icon: mdi:beer
+          icon_color: green
+          fill_container: true
+          multiline_secondary: false
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: markdown
+            card_mod:
+              style: |
+                ha-card.type-markdown {
+                  box-shadow: none;
+                  border-top: 1px groove var(--divider-color);
+                  overflow-y: scroll;
+                  height: 300px;
+                }
+                ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
+            content: >
+              {% set prev = namespace(count=false) %} {% for item in
+              state_attr('sensor.untappd_stats_by_brewery','data') %} {% if
+              item.count %} {% if item.count != prev.count %}
+
+              <b><u>{{ item.count }} Check-ins</b></u>
+
+              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
+              endif %}
+
+              {% endfor %}
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          primary: Most Check-ins (by Beer Style)
+          secondary: >
+            {{ state_attr('sensor.untappd_stats_by_beerstyle','data')[0]['item']
+            }}, {{
+            state_attr('sensor.untappd_stats_by_beerstyle','data')[0]['count']}}
+            Check-ins
+          icon: mdi:beer
+          icon_color: green
+          fill_container: true
+          multiline_secondary: false
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: markdown
+            card_mod:
+              style: |
+                ha-card.type-markdown {
+                  box-shadow: none;
+                  border-top: 1px groove var(--divider-color);
+                  overflow-y: scroll;
+                  height: 300px;
+                }
+                ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
+            content: >
+              {% set prev = namespace(count=false) %} {% for item in
+              state_attr('sensor.untappd_stats_by_beerstyle','data') %} {% if
+              item.count %} {% if item.count != prev.count %}
+
+              <b><u>{{ item.count }} Check-ins</b></u>
+
+              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
+              endif %}
+
+              {% endfor %}
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          primary: Most Check-ins (by Nation)
+          secondary: >
+            {{
+            state_attr('sensor.untappd_stats_by_brewerycountry','data')[0]['item']
+            }}, {{
+            state_attr('sensor.untappd_stats_by_brewerycountry','data')[0]['count']}}
+            Check-ins
+          icon: mdi:beer
+          icon_color: green
+          fill_container: true
+          multiline_secondary: false
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: markdown
+            card_mod:
+              style: |
+                ha-card.type-markdown {
+                  box-shadow: none;
+                  border-top: 1px groove var(--divider-color);
+                  overflow-y: scroll;
+                  height: 300px;
+                }
+                ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
+            content: >
+              {% set prev = namespace(count=false) %} {% for item in
+              state_attr('sensor.untappd_stats_by_brewerycountry','data') %} {%
+              if item.count %} {% if item.count != prev.count %}
+
+              <b><u>{{ item.count }} Check-ins</b></u>
+
+              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
+              endif %}
+
+              {% endfor %}

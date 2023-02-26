@@ -112,3 +112,29 @@ cards:
                             f1_font: true
                           attributes:
                             label: Results
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          --mdc-theme-primary: var(--label-badge-blue)
+          --mdc-tab-text-label-color-default: var(--label-badge-red)
+        tabs:
+          - attributes:
+              label: AFL
+              isMinWidthIndicator: true
+            card: !include ../sport/snippets/standings_afl.yaml
+          - attributes:
+              label: NRL
+              isMinWidthIndicator: true
+            card: !include ../sport/snippets/standings_nrl.yaml
+          - attributes:
+              label: EPL
+              isMinWidthIndicator: true
+            card: !include ../sport/snippets/standings_epl.yaml
+          - attributes:
+              label: SRP
+              isMinWidthIndicator: true
+            card: !include ../sport/snippets/standings_srp.yaml
+          - attributes:
+              label: ALM
+              isMinWidthIndicator: true
+            card: !include ../sport/snippets/standings_alm.yaml

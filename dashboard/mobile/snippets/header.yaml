@@ -1,314 +1,322 @@
 ---
-type: vertical-stack
-cards:
-  - type: custom:paper-buttons-row
-    styles:
-      justify-content: space-between
-      margin-left: 10px
-      margin-right: 10px
-      background: none
-    buttons:
-      - name: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
-        styles:
-          name:
-            font-weight: 300
-            font-size: 30px
-            letter-spacing: "-1px"
-            margin-left: 2px
-            position: relative
-            left: "-10px"
-            color: var(--snow-dark)
-          button:
-            pointer-events: none
-      - layout: name_state
-        name: "{{ states('sensor.helper_dayofweek') }}"
-        state: "{{ states('sensor.helper_daymonthstring') }}"
-        styles:
-          button:
-            width: 200px
-            height: 32px
-            pointer-events: none
-            position: relative
-            color: var(--snow-dark)
-          name:
-            position: absolute
-            left: "-10px"
-            top: 0
-            font-weight: 400
-            white-space: nowrap
-          state:
-            position: absolute
-            left: "-10px"
-            bottom: 0
-            font-weight: 600
-            white-space: nowrap
-      - name: "{{ state_attr('weather.east_tamworth_hourly','temperature') }}°C"
-        icon: mdi:thermometer
-        layout: icon|name
-        styles:
-          name:
-            font-size: 14px
-            margin-left: "-2px"
-          button:
-            pointer-events: none
-            color: var(--snow-dark)
-      - name: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
-        icon: mdi:home-thermometer
-        layout: icon|name
-        styles:
-          name:
-            font-size: 14px
-            margin-left: 2px
-          button:
-            pointer-events: none
-            margin-right: "-6px"
-            color: var(--snow-dark)
-    # - type: entities
-    entities:
-      - type: custom:paper-buttons-row
-        buttons:
-          - entity: person.thomas_baxter
-            layout: icon
-            image: "{{ state_attr(config.entity, 'entity_picture') }}"
-            name: "{{ state_attr(config.entity, 'friendly_name') }}"
-            style:
-              button:
-                width: 42px
-                height: 42px
-                background-color: >-
-                  var( --ha-card-background, var(--card-background-color, white)
-                  );
-                border-radius: 100%
-                color: var(--snow-dark)
-              icon:
-                width: 35px
-                height: 35px
-                margin-top: 0
-              name:
-                margin-top: 20px
-          - layout: icon
-            icon: mdi:home
-            name: Home
-            tap_action:
-              action: navigate
-              navigation_path: mobile-dashboard
-            style:
-              button:
-                width: 42px
-                height: 42px
-                background-color: >-
-                  var( --ha-card-background, var(--card-background-color, white)
-                  );
-                border-radius: 100%
-                color: var(--snow-dark)
-              icon:
-                margin-top: 0
-              name:
-                margin-top: 20px
-          - layout: icon
-            icon: mdi:lan
-            name: Network
-            tap_action:
-              action: navigate
-              navigation_path: /mobile-dashboard/network
-            style:
-              button:
-                width: 42px
-                height: 42px
-                color: var(--snow-dark)
-              icon:
-                margin-top: 0
-              name:
-                margin-top: 20px
-          - icon: mdi:video
-            layout: icon
-            name: Sécurité
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/securite
-            style:
-              button:
-                width: 42px
-                height: 42px
-                color: var(--snow-dark)
-              icon:
-                margin-top: 0
-              name:
-                margin-top: 20px
-          - layout: icon
-            icon: mdi:cog
-            name: Réglages
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/reglages
-            style:
-              button:
-                width: 42px
-                height: 42px
-                color: var(--snow-dark)
-              icon:
-                margin-top: 0
-              name:
-                margin-top: 20px
-        style: |
-          div.flex-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: -16px !important;
+type: custom:mod-card
+style: |
+  ha-card {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+card:
+  type: vertical-stack
+  cards:
+    - type: custom:paper-buttons-row
+      styles:
+        justify-content: space-between
+        margin-left: 10px
+        margin-right: 10px
+        background: none
+      buttons:
+        - name: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
+          styles:
+            name:
+              font-weight: 300
+              font-size: 30px
+              letter-spacing: "-1px"
+              margin-left: 2px
+              position: relative
+              left: "-10px"
+              color: var(--secondary-text-color)
+            button:
+              pointer-events: none
+        - layout: name_state
+          name: "{{ states('sensor.helper_dayofweek') }}"
+          state: "{{ states('sensor.helper_daymonthstring') }}"
+          styles:
+            button:
+              width: 200px
+              height: 32px
+              pointer-events: none
+              position: relative
+              color: var(--secondary-text-color)
+            name:
+              position: absolute
+              left: "-10px"
+              top: 0
+              font-weight: 400
+              white-space: nowrap
+            state:
+              position: absolute
+              left: "-10px"
+              bottom: 0
+              font-weight: 600
+              white-space: nowrap
+        - name: "{{ state_attr('weather.east_tamworth_hourly','temperature') }}°C"
+          icon: mdi:thermometer
+          layout: icon|name
+          styles:
+            name:
+              font-size: 14px
+              margin-left: "-2px"
+            button:
+              pointer-events: none
+              color: var(--secondary-text-color)
+        - name: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
+          icon: mdi:home-thermometer
+          layout: icon|name
+          styles:
+            name:
+              font-size: 14px
+              margin-left: 2px
+            button:
+              pointer-events: none
+              margin-right: "-6px"
+              color: var(--secondary-text-color)
+      # - type: entities
+      entities:
+        - type: custom:paper-buttons-row
+          buttons:
+            - entity: person.thomas_baxter
+              layout: icon
+              image: "{{ state_attr(config.entity, 'entity_picture') }}"
+              name: "{{ state_attr(config.entity, 'friendly_name') }}"
+              style:
+                button:
+                  width: 42px
+                  height: 42px
+                  background-color: >-
+                    var( --ha-card-background, var(--card-background-color, white)
+                    );
+                  border-radius: 100%
+                  color: var(--secondary-text-color)
+                icon:
+                  width: 35px
+                  height: 35px
+                  margin-top: 0
+                name:
+                  margin-top: 20px
+            - layout: icon
+              icon: mdi:home
+              name: Home
+              tap_action:
+                action: navigate
+                navigation_path: mobile-dashboard
+              style:
+                button:
+                  width: 42px
+                  height: 42px
+                  background-color: >-
+                    var( --ha-card-background, var(--card-background-color, white)
+                    );
+                  border-radius: 100%
+                  color: var(--secondary-text-color)
+                icon:
+                  margin-top: 0
+                name:
+                  margin-top: 20px
+            - layout: icon
+              icon: mdi:lan
+              name: Network
+              tap_action:
+                action: navigate
+                navigation_path: /mobile-dashboard/network
+              style:
+                button:
+                  width: 42px
+                  height: 42px
+                  color: var(--secondary-text-color)
+                icon:
+                  margin-top: 0
+                name:
+                  margin-top: 20px
+            - icon: mdi:video
+              layout: icon
+              name: Sécurité
+              tap_action:
+                action: navigate
+                navigation_path: /lovelace/securite
+              style:
+                button:
+                  width: 42px
+                  height: 42px
+                  color: var(--secondary-text-color)
+                icon:
+                  margin-top: 0
+                name:
+                  margin-top: 20px
+            - layout: icon
+              icon: mdi:cog
+              name: Réglages
+              tap_action:
+                action: navigate
+                navigation_path: /lovelace/reglages
+              style:
+                button:
+                  width: 42px
+                  height: 42px
+                  color: var(--secondary-text-color)
+                icon:
+                  margin-top: 0
+                name:
+                  margin-top: 20px
+          style: |
+            div.flex-box {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin: -16px !important;
 
-          }
-    style: |
-      ha-card {
-
-        background: none !important;
-        margin-left: 20px;
-        margin-right: 20px;
-        border-radius: 26px;
-      }
-      ha-card:before {
-        content: '';
-        display: block;
-        background: var( --ha-card-background, var(--card-background-color, white) );
-        position: absolute;
-        right: 0;
-        width: 76%;
-        height: 54px;
-        border-radius: 26px;
-      }
-  - type: custom:mushroom-chips-card
-    card_mod:
+            }
       style: |
-        ha-card: {
-          margin-left: 10px;
-          margin-right: 10px;
-        }
-    chips:
-      - type: template
-        icon: mdi:home
-        icon_color: red
-        tap_action:
-          action: navigate
-          navigation_path: /mobile-dashboard
-        card_mod:
-          style: |
-            ha-card {
-              --chip-background: rgba(var(--rgb-red), 0.2);
-            }
-      - type: template
-        icon: mdi:trash-can
-        icon_color: |
-          {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
-            yellow
-          {%- else %}
-            green
-          {%- endif %}
-        tap_action:
-          action: none
-        card_mod:
-          style: |
-            ha-card {
-              {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
-                --chip-background: rgba(var(--rgb-yellow), 0.2);
-              {%- else %}
-                --chip-background: rgba(var(--rgb-green), 0.2);
-              {%- endif %}
-            }
-            ha-card:after {
-              {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
-              content: "{{ state_attr('sensor.binday_recycling', 'days') }}";
-              {%- else %}
-              content: "{{ state_attr('sensor.binday_greenwaste', 'days') }}";
-              {%- endif %}
-              position: absolute;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background: red;
-              color: white;
-              font-weight: bolder;
-              border-radius: 50%;
-              top: -6px;
-              right: -6px;
-              width: 16px;
-              height: 16px;
-              font-size: 11px;
-            }
-      - type: template
-        icon: mdi:power-plug
-        icon_color: green
-        tap_action:
-          action: none
-        card_mod:
-          style: |
-            ha-card {
-              --chip-background: rgba(var(--rgb-green), 0.2);
-            }
-      - type: template
-        icon: mdi:shield-home
-        icon_color: purple
-        tap_action:
-          action: none
-        card_mod:
-          style: |
-            ha-card {
-              --chip-background: rgba(var(--rgb-purple), 0.2);
-            }
-      - type: template
-        icon: mdi:home-assistant
-        icon_color: teal
-        tap_action:
-          action: navigate
-          navigation_path: homeassistant
-        card_mod:
-          style: |
-            ha-card {
-              --chip-background: rgba(var(--rgb-teal), 0.2);
-            }
-            ha-card:after {
-              content: "{{ states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int  }}";
-              position: absolute;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background: rgb(var(--rgb-orange));
-              color: var(--card-background-color);
-              font-weight: bolder;
-              border-radius: 50%;
-              top: -5px;
-              right: -5px;
-              width: 16px;
-              height: 16px;
-              font-size: 11px;
-            }
-      - type: template
-        entity: light.all_lights
-        icon: mdi:lightbulb
-        icon_color: amber
-        card_mod:
-          style: |
-            ha-card:after {
-              content: "{{ expand(states.light.all_lights) | selectattr( 'state', 'eq', 'on') | list | count }}";
-              position: absolute;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background: rgb(var(--rgb-orange));
-              color: var(--card-background-color);
-              font-weight: bolder;
-              border-radius: 50%;
-              top: -5px;
-              right: -5px;
-              width: 16px;
-              height: 16px;
-              font-size: 11px;
-            }
-      - type: template
-        icon: mdi:cog
-      - type: entity
-        entity: person.thomas_baxter
-        content_info: none
-        use_entity_picture: true
-        tap_action: !include popup_thomas.yaml
+        ha-card {
 
-    alignment: justify
+          background: none !important;
+          margin-left: 20px;
+          margin-right: 20px;
+          border-radius: 26px;
+        }
+        ha-card:before {
+          content: '';
+          display: block;
+          background: var( --ha-card-background, var(--card-background-color, white) );
+          position: absolute;
+          right: 0;
+          width: 76%;
+          height: 54px;
+          border-radius: 26px;
+        }
+    - type: custom:mushroom-chips-card
+      card_mod:
+        style: |
+          ha-card: {
+            margin-left: 10px;
+            margin-right: 10px;
+          }
+      chips:
+        - type: template
+          icon: mdi:home
+          icon_color: red
+          tap_action:
+            action: navigate
+            navigation_path: /mobile-dashboard
+          card_mod:
+            style: |
+              ha-card {
+                --chip-background: rgba(var(--rgb-red), 0.2);
+              }
+        - type: template
+          icon: mdi:trash-can
+          icon_color: |
+            {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+              yellow
+            {%- else %}
+              green
+            {%- endif %}
+          tap_action:
+            action: none
+          card_mod:
+            style: |
+              ha-card {
+                {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+                  --chip-background: rgba(var(--rgb-yellow), 0.2);
+                {%- else %}
+                  --chip-background: rgba(var(--rgb-green), 0.2);
+                {%- endif %}
+              }
+              ha-card:after {
+                {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+                content: "{{ state_attr('sensor.binday_recycling', 'days') }}";
+                {%- else %}
+                content: "{{ state_attr('sensor.binday_greenwaste', 'days') }}";
+                {%- endif %}
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: red;
+                color: white;
+                font-weight: bolder;
+                border-radius: 50%;
+                top: -6px;
+                right: -6px;
+                width: 16px;
+                height: 16px;
+                font-size: 11px;
+              }
+        - type: template
+          icon: mdi:power-plug
+          icon_color: green
+          tap_action:
+            action: none
+          card_mod:
+            style: |
+              ha-card {
+                --chip-background: rgba(var(--rgb-green), 0.2);
+              }
+        - type: template
+          icon: mdi:shield-home
+          icon_color: purple
+          tap_action:
+            action: none
+          card_mod:
+            style: |
+              ha-card {
+                --chip-background: rgba(var(--rgb-purple), 0.2);
+              }
+        - type: template
+          icon: mdi:home-assistant
+          icon_color: teal
+          tap_action:
+            action: navigate
+            navigation_path: homeassistant
+          card_mod:
+            style: |
+              ha-card {
+                --chip-background: rgba(var(--rgb-teal), 0.2);
+              }
+              ha-card:after {
+                content: "{{ states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int  }}";
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgb(var(--rgb-orange));
+                color: var(--card-background-color);
+                font-weight: bolder;
+                border-radius: 50%;
+                top: -5px;
+                right: -5px;
+                width: 16px;
+                height: 16px;
+                font-size: 11px;
+              }
+        - type: template
+          entity: light.all_lights
+          icon: mdi:lightbulb
+          icon_color: amber
+          card_mod:
+            style: |
+              ha-card:after {
+                content: "{{ expand(states.light.all_lights) | selectattr( 'state', 'eq', 'on') | list | count }}";
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgb(var(--rgb-orange));
+                color: var(--card-background-color);
+                font-weight: bolder;
+                border-radius: 50%;
+                top: -5px;
+                right: -5px;
+                width: 16px;
+                height: 16px;
+                font-size: 11px;
+              }
+        - type: template
+          icon: mdi:cog
+        - type: entity
+          entity: person.thomas_baxter
+          content_info: none
+          use_entity_picture: true
+          tap_action: !include popup_thomas.yaml
+
+      alignment: justify
+    - !include ../../snippets/media_currently_playing.yaml

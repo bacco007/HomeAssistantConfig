@@ -8,7 +8,7 @@ cards:
     fill_container: true
     name: Count YAML Files
     icon: mdi:file
-    icon_color: orange
+    icon_color: yellow
   - type: custom:apexcharts-card
     graph_span: 7d
     span:
@@ -34,7 +34,7 @@ cards:
       - entity: sensor.count_yaml_files
         yaxis_id: lines
         stroke_width: 4
-        color: var(--aurora-orange)
+        color: var(--label-badge-yellow)
 card_mod:
   style: |
     ha-card {

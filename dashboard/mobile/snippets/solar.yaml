@@ -1,46 +1,6 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: custom:mushroom-chips-card
-    style: |
-      ha-card {
-        --chip-box-shadow: none;
-        --chip-background: none;
-      }
-    chips:
-      - type: entity
-        entity: sensor.daily_generation
-        icon_color: orange
-        style: |
-          ha-card {
-            --chip-box-shadow: none;
-            --chip-background: none;
-          }
-      - type: entity
-        entity: sensor.daily_import_from_grid
-        icon_color: red
-        style: |
-          ha-card {
-            --chip-box-shadow: none;
-            --chip-background: none;
-          }
-      - type: entity
-        entity: sensor.daily_export_to_grid
-        icon_color: green
-        style: |
-          ha-card {
-            --chip-box-shadow: none;
-            --chip-background: none;
-          }
-      - type: entity
-        entity: sensor.daily_direct_energy_consumption
-        icon_color: blue
-        style: |
-          ha-card {
-            --chip-box-shadow: none;
-            --chip-background: none;
-          }
-    alignment: justify
   - type: custom:power-flow-card
     title: Live Action
     entities:

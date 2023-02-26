@@ -1,9 +1,5 @@
 ---
-|
-  ha-card {
-    padding-bottom: 10px;
-    background-color: var(--dwains-theme-primary)
-  }
+style: |
   .card-header {
     padding: 5px 16px;
     font-size: 18px;

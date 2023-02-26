@@ -1,0 +1,28 @@
+---
+type: vertical-stack
+cards:
+  - entity: sensor.untappd_project_52
+    icon: mdi:beer-outline
+    primary: Beers Drunk
+    secondary: "{{ state_attr(entity, 'count') }} Beers"
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project_52
+    icon: mdi:beer-outline
+    primary: Beers from Target
+    secondary: "{{ state_attr(entity, 'target') }} Beers"
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project_52
+    icon: mdi:beer-outline
+    primary: Average Rating
+    secondary: "{{ state_attr(entity, 'rating_average') }} / 5"
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project_52
+    icon: mdi:beer-outline
+    primary: Maximum Rating
+    secondary: "{{ state_attr(entity, 'rating_maximum') }} / 5"
+    type: custom:mushroom-template-card
+  - entity: sensor.untappd_project_52
+    icon: mdi:beer-outline
+    primary: Minimum Rating
+    secondary: "{{ state_attr(entity, 'rating_minimum') }} / 5"
+    type: custom:mushroom-template-card

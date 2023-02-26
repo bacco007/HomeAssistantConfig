@@ -15,9 +15,9 @@ views:
   - !include mobile/solar.yaml
   - !include mobile/sport.yaml
   - !include mobile/tamworth.yaml
+  - !include mobile/untappd.yaml
   - !include mobile/weather.yaml
-  - theme: noctis_tbsh
-    title: Kiosk
+  - title: Kiosk
     path: kiosk
     type: custom:ha-dashboard
     sidebar:
@@ -27,30 +27,10 @@ views:
             action: call-service
             service: myservice.action
       stickyCards:
-        - type: custom:mod-card
-          style: |
-            ha-card {
-              padding-left: 20px;
-              padding-right: 20px;
-            }
-          card:
-            type: vertical-stack
-            cards:
-              - !include mobile/snippets/header.yaml
+        - !include mobile/snippets/header.yaml
       cards:
-        - type: custom:mod-card
-          style: |
-            ha-card {
-              padding-left: 20px;
-              padding-right: 20px;
-            }
-          card:
-            type: vertical-stack
-            cards:
-              - !include mobile/snippets/menu.yaml
-    icon: mdi:help-network
-    badges:
-      - entity: person.thomas_baxter
+        - !include mobile/snippets/menu.yaml
+    icon: mdi:home
     cards:
       - type: custom:mushroom-template-card
         primary: >

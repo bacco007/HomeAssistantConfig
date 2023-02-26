@@ -7,7 +7,6 @@ cards:
   - type: vertical-stack
     cards:
       - !include snippets/header.yaml
-
       - type: vertical-stack
         cards:
           - !include snippets/menu.yaml
@@ -18,3 +17,4 @@ cards:
           - !include snippets/weather_forecast.yaml
         view_layout:
           grid-area: main
+      - !include snippets/footer.yaml

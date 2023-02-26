@@ -91,7 +91,25 @@ card:
     - entity: sensor.active_generation
       name: Solar Generation
       stroke_width: 3
+      color: "#ff9800"
       extend_to: now
+      transform: "return x / 1000;"
+      group_by:
+        func: last
+        duration: 5min
+    - entity: sensor.active_export_to_grid
+      name: Export to Grid
+      extend_to: now
+      color: "#8353d1"
+      transform: "return x / 1000;"
+      invert: true
+      group_by:
+        func: last
+        duration: 5min
+    - entity: sensor.active_import_from_grid
+      name: Import from Grid
+      extend_to: now
+      color: "#488fc2"
       transform: "return x / 1000;"
       group_by:
         func: last
@@ -99,51 +117,40 @@ card:
     - entity: sensor.load_power
       name: House Consumption
       extend_to: now
+      color: "#FFFFFF"
       transform: "return x / 1000;"
       group_by:
         func: last
         duration: 5min
-    - entity: sensor.active_export_to_grid
-      name: Grid
-      extend_to: now
-      transform: "return x / 1000;"
-      invert: true
-      group_by:
-        func: last
-        duration: 5min
-    - entity: sensor.solcast_forecast_average_30min
-      name: Forecast (Past)
-      fill_raw: last
-      extend_to: now
-    - entity: sensor.solcast_forecast
+    - entity: sensor.solcast_forecast_today
       name: Forecast
       show:
         in_header: false
       data_generator: |
-        return entity.attributes.forecasts.map((entry) => {
-          return [new Date(entry.period_end), entry.pv_estimate];
+        return entity.attributes.forecast.map((entry) => {
+          return [new Date(entry.period_start), entry.pv_estimate];
         });
-    - entity: sensor.solcast_forecast
-      name: Forecast (Future 10%)
-      show:
-        extremas: false
-        in_header: false
-      color: "#797D7F"
-      type: line
-      opacity: 0.4
-      data_generator: |
-        return entity.attributes.forecasts.map((entry) => {
-          return [new Date(entry.period_end), entry.pv_estimate10];
-        });
-    - entity: sensor.solcast_forecast
-      name: Forecast (Future 90%)
-      show:
-        extremas: false
-        in_header: false
-      color: "#797D7F"
-      type: line
-      opacity: 0.4
-      data_generator: |
-        return entity.attributes.forecasts.map((entry) => {
-          return [new Date(entry.period_end), entry.pv_estimate90];
-        });
+    # - entity: sensor.solcast_forecast_today
+    #   name: Forecast (Future 10%)
+    #   show:
+    #     extremas: false
+    #     in_header: false
+    #   color: "#797D7F"
+    #   type: line
+    #   opacity: 0.4
+    #   data_generator: |
+    #     return entity.attributes.detailedForecast.map((entry) => {
+    #       return [new Date(entry.period_start), entry.pv_estimate10];
+    #     });
+    # - entity: sensor.solcast_forecast_today
+    #   name: Forecast (Future 90%)
+    #   show:
+    #     extremas: false
+    #     in_header: false
+    #   color: "#797D7F"
+    #   type: line
+    #   opacity: 0.4
+    #   data_generator: |
+    #     return entity.attributes.detailedForecast.map((entry) => {
+    #       return [new Date(entry.period_start), entry.pv_estimate90];
+    #     });

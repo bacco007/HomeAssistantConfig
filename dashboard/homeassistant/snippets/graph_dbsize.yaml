@@ -8,7 +8,7 @@ cards:
     name: Database Size
     fill_container: true
     icon: mdi:file
-    icon_color: orange
+    icon_color: yellow
   - type: custom:apexcharts-card
     graph_span: 7d
     span:
@@ -34,7 +34,7 @@ cards:
         func: last
     series:
       - entity: sensor.ha_db_size
-        color: var(--aurora-orange)
+        color: var(--label-badge-yellow)
 card_mod:
   style: |
     ha-card {

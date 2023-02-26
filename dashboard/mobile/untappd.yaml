@@ -1,0 +1,45 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:beer
+subview: true
+path: untappd
+title: Untappd
+badges: []
+cards:
+  - !include snippets/header.yaml
+
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: template
+        icon: mdi:beer
+        content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'total_beers')}}"
+      - type: template
+        icon: mdi:account
+        content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'friends')}}"
+      - type: template
+        icon: mdi:badge-account
+        content: >-
+          {{state_attr('sensor.untappd_last_check_in_bacco007',
+          'total_badges')}}
+      - type: template
+        icon: mdi:check-bold
+        content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'checkins')}}"
+    alignment: center
+
+  - type: vertical-stack
+    cards:
+      - type: custom:tabbed-card
+        options: {}
+        styles:
+          --mdc-theme-primary: var(--label-badge-blue)
+          --mdc-tab-text-label-color-default: var(--label-badge-red)
+        tabs:
+          - attributes:
+              label: Stats
+              isMinWidthIndicator: true
+            card: !include ../untappd/snippets/stats.yaml
+          - attributes:
+              label: Project 52
+              isMinWidthIndicator: true
+            card: !include ../untappd/snippets/project_52.yaml

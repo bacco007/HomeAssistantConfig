@@ -1,0 +1,8 @@
+---
+grid-template-columns: "repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])"
+grid-template-rows: auto
+grid-column-gap: 16px
+margin: -1px
+mediaquery:
+  "(max-width: 800px)":
+    margin: -1
