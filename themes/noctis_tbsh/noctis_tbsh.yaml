@@ -246,7 +246,7 @@ noctis_tbsh:
   # Uncomment the Code below if you have card-mod installed and want blur effect #
   ################################################################################
 
-  card-mod-theme: noctis
+  card-mod-theme: noctis_tbsh
 
   card-mod-more-info-yaml: |
     $: |
