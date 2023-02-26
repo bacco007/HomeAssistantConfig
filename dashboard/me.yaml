@@ -1108,7 +1108,7 @@ cards:
                 layout:
                   grid-template-columns: "repeat(auto-fill, [col-start] minmax(144px, 1fr) [col-end])"
                   grid-template-rows: auto
-                  margin: 0
+                  margin: 0 
 
           - type: vertical-stack
             cards:

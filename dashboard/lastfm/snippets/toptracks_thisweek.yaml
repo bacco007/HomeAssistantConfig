@@ -1,0 +1,106 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: grid
+    square: false
+    columns: 1
+    cards:
+      - type: custom:mushroom-template-card
+        primary: Top Tracks (This Week)
+        icon: mdi:music
+        icon_color: red
+      - type: custom:config-template-card
+        entities:
+          - sensor.last_fm_weekly_track_chart
+        card:
+          type: entities
+          entities:
+            - type: custom:bar-card
+              entity_row: true
+              height: 2
+              min: 0
+              color: red
+              positions:
+                icon: "off"
+                indicator: "off"
+                name: inside
+                value: inside
+              style: |-
+                bar-card-row {
+                  height: 12px;
+                  padding-top: 36px;
+                }
+                bar-card-background {
+                  background: transparent !important;
+                }
+                bar-card-contentbar {
+                  margin-top: -16px;
+                }
+                bar-card-name, bar-card-value {
+                  font-size: 13px;
+                  margin: 0;
+                }
+              max: >-
+                ${states['sensor.last_fm_weekly_track_chart'].attributes.track_1_playcount}
+              unit_of_measurement: Scrobbles
+              entities:
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_1_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_1}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_2_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_2}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_3_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_3}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_4_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_4}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_5_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_5}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_6_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_6}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_7_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_7}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_8_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_8}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_9_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_9}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_10_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_10}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_11_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_11}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_12_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_12}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_13_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_13}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_14_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_14}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_15_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_15}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_16_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_16}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_17_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_17}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_18_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_18}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_19_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_19}
+                - entity: sensor.last_fm_weekly_track_chart
+                  attribute: track_20_playcount
+                  name: ${states['sensor.last_fm_weekly_track_chart'].attributes.track_20}

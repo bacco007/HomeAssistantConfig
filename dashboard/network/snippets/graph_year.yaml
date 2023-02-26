@@ -1,0 +1,66 @@
+---
+type: custom:apexcharts-card
+header:
+  show: true
+  title: "Internet Performance - Last Year"
+graph_span: 1year
+span:
+  end: day
+  offset: +1d
+yaxis:
+  - id: left
+    min: 0
+    apex_config:
+      decimalsInFloat: 0
+      title:
+        text: "Speed (Mbit/s)"
+  - id: right
+    min: 0
+    apex_config:
+      decimalsInFloat: 1
+      title:
+        text: "Ping (ms)"
+    opposite: true
+apex_config:
+  chart: { type: "area", height: 300 }
+  stroke: { show: true, curve: smooth, dashArray: [0, 0, 2] }
+  legend: { show: false }
+  dataLabels: { enabled: false }
+  fill:
+    {
+      type: "gradient",
+      gradient:
+        {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [20, 100, 100, 100],
+        },
+    }
+all_series_config:
+  type: area
+  extend_to: now
+  group_by:
+    func: max
+    duration: 1d
+  show:
+    extremas: true
+  data_generator: |
+    let res = [];
+    for (const [key, value] of
+        Object.entries(entity.attributes)) {
+        res.push([new Date(key).getTime(), value]);
+    }
+    return res.sort((a, b) => { return a[0] - b[0] });
+series:
+  - entity: sensor.archive_internet_download_max_365day
+    yaxis_id: left
+    name: Download
+    stroke_width: 3
+    color: "#db4437"
+  - entity: sensor.archive_internet_upload_max_365day
+    yaxis_id: left
+    name: Upload
+    stroke_width: 3
+    color: "#43a047"

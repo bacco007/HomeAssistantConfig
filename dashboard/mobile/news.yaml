@@ -9,4 +9,6 @@ badges: []
 cards:
   - !include snippets/header.yaml
   - !include ../news/snippets/stocks.yaml
+  - !include ../news/snippets/stocks_international.yaml
+  - !include ../news/snippets/indicies.yaml
   - !include ../news/snippets/exchange_rates.yaml

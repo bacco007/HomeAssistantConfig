@@ -9,29 +9,6 @@ badges: []
 cards:
   - !include snippets/header.yaml
 
-  - type: custom:mushroom-template-card
-    primary: >
-      Network
-    icon: mdi:lan
-    fill_container: true
-    tap_action:
-      action: none
-    hold_action:
-      action: none
-    icon_color: red
-    secondary: |-
-      Yo!
-    card_mod:
-      style: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-          padding: 0px 16px 8px !important;
-        }
-        :host {
-          --mush-card-primary-font-size: 1.2rem;
-        }
-
   - type: vertical-stack
     cards:
       # Network Uptime
@@ -386,3 +363,8 @@ cards:
                           --mush-card-primary-font-size: 12px;
                           --mush-card-secondary-font-size: 11px;
                         }
+
+      - type: vertical-stack
+        cards:
+          - !include ../network/snippets/graph_week.yaml
+          - !include ../network/snippets/graph_year.yaml

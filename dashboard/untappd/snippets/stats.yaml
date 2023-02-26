@@ -75,16 +75,16 @@ cards:
                 }
                 ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
             content: >
-              {% set prev = namespace(count=false) %} {% for item in
-              state_attr('sensor.untappd_stats_by_beercheckincnt','data') %} {%
-              if item.count %} {% if item.count != prev.count %}
+              {%- set prev = namespace(count=false) %}
+              {%- for item in state_attr('sensor.untappd_stats_by_beercheckincnt','data')|sort(attribute="item") |sort(reverse=true, attribute="count") %}
+              {%- if item.count %} {% if item.count != prev.count %}
 
               <b><u>{{ item.count }} Check-ins</b></u>
 
-              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
-              endif %}
+              {% set prev.count = item.count %} {% endif %} * {{item.item}}
 
-              {% endfor %}
+              {% endif -%}
+              {%- endfor %}
   - type: entities
     card_mod:
       style:
@@ -135,16 +135,16 @@ cards:
                 }
                 ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
             content: >
-              {% set prev = namespace(count=false) %} {% for item in
-              state_attr('sensor.untappd_stats_by_brewery','data') %} {% if
-              item.count %} {% if item.count != prev.count %}
+              {%- set prev = namespace(count=false) %}
+              {%- for item in state_attr('sensor.untappd_stats_by_brewery','data')|sort(attribute="item") |sort(reverse=true, attribute="count") %}
+              {%- if item.count %} {% if item.count != prev.count %}
 
               <b><u>{{ item.count }} Check-ins</b></u>
 
-              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
-              endif %}
+              {% set prev.count = item.count %} {% endif %} * {{item.item}}
 
-              {% endfor %}
+              {% endif -%}
+              {%- endfor %}
   - type: entities
     card_mod:
       style:
@@ -195,16 +195,16 @@ cards:
                 }
                 ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
             content: >
-              {% set prev = namespace(count=false) %} {% for item in
-              state_attr('sensor.untappd_stats_by_beerstyle','data') %} {% if
-              item.count %} {% if item.count != prev.count %}
+              {%- set prev = namespace(count=false) %}
+              {%- for item in state_attr('sensor.untappd_stats_by_beerstyle','data')|sort(attribute="item") |sort(reverse=true, attribute="count") %}
+              {%- if item.count %} {% if item.count != prev.count %}
 
               <b><u>{{ item.count }} Check-ins</b></u>
 
-              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
-              endif %}
+              {% set prev.count = item.count %} {% endif %} * {{item.item}}
 
-              {% endfor %}
+              {% endif -%}
+              {%- endfor %}
   - type: entities
     card_mod:
       style:
@@ -256,13 +256,13 @@ cards:
                 }
                 ha-card.type-markdown::-webkit-scrollbar { width: 12px; }
             content: >
-              {% set prev = namespace(count=false) %} {% for item in
-              state_attr('sensor.untappd_stats_by_brewerycountry','data') %} {%
-              if item.count %} {% if item.count != prev.count %}
+              {%- set prev = namespace(count=false) %}
+              {%- for item in state_attr('sensor.untappd_stats_by_brewerycountry','data')|sort(attribute="item") |sort(reverse=true, attribute="count") %}
+              {%- if item.count %} {% if item.count != prev.count %}
 
               <b><u>{{ item.count }} Check-ins</b></u>
 
-              {% set prev.count = item.count %} {% endif %} * {{item.item}} {%
-              endif %}
+              {% set prev.count = item.count %} {% endif %} * {{item.item}}
 
-              {% endfor %}
+              {% endif -%}
+              {%- endfor %}

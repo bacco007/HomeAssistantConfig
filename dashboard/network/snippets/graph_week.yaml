@@ -1,0 +1,73 @@
+---
+type: custom:apexcharts-card
+header:
+  show: true
+  title: Internet Performance - Last Week
+graph_span: 7d
+span:
+  end: hour
+yaxis:
+  - id: left
+    min: 0
+    apex_config:
+      decimalsInFloat: 0
+      title:
+        text: Speed (Mbit/s)
+  - id: right
+    min: 0
+    apex_config:
+      decimalsInFloat: 1
+      title:
+        text: Ping (ms)
+    opposite: true
+apex_config:
+  chart:
+    type: area
+    height: 300
+  stroke:
+    show: true
+    curve: smooth
+    dashArray:
+      - 0
+      - 0
+      - 6
+  legend:
+    show: false
+  dataLabels:
+    enabled: false
+  fill:
+    type: gradient
+    gradient:
+      shadeIntensity: 1
+      inverseColors: false
+      opacityFrom: 0.45
+      opacityTo: 0.05
+      stops:
+        - 20
+        - 100
+        - 100
+        - 100
+all_series_config:
+  type: area
+  extend_to: now
+  group_by:
+    func: avg
+    duration: 1h
+  show:
+    extremas: true
+series:
+  - entity: sensor.speedtest_download
+    yaxis_id: left
+    name: Download
+    stroke_width: 3
+    color: "#db4437"
+  - entity: sensor.speedtest_upload
+    yaxis_id: left
+    name: Upload
+    stroke_width: 3
+    color: "#43a047"
+  - entity: sensor.speedtest_ping
+    yaxis_id: right
+    name: Ping
+    stroke_width: 1.5
+    color: "#FFFFFF"

@@ -1,0 +1,11 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:spotify
+subview: true
+path: spotify
+title: Spotify
+badges: []
+cards:
+  - !include snippets/header.yaml
+  - !include ../spotify/partial.yaml
