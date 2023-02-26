@@ -1,7 +1,6 @@
 noctis:
-
   # Fonts
-  primary-font-family: 'Raleway,sans-serif'
+  primary-font-family: &font-stack "Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, system-ui, sans-serif"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
@@ -12,79 +11,79 @@ noctis:
   ha-card-header-font-family: "var(--primary-font-family)"
 
   # Text
-  text-color: '#ffffff'
-  primary-text-color: 'var(--text-color)'
-  text-primary-color: 'var(--text-color)'
+  text-color: "#ffffff"
+  primary-text-color: "var(--text-color)"
+  text-primary-color: "var(--text-color)"
   secondary-text-color: "#BAC0C6"
-  text-medium-light-color: '#A0A2A8'
-  text-medium-color: '#80828A'
-  disabled-text-color: '#626569'
-  primary-color: 'var(--accent-color)'
-  text-light-primary-color: 'var(--text-color)'
+  text-medium-light-color: "#A0A2A8"
+  text-medium-color: "#80828A"
+  disabled-text-color: "#626569"
+  primary-color: "var(--accent-color)"
+  text-light-primary-color: "var(--text-color)"
 
   # Text Fields an Dropdown
-  mdc-text-field-fill-color: '#2e3b53'
-  mdc-text-field-ink-color: 'var(--text-color)'
-  mdc-select-fill-color: '#2e3b53'
-  mdc-text-field-label-ink-color: 'var(--secondary-text-color)'
-  input-fill-color: 'var(--background-color)'
-  input-ink-color: 'var(--text-color)'
-  input-label-ink-color: 'var(--text-color)'
-  input-disabled-fill-color: 'var(--background-color)'
-  input-disabled-ink-color: 'var(--disabled-text-color)'
-  input-disabled-label-ink-color: 'var(--disabled-text-color)'
-  input-idle-line-color: 'var(--background-color)'
-  input-dropdown-icon-color: 'var(--secondary-text-color)'
-  input-hover-line-color: 'var(--primary-color)'
-  code-editor-background-color: '#222c40'
-  codemirror-property: 'var(--accent-color)'
+  mdc-text-field-fill-color: "#2e3b53"
+  mdc-text-field-ink-color: "var(--text-color)"
+  mdc-select-fill-color: "#2e3b53"
+  mdc-text-field-label-ink-color: "var(--secondary-text-color)"
+  input-fill-color: "var(--background-color)"
+  input-ink-color: "var(--text-color)"
+  input-label-ink-color: "var(--text-color)"
+  input-disabled-fill-color: "var(--background-color)"
+  input-disabled-ink-color: "var(--disabled-text-color)"
+  input-disabled-label-ink-color: "var(--disabled-text-color)"
+  input-idle-line-color: "var(--background-color)"
+  input-dropdown-icon-color: "var(--secondary-text-color)"
+  input-hover-line-color: "var(--primary-color)"
+  code-editor-background-color: "#222c40"
+  codemirror-property: "var(--accent-color)"
 
   # Main Colors
-  app-header-background-color: '#242e42'
+  app-header-background-color: "#242e42"
   header-height: 48px
-  accent-color: '#1A89F5'
-  accent-medium-color: 'var(--accent-color)'
+  accent-color: "#1A89F5"
+  accent-medium-color: "var(--accent-color)"
 
   # Background
-  background-color: '#242e42'
-  primary-background-color: 'var(--background-color)'
-  background-color-2: '#20293c'
-  secondary-background-color: 'none'
-  markdown-code-background-color: 'var(--background-color)'
+  background-color: "#242e42"
+  primary-background-color: "var(--background-color)"
+  background-color-2: "#20293c"
+  secondary-background-color: "none"
+  markdown-code-background-color: "var(--background-color)"
 
   # Card
-  card-background-color: 'var(--ha-card-background)'
-  ha-card-background: 'rgba(43,55,78,1)' #'linear-gradient(145deg, #273246, #2e3b53)'
+  card-background-color: "var(--ha-card-background)"
+  ha-card-background: "rgba(43,55,78,1)" #'linear-gradient(145deg, #273246, #2e3b53)'
   ha-card-box-shadow: "3px 3px 13px -6px rgba(17,35,52,1)"
   ha-card-border-radius: "5px"
   border-radius: "5px"
-  ha-card-border-color: 'rgba(0,0,0,0)'
-  ha-card-border-width: '0'
+  ha-card-border-color: "rgba(0,0,0,0)"
+  ha-card-border-width: "0"
 
   # Dialog
   ha-dialog-border-radius: "5px"
 
   # Icons
-  paper-item-icon-color: '#EBEBEB'
-  paper-item-icon-active-color: 'var(--accent-color)'
+  paper-item-icon-color: "#EBEBEB"
+  paper-item-icon-active-color: "var(--accent-color)"
 
   # RGB States
-  rgb-state-default-color: '26, 137, 245'
-  rgb-accent-color: 'var(--rgb-state-default-color)'
-  rgb-state-light-color: 'var(--rgb-state-default-color)'
-  rgb-state-switch-color: 'var(--rgb-state-default-color)'
-  rgb-state-automation-color: 'var(--rgb-state-default-color)'
-  rgb-state-binary-sensor-color: 'var(--rgb-state-default-color)'
-  rgb-state-cover-color: 'var(--rgb-state-default-color)'
-  rgb-state-fan-color: 'var(--rgb-state-default-color)'
-  rgb-state-group-color: 'var(--rgb-state-default-color)'
-  rgb-state-humidifier-color: 'var(--rgb-state-default-color)'
-  rgb-state-input-boolean-color: 'var(--rgb-state-default-color)'
-  rgb-state-media-player-color: 'var(--rgb-state-default-color)'
-  rgb-state-remote-color: 'var(--rgb-state-default-color)'
-  rgb-state-script-color: 'var(--rgb-state-default-color)'
-  rgb-state-timer-color: 'var(--rgb-state-default-color)'
-  rgb-state-vacuum-color: 'var(--rgb-state-default-color)'
+  rgb-state-default-color: "26, 137, 245"
+  rgb-accent-color: "var(--rgb-state-default-color)"
+  rgb-state-light-color: "var(--rgb-state-default-color)"
+  rgb-state-switch-color: "var(--rgb-state-default-color)"
+  rgb-state-automation-color: "var(--rgb-state-default-color)"
+  rgb-state-binary-sensor-color: "var(--rgb-state-default-color)"
+  rgb-state-cover-color: "var(--rgb-state-default-color)"
+  rgb-state-fan-color: "var(--rgb-state-default-color)"
+  rgb-state-group-color: "var(--rgb-state-default-color)"
+  rgb-state-humidifier-color: "var(--rgb-state-default-color)"
+  rgb-state-input-boolean-color: "var(--rgb-state-default-color)"
+  rgb-state-media-player-color: "var(--rgb-state-default-color)"
+  rgb-state-remote-color: "var(--rgb-state-default-color)"
+  rgb-state-script-color: "var(--rgb-state-default-color)"
+  rgb-state-timer-color: "var(--rgb-state-default-color)"
+  rgb-state-vacuum-color: "var(--rgb-state-default-color)"
   # rgb-state-alarm-armed-color: var(--rgb-red-color)
   # rgb-state-alarm-arming-color: var(--rgb-orange-color)
   # rgb-state-alarm-disarmed-color: var(--rgb-grey-color)
@@ -123,71 +122,69 @@ noctis:
   # info-color: #039be5
 
   # Sidebar
-  sidebar-background-color: 'var(--background-color)'
-  sidebar-icon-color: '#98a7b9'
-  sidebar-selected-icon-color: 'var(--accent-color)'
-  sidebar-selected-text-color: 'var(--text-color)'
-  paper-listbox-background-color: 'var(--sidebar-background-color)'
-  divider-color: 'var(--background-color)'
-  light-primary-color: 'var(--ha-card-background)'
+  sidebar-background-color: "var(--background-color)"
+  sidebar-icon-color: "#98a7b9"
+  sidebar-selected-icon-color: "var(--accent-color)"
+  sidebar-selected-text-color: "var(--text-color)"
+  paper-listbox-background-color: "var(--sidebar-background-color)"
+  divider-color: "var(--background-color)"
+  light-primary-color: "var(--ha-card-background)"
 
   # Sliders
-  paper-slider-knob-color: 'var(--accent-color)'
-  paper-slider-pin-color: 'var(--background-color-2)'
-  paper-slider-active-color: 'var(--accent-color)'
-  paper-slider-container-color: 'var(--background-color-2)'
+  paper-slider-knob-color: "var(--accent-color)"
+  paper-slider-pin-color: "var(--background-color-2)"
+  paper-slider-active-color: "var(--accent-color)"
+  paper-slider-container-color: "var(--background-color-2)"
 
   # Toggle:
-  paper-toggle-button-checked-bar-color: 'var(--accent-color)'
-  mdc-theme-primary: 'var(--accent-color)'
+  paper-toggle-button-checked-bar-color: "var(--accent-color)"
+  mdc-theme-primary: "var(--accent-color)"
 
   # Switch
-  switch-unchecked-color: '#70889e'
-  switch-checked-button-color: 'var(--accent-color)'
-  switch-unchecked-track-color: 'var(--background-color-2)'
-  switch-checked-track-color: 'var(--background-color-2)'
+  switch-unchecked-color: "#70889e"
+  switch-checked-button-color: "var(--accent-color)"
+  switch-unchecked-track-color: "var(--background-color-2)"
+  switch-checked-track-color: "var(--background-color-2)"
 
   # Radio Button
-  paper-radio-button-checked-color: 'var(--accent-color)'
+  paper-radio-button-checked-color: "var(--accent-color)"
 
   # Popups
-  more-info-header-background: 'var(--secondary-background-color)'
-  paper-dialog-background-color: 'var(--background-color)' #'rgba(47,59,82,0.4)'
+  more-info-header-background: "var(--secondary-background-color)"
+  paper-dialog-background-color: "var(--background-color)" #'rgba(47,59,82,0.4)'
   popup-border-radius: "5px"
 
   # Tables
-  table-row-background-color: 'var(--background-color)'
-  table-row-alternative-background-color: 'var(--ha-card-background)'
+  table-row-background-color: "var(--background-color)"
+  table-row-alternative-background-color: "var(--ha-card-background)"
 
   # Badges
-  label-badge-background-color: 'var(--background-color)'
-  label-badge-text-color: 'var(--text-primary-color)'
-  label-badge-red: 'rgba(73,85,108,1)'
-  label-badge-blue: 'rgba(26,137,245,1)'
-  label-badge-green: 'rgba(0,202,139,1)'
-  label-badge-yellow: 'rgba(222,176,107,1)'
+  label-badge-background-color: "var(--background-color)"
+  label-badge-text-color: "var(--text-primary-color)"
+  label-badge-red: "#B54949"
+  label-badge-blue: "#539BE1"
+  label-badge-green: "#44ba83"
+  label-badge-yellow: "#E0A957"
 
-  paper-input-container-focus-color: 'var(--accent-color)'
+  paper-input-container-focus-color: "var(--accent-color)"
 
   # Custom Header
-  ch-background: 'var(--background-color)'
-  ch-active-tab-color: 'var(--accent-color)'
-  ch-notification-dot-color: 'var(--accent-color)'
-  ch-all-tabs-color: 'var(--sidebar-icon-color)'
-  ch-tab-indicator-color: 'var(--accent-color)'
+  ch-background: "var(--background-color)"
+  ch-active-tab-color: "var(--accent-color)"
+  ch-notification-dot-color: "var(--accent-color)"
+  ch-all-tabs-color: "var(--sidebar-icon-color)"
+  ch-tab-indicator-color: "var(--accent-color)"
 
   # Mini Mediaplayer
-  mini-media-player-base-color: 'var(--text-color)'
-  mini-media-player-accent-color: 'var(--accent-color)'
+  mini-media-player-base-color: "var(--text-color)"
+  mini-media-player-accent-color: "var(--accent-color)"
 
   # Alarm
-  alarm-color-armed: 'rgba(247,53,67,1)'
-
+  alarm-color-armed: "rgba(247,53,67,1)"
 
   # Card-Mod #####################################################################
   # Uncomment the Code below if you have card-mod installed and want blur effect #
   ################################################################################
-
 
   card-mod-theme: noctis
 
@@ -206,4 +203,3 @@ noctis:
       :host {
         --ha-card-box-shadow: none;
       }
-
