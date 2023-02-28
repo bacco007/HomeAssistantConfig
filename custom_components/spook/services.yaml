@@ -1,0 +1,420 @@
+boo:
+  name: Boo! 👻
+  description: >-
+    Calling this service, spookes Home Assistant.
+    The service call will always fail.
+
+random_fail:
+  name: Random fail 👻
+  description: A call to this service will randomly fail.
+
+blueprint_import:
+  name: Import blueprint 👻
+  description: >-
+    Import a blueprint.
+  fields:
+    url:
+      name: URL
+      description: The URL to import the blueprint from.
+      required: true
+      selector:
+        text:
+
+homeassistant_disable_config_entry:
+  name: Disable an integration 👻
+  description: >-
+    Disables an integration configuration entry.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: The integration configuration entry to disable.
+      required: true
+      selector:
+        config_entry:
+
+homeassistant_enable_config_entry:
+  name: Enable an integration 👻
+  description: >-
+    Enables an integration configuration entry.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: The integration configuration entry to enable.
+      required: true
+      selector:
+        config_entry:
+
+homeassistant_disable_device:
+  name: Disable a device 👻
+  description: >-
+    Disables a device on the fly.
+  fields:
+    device_id:
+      name: Device
+      description: The device to disable.
+      required: true
+      selector:
+        device:
+
+homeassistant_enable_device:
+  name: Enable a device 👻
+  description: >-
+    Enables a device on the fly.
+  fields:
+    device_id:
+      name: Device
+      description: The device to disable.
+      required: true
+      selector:
+        device:
+
+homeassistant_disable_entity:
+  name: Disable an entity 👻
+  description: >-
+    Disables an entity (or entities) on the fly.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to disable.
+      required: true
+      selector:
+        entity:
+          multiple: true
+
+homeassistant_enable_entity:
+  name: Enable an entity 👻
+  description: >-
+    Enables an entity (or entities) on the fly.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to enable.
+      required: true
+      selector:
+        entity:
+          multiple: true
+
+homeassistant_hide_entity:
+  name: Hide an entity 👻
+  description: >-
+    Hides an entity (or entities) on the fly.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to hide.
+      required: true
+      selector:
+        entity:
+          multiple: true
+
+homeassistant_unhide_entity:
+  name: Unhide an entity 👻
+  description: >-
+    Unhides an entity (or entities) on the fly.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to unhide.
+      required: true
+      selector:
+        entity:
+          multiple: true
+
+homeassistant_ignore_all_discovered:
+  name: Ignore all currently discovered devices 👻
+  description: >-
+    Ignore all currently discovered devices that are shown on the integrations
+    dashboard. This will not ignore devices that are discovered after this.
+  fields:
+    domain:
+      name: Integration domain
+      description: >-
+        The integration domain to ignore all discovered devices for.
+        If not provided, all domains will be considered to be ignored.
+      required: false
+      selector:
+        text:
+
+homeassistant_remove_all_orphaned_entities:
+  name: Remove all orphaned entities 👻
+  description: >-
+    Removes all orphaned entities that no longer have an integration that
+    claim/provide them. Please note, if the integration was just removed,
+    it might need a restart for Home Assistant to realize they are orphaned.
+
+    **WARNING** Entities might have been marked orphaned because an
+    integration is offline or not working since Home Assistant started. Calling
+    this service will remove those entities as well.
+
+recorder_import_statistics:
+  name: Import statistics 👻
+  description: >-
+    Import long-term statistics.
+  fields:
+    statistics_id:
+      name: Statistics ID
+      description: The statistics ID (entity ID) to import for.
+      required: true
+      selector:
+        entity:
+    name:
+      name: Name
+      description: The name of the statistics.
+      required: false
+      selector:
+        text:
+    source:
+      name: Source
+      description: The source of the statistics data.
+      required: true
+      selector:
+        text:
+    unit_of_measurement:
+      name: Unit of measurement
+      description: The unit of measurement of the statistics.
+      required: false
+      selector:
+        text:
+    has_mean:
+      name: Has a mean
+      description: If the statistics has a mean value.
+      required: true
+      selector:
+        boolean:
+    has_sum:
+      name: Has a sum
+      description: If the statistics has a sum value.
+      required: true
+      selector:
+        boolean:
+    stats:
+      name: Statistics
+      description: >-
+        A list of mappings/dictionaries with statistics to import.
+        The dictionaries must contain a "start" key with a datetime string
+        other valid options are "mean", "sum", "min", "max", "last_reset", and
+        "state". All of those are optional and either an integer or a float,
+        except for "last_reset" which is a datetime string.
+      required: true
+      selector:
+        object:
+
+select_random:
+  name: Select random option 👻
+  description: >-
+    Select an random option for a select entity.
+  target:
+    entity:
+      domain: select
+  fields:
+    options:
+      name: Options
+      description: >-
+        Limits the options to select from. If not provided, all options will be
+        considered.
+      required: false
+      selector:
+        object:
+
+input_select_random:
+  name: Select random option 👻
+  description: >-
+    Select an random option for an input_select entity.
+  target:
+    entity:
+      domain: input_select
+  fields:
+    options:
+      name: Options
+      description: >-
+        Limits the options to select from. If not provided, all options will be
+        considered.
+      required: false
+      selector:
+        object:
+
+number_decrement:
+  name: Decrease value 👻
+  description: >-
+    Decrease a number entity value by a certain amount.
+  target:
+    entity:
+      domain: number
+  fields:
+    step:
+      name: Amount
+      description: >-
+        The step to decrease the number with. If not provided, the step of the
+        number entity will be used.
+      required: false
+      selector:
+        number:
+
+number_increment:
+  name: Increase value 👻
+  description: >-
+    Increase a number entity value by a certain amount.
+  target:
+    entity:
+      domain: input_number
+  fields:
+    step:
+      name: Amount
+      description: >-
+        The step to increase the number with. If not provided, the step of the
+        number entity will be used.
+      required: false
+      selector:
+        number:
+
+number_max:
+  name: Set maximum value 👻
+  description: >-
+    Set a number entity to its maximum value.
+  target:
+    entity:
+      domain: number
+
+number_min:
+  name: Set minimum value 👻
+  description: >-
+    Set a number entity to its minimum value.
+  target:
+    entity:
+      domain: number
+
+input_number_decrement:
+  name: Decrease value 👻
+  description: >-
+    Decrease an input number entity value by a certain amount.
+  target:
+    entity:
+      domain: input_number
+  fields:
+    step:
+      name: Amount
+      description: >-
+        The step to decrease the input number with. If not provided, the step
+        of the number entity will be used.
+      required: false
+      selector:
+        number:
+
+input_number_increment:
+  name: Increase value 👻
+  description: >-
+    Increase an input number entity value by a certain amount.
+  target:
+    entity:
+      domain: number
+  fields:
+    step:
+      name: Amount
+      description: >-
+        The step to increase the input number with. If not provided, the step
+        of the number entity will be used.
+      required: false
+      selector:
+        number:
+
+input_number_max:
+  name: Set maximum value 👻
+  description: >-
+    Set an input number entity to its maximum value.
+  target:
+    entity:
+      domain: input_number
+
+input_number_min:
+  name: Set minimum value 👻
+  description: >-
+    Set an input number entity to its minimum value.
+  target:
+    entity:
+      domain: input_number
+
+repairs_create:
+  name: Create issue 👻
+  description: >-
+    Manually create and raise a issue in Home Assistant repairs.
+  fields:
+    title:
+      name: Title
+      description: The title of the issue.
+      required: true
+      selector:
+        text:
+    description:
+      name: Description
+      description: The description of the issue. Supports Markdown.
+      required: true
+      selector:
+        text:
+          multiline: true
+    issue_id:
+      name: Issue ID
+      description: >-
+        The issue can have an identifier, which allows you to cancel it
+        later with that ID if needed. It also prevent duplicate issues
+        to be created. If not provided, a random ID will be generated.
+      required: false
+      selector:
+        text:
+    domain:
+      name: Domain
+      description: >-
+        This field can be used to set the domain of the issue. For example,
+        by default (if not set), it will use "spook". This causes Spook to
+        be shown in the logo/image of the issue. If you set it to
+        "homeassistant", the Home Assistant logo will be used, or use "hue",
+        "zwave_js", "mqtt", etc. to use the logo of that integration.
+      required: false
+      selector:
+        text:
+    severity:
+      name: Severity
+      description: >-
+        The severity of the issue. This will be used to determine the
+        priority of the issue. If not set, "warning" will be used
+      required: false
+      selector:
+        select:
+          options:
+            - label: Warning
+              value: warning
+            - label: Error
+              value: error
+            - label: Critical
+              value: critical
+    persistent:
+      name: Persistent
+      description: >-
+        If the issue should be persistent, which means it will survive
+        restarts of Home Assistant. By default, issues are not persistent.
+      required: false
+      selector:
+        boolean:
+
+repairs_ignore_all:
+  name: Ignore all issues 👻
+  description: >-
+    Ignore all issues currently raised in Home Assistant Repairs.
+
+repairs_remove:
+  name: Remove issue 👻
+  description: >-
+    Removes a manually created Home Assistant repairs issue. This service
+    can only remove issues created with the `repairs_create` service.
+  fields:
+    issue_id:
+      name: Issue ID
+      description: >-
+        The issue ID to remove.
+      required: true
+      selector:
+        text:
+
+repairs_unignore_all:
+  name: Unignore all issues 👻
+  description: >-
+    Unignore all issues currently raised in Home Assistant Repairs.
