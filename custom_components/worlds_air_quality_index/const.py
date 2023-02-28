@@ -2,6 +2,8 @@
 
 from datetime import timedelta
 
+from typing import Final
+
 from homeassistant.const import (
     TEMP_CELSIUS,
     PRESSURE_HPA,
@@ -16,14 +18,13 @@ from homeassistant.components.sensor import SensorDeviceClass
 
 DOMAIN = "worlds_air_quality_index"
 PLATFORMS = [Platform.SENSOR]
-SW_VERSION = "0.3.5"
+SW_VERSION = "0.3.7"
 
-SCAN_INTERVAL = timedelta(minutes=30)
-
+DEFAULT_NAME = 'waqi1'
 DISCOVERY_TYPE = "discovery_type"
 GEOGRAPHIC_LOCALIZATION = "Geographic localization"
+SCAN_INTERVAL = timedelta(minutes=30)
 STATION_ID = "Station ID"
-DEFAULT_NAME = 'waqi1'
 
 SENSORS = {
     'aqi': ['Air Quality Index', ' ', 'mdi:leaf', SensorDeviceClass.AQI],

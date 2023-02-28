@@ -1,18 +1,16 @@
 """Get station's air quality informations"""
 from __future__ import annotations
 
+from datetime import date, timedelta
 import logging
 from this import s
 
+from typing import Any
+
 from .waqi_api import WaqiDataRequester
-
-import json
-
-import voluptuous as vol
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
-    PLATFORM_SCHEMA as PARENT_PLATFORM_SCHEMA,
     SensorEntity,
 )
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
@@ -24,21 +22,21 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from homeassistant.const import (
-    CONF_NAME,
+    CONF_ID,
     CONF_LATITUDE, 
     CONF_LONGITUDE, 
-    CONF_TOKEN,
-    CONF_ID,
     CONF_METHOD,
+    CONF_NAME,
     CONF_TEMPERATURE_UNIT,
+    CONF_TOKEN,
+    TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
-    TEMP_CELSIUS
 )
 
 from .const import (
-    SENSORS,
     DOMAIN,
     DEFAULT_NAME,
+    SENSORS,
     SW_VERSION,
     WIND_DIRECTION,
     WIND_DIRECTION_PREFIX,
@@ -103,12 +101,14 @@ async def async_setup_entry(
     await hass.async_add_executor_job(requester.update)
 
     scannedData = requester.GetData()
-    scannedData = scannedData["data"]["iaqi"]
+    _LOGGER.debug("Got station data from WAQI server:")
+    _LOGGER.debug(scannedData)
+    scannedDataSensors = scannedData["data"]["iaqi"]
 
     entities = []
     
     for res in SENSORS:
-        if res == "aqi" or res in scannedData:
+        if res == "aqi" or res in scannedDataSensors:
             entities.append(WorldsAirQualityIndexSensor(res, requester, tempUnit))
 
     async_add_entities(entities, update_before_add=True)
@@ -126,6 +126,7 @@ class WorldsAirQualityIndexSensor(SensorEntity):
         self._stationIdx = self._requester.GetStationIdx()
         self._updateLastTime = self._requester.GetUpdateLastTime()
         self._data = self._requester.GetData()
+
         self._name = SENSORS[self._resType][0]
         self._tempUnit = tempUnit
 
@@ -151,6 +152,7 @@ class WorldsAirQualityIndexSensor(SensorEntity):
     @property
     def unit_of_measurement(self) -> str:
         #Return the unit of measurement.
+        
         if SENSORS[self._resType][1] == TEMP_CELSIUS:
             return self._tempUnit
         else:
@@ -203,9 +205,33 @@ class WorldsAirQualityIndexSensor(SensorEntity):
                 self._state = float(self._data["data"]["iaqi"]['t']["v"])
         else:
             self._state = float(self._data["data"]["iaqi"][self._resType]["v"])
+
         
         self._attr_extra_state_attributes = {
             "StationName": self._requester.GetStationName(),
             "LastUpdate": self._requester.GetUpdateLastTime()
         }
-
+        if self._resType in self._data['data']['forecast']['daily']:
+            scannedDataForecast = self._data['data']['forecast']['daily'][self._resType]
+            day = date.today()
+            dayName = "Today"
+            if scannedDataForecast is not None:
+                for res in scannedDataForecast:
+                    readDate = date.fromisoformat(res["day"])
+                    if readDate == day:
+                        self._attr_extra_state_attributes['Forecast' + dayName + 'Avg'] = res['avg']
+                        self._attr_extra_state_attributes['Forecast' + dayName + 'Min'] = res['min']
+                        self._attr_extra_state_attributes['Forecast' + dayName + 'Max'] = res['max']
+                        _LOGGER.debug(f"Forecast{dayName} Avg/Min/Max extra state attributes added.")
+                    
+                    day = day + timedelta(days=1)
+                    if dayName == "Today":
+                        dayName = "Tomorrow"
+                    elif dayName == "Tomorrow":
+                        dayName = "2Days"
+                    elif dayName == "2Days":
+                        dayName = "3Days"
+                    elif dayName == "3Days":
+                        dayName = "4Days"
+                    elif dayName == "4Days":
+                        dayName = "5Days"
