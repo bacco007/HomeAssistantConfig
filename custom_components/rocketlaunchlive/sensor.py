@@ -140,9 +140,16 @@ class RocketLaunchSensor(CoordinatorEntity):
         attrs["launch_20m_warning"] = "false"
         attrs["launch_target_timestamp"] = ""
 
-        if launch.get("win_open"):
+        if launch.get("t0"):
+            launch_timestamp = as_timestamp(dateutil.parser.parse(launch["t0"]))
+            launch_target = as_local(dateutil.parser.parse(launch["t0"]))
+        elif launch.get("win_open"):
             launch_timestamp = as_timestamp(dateutil.parser.parse(launch["win_open"]))
             launch_target = as_local(dateutil.parser.parse(launch["win_open"]))
+        else:
+            launch_target = "NA"
+        
+        if launch_target != "NA":
             attrs["launch_target"] = launch_target.strftime("%d-%b-%y %I:%M %p")
             attrs["launch_target_timestamp"] = int(launch_timestamp)
 
@@ -151,8 +158,7 @@ class RocketLaunchSensor(CoordinatorEntity):
 
             if launch_timestamp < (time.time() + (20 * 60)) and launch_timestamp > time.time():
                 attrs["launch_20m_warning"] = "true"
-            
-        else:
+        else:        
             attrs["launch_target"] = "NA"
 
         if launch["est_date"].get("year") and launch["est_date"].get("month") and launch["est_date"].get("day"):
