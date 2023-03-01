@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/hockey/nhl/standings?type=0&level=1
+sensor:
+  name: scoreboard_nhl
+  value_template: "{{ now() }}"
+  json_attributes_path: "$['standings']"
+  json_attributes:
+    - entries
+scan_interval: 3600

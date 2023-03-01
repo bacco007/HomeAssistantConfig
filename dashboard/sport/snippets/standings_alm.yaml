@@ -12,13 +12,19 @@ cards:
   - type: custom:flex-table-card
     entities:
       include: sensor.scoreboard_alm
+    css:
+      table+: "border-collapse: collapse; padding: 0px;"
+      tbody tr td:nth-child(2): "width: 10%;"
     columns:
       - name: "#"
         data: entries
         modify: x.stats[10].value
+      - name: Logo
+        data: entries
+        modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
       - name: Team
         data: entries
-        modify: x.team.name
+        modify: x.team.displayName
       - name: Pl
         data: entries
         modify: x.stats[0].value

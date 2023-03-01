@@ -6,4 +6,4 @@ sensor:
   json_attributes_path: "$['children'][0]['standings']"
   json_attributes:
     - entries
-scan_interval: 21600
+scan_interval: 3600

@@ -14,10 +14,14 @@ cards:
       include: sensor.getdata_nrl_ladder
     css:
       table+: "border-collapse: collapse; padding: 0px;"
+      tbody tr td:nth-child(2): "width: 10%;"
     columns:
       - name: "#"
         data: ladder
         modify: x.position
+      - name: Logo
+        data: ladder
+        modify: '''<img src="'' + x.logo + ''"style="width: 100%">'''
       - name: Team
         data: ladder
         modify: x.team

@@ -1,7 +1,7 @@
 ---
-resource: https://site.web.api.espn.com/apis/v2/sports/soccer/aus.1/standings?type=0&level=0
+resource: https://site.web.api.espn.com/apis/v2/sports/rugby-league/3/standings?type=0&level=0&season=2023
 sensor:
-  name: scoreboard_alm
+  name: scoreboard_nrl
   value_template: "{{ now() }}"
   json_attributes_path: "$['children'][0]['standings']"
   json_attributes:

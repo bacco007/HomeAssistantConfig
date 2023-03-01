@@ -16,8 +16,7 @@ card:
       }
 filter:
   template: >
-    {% for s in states|selectattr('entity_id','search','sensor.sport_') |
-    sort(attribute="attributes.friendly_name")  -%}
+    {% for s in states|selectattr('entity_id','search','sensor.sport_') | rejectattr("attributes.nextevent", "search", "Scheduled") | sort(attribute="attributes.friendly_name")  -%}
       {{
         {
           "type": "custom:fold-entity-row",
@@ -34,7 +33,7 @@ filter:
             "tap_action": "none",
             "card_mod": {
               "style": {
-                "mushroom-state-info$": ".primary {\n  font-size: 16px !important;\n  white-space: normal !important;\n}\n.secondary {\n  font-size: 15px !important;\n}\n",
+                "mushroom-state-info$": ".primary {\n  font-size: 14px !important;\n  white-space: normal !important;\n}\n.secondary {\n  font-size: 13px !important;\n}\n",
                 ".": "ha-card:before {\n  content: \"\";\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, \"entity_picture\") }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background: none;\n  box-shadow: none;\n}\n"
               }
             }
