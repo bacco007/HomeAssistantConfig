@@ -1,0 +1,8 @@
+---
+sensor:
+  - unique_id: count_zigbee
+    state: >
+      {{ integration_entities('zha') | map('device_id') | list | count }}
+    unit_of_measurement: devices
+    attributes:
+      icon: mdi:zigbee

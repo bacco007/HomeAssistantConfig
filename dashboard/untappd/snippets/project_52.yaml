@@ -6,23 +6,113 @@ cards:
     primary: Beers Drunk
     secondary: "{{ state_attr(entity, 'count') }} Beers"
     type: custom:mushroom-template-card
+    icon_color: orange
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+            conic-gradient(rgb(var(--rgb-{{ config.icon_color}}))
+            {{ (int(state_attr('sensor.untappd_project_52','count')))/52*100 }}% 0%,
+            var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: var(--icon-border-radius);
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
   - entity: sensor.untappd_project_52
     icon: mdi:beer-outline
     primary: Beers from Target
     secondary: "{{ state_attr(entity, 'target') }} Beers"
+    icon_color: orange
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+            conic-gradient(rgb(var(--rgb-{{ config.icon_color}}))
+            {{ (int(state_attr('sensor.untappd_project_52','target')))/52*100 }}% 0%,
+            var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: var(--icon-border-radius);
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
     type: custom:mushroom-template-card
   - entity: sensor.untappd_project_52
     icon: mdi:beer-outline
     primary: Average Rating
     secondary: "{{ state_attr(entity, 'rating_average') }} / 5"
     type: custom:mushroom-template-card
+    icon_color: yellow
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+            conic-gradient(rgb(var(--rgb-{{ config.icon_color}}))
+            {{ (int(state_attr('sensor.untappd_project_52','rating_average')))/5*100 }}% 0%,
+            var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: var(--icon-border-radius);
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
   - entity: sensor.untappd_project_52
     icon: mdi:beer-outline
     primary: Maximum Rating
     secondary: "{{ state_attr(entity, 'rating_maximum') }} / 5"
     type: custom:mushroom-template-card
+    icon_color: green
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+            conic-gradient(rgb(var(--rgb-{{ config.icon_color}}))
+            {{ (int(state_attr('sensor.untappd_project_52','rating_maximum')))/5*100 }}% 0%,
+            var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: var(--icon-border-radius);
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
   - entity: sensor.untappd_project_52
     icon: mdi:beer-outline
     primary: Minimum Rating
     secondary: "{{ state_attr(entity, 'rating_minimum') }} / 5"
     type: custom:mushroom-template-card
+    icon_color: red
+    card_mod:
+      style:
+        mushroom-shape-icon$: |
+          .shape {
+            background: radial-gradient(var(--card-background-color) 60%, transparent calc(60% + 1px)),
+            conic-gradient(rgb(var(--rgb-{{ config.icon_color}}))
+            {{ (int(state_attr('sensor.untappd_project_52','rating_minimum')))/5*100 }}% 0%,
+            var(--card-background-color) 0% 100%);
+          }
+          .shape:after {
+            content: "";
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border-radius: var(--icon-border-radius);
+            background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+          }
