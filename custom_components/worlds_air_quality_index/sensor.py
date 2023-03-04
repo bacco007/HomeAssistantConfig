@@ -103,6 +103,9 @@ async def async_setup_entry(
     scannedData = requester.GetData()
     _LOGGER.debug("Got station data from WAQI server:")
     _LOGGER.debug(scannedData)
+    
+    if not "forecast" in scannedData['data']:
+        _LOGGER.warning(f"Station {name} doesn't support forecast")
     scannedDataSensors = scannedData["data"]["iaqi"]
 
     entities = []
@@ -211,27 +214,28 @@ class WorldsAirQualityIndexSensor(SensorEntity):
             "StationName": self._requester.GetStationName(),
             "LastUpdate": self._requester.GetUpdateLastTime()
         }
-        if self._resType in self._data['data']['forecast']['daily']:
-            scannedDataForecast = self._data['data']['forecast']['daily'][self._resType]
-            day = date.today()
-            dayName = "Today"
-            if scannedDataForecast is not None:
-                for res in scannedDataForecast:
-                    readDate = date.fromisoformat(res["day"])
-                    if readDate == day:
-                        self._attr_extra_state_attributes['Forecast' + dayName + 'Avg'] = res['avg']
-                        self._attr_extra_state_attributes['Forecast' + dayName + 'Min'] = res['min']
-                        self._attr_extra_state_attributes['Forecast' + dayName + 'Max'] = res['max']
-                        _LOGGER.debug(f"Forecast{dayName} Avg/Min/Max extra state attributes added.")
-                    
-                    day = day + timedelta(days=1)
-                    if dayName == "Today":
-                        dayName = "Tomorrow"
-                    elif dayName == "Tomorrow":
-                        dayName = "2Days"
-                    elif dayName == "2Days":
-                        dayName = "3Days"
-                    elif dayName == "3Days":
-                        dayName = "4Days"
-                    elif dayName == "4Days":
-                        dayName = "5Days"
+        if "forecast" in self._data['data']:
+            if self._resType in self._data['data']['forecast']['daily']:
+                scannedDataForecast = self._data['data']['forecast']['daily'][self._resType]
+                day = date.today()
+                dayName = "Today"
+                if scannedDataForecast is not None:
+                    for res in scannedDataForecast:
+                        readDate = date.fromisoformat(res["day"])
+                        if readDate == day:
+                            self._attr_extra_state_attributes['Forecast' + dayName + 'Avg'] = res['avg']
+                            self._attr_extra_state_attributes['Forecast' + dayName + 'Min'] = res['min']
+                            self._attr_extra_state_attributes['Forecast' + dayName + 'Max'] = res['max']
+                            _LOGGER.debug(f"Forecast{dayName} Avg/Min/Max extra state attributes added.")
+                        
+                        day = day + timedelta(days=1)
+                        if dayName == "Today":
+                            dayName = "Tomorrow"
+                        elif dayName == "Tomorrow":
+                            dayName = "2Days"
+                        elif dayName == "2Days":
+                            dayName = "3Days"
+                        elif dayName == "3Days":
+                            dayName = "4Days"
+                        elif dayName == "4Days":
+                            dayName = "5Days"

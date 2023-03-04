@@ -18,7 +18,7 @@ from homeassistant.components.sensor import SensorDeviceClass
 
 DOMAIN = "worlds_air_quality_index"
 PLATFORMS = [Platform.SENSOR]
-SW_VERSION = "0.3.7"
+SW_VERSION = "1.0.1"
 
 DEFAULT_NAME = 'waqi1'
 DISCOVERY_TYPE = "discovery_type"
