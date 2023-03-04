@@ -203,3 +203,13 @@ noctis:
       :host {
         --ha-card-box-shadow: none;
       }
+
+  card-mod-card: |
+    .header .card-header {
+      letter-spacing: 0.005em;
+      font-size: 1.6em;
+      font-weight: 500;
+      padding: 1em 0 0 1.38em;
+      line-height: initial;
+      cursor: default;
+    }
