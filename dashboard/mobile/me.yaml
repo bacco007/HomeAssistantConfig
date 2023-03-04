@@ -9,19 +9,28 @@ badges: []
 cards:
   - !include snippets/header.yaml
 
-  - type: vertical-stack
-    cards:
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
-        tabs:
-          - attributes:
-              label: Location History
-              isMinWidthIndicator: true
-            card: !include ../me/snippets/location_history.yaml
-          - attributes:
-              label: Anniversaries
-              isMinWidthIndicator: true
-            card: !include ../me/snippets/anniversaries.yaml
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+        cards:
+          - type: custom:tabbed-card
+            options: {}
+            styles:
+              --mdc-theme-primary: var(--label-badge-blue)
+              --mdc-tab-text-label-color-default: var(--label-badge-red)
+            tabs:
+              - attributes:
+                  label: Location History
+                  isMinWidthIndicator: true
+                card: !include ../me/snippets/location_history.yaml
+              - attributes:
+                  label: Anniversaries
+                  isMinWidthIndicator: true
+                card: !include ../me/snippets/anniversaries.yaml
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include ../me/snippets/location_history.yaml
+          - !include ../me/snippets/anniversaries.yaml

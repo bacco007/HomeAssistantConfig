@@ -1,0 +1,77 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    hui-section-row $: |
+      .divider { display: none; }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      primary: MLB
+      icon: mdi:baseball-diamond
+      icon_color: green
+      card_mod:
+        style: |
+          ha-card {
+            background: none;
+            border: 0;
+            box-shadow: none;
+          }
+    padding: 0
+    entities:
+      - type: custom:hui-element
+        card_type: markdown
+        content: >-
+          {% for conf in state_attr('sensor.scoreboard_mlb', 'children') %} {% for
+          division in conf.children %}
+
+          ### {{division.name }}
+
+          |Team|Logo|GP|W|L|RD|Pts|
+
+          |:--|:--:|:--:|:--:|:--:|:--:|:--:|
+
+          {%- for team in division.standings.entries %}
+
+          |{{team.team.displayName}}|<img
+          src="{{team.team.logos[1].href}}">|{{team.stats[7].value|int}}|{{team.stats[17].value|int}}|{{team.stats[9].value|int}}|{{team.stats[13].value|int}}:{{team.stats[12].value|int}}|{{team.stats[11].value|int}}|
+
+          {%- endfor %}
+
+          {% endfor %}
+
+          {% endfor %}
+        card_mod:
+          style:
+            ha-markdown: |
+              ha-card.type-markdown { box-shadow: none; }
+              .no-header {padding-top: 0px !important; }
+            ha-markdown$: >
+              table { width: 100%; padding: 16px; border-collapse: collapse;
+              padding: 0px; }
+
+              thead th { height: 1em; }
+
+              tr td { padding-left: 0.5em; padding-right: 0.5em;  }
+
+              th { padding-left: 0.5em; padding-right: 0.5em;  }
+
+              tbody tr:nth-child(odd) { background-color:
+              var(--table-row-background-color);  }
+
+              tbody tr:nth-child(even) { background-color:
+              var(--table-row-alternative-background-color);  }
+
+              tbody tr td:nth-child(2) { width: 10%; }
+
+              th ha-icon { height: 1em; vertical-align: top;  }

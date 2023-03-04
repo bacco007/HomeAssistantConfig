@@ -1,20 +1,25 @@
 ---
-type: custom:mushroom-chips-card
-chips:
-  - type: template
-    icon: mdi:refresh
-    tap_action:
-      action: call-service
-      service: browser_mod.refresh
-      data: {}
-      target: {}
-    icon_color: green
-  - type: template
-    tap_action:
-      action: call-service
-      service: homeassistant.reload_all
-      data: {}
-      target: {}
-    icon: mdi:reload-alert
-    icon_color: red
-alignment: end
+type: horizontal-stack
+view_layout:
+  grid-area: footer
+cards:
+  - !include ../../snippets/media_currently_playing.yaml
+# type: custom:mushroom-chips-card
+# chips:
+#   - type: template
+#     icon: mdi:refresh
+#     tap_action:
+#       action: call-service
+#       service: browser_mod.refresh
+#       data: {}
+#       target: {}
+#     icon_color: green
+#   - type: template
+#     tap_action:
+#       action: call-service
+#       service: homeassistant.reload_all
+#       data: {}
+#       target: {}
+#     icon: mdi:reload-alert
+#     icon_color: red
+# alignment: end

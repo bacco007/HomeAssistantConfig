@@ -319,4 +319,3 @@ card:
           tap_action: !include popup_thomas.yaml
 
       alignment: justify
-    - !include ../../snippets/media_currently_playing.yaml

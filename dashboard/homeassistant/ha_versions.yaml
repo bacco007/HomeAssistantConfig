@@ -1,23 +1,16 @@
 ---
 type: vertical-stack
 cards:
-  # - type: custom:mushroom-chips-card
-  #   chips:
-  #     # - type: entity
-  #     #   entity: sensor.processor_temperature
-  #     #   icon_color: orange
-  #     # - type: entity
-  #     #   entity: sensor.processor_use
-  #     #   icon_color: blue
-  #     - type: entity
-  #       entity: sensor.memory_use_percent
-  #       icon_color: orange
-  #     - type: entity
-  #       entity: sensor.disk_use_percent_config
-  #       icon_color: deep-purple
-  #     # - type: entity
-  #     #   entity: sensor.network_in_eth0
-  #     #   icon_color: green
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(min-width: 801px)":
+        type: "custom:button-card"
+        template: header_card_no_link
+        variables:
+          name: Version Information
+        view_layout:
+          grid-column: 1/-1
   - type: horizontal-stack
     cards:
       - type: custom:mushroom-update-card

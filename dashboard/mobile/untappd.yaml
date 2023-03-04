@@ -27,19 +27,28 @@ cards:
         content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'checkins')}}"
     alignment: center
 
-  - type: vertical-stack
-    cards:
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
-        tabs:
-          - attributes:
-              label: Stats
-              isMinWidthIndicator: true
-            card: !include ../untappd/snippets/stats.yaml
-          - attributes:
-              label: Project 52
-              isMinWidthIndicator: true
-            card: !include ../untappd/snippets/project_52.yaml
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+        cards:
+          - type: custom:tabbed-card
+            options: {}
+            styles:
+              --mdc-theme-primary: var(--label-badge-blue)
+              --mdc-tab-text-label-color-default: var(--label-badge-red)
+            tabs:
+              - attributes:
+                  label: Stats
+                  isMinWidthIndicator: true
+                card: !include ../untappd/snippets/stats.yaml
+              - attributes:
+                  label: Project 52
+                  isMinWidthIndicator: true
+                card: !include ../untappd/snippets/project_52.yaml
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include ../untappd/snippets/stats.yaml
+          - !include ../untappd/snippets/project_52.yaml

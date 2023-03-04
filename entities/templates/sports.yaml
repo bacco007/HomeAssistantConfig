@@ -2933,7 +2933,7 @@ sensor:
     picture: /local/sportlogos/sydney_swans_vfl.png
     state: >-
       {%- if state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary') %}
-        {{ state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary') }}
+        {{ state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary').split(" - ",2)[0] }}
       {%- else %}
         Nothing Scheduled
       {%- endif %}
@@ -2961,7 +2961,7 @@ sensor:
           No Game Scheduled
         {%- endif %}
       nextevent: >-
-        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary') %}
+        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'summary').split(" - ",2)[0] %}
         {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_0", 'start') %}
         {%- if st != None %}
           {{ op }}
@@ -2976,7 +2976,7 @@ sensor:
           No Location Noted
         {%- endif %}
       nexteventafter: >-
-        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'summary') %}
+        {%- set op = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'summary').split(" - ",2)[0] %}
         {%- set st = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'start') %}
         {%- set et = state_attr("sensor.ical_sydney_swans_vfl_event_1", 'eta') %}
         {%- if st != None %}

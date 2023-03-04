@@ -3,18 +3,94 @@ theme: noctis
 title: Home
 path: home
 badges: []
+type: custom:grid-layout
+layout:
+  #default
+  margin: 0
+  grid-gap: 0.5vw
+  grid-template-columns: 15% repeat(3, 1fr) 0
+  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+  grid-template-areas: |
+    "sidebar . . . ."
+    "sidebar  c2r2 c3r2 c4r2 ."
+    "sidebar  c2r3 c3r3 c4r3 ."
+    "footer footer footer footer  ."
+  mediaquery:
+    #phone
+    "(max-width: 800px)":
+      grid-gap: 1vw
+      grid-template-columns: 0 repeat(1, 1fr) 0
+      grid-template-rows: auto
+      grid-template-areas: |
+        ".  .       ."
+        ".  sidebar ."
+        ".  footer  ."
+        ".  .       ."
 cards:
+  ###
+  # SIDEBAR
+  # Column 1
+  ###
+
   - type: vertical-stack
+    view_layout:
+      grid-area: sidebar
     cards:
       - !include snippets/header.yaml
-      - type: vertical-stack
-        cards:
-          - !include snippets/menu.yaml
-        view_layout:
-          grid-area: main
-      - type: vertical-stack
+      - !include snippets/menu.yaml
+
+  ###
+  # Column 2, Row 2
+  ###
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(min-width: 801px)":
+        type: grid
+        title: Vardagsrum
+        columns: 2
         cards:
           - !include snippets/weather_forecast.yaml
-        view_layout:
-          grid-area: main
-      - !include snippets/footer.yaml
+
+  ###
+  # Column 3, Row 2
+  ###
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r2
+    states:
+      "(min-width: 801px)":
+        type: grid
+        title: Studio
+        columns: 2
+        cards:
+          - type: entites
+            entities: [sun.sun]
+
+  ###
+  # Column 4, Row 2
+  ###
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c4r2
+    states:
+      "(min-width: 801px)":
+        type: grid
+        title: Studio
+        columns: 2
+        cards:
+          - type: entites
+            entities: [sun.sun]
+
+  ###
+  # Footer
+  ###
+
+  - !include snippets/footer.yaml

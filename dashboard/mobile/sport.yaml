@@ -6,135 +6,209 @@ subview: true
 path: sport
 title: Sport
 badges: []
+type: custom:grid-layout
+layout:
+  #default
+  margin: 0
+  grid-gap: 0.5vw
+  grid-template-columns: 15% repeat(4, 1fr) 0
+  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+  grid-template-areas: |
+    "sidebar . . . . ."
+    "sidebar c2r2 c3r2 c4r2 c5r2 ."
+    "footer footer footer footer footer ."
+  mediaquery:
+    #phone
+    "(max-width: 800px)":
+      grid-gap: calc(3.3vw * 1.7)
+      grid-template-columns: 0 repeat(1, 1fr) 0
+      grid-template-rows: auto
+      grid-template-areas: |
+        ".  .       ."
+        ".  sidebar ."
+        ".  footer  ."
+        ".  c2r2    ."
+        ".  c4r2    ."
+        ".  .       ."
 cards:
-  - !include snippets/header.yaml
-
-  - type: custom:mushroom-template-card
-    primary: >
-      Sport
-    icon: mdi:home
-    fill_container: true
-    tap_action:
-      action: none
-    hold_action:
-      action: none
-    icon_color: red
-    secondary: |-
-      Today: {{ states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 0)|list|count }}, This Week: {{ states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 7)|list|count }}
-    card_mod:
-      style: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-          padding: 0px 16px 8px !important;
-        }
-        :host {
-          --mush-card-primary-font-size: 1.2rem;
-        }
-
+  ###
+  # SIDEBAR
+  # Column 1
+  ###
   - type: vertical-stack
+    view_layout:
+      grid-area: sidebar
     cards:
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
-        tabs:
-          - attributes:
-              label: Calendar
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/calendar.yaml
-          - attributes:
-              label: Team Tracker
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/teamtracker.yaml
-          - attributes:
-              label: Formula One
-              isMinWidthIndicator: true
-            card:
-              type: vertical-stack
-              cards:
-                - type: custom:formulaone-card
-                  card_type: countdown
-                  date_locale: au
-                  f1_font: true
-                - type: custom:formulaone-card
-                  card_type: next_race
-                  date_locale: au
-                  image_clickable: true
-                  f1_font: true
-                - type: custom:stack-in-card
-                  cards:
-                    - type: custom:formulaone-card
-                      card_type: last_result
-                      title: Last Race
-                      ddate_locale: au
-                      f1_font: true
-                - type: vertical-stack
-                  cards:
-                    - type: custom:tabbed-card
+      - !include snippets/header.yaml
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(min-width: 801px)":
+            type: vertical-stack
+
+            cards:
+              - !include snippets/menu.yaml
+  ###
+  # Footer
+  ###
+
+  - !include snippets/footer.yaml
+
+  # - type: custom:mushroom-template-card
+  #   primary: >
+  #     Sport
+  #   icon: mdi:home
+  #   fill_container: true
+  #   tap_action:
+  #     action: none
+  #   hold_action:
+  #     action: none
+  #   icon_color: red
+  #   secondary: |-
+  #     Today: {{ states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 0)|list|count }}, This Week: {{ states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 7)|list|count }}
+  #   card_mod:
+  #     style: |
+  #       ha-card {
+  #         background: none;
+  #         box-shadow: none;
+  #         padding: 0px 16px 8px !important;
+  #       }
+  #       :host {
+  #         --mush-card-primary-font-size: 1.2rem;
+  #       }
+
+  # Mobile Only
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r3
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:tabbed-card
+                options: {}
+                styles:
+                  --mdc-theme-primary: var(--label-badge-blue)
+                  --mdc-tab-text-label-color-default: var(--label-badge-red)
+                tabs:
+                  - attributes:
+                      label: Calendar
+                      isMinWidthIndicator: true
+                    card:
+                      type: custom:tabbed-card
                       options: {}
                       styles:
                         --mdc-theme-primary: var(--label-badge-blue)
                         --mdc-tab-text-label-color-default: var(--label-badge-red)
                       tabs:
-                        - card:
-                            type: custom:formulaone-card
-                            card_type: schedule
-                            date_locale: au
-                            previous_race: hide
-                            location_clickable: true
-                            f1_font: true
+                        - card: !include ../sport/calendar.yaml
                           attributes:
-                            label: Schedule
-                        - card:
-                            type: custom:formulaone-card
-                            card_type: constructor_standings
-                            standings:
-                              show_teamlogo: true
+                            label: With Events
+                        - card: !include ../sport/calendar_none.yaml
                           attributes:
-                            label: Cons Stds
-                        - card:
-                            type: custom:formulaone-card
-                            card_type: driver_standings
-                            f1_font: true
-                            standings:
-                              show_flag: true
-                              show_team: true
-                              show_teamlogo: true
-                          attributes:
-                            label: Drv Stds
-                        - card:
-                            type: custom:formulaone-card
-                            card_type: results
-                            date_locale: au
-                            location_clickable: true
-                            f1_font: true
-                          attributes:
-                            label: Results
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
-        tabs:
-          - attributes:
-              label: AFL
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/standings_afl.yaml
-          - attributes:
-              label: NRL
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/standings_nrl.yaml
-          - attributes:
-              label: EPL
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/standings_epl.yaml
-          - attributes:
-              label: SRP
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/standings_srp.yaml
-          - attributes:
-              label: ALM
-              isMinWidthIndicator: true
-            card: !include ../sport/snippets/standings_alm.yaml
+                            label: Without Events
+                  - attributes:
+                      label: Team Tracker
+                      isMinWidthIndicator: true
+                    card: !include ../sport/teamtracker.yaml
+                  - attributes:
+                      label: Formula One
+                      isMinWidthIndicator: true
+                    card: !include ../sport/formula1.yaml
+
+  # Non-Mobile
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - type: custom:state-switch
+            entity: mediaquery
+            states:
+              "(min-width: 801px)":
+                type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Calendar
+                view_layout:
+                  grid-column: 1/-1
+          - type: custom:tabbed-card
+            options: {}
+            styles:
+              --mdc-theme-primary: var(--label-badge-blue)
+              --mdc-tab-text-label-color-default: var(--label-badge-red)
+            tabs:
+              - card: !include ../sport/calendar.yaml
+                attributes:
+                  label: With Events
+              - card: !include ../sport/calendar_none.yaml
+                attributes:
+                  label: Without Events
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - type: custom:state-switch
+            entity: mediaquery
+            states:
+              "(min-width: 801px)":
+                type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: TeamTracker
+                view_layout:
+                  grid-column: 1/-1
+          - !include ../sport/teamtracker.yaml
+
+  - type: vertical-stack
+    view_layout:
+      grid-area: c4r2
+    cards:
+      - type: "custom:button-card"
+        template: header_card_no_link
+        variables:
+          name: Standings
+        view_layout:
+          grid-column: 1/-1
+      - !include ../sport/standings_afl.yaml
+      - !include ../sport/standings_alm.yaml
+      - !include ../sport/standings_epl.yaml
+      - !include ../sport/standings_mlb.yaml
+      - !include ../sport/standings_nhl.yaml
+      - !include ../sport/standings_nrl.yaml
+      - !include ../sport/standings_srp.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c5r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - type: custom:state-switch
+            entity: mediaquery
+            states:
+              "(min-width: 801px)":
+                type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Formula 1
+                view_layout:
+                  grid-column: 1/-1
+          - !include ../sport/formula1.yaml

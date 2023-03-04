@@ -20,89 +20,180 @@ views:
   - !include mobile/weather.yaml
   - title: Kiosk
     path: kiosk
-    type: custom:ha-dashboard
-    sidebar:
-      buttons:
-        - icon: mdi:information
-          action:
-            action: call-service
-            service: myservice.action
-      stickyCards:
-        - !include mobile/snippets/header.yaml
-      cards:
-        - !include mobile/snippets/menu.yaml
-    icon: mdi:home
+    type: custom:grid-layout
+    layout:
+      #default
+      margin: 0
+      grid-gap: 0.5vw
+      grid-template-columns: 15% repeat(3, 1fr) 0
+      grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+      grid-template-areas: |
+        "sidebar . . . ."
+        "sidebar  c2r2 c3r2 c4r2 ."
+        "sidebar  c2r3 c3r3 c4r3 ."
+        "footer footer footer footer  ."
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(3.3vw * 1.7)
+          grid-template-columns: 0 repeat(1, 1fr) 0
+          grid-template-rows: auto
+          grid-template-areas: |
+            ".  .       ."
+            ".  sidebar ."
+            ".  footer  ."
+            ".  .       ."
     cards:
-      - type: custom:mushroom-template-card
-        primary: >
-          Tamworth
-        icon: mdi:city
-        fill_container: true
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        icon_color: red
-        secondary: |-
-          Yo!
-        card_mod:
-          style: |
-            ha-card {
-              background: none;
-              box-shadow: none;
-              padding: 0px 16px 8px !important;
-            }
-            :host {
-              --mush-card-primary-font-size: 1.2rem;
-            }
+      ###
+      # SIDEBAR
+      # Column 1
+      ###
 
       - type: vertical-stack
+        view_layout:
+          grid-area: sidebar
         cards:
-          - type: custom:tabbed-card
-            options: {}
-            styles:
-              "--mdc-theme-primary": unset
-              "--mdc-tab-text-label-color-default": var(--secondary-text-color)
-              "--mdc-tab-color-default": var(--paper-item-icon-color)
-            tabs:
-              - attributes:
-                  label: Live Traffic
-                  isMinWidthIndicator: true
-                card:
-                  type: vertical-stack
-                  cards:
-                    - !include tamworth/snippets/livetraffic.yaml
-                    - !include tamworth/livetraffic/alpine.yaml
-                    - !include tamworth/livetraffic/fire.yaml
-                    - !include tamworth/livetraffic/flood.yaml
-                    - !include tamworth/livetraffic/incidents.yaml
-                    - !include tamworth/livetraffic/incidentslga.yaml
-                    - !include tamworth/livetraffic/majorevents.yaml
-                    - !include tamworth/livetraffic/roadwork.yaml
-              - attributes:
-                  label: Fuel
-                  isMinWidthIndicator: true
-                card:
-                  type: vertical-stack
-                  cards:
-                    - !include tamworth/snippets/fuel_u95.yaml
-                    - !include tamworth/snippets/fuel_u98.yaml
-                    - !include tamworth/snippets/fuel_u91.yaml
-                    - !include tamworth/snippets/fuel_e10.yaml
-              - attributes:
-                  label: Hospital
-                  isMinWidthIndicator: true
-                card:
-                  type: vertical-stack
-                  cards:
-                    - !include tamworth/snippets/hospital.yaml
-              - attributes:
-                  label: Dams
-                  isMinWidthIndicator: true
-                card:
-                  type: vertical-stack
-                  cards:
-                    - !include tamworth/dams.yaml
+          - !include mobile/snippets/header.yaml
+          - !include mobile/snippets/menu.yaml
+
+      ###
+      # Column 2, Row 2
+      ###
+
+      - type: custom:state-switch
+        entity: mediaquery
+        view_layout:
+          grid-area: c2r2
+        states:
+          "(min-width: 801px)":
+            type: grid
+            title: Vardagsrum
+            columns: 2
+            cards:
+              - type: entites
+                entities: [sun.sun]
+
+      ###
+      # Column 3, Row 2
+      ###
+
+      - type: custom:state-switch
+        entity: mediaquery
+        view_layout:
+          grid-area: c3r2
+        states:
+          "(min-width: 801px)":
+            type: grid
+            title: Studio
+            columns: 2
+            cards:
+              - type: entites
+                entities: [sun.sun]
+
+      ###
+      # Column 4, Row 2
+      ###
+
+      - type: custom:state-switch
+        entity: mediaquery
+        view_layout:
+          grid-area: c4r2
+        states:
+          "(min-width: 801px)":
+            type: grid
+            title: Studio
+            columns: 2
+            cards:
+              - type: entites
+                entities: [sun.sun]
+
+      ###
+      # Footer
+      ###
+
+      - type: horizontal-stack
+        view_layout:
+          grid-area: footer
+        cards:
+          - !include snippets/media_currently_playing.yaml
+          # - !include mobile/snippets/footer.yaml
+          # - type: custom:button-card
+          #   name: >
+          #     <ha-icon icon="mdi:nas"></ha-icon> NAS
+          #   triggers_update:
+          #     - update.nas_dsm_update
+          #     - sensor.nas_volume_1_status
+          #     - binary_sensor.nas_security_status
+          #     - sensor.disk_use_percent
+          #   variables:
+          #     notify: >
+          #       [[[
+          #         let id = this._config.triggers_update;
+          #         if (id.every(e => states[e]))
+          #             return states[id[0]].state === 'on'
+          #                 ? 1
+          #                 : states[id[1]].state === 'background_scrubbing' ||
+          #                   states[id[2]].state === 'on' ||
+          #                   parseFloat(states[id[3]].state) >= 85;
+          #       ]]]
+          #   template: footer
+
+          # - type: custom:button-card
+          #   entity: sensor.template_updates
+          #   name: >
+          #     <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Uppdatera
+          #   variables:
+          #     notify: >
+          #       [[[
+          #         return parseInt(entity?.state);
+          #       ]]]
+          #   template: footer
+
+          # - type: custom:button-card
+          #   name: >
+          #     <ha-icon icon="mdi:robot-vacuum-variant"></ha-icon> Städa
+          #   triggers_update:
+          #     - sensor.date
+          #   variables:
+          #     notify: >
+          #       [[[
+          #         let id = states['sensor.morty_last_clean_end'];
+          #         if (id) return (Date.now() - Date.parse(id.state)) > 6048e5;
+          #       ]]]
+          #   template: footer
+
+          # - type: custom:button-card
+          #   name: >
+          #     <ha-icon icon="mdi:chart-line-variant"></ha-icon> Historik
+          #   template: footer
+
+          # - type: custom:button-card
+          #   name: >
+          #     <ha-icon icon="mdi:tablet"></ha-icon> Platta
+          #   variables:
+          #     notify: >
+          #       [[[
+          #         let id = states['binary_sensor.galaxy_tab_a_plugged_in'];
+          #         if (id) return id.state === 'off';
+          #       ]]]
+          #   template: footer
+
+          # - type: custom:button-card
+          #   name: >
+          #     <ha-icon icon="mdi:router-wireless"></ha-icon> Router
+          #   triggers_update:
+          #     - update.unifi_dream_machine
+          #     - binary_sensor.template_udm_internet
+          #   variables:
+          #     notify: >
+          #       [[[
+          #         let id = this._config.triggers_update;
+          #         if (id.every(e => states[e]))
+          #             return states[id[0]].state === 'on'
+          #                 ? 1
+          #                 : states[id[1]].state === 'off';
+          #       ]]]
+          #   template: footer
 
   # - theme: Metro Red
   #   icon: mdi:sofa
