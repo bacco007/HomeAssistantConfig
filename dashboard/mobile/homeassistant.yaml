@@ -21,16 +21,14 @@ layout:
   mediaquery:
     #phone
     "(max-width: 800px)":
-      grid-gap: calc(3.3vw * 1.7)
-      grid-template-columns: 0 repeat(1, 1fr) 0
+      grid-gap: 1vw
+      grid-template-columns: 100%
       grid-template-rows: auto
       grid-template-areas: |
-        ".  .       ."
-        ".  sidebar ."
-        ".  footer  ."
-        ".  c2r2    ."
-        ".  c2r3    ."
-        ".  .       ."
+        "sidebar"
+        "footer"
+        "c2r2"
+        "c2r3"
 cards:
   ###
   # SIDEBAR
