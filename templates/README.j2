@@ -73,7 +73,7 @@ _Stats as at {{ states('sensor.time') }}, {{ states('sensor.date_long_format') }
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| {{ states('sensor.ha_current_version')}} | {{ states.sensor.hass_main_config.attributes.components | count }}     | {{states    | count}}         | {{states.sensor | count}} | {{states.automation | count}} |
+| {{ states('sensor.ha_version_installed_2')}} | {{ states.sensor.hass_main_config.attributes.components | count }}     | {{states    | count}}         | {{states.sensor | count}} | {{states.automation | count}} |
 
 Type | Qty
 -- | --
@@ -144,25 +144,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ## HA Supervisor
 
-### Addon Repositories
-
-{% for repository in states.sensor.addons.attributes.addons_repositories | sort -%}
-- {{ repository }}
-{% endfor %}
-
 ### Addons
 
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
 
-{%- set addon_docs =
-	{
-		"core_samba": "https://github.com/home-assistant/hassio-addons/tree/master/samba",
-		"core_mariadb": "https://github.com/home-assistant/hassio-addons/tree/master/mariadb"
-	}
--%}
-
 {% for addon in states.sensor.addons.attributes.addons | sort(attribute='name') -%}
-- [{{ addon.name }}]({{addon_docs[addon.slug]}})
+- {{ addon.name }}
 {% endfor %}
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
