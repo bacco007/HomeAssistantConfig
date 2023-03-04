@@ -18,2084 +18,1986 @@ views:
   - !include mobile/tamworth.yaml
   - !include mobile/untappd.yaml
   - !include mobile/weather.yaml
-  - title: Kiosk
-    path: kiosk
-    type: custom:grid-layout
-    layout:
-      #default
-      margin: 0
-      grid-gap: 0.5vw
-      grid-template-columns: 15% repeat(3, 1fr) 0
-      grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
-      grid-template-areas: |
-        "sidebar . . . ."
-        "sidebar  c2r2 c3r2 c4r2 ."
-        "sidebar  c2r3 c3r3 c4r3 ."
-        "footer footer footer footer  ."
-      mediaquery:
-        #phone
-        "(max-width: 800px)":
-          grid-gap: calc(3.3vw * 1.7)
-          grid-template-columns: 0 repeat(1, 1fr) 0
-          grid-template-rows: auto
-          grid-template-areas: |
-            ".  .       ."
-            ".  sidebar ."
-            ".  footer  ."
-            ".  .       ."
-    cards:
-      ###
-      # SIDEBAR
-      # Column 1
-      ###
 
-      - type: vertical-stack
-        view_layout:
-          grid-area: sidebar
-        cards:
-          - !include mobile/snippets/header.yaml
-          - !include mobile/snippets/menu.yaml
+  # - !include mobile/snippets/footer.yaml
+  # - type: custom:button-card
+  #   name: >
+  #     <ha-icon icon="mdi:nas"></ha-icon> NAS
+  #   triggers_update:
+  #     - update.nas_dsm_update
+  #     - sensor.nas_volume_1_status
+  #     - binary_sensor.nas_security_status
+  #     - sensor.disk_use_percent
+  #   variables:
+  #     notify: >
+  #       [[[
+  #         let id = this._config.triggers_update;
+  #         if (id.every(e => states[e]))
+  #             return states[id[0]].state === 'on'
+  #                 ? 1
+  #                 : states[id[1]].state === 'background_scrubbing' ||
+  #                   states[id[2]].state === 'on' ||
+  #                   parseFloat(states[id[3]].state) >= 85;
+  #       ]]]
+  #   template: footer
 
-      ###
-      # Column 2, Row 2
-      ###
+  # - type: custom:button-card
+  #   entity: sensor.template_updates
+  #   name: >
+  #     <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Uppdatera
+  #   variables:
+  #     notify: >
+  #       [[[
+  #         return parseInt(entity?.state);
+  #       ]]]
+  #   template: footer
 
-      - type: custom:state-switch
-        entity: mediaquery
-        view_layout:
-          grid-area: c2r2
-        states:
-          "(min-width: 801px)":
-            type: grid
-            title: Vardagsrum
-            columns: 2
-            cards:
-              - type: entites
-                entities: [sun.sun]
+  # - type: custom:button-card
+  #   name: >
+  #     <ha-icon icon="mdi:robot-vacuum-variant"></ha-icon> Städa
+  #   triggers_update:
+  #     - sensor.date
+  #   variables:
+  #     notify: >
+  #       [[[
+  #         let id = states['sensor.morty_last_clean_end'];
+  #         if (id) return (Date.now() - Date.parse(id.state)) > 6048e5;
+  #       ]]]
+  #   template: footer
 
-      ###
-      # Column 3, Row 2
-      ###
+  # - type: custom:button-card
+  #   name: >
+  #     <ha-icon icon="mdi:chart-line-variant"></ha-icon> Historik
+  #   template: footer
 
-      - type: custom:state-switch
-        entity: mediaquery
-        view_layout:
-          grid-area: c3r2
-        states:
-          "(min-width: 801px)":
-            type: grid
-            title: Studio
-            columns: 2
-            cards:
-              - type: entites
-                entities: [sun.sun]
+  # - type: custom:button-card
+  #   name: >
+  #     <ha-icon icon="mdi:tablet"></ha-icon> Platta
+  #   variables:
+  #     notify: >
+  #       [[[
+  #         let id = states['binary_sensor.galaxy_tab_a_plugged_in'];
+  #         if (id) return id.state === 'off';
+  #       ]]]
+  #   template: footer
 
-      ###
-      # Column 4, Row 2
-      ###
-
-      - type: custom:state-switch
-        entity: mediaquery
-        view_layout:
-          grid-area: c4r2
-        states:
-          "(min-width: 801px)":
-            type: grid
-            title: Studio
-            columns: 2
-            cards:
-              - type: entites
-                entities: [sun.sun]
-
-      ###
-      # Footer
-      ###
-
-      - type: horizontal-stack
-        view_layout:
-          grid-area: footer
-        cards:
-          - !include snippets/media_currently_playing.yaml
-          # - !include mobile/snippets/footer.yaml
-          # - type: custom:button-card
-          #   name: >
-          #     <ha-icon icon="mdi:nas"></ha-icon> NAS
-          #   triggers_update:
-          #     - update.nas_dsm_update
-          #     - sensor.nas_volume_1_status
-          #     - binary_sensor.nas_security_status
-          #     - sensor.disk_use_percent
-          #   variables:
-          #     notify: >
-          #       [[[
-          #         let id = this._config.triggers_update;
-          #         if (id.every(e => states[e]))
-          #             return states[id[0]].state === 'on'
-          #                 ? 1
-          #                 : states[id[1]].state === 'background_scrubbing' ||
-          #                   states[id[2]].state === 'on' ||
-          #                   parseFloat(states[id[3]].state) >= 85;
-          #       ]]]
-          #   template: footer
-
-          # - type: custom:button-card
-          #   entity: sensor.template_updates
-          #   name: >
-          #     <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Uppdatera
-          #   variables:
-          #     notify: >
-          #       [[[
-          #         return parseInt(entity?.state);
-          #       ]]]
-          #   template: footer
-
-          # - type: custom:button-card
-          #   name: >
-          #     <ha-icon icon="mdi:robot-vacuum-variant"></ha-icon> Städa
-          #   triggers_update:
-          #     - sensor.date
-          #   variables:
-          #     notify: >
-          #       [[[
-          #         let id = states['sensor.morty_last_clean_end'];
-          #         if (id) return (Date.now() - Date.parse(id.state)) > 6048e5;
-          #       ]]]
-          #   template: footer
-
-          # - type: custom:button-card
-          #   name: >
-          #     <ha-icon icon="mdi:chart-line-variant"></ha-icon> Historik
-          #   template: footer
-
-          # - type: custom:button-card
-          #   name: >
-          #     <ha-icon icon="mdi:tablet"></ha-icon> Platta
-          #   variables:
-          #     notify: >
-          #       [[[
-          #         let id = states['binary_sensor.galaxy_tab_a_plugged_in'];
-          #         if (id) return id.state === 'off';
-          #       ]]]
-          #   template: footer
-
-          # - type: custom:button-card
-          #   name: >
-          #     <ha-icon icon="mdi:router-wireless"></ha-icon> Router
-          #   triggers_update:
-          #     - update.unifi_dream_machine
-          #     - binary_sensor.template_udm_internet
-          #   variables:
-          #     notify: >
-          #       [[[
-          #         let id = this._config.triggers_update;
-          #         if (id.every(e => states[e]))
-          #             return states[id[0]].state === 'on'
-          #                 ? 1
-          #                 : states[id[1]].state === 'off';
-          #       ]]]
-          #   template: footer
-
-  # - theme: Metro Red
-  #   icon: mdi:sofa
-  #   subview: true
-  #   path: lounge
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: custom:mushroom-chips-card
-  #       chips:
-  #         - type: entity
-  #           entity: sensor.lounge_sensor_temperature
-  #           icon_color: red
-  #         - type: entity
-  #           entity: sensor.lounge_sensor_humidity
-  #           icon_color: blue
-  #         - type: entity
-  #           entity: binary_sensor.patio_door_sensor_magnet_on_off
-  #       alignment: center
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-light-card
-  #           entity: light.lounge
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #           tap_action:
-  #             action: toggle
-  #         - type: custom:mushroom-light-card
-  #           entity: light.lounge_hue
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #     - type: vertical-stack
-  #       cards:
-  #         - commands:
-  #             - start_pause
-  #             - stop
-  #             - return_home
-  #           entity: vacuum.roborock_vacuum_a27
-  #           layout: vertical
-  #           tap_action:
-  #             action: navigate
-  #             navigation_path: /mobile-dashboard/vacuum
-  #           type: custom:mushroom-vacuum-card
-  #         - entities:
-  #             - entity: input_boolean.vacuumed_today
-  #           type: entities
-  #     - type: custom:mushroom-climate-card
-  #       entity: climate.lounge_radiator_thermostat
-  #       layout: vertical
-  #       show_temperature_control: true
-  #       hvac_modes:
-  #         - heat
-  #         - "off"
-  #     - type: vertical-stack
-  #       cards:
-  #         - show_state: true
-  #           show_name: true
-  #           camera_view: live
-  #           type: picture-entity
-  #           image: https://demo.home-assistant.io/stub_config/bedroom.png
-  #           entity: camera.lounge
-  #           camera_image: camera.lounge
-  #           aspect_ratio: "1.35"
-  #         - type: custom:mushroom-cover-card
-  #           entity: cover.lounge_curtains
-  #           layout: horizontal
-  #           show_buttons_control: true
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.lounge_tv
-  #           layout: vertical
-  #           media_controls:
-  #             - on_off
-  #             - play_pause_stop
-  #           tap_action:
-  #             action: toggle
-  #           volume_controls: []
-  #           use_media_info: true
-  #           show_volume_level: false
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.skyq
-  #           name: SkyQ
-  #           use_media_info: true
-  #           media_controls:
-  #             - on_off
-  #           layout: horizontal
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.lounge_sonos_ray
-  #           layout: vertical
-  #           use_media_info: true
-  #           icon_type: entity-picture
-  #           volume_controls:
-  #             - volume_set
-  #           media_controls:
-  #             - previous
-  #             - play_pause_stop
-  #             - next
-  #           show_volume_level: true
-  # - theme: Metro Red
-  #   subview: true
-  #   title: Lights
-  #   path: lights
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: vertical-stack
-  #       cards:
-  #         - cards:
-  #             - collapsible_controls: false
-  #               entity: light.bedroom
-  #               layout: vertical
-  #               name: Bedroom Light
-  #               show_brightness_control: true
-  #               show_color_control: false
-  #               show_color_temp_control: false
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:mushroom-light-card
-  #               use_light_color: true
-  #             - collapsible_controls: false
-  #               entity: light.bedroom_hue
-  #               layout: vertical
-  #               show_brightness_control: true
-  #               show_color_control: true
-  #               show_color_temp_control: true
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:mushroom-light-card
-  #               use_light_color: true
-  #           type: horizontal-stack
-  #         - cards:
-  #             - cards:
-  #                 - collapsible_controls: false
-  #                   entity: light.boys_light2
-  #                   hold_action:
-  #                     action: more-info
-  #                   layout: vertical
-  #                   name: Alex Light
-  #                   show_brightness_control: true
-  #                   show_color_temp_control: true
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #                 - collapsible_controls: false
-  #                   entity: light.alex_lamp
-  #                   hold_action:
-  #                     action: more-info
-  #                   icon: mdi:led-strip-variant
-  #                   layout: vertical
-  #                   name: Alex Lamp
-  #                   show_brightness_control: true
-  #                   show_color_control: true
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #               type: horizontal-stack
-  #           type: vertical-stack
-  #         - cards:
-  #             - cards:
-  #                 - collapsible_controls: false
-  #                   entity: light.thomas_light
-  #                   hold_action:
-  #                     action: more-info
-  #                   layout: vertical
-  #                   name: Thomas Light
-  #                   show_brightness_control: true
-  #                   show_color_temp_control: true
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #                 - collapsible_controls: false
-  #                   entity: light.thomas_lamp
-  #                   hold_action:
-  #                     action: more-info
-  #                   icon: mdi:led-strip-variant
-  #                   layout: vertical
-  #                   name: Thomas Lamp
-  #                   show_brightness_control: true
-  #                   show_color_control: true
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #               type: horizontal-stack
-  #           type: vertical-stack
-  #         - cards:
-  #             - cards:
-  #                 - collapsible_controls: false
-  #                   entity: light.hallway_lights
-  #                   fill_container: false
-  #                   hold_action:
-  #                     action: more-info
-  #                   layout: vertical
-  #                   name: Hallway Lights
-  #                   show_brightness_control: true
-  #                   show_color_control: true
-  #                   show_color_temp_control: true
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #                 - collapsible_controls: false
-  #                   entity: light.hallway_cupboard
-  #                   hold_action:
-  #                     action: more-info
-  #                   layout: vertical
-  #                   name: Cupboard
-  #                   show_brightness_control: true
-  #                   show_color_control: false
-  #                   show_color_temp_control: true
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #               type: horizontal-stack
-  #           type: vertical-stack
-  #         - cards:
-  #             - entity: light.bathroom_light
-  #               icon: mdi:lightbulb-spot
-  #               layout: vertical
-  #               name: Bathroom Light
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:mushroom-light-card
-  #             - entity: light.washroom
-  #               icon: mdi:ceiling-light
-  #               layout: vertical
-  #               name: Washroom Light
-  #               type: custom:mushroom-light-card
-  #           type: horizontal-stack
-  #         - cards:
-  #             - cards:
-  #                 - collapsible_controls: false
-  #                   entity: light.lounge
-  #                   layout: vertical
-  #                   name: Lounge Light
-  #                   show_brightness_control: true
-  #                   show_color_control: true
-  #                   show_color_temp_control: true
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #                 - collapsible_controls: false
-  #                   entity: light.lounge_hue
-  #                   layout: vertical
-  #                   name: Lounge LED's
-  #                   show_brightness_control: true
-  #                   show_color_control: true
-  #                   show_color_temp_control: true
-  #                   type: custom:mushroom-light-card
-  #                   use_light_color: true
-  #               type: horizontal-stack
-  #           type: vertical-stack
-  #         - cards:
-  #             - entity: light.kitchen_spotlights
-  #               icon: mdi:spotlight
-  #               layout: vertical
-  #               name: Kitchen Spotlights
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:mushroom-light-card
-  #             - collapsible_controls: false
-  #               entity: light.kitchen_leds
-  #               icon: mdi:led-strip-variant
-  #               layout: vertical
-  #               name: Kitchen LED's
-  #               show_brightness_control: false
-  #               show_color_control: false
-  #               show_color_temp_control: false
-  #               type: custom:mushroom-light-card
-  #               use_light_color: true
-  #           type: horizontal-stack
-  #         - cards:
-  #             - cards:
-  #                 - entity: light.office
-  #                   icon: mdi:lightbulb-spot
-  #                   layout: vertical
-  #                   name: Office Lights
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                 - entity: light.canopy
-  #                   icon: mdi:spotlight-beam
-  #                   layout: vertical
-  #                   name: Canopy
-  #                   type: custom:mushroom-light-card
-  #               type: horizontal-stack
-  #           type: vertical-stack
-  #         - type: custom:mushroom-light-card
-  #           entity: light.pc_govee_flow_pro
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #         - type: horizontal-stack
-  #           cards:
-  #             - collapsible_controls: false
-  #               entity: light.yeelight_mono1_f0b429a93ec5
-  #               layout: vertical
-  #               name: Front Light
-  #               show_brightness_control: true
-  #               show_color_control: true
-  #               show_color_temp_control: true
-  #               type: custom:mushroom-light-card
-  #               use_light_color: true
-  #             - collapsible_controls: false
-  #               entity: light.back
-  #               layout: vertical
-  #               name: Back Light
-  #               show_brightness_control: true
-  #               show_color_control: true
-  #               show_color_temp_control: true
-  #               type: custom:mushroom-light-card
-  #               use_light_color: true
-  # - theme: Metro Red
-  #   subview: true
-  #   path: windows
-  #   title: Windows
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.big_bedroom_window_contact
-  #           name: Bedroom Big Window
-  #           layout: vertical
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.small_bedroom_window_contact
-  #           name: Bedroom Small Window
-  #           layout: vertical
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.alex_big_window_contact
-  #           name: Alex Big Window
-  #           layout: vertical
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.alex_small_window_contact
-  #           name: Alex Small Window
-  #           layout: vertical
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.thomas_big_window_contact
-  #           name: Thomas Big Window
-  #           layout: vertical
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.thomas_small_window_contact
-  #           name: Thomas Small Window
-  #           layout: vertical
-  #     - type: custom:mushroom-entity-card
-  #       entity: binary_sensor.bathroom_window_contact
-  #       name: "Bathroom Window "
-  #       layout: vertical
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.left_kitchen_window_sensor_magnet_on_off
-  #           name: Kitchen Left Window
-  #           layout: vertical
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.right_kitchen_window_contact
-  #           name: Kitchen Right Window
-  #           layout: vertical
-  # - theme: Metro Red
-  #   path: media
-  #   title: Media
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.lounge_tv
-  #           layout: vertical
-  #           use_media_info: true
-  #           show_volume_level: true
-  #           media_controls: []
-  #           volume_controls:
-  #             - volume_buttons
-  #           tap_action:
-  #             action: toggle
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.bedroom_tv_samsung
-  #           layout: vertical
-  #           volume_controls:
-  #             - volume_buttons
-  #           media_controls: []
-  #           tap_action:
-  #             action: toggle
-  #           show_volume_level: true
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.lounge_sonos_ray
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: true
-  #       name: Lounge SONOS
-  #       show_volume_level: true
-  #       icon_type: entity-picture
-  #       primary_info: name
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.bedroom_sonos
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: true
-  #       show_volume_level: true
-  #       primary_info: name
-  #       icon_type: entity-picture
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.kitchen_sonos
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: true
-  #       show_volume_level: true
-  #       icon_type: entity-picture
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.bedroom_sonos_sonos
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: false
-  #       show_volume_level: true
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.hallway_sonos
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: true
-  #       show_volume_level: true
-  #       icon_type: entity-picture
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.bathroom_sonos
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: true
-  #       show_volume_level: true
-  #       icon_type: entity-picture
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.sonos_roam_sl
-  #       layout: vertical
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       use_media_info: true
-  #       show_volume_level: true
-  #       icon_type: entity-picture
-  # - theme: Metro Red
-  #   title: Bedroom
-  #   path: bedroom
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: custom:mushroom-chips-card
-  #       chips:
-  #         - type: entity
-  #           entity: sensor.bedroom_sensor_temperature
-  #           name: "Temperature "
-  #           icon_color: red
-  #         - type: entity
-  #           entity: sensor.bedroom_sensor_humidity
-  #           icon_color: blue
-  #       alignment: center
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-light-card
-  #           entity: light.bedroom
-  #           name: Light
-  #           icon: mdi:ceiling-light
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #           tap_action:
-  #             action: toggle
-  #         - type: custom:mushroom-light-card
-  #           entity: light.bedroom_hue
-  #           name: LED's
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #           show_color_control: true
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.big_bedroom_window_contact
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.small_bedroom_window_contact
-  #     - type: custom:mushroom-climate-card
-  #       entity: climate.bedroom_air_con
-  #       layout: vertical
-  #       show_temperature_control: false
-  #       hvac_modes:
-  #         - cool
-  #         - "off"
-  #         - fan_only
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: custom:mushroom-cover-card
-  #           entity: cover.bedroom_blind
-  #           layout: horizontal
-  #           show_buttons_control: true
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.bedroom_tv_samsung
-  #           name: TV
-  #           volume_controls:
-  #             - volume_buttons
-  #           tap_action:
-  #             action: toggle
-  #           show_volume_level: true
-  #           layout: horizontal
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.bedroom_sonos
-  #           layout: vertical
-  #           use_media_info: true
-  #           icon_type: entity-picture
-  #           media_controls:
-  #             - previous
-  #             - play_pause_stop
-  #             - next
-  #           volume_controls:
-  #             - volume_set
-  #         - type: custom:mushroom-entity-card
-  #           entity: input_boolean.in_bed
-  #           layout: vertical
-  #           tap_action:
-  #             action: toggle
-  #           primary_info: name
-  #           secondary_info: state
-  # - theme: Metro Red
-  #   title: Alex
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: custom:mushroom-chips-card
-  #       chips:
-  #         - type: entity
-  #           entity: sensor.boys_temp_sens_temperature
-  #           icon_color: red
-  #         - type: entity
-  #           entity: sensor.boys_temp_sens_humidity
-  #           icon_color: blue
-  #       alignment: center
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-light-card
-  #           entity: light.boys_light2
-  #           layout: vertical
-  #           collapsible_controls: false
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #           name: Light
-  #         - type: custom:mushroom-light-card
-  #           entity: light.alex_lamp
-  #           icon: mdi:led-strip-variant
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #     - type: custom:mushroom-fan-card
-  #       entity: fan.alex_fan
-  #       layout: vertical
-  #       icon_animation: true
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.alex_big_window_contact
-  #           name: Big Window
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.alex_small_window_contact
-  #           name: Small Window
-  #     - type: custom:mushroom-cover-card
-  #       entity: cover.bedroom_blind_2
-  #       layout: horizontal
-  #       show_buttons_control: true
-  #       name: Blind
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: switch.localbytes_plug_pm_3
-  #           layout: vertical
-  #           tap_action:
-  #             action: toggle
-  #         - type: custom:mushroom-entity-card
-  #           entity: switch.localbytes_plug_pm_4
-  #           layout: vertical
-  #           icon: mdi:power-socket-uk
-  #           tap_action:
-  #             action: toggle
-  #     - type: custom:mushroom-entity-card
-  #       entity: sensor.alex_room_power
-  #       layout: vertical
-  # - theme: Metro Red
-  #   title: Thomas
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - !include mobile/snippets/header.yaml
-  #     - type: custom:mushroom-chips-card
-  #       chips:
-  #         - type: entity
-  #           entity: sensor.thomas_sensor_temperature
-  #           icon_color: red
-  #         - type: entity
-  #           entity: sensor.thomas_sensor_humidity
-  #           icon_color: blue
-  #       alignment: center
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-light-card
-  #           entity: light.thomas_light
-  #           name: Light
-  #           icon: mdi:ceiling-light
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #           tap_action:
-  #             action: toggle
-  #         - type: custom:mushroom-light-card
-  #           entity: light.thomas_lamp
-  #           icon: mdi:led-strip-variant
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #           show_color_control: true
-  #     - type: custom:mushroom-fan-card
-  #       entity: fan.thomas_fan
-  #       name: Fan
-  #       layout: vertical
-  #       icon_animation: true
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.thomas_big_window_contact
-  #           name: "Big Window "
-  #         - type: custom:mushroom-entity-card
-  #           entity: binary_sensor.thomas_small_window_contact
-  #           name: "Small Window "
-  #     - type: custom:mushroom-cover-card
-  #       entity: cover.thomas_blind
-  #       layout: horizontal
-  #       show_buttons_control: true
-  #       name: Blind
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-entity-card
-  #           entity: switch.localbytes_plug_pm
-  #           layout: vertical
-  #           tap_action:
-  #             action: toggle
-  #         - type: custom:mushroom-entity-card
-  #           entity: switch.localbytes_plug_pm_2
-  #           layout: vertical
-  #           tap_action:
-  #             action: toggle
-  #     - type: custom:mushroom-entity-card
-  #       entity: sensor.thomas_room_power
-  #       icon: mdi:lightning-bolt
-  #       layout: vertical
-  # - theme: Metro Red
-  #   title: Hallway
-  #   path: hallway
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: custom:mushroom-chips-card
-  #       chips:
-  #         - type: entity
-  #           entity: sensor.hallway_temperature_temperature
-  #           icon_color: red
-  #         - type: entity
-  #           entity: sensor.hallway_temperature_humidity
-  #           icon_color: light-blue
-  #         - type: template
-  #           entity: lock.nuki_front_door_lock
-  #           icon: |-
-  #             {% set state=states(entity) %}
-  #             {% if state=='locked' %}
-  #             mdi:lock
-  #             {% elif state=='unlocked' %}
-  #             mdi:lock-open-alert
-  #             {% else %}
-  #             mdi:alert
-  #             {% endif %}
-  #           icon_color: |-
-  #             {% set state=states(entity) %}
-  #             {% if state=='locked' %}
-  #             green
-  #             {% elif state=='unlocked' %}
-  #             red
-  #             {% else %}
-  #             grey
-  #             {% endif %}
-  #           content: Front Door
-  #           tap_action:
-  #             action: toggle
-  #         - type: entity
-  #           entity: binary_sensor.front_door_sensor_magnet_on_off
-  #         - type: entity
-  #           entity: binary_sensor.hallway_sensor_smoke_ias_zone
-  #           use_entity_picture: true
-  #           icon: mdi:smoke-detector
-  #       alignment: center
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-light-card
-  #           entity: light.hallway_lights
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #         - type: custom:mushroom-light-card
-  #           entity: light.hallway_cupboard
-  #           layout: vertical
-  #           use_light_color: true
-  #           show_brightness_control: true
-  #     - show_state: false
-  #       show_name: true
-  #       camera_view: live
-  #       type: picture-entity
-  #       image: https://demo.home-assistant.io/stub_config/bedroom.png
-  #       camera_image: camera.hallway
-  #       entity: camera.hallway
-  #       aspect_ratio: "1.35"
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.hallway_sonos
-  #       layout: vertical
-  #       use_media_info: true
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  #       icon_type: entity-picture
-  #     - type: custom:mushroom-fan-card
-  #       entity: fan.air_ventilation
-  #       layout: vertical
-  #       show_oscillate_control: false
-  #       icon_animation: true
-  # - theme: Metro Red
-  #   title: Bathroom
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: custom:mushroom-chips-card
-  #       chips:
-  #         - type: entity
-  #           entity: sensor.bathroom_temp_sens_temperature
-  #           icon_color: red
-  #         - type: entity
-  #           entity: sensor.bathroom_temp_sens_humidity
-  #           icon_color: blue
-  #         - type: entity
-  #           entity: binary_sensor.bathroom_sensor_motion
-  #       alignment: center
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: custom:mushroom-light-card
-  #           entity: light.bathroom_light
-  #           layout: vertical
-  #         - type: custom:mushroom-light-card
-  #           entity: light.washroom
-  #           layout: vertical
-  #     - type: horizontal-stack
-  #       cards:
-  #         - entity: input_select.washing_machine_state_machine
-  #           state:
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:washing-machine
-  #               name: Washing
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: job_ongoing
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:washing-machine-alert
-  #               name: Washing Finished
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: job_completed
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:washing-machine-off
-  #               name: Washer Off
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: idle
-  #           tap_action:
-  #             action: more-info
-  #           type: custom:button-card
-  #         - entity: input_select.tumble_dryer_state_machine
-  #           state:
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:tumble-dryer
-  #               name: Drying
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: job_ongoing
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:tumble-dryer-alert
-  #               name: Dryer Finished
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: job_completed
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:tumble-dryer-off
-  #               name: Dryer Off
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: idle
-  #           tap_action:
-  #             action: more-info
-  #           type: custom:button-card
-  #     - type: horizontal-stack
-  #       cards:
-  #         - type: entity
-  #           entity: sensor.washing_machine_power
-  #           icon: mdi:washing-machine
-  #         - type: entity
-  #           entity: sensor.tumble_dryer
-  #     - type: custom:mushroom-entity-card
-  #       entity: binary_sensor.bathroom_window_contact
-  #       name: Window
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.bathroom_sonos
-  #       layout: vertical
-  #       use_media_info: true
-  #       icon_type: entity-picture
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - previous
-  #         - play_pause_stop
-  #         - next
-  # - theme: Metro Red
-  #   title: Lounge
-  #   subview: true
-  #   badges: []
-  #   cards: []
-  # - theme: Metro Red
-  #   title: Kitchen
-  #   path: kitchen
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: custom:mushroom-chips-card
-  #           chips:
-  #             - type: entity
-  #               entity: sensor.kitchen_sensor_temperature
-  #               icon_color: red
-  #             - type: entity
-  #               entity: sensor.kitchen_sensor_humidity
-  #               icon_color: blue
-  #             - type: entity
-  #               entity: binary_sensor.back_door_sensor_magnet_on_off
-  #             - type: entity
-  #               entity: binary_sensor.kitchen_sensor_smoke_ias_zone
-  #               icon: mdi:smoke-detector
-  #             - type: entity
-  #               entity: binary_sensor.kitchen_motion_group
-  #           alignment: center
-  #         - type: horizontal-stack
-  #           cards:
-  #             - entity: light.kitchen_spotlights
-  #               icon: mdi:spotlight
-  #               layout: vertical
-  #               name: Spotlights
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:mushroom-light-card
-  #             - collapsible_controls: true
-  #               entity: light.kitchen_leds
-  #               icon: mdi:led-strip-variant
-  #               layout: vertical
-  #               name: LED's
-  #               show_brightness_control: true
-  #               show_color_control: true
-  #               show_color_temp_control: false
-  #               type: custom:mushroom-light-card
-  #               use_light_color: true
-  #         - type: horizontal-stack
-  #           cards:
-  #             - type: custom:mushroom-entity-card
-  #               entity: binary_sensor.left_kitchen_window_sensor_magnet_on_off
-  #             - type: custom:mushroom-entity-card
-  #               entity: binary_sensor.right_kitchen_window_contact
-  #         - type: custom:mushroom-cover-card
-  #           entity: cover.kitchen_blind
-  #           layout: horizontal
-  #           show_buttons_control: true
-  #         - entity: input_select.dishwasher_state_machine
-  #           state:
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:dishwasher
-  #               name: Dishwasher Cleaning
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: job_ongoing
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:dishwasher-alert
-  #               name: Dishwasher Finished
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: job_completed
-  #             - color: rgb(3,169,244,255)
-  #               icon: mdi:dishwasher-off
-  #               name: Dishwasher Off
-  #               styles:
-  #                 card:
-  #                   - height: 205px
-  #                 icon:
-  #                   - width: 40%
-  #                   - opacity: 0.5
-  #                 name:
-  #                   - padding: 5px 0px
-  #                   - font-size: 15px
-  #                   - text-overflow: unset
-  #                   - white-space: unset
-  #                   - word-break: break-word
-  #               value: idle
-  #           tap_action:
-  #             action: more-info
-  #           type: custom:button-card
-  #         - type: entity
-  #           entity: sensor.dishwasher_powee
-  #         - type: custom:mushroom-media-player-card
-  #           entity: media_player.kitchen_sonos
-  #           layout: vertical
-  #           volume_controls:
-  #             - volume_set
-  #           media_controls:
-  #             - previous
-  #             - play_pause_stop
-  #             - next
-  #           icon_type: entity-picture
-  #           show_volume_level: true
-  # - theme: Metro Red
-  #   title: Office
-  #   subview: true
-  #   path: office
-  #   badges: []
-  #   cards:
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: custom:mushroom-chips-card
-  #           chips:
-  #             - type: entity
-  #               entity: sensor.office_current_temp
-  #               icon_color: red
-  #           alignment: center
-  #         - cards:
-  #             - cards:
-  #                 - entity: light.office
-  #                   icon: mdi:lightbulb-spot
-  #                   layout: vertical
-  #                   name: Lights
-  #                   tap_action:
-  #                     action: toggle
-  #                   type: custom:mushroom-light-card
-  #                 - entity: light.canopy
-  #                   icon: mdi:spotlight-beam
-  #                   layout: vertical
-  #                   name: Canopy
-  #                   type: custom:mushroom-light-card
-  #               type: horizontal-stack
-  #             - entity: switch.windows
-  #               icon: mdi:desktop-classic
-  #               layout: vertical
-  #               name: PC
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:mushroom-entity-card
-  #           type: vertical-stack
-  #         - type: custom:mushroom-climate-card
-  #           entity: climate.office_heater
-  #           layout: vertical
-  #           show_temperature_control: true
-  #           hvac_modes:
-  #             - heat
-  #             - "off"
-  #         - type: custom:mushroom-light-card
-  #           entity: light.pc_govee_flow_pro
-  #           show_color_control: true
-  #           show_brightness_control: true
-  #           show_color_temp_control: true
-  #           use_light_color: false
-  #           collapsible_controls: false
-  #     - type: custom:mushroom-media-player-card
-  #       entity: media_player.sonos_roam_sl
-  #       layout: vertical
-  #       use_media_info: true
-  #       icon_type: entity-picture
-  #       show_volume_level: true
-  #       volume_controls:
-  #         - volume_set
-  #       media_controls:
-  #         - play_pause_stop
-  #         - next
-  #         - previous
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: entities
-  #           entities:
-  #             - entity: sensor.truenas_system_tank_free
-  #             - entity: sensor.truenas_system_tank2_free
-  #             - entity: sensor.power_monitor_current_consumption
-  #             - entity: update.truenas_system_update
-  #           title: TrueNAS
-  #         - type: horizontal-stack
-  #           cards:
-  #             - entity: sensor.truenas_system_uptime
-  #               state:
-  #                 - color: rgb(3,169,244,255)
-  #                   icon: mdi:server
-  #                   name: Reboot TrueNAS
-  #                   operator: default
-  #                   styles:
-  #                     card:
-  #                       - height: 100px
-  #                     icon:
-  #                       - width: 40%
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #               tap_action:
-  #                 action: call-service
-  #                 service: truenas.system_reboot
-  #                 service_data:
-  #                   entity_id: sensor.truenas_system_uptime
-  #               type: custom:button-card
-  #             - entity: sensor.truenas_system_uptime
-  #               state:
-  #                 - color: rgb(3,169,244,255)
-  #                   icon: mdi:plex
-  #                   name: Restart Plex
-  #                   operator: default
-  #                   styles:
-  #                     card:
-  #                       - height: 100px
-  #                     icon:
-  #                       - width: 40%
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #               tap_action:
-  #                 action: call-service
-  #                 service: truenas.jail_restart
-  #                 service_data:
-  #                   entity_id: binary_sensor.truenas_jails_plex
-  #               type: custom:button-card
-  #             - entity: sensor.truenas_system_uptime
-  #               state:
-  #                 - color: rgb(3,169,244,255)
-  #                   icon: mdi:server-network
-  #                   name: Restart Transmission
-  #                   operator: default
-  #                   styles:
-  #                     card:
-  #                       - height: 100px
-  #                     icon:
-  #                       - width: 40%
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #               tap_action:
-  #                 action: call-service
-  #                 service: truenas.jail_restart
-  #                 service_data:
-  #                   entity_id: binary_sensor.truenas_jails_transmission
-  #               type: custom:button-card
-  #         - type: horizontal-stack
-  #           cards:
-  #             - entity: sensor.truenas_system_uptime
-  #               state:
-  #                 - color: rgb(3,169,244,255)
-  #                   icon: mdi:ubuntu
-  #                   name: Start Ubuntu VM
-  #                   operator: default
-  #                   styles:
-  #                     card:
-  #                       - height: 100px
-  #                     icon:
-  #                       - width: 40%
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #               tap_action:
-  #                 action: call-service
-  #                 service: truenas.vm_start
-  #                 service_data:
-  #                   entity_id: binary_sensor.truenas_vms_ubudocker
-  #               type: custom:button-card
-  #             - entity: sensor.truenas_system_uptime
-  #               state:
-  #                 - color: rgb(3,169,244,255)
-  #                   icon: mdi:ubuntu
-  #                   name: Stop Ubuntu VM
-  #                   operator: default
-  #                   styles:
-  #                     card:
-  #                       - height: 100px
-  #                     icon:
-  #                       - width: 40%
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #               tap_action:
-  #                 action: call-service
-  #                 service: truenas.vm_stop
-  #                 service_data:
-  #                   entity_id: binary_sensor.truenas_vms_ubudocker
-  #               type: custom:button-card
-  # - theme: Metro Red
-  #   title: Outside
-  #   path: outside
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: horizontal-stack
-  #       cards:
-  #         - collapsible_controls: false
-  #           entity: light.yeelight_mono1_f0b429a93ec5
-  #           layout: vertical
-  #           name: Front
-  #           show_brightness_control: true
-  #           show_color_control: true
-  #           show_color_temp_control: true
-  #           type: custom:mushroom-light-card
-  #           use_light_color: true
-  #         - collapsible_controls: false
-  #           entity: light.back
-  #           layout: vertical
-  #           name: Back
-  #           show_brightness_control: true
-  #           show_color_control: true
-  #           show_color_temp_control: true
-  #           type: custom:mushroom-light-card
-  #           use_light_color: true
-  #     - type: custom:mushroom-entity-card
-  #       entity: sensor.oil_tank_level
-  #       layout: vertical
-  # - theme: Metro Red
-  #   title: Car
-  #   path: car
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: custom:mushroom-chips-card
-  #           chips:
-  #             - type: entity
-  #               entity: sensor.leaf_gom
-  #               icon_color: blue
-  #             - type: entity
-  #               entity: sensor.leaf_cabin_temperature
-  #               icon_color: red
-  #           alignment: center
-  #         - type: custom:charger-card
-  #           entity: sensor.myenergi_zappi_21782493_status
-  #           customCardTheme: theme_custom
-  #           show_leds: false
-  #           customImage: \local\zappi.png
-  #           show_collapsibles: false
-  #           show_toolbar: true
-  #           show_status: true
-  #           details:
-  #             status:
-  #               entity_id: sensor.myenergi_zappi_21782493_status
-  #             statetext:
-  #               Paused: not charging
-  #               Completed: finished charging
-  #               Charging: charging
-  #               fault: error
-  #               EV Disconnected: Disconnected
-  #             substatus:
-  #               entity_id: sensor.myenergi_zappi_21782493_plug_status
-  #             info_right:
-  #               - entity_id: sensor.myenergi_my_home_voltage_grid
-  #                 text: voltage
-  #                 unit_show: true
-  #               - entity_id: sensor.zappi_charge_current
-  #                 text: Current
-  #                 round: 1
-  #                 unit_show: true
-  #                 unit: A
-  #               - entity_id: sensor.myenergi_zappi_21782493_internal_load_ct1
-  #                 text: Power
-  #                 unit_show: true
-  #                 unit: W
-  #             info_left:
-  #               - entity_id: number.myenergi_zappi_21782493_minimum_green_level
-  #             stats:
-  #               Charging:
-  #                 - entity_id: sensor.myenergi_zappi_21782493_charge_added_session
-  #                   text: This Session
-  #                   unit_show: true
-  #                 - entity_id: select.myenergi_zappi_21782493_charge_mode
-  #                 - entity_id: sensor.leaf_battery_percentage
-  #                   unit_show: true
-  #               Paused:
-  #                 - entity_id: sensor.myenergi_zappi_21782493_charge_added_session
-  #                   text: Charged Added Last Session
-  #                   unit_show: true
-  #                 - entity_id: select.myenergi_zappi_21782493_charge_mode
-  #               Completed:
-  #                 - entity_id: sensor.myenergi_zappi_21782493_charge_added_session
-  #                   text: Charged Added Last Session
-  #                   unit_show: true
-  #                 - entity_id: select.myenergi_zappi_21782493_charge_mode
-  #             toolbar_left:
-  #               default:
-  #                 - service: script.set_zappi_to_fast
-  #                   icon: hass:speedometer
-  #                   text: Fast
-  #                 - service: script.set_zappi_to_eco
-  #                   icon: hass:plus-box
-  #                   text: Eco
-  #                 - service: script.set_zappi_to_eco_plus
-  #                   icon: hass:plus-box-multiple
-  #                   text: Eco+
-  #                 - service: script.set_zappi_to_stopped
-  #                   icon: hass:close-octagon
-  #                   text: Stopped
-  #         - type: custom:mushroom-entity-card
-  #           entity: input_boolean.octopus_go_charging
-  #           layout: vertical
-  #           tap_action:
-  #             action: toggle
-  #         - type: entities
-  #           entities:
-  #             - entity: input_datetime.octopus_go_car_charge_start
-  #             - entity: input_datetime.octopus_go_charge_time_end
-  #         - type: horizontal-stack
-  #           cards:
-  #             - entity: switch.leaf_refresh
-  #               name: Refresh Leaf data
-  #               state:
-  #                 - color: red
-  #                   icon: mdi:refresh
-  #                   name: Refresh Leaf Data
-  #                   styles:
-  #                     card:
-  #                       - height: 172px
-  #                     icon:
-  #                       - width: 25%
-  #                       - opacity: 0.5
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #                   value: "off"
-  #                 - color: green
-  #                   icon: mdi:car-wireless
-  #                   name: Fetching Latest Data
-  #                   operator: default
-  #                   styles:
-  #                     card:
-  #                       - height: 172px
-  #                     icon:
-  #                       - width: 25%
-  #                     name:
-  #                       - padding: 5px 0px
-  #                       - font-size: 15px
-  #                       - text-overflow: unset
-  #                       - white-space: unset
-  #                       - word-break: break-word
-  #               tap_action:
-  #                 action: toggle
-  #               type: custom:button-card
-  # - theme: Metro Red
-  #   subview: true
-  #   path: covers
-  #   title: Covers
-  #   badges: []
-  #   cards:
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: custom:mushroom-cover-card
-  #           entity: cover.bedroom_blind
-  #           show_buttons_control: true
-  #           layout: horizontal
-  #         - type: custom:mushroom-cover-card
-  #           layout: horizontal
-  #           show_buttons_control: true
-  #           entity: cover.bedroom_blind_2
-  #         - type: custom:mushroom-cover-card
-  #           layout: horizontal
-  #           show_buttons_control: true
-  #           entity: cover.thomas_blind
-  #         - type: custom:mushroom-cover-card
-  #           layout: horizontal
-  #           show_position_control: false
-  #           show_buttons_control: true
-  #           entity: cover.kitchen_blind
-  #           icon: mdi:blinds
-  #         - type: custom:mushroom-cover-card
-  #           entity: cover.lounge_curtains
-  #           layout: horizontal
-  #           show_position_control: false
-  #           show_buttons_control: true
-  # - theme: Metro Red
-  #   title: Vacuum
-  #   path: vacuum
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - calibration_source:
-  #         camera: true
-  #       entity: vacuum.roborock_vacuum_a27
-  #       map_locked: true
-  #       map_modes:
-  #         - name: Zone cleanup
-  #           icon: mdi:select-drag
-  #           run_immediately: false
-  #           coordinates_rounding: true
-  #           selection_type: MANUAL_RECTANGLE
-  #           max_selections: 5
-  #           repeats_type: EXTERNAL
-  #           max_repeats: 3
-  #           service_call_schema:
-  #             service: xiaomi_miio.vacuum_clean_zone
-  #             service_data:
-  #               zone: "[[selection]]"
-  #               repeats: "[[repeats]]"
-  #               entity_id: "[[entity_id]]"
-  #           predefined_selections: []
-  #           variables: {}
-  #         - name: Zones list
-  #           icon: mdi:floor-plan
-  #           run_immediately: false
-  #           coordinates_rounding: true
-  #           selection_type: PREDEFINED_RECTANGLE
-  #           max_selections: 5
-  #           repeats_type: EXTERNAL
-  #           max_repeats: 3
-  #           service_call_schema:
-  #             service: xiaomi_miio.vacuum_clean_zone
-  #             service_data:
-  #               zone: "[[selection]]"
-  #               repeats: "[[repeats]]"
-  #               entity_id: "[[entity_id]]"
-  #           predefined_selections:
-  #             - zones:
-  #                 - - 24263
-  #                   - 25131
-  #                   - 29556
-  #                   - 29628
-  #             - zones:
-  #                 - - 29492
-  #                   - 25054
-  #                   - 32596
-  #                   - 28145
-  #             - zones:
-  #                 - - 28569
-  #                   - 29605
-  #                   - 29754
-  #                   - 35617
-  #             - zones:
-  #                 - - 24820
-  #                   - 29690
-  #                   - 28474
-  #                   - 33022
-  #             - zones:
-  #                 - - 24992
-  #                   - 32955
-  #                   - 28612
-  #                   - 36527
-  #             - zones:
-  #                 - - 29801
-  #                   - 31958
-  #                   - 32493
-  #                   - 35873
-  #             - zones:
-  #                 - - 29870
-  #                   - 28250
-  #                   - 32253
-  #                   - 30894
-  #           variables: {}
-  #       map_source:
-  #         camera: camera.xiaomi_cloud_map_extractor
-  #       two_finger_pan: false
-  #       type: custom:xiaomi-vacuum-map-card
-  #       vacuum_platform: default
-  #       tiles:
-  #         - tile_id: status
-  #           entity: vacuum.roborock_vacuum_a27
-  #           label: Status
-  #           attribute: status
-  #           icon: mdi:robot-vacuum
-  #           translations:
-  #             starting: Starting
-  #             charger disconnected: Charger disconnected
-  #             idle: Idle
-  #             remote control active: Remote control active
-  #             cleaning: Cleaning
-  #             returning home: Returning home
-  #             manual mode: Manual mode
-  #             charging: Charging
-  #             charging problem: Charging problem
-  #             paused: Paused
-  #             spot cleaning: Spot cleaning
-  #             error: Error
-  #             shutting down: Shutting down
-  #             updating: Updating
-  #             docking: Docking
-  #             going to target: Going to target
-  #             zoned cleaning: Zoned cleaning
-  #             segment cleaning: Segment cleaning
-  #             emptying the bin: Emptying the bin
-  #             charging complete: Charging complete
-  #             device offline: Device offline
-  #         - tile_id: battery_level
-  #           entity: vacuum.roborock_vacuum_a27
-  #           label: Battery
-  #           attribute: battery_level
-  #           icon: mdi:battery-charging-100
-  #           unit: "%"
-  #         - tile_id: fan_speed
-  #           entity: vacuum.roborock_vacuum_a27
-  #           label: Fan speed
-  #           attribute: fan_speed
-  #           icon: mdi:fan
-  #           translations:
-  #             silent: Silent
-  #             standard: Standard
-  #             medium: Medium
-  #             turbo: Turbo
-  #             auto: Auto
-  #             gentle: Gentle
-  #         - tile_id: sensor_dirty_left
-  #           label: Sensors left
-  #           unit: h
-  #           multiplier: 0.0002777777777777778
-  #           hold_action:
-  #             action: call-service
-  #             service: vacuum.send_command
-  #             confirmation: true
-  #             service_data:
-  #               command: reset_consumable
-  #               params: sensor_dirty_time
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #           entity: sensor.roborock_vacuum_a27_sensor_dirty_left
-  #           icon: mdi:eye-outline
-  #           precision: 0
-  #           translations: {}
-  #         - tile_id: filter_left
-  #           label: Filter left
-  #           unit: h
-  #           multiplier: 0.0002777777777777778
-  #           hold_action:
-  #             action: call-service
-  #             service: vacuum.send_command
-  #             confirmation: true
-  #             service_data:
-  #               command: reset_consumable
-  #               params: filter_work_time
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #           entity: sensor.roborock_vacuum_a27_filter_left
-  #           icon: mdi:air-filter
-  #           precision: 0
-  #           translations: {}
-  #         - tile_id: main_brush_left
-  #           label: Main brush left
-  #           unit: h
-  #           multiplier: 0.0002777777777777778
-  #           hold_action:
-  #             action: call-service
-  #             service: vacuum.send_command
-  #             confirmation: true
-  #             service_data:
-  #               command: reset_consumable
-  #               params: main_brush_work_time
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #           entity: sensor.roborock_vacuum_a27_main_brush_left
-  #           icon: mdi:brush
-  #           precision: 0
-  #           translations: {}
-  #         - tile_id: side_brush_left
-  #           label: Side brush left
-  #           unit: h
-  #           multiplier: 0.0002777777777777778
-  #           hold_action:
-  #             action: call-service
-  #             service: vacuum.send_command
-  #             confirmation: true
-  #             service_data:
-  #               command: reset_consumable
-  #               params: side_brush_work_time
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #           entity: sensor.roborock_vacuum_a27_side_brush_left
-  #           icon: mdi:brush
-  #           precision: 0
-  #           translations: {}
-  #       icons:
-  #         - icon: mdi:play
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: cleaning
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: error
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: returning
-  #           tooltip: Start
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.start
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #         - icon: mdi:pause
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: docked
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: idle
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: error
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: paused
-  #           tooltip: Pause
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.pause
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #         - icon: mdi:stop
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: docked
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: idle
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: error
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: paused
-  #           tooltip: Stop
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.stop
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #         - icon: mdi:home-map-marker
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: docked
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: returning
-  #           tooltip: Return to base
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.return_to_base
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #         - icon: mdi:target-variant
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: docked
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: error
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: cleaning
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               value_not: returning
-  #           tooltip: Clean spot
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.clean_spot
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #         - icon: mdi:map-marker
-  #           tooltip: Locate
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.locate
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #         - icon: mdi:fan-remove
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value: Silent
-  #           tooltip: Change fan speed
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.set_fan_speed
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #               fan_speed: Standard
-  #         - icon: mdi:fan-speed-1
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value: Standard
-  #           tooltip: Change fan speed
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.set_fan_speed
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #               fan_speed: Medium
-  #         - icon: mdi:fan-speed-2
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value: Medium
-  #           tooltip: Change fan speed
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.set_fan_speed
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #               fan_speed: Turbo
-  #         - icon: mdi:fan-speed-3
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value: Turbo
-  #           tooltip: Change fan speed
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.set_fan_speed
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #               fan_speed: Max
-  #         - icon: mdi:fan-alert
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value: Max
-  #           tooltip: Change fan speed
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.set_fan_speed
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #               fan_speed: Silent
-  #         - icon: mdi:fan-alert
-  #           conditions:
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value_not: Silent
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value_not: Standard
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value_not: Medium
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value_not: Turbo
-  #             - entity: vacuum.roborock_vacuum_a27
-  #               attribute: fan_speed
-  #               value_not: Max
-  #           tooltip: Change fan speed
-  #           tap_action:
-  #             action: call-service
-  #             service: vacuum.set_fan_speed
-  #             service_data:
-  #               entity_id: vacuum.roborock_vacuum_a27
-  #               fan_speed: Silent
-  # - theme: Metro Red
-  #   title: SONOS
-  #   path: sonos
-  #   type: panel
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: custom:custom-sonos-card
-  # - theme: Metro Red
-  #   title: FIRETV
-  #   path: firetv
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: custom:firemote-card
-  #       entity: media_player.fire_tv_192_168_0_251
-  #       device_type: fire_stick_4k
-  #       compatibility_mode: event3
-  #       app_launch_1: netflix
-  #       app_launch_2: netflix
-  #       app_launch_3: disney-plus
-  #       app_launch_4: hulu
-  #       scale: "120"
-  # - theme: Metro Red
-  #   title: samsung
-  #   path: samsung
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: custom:tv-card
-  #       entity: media_player.bedroom_tv_samsung
-  #       power_row:
-  #         - power
-  #       channel_row:
-  #         - channel_up
-  #         - info
-  #         - channel_down
-  #       apps_row:
-  #         - netflix
-  #         - youtube
-  #         - spotify
-  #       volume_row: slider
-  #       navigation_row: touchpad
-  #       source_row:
-  #         - return
-  #         - home
-  #         - source
-  #       media_control_row:
-  #         - rewind
-  #         - play
-  #         - pause
-  #         - fast_forward
-  # - theme: Metro Red
-  #   title: Heating
-  #   path: heating
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: vertical-stack
-  #       cards:
-  #         - type: custom:mushroom-climate-card
-  #           entity: climate.heating_nest
-  #           layout: vertical
-  #           show_temperature_control: true
-  #           hvac_modes:
-  #             - heat
-  #             - "off"
-  #         - type: custom:scheduler-card
-  #           include:
-  #             - climate
-  #             - input_boolean
-  #           exclude: []
-  #     - type: horizontal-stack
-  #       cards:
-  #         - show_name: true
-  #           show_icon: true
-  #           type: button
-  #           tap_action:
-  #             action: toggle
-  #           entity: button.wiser_boost_all_heating
-  #           name: Boost Heating
-  #         - show_name: true
-  #           show_icon: true
-  #           type: button
-  #           tap_action:
-  #             action: toggle
-  #           entity: button.wiser_boost_hot_water
-  #           name: Boost Water
-  # - theme: noctis
-  #   title: Teamtracker
-  #   path: energy
-  #   subview: true
-  #   badges: []
-  #   cards:
-  #     - type: custom:auto-entities
-  #       unique: true
-  #       show_empty: false
-  #       card:
-  #         type: custom:layout-card
-  #         layout_type: "custom:grid-layout"
-  #         layout: !include snippets/layout-page-columns.yaml
-  #       filter:
-  #         template: |
-  #           {%- for team in integration_entities("teamtracker") -%}
-  #           {%- if states(team) != "NOT_FOUND" -%}
-  #               {{{"type": "custom:teamtracker-card",
-  #                 "entity": team }}},
-  #           {%- endif -%}
-  #           {%- endfor -%}
-  #         exclude:
-  #           - entity_id: "*team_tracker*"
-  #       options: null
-  #       sort:
-  #         method: attribute
-  #         attribute: date
+  # - type: custom:button-card
+  #   name: >
+  #     <ha-icon icon="mdi:router-wireless"></ha-icon> Router
+  #   triggers_update:
+  #     - update.unifi_dream_machine
+  #     - binary_sensor.template_udm_internet
+  #   variables:
+  #     notify: >
+  #       [[[
+  #         let id = this._config.triggers_update;
+  #         if (id.every(e => states[e]))
+  #             return states[id[0]].state === 'on'
+  #                 ? 1
+  #                 : states[id[1]].state === 'off';
+  #       ]]]
+  #   template: footer
+# - theme: Metro Red
+#   icon: mdi:sofa
+#   subview: true
+#   path: lounge
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: custom:mushroom-chips-card
+#       chips:
+#         - type: entity
+#           entity: sensor.lounge_sensor_temperature
+#           icon_color: red
+#         - type: entity
+#           entity: sensor.lounge_sensor_humidity
+#           icon_color: blue
+#         - type: entity
+#           entity: binary_sensor.patio_door_sensor_magnet_on_off
+#       alignment: center
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-light-card
+#           entity: light.lounge
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#           tap_action:
+#             action: toggle
+#         - type: custom:mushroom-light-card
+#           entity: light.lounge_hue
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#     - type: vertical-stack
+#       cards:
+#         - commands:
+#             - start_pause
+#             - stop
+#             - return_home
+#           entity: vacuum.roborock_vacuum_a27
+#           layout: vertical
+#           tap_action:
+#             action: navigate
+#             navigation_path: /mobile-dashboard/vacuum
+#           type: custom:mushroom-vacuum-card
+#         - entities:
+#             - entity: input_boolean.vacuumed_today
+#           type: entities
+#     - type: custom:mushroom-climate-card
+#       entity: climate.lounge_radiator_thermostat
+#       layout: vertical
+#       show_temperature_control: true
+#       hvac_modes:
+#         - heat
+#         - "off"
+#     - type: vertical-stack
+#       cards:
+#         - show_state: true
+#           show_name: true
+#           camera_view: live
+#           type: picture-entity
+#           image: https://demo.home-assistant.io/stub_config/bedroom.png
+#           entity: camera.lounge
+#           camera_image: camera.lounge
+#           aspect_ratio: "1.35"
+#         - type: custom:mushroom-cover-card
+#           entity: cover.lounge_curtains
+#           layout: horizontal
+#           show_buttons_control: true
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.lounge_tv
+#           layout: vertical
+#           media_controls:
+#             - on_off
+#             - play_pause_stop
+#           tap_action:
+#             action: toggle
+#           volume_controls: []
+#           use_media_info: true
+#           show_volume_level: false
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.skyq
+#           name: SkyQ
+#           use_media_info: true
+#           media_controls:
+#             - on_off
+#           layout: horizontal
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.lounge_sonos_ray
+#           layout: vertical
+#           use_media_info: true
+#           icon_type: entity-picture
+#           volume_controls:
+#             - volume_set
+#           media_controls:
+#             - previous
+#             - play_pause_stop
+#             - next
+#           show_volume_level: true
+# - theme: Metro Red
+#   subview: true
+#   title: Lights
+#   path: lights
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: vertical-stack
+#       cards:
+#         - cards:
+#             - collapsible_controls: false
+#               entity: light.bedroom
+#               layout: vertical
+#               name: Bedroom Light
+#               show_brightness_control: true
+#               show_color_control: false
+#               show_color_temp_control: false
+#               tap_action:
+#                 action: toggle
+#               type: custom:mushroom-light-card
+#               use_light_color: true
+#             - collapsible_controls: false
+#               entity: light.bedroom_hue
+#               layout: vertical
+#               show_brightness_control: true
+#               show_color_control: true
+#               show_color_temp_control: true
+#               tap_action:
+#                 action: toggle
+#               type: custom:mushroom-light-card
+#               use_light_color: true
+#           type: horizontal-stack
+#         - cards:
+#             - cards:
+#                 - collapsible_controls: false
+#                   entity: light.boys_light2
+#                   hold_action:
+#                     action: more-info
+#                   layout: vertical
+#                   name: Alex Light
+#                   show_brightness_control: true
+#                   show_color_temp_control: true
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#                 - collapsible_controls: false
+#                   entity: light.alex_lamp
+#                   hold_action:
+#                     action: more-info
+#                   icon: mdi:led-strip-variant
+#                   layout: vertical
+#                   name: Alex Lamp
+#                   show_brightness_control: true
+#                   show_color_control: true
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#               type: horizontal-stack
+#           type: vertical-stack
+#         - cards:
+#             - cards:
+#                 - collapsible_controls: false
+#                   entity: light.thomas_light
+#                   hold_action:
+#                     action: more-info
+#                   layout: vertical
+#                   name: Thomas Light
+#                   show_brightness_control: true
+#                   show_color_temp_control: true
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#                 - collapsible_controls: false
+#                   entity: light.thomas_lamp
+#                   hold_action:
+#                     action: more-info
+#                   icon: mdi:led-strip-variant
+#                   layout: vertical
+#                   name: Thomas Lamp
+#                   show_brightness_control: true
+#                   show_color_control: true
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#               type: horizontal-stack
+#           type: vertical-stack
+#         - cards:
+#             - cards:
+#                 - collapsible_controls: false
+#                   entity: light.hallway_lights
+#                   fill_container: false
+#                   hold_action:
+#                     action: more-info
+#                   layout: vertical
+#                   name: Hallway Lights
+#                   show_brightness_control: true
+#                   show_color_control: true
+#                   show_color_temp_control: true
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#                 - collapsible_controls: false
+#                   entity: light.hallway_cupboard
+#                   hold_action:
+#                     action: more-info
+#                   layout: vertical
+#                   name: Cupboard
+#                   show_brightness_control: true
+#                   show_color_control: false
+#                   show_color_temp_control: true
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#               type: horizontal-stack
+#           type: vertical-stack
+#         - cards:
+#             - entity: light.bathroom_light
+#               icon: mdi:lightbulb-spot
+#               layout: vertical
+#               name: Bathroom Light
+#               tap_action:
+#                 action: toggle
+#               type: custom:mushroom-light-card
+#             - entity: light.washroom
+#               icon: mdi:ceiling-light
+#               layout: vertical
+#               name: Washroom Light
+#               type: custom:mushroom-light-card
+#           type: horizontal-stack
+#         - cards:
+#             - cards:
+#                 - collapsible_controls: false
+#                   entity: light.lounge
+#                   layout: vertical
+#                   name: Lounge Light
+#                   show_brightness_control: true
+#                   show_color_control: true
+#                   show_color_temp_control: true
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#                 - collapsible_controls: false
+#                   entity: light.lounge_hue
+#                   layout: vertical
+#                   name: Lounge LED's
+#                   show_brightness_control: true
+#                   show_color_control: true
+#                   show_color_temp_control: true
+#                   type: custom:mushroom-light-card
+#                   use_light_color: true
+#               type: horizontal-stack
+#           type: vertical-stack
+#         - cards:
+#             - entity: light.kitchen_spotlights
+#               icon: mdi:spotlight
+#               layout: vertical
+#               name: Kitchen Spotlights
+#               tap_action:
+#                 action: toggle
+#               type: custom:mushroom-light-card
+#             - collapsible_controls: false
+#               entity: light.kitchen_leds
+#               icon: mdi:led-strip-variant
+#               layout: vertical
+#               name: Kitchen LED's
+#               show_brightness_control: false
+#               show_color_control: false
+#               show_color_temp_control: false
+#               type: custom:mushroom-light-card
+#               use_light_color: true
+#           type: horizontal-stack
+#         - cards:
+#             - cards:
+#                 - entity: light.office
+#                   icon: mdi:lightbulb-spot
+#                   layout: vertical
+#                   name: Office Lights
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                 - entity: light.canopy
+#                   icon: mdi:spotlight-beam
+#                   layout: vertical
+#                   name: Canopy
+#                   type: custom:mushroom-light-card
+#               type: horizontal-stack
+#           type: vertical-stack
+#         - type: custom:mushroom-light-card
+#           entity: light.pc_govee_flow_pro
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#         - type: horizontal-stack
+#           cards:
+#             - collapsible_controls: false
+#               entity: light.yeelight_mono1_f0b429a93ec5
+#               layout: vertical
+#               name: Front Light
+#               show_brightness_control: true
+#               show_color_control: true
+#               show_color_temp_control: true
+#               type: custom:mushroom-light-card
+#               use_light_color: true
+#             - collapsible_controls: false
+#               entity: light.back
+#               layout: vertical
+#               name: Back Light
+#               show_brightness_control: true
+#               show_color_control: true
+#               show_color_temp_control: true
+#               type: custom:mushroom-light-card
+#               use_light_color: true
+# - theme: Metro Red
+#   subview: true
+#   path: windows
+#   title: Windows
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.big_bedroom_window_contact
+#           name: Bedroom Big Window
+#           layout: vertical
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.small_bedroom_window_contact
+#           name: Bedroom Small Window
+#           layout: vertical
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.alex_big_window_contact
+#           name: Alex Big Window
+#           layout: vertical
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.alex_small_window_contact
+#           name: Alex Small Window
+#           layout: vertical
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.thomas_big_window_contact
+#           name: Thomas Big Window
+#           layout: vertical
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.thomas_small_window_contact
+#           name: Thomas Small Window
+#           layout: vertical
+#     - type: custom:mushroom-entity-card
+#       entity: binary_sensor.bathroom_window_contact
+#       name: "Bathroom Window "
+#       layout: vertical
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.left_kitchen_window_sensor_magnet_on_off
+#           name: Kitchen Left Window
+#           layout: vertical
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.right_kitchen_window_contact
+#           name: Kitchen Right Window
+#           layout: vertical
+# - theme: Metro Red
+#   path: media
+#   title: Media
+#   subview: true
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.lounge_tv
+#           layout: vertical
+#           use_media_info: true
+#           show_volume_level: true
+#           media_controls: []
+#           volume_controls:
+#             - volume_buttons
+#           tap_action:
+#             action: toggle
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.bedroom_tv_samsung
+#           layout: vertical
+#           volume_controls:
+#             - volume_buttons
+#           media_controls: []
+#           tap_action:
+#             action: toggle
+#           show_volume_level: true
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.lounge_sonos_ray
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: true
+#       name: Lounge SONOS
+#       show_volume_level: true
+#       icon_type: entity-picture
+#       primary_info: name
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.bedroom_sonos
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: true
+#       show_volume_level: true
+#       primary_info: name
+#       icon_type: entity-picture
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.kitchen_sonos
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: true
+#       show_volume_level: true
+#       icon_type: entity-picture
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.bedroom_sonos_sonos
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: false
+#       show_volume_level: true
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.hallway_sonos
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: true
+#       show_volume_level: true
+#       icon_type: entity-picture
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.bathroom_sonos
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: true
+#       show_volume_level: true
+#       icon_type: entity-picture
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.sonos_roam_sl
+#       layout: vertical
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       use_media_info: true
+#       show_volume_level: true
+#       icon_type: entity-picture
+# - theme: Metro Red
+#   title: Bedroom
+#   path: bedroom
+#   subview: true
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: custom:mushroom-chips-card
+#       chips:
+#         - type: entity
+#           entity: sensor.bedroom_sensor_temperature
+#           name: "Temperature "
+#           icon_color: red
+#         - type: entity
+#           entity: sensor.bedroom_sensor_humidity
+#           icon_color: blue
+#       alignment: center
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-light-card
+#           entity: light.bedroom
+#           name: Light
+#           icon: mdi:ceiling-light
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#           tap_action:
+#             action: toggle
+#         - type: custom:mushroom-light-card
+#           entity: light.bedroom_hue
+#           name: LED's
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#           show_color_control: true
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.big_bedroom_window_contact
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.small_bedroom_window_contact
+#     - type: custom:mushroom-climate-card
+#       entity: climate.bedroom_air_con
+#       layout: vertical
+#       show_temperature_control: false
+#       hvac_modes:
+#         - cool
+#         - "off"
+#         - fan_only
+#     - type: vertical-stack
+#       cards:
+#         - type: custom:mushroom-cover-card
+#           entity: cover.bedroom_blind
+#           layout: horizontal
+#           show_buttons_control: true
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.bedroom_tv_samsung
+#           name: TV
+#           volume_controls:
+#             - volume_buttons
+#           tap_action:
+#             action: toggle
+#           show_volume_level: true
+#           layout: horizontal
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.bedroom_sonos
+#           layout: vertical
+#           use_media_info: true
+#           icon_type: entity-picture
+#           media_controls:
+#             - previous
+#             - play_pause_stop
+#             - next
+#           volume_controls:
+#             - volume_set
+#         - type: custom:mushroom-entity-card
+#           entity: input_boolean.in_bed
+#           layout: vertical
+#           tap_action:
+#             action: toggle
+#           primary_info: name
+#           secondary_info: state
+# - theme: Metro Red
+#   title: Alex
+#   subview: true
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: custom:mushroom-chips-card
+#       chips:
+#         - type: entity
+#           entity: sensor.boys_temp_sens_temperature
+#           icon_color: red
+#         - type: entity
+#           entity: sensor.boys_temp_sens_humidity
+#           icon_color: blue
+#       alignment: center
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-light-card
+#           entity: light.boys_light2
+#           layout: vertical
+#           collapsible_controls: false
+#           use_light_color: true
+#           show_brightness_control: true
+#           name: Light
+#         - type: custom:mushroom-light-card
+#           entity: light.alex_lamp
+#           icon: mdi:led-strip-variant
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#     - type: custom:mushroom-fan-card
+#       entity: fan.alex_fan
+#       layout: vertical
+#       icon_animation: true
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.alex_big_window_contact
+#           name: Big Window
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.alex_small_window_contact
+#           name: Small Window
+#     - type: custom:mushroom-cover-card
+#       entity: cover.bedroom_blind_2
+#       layout: horizontal
+#       show_buttons_control: true
+#       name: Blind
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: switch.localbytes_plug_pm_3
+#           layout: vertical
+#           tap_action:
+#             action: toggle
+#         - type: custom:mushroom-entity-card
+#           entity: switch.localbytes_plug_pm_4
+#           layout: vertical
+#           icon: mdi:power-socket-uk
+#           tap_action:
+#             action: toggle
+#     - type: custom:mushroom-entity-card
+#       entity: sensor.alex_room_power
+#       layout: vertical
+# - theme: Metro Red
+#   title: Thomas
+#   subview: true
+#   badges: []
+#   cards:
+#     - !include mobile/snippets/header.yaml
+#     - type: custom:mushroom-chips-card
+#       chips:
+#         - type: entity
+#           entity: sensor.thomas_sensor_temperature
+#           icon_color: red
+#         - type: entity
+#           entity: sensor.thomas_sensor_humidity
+#           icon_color: blue
+#       alignment: center
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-light-card
+#           entity: light.thomas_light
+#           name: Light
+#           icon: mdi:ceiling-light
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#           tap_action:
+#             action: toggle
+#         - type: custom:mushroom-light-card
+#           entity: light.thomas_lamp
+#           icon: mdi:led-strip-variant
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#           show_color_control: true
+#     - type: custom:mushroom-fan-card
+#       entity: fan.thomas_fan
+#       name: Fan
+#       layout: vertical
+#       icon_animation: true
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.thomas_big_window_contact
+#           name: "Big Window "
+#         - type: custom:mushroom-entity-card
+#           entity: binary_sensor.thomas_small_window_contact
+#           name: "Small Window "
+#     - type: custom:mushroom-cover-card
+#       entity: cover.thomas_blind
+#       layout: horizontal
+#       show_buttons_control: true
+#       name: Blind
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-entity-card
+#           entity: switch.localbytes_plug_pm
+#           layout: vertical
+#           tap_action:
+#             action: toggle
+#         - type: custom:mushroom-entity-card
+#           entity: switch.localbytes_plug_pm_2
+#           layout: vertical
+#           tap_action:
+#             action: toggle
+#     - type: custom:mushroom-entity-card
+#       entity: sensor.thomas_room_power
+#       icon: mdi:lightning-bolt
+#       layout: vertical
+# - theme: Metro Red
+#   title: Hallway
+#   path: hallway
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: custom:mushroom-chips-card
+#       chips:
+#         - type: entity
+#           entity: sensor.hallway_temperature_temperature
+#           icon_color: red
+#         - type: entity
+#           entity: sensor.hallway_temperature_humidity
+#           icon_color: light-blue
+#         - type: template
+#           entity: lock.nuki_front_door_lock
+#           icon: |-
+#             {% set state=states(entity) %}
+#             {% if state=='locked' %}
+#             mdi:lock
+#             {% elif state=='unlocked' %}
+#             mdi:lock-open-alert
+#             {% else %}
+#             mdi:alert
+#             {% endif %}
+#           icon_color: |-
+#             {% set state=states(entity) %}
+#             {% if state=='locked' %}
+#             green
+#             {% elif state=='unlocked' %}
+#             red
+#             {% else %}
+#             grey
+#             {% endif %}
+#           content: Front Door
+#           tap_action:
+#             action: toggle
+#         - type: entity
+#           entity: binary_sensor.front_door_sensor_magnet_on_off
+#         - type: entity
+#           entity: binary_sensor.hallway_sensor_smoke_ias_zone
+#           use_entity_picture: true
+#           icon: mdi:smoke-detector
+#       alignment: center
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-light-card
+#           entity: light.hallway_lights
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#         - type: custom:mushroom-light-card
+#           entity: light.hallway_cupboard
+#           layout: vertical
+#           use_light_color: true
+#           show_brightness_control: true
+#     - show_state: false
+#       show_name: true
+#       camera_view: live
+#       type: picture-entity
+#       image: https://demo.home-assistant.io/stub_config/bedroom.png
+#       camera_image: camera.hallway
+#       entity: camera.hallway
+#       aspect_ratio: "1.35"
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.hallway_sonos
+#       layout: vertical
+#       use_media_info: true
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+#       icon_type: entity-picture
+#     - type: custom:mushroom-fan-card
+#       entity: fan.air_ventilation
+#       layout: vertical
+#       show_oscillate_control: false
+#       icon_animation: true
+# - theme: Metro Red
+#   title: Bathroom
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: custom:mushroom-chips-card
+#       chips:
+#         - type: entity
+#           entity: sensor.bathroom_temp_sens_temperature
+#           icon_color: red
+#         - type: entity
+#           entity: sensor.bathroom_temp_sens_humidity
+#           icon_color: blue
+#         - type: entity
+#           entity: binary_sensor.bathroom_sensor_motion
+#       alignment: center
+#     - type: horizontal-stack
+#       cards:
+#         - type: custom:mushroom-light-card
+#           entity: light.bathroom_light
+#           layout: vertical
+#         - type: custom:mushroom-light-card
+#           entity: light.washroom
+#           layout: vertical
+#     - type: horizontal-stack
+#       cards:
+#         - entity: input_select.washing_machine_state_machine
+#           state:
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:washing-machine
+#               name: Washing
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: job_ongoing
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:washing-machine-alert
+#               name: Washing Finished
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: job_completed
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:washing-machine-off
+#               name: Washer Off
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: idle
+#           tap_action:
+#             action: more-info
+#           type: custom:button-card
+#         - entity: input_select.tumble_dryer_state_machine
+#           state:
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:tumble-dryer
+#               name: Drying
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: job_ongoing
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:tumble-dryer-alert
+#               name: Dryer Finished
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: job_completed
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:tumble-dryer-off
+#               name: Dryer Off
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: idle
+#           tap_action:
+#             action: more-info
+#           type: custom:button-card
+#     - type: horizontal-stack
+#       cards:
+#         - type: entity
+#           entity: sensor.washing_machine_power
+#           icon: mdi:washing-machine
+#         - type: entity
+#           entity: sensor.tumble_dryer
+#     - type: custom:mushroom-entity-card
+#       entity: binary_sensor.bathroom_window_contact
+#       name: Window
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.bathroom_sonos
+#       layout: vertical
+#       use_media_info: true
+#       icon_type: entity-picture
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - previous
+#         - play_pause_stop
+#         - next
+# - theme: Metro Red
+#   title: Lounge
+#   subview: true
+#   badges: []
+#   cards: []
+# - theme: Metro Red
+#   title: Kitchen
+#   path: kitchen
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: vertical-stack
+#       cards:
+#         - type: custom:mushroom-chips-card
+#           chips:
+#             - type: entity
+#               entity: sensor.kitchen_sensor_temperature
+#               icon_color: red
+#             - type: entity
+#               entity: sensor.kitchen_sensor_humidity
+#               icon_color: blue
+#             - type: entity
+#               entity: binary_sensor.back_door_sensor_magnet_on_off
+#             - type: entity
+#               entity: binary_sensor.kitchen_sensor_smoke_ias_zone
+#               icon: mdi:smoke-detector
+#             - type: entity
+#               entity: binary_sensor.kitchen_motion_group
+#           alignment: center
+#         - type: horizontal-stack
+#           cards:
+#             - entity: light.kitchen_spotlights
+#               icon: mdi:spotlight
+#               layout: vertical
+#               name: Spotlights
+#               tap_action:
+#                 action: toggle
+#               type: custom:mushroom-light-card
+#             - collapsible_controls: true
+#               entity: light.kitchen_leds
+#               icon: mdi:led-strip-variant
+#               layout: vertical
+#               name: LED's
+#               show_brightness_control: true
+#               show_color_control: true
+#               show_color_temp_control: false
+#               type: custom:mushroom-light-card
+#               use_light_color: true
+#         - type: horizontal-stack
+#           cards:
+#             - type: custom:mushroom-entity-card
+#               entity: binary_sensor.left_kitchen_window_sensor_magnet_on_off
+#             - type: custom:mushroom-entity-card
+#               entity: binary_sensor.right_kitchen_window_contact
+#         - type: custom:mushroom-cover-card
+#           entity: cover.kitchen_blind
+#           layout: horizontal
+#           show_buttons_control: true
+#         - entity: input_select.dishwasher_state_machine
+#           state:
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:dishwasher
+#               name: Dishwasher Cleaning
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: job_ongoing
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:dishwasher-alert
+#               name: Dishwasher Finished
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: job_completed
+#             - color: rgb(3,169,244,255)
+#               icon: mdi:dishwasher-off
+#               name: Dishwasher Off
+#               styles:
+#                 card:
+#                   - height: 205px
+#                 icon:
+#                   - width: 40%
+#                   - opacity: 0.5
+#                 name:
+#                   - padding: 5px 0px
+#                   - font-size: 15px
+#                   - text-overflow: unset
+#                   - white-space: unset
+#                   - word-break: break-word
+#               value: idle
+#           tap_action:
+#             action: more-info
+#           type: custom:button-card
+#         - type: entity
+#           entity: sensor.dishwasher_powee
+#         - type: custom:mushroom-media-player-card
+#           entity: media_player.kitchen_sonos
+#           layout: vertical
+#           volume_controls:
+#             - volume_set
+#           media_controls:
+#             - previous
+#             - play_pause_stop
+#             - next
+#           icon_type: entity-picture
+#           show_volume_level: true
+# - theme: Metro Red
+#   title: Office
+#   subview: true
+#   path: office
+#   badges: []
+#   cards:
+#     - type: vertical-stack
+#       cards:
+#         - type: custom:mushroom-chips-card
+#           chips:
+#             - type: entity
+#               entity: sensor.office_current_temp
+#               icon_color: red
+#           alignment: center
+#         - cards:
+#             - cards:
+#                 - entity: light.office
+#                   icon: mdi:lightbulb-spot
+#                   layout: vertical
+#                   name: Lights
+#                   tap_action:
+#                     action: toggle
+#                   type: custom:mushroom-light-card
+#                 - entity: light.canopy
+#                   icon: mdi:spotlight-beam
+#                   layout: vertical
+#                   name: Canopy
+#                   type: custom:mushroom-light-card
+#               type: horizontal-stack
+#             - entity: switch.windows
+#               icon: mdi:desktop-classic
+#               layout: vertical
+#               name: PC
+#               tap_action:
+#                 action: toggle
+#               type: custom:mushroom-entity-card
+#           type: vertical-stack
+#         - type: custom:mushroom-climate-card
+#           entity: climate.office_heater
+#           layout: vertical
+#           show_temperature_control: true
+#           hvac_modes:
+#             - heat
+#             - "off"
+#         - type: custom:mushroom-light-card
+#           entity: light.pc_govee_flow_pro
+#           show_color_control: true
+#           show_brightness_control: true
+#           show_color_temp_control: true
+#           use_light_color: false
+#           collapsible_controls: false
+#     - type: custom:mushroom-media-player-card
+#       entity: media_player.sonos_roam_sl
+#       layout: vertical
+#       use_media_info: true
+#       icon_type: entity-picture
+#       show_volume_level: true
+#       volume_controls:
+#         - volume_set
+#       media_controls:
+#         - play_pause_stop
+#         - next
+#         - previous
+#     - type: vertical-stack
+#       cards:
+#         - type: entities
+#           entities:
+#             - entity: sensor.truenas_system_tank_free
+#             - entity: sensor.truenas_system_tank2_free
+#             - entity: sensor.power_monitor_current_consumption
+#             - entity: update.truenas_system_update
+#           title: TrueNAS
+#         - type: horizontal-stack
+#           cards:
+#             - entity: sensor.truenas_system_uptime
+#               state:
+#                 - color: rgb(3,169,244,255)
+#                   icon: mdi:server
+#                   name: Reboot TrueNAS
+#                   operator: default
+#                   styles:
+#                     card:
+#                       - height: 100px
+#                     icon:
+#                       - width: 40%
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#               tap_action:
+#                 action: call-service
+#                 service: truenas.system_reboot
+#                 service_data:
+#                   entity_id: sensor.truenas_system_uptime
+#               type: custom:button-card
+#             - entity: sensor.truenas_system_uptime
+#               state:
+#                 - color: rgb(3,169,244,255)
+#                   icon: mdi:plex
+#                   name: Restart Plex
+#                   operator: default
+#                   styles:
+#                     card:
+#                       - height: 100px
+#                     icon:
+#                       - width: 40%
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#               tap_action:
+#                 action: call-service
+#                 service: truenas.jail_restart
+#                 service_data:
+#                   entity_id: binary_sensor.truenas_jails_plex
+#               type: custom:button-card
+#             - entity: sensor.truenas_system_uptime
+#               state:
+#                 - color: rgb(3,169,244,255)
+#                   icon: mdi:server-network
+#                   name: Restart Transmission
+#                   operator: default
+#                   styles:
+#                     card:
+#                       - height: 100px
+#                     icon:
+#                       - width: 40%
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#               tap_action:
+#                 action: call-service
+#                 service: truenas.jail_restart
+#                 service_data:
+#                   entity_id: binary_sensor.truenas_jails_transmission
+#               type: custom:button-card
+#         - type: horizontal-stack
+#           cards:
+#             - entity: sensor.truenas_system_uptime
+#               state:
+#                 - color: rgb(3,169,244,255)
+#                   icon: mdi:ubuntu
+#                   name: Start Ubuntu VM
+#                   operator: default
+#                   styles:
+#                     card:
+#                       - height: 100px
+#                     icon:
+#                       - width: 40%
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#               tap_action:
+#                 action: call-service
+#                 service: truenas.vm_start
+#                 service_data:
+#                   entity_id: binary_sensor.truenas_vms_ubudocker
+#               type: custom:button-card
+#             - entity: sensor.truenas_system_uptime
+#               state:
+#                 - color: rgb(3,169,244,255)
+#                   icon: mdi:ubuntu
+#                   name: Stop Ubuntu VM
+#                   operator: default
+#                   styles:
+#                     card:
+#                       - height: 100px
+#                     icon:
+#                       - width: 40%
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#               tap_action:
+#                 action: call-service
+#                 service: truenas.vm_stop
+#                 service_data:
+#                   entity_id: binary_sensor.truenas_vms_ubudocker
+#               type: custom:button-card
+# - theme: Metro Red
+#   title: Outside
+#   path: outside
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: horizontal-stack
+#       cards:
+#         - collapsible_controls: false
+#           entity: light.yeelight_mono1_f0b429a93ec5
+#           layout: vertical
+#           name: Front
+#           show_brightness_control: true
+#           show_color_control: true
+#           show_color_temp_control: true
+#           type: custom:mushroom-light-card
+#           use_light_color: true
+#         - collapsible_controls: false
+#           entity: light.back
+#           layout: vertical
+#           name: Back
+#           show_brightness_control: true
+#           show_color_control: true
+#           show_color_temp_control: true
+#           type: custom:mushroom-light-card
+#           use_light_color: true
+#     - type: custom:mushroom-entity-card
+#       entity: sensor.oil_tank_level
+#       layout: vertical
+# - theme: Metro Red
+#   title: Car
+#   path: car
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: vertical-stack
+#       cards:
+#         - type: custom:mushroom-chips-card
+#           chips:
+#             - type: entity
+#               entity: sensor.leaf_gom
+#               icon_color: blue
+#             - type: entity
+#               entity: sensor.leaf_cabin_temperature
+#               icon_color: red
+#           alignment: center
+#         - type: custom:charger-card
+#           entity: sensor.myenergi_zappi_21782493_status
+#           customCardTheme: theme_custom
+#           show_leds: false
+#           customImage: \local\zappi.png
+#           show_collapsibles: false
+#           show_toolbar: true
+#           show_status: true
+#           details:
+#             status:
+#               entity_id: sensor.myenergi_zappi_21782493_status
+#             statetext:
+#               Paused: not charging
+#               Completed: finished charging
+#               Charging: charging
+#               fault: error
+#               EV Disconnected: Disconnected
+#             substatus:
+#               entity_id: sensor.myenergi_zappi_21782493_plug_status
+#             info_right:
+#               - entity_id: sensor.myenergi_my_home_voltage_grid
+#                 text: voltage
+#                 unit_show: true
+#               - entity_id: sensor.zappi_charge_current
+#                 text: Current
+#                 round: 1
+#                 unit_show: true
+#                 unit: A
+#               - entity_id: sensor.myenergi_zappi_21782493_internal_load_ct1
+#                 text: Power
+#                 unit_show: true
+#                 unit: W
+#             info_left:
+#               - entity_id: number.myenergi_zappi_21782493_minimum_green_level
+#             stats:
+#               Charging:
+#                 - entity_id: sensor.myenergi_zappi_21782493_charge_added_session
+#                   text: This Session
+#                   unit_show: true
+#                 - entity_id: select.myenergi_zappi_21782493_charge_mode
+#                 - entity_id: sensor.leaf_battery_percentage
+#                   unit_show: true
+#               Paused:
+#                 - entity_id: sensor.myenergi_zappi_21782493_charge_added_session
+#                   text: Charged Added Last Session
+#                   unit_show: true
+#                 - entity_id: select.myenergi_zappi_21782493_charge_mode
+#               Completed:
+#                 - entity_id: sensor.myenergi_zappi_21782493_charge_added_session
+#                   text: Charged Added Last Session
+#                   unit_show: true
+#                 - entity_id: select.myenergi_zappi_21782493_charge_mode
+#             toolbar_left:
+#               default:
+#                 - service: script.set_zappi_to_fast
+#                   icon: hass:speedometer
+#                   text: Fast
+#                 - service: script.set_zappi_to_eco
+#                   icon: hass:plus-box
+#                   text: Eco
+#                 - service: script.set_zappi_to_eco_plus
+#                   icon: hass:plus-box-multiple
+#                   text: Eco+
+#                 - service: script.set_zappi_to_stopped
+#                   icon: hass:close-octagon
+#                   text: Stopped
+#         - type: custom:mushroom-entity-card
+#           entity: input_boolean.octopus_go_charging
+#           layout: vertical
+#           tap_action:
+#             action: toggle
+#         - type: entities
+#           entities:
+#             - entity: input_datetime.octopus_go_car_charge_start
+#             - entity: input_datetime.octopus_go_charge_time_end
+#         - type: horizontal-stack
+#           cards:
+#             - entity: switch.leaf_refresh
+#               name: Refresh Leaf data
+#               state:
+#                 - color: red
+#                   icon: mdi:refresh
+#                   name: Refresh Leaf Data
+#                   styles:
+#                     card:
+#                       - height: 172px
+#                     icon:
+#                       - width: 25%
+#                       - opacity: 0.5
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#                   value: "off"
+#                 - color: green
+#                   icon: mdi:car-wireless
+#                   name: Fetching Latest Data
+#                   operator: default
+#                   styles:
+#                     card:
+#                       - height: 172px
+#                     icon:
+#                       - width: 25%
+#                     name:
+#                       - padding: 5px 0px
+#                       - font-size: 15px
+#                       - text-overflow: unset
+#                       - white-space: unset
+#                       - word-break: break-word
+#               tap_action:
+#                 action: toggle
+#               type: custom:button-card
+# - theme: Metro Red
+#   subview: true
+#   path: covers
+#   title: Covers
+#   badges: []
+#   cards:
+#     - type: vertical-stack
+#       cards:
+#         - type: custom:mushroom-cover-card
+#           entity: cover.bedroom_blind
+#           show_buttons_control: true
+#           layout: horizontal
+#         - type: custom:mushroom-cover-card
+#           layout: horizontal
+#           show_buttons_control: true
+#           entity: cover.bedroom_blind_2
+#         - type: custom:mushroom-cover-card
+#           layout: horizontal
+#           show_buttons_control: true
+#           entity: cover.thomas_blind
+#         - type: custom:mushroom-cover-card
+#           layout: horizontal
+#           show_position_control: false
+#           show_buttons_control: true
+#           entity: cover.kitchen_blind
+#           icon: mdi:blinds
+#         - type: custom:mushroom-cover-card
+#           entity: cover.lounge_curtains
+#           layout: horizontal
+#           show_position_control: false
+#           show_buttons_control: true
+# - theme: Metro Red
+#   title: Vacuum
+#   path: vacuum
+#   subview: true
+#   badges: []
+#   cards:
+#     - calibration_source:
+#         camera: true
+#       entity: vacuum.roborock_vacuum_a27
+#       map_locked: true
+#       map_modes:
+#         - name: Zone cleanup
+#           icon: mdi:select-drag
+#           run_immediately: false
+#           coordinates_rounding: true
+#           selection_type: MANUAL_RECTANGLE
+#           max_selections: 5
+#           repeats_type: EXTERNAL
+#           max_repeats: 3
+#           service_call_schema:
+#             service: xiaomi_miio.vacuum_clean_zone
+#             service_data:
+#               zone: "[[selection]]"
+#               repeats: "[[repeats]]"
+#               entity_id: "[[entity_id]]"
+#           predefined_selections: []
+#           variables: {}
+#         - name: Zones list
+#           icon: mdi:floor-plan
+#           run_immediately: false
+#           coordinates_rounding: true
+#           selection_type: PREDEFINED_RECTANGLE
+#           max_selections: 5
+#           repeats_type: EXTERNAL
+#           max_repeats: 3
+#           service_call_schema:
+#             service: xiaomi_miio.vacuum_clean_zone
+#             service_data:
+#               zone: "[[selection]]"
+#               repeats: "[[repeats]]"
+#               entity_id: "[[entity_id]]"
+#           predefined_selections:
+#             - zones:
+#                 - - 24263
+#                   - 25131
+#                   - 29556
+#                   - 29628
+#             - zones:
+#                 - - 29492
+#                   - 25054
+#                   - 32596
+#                   - 28145
+#             - zones:
+#                 - - 28569
+#                   - 29605
+#                   - 29754
+#                   - 35617
+#             - zones:
+#                 - - 24820
+#                   - 29690
+#                   - 28474
+#                   - 33022
+#             - zones:
+#                 - - 24992
+#                   - 32955
+#                   - 28612
+#                   - 36527
+#             - zones:
+#                 - - 29801
+#                   - 31958
+#                   - 32493
+#                   - 35873
+#             - zones:
+#                 - - 29870
+#                   - 28250
+#                   - 32253
+#                   - 30894
+#           variables: {}
+#       map_source:
+#         camera: camera.xiaomi_cloud_map_extractor
+#       two_finger_pan: false
+#       type: custom:xiaomi-vacuum-map-card
+#       vacuum_platform: default
+#       tiles:
+#         - tile_id: status
+#           entity: vacuum.roborock_vacuum_a27
+#           label: Status
+#           attribute: status
+#           icon: mdi:robot-vacuum
+#           translations:
+#             starting: Starting
+#             charger disconnected: Charger disconnected
+#             idle: Idle
+#             remote control active: Remote control active
+#             cleaning: Cleaning
+#             returning home: Returning home
+#             manual mode: Manual mode
+#             charging: Charging
+#             charging problem: Charging problem
+#             paused: Paused
+#             spot cleaning: Spot cleaning
+#             error: Error
+#             shutting down: Shutting down
+#             updating: Updating
+#             docking: Docking
+#             going to target: Going to target
+#             zoned cleaning: Zoned cleaning
+#             segment cleaning: Segment cleaning
+#             emptying the bin: Emptying the bin
+#             charging complete: Charging complete
+#             device offline: Device offline
+#         - tile_id: battery_level
+#           entity: vacuum.roborock_vacuum_a27
+#           label: Battery
+#           attribute: battery_level
+#           icon: mdi:battery-charging-100
+#           unit: "%"
+#         - tile_id: fan_speed
+#           entity: vacuum.roborock_vacuum_a27
+#           label: Fan speed
+#           attribute: fan_speed
+#           icon: mdi:fan
+#           translations:
+#             silent: Silent
+#             standard: Standard
+#             medium: Medium
+#             turbo: Turbo
+#             auto: Auto
+#             gentle: Gentle
+#         - tile_id: sensor_dirty_left
+#           label: Sensors left
+#           unit: h
+#           multiplier: 0.0002777777777777778
+#           hold_action:
+#             action: call-service
+#             service: vacuum.send_command
+#             confirmation: true
+#             service_data:
+#               command: reset_consumable
+#               params: sensor_dirty_time
+#               entity_id: vacuum.roborock_vacuum_a27
+#           entity: sensor.roborock_vacuum_a27_sensor_dirty_left
+#           icon: mdi:eye-outline
+#           precision: 0
+#           translations: {}
+#         - tile_id: filter_left
+#           label: Filter left
+#           unit: h
+#           multiplier: 0.0002777777777777778
+#           hold_action:
+#             action: call-service
+#             service: vacuum.send_command
+#             confirmation: true
+#             service_data:
+#               command: reset_consumable
+#               params: filter_work_time
+#               entity_id: vacuum.roborock_vacuum_a27
+#           entity: sensor.roborock_vacuum_a27_filter_left
+#           icon: mdi:air-filter
+#           precision: 0
+#           translations: {}
+#         - tile_id: main_brush_left
+#           label: Main brush left
+#           unit: h
+#           multiplier: 0.0002777777777777778
+#           hold_action:
+#             action: call-service
+#             service: vacuum.send_command
+#             confirmation: true
+#             service_data:
+#               command: reset_consumable
+#               params: main_brush_work_time
+#               entity_id: vacuum.roborock_vacuum_a27
+#           entity: sensor.roborock_vacuum_a27_main_brush_left
+#           icon: mdi:brush
+#           precision: 0
+#           translations: {}
+#         - tile_id: side_brush_left
+#           label: Side brush left
+#           unit: h
+#           multiplier: 0.0002777777777777778
+#           hold_action:
+#             action: call-service
+#             service: vacuum.send_command
+#             confirmation: true
+#             service_data:
+#               command: reset_consumable
+#               params: side_brush_work_time
+#               entity_id: vacuum.roborock_vacuum_a27
+#           entity: sensor.roborock_vacuum_a27_side_brush_left
+#           icon: mdi:brush
+#           precision: 0
+#           translations: {}
+#       icons:
+#         - icon: mdi:play
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: cleaning
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: error
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: returning
+#           tooltip: Start
+#           tap_action:
+#             action: call-service
+#             service: vacuum.start
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#         - icon: mdi:pause
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: docked
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: idle
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: error
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: paused
+#           tooltip: Pause
+#           tap_action:
+#             action: call-service
+#             service: vacuum.pause
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#         - icon: mdi:stop
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: docked
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: idle
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: error
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: paused
+#           tooltip: Stop
+#           tap_action:
+#             action: call-service
+#             service: vacuum.stop
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#         - icon: mdi:home-map-marker
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: docked
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: returning
+#           tooltip: Return to base
+#           tap_action:
+#             action: call-service
+#             service: vacuum.return_to_base
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#         - icon: mdi:target-variant
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: docked
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: error
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: cleaning
+#             - entity: vacuum.roborock_vacuum_a27
+#               value_not: returning
+#           tooltip: Clean spot
+#           tap_action:
+#             action: call-service
+#             service: vacuum.clean_spot
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#         - icon: mdi:map-marker
+#           tooltip: Locate
+#           tap_action:
+#             action: call-service
+#             service: vacuum.locate
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#         - icon: mdi:fan-remove
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value: Silent
+#           tooltip: Change fan speed
+#           tap_action:
+#             action: call-service
+#             service: vacuum.set_fan_speed
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#               fan_speed: Standard
+#         - icon: mdi:fan-speed-1
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value: Standard
+#           tooltip: Change fan speed
+#           tap_action:
+#             action: call-service
+#             service: vacuum.set_fan_speed
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#               fan_speed: Medium
+#         - icon: mdi:fan-speed-2
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value: Medium
+#           tooltip: Change fan speed
+#           tap_action:
+#             action: call-service
+#             service: vacuum.set_fan_speed
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#               fan_speed: Turbo
+#         - icon: mdi:fan-speed-3
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value: Turbo
+#           tooltip: Change fan speed
+#           tap_action:
+#             action: call-service
+#             service: vacuum.set_fan_speed
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#               fan_speed: Max
+#         - icon: mdi:fan-alert
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value: Max
+#           tooltip: Change fan speed
+#           tap_action:
+#             action: call-service
+#             service: vacuum.set_fan_speed
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#               fan_speed: Silent
+#         - icon: mdi:fan-alert
+#           conditions:
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value_not: Silent
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value_not: Standard
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value_not: Medium
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value_not: Turbo
+#             - entity: vacuum.roborock_vacuum_a27
+#               attribute: fan_speed
+#               value_not: Max
+#           tooltip: Change fan speed
+#           tap_action:
+#             action: call-service
+#             service: vacuum.set_fan_speed
+#             service_data:
+#               entity_id: vacuum.roborock_vacuum_a27
+#               fan_speed: Silent
+# - theme: Metro Red
+#   title: SONOS
+#   path: sonos
+#   type: panel
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: custom:custom-sonos-card
+# - theme: Metro Red
+#   title: FIRETV
+#   path: firetv
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: custom:firemote-card
+#       entity: media_player.fire_tv_192_168_0_251
+#       device_type: fire_stick_4k
+#       compatibility_mode: event3
+#       app_launch_1: netflix
+#       app_launch_2: netflix
+#       app_launch_3: disney-plus
+#       app_launch_4: hulu
+#       scale: "120"
+# - theme: Metro Red
+#   title: samsung
+#   path: samsung
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: custom:tv-card
+#       entity: media_player.bedroom_tv_samsung
+#       power_row:
+#         - power
+#       channel_row:
+#         - channel_up
+#         - info
+#         - channel_down
+#       apps_row:
+#         - netflix
+#         - youtube
+#         - spotify
+#       volume_row: slider
+#       navigation_row: touchpad
+#       source_row:
+#         - return
+#         - home
+#         - source
+#       media_control_row:
+#         - rewind
+#         - play
+#         - pause
+#         - fast_forward
+# - theme: Metro Red
+#   title: Heating
+#   path: heating
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: vertical-stack
+#       cards:
+#         - type: custom:mushroom-climate-card
+#           entity: climate.heating_nest
+#           layout: vertical
+#           show_temperature_control: true
+#           hvac_modes:
+#             - heat
+#             - "off"
+#         - type: custom:scheduler-card
+#           include:
+#             - climate
+#             - input_boolean
+#           exclude: []
+#     - type: horizontal-stack
+#       cards:
+#         - show_name: true
+#           show_icon: true
+#           type: button
+#           tap_action:
+#             action: toggle
+#           entity: button.wiser_boost_all_heating
+#           name: Boost Heating
+#         - show_name: true
+#           show_icon: true
+#           type: button
+#           tap_action:
+#             action: toggle
+#           entity: button.wiser_boost_hot_water
+#           name: Boost Water
+# - theme: noctis
+#   title: Teamtracker
+#   path: energy
+#   subview: true
+#   badges: []
+#   cards:
+#     - type: custom:auto-entities
+#       unique: true
+#       show_empty: false
+#       card:
+#         type: custom:layout-card
+#         layout_type: "custom:grid-layout"
+#         layout: !include snippets/layout-page-columns.yaml
+#       filter:
+#         template: |
+#           {%- for team in integration_entities("teamtracker") -%}
+#           {%- if states(team) != "NOT_FOUND" -%}
+#               {{{"type": "custom:teamtracker-card",
+#                 "entity": team }}},
+#           {%- endif -%}
+#           {%- endfor -%}
+#         exclude:
+#           - entity_id: "*team_tracker*"
+#       options: null
+#       sort:
+#         method: attribute
+#         attribute: date

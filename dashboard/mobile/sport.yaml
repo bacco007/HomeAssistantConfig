@@ -8,7 +8,7 @@ title: Sport
 badges: []
 type: custom:grid-layout
 layout:
-  #default
+  # default
   margin: 0
   grid-gap: 0.5vw
   grid-template-columns: 15% repeat(4, 1fr) 0
@@ -18,7 +18,7 @@ layout:
     "sidebar c2r2 c3r2 c4r2 c5r2 ."
     "footer footer footer footer footer ."
   mediaquery:
-    #phone
+    # phone
     "(max-width: 800px)":
       grid-gap: 1vw
       grid-template-columns: 100%

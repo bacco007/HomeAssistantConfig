@@ -5,7 +5,7 @@ path: home
 badges: []
 type: custom:grid-layout
 layout:
-  #default
+  # default
   margin: 0
   grid-gap: 0.5vw
   grid-template-columns: 15% repeat(3, 1fr) 0
@@ -16,7 +16,7 @@ layout:
     "sidebar  c2r3 c3r3 c4r3 ."
     "footer footer footer footer  ."
   mediaquery:
-    #phone
+    # phone
     "(max-width: 800px)":
       grid-gap: 1vw
       grid-template-columns: 100%
