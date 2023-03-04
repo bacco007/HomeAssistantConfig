@@ -1,8 +1,0 @@
----
-style:
-  mushroom-title-card$: |
-    h1 {
-      --primary-text-color: var(--secondary-text-color);
-      --title-font-size: var(--h4-font-size);
-      --title-font-weight: 500;
-    }

@@ -48,10 +48,15 @@ cards:
     states:
       "(min-width: 801px)":
         type: grid
-        title: Vardagsrum
-        columns: 2
+        title: Weather
+        columns: 1
+        square: false
         cards:
           - !include snippets/weather_forecast.yaml
+          - type: custom:clock-weather-card
+            entity: weather.east_tamworth
+            hide_today_section: true
+            forecast_days: 7
 
   ###
   # Column 3, Row 2
@@ -82,10 +87,10 @@ cards:
       "(min-width: 801px)":
         type: grid
         title: Studio
-        columns: 2
+        columns: 1
+        square: false
         cards:
-          - type: entites
-            entities: [sun.sun]
+          - !include ../snippets/media_currently_playing_details.yaml
 
   ###
   # Footer

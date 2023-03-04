@@ -6,13 +6,124 @@ subview: true
 path: solar
 title: Solar
 badges: []
+type: custom:grid-layout
+layout:
+  # default
+  margin: 0
+  grid-gap: 0.5vw
+  grid-template-columns: 15% repeat(3, 1fr) 0
+  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+  grid-template-areas: |
+    "sidebar . . . ."
+    "sidebar  c2r2 c3r2 c4r2 ."
+    "sidebar  c2r3 c3r3 c4r3 ."
+    "footer footer footer footer  ."
+  mediaquery:
+    # phone
+    "(max-width: 800px)":
+      grid-gap: 1vw
+      grid-template-columns: 100%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar"
+        "footer"
+        "c2r2"
 cards:
-  - !include snippets/header.yaml
-
+  ###
+  # SIDEBAR
+  # Column 1
+  ###
   - type: vertical-stack
+    view_layout:
+      grid-area: sidebar
     cards:
-      - !include snippets/solar.yaml
-      - !include ../energy/graph_production.yaml
-      - !include ../energy/snippets/solcast.yaml
-      - !include ../energy/graph_forecast.yaml
-      - !include ../energy/graph_yield_year.yaml
+      - !include snippets/header.yaml
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(min-width: 801px)":
+            type: vertical-stack
+
+            cards:
+              - !include snippets/menu.yaml
+  ###
+  # Footer
+  ###
+
+  - !include snippets/footer.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+        cards:
+          - !include snippets/solar.yaml
+          - !include ../energy/graph_production.yaml
+          - !include ../energy/snippets/solcast.yaml
+          - !include ../energy/graph_forecast.yaml
+          - !include ../energy/graph_yield_year.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - type: custom:state-switch
+            entity: mediaquery
+            states:
+              "(min-width: 801px)":
+                type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Today
+                view_layout:
+                  grid-column: 1/-1
+          - !include snippets/solar.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - type: custom:state-switch
+            entity: mediaquery
+            states:
+              "(min-width: 801px)":
+                type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Yield
+                view_layout:
+                  grid-column: 1/-1
+          - !include ../energy/graph_production.yaml
+          - !include ../energy/graph_yield_year.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c4r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - type: custom:state-switch
+            entity: mediaquery
+            states:
+              "(min-width: 801px)":
+                type: "custom:button-card"
+                template: header_card_no_link
+                variables:
+                  name: Forecast
+                view_layout:
+                  grid-column: 1/-1
+          - !include ../energy/snippets/solcast.yaml
+          - !include ../energy/graph_forecast.yaml

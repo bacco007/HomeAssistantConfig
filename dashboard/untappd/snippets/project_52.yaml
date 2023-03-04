@@ -116,3 +116,4 @@ cards:
             border-radius: var(--icon-border-radius);
             background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
           }
+  - !include project_52_beers.yaml

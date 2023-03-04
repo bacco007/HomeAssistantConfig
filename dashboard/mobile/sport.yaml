@@ -186,6 +186,7 @@ cards:
       - !include ../sport/standings_alm.yaml
       - !include ../sport/standings_epl.yaml
       - !include ../sport/standings_mlb.yaml
+      - !include ../sport/standings_nfl.yaml
       - !include ../sport/standings_nhl.yaml
       - !include ../sport/standings_nrl.yaml
       - !include ../sport/standings_srp.yaml

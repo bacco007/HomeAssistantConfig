@@ -37,14 +37,14 @@ entities:
 
           ### {{division.name }}
 
-          |Team|Logo|GP|W|L|RD|Pts|
+          |Team|Logo|W|L|PCT|GB|
 
-          |:--|:--:|:--:|:--:|:--:|:--:|:--:|
+          |:--|:--:|:--:|:--:|:--:|:--:|
 
           {%- for team in division.standings.entries %}
 
           |{{team.team.displayName}}|<img
-          src="{{team.team.logos[1].href}}">|{{team.stats[7].value|int}}|{{team.stats[17].value|int}}|{{team.stats[9].value|int}}|{{team.stats[13].value|int}}:{{team.stats[12].value|int}}|{{team.stats[11].value|int}}|
+          src="{{team.team.logos[1].href}}">|{{team.stats[17].value|int}}|{{team.stats[9].value|int}}|{{team.stats[16].value|int}}|{{team.stats[6].value|round(3)}}|
 
           {%- endfor %}
 
