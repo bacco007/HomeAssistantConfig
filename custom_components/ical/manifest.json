@@ -6,7 +6,7 @@
   "issue_tracker": "https://github.com/tybritten/ical-sensor-homeassistant/issues",
   "documentation": "https://www.home-assistant.io/integrations/ical",
   "requirements": [
-    "icalendar==4.0.7"
+    "icalendar==5.0.4"
   ],
   "ssdp": [],
   "zeroconf": [],
