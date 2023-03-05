@@ -28,6 +28,15 @@ layout:
         "footer"
         "c2r3"
         "c4r2"
+    "(max-width: 1400px)":
+      grid-gap: 1vw
+      grid-template-columns: 25% repeat(2, 1fr) 0
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar c2r2 c3r2"
+        "sidebar c4r2 c3r3"
+        "sidebar c4r3 c5r2"
+        "footer footer footer"
 cards:
   ###
   # SIDEBAR

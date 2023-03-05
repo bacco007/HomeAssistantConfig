@@ -15,20 +15,11 @@ card:
     title: "Solar Production"
   span:
     start: day
-  now:
-    show: true
-    label: now
   all_series_config:
     stroke_width: 2
     type: line
     curve: smooth
     unit: kW
-  # color_list:
-  #   - rgb(35, 155, 86)
-  #   - rgb(229, 152, 102)
-  #   - rgb(241, 148, 138)
-  #   - rgb(208, 236, 231)
-  #   - rgb(232, 246, 243)
   apex_config:
     annotations:
       xaxis:
@@ -59,20 +50,6 @@ card:
       borderColor: "#7B7B7B"
     chart:
       height: 450
-      foreColor: "#7B7B7B"
-      zoom:
-        type: x
-        enabled: true
-        autoScaleYaxis: true
-      toolbar:
-        show: true
-        autoSelected: zoom
-        tools:
-          zoom: true
-          zoomin: false
-          zoomout: false
-          pan: false
-          reset: true
     xaxis:
       {
         type: "datetime",
@@ -130,27 +107,3 @@ card:
         return entity.attributes.forecast.map((entry) => {
           return [new Date(entry.period_start), entry.pv_estimate];
         });
-    # - entity: sensor.solcast_forecast_today
-    #   name: Forecast (Future 10%)
-    #   show:
-    #     extremas: false
-    #     in_header: false
-    #   color: "#797D7F"
-    #   type: line
-    #   opacity: 0.4
-    #   data_generator: |
-    #     return entity.attributes.detailedForecast.map((entry) => {
-    #       return [new Date(entry.period_start), entry.pv_estimate10];
-    #     });
-    # - entity: sensor.solcast_forecast_today
-    #   name: Forecast (Future 90%)
-    #   show:
-    #     extremas: false
-    #     in_header: false
-    #   color: "#797D7F"
-    #   type: line
-    #   opacity: 0.4
-    #   data_generator: |
-    #     return entity.attributes.detailedForecast.map((entry) => {
-    #       return [new Date(entry.period_start), entry.pv_estimate90];
-    #     });

@@ -304,6 +304,24 @@ def getdata_untappd_project52():
     attributes_mostcheckedinbeers["friendly_name"] = "Untappd: Most Checked In Beers"
     state.set("sensor.untappd_most_checked_in_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["count"], reverse=True)[:25]), new_attributes=attributes_mostcheckedinbeers)
 
+    # Highest ABV Beers
+    attributes_highestabvbeers = {}
+    attributes_highestabvbeers["data"] = sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=True)[:25]
+    attributes_highestabvbeers["count"] = len(sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=True)[:25])
+    attributes_highestabvbeers["icon"] = "mdi:untappd"
+    attributes_highestabvbeers["unit_of_measurement"] = "beers"
+    attributes_highestabvbeers["friendly_name"] = "Untappd: Highest ABV Beers"
+    state.set("sensor.untappd_highest_abv_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=True)[:25]), new_attributes=attributes_highestabvbeers)
+
+    # Lowest ABV Beers
+    attributes_lowestabvbeers = {}
+    attributes_lowestabvbeers["data"] = sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=False)[:25]
+    attributes_lowestabvbeers["count"] = len(sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=False)[:25])
+    attributes_lowestabvbeers["icon"] = "mdi:untappd"
+    attributes_lowestabvbeers["unit_of_measurement"] = "beers"
+    attributes_lowestabvbeers["friendly_name"] = "Untappd: Lowest ABV Beers"
+    state.set("sensor.untappd_lowest_abv_beers", value=len(sorted(ATTR_BEER, key=lambda x: x["beer_abv"], reverse=False)[:25]), new_attributes=attributes_lowestabvbeers)
+
 def get_config(name):
     value = pyscript.app_config.get(name)
 

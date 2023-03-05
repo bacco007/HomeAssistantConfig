@@ -38,16 +38,24 @@ entities:
                 type: custom:mushroom-entity-card
                 card_mod:
                   style: |
+                    :host {
+                      --mush-icon-size: 28px;
+                      --mush-card-primary-font-size: 12px;
+                      --mush-card-secondary-font-size: 12px;
+                    }
                     ha-card {
-                      margin: -8px 0px 0px 0px;
                       box-shadow: none;
                     }
                 icon_color: orange
                 tap_action:
                   action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
         card:
           type: grid
-          columns: 1
+          columns: 2
           square: false
           card_mod:
             style: |

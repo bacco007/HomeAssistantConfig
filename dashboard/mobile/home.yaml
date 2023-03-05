@@ -24,6 +24,15 @@ layout:
       grid-template-areas: |
         "sidebar"
         "footer"
+    "(max-width: 1400px)":
+      grid-gap: 1vw
+      grid-template-columns: 25% repeat(2, 1fr) 0
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar c2r2 c3r2"
+        "sidebar c4r2 c3r3"
+        "sidebar c4r3 ."
+        "footer footer footer"
 cards:
   ###
   # SIDEBAR
@@ -48,7 +57,6 @@ cards:
     states:
       "(min-width: 801px)":
         type: grid
-        title: Weather
         columns: 1
         square: false
         cards:
@@ -69,11 +77,201 @@ cards:
     states:
       "(min-width: 801px)":
         type: grid
-        title: Studio
-        columns: 2
+        columns: 1
+        square: false
         cards:
-          - type: entites
-            entities: [sun.sun]
+          - type: vertical-stack
+            cards:
+              - type: custom:button-card
+                template: header_card
+                variables:
+                  name: >
+                    <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+                    icon='mdi:docker'></ha-icon> DOCKER
+                  label: More
+                  link: /ui-dashboard/docker
+                view_layout:
+                  grid-column: 1/-1
+                card_mod:
+                  style: |
+                    ha-card {
+                      box-shadow: none;
+                    }
+              - type: grid
+                square: false
+                columns: 3
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: "{{state_attr(entity, 'containers_running')}}"
+                    secondary: |-
+                      Containers
+                      Running
+                    icon: mdi:docker
+                    entity: sensor.stats_docker
+                    layout: vertical
+                    fill_container: true
+                    icon_color: ""
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    multiline_secondary: true
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-card-primary-font-size: 18px;
+                          --mush-card-secondary-font-size: 14px;
+                        }
+                  - type: custom:mushroom-template-card
+                    primary: "{{state_attr(entity, 'containers_stopped')}}"
+                    secondary: |-
+                      Containers
+                      Stopped
+                    icon: mdi:docker
+                    entity: sensor.stats_docker
+                    layout: vertical
+                    fill_container: true
+                    icon_color: ""
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    multiline_secondary: true
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-card-primary-font-size: 18px;
+                          --mush-card-secondary-font-size: 14px;
+                        }
+                  - type: custom:mushroom-template-card
+                    primary: "{{state_attr(entity, 'containers_updatable')}}"
+                    secondary: |-
+                      Containers
+                      To Update
+                    icon: mdi:docker
+                    entity: sensor.stats_docker
+                    layout: vertical
+                    fill_container: true
+                    icon_color: ""
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    multiline_secondary: true
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-card-primary-font-size: 18px;
+                          --mush-card-secondary-font-size: 14px;
+                        }
+          - type: vertical-stack
+            cards:
+              - type: custom:button-card
+                template: header_card
+                variables:
+                  name: >
+                    <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+                    icon='mdi:football'></ha-icon> UPCOMING SPORT
+                  label: More
+                  link: /ui-dashboard/docker
+                view_layout:
+                  grid-column: 1/-1
+                card_mod:
+                  style: |
+                    ha-card {
+                      box-shadow: none;
+                    }
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.stats_sport_upcoming_today
+                    layout: vertical
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    secondary_info: name
+                    primary_info: state
+                    name: Today
+                    icon_color: green
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-card-primary-font-size: 18px;
+                          --mush-card-secondary-font-size: 14px;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.stats_sport_upcoming_thisweek
+                    name: This Week
+                    fill_container: false
+                    icon_color: yellow
+                    layout: vertical
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    primary_info: state
+                    secondary_info: name
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-card-primary-font-size: 18px;
+                          --mush-card-secondary-font-size: 14px;
+                        }
+              - type: custom:auto-entities
+                sort:
+                  method: attribute
+                  attribute: sortorder
+                card_param: cards
+                filter:
+                  template: >-
+                    {% for s in states|selectattr('entity_id','search','sensor.sport_') |
+                    selectattr("attributes.sortorder", "<=", 7) |
+                    sort(attribute="attributes.sortorder")  -%}
+                      {{
+                        {
+                          "type": "custom:mushroom-template-card",
+                          "primary": "{{ state_attr(entity, \"friendly_name\") }}",
+                          "multiline_secondary": true,
+                          "secondary": "{{ state_attr(entity, \"nextevent\") }} ({{ state_attr(entity, \"nexttime\") }})\n{{ state_attr(entity, \"nexteventafter\") }}",
+                          "entity": s.entity_id,
+                          "badge_icon": "{%- if is_state_attr(entity, 'nexttime', 'On Now!') %} mdi:clock {%- endif %}",
+                          "icon": "{{ state_attr(entity, \"icon\") }}",
+                          "badge_color": "green",
+                          "tap_action": "none",
+                          "card_mod": {
+                            "style": {
+                              "mushroom-state-info$": ".primary {\n  font-size: 16px !important;\n  white-space: normal !important;\n}\n.secondary {\n  font-size: 15px !important;\n}\n",
+                              ".": "ha-card:before {\n  content: \"\";\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  right: 5px;\n  background: url( {{ state_attr(config.entity, \"entity_picture\") }} ) center no-repeat, linear-gradient(to left, transparent, var(--background-color) 50%);\n  background-repeat: no-repeat;\n  background-size: auto 100%, cover;\n  background-position: right;\n  background-blend-mode: saturation;\n  filter: opacity(0.25);\n}\nha-card {\n  background: none;\n  box-shadow: none;\n}\n"
+                            }
+                          }
+                        }
+                      }},
+                    {%- endfor %}
+                show_empty: false
+                card:
+                  type: custom:swipe-card
+                  parameters:
+                    direction: vertical
+                    autoHeight: true
+                    height: 112
+                    effect: cube
+                    autoplay:
+                      delay: 2000
+                    cubeEffect:
+                      - slideShadows: false
 
   ###
   # Column 4, Row 2
@@ -86,11 +284,206 @@ cards:
     states:
       "(min-width: 801px)":
         type: grid
-        title: Studio
         columns: 1
         square: false
         cards:
+          - type: custom:vertical-stack-in-card
+            cards:
+              - square: false
+                columns: 1
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.lastfm_user_playcount
+                    primary_info: state
+                    secondary_info: name
+                    icon: fab:lastfm
+                    name: Last.FM Listen Count
+                    icon_color: lime
+                    fill_container: true
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+              - type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.lastfm_user_playcount
+                    name: Temperature
+                    color: lightgreen
+                hours_to_show: 168
+                points_per_hour: 1
+                line_width: 2
+                font_size: 50
+                animate: true
+                show:
+                  name: false
+                  icon: false
+                  state: false
+                  legend: false
+                  fill: fade
+
           - !include ../snippets/media_currently_playing_details.yaml
+
+          - type: "custom:swipe-card"
+            parameters:
+              direction: vertical
+              autoHeight: true
+              height: 112
+              effect: cube
+              autoplay:
+                delay: 10000
+              cubeEffect:
+                - slideShadows: false
+            view_layout:
+              grid-column: 1/3
+              grid-row: 3/4
+            cards:
+              - type: "custom:button-card"
+                template:
+                  - live_tile_media_player
+                entity: media_player.office_sonos
+                icon: "phu:sonos-one"
+                name: Sonos (Office)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_media_player
+                entity: media_player.bedroom_symfonisk
+                icon: "phu:symfonisk-lampe"
+                name: Sonos (Bedroom)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_media_player
+                entity: media_player.homepod_mini_bedroom_left
+                icon: "mdi:album"
+                name: Homepod Mini (Left)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_media_player
+                entity: media_player.homepod_mini_bedroom_right
+                icon: "mdi:album"
+                name: Homepod Mini (Right)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_media_player
+                entity: media_player.bedroom_apple_tv
+                icon: "ios:tv-circle-fill"
+                name: Apple TV
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_media_player
+                entity: media_player.spotify_thomas_baxter
+                icon: "mdi:spotify"
+                name: Spotify
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_conditional_media
+                entity: sensor.frontpage_plex_unwatched_tv
+                icon: "mdi:plex"
+                name: Plex (New, Unwatched TV)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_conditional_media
+                entity: sensor.frontpage_plex_unwatched_movies
+                icon: "mdi:plex"
+                name: Plex (New, Unwatched Movies)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_conditional_media
+                entity: sensor.frontpage_sonarr_upcoming
+                icon: "mdi:television"
+                name: Sonarr (Upcoming TV)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_conditional_media
+                entity: sensor.frontpage_radarr_upcoming
+                icon: "mdi:filmstrip"
+                name: Radarr (Upcoming Movies)
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_with_longer_state
+                entity: sensor.last_fm_top_artists
+                icon: "mdi:album"
+                color: var(--primary-background-color)
+                name: last.fm Top Artists
+                label: >
+                  [[[ return
+                  entity.attributes.artist_2 + " (" + entity.attributes.artist_2_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.artist_3 + " (" + entity.attributes.artist_3_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.artist_4 + " (" + entity.attributes.artist_4_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.artist_5 + " (" + entity.attributes.artist_5_playcount + ")"
+                  ]]]
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_with_longer_state
+                entity: sensor.last_fm_top_albums
+                color: var(--primary-background-color)
+                icon: "mdi:album"
+                name: last.fm Top Albums
+                label: >
+                  [[[ return
+                  entity.attributes.album_2 + " (" + entity.attributes.album_2_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.album_3 + " (" + entity.attributes.album_3_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.album_4 + " (" + entity.attributes.album_4_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.album_5 + " (" + entity.attributes.album_5_playcount + ")"
+                  ]]]
+                variables:
+                  aspect_ratio: 3/1
+              - type: "custom:button-card"
+                template:
+                  - live_tile_card
+                  - live_tile_with_longer_state
+                entity: sensor.last_fm_top_tracks
+                color: var(--primary-background-color)
+                icon: "mdi:album"
+                name: last.fm Top Tracks
+                label: >
+                  [[[ return
+                  entity.attributes.track_2 + " (" + entity.attributes.track_2_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.track_3 + " (" + entity.attributes.track_3_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.track_4 + " (" + entity.attributes.track_4_playcount + ")"
+                  + "<br/>" +
+                  entity.attributes.track_5 + " (" + entity.attributes.track_5_playcount + ")"
+                  ]]]
+                variables:
+                  aspect_ratio: 3/1
 
   ###
   # Footer

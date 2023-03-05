@@ -1,0 +1,7 @@
+---
+type: vertical-stack
+cards:
+  - !include lowestrankedbeers.yaml
+  - !include highestrankedbeers.yaml
+  - !include lowestabvbeers.yaml
+  - !include highestabvbeers.yaml

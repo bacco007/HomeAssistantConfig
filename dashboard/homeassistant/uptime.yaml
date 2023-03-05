@@ -1,0 +1,18 @@
+---
+square: false
+columns: 2
+type: grid
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.ha_uptime_hours
+    name: HA Uptime
+    secondary_info: name
+    primary_info: state
+    fill_container: true
+  - type: custom:mushroom-entity-card
+    entity: sensor.ha_restart_time
+    icon: mdi:home-assistant
+    fill_container: true
+    name: Last Restart Time
+    secondary_info: name
+    primary_info: state

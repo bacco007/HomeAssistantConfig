@@ -1,0 +1,62 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    hui-section-row $: |
+      .divider { display: none; }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      primary: Highest ABV Beers
+      icon: mdi:beer
+      icon_color: green
+      card_mod:
+        style: |
+          ha-card {
+            background: none;
+            border: 0;
+            box-shadow: none;
+          }
+    padding: 0
+    entities:
+      - type: custom:hui-element
+        card_type: custom:flex-table-card
+        entities:
+          include: sensor.untappd_highest_abv_beers
+        css:
+          table+: "border-collapse: collapse; padding: 0px;"
+        columns:
+          - name: Beer
+            data: data
+            modify: >-
+              { x.beer_name + "<br/><i>" + x.brewery + " (" + x.brewery_country
+              + ")</i>"}
+          - name: Style
+            data: data
+            modify: '{ x.beer_style + "<br/>" + x.beer_abv + "%" }'
+          - name: Rating
+            data: data
+            modify: >-
+              { "Me: " + x.rating + "<br/>All:" +
+              parseFloat(x.beer_rating).toFixed(2) }
+        card_mod:
+          style: |
+            ha-card {
+              overflow: auto;
+              padding-left: 20px;
+              padding-right: 20px;
+              padding-bottom: 20px
+            }
+            tbody tr:hover {
+              background-color: coral !important
+            }

@@ -266,5 +266,3 @@ cards:
 
               {% endif -%}
               {%- endfor %}
-  - !include lowestrankedbeers.yaml
-  - !include highestrankedbeers.yaml

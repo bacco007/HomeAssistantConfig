@@ -9,7 +9,7 @@ views:
   # - !include astrometrics.yaml
   - !include energy.yaml
   - !include lights.yaml
-  - !include maintenance.yaml
+  # - !include maintenance.yaml
   - !include media2.yaml
   - !include neighbourhood.yaml
   - !include network.yaml
