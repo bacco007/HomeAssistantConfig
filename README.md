@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, March 5th 2023_
+_Stats as at 05:00, Monday, March 6th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.1 | 460     | 3698         | 2400 | 101 |
+| 2023.3.1 | 460     | 3691         | 2393 | 101 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 101
-Binary Sensor | 168
+Binary Sensor | 167
 Camera | 5
 Device Tracker | 263
 Group | 1
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2400
+Sensor | 2393
 Sun | 1
 Switch | 153
 Weather | 7
@@ -196,6 +196,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [climate.sensibo](https://www.home-assistant.io/components/climate.sensibo) |
 | [climate.smartthinq_sensors](https://www.home-assistant.io/components/climate.smartthinq_sensors) |
 | [climate.zha](https://www.home-assistant.io/components/climate.zha) |
+| [clock_drift](https://www.home-assistant.io/components/clock_drift) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
 | [config](https://www.home-assistant.io/components/config) |
@@ -273,7 +274,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
@@ -586,6 +586,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
 - [Browser mod](https://github.com/thomasloven/hass-browser_mod/blob/master/README.md)
 - [Bureau of Meteorology](https://github.com/bremor/bureau_of_meteorology)
+- [Clock Drift]()
 - [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor)
 - [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
 - [Dyson Local](https://github.com/shenxn/ha-dyson)
