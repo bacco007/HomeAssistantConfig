@@ -1,18 +1,25 @@
 """Spook - Not your homie."""
 from __future__ import annotations
 
+import importlib
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
-import importlib
 from pathlib import Path
 from typing import final
 
+from homeassistant.components.repairs import ConfirmRepairFlow, RepairsFlow
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import (
     area_registry as ar,
+)
+from homeassistant.helpers import (
     device_registry as dr,
+)
+from homeassistant.helpers import (
     entity_registry as er,
+)
+from homeassistant.helpers import (
     issue_registry as ir,
 )
 from homeassistant.helpers.debounce import Debouncer
@@ -114,7 +121,6 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
 
     async def async_activate(self) -> None:
         """Handle the activating a repair."""
-
         # Debouncer to prevent multiple inspections / inspections fired quickly
         # after each other.
         self.inspect_debouncer = Debouncer(
@@ -133,7 +139,7 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
 
         for event in self.inspect_events:
             self._event_subs.add(
-                self.hass.bus.async_listen(event, self.inspect_debouncer.async_call)
+                self.hass.bus.async_listen(event, self.inspect_debouncer.async_call),
             )
 
     async def async_deactivate(self) -> None:
@@ -203,6 +209,15 @@ class SpookRepairManager:
             # Remove issues created by this Spook repair
             for domain, issue_id in self.issue_registry.issues:
                 if domain == DOMAIN and issue_id.startswith(
-                    f"{repair.domain}_{repair.repair}"
+                    f"{repair.domain}_{repair.repair}",
                 ):
                     self.issue_registry.async_delete(domain, issue_id)
+
+
+async def async_create_fix_flow(
+    _hass: HomeAssistant,
+    _issue_id: str,
+    _data: dict[str, str | int | float | None] | None,
+) -> RepairsFlow:
+    """Create flow."""
+    return ConfirmRepairFlow()
