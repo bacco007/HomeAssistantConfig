@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, March 8th 2023_
+_Stats as at 05:00, Thursday, March 9th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.1 | 460     | 3607         | 2359 | 101 |
+| 2023.3.1 | 460     | 3692         | 2393 | 101 |
 
 Type | Qty
 -- | --
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2359
+Sensor | 2393
 Sun | 1
-Switch | 133
+Switch | 153
 Weather | 7
 Zone | 3
 
