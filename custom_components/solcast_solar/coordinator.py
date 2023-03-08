@@ -1,4 +1,4 @@
-"""The Airzone integration."""
+"""The Solcast Solar integration."""
 from __future__ import annotations
 
 import logging
@@ -24,9 +24,8 @@ from .solcastapi import SolcastApi
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class SolcastUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching data from the Airzone device."""
+    """Class to manage fetching data from Solcast Solar API."""
 
     def __init__(self, hass: HomeAssistant, solcast: SolcastApi) -> None:
         """Initialize."""
@@ -48,7 +47,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via library."""
-        async with async_timeout.timeout(30):
+        async with async_timeout.timeout(60):
             try:
                 await self.update_forecast()
             except Exception as error:
@@ -80,6 +79,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
             async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
             async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=10, second=15, local=True)
+            async_track_utc_time_change(self._hass, self.update_integration_listeners, minute=0, second=15, local=True)
         except Exception as error:
             _LOGGER.error("Solcast - Error coordinator setup: %s", traceback.format_exc())
 
@@ -99,6 +99,15 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         except Exception:
             _LOGGER.error("Solcast - setup_auto_fetch: %s", traceback.format_exc())
+
+
+    async def update_integration_listeners(self,*args):
+        try:
+            _LOGGER.debug("SOLCAST: updating listerners")
+            self.async_update_listeners()
+        except Exception:
+            _LOGGER.error("Solcast - update_integration_listeners: %s", traceback.format_exc())
+
 
     async def update_forecast(self,*args):
         """Update forecast state."""
@@ -130,7 +139,8 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                         _LOGGER.debug("SOLCAST: between sun rise/set code test un forcast_update")
                         if self.solcast._sites:
                             #if we have sites to even poll
-                            if _hournow % 3 == 0: 
+                            #if _hournow % 3 == 0: 
+                            if _hournow == 12: 
                                 _LOGGER.debug("SOLCAST: calling the update data code to include past data")
                                 await self.solcast.force_api_poll(True) #also do the actual past values
                             else:
@@ -140,10 +150,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             else:
                 _LOGGER.debug("Solcast - API poll called, but did not happen as the last update is less than an hour old")
             
-            #self.async_set_updated_data(True)
-            #self.async_update_listeners()
-            _LOGGER.debug("SOLCAST: updating listerners")
-            self.async_update_listeners()
+            self.update_integration_listeners()
 
         except Exception:
             _LOGGER.error("update_forecast: %s", traceback.format_exc())
@@ -152,14 +159,11 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug("Solcast - Event called to force an update of data from Solcast API")
         await self.solcast.force_api_poll()
         #self.async_set_updated_data(True)
-        self.async_update_listeners()
-        #for update_callback in self._listeners:
-        #        update_callback()
-        #if "2022.7" in self._v:
-        #    self.async_update_listeners()
-        #else:
-        #    for update_callback in self._listeners:
-        #        update_callback()
+        self.update_integration_listeners()
+
+    async def service_event_delete_old_solcast_json_file(self, *args):
+        _LOGGER.debug("Solcast - Event called to delete the solcast.json file")
+        await self.solcast.delete_solcast_file()
 
     def get_energy_tab_data(self):
         return self.solcast.get_energy_data()

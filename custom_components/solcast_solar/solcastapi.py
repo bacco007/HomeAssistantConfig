@@ -10,6 +10,7 @@ from datetime import datetime as dt
 from datetime import timedelta, timezone
 from operator import itemgetter
 from os.path import exists as file_exists
+import os
 from typing import Any, cast
 
 from aiohttp import ClientConnectionError, ClientSession
@@ -77,7 +78,7 @@ class SolcastApi:
                 #params = {"format": "json", "api_key": self.options.api_key}
                 params = {"format": "json", "api_key": spl.strip()}
                 _LOGGER.debug(f"SOLCAST: trying to connect to - {self.options.host}/rooftop_sites?format=json&api_key={spl.strip()}")
-                async with async_timeout.timeout(10):
+                async with async_timeout.timeout(60):
                     apiCacheFileName = "sites.json"
                     if self.apiCacheEnabled and file_exists(apiCacheFileName):
                         status = 404
@@ -147,6 +148,17 @@ class SolcastApi:
             await self.http_data(args[0])
         else:
             await self.http_data()
+
+    async def delete_solcast_file(self, *args):
+        _LOGGER.debug(f"SOLCAST: delete_solcast_file with any args? : {args}")
+        try:
+            if file_exists(self._filename):
+                os.remove(self._filename)
+                await self.sites_data()
+                await self.load_saved_data()
+        except Exception:
+            _LOGGER.error(f"SOLCAST: service event to delete old solcast.json file failed")
+
 
     def get_api_used_count(self):
         """Return API polling count for this UTC 24hr period"""
@@ -501,10 +513,10 @@ class SolcastApi:
 
                 # Combine the data from the current solar array with the previous ones
                 if len(_detailedForcast) == 0:
-                    _LOGGER.debug("_detailedForcost len is zero")
+                    #_LOGGER.debug("_detailedForcost len is zero")
                     _detailedForcast = _data
                 else:
-                    _LOGGER.debug("hmmm _detailedForcost len is not zero")
+                    #_LOGGER.debug("hmmm _detailedForcost len is not zero")
                     for number in range(len(_detailedForcast)):
                         p = _detailedForcast[number]
                         p["pv_estimate"] = float(p["pv_estimate"]) + float(_data[number]["pv_estimate"])
@@ -566,7 +578,7 @@ class SolcastApi:
             url=f"{self.options.host}/rooftop_sites/{site}/{path}"
             _LOGGER.debug(f"SOLCAST: fetch_data code url - {url}")
 
-            async with async_timeout.timeout(20):
+            async with async_timeout.timeout(60):
                 apiCacheFileName = path + "_" + site + ".json"
                 if self.apiCacheEnabled and file_exists(apiCacheFileName):
                     status = 404

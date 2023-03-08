@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.device_registry import async_get as device_registry
 
-from .const import DOMAIN, SOLCAST_URL, CONST_DISABLEAUTOPOLL
+from .const import DOMAIN, SOLCAST_URL, CONST_DISABLEAUTOPOLL, SERVICE_UPDATE, SERVICE_CLEAR_DATA
 from .coordinator import SolcastUpdateCoordinator
 from .solcastapi import ConnectionOptions, SolcastApi
 
@@ -40,7 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await coordinator.async_config_entry_first_refresh()
         #await _async_migrate_unique_ids(hass, entry, coordinator)
 
-        entry.async_on_unload(entry.add_update_listener(update_listener))
+        entry.async_on_unload(entry.add_update_listener(async_update_options))
 
         hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
         
@@ -54,8 +54,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             #await solcast.force_api_poll(True)
             await coordinator.service_event_update()
 
+        async def handle_service_clear_solcast_data(call):
+            """Handle service call"""
+            _LOGGER.debug("Deleting the old solcast.json file to clear old solcast data")
+            await coordinator.service_event_delete_old_solcast_json_file()
+
         hass.services.async_register(
-            DOMAIN, "update_forecasts", handle_service_update_forecast
+            DOMAIN, SERVICE_UPDATE, handle_service_update_forecast
+        )
+        hass.services.async_register(
+            DOMAIN, SERVICE_CLEAR_DATA, handle_service_clear_solcast_data
         )
 
         #hass.bus.async_listen("solcast_update_all_forecasts", coordinator.service_event_update)
@@ -73,14 +81,35 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 
+    hass.services.async_remove(DOMAIN, SERVICE_UPDATE)
+    hass.services.async_remove(DOMAIN, SERVICE_CLEAR_DATA)
+
     return unload_ok
 
 async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEntry, device) -> bool:
     device_registry(hass).async_remove_device(device.id)
     return True
 
-async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Update listener."""
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle removal of an entry."""
+    try:
+        coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+        if coordinator._auto_fetch_tracker:
+            #_LOGGER.debug("async_remove_entry removed auto fetch timer")
+            coordinator._auto_fetch_tracker()
+            coordinator._auto_fetch_tracker = None
+
+    except Exception as err:
+        _LOGGER.error("async_remove_entry: %s",traceback.format_exc())
+
+async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
+    """Reload entry if options change."""
+    _LOGGER.debug("Reloading entry %s", entry.entry_id)
+    if not entry.options[CONST_DISABLEAUTOPOLL]:
+        coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+        if coordinator._auto_fetch_tracker:
+            _LOGGER.debug("** THERE IS A AUTO FETCHER!!")
+
     await hass.config_entries.async_reload(entry.entry_id)
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:

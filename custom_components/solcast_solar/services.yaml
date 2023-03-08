@@ -2,3 +2,7 @@
 update_forecasts:
   name: Update
   description: Fetches the forecasts from Solcast.
+
+clear_all_solcast_data:
+  name: Clear saved Solcast site data
+  description: Deletes the solcast.json file to remove all current solcast site data

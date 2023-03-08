@@ -12,3 +12,6 @@ ATTR_ENTRY_TYPE: Final = "entry_type"
 ENTRY_TYPE_SERVICE: Final = "service"
 
 ATTRIBUTION: Final = "Data retrieved from Solcast"
+
+SERVICE_UPDATE = "update_forecasts"
+SERVICE_CLEAR_DATA = "clear_all_solcast_data"

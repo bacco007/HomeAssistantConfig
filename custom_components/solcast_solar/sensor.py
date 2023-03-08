@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Final
 
+
 from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
                                              SensorEntityDescription)
 from homeassistant.config_entries import ConfigEntry
@@ -140,7 +141,7 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Airthings sensor."""
+    """Set up the Solcast sensor."""
 
     coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
     entities = []
@@ -164,7 +165,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 class SolcastSensor(CoordinatorEntity, SensorEntity):
-    """Representation of a Airthings Sensor device."""
+    """Representation of a Seplos Sensor device."""
 
 
     def __init__(
@@ -190,10 +191,11 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "Solcast API Forecast", #entry.title,
-            ATTR_MANUFACTURER: "Solcast Solar",
-            ATTR_MODEL: "Solcast API",
+            ATTR_NAME: "Solcast PV Forecast", #entry.title,
+            ATTR_MANUFACTURER: "Oziee",
+            ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
+            #"sw_version": version,
             "configuration_url": "https://toolkit.solcast.com.au/live-forecast",
             #"configuration_url": f"https://toolkit.solcast.com.au/rooftop-sites/{entry.options[CONF_RESOURCE_ID]}/detail",
             #"hw_version": entry.options[CONF_RESOURCE_ID],
@@ -247,7 +249,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
 
 
 class RooftopSensor(CoordinatorEntity, SensorEntity):
-    """Representation of a Airthings Sensor device."""
+    """Representation of a Seplos Sensor device."""
 
 
     def __init__(
@@ -273,10 +275,11 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "Solcast API Forecast", #entry.title,
-            ATTR_MANUFACTURER: "Solcast Solar",
-            ATTR_MODEL: "Solcast API",
+            ATTR_NAME: "Solcast PV Forecast", #entry.title,
+            ATTR_MANUFACTURER: "Oziee",
+            ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
+            #"sw_version": version,
             "configuration_url": "https://toolkit.solcast.com.au/live-forecast",
             #"configuration_url": f"https://toolkit.solcast.com.au/rooftop-sites/{entry.options[CONF_RESOURCE_ID]}/detail",
             #"hw_version": entry.options[CONF_RESOURCE_ID],
