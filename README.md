@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Thursday, March 9th 2023_
+_Stats as at 05:00, Friday, March 10th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.1 | 460     | 3692         | 2393 | 101 |
+| 2023.3.2 | 460     | 3700         | 2394 | 101 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2393
+Sensor | 2394
 Sun | 1
 Switch | 153
 Weather | 7
@@ -661,26 +661,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
 
-- ESPHome
-- Eufy Security Add-on
-- File editor
-- Glances
-- Home Assistant Git Exporter
-- Home Assistant Google Drive Backup
-- JupyterLab
-- MariaDB
-- Mosquitto broker
-- MQTT Explorer
-- Node-RED
-- phpMyAdmin
-- Portainer
-- RTSP Simple Server Add-on
-- Samba share
-- Shortumation
-- SSH & Web Terminal
-- SunGather
-- WeatherFlow to MQTT
-- Zigbee2MQTT
 
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
