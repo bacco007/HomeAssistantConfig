@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, March 10th 2023_
+_Stats as at 05:00, Saturday, March 11th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.2 | 460     | 3700         | 2394 | 101 |
+| 2023.3.3 | 463     | 3608         | 2359 | 101 |
 
 Type | Qty
 -- | --
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2394
+Sensor | 2359
 Sun | 1
-Switch | 153
+Switch | 133
 Weather | 7
 Zone | 3
 
@@ -155,6 +155,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.tod](https://www.home-assistant.io/components/binary_sensor.tod) |
 | [binary_sensor.trend](https://www.home-assistant.io/components/binary_sensor.trend) |
 | [binary_sensor.upnp](https://www.home-assistant.io/components/binary_sensor.upnp) |
+| [binary_sensor.uptime_kuma](https://www.home-assistant.io/components/binary_sensor.uptime_kuma) |
 | [binary_sensor.version](https://www.home-assistant.io/components/binary_sensor.version) |
 | [binary_sensor.weatherflow](https://www.home-assistant.io/components/binary_sensor.weatherflow) |
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
@@ -464,6 +465,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.upnp](https://www.home-assistant.io/components/sensor.upnp) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
+| [sensor.uptime_kuma](https://www.home-assistant.io/components/sensor.uptime_kuma) |
 | [sensor.utility_meter](https://www.home-assistant.io/components/sensor.utility_meter) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
 | [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
@@ -547,6 +549,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.unifi](https://www.home-assistant.io/components/update.unifi) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
+| [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
 | [usb](https://www.home-assistant.io/components/usb) |
 | [utility_meter](https://www.home-assistant.io/components/utility_meter) |
 | [vacuum](https://www.home-assistant.io/components/vacuum) |
@@ -630,6 +633,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Trakt](https://github.com/dylandoamaral/trakt-integration)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
+- [Uptime Kuma](https://github.com/meichthys/uptime_kuma/blob/main/README.md)
 - [Watchman](https://github.com/dummylabs/thewatchman)
 - [Water NSW](https://github.com/bacco007/sensor.waternsw)
 - [WeatherFlow Weather](https://github.com/briis/hass-weatherflow)
