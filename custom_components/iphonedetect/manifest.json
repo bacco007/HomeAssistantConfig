@@ -8,11 +8,12 @@
     ],
     "documentation": "https://github.com/mudape/iphonedetect",
     "domain": "iphonedetect",
+    "integration_type": "device",
     "iot_class": "local_polling",
     "issue_tracker": "https://github.com/mudape/iphonedetect/issues",
     "name": "iPhone Device Tracker",
     "requirements": [
-        "pyroute2==0.6.9"
+        "pyroute2==0.7.5"
     ],
-    "version": "2.0.4"
+    "version": "2.0.5"
 }
