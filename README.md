@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, March 11th 2023_
+_Stats as at 05:00, Sunday, March 12th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.3 | 463     | 3608         | 2359 | 101 |
+| 2023.3.3 | 463     | 3765         | 2451 | 101 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 101
-Binary Sensor | 167
+Binary Sensor | 170
 Camera | 5
 Device Tracker | 263
 Group | 1
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2359
+Sensor | 2451
 Sun | 1
-Switch | 133
+Switch | 153
 Weather | 7
 Zone | 3
 

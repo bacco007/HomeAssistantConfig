@@ -1,0 +1,8 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?seasontype=2&type=0&level=3
+sensor:
+  name: scoreboard_nba
+  value_template: "{{ now() }}"
+  json_attributes:
+    - children
+scan_interval: 3600

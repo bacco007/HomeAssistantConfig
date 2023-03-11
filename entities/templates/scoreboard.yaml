@@ -1,0 +1,134 @@
+---
+sensor:
+  ###
+  ### MLB Divisions
+  ###
+  - name: scoreboard_mlb_american_east
+    unique_id: scoreboard_mlb_american_east
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mlb','children')[0]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_mlb_american_central
+    unique_id: scoreboard_mlb_american_central
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mlb','children')[0]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_mlb_american_west
+    unique_id: scoreboard_mlb_american_west
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mlb','children')[0]['children'][2]['standings']['entries'] }}"
+  - name: scoreboard_mlb_national_east
+    unique_id: scoreboard_mlb_national_east
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mlb','children')[1]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_mlb_national_central
+    unique_id: scoreboard_mlb_national_central
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mlb','children')[1]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_mlb_national_west
+    unique_id: scoreboard_mlb_national_west
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_mlb','children')[1]['children'][2]['standings']['entries'] }}"
+  ###
+  ### NHL Divisions
+  ###
+  - name: scoreboard_nhl_east_atlantic
+    unique_id: scoreboard_nhl_east_atlantic
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nhl','children')[0]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_nhl_east_metropolitan
+    unique_id: scoreboard_nhl_east_metropolitan
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nhl','children')[0]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_nhl_west_central
+    unique_id: scoreboard_nhl_west_central
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nhl','children')[1]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_nhl_west_pacific
+    unique_id: scoreboard_nhl_west_pacific
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nhl','children')[1]['children'][1]['standings']['entries'] }}"
+  ###
+  ### NFL Divisions
+  ###
+  - name: scoreboard_nfl_afc_east
+    unique_id: scoreboard_nfl_afc_east
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[0]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_nfl_afc_north
+    unique_id: scoreboard_nfl_afc_north
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[0]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_nfl_afc_south
+    unique_id: scoreboard_nfl_afc_south
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[0]['children'][2]['standings']['entries'] }}"
+  - name: scoreboard_nfl_afc_west
+    unique_id: scoreboard_nfl_afc_west
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[0]['children'][3]['standings']['entries'] }}"
+  - name: scoreboard_nfl_nfc_east
+    unique_id: scoreboard_nfl_nfc_east
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[1]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_nfl_nfc_north
+    unique_id: scoreboard_nfl_nfc_north
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[1]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_nfl_nfc_south
+    unique_id: scoreboard_nfl_nfc_south
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[1]['children'][2]['standings']['entries'] }}"
+  - name: scoreboard_nfl_nfc_west
+    unique_id: scoreboard_nfl_nfc_west
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nfl','children')[1]['children'][3]['standings']['entries'] }}"
+  ###
+  ### NBA Divisions
+  ###
+  - name: scoreboard_nba_eastern_atlantic
+    unique_id: scoreboard_nba_eastern_atlantic
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nba','children')[0]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_nba_eastern_central
+    unique_id: scoreboard_nba_eastern_central
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nba','children')[0]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_nba_eastern_southeast
+    unique_id: scoreboard_nba_eastern_southeast
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nba','children')[0]['children'][2]['standings']['entries'] }}"
+  - name: scoreboard_nba_western_northwest
+    unique_id: scoreboard_nba_western_northwest
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nba','children')[1]['children'][0]['standings']['entries'] }}"
+  - name: scoreboard_nba_western_pacific
+    unique_id: scoreboard_nba_western_pacific
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nba','children')[1]['children'][1]['standings']['entries'] }}"
+  - name: scoreboard_nba_western_southwest
+    unique_id: scoreboard_nba_western_southwest
+    state: "{{ now() }}"
+    attributes:
+      entries: "{{ state_attr('sensor.scoreboard_nba','children')[1]['children'][2]['standings']['entries'] }}"
