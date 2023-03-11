@@ -20,6 +20,162 @@ blueprint_import:
       selector:
         text:
 
+homeassistant_create_area:
+  name: Create an area 👻
+  description: >-
+    Creates a new area on the fly.
+  fields:
+    name:
+      name: Name
+      description: The name of the area to create.
+      required: true
+      selector:
+        text:
+    aliases:
+      name: Aliases
+      description: >-
+        A list of aliases for the area. This is useful if you want to use the
+        area in a different language or different nickname.
+      selector:
+        object:
+
+homeassistant_add_alias_to_area:
+  name: Add an alias to an area 👻
+  description: >-
+    Adds an alias to an area.
+  fields:
+    area_id:
+      name: Area ID
+      description: The ID of the area to add the alias to.
+      required: true
+      selector:
+        area:
+    alias:
+      name: Alias
+      description: The alias (or list of aliasses) to add to the area.
+      required: true
+      selector:
+        object:
+
+homeassistant_remove_alias_from_area:
+  name: Remove an alias from an area 👻
+  description: >-
+    Removes an alias from an area.
+  fields:
+    area_id:
+      name: Area ID
+      description: The ID of the area to remove the alias from.
+      required: true
+      selector:
+        area:
+    alias:
+      name: Alias
+      description: The alias (or list of aliasses) to remove from the area.
+      required: true
+      selector:
+        object:
+
+homeassistant_set_area_aliases:
+  name: Sets aliases for an area 👻
+  description: >-
+    Sets aliases for an area. Overwrite and removed any existing aliases,
+    fully replacing them with the new ones.
+  fields:
+    area_id:
+      name: Area ID
+      description: The ID of the area to set the aliases for.
+      required: true
+      selector:
+        area:
+    aliases:
+      name: Aliases
+      description: The aliases to set for the area.
+      required: true
+      selector:
+        object:
+
+homeassistant_add_device_to_area:
+  name: Add a device to an area 👻
+  description: >-
+    Adds an device to an area. Please note, if the device is already in an area,
+    it will be removed from the previous area.
+  fields:
+    area_id:
+      name: Area ID
+      description: The ID of the area to add the device to.
+      required: true
+      selector:
+        area:
+    device_id:
+      name: Device ID
+      description: The ID of the device(s) to add to the area.
+      required: true
+      selector:
+        device:
+          multiple: true
+
+homeassistant_remove_device_from_area:
+  name: Remove a device from an area 👻
+  description: >-
+    Removes a device from an area. As a device can only be in one area, this
+    call doesn't need to specify the area.
+  fields:
+    device_id:
+      name: Device ID
+      description: The ID of the device to remove the area from.
+      required: true
+      selector:
+        device:
+          multiple: true
+
+homeassistant_add_entity_to_area:
+  name: Add an entity to an area 👻
+  description: >-
+    Adds an entity to an area. Please note, if the enity is already in an area,
+    it will be removed from the previous area. This will override the area
+    the device, that provides this entity, is in.
+  fields:
+    area_id:
+      name: Area ID
+      description: The ID of the area to add the entity to.
+      required: true
+      selector:
+        area:
+    entity_id:
+      name: Entity ID
+      description: The ID of the entity (or entities) to add to the area.
+      required: true
+      selector:
+        entity:
+          multiple: true
+
+homeassistant_remove_entity_from_area:
+  name: Remove an entity from an area 👻
+  description: >-
+    Removes an entity from an area. As an entity can only be in one area, this
+    call doesn't need to specify the area. Please note, the entity will
+    still be in the area of the device that provides it after this call.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: The ID of the entity (or entities) to remove the area from.
+      required: true
+      selector:
+        entity:
+          multiple: true
+
+homeassistant_delete_area:
+  name: Delete an area 👻
+  description: >-
+    Deletes a new area on the fly.
+  fields:
+    area_id:
+      name: Area ID
+      description: The ID of the area to delete.
+      required: true
+      selector:
+        area:
+
 homeassistant_disable_config_entry:
   name: Disable an integration 👻
   description: >-
@@ -135,23 +291,47 @@ homeassistant_ignore_all_discovered:
       selector:
         text:
 
-homeassistant_remove_all_orphaned_entities:
-  name: Remove all orphaned entities 👻
+homeassistant_disable_polling:
+  name: Disable polling for updates 👻
   description: >-
-    Removes all orphaned entities that no longer have an integration that
+    Disables polling for updates for an integration configuration entry.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: The integration configuration entry to disable polling for.
+      required: true
+      selector:
+        config_entry:
+
+homeassistant_enable_polling:
+  name: Enable polling for updates 👻
+  description: >-
+    Enables polling for updates for an integration configuration entry.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: The integration configuration entry to enable polling for.
+      required: true
+      selector:
+        config_entry:
+
+homeassistant_delete_all_orphaned_entities:
+  name: Delete all orphaned entities 👻
+  description: >-
+    Deletes all orphaned entities that no longer have an integration that
     claim/provide them. Please note, if the integration was just removed,
     it might need a restart for Home Assistant to realize they are orphaned.
 
     **WARNING** Entities might have been marked orphaned because an
     integration is offline or not working since Home Assistant started. Calling
-    this service will remove those entities as well.
+    this service will delete those entities as well.
 
 recorder_import_statistics:
   name: Import statistics 👻
   description: >-
     Import long-term statistics.
   fields:
-    statistics_id:
+    statistic_id:
       name: Statistics ID
       description: The statistics ID (entity ID) to import for.
       required: true
