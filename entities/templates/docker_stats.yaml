@@ -6,6 +6,7 @@ sensor:
     state: >
       {{ states('sensor.tbsh03_monitordocker_containers_total') | int(default=0)
         + states('sensor.tbsh1_monitordocker_containers_total') | int(default=0)
+        + states('sensor.tbsh2_monitordocker_containers_total') | int(default=0)
         + states('sensor.pi4srv_monitordocker_containers_total') | int(default=0)}}
     state_class: measurement
     unit_of_measurement: Containers
@@ -13,14 +14,17 @@ sensor:
       containers_running: >
         {{ states('sensor.tbsh03_monitordocker_containers_running') | int(default=0)
           + states('sensor.tbsh1_monitordocker_containers_running') | int(default=0)
+          + states('sensor.tbsh2_monitordocker_containers_running') | int(default=0)
           + states('sensor.pi4srv_monitordocker_containers_running') | int(default=0) }}
       containers_stopped: >
         {{ states('sensor.tbsh03_monitordocker_containers_stopped') | int(default=0)
           + states('sensor.tbsh1_monitordocker_containers_stopped') | int(default=0)
+          + states('sensor.tbsh2_monitordocker_containers_stopped') | int(default=0)
           + states('sensor.pi4srv_monitordocker_containers_stopped') | int(default=0) }}
       images: >
         {{ states('sensor.tbsh03_monitordocker_images') | int(default=0)
           + states('sensor.tbsh1_monitordocker_images') | int(default=0)
+          + states('sensor.tbsh2_monitordocker_images') | int(default=0)
           + states('sensor.pi4srv_monitordocker_images') | int(default=0) }}
       containers_updatable: >
         {{ states | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | selectattr('entity_id','search','update.wud_*') | list | count }}

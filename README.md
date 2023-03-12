@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Sunday, March 12th 2023_
+_Stats as at 05:00, Monday, March 13th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.3 | 463     | 3765         | 2451 | 101 |
+| 2023.3.3 | 459     | 3849         | 2487 | 101 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 101
-Binary Sensor | 170
+Binary Sensor | 173
 Camera | 5
 Device Tracker | 263
 Group | 1
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2451
+Sensor | 2487
 Sun | 1
-Switch | 153
+Switch | 158
 Weather | 7
 Zone | 3
 
@@ -165,6 +165,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
 | [bluetooth_adapters](https://www.home-assistant.io/components/bluetooth_adapters) |
+| [braviatv](https://www.home-assistant.io/components/braviatv) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
@@ -420,7 +421,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.mqtt_room](https://www.home-assistant.io/components/sensor.mqtt_room) |
 | [sensor.multiscrape](https://www.home-assistant.io/components/sensor.multiscrape) |
 | [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
-| [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
@@ -458,7 +458,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.thermal_comfort](https://www.home-assistant.io/components/sensor.thermal_comfort) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
-| [sensor.transmission](https://www.home-assistant.io/components/sensor.transmission) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
@@ -507,14 +506,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.mqtt](https://www.home-assistant.io/components/switch.mqtt) |
 | [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
-| [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.sensibo](https://www.home-assistant.io/components/switch.sensibo) |
 | [switch.smartthinq_sensors](https://www.home-assistant.io/components/switch.smartthinq_sensors) |
 | [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
 | [switch.spook](https://www.home-assistant.io/components/switch.spook) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
-| [switch.transmission](https://www.home-assistant.io/components/switch.transmission) |
 | [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
 | [switch.zha](https://www.home-assistant.io/components/switch.zha) |
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
@@ -532,7 +529,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [timer](https://www.home-assistant.io/components/timer) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [trakt_tv](https://www.home-assistant.io/components/trakt_tv) |
-| [transmission](https://www.home-assistant.io/components/transmission) |
 | [tts](https://www.home-assistant.io/components/tts) |
 | [tts.cloud](https://www.home-assistant.io/components/tts.cloud) |
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |

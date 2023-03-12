@@ -32,46 +32,52 @@ entities:
       - type: custom:hui-element
         card_type: custom:flex-table-card
         entities:
-          include: sensor.getdata_nrl_ladder
+          include: sensor.scoreboard_nrl
         css:
           table+: "border-collapse: collapse; padding: 0px;"
           tbody tr td:nth-child(2): "width: 10%;"
         columns:
           - name: "#"
-            data: ladder
-            modify: x.position
+            data: entries
+            modify: x.stats[22].displayValue
           - name: Logo
-            data: ladder
-            modify: '''<img src="'' + x.logo + ''"style="width: 100%">'''
+            data: entries
+            modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
           - name: Team
-            data: ladder
-            modify: x.team
+            data: entries
+            modify: x.team.displayName
           - name: Pl
-            data: ladder
-            modify: x.played
+            data: entries
+            modify: x.stats[7].displayValue
           - name: W
-            data: ladder
-            modify: x.wins
+            data: entries
+            modify: x.stats[17].displayValue
+          - name: W
+            data: entries
+            modify: x.stats[17].value
           - name: D
-            data: ladder
-            modify: x.drawn
+            data: entries
+            modify: x.stats[15].value
           - name: L
-            data: ladder
-            modify: x.lost
+            data: entries
+            modify: x.stats[9].value
           - name: B
-            data: ladder
-            modify: x.byes
-          - name: PD
-            data: ladder
+            data: entries
+            modify: x.stats[19].value
+          - name: GD
+            data: entries
             modify: |-
               {
-                x.for +
+                x.stats[13].value +
                 ":" +
-                x.against
+                x.stats[12].value
               }
+          - name: BP
+            data: entries
+            modify: x.stats[18].value
           - name: Pts
-            data: ladder
-            modify: x.points
+            data: entries
+            modify: x.stats[11].value
         card_mod:
           style: |
             ha-card {

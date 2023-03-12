@@ -56,6 +56,54 @@ monitor_docker:
       your_spotify_server: Your Spotify - Server
       youtubedl: YouTube DL
 
+  - name: TBSH2_monitordocker
+    url: tcp://192.168.1.131:2375
+    scan_interval: 60
+    monitored_conditions:
+      - allinone
+    rename:
+      alertmanager: Alert Manager
+      authelia: Authelia
+      bazarr: Bazarr
+      cadvisor: CAdvisor
+      codeserver: Visual Studio Code
+      cyberchef: Cyberchef
+      dockercleanup: Docker Cleanup
+      dockerproxy: Docker Proxy
+      dozzle: Dozzle
+      glances: Glances
+      grafana: Grafana
+      homer: Homer
+      influxdb2: InfluxDB 2
+      jdownloader: jDownloader
+      lidarr: Lidarr
+      mongo: Your Spotify - Mongo
+      nextcloud: Nextcloud - App
+      nextcloud_db: Nextcloud - DB (MariaDB)
+      nextcloud_redis: Nextcloud - Redis
+      nodeexporter: Node Exporter
+      overseerr: Overseerr
+      portainer: Portainer
+      prometheus: Prometheus
+      prowlarr: Prowlarr
+      pushgateway: Push Gateway
+      radarr: Radarr
+      sabnzbd: SABnzbd
+      sonarr: Sonarr
+      sungather: Sungather
+      tautulli: Tautulli
+      traefik: Traefik
+      transmission: Transmission
+      tvheadend: TVHeadend
+      varken: Varken
+      vaultwarden: Vaultwarden
+      watchtower: Watchtower
+      wud: What's Up Docker?
+      xteve: xteve
+      your_spotify_client: Your Spotify - Client
+      your_spotify_server: Your Spotify - Server
+      youtubedl: YouTube DL
+
   - name: TBSH03_monitordocker
     url: tcp://192.168.1.65:2375
     scan_interval: 60

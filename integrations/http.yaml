@@ -6,5 +6,6 @@ http:
     - 192.168.1.1
     - 192.168.1.20
     - 192.168.1.91
+    - 192.168.1.131
   server_port: !secret httpserver_port
   ip_ban_enabled: true
