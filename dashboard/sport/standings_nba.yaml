@@ -17,8 +17,8 @@ entities:
   - type: custom:fold-entity-row
     head:
       type: custom:mushroom-template-card
-      primary: MLB
-      icon: mdi:baseball-diamond
+      primary: NBA
+      icon: mdi:basketball-hoop
       icon_color: green
       card_mod:
         style: |
@@ -32,43 +32,43 @@ entities:
       - type: custom:stack-in-card
         cards:
           - type: markdown
-            content: "### American League Central"
+            content: "### Eastern, Atlantic"
           - type: custom:decluttering-card
-            template: scoreboard_mlb
+            template: scoreboard_nba
             variables:
-              - entity: sensor.scoreboard_mlb_american_central
+              - entity: sensor.scoreboard_nba_eastern_atlantic
 
           - type: markdown
-            content: "### American League East"
+            content: "### Eastern, Central"
           - type: custom:decluttering-card
-            template: scoreboard_mlb
+            template: scoreboard_nba
             variables:
-              - entity: sensor.scoreboard_mlb_american_east
+              - entity: sensor.scoreboard_nba_eastern_central
 
           - type: markdown
-            content: "### American League West"
+            content: "### Eastern, Southeast"
           - type: custom:decluttering-card
-            template: scoreboard_mlb
+            template: scoreboard_nba
             variables:
-              - entity: sensor.scoreboard_mlb_american_west
+              - entity: sensor.scoreboard_nba_eastern_southeast
 
           - type: markdown
-            content: "### National League Central"
+            content: "### Western, Northwest"
           - type: custom:decluttering-card
-            template: scoreboard_mlb
+            template: scoreboard_nba
             variables:
-              - entity: sensor.scoreboard_mlb_national_central
+              - entity: sensor.scoreboard_nba_western_northwest
 
           - type: markdown
-            content: "### National League East"
+            content: "### Western, Pacific"
           - type: custom:decluttering-card
-            template: scoreboard_mlb
+            template: scoreboard_nba
             variables:
-              - entity: sensor.scoreboard_mlb_national_east
+              - entity: sensor.scoreboard_nba_western_pacific
 
           - type: markdown
-            content: "### National League West"
+            content: "### Western, Southwest"
           - type: custom:decluttering-card
-            template: scoreboard_mlb
+            template: scoreboard_nba
             variables:
-              - entity: sensor.scoreboard_mlb_national_west
+              - entity: sensor.scoreboard_nba_western_southwest

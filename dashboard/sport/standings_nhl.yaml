@@ -18,7 +18,7 @@ entities:
     head:
       type: custom:mushroom-template-card
       primary: NHL
-      icon: mdi:hockey-puck
+      icon: mdi:hockey-sticks
       icon_color: green
       card_mod:
         style: |
@@ -33,169 +33,28 @@ entities:
         cards:
           - type: markdown
             content: "### Eastern Conference, Atlantic Division"
-          - type: custom:flex-table-card
-            css:
-              table+: "border-collapse: collapse; padding: 0px;"
-              tbody tr td:nth-child(1): "width: 10%;"
-            card_mod:
-              style: |
-                ha-card {
-                    overflow: auto;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                    padding-bottom: 20px
-                }
-            entities:
-              include: sensor.scoreboard_nhl_east_atlantic
-            sort_by: entries-
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats[6].displayValue
-              - name: Logo
-                data: entries
-                modify: '''<img src="'' + x.team.logos[1].href + ''"style="width: 100%">'''
-              - name: Team
-                data: entries
-                modify: x.team.displayName
-              - name: GP
-                data: entries
-                modify: x.stats[3].displayValue
-              - name: W
-                data: entries
-                modify: x.stats[10].displayValue
-              - name: L
-                data: entries
-                modify: x.stats[4].displayValue
-              - name: OTL
-                data: entries
-                modify: x.stats[11].displayValue
-              - name: Pts
-                data: entries
-                modify: x.stats[6].displayValue
+          - type: custom:decluttering-card
+            template: scoreboard_nhl
+            variables:
+              - entity: sensor.scoreboard_nhl_east_atlantic
+
           - type: markdown
             content: "### Eastern Conference, Metropolitan Division"
-          - type: custom:flex-table-card
-            css:
-              table+: "border-collapse: collapse; padding: 0px;"
-              tbody tr td:nth-child(1): "width: 10%;"
-            card_mod:
-              style: |
-                ha-card {
-                    overflow: auto;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                    padding-bottom: 20px
-                }
-            entities:
-              include: sensor.scoreboard_nhl_east_metropolitan
-            sort_by: entries-
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats[6].displayValue
-              - name: Logo
-                data: entries
-                modify: '''<img src="'' + x.team.logos[1].href + ''"style="width: 100%">'''
-              - name: Team
-                data: entries
-                modify: x.team.displayName
-              - name: GP
-                data: entries
-                modify: x.stats[3].displayValue
-              - name: W
-                data: entries
-                modify: x.stats[10].displayValue
-              - name: L
-                data: entries
-                modify: x.stats[4].displayValue
-              - name: OTL
-                data: entries
-                modify: x.stats[11].displayValue
-              - name: Pts
-                data: entries
-                modify: x.stats[6].displayValue
+          - type: custom:decluttering-card
+            template: scoreboard_nhl
+            variables:
+              - entity: sensor.scoreboard_nhl_east_metropolitan
+
           - type: markdown
             content: "### Western Conference, Central Division"
-          - type: custom:flex-table-card
-            css:
-              table+: "border-collapse: collapse; padding: 0px;"
-              tbody tr td:nth-child(1): "width: 10%;"
-            card_mod:
-              style: |
-                ha-card {
-                    overflow: auto;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                    padding-bottom: 20px
-                }
-            entities:
-              include: sensor.scoreboard_nhl_west_central
-            sort_by: entries-
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats[6].displayValue
-              - name: Logo
-                data: entries
-                modify: '''<img src="'' + x.team.logos[1].href + ''"style="width: 100%">'''
-              - name: Team
-                data: entries
-                modify: x.team.displayName
-              - name: GP
-                data: entries
-                modify: x.stats[3].displayValue
-              - name: W
-                data: entries
-                modify: x.stats[10].displayValue
-              - name: L
-                data: entries
-                modify: x.stats[4].displayValue
-              - name: OTL
-                data: entries
-                modify: x.stats[11].displayValue
-              - name: Pts
-                data: entries
-                modify: x.stats[6].displayValue
+          - type: custom:decluttering-card
+            template: scoreboard_nhl
+            variables:
+              - entity: sensor.scoreboard_nhl_west_central
+
           - type: markdown
             content: "### Western Conference, Pacific Division"
-          - type: custom:flex-table-card
-            css:
-              table+: "border-collapse: collapse; padding: 0px;"
-              tbody tr td:nth-child(1): "width: 10%;"
-            card_mod:
-              style: |
-                ha-card {
-                    overflow: auto;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                    padding-bottom: 20px
-                }
-            entities:
-              include: sensor.scoreboard_nhl_west_pacific
-            sort_by: entries-
-            columns:
-              - hidden: true
-                data: entries
-                modify: x.stats[6].displayValue
-              - name: Logo
-                data: entries
-                modify: '''<img src="'' + x.team.logos[1].href + ''"style="width: 100%">'''
-              - name: Team
-                data: entries
-                modify: x.team.displayName
-              - name: GP
-                data: entries
-                modify: x.stats[3].displayValue
-              - name: W
-                data: entries
-                modify: x.stats[10].displayValue
-              - name: L
-                data: entries
-                modify: x.stats[4].displayValue
-              - name: OTL
-                data: entries
-                modify: x.stats[11].displayValue
-              - name: Pts
-                data: entries
-                modify: x.stats[6].displayValue
+          - type: custom:decluttering-card
+            template: scoreboard_nhl
+            variables:
+              - entity: sensor.scoreboard_nhl_west_pacific

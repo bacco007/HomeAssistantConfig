@@ -1,0 +1,9 @@
+---
+resource: https://site.web.api.espn.com/apis/v2/sports/australian-football/afl/standings?type=0&level=0
+sensor:
+  name: scoreboard_afl
+  value_template: "{{ now() }}"
+  json_attributes_path: "$['standings']"
+  json_attributes:
+    - entries
+scan_interval: 3600

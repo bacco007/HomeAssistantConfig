@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Monday, March 13th 2023_
+_Stats as at 05:00, Tuesday, March 14th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.3 | 459     | 3849         | 2487 | 101 |
+| 2023.3.3 | 460     | 3895         | 2554 | 101 |
 
 Type | Qty
 -- | --
@@ -82,7 +82,7 @@ Alert | 0
 Automation | 101
 Binary Sensor | 173
 Camera | 5
-Device Tracker | 263
+Device Tracker | 267
 Group | 1
 Input Boolean | 14
 Input Datetime | 3
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2487
+Sensor | 2554
 Sun | 1
 Switch | 158
 Weather | 7
@@ -165,7 +165,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
 | [bluetooth_adapters](https://www.home-assistant.io/components/bluetooth_adapters) |
-| [braviatv](https://www.home-assistant.io/components/braviatv) |
 | [browser_mod](https://www.home-assistant.io/components/browser_mod) |
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
@@ -214,6 +213,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
 | [device_tracker.ibeacon](https://www.home-assistant.io/components/device_tracker.ibeacon) |
+| [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.mqtt](https://www.home-assistant.io/components/device_tracker.mqtt) |
 | [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
@@ -268,6 +268,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
 | [ibeacon](https://www.home-assistant.io/components/ibeacon) |
 | [ical](https://www.home-assistant.io/components/ical) |
+| [icloud3](https://www.home-assistant.io/components/icloud3) |
 | [image_upload](https://www.home-assistant.io/components/image_upload) |
 | [influxdb](https://www.home-assistant.io/components/influxdb) |
 | [input_boolean](https://www.home-assistant.io/components/input_boolean) |
@@ -601,6 +602,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays/)
 - [HomeAssistant Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [ical Sensor](https://www.home-assistant.io/integrations/ical)
+- [iCloud3 v3](https://gcobb321.github.io/icloud3_v3/#/)
 - [Indoor Air Quality UK Index](https://github.com/Limych/ha-iaquk)
 - [Lovelace Gen]()
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)

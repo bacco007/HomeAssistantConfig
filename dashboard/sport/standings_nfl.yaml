@@ -29,49 +29,60 @@ entities:
           }
     padding: 0
     entities:
-      - type: custom:hui-element
-        card_type: markdown
-        content: >-
-          {% for conf in state_attr('sensor.scoreboard_nfl', 'children') %} {%
-          for division in conf.children %}
+      - type: custom:stack-in-card
+        cards:
+          - type: markdown
+            content: "### AFC East"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_afc_east
 
-          ### {{division.name }}
+          - type: markdown
+            content: "### AFC North"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_afc_north
 
-          |Team|Logo|W|L|T|PCT|
+          - type: markdown
+            content: "### AFC South"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_afc_south
 
-          |:--|:--:|:--:|:--:|:--:|:--:|
+          - type: markdown
+            content: "### AFC West"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_afc_west
 
-          {%- for team in division.standings.entries %}
+          - type: markdown
+            content: "### NFC East"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_nfc_east
 
-          |{{team.team.displayName}}|<img
-          src="{{team.team.logos[1].href}}">|{{team.stats[10].value|int}}|{{team.stats[3].value|int}}|{{team.stats[8].value|int}}|{{team.stats[9].value|round(3)}}|
+          - type: markdown
+            content: "### NFC North"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_nfc_north
 
-          {%- endfor %}
+          - type: markdown
+            content: "### NFC South"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_nfc_south
 
-          {% endfor %}
-
-          {% endfor %}
-        card_mod:
-          style:
-            ha-markdown: |
-              ha-card.type-markdown { box-shadow: none; }
-              .no-header {padding-top: 0px !important; }
-            ha-markdown$: >
-              table { width: 100%; padding: 16px; border-collapse: collapse;
-              padding: 0px; }
-
-              thead th { height: 1em; }
-
-              tr td { padding-left: 0.5em; padding-right: 0.5em;  }
-
-              th { padding-left: 0.5em; padding-right: 0.5em;  }
-
-              tbody tr:nth-child(odd) { background-color:
-              var(--table-row-background-color);  }
-
-              tbody tr:nth-child(even) { background-color:
-              var(--table-row-alternative-background-color);  }
-
-              tbody tr td:nth-child(2) { width: 10%; }
-
-              th ha-icon { height: 1em; vertical-align: top;  }
+          - type: markdown
+            content: "### NFC West"
+          - type: custom:decluttering-card
+            template: scoreboard_nfl
+            variables:
+              - entity: sensor.scoreboard_nfl_nfc_west
