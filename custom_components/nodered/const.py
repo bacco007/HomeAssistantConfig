@@ -2,7 +2,7 @@
 # Base component constants
 DOMAIN = "nodered"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.1.3"
+VERSION = "1.2.0"
 
 ISSUE_URL = "https://github.com/zachowj/hass-node-red/issues"
 
@@ -17,6 +17,7 @@ CONF_DATA = "data"
 CONF_DEVICE_INFO = "device_info"
 CONF_DEVICE_TRIGGER = "device_trigger"
 CONF_ENABLED = "enabled"
+CONF_ENTITY_PICTURE = "entity_picture"
 CONF_LAST_RESET = "last_reset"
 CONF_NAME = "name"
 CONF_NODE_ID = "node_id"
