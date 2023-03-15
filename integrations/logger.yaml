@@ -20,6 +20,8 @@ logger:
     custom_components.google_fit: debug
     custom_components.aio_geojson_query: debug
     # custom_components.gtfs_rt: debug
+    # homeassistant.components.websocket_api: debug
+    # custom_components.nodered: debug
 
   filters:
     homeassistant:

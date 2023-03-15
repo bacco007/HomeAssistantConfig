@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, March 15th 2023_
+_Stats as at 05:00, Thursday, March 16th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.4 | 463     | 3721         | 2567 | 101 |
+| 2023.3.4 | 461     | 3673         | 2554 | 101 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 101
-Binary Sensor | 174
+Binary Sensor | 173
 Camera | 5
 Device Tracker | 51
 Group | 1
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2567
+Sensor | 2554
 Sun | 1
 Switch | 158
 Weather | 7
@@ -277,7 +277,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
@@ -424,7 +423,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.mqtt_room](https://www.home-assistant.io/components/sensor.mqtt_room) |
 | [sensor.multiscrape](https://www.home-assistant.io/components/sensor.multiscrape) |
 | [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
-| [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
@@ -510,7 +508,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.mqtt](https://www.home-assistant.io/components/switch.mqtt) |
 | [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
-| [switch.nodered](https://www.home-assistant.io/components/switch.nodered) |
 | [switch.sensibo](https://www.home-assistant.io/components/switch.sensibo) |
 | [switch.smartthinq_sensors](https://www.home-assistant.io/components/switch.smartthinq_sensors) |
 | [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
@@ -539,6 +536,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [update](https://www.home-assistant.io/components/update) |
+| [update.esphome](https://www.home-assistant.io/components/update.esphome) |
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
 | [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
