@@ -215,14 +215,14 @@ card:
           card_mod:
             style: |
               ha-card {
-                {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+                {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 or state_attr('sensor.binday_greenwaste', 'days') | int > 7 %}
                   --chip-background: rgba(var(--rgb-yellow), 0.2);
                 {%- else %}
                   --chip-background: rgba(var(--rgb-green), 0.2);
                 {%- endif %}
               }
               ha-card:after {
-                {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 %}
+                {%- if state_attr('sensor.binday_recycling', 'days') | int < 7 or state_attr('sensor.binday_greenwaste', 'days') | int > 7 %}
                 content: "{{ state_attr('sensor.binday_recycling', 'days') }}";
                 {%- else %}
                 content: "{{ state_attr('sensor.binday_greenwaste', 'days') }}";

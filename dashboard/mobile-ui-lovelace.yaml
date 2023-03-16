@@ -6,7 +6,6 @@ button_card_templates: !include_dir_merge_named button-card
 decluttering_templates: !include declutter.yaml
 apexcharts_card_templates: !include apexcharts.yaml
 views:
-  - !include mobile/docker.yaml
   - !include mobile/home.yaml
   - !include mobile/homeassistant.yaml
   - !include mobile/me.yaml
@@ -19,6 +18,7 @@ views:
   - !include mobile/tamworth.yaml
   - !include mobile/untappd.yaml
   - !include mobile/weather.yaml
+  - !include mobile/docker.yaml
 
   # - !include mobile/snippets/footer.yaml
   # - type: custom:button-card
