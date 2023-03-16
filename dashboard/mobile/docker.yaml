@@ -1,0 +1,152 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:docker
+subview: true
+path: docker
+title: Docker
+badges: []
+type: custom:grid-layout
+layout:
+  # default
+  margin: 0
+  grid-gap: 0.5vw
+  grid-template-columns: 15% repeat(4, 1fr) 0
+  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+  grid-template-areas: |
+    "sidebar . . . . ."
+    "sidebar c2r2 c3r2 c4r2 c5r2 ."
+    "footer footer footer footer footer ."
+  mediaquery:
+    # phone
+    "(max-width: 800px)":
+      grid-gap: 1vw
+      grid-template-columns: 100%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar"
+        "footer"
+        "c2r3"
+    "(max-width: 1400px)":
+      grid-gap: 1vw
+      grid-template-columns: 25% repeat(2, 1fr) 0
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar c2r2 c3r2"
+        "sidebar c4r2 c3r3"
+        "sidebar c4r3 c5r2"
+        "footer footer footer"
+cards:
+  ###
+  # SIDEBAR
+  # Column 1
+  ###
+  - type: vertical-stack
+    view_layout:
+      grid-area: sidebar
+    cards:
+      - !include snippets/header.yaml
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(min-width: 801px)":
+            type: vertical-stack
+
+            cards:
+              - !include snippets/menu.yaml
+  ###
+  # Footer
+  ###
+
+  - !include snippets/footer.yaml
+
+  # Mobile Only
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r3
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+
+        cards:
+          - type: custom:tabbed-card
+
+            options: {}
+            styles:
+              --mdc-theme-primary: var(--label-badge-blue)
+              --mdc-tab-text-label-color-default: var(--label-badge-red)
+            tabs:
+              - attributes:
+                  label: tbsh1
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include ../docker/tbsh1.yaml
+              - attributes:
+                  label: tbsh2
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include ../docker/tbsh2.yaml
+              - attributes:
+                  label: tbsh03
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include ../docker/tbsh03.yaml
+              - attributes:
+                  label: pi4-srv
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include ../docker/pi4-srv.yaml
+
+  # Non-Mobile
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../docker/tbsh1.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../docker/tbsh2.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c4r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../docker/tbsh03.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c5r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../docker/pi4-srv.yaml
