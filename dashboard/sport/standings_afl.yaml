@@ -32,46 +32,40 @@ entities:
       - type: custom:hui-element
         card_type: custom:flex-table-card
         entities:
-          include: sensor.getdata_afl_ladder
+          include: sensor.scoreboard_afl
         css:
-          table+: "border-collapse: collapse;"
+          table+: 'border-collapse: collapse; padding: 0px;'
+          tbody tr td:nth-child(1): 'width: 10%;'
+        sort_by: entries-
         columns:
-          - name: "#"
-            data: ladder
-            modify: x.position
+          - hidden: true
+            name: sort
+            data: entries
+            modify: x.stats.find(y=>y.name == 'percentage').displayValue
+          - name: Logo
+            data: entries
+            modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
           - name: Team
-            data: ladder
-            modify: x.team
+            data: entries
+            modify: x.team.displayName
           - name: Pl
-            data: ladder
-            modify: x.played
+            data: entries
+            modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
           - name: W
-            data: ladder
-            modify: x.wins
+            data: entries
+            modify: x.stats.find(y=>y.name == 'wins').displayValue
           - name: D
-            data: ladder
-            modify: x.drawn
+            data: entries
+            modify: x.stats.find(y=>y.name == 'ties').displayValue
           - name: L
-            data: ladder
-            modify: x.lost
-          - name: PD
-            data: ladder
-            modify: |-
-              {
-                x.for +
-                ":" +
-                x.against
-              }
-          - name: "%"
-            data: ladder
-            modify: |-
-              {
-                x.percent +
-                "%"
-              }
+            data: entries
+            modify: x.stats.find(y=>y.name == 'losses').displayValue
+          - name: PCT
+            data: entries
+            modify: x.stats.find(y=>y.name == 'percentage').value
           - name: Pts
-            data: ladder
-            modify: x.points
+            data: entries
+            modify: x.stats.find(y=>y.name == 'points').value
         card_mod:
           style: |
             ha-card {
