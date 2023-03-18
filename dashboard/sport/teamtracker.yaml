@@ -11,7 +11,9 @@ filter:
     {%- for team in integration_entities("teamtracker") -%}
       {%- if states(team) != "NOT_FOUND" -%}
         {{{"type": "custom:teamtracker-card",
-          "entity": team }}},
+          "entity": team,
+          "show_rank": true,
+          "outline": true,}}},
       {%- endif -%}
     {%- endfor -%}
   exclude:

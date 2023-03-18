@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, March 18th 2023_
+_Stats as at 05:00, Sunday, March 19th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.5 | 461     | 3701         | 2554 | 101 |
+| 2023.3.5 | 462     | 3703         | 2551 | 101 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2554
+Sensor | 2551
 Sun | 1
 Switch | 158
 Weather | 7
@@ -423,6 +423,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.mqtt_room](https://www.home-assistant.io/components/sensor.mqtt_room) |
 | [sensor.multiscrape](https://www.home-assistant.io/components/sensor.multiscrape) |
 | [sensor.myjdownloader](https://www.home-assistant.io/components/sensor.myjdownloader) |
+| [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |

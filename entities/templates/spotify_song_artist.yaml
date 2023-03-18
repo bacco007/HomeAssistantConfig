@@ -1,0 +1,8 @@
+---
+sensor:
+  - name: "Spotify Song & Artist"
+    state: >
+      {%  if state_attr('media_player.spotify_thomas_baxter', 'media_title') != none -%}
+      {{ state_attr('media_player.spotify_thomas_baxter', 'media_title') }}  |  {{ state_attr('media_player.spotify_thomas_baxter', 'media_artist') }}
+      {%- endif %}
+    icon: mdi:format-list-bulleted

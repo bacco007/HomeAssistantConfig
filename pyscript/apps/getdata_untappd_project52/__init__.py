@@ -350,7 +350,7 @@ def getdata_untappd_project52():
     attributes_firstcheckin_year["icon"] = "mdi:untappd"
     attributes_firstcheckin_year["unit_of_measurement"] = "beers"
     attributes_firstcheckin_year["friendly_name"] = "Untappd: Check-ins by Year"
-    state.set("sensor.untappd_lowest_abv_beers", value=llen(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_year)
+    state.set("sensor.untappd_lowest_abv_beers", value=len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_year)
 
 def get_config(name):
     value = pyscript.app_config.get(name)

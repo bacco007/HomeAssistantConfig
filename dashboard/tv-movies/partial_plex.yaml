@@ -1,15 +1,5 @@
 ---
-type: "custom:layout-card"
-view_layout:
-  grid-column: 3/-1
-layout_type: "custom:grid-layout"
-layout:
-  grid-template-columns: "repeat(auto-fill, [col-start] minmax(50%, 1fr) [col-end])"
-  grid-template-rows: auto
-  margin: -1
-  mediaquery:
-    "(max-width: 760px)":
-      grid-template-columns: "repeat(auto-fill, [col-start] minmax(100%, 1fr) [col-end])"
+type: vertical-stack
 cards:
   - type: "custom:button-card"
     template: header_card
@@ -21,89 +11,224 @@ cards:
       link: http://192.168.1.100:32400
     view_layout:
       grid-column: 1/-1
-  - type: horizontal-stack
-    view_layout:
-      grid-column: 1/-1
+  - square: false
+    columns: 1
+    type: grid
     cards:
-      - type: entity
-        entity: sensor.plexstats_tvshowcount
+      - entity: sensor.plexstats_tvshowcount
         name: TV Shows
-      - type: entity
-        entity: sensor.plexstats_tvseasoncount
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.plexstats_tvseasoncount
         name: TV Seasons
-      - type: entity
-        entity: sensor.plexstats_tvepisodecount
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.plexstats_tvepisodecount
         name: TV Episodes
-      - type: entity
-        entity: sensor.plexstats_moviecount
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.plexstats_moviecount
         name: Movies
-  - type: vertical-stack
-    view_layout:
-      grid-column-start: 1/1
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+
+  - square: false
+    columns: 2
+    type: grid
     cards:
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:
-          - type: entities
-            card_mod: !include ../snippets/style-entities.yaml
-            entities:
-              - entity: sensor.plex_thecube2
-              - entity: sensor.plex_installed_version
-              - entity: sensor.plex_latest_version
-              - entity: sensor.top_movie
-              - entity: sensor.top_tv_show
-              - entity: sensor.top_user
-              - entity: sensor.direct_plays
-              - entity: sensor.direct_streams
-              - entity: sensor.lan_bandwidth
-              - entity: sensor.total_bandwidth
-              - entity: sensor.transcodes
-              - entity: sensor.wan_bandwidth
-          - type: markdown
-            card_mod: !include ../snippets/style-markdown-table.yaml
-            content: |-
-              <details>
-              <summary>Plex Top Users</summary>
+      - entity: sensor.plex_thecube2
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.plex_installed_version
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.plex_latest_version
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.top_movie
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.top_tv_show
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.top_user
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.direct_plays
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.direct_streams
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.lan_bandwidth
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.total_bandwidth
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.transcodes
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.wan_bandwidth
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+  - type: markdown
+    card_mod: !include ../snippets/style-markdown-table.yaml
+    content: |-
+      <details>
+      <summary>Plex Top Users</summary>
 
-              <table width="100%">
-              <tr>
-              <th>User</th>
-              <th>Total Plays</th>
-              <th>Watch Length</th>
-              <th>Last Play</th>
-              <th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_tautulli_topusers', 'rows') %}
-              {%- set uptime = item.total_duration | int -%}
-              {%- set minutes = ((uptime % 3600) / 60) | int -%}
-              {%- set hours = ((uptime) / 3600) | int -%}
-              {%- set days = (uptime / 86400) | int -%}
-              <tr>
-              <td>{{ item.friendly_name }}</td>
-              <td>{{ item.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
+      <table width="100%">
+      <tr>
+      <th>User</th>
+      <th>Total Plays</th>
+      <th>Watch Length</th>
+      <th>Last Play</th>
+      <th>
+      </tr>
+      {%- for item in state_attr('sensor.plex_tautulli_topusers', 'rows') %}
+      {%- set uptime = item.total_duration | int -%}
+      {%- set minutes = ((uptime % 3600) / 60) | int -%}
+      {%- set hours = ((uptime) / 3600) | int -%}
+      {%- set days = (uptime / 86400) | int -%}
+      <tr>
+      <td>{{ item.friendly_name }}</td>
+      <td>{{ item.total_plays }}</td>
+      <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
+      <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
+      </tr>
+      {% endfor %}
+      </table>
+      </details>
 
-              <details>
-              <summary>Plex - Popular TV</summary>
+      <details>
+      <summary>Plex - Popular TV</summary>
 
-              <table width="100%">
-              <tr>
-              <th>What?</th>
-              <th>Who?</th>
-              </tr>
-              {% for row in state_attr("sensor.plex_tautulli_populartv", "rows") -%}
-              <tr>
-              <td>{{row.title}}</td>
-              <td>{{row.users_watched}}</td>
-              </tr>
-              {% endfor -%}
-              </table>
-              </details>
+      <table width="100%">
+      <tr>
+      <th>What?</th>
+      <th>Who?</th>
+      </tr>
+      {% for row in state_attr("sensor.plex_tautulli_populartv", "rows") -%}
+      <tr>
+      <td>{{row.title}}</td>
+      <td>{{row.users_watched}}</td>
+      </tr>
+      {% endfor -%}
+      </table>
+      </details>
   - type: vertical-stack
     view_layout:
       grid-column-start: 2/2

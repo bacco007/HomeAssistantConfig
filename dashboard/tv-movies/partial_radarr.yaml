@@ -23,33 +23,126 @@ cards:
       action: none
     double_tap_action:
       action: none
-  - type: custom:stack-in-card
-    mode: vertical
+  - square: false
+    columns: 2
+    type: grid
     cards:
-      - type: entities
-        card_mod: !include ../snippets/style-entities.yaml
+      - entity: binary_sensor.radarr_health
+        name: Health
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.radarr_start_time
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.radarr_movies
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.radarr_installed_version
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+      - entity: sensor.radarr_latest_update
+        type: custom:mushroom-entity-card
+        primary_info: state
+        secondary_info: name
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          primary: Upcoming Movies
+          icon: mdi:movie
+          icon_color: green
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
         entities:
-          - entity: binary_sensor.radarr_health
-            name: Health
-          - entity: sensor.radarr_start_time
-          - entity: sensor.radarr_movies
-          - entity: sensor.radarr_installed_version
-          - entity: sensor.radarr_latest_update
-      - type: markdown
-        card_mod: !include ../snippets/style-markdown-table-scroll.yaml
-        content: |-
-          <table width="100%">
-          <tr>
-          <th>Date</th>
-          <th>Time</th>
-          </tr>
-          {%- for item in state_attr('sensor.radarr_upcoming_media', 'data') %}
-          {%- if item.airdate | default('', true) %}
-          {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
-          {%- set airtime = as_timestamp(item.airdate) | timestamp_custom('%H:%M') %}
-          <tr>
-          <td>{{ airdate }}</td>
-          <td>{{item.title}}</td>
-          </tr>
-          {%- endif %}{% endfor %}
-          </table>
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.radarr_upcoming_media
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+              tbody tr td:nth-child(1): "width: 25%;"
+              span: "font-size: smaller"
+            strict: true
+            columns:
+              - name: test
+                data: data
+                modify: x.title
+                hidden: true
+              - name: Date
+                data: data
+                modify: |-
+                  {
+                    var date = new Date(x.airdate);
+                    date.toString().split(' ')[0] + " " +
+                    String(date.getDate()).padStart(2,'0')+"/"+
+                    (String(date.getMonth()+ 1).padStart(2,'0'))
+                  }
+              - name: Detail
+                data: data
+                modify: x.title
+            card_mod:
+              style: |
+                ha-card {
+                  overflow: auto;
+                  padding-left: 20px;
+                  padding-right: 20px;
+                  padding-bottom: 20px
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }

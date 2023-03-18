@@ -6,49 +6,117 @@ subview: true
 path: tv-movies
 title: Media
 badges: []
+type: custom:grid-layout
+layout:
+  # default
+  margin: 0
+  grid-gap: 0.5vw
+  grid-template-columns: 15% repeat(3, 1fr) 0
+  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+  grid-template-areas: |
+    "sidebar . . . ."
+    "sidebar  c2r2 c3r2 c4r2 ."
+    "sidebar  c2r3 c3r3 c4r3 ."
+    "footer footer footer footer  ."
+  mediaquery:
+    # phone
+    "(max-width: 800px)":
+      grid-gap: 1vw
+      grid-template-columns: 100%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar"
+        "footer"
+        "c2r2"
+    "(max-width: 1400px)":
+      grid-gap: 1vw
+      grid-template-columns: 25% repeat(2, 1fr) 0
+      grid-template-rows: auto
+      grid-template-areas: |
+        "sidebar c2r2 c3r2"
+        "sidebar c4r2 c3r3"
+        "sidebar c4r3 ."
+        "footer footer footer"
 cards:
-  - !include snippets/header.yaml
-
-  - type: custom:mushroom-template-card
-    primary: >
-      TV & Movies
-    icon: mdi:television
-    fill_container: true
-    tap_action:
-      action: none
-    hold_action:
-      action: none
-    icon_color: red
-    secondary: |-
-      Yo!
-    card_mod:
-      style: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-          padding: 0px 16px 8px !important;
-        }
-        :host {
-          --mush-card-primary-font-size: 1.2rem;
-        }
-
+  ###
+  # SIDEBAR
+  # Column 1
+  ###
   - type: vertical-stack
+    view_layout:
+      grid-area: sidebar
     cards:
-      - type: custom:tabbed-card
-        options: {}
-        styles:
-          --mdc-theme-primary: var(--label-badge-blue)
-          --mdc-tab-text-label-color-default: var(--label-badge-red)
-        tabs:
-          - attributes:
-              label: Sonarr
-              isMinWidthIndicator: true
-            card: !include ../tv-movies/partial_sonarr.yaml
-          - attributes:
-              label: Radarr
-              isMinWidthIndicator: true
-            card: !include ../tv-movies/partial_radarr.yaml
-          - attributes:
-              label: Plex
-              isMinWidthIndicator: true
-            card: !include ../tv-movies/partial_plex.yaml
+      - !include snippets/header.yaml
+      - type: custom:state-switch
+        entity: mediaquery
+        states:
+          "(min-width: 801px)":
+            type: vertical-stack
+
+            cards:
+              - !include snippets/menu.yaml
+  ###
+  # Footer
+  ###
+
+  - !include snippets/footer.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+        cards:
+          - type: custom:tabbed-card
+            options: {}
+            styles:
+              --mdc-theme-primary: var(--label-badge-blue)
+              --mdc-tab-text-label-color-default: var(--label-badge-red)
+            tabs:
+              - attributes:
+                  label: Sonarr
+                  isMinWidthIndicator: true
+                card: !include ../tv-movies/partial_sonarr.yaml
+              - attributes:
+                  label: Radarr
+                  isMinWidthIndicator: true
+                card: !include ../tv-movies/partial_radarr.yaml
+              - attributes:
+                  label: Plex
+                  isMinWidthIndicator: true
+                card: !include ../tv-movies/partial_plex.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../tv-movies/partial_sonarr.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../tv-movies/partial_radarr.yaml
+
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c4r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../tv-movies/partial_plex.yaml

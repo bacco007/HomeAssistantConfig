@@ -1,0 +1,8 @@
+---
+sensor:
+  - name: "Currently Playing Song & Artist"
+    state: >
+      {%  if state_attr('media_player.currently_playing', 'media_title') != none -%}
+      {{ state_attr('media_player.currently_playing', 'media_title') }}  |  {{ state_attr('media_player.currently_playing', 'media_artist') }}
+      {%- endif %}
+    icon: mdi:format-list-bulleted

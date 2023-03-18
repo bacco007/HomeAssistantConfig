@@ -65,6 +65,214 @@ cards:
             entity: weather.east_tamworth
             hide_today_section: true
             forecast_days: 7
+          - type: vertical-stack
+            cards:
+              - type: custom:button-card
+                template: header_card
+                variables:
+                  name: >
+                    <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+                    icon='mdi:network-outline'></ha-icon> NETWORK
+                  label: More
+                  link: /ui-dashboard/network
+                view_layout:
+                  grid-column: 1/-1
+                card_mod:
+                  style: |
+                    ha-card {
+                      box-shadow: none;
+                    }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.unifi_gateway_wan_uptimeavail_stats
+                    secondary: Internet Uptime
+                    primary: |
+                      {{ states('sensor.unifi_gateway_wan_uptimeavail_stats')}} %
+                    icon: mdi:calculator
+                    icon_color: "#B694E7"
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+                  - type: custom:mini-graph-card
+                    entities:
+                      - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+                        color: "#B694E7"
+                    hours_to_show: 24
+                    line_width: 4
+                    animate: true
+                    show:
+                      name: false
+                      icon: false
+                      state: false
+                      legend: false
+                      fill: fade
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          background: none;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.unifi_networkstats_connected_devices
+                    secondary: Network Connected Devices
+                    primary: |
+                      {{ states('sensor.unifi_networkstats_connected_devices')}} Devices
+                    icon: mdi:network
+                    icon_color: "#B694E7"
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+                  - type: custom:mini-graph-card
+                    entities:
+                      - entity: sensor.unifi_networkstats_connected_devices
+                        color: "#B694E7"
+                    hours_to_show: 24
+                    line_width: 4
+                    animate: true
+                    show:
+                      name: false
+                      icon: false
+                      state: false
+                      legend: false
+                      fill: fade
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          background: none;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.speedtest_download
+                    secondary: Download
+                    primary: |
+                      {{ states('sensor.speedtest_download')}} Mbits/s
+                    icon: mdi:download-network
+                    icon_color: "#B694E7"
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+                  - type: custom:mini-graph-card
+                    entities:
+                      - entity: sensor.speedtest_download
+                        color: "#B694E7"
+                    hours_to_show: 24
+                    line_width: 4
+                    animate: true
+                    show:
+                      name: false
+                      icon: false
+                      state: false
+                      legend: false
+                      fill: fade
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          background: none;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.speedtest_upload
+                    secondary: Upload
+                    primary: |
+                      {{ states('sensor.speedtest_upload')}} Mbit/s
+                    icon: mdi:upload-network
+                    icon_color: "#B694E7"
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+                  - type: custom:mini-graph-card
+                    entities:
+                      - entity: sensor.speedtest_upload
+                        color: "#B694E7"
+                    hours_to_show: 24
+                    line_width: 4
+                    animate: true
+                    show:
+                      name: false
+                      icon: false
+                      state: false
+                      legend: false
+                      fill: fade
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          background: none;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.speedtest_ping
+                    secondary: Ping
+                    primary: |
+                      {{ states('sensor.speedtest_ping')}} ms
+                    icon: mdi:network-strength-4-cog
+                    icon_color: "#B694E7"
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
+                  - type: custom:mini-graph-card
+                    entities:
+                      - entity: sensor.speedtest_ping
+                        color: "#B694E7"
+                    hours_to_show: 24
+                    line_width: 4
+                    animate: true
+                    show:
+                      name: false
+                      icon: false
+                      state: false
+                      legend: false
+                      fill: fade
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 0px;
+                          background: none;
+                          box-shadow: none;
+                          --ha-card-border-width: 0;
+                        }
 
   ###
   # Column 3, Row 2
@@ -170,6 +378,93 @@ cards:
                           --mush-card-primary-font-size: 18px;
                           --mush-card-secondary-font-size: 14px;
                         }
+          - type: vertical-stack
+            cards:
+              - type: custom:button-card
+                template: header_card
+                variables:
+                  name: >
+                    <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+                    icon='mdi:airplane-alert'></ha-icon> FLIGHT TRACKER
+                  label: More
+                  link: /ui-dashboard/docker
+                view_layout:
+                  grid-column: 1/-1
+                card_mod:
+                  style: |
+                    ha-card {
+                      box-shadow: none;
+                    }
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:mushroom-template-card
+                    icon: mdi:airplane
+                    primary: |
+                      {{ states("sensor.plane_overhead") }}
+                    secondary: "{{ state_attr('sensor.plane_overhead', 'distance') | round(2) }} km Away"
+                    icon_color: grey
+                    badge_icon: ""
+                    badge_color: red
+                    fill_container: true
+                    multiline_secondary: true
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+                    layout: vertical
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-card-primary-font-size: 18px;
+                          --mush-card-secondary-font-size: 14px;
+                        }
+                  - type: custom:vertical-stack-in-card
+                    cards:
+                      - type: custom:mushroom-template-card
+                        entity: sensor.flighttracker_flights_now
+                        secondary: Planes Overhead
+                        primary: |
+                          {{ states('sensor.flighttracker_flights_now') }} Flights
+                        icon: mdi:airplane-alert
+                        icon_color: "#B694E7"
+                        tap_action:
+                          action: more-info
+                        card_mod:
+                          style: |
+                            ha-card {
+                              margin-bottom: -10px;
+                            }
+                            :host {
+                              --mush-card-primary-font-size: 16px;
+                              --mush-card-secondary-font-size: 13px;
+                            }
+                      - type: custom:layout-card
+                        cards:
+                          - type: custom:mini-graph-card
+                            entities:
+                              - entity: sensor.flighttracker_flights_now
+                                name: Download
+                                color: "#B694E7"
+                            hours_to_show: 24
+                            points_per_hour: 6
+                            line_width: 4
+                            animate: true
+                            show:
+                              name: false
+                              icon: false
+                              state: false
+                              legend: false
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  border-radius: 0px;
+                                  box-shadow: none;
+                                }
+
           - type: vertical-stack
             cards:
               - type: custom:button-card
@@ -287,35 +582,37 @@ cards:
         columns: 1
         square: false
         cards:
-          - type: custom:vertical-stack-in-card
+          - type: custom:stack-in-card
+            mode: horizontal
             cards:
-              - square: false
-                columns: 1
-                type: grid
-                cards:
-                  - type: custom:mushroom-entity-card
-                    entity: sensor.lastfm_user_playcount
-                    primary_info: state
-                    secondary_info: name
-                    icon: fab:lastfm
-                    name: Last.FM Listen Count
-                    icon_color: lime
-                    fill_container: true
-                    tap_action:
-                      action: none
-                    hold_action:
-                      action: none
-                    double_tap_action:
-                      action: none
+              - type: custom:mushroom-entity-card
+                entity: sensor.lastfm_user_playcount
+                primary_info: state
+                secondary_info: name
+                icon: fab:lastfm
+                name: Last.FM Listen Count
+                icon_color: lime
+                fill_container: true
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-radius: 0px;
+                      box-shadow: none;
+                      --ha-card-border-width: 0;
+                    }
               - type: custom:mini-graph-card
                 entities:
                   - entity: sensor.lastfm_user_playcount
-                    name: Temperature
                     color: lightgreen
                 hours_to_show: 168
                 points_per_hour: 1
-                line_width: 2
-                font_size: 50
+                line_width: 4
                 animate: true
                 show:
                   name: false
@@ -323,6 +620,14 @@ cards:
                   state: false
                   legend: false
                   fill: fade
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-radius: 0px;
+                      background: none;
+                      box-shadow: none;
+                      --ha-card-border-width: 0;
+                    }
 
           - !include ../snippets/media_currently_playing_details.yaml
 
@@ -336,9 +641,9 @@ cards:
                 delay: 10000
               cubeEffect:
                 - slideShadows: false
-            view_layout:
-              grid-column: 1/3
-              grid-row: 3/4
+            # view_layout:
+            #   grid-column: 1/3
+            #   grid-row: 3/4
             cards:
               - type: "custom:button-card"
                 template:
@@ -347,7 +652,7 @@ cards:
                 icon: "phu:sonos-one"
                 name: Sonos (Office)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_media_player
@@ -355,7 +660,7 @@ cards:
                 icon: "phu:symfonisk-lampe"
                 name: Sonos (Bedroom)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_media_player
@@ -363,7 +668,7 @@ cards:
                 icon: "mdi:album"
                 name: Homepod Mini (Left)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_media_player
@@ -371,7 +676,7 @@ cards:
                 icon: "mdi:album"
                 name: Homepod Mini (Right)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_media_player
@@ -379,7 +684,7 @@ cards:
                 icon: "ios:tv-circle-fill"
                 name: Apple TV
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_media_player
@@ -387,7 +692,7 @@ cards:
                 icon: "mdi:spotify"
                 name: Spotify
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -396,7 +701,7 @@ cards:
                 icon: "mdi:plex"
                 name: Plex (New, Unwatched TV)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -405,7 +710,7 @@ cards:
                 icon: "mdi:plex"
                 name: Plex (New, Unwatched Movies)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -414,7 +719,7 @@ cards:
                 icon: "mdi:television"
                 name: Sonarr (Upcoming TV)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -423,7 +728,7 @@ cards:
                 icon: "mdi:filmstrip"
                 name: Radarr (Upcoming Movies)
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -443,7 +748,7 @@ cards:
                   entity.attributes.artist_5 + " (" + entity.attributes.artist_5_playcount + ")"
                   ]]]
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -463,7 +768,7 @@ cards:
                   entity.attributes.album_5 + " (" + entity.attributes.album_5_playcount + ")"
                   ]]]
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
               - type: "custom:button-card"
                 template:
                   - live_tile_card
@@ -483,7 +788,7 @@ cards:
                   entity.attributes.track_5 + " (" + entity.attributes.track_5_playcount + ")"
                   ]]]
                 variables:
-                  aspect_ratio: 3/1
+                  aspect_ratio: 4/1
 
   ###
   # Footer

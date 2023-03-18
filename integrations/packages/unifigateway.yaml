@@ -12,7 +12,6 @@ sensor:
       - wan
       - www
       - wlan
-      - alerts
       - firmware
 
   - platform: template
