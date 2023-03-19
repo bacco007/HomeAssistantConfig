@@ -13,6 +13,7 @@ filter:
         {{{"type": "custom:teamtracker-card",
           "entity": team,
           "show_rank": true,
+          "home_side": "left",
           "outline": true,}}},
       {%- endif -%}
     {%- endfor -%}

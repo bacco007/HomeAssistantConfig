@@ -226,9 +226,13 @@ def getdata_untappd_project52():
     # Stats by Brewery
     attributes_brewery = {}
     attributes_brewery["data"] = ATTR_STATS_BREWERY
+    max_new = 0
     for b in sorted(countOccurrence(BREWERY).items(), key=lambda x: x[1], reverse=True):
         attributes_brewery[b[0]] = b[1]
-    attributes_brewery["count"] = ATTR_STATS_BREWERY[0]['count']
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_brewery["count"] = ATTR_STATS_BREWERY[0]['count']
+    attributes_brewery["max"] = max_new
     attributes_brewery["icon"] = "mdi:untappd"
     attributes_brewery["unit_of_measurement"] = "beers"
     attributes_brewery["friendly_name"] = "Untappd: Stats by Brewery"
@@ -237,9 +241,13 @@ def getdata_untappd_project52():
     # Stats by Brewery Country
     attributes_brewerycountry = {}
     attributes_brewerycountry["data"] = ATTR_STATS_BREWERY_COUNTRY
+    max_new = 0
     for b in sorted(countOccurrence(BREWERY_COUNTRY).items(), key=lambda x: x[1], reverse=True):
         attributes_brewerycountry[b[0]] = b[1]
-    attributes_brewerycountry["count"] = ATTR_STATS_BREWERY_COUNTRY[0]['count']
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_brewerycountry["count"] = ATTR_STATS_BREWERY_COUNTRY[0]['count']
+    attributes_brewerycountry["max"] = max_new
     attributes_brewerycountry["icon"] = "mdi:untappd"
     attributes_brewerycountry["unit_of_measurement"] = "beers"
     attributes_brewerycountry["friendly_name"] = "Untappd: Stats by Brewery Country"
@@ -248,9 +256,13 @@ def getdata_untappd_project52():
     # Stats by Beer Style
     attributes_beerstyle = {}
     attributes_beerstyle["data"] = ATTR_STATS_BEERSTYLE
+    max_new = 0
     for b in sorted(countOccurrence(BEER_STYLE).items(), key=lambda x: x[1], reverse=True):
         attributes_beerstyle[b[0]] = b[1]
-    attributes_beerstyle["count"] = ATTR_STATS_BEERSTYLE[0]['count']
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_beerstyle["count"] = ATTR_STATS_BEERSTYLE[0]['count']
+    attributes_beerstyle["max"] = max_new
     attributes_beerstyle["icon"] = "mdi:untappd"
     attributes_beerstyle["unit_of_measurement"] = "beers"
     attributes_beerstyle["friendly_name"] = "Untappd: Stats by Beer Style"
@@ -259,9 +271,13 @@ def getdata_untappd_project52():
     # Stats by Beer Rating
     attributes_beerrating = {}
     attributes_beerrating["data"] = ATTR_STATS_RATING
+    max_new = 0
     for b in sorted(countOccurrence(RATING_COUNT).items(), key=lambda x: float(x[0])):
         attributes_beerrating[b[0]] = b[1]
-    attributes_beerrating["count"] = len(ATTR_STATS_RATING)
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_beerrating["count"] = len(ATTR_STATS_RATING)
+    attributes_beerrating["max"] = max_new
     attributes_beerrating["icon"] = "mdi:untappd"
     attributes_beerrating["unit_of_measurement"] = "beers"
     attributes_beerrating["friendly_name"] = "Untappd: Stats by Beer Rating"
@@ -269,10 +285,14 @@ def getdata_untappd_project52():
 
     # Stats by Beer ABV
     attributes_beerabv = {}
-    attributes_beerabv["data"] = sorted(countOccurrence(ABV_COUNT).items(), key=lambda x: str(float(x[0])))
+    attributes_beerabv["data"] = ATTR_STATS_ABV
+    max_new = 0
     for b in sorted(countOccurrence(ABV_COUNT).items(), key=lambda x: float(x[0])):
         attributes_beerabv[b[0]] = b[1]
-    attributes_beerabv["count"] = len(ATTR_STATS_ABV)
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_beerabv["count"] = len(ATTR_STATS_ABV)
+    attributes_beerabv["max"] = max_new
     attributes_beerabv["icon"] = "mdi:untappd"
     attributes_beerabv["unit_of_measurement"] = "beers"
     attributes_beerabv["friendly_name"] = "Untappd: Stats by Beer ABV"
@@ -281,7 +301,7 @@ def getdata_untappd_project52():
     # Stats by Beer Check-in Count
     attributes_beercheckincnt = {}
     attributes_beercheckincnt["data"] = ATTR_STATS_BEER_COUNT
-    attributes_beercheckincnt["count"] = ATTR_STATS_BEER_COUNT[0]['count']
+    #attributes_beercheckincnt["count"] = ATTR_STATS_BEER_COUNT[0]['count']
     attributes_beercheckincnt["icon"] = "mdi:untappd"
     attributes_beercheckincnt["unit_of_measurement"] = "beers"
     attributes_beercheckincnt["friendly_name"] = "Untappd: Stats by Beer Check-in Count"
@@ -343,14 +363,18 @@ def getdata_untappd_project52():
 
     # Check-Ins by Year
     attributes_firstcheckin_year = {}
-    attributes_firstcheckin_year["data"] = sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)
+    attributes_firstcheckin_year["data"] = ATTR_STATS_YEAR
+    max_new = 0
     for b in sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False):
         attributes_firstcheckin_year[b[0]] = b[1]
-    attributes_firstcheckin_year["count"] = len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False))
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_firstcheckin_year["count"] = len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False))
+    attributes_firstcheckin_year["max"] = max_new
     attributes_firstcheckin_year["icon"] = "mdi:untappd"
     attributes_firstcheckin_year["unit_of_measurement"] = "beers"
     attributes_firstcheckin_year["friendly_name"] = "Untappd: Check-ins by Year"
-    state.set("sensor.untappd_lowest_abv_beers", value=len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_year)
+    state.set("sensor.untappd_stats_by_checkinsbyyear", value=len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_year)
 
 def get_config(name):
     value = pyscript.app_config.get(name)

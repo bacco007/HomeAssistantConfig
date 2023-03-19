@@ -17,8 +17,8 @@ entities:
   - type: custom:fold-entity-row
     head:
       type: custom:mushroom-template-card
-      primary: NRL
-      icon: mdi:football
+      primary: A-League Womens
+      icon: mdi:soccer
       icon_color: green
       card_mod:
         style: |
@@ -32,11 +32,11 @@ entities:
       - type: custom:hui-element
         card_type: custom:flex-table-card
         entities:
-          include: sensor.scoreboard_nrl
+          include: sensor.scoreboard_alw
         css:
           table+: "border-collapse: collapse; padding: 0px;"
           tbody tr td:nth-child(1): "width: 10%;"
-        sort_by: x.stats.find(y=>y.name == 'rank').displayValue
+        sort_by: x.stats.find(y=>y.name == 'points').displayValue
         columns:
           - name: Logo
             data: entries
@@ -49,16 +49,13 @@ entities:
             modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
           - name: W
             data: entries
-            modify: x.stats.find(y=>y.name == 'gamesWon').displayValue
+            modify: x.stats.find(y=>y.name == 'wins').displayValue
           - name: D
             data: entries
-            modify: x.stats.find(y=>y.name == 'gamesDrawn').displayValue
+            modify: x.stats.find(y=>y.name == 'ties').displayValue
           - name: L
             data: entries
-            modify: x.stats.find(y=>y.name == 'gamesLost').displayValue
-          - name: B
-            data: entries
-            modify: x.stats.find(y=>y.name == 'gamesBye').displayValue
+            modify: x.stats.find(y=>y.name == 'losses').displayValue
           - name: GD
             data: entries
             modify: |-
@@ -80,7 +77,4 @@ entities:
             }
             tbody tr:hover {
               background-color: coral !important
-            }
-            tbody tr:nth-child(8) {
-              border-bottom: 1.2px dashed red !important;
             }

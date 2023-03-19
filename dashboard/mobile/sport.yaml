@@ -193,6 +193,7 @@ cards:
           grid-column: 1/-1
       - !include ../sport/standings_afl.yaml
       - !include ../sport/standings_alm.yaml
+      - !include ../sport/standings_alw.yaml
       - !include ../sport/standings_epl.yaml
       - !include ../sport/standings_mlb.yaml
       - !include ../sport/standings_nba.yaml

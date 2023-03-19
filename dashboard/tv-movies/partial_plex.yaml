@@ -184,275 +184,770 @@ cards:
           action: none
         double_tap_action:
           action: none
-  - type: markdown
-    card_mod: !include ../snippets/style-markdown-table.yaml
-    content: |-
-      <details>
-      <summary>Plex Top Users</summary>
 
-      <table width="100%">
-      <tr>
-      <th>User</th>
-      <th>Total Plays</th>
-      <th>Watch Length</th>
-      <th>Last Play</th>
-      <th>
-      </tr>
-      {%- for item in state_attr('sensor.plex_tautulli_topusers', 'rows') %}
-      {%- set uptime = item.total_duration | int -%}
-      {%- set minutes = ((uptime % 3600) / 60) | int -%}
-      {%- set hours = ((uptime) / 3600) | int -%}
-      {%- set days = (uptime / 86400) | int -%}
-      <tr>
-      <td>{{ item.friendly_name }}</td>
-      <td>{{ item.total_plays }}</td>
-      <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-      <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
-      </tr>
-      {% endfor %}
-      </table>
-      </details>
-
-      <details>
-      <summary>Plex - Popular TV</summary>
-
-      <table width="100%">
-      <tr>
-      <th>What?</th>
-      <th>Who?</th>
-      </tr>
-      {% for row in state_attr("sensor.plex_tautulli_populartv", "rows") -%}
-      <tr>
-      <td>{{row.title}}</td>
-      <td>{{row.users_watched}}</td>
-      </tr>
-      {% endfor -%}
-      </table>
-      </details>
   - type: vertical-stack
-    view_layout:
-      grid-column-start: 2/2
     cards:
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:
-          - type: markdown
-            card_mod: !include ../snippets/style-markdown-table.yaml
-            content: |-
-              <br>
-              <details>
-              <summary>Plex Watch History</summary>
+      - type: entities
+        card_mod: null
+        style:
+          fold-entity-row$: |
+            ha-icon {
+              color: rgb(var(--rgb-disabled-color));
+              margin-right: 24px;
+            }
+          hui-section-row $: |
+            .divider { display: none; }
+          .: |
+            .card-content {
+              padding: 0;
+            }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Top Users
+              secondary: >
+                {{state_attr('sensor.plex_tautulli_topusers', 'rows')[0].friendly_name }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_topusers
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: User
+                    data: rows
+                    modify: x.friendly_name
+                  - name: Total Plays
+                    data: rows
+                    modify: x.total_plays
+                    align: center
+                  - name: Watch Length
+                    data: rows
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_duration);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Last Play
+                    data: rows
+                    modify: |-
+                      {
+                        var date = new Date(x.last_play*1000);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <table width="100%">
-              <tr>
-              <th>What?</th>
-              <th>Who?</th>
-              <th>When?</th>
-              </tr>
-              {% for row in state_attr("sensor.plex_tautulli_history", "data") -%}
-              <tr>
-              <td>{{row.full_title}}</td>
-              <td>{{row.user}}</td>
-              <td>{{ row.date|timestamp_custom ('%d/%m/%Y %H:%M') }}</td>
-              </tr>
-              {% endfor -%}
-              </table>
-              </details>
+      - type: entities
+        card_mod: null
+        style:
+          fold-entity-row$: |
+            ha-icon {
+              color: rgb(var(--rgb-disabled-color));
+              margin-right: 24px;
+            }
+          hui-section-row $: |
+            .divider { display: none; }
+          .: |
+            .card-content {
+              padding: 0;
+            }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Watch Summary
+              secondary: >
+                {{state_attr('sensor.plex_tautulli_history', 'data')[0].full_title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_history
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: "What?"
+                    data: data
+                    modify: x.full_title
+                  - name: "Who?"
+                    data: data
+                    modify: x.user
+                  - name: "When?"
+                    data: data
+                    modify: |-
+                      {
+                        var date = new Date(x.date*1000);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Watch Stats - TV Shows</summary>
-              <table width="100%">
-              <tr>
-              <th>#</th>
-              <th>Plays</th>
-              <th>Duration</th>
-              <th>Average</th>
-              <th>
-              </tr>
-              {% for row in state_attr("sensor.plex_tautulli_watch_stats_tv", "data") -%}
-              {% set uptime = row.total_time | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}
-              {% set hours = ((uptime) / 3600) | int -%}
-              {% if 0 not in [ row.total_time, row.total_plays ] -%}
-                {% set avetime = row.total_time / row.total_plays -%} {% set avemin = ((avetime % 3600) / 60) | int -%}
-                {% set avehrs = ((avetime) / 3600) | int -%}
-              {% else -%}
-                {% set avetime = 0 -%}{% set avemin = 0 -%}{% set avehrs = 0 -%}
-              {% endif -%}
-              <tr>
-              <td>{{ row.query_days }}D</td>
-              <td>{{ row.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{'%02d' % avehrs}}:{{'%02d' % avemin}}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod: null
+        style:
+          fold-entity-row$: |
+            ha-icon {
+              color: rgb(var(--rgb-disabled-color));
+              margin-right: 24px;
+            }
+          hui-section-row $: |
+            .divider { display: none; }
+          .: |
+            .card-content {
+              padding: 0;
+            }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Watch Stats - TV
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_watch_stats_tv
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: "#"
+                    data: data
+                    modify: x.query_days + "D"
+                    align: center
+                  - name: Plays
+                    data: data
+                    modify: x.total_plays
+                    align: center
+                  - name: Duration
+                    data: data
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_time);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Average
+                    data: data
+                    align: center
+                    modify: |-
+                      {
+                        var time = Number(x.total_time);
+                        var playcnt = Number(x.total_plays);
+                        var uptime = time / playcnt;
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        if (playcnt == 0) {
+                          "00:00"
+                        } else {
+                          hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                        }
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Watch Stats - Movies</summary>
-              <table width="100%">
-              <tr>
-              <th>#</th>
-              <th>Plays</th>
-              <th>Duration</th>
-              <th>Average</th>
-              <th>
-              </tr>
-              {% for row in state_attr("sensor.plex_tautulli_watch_stats_movies", "data") -%}
-              {% set uptime = row.total_time | int -%}{% set minutes = ((uptime % 3600) / 60) | int -%}
-              {% set hours = ((uptime) / 3600) | int -%}
-              {% if 0 not in [ row.total_time, row.total_plays ] -%}
-                {% set avetime = row.total_time / row.total_plays -%} {% set avemin = ((avetime % 3600) / 60) | int -%}
-                {% set avehrs = ((avetime) / 3600) | int -%}
-              {% else -%}
-                {% set avetime = 0 -%}{% set avemin = 0 -%}{% set avehrs = 0 -%}
-              {% endif -%}
-              <tr>
-              <td>{{ row.query_days }}D</td>
-              <td>{{ row.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{'%02d' % avehrs}}:{{'%02d' % avemin}}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod: null
+        style:
+          fold-entity-row$: |
+            ha-icon {
+              color: rgb(var(--rgb-disabled-color));
+              margin-right: 24px;
+            }
+          hui-section-row $: |
+            .divider { display: none; }
+          .: |
+            .card-content {
+              padding: 0;
+            }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Watch Stats - Movies
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_watch_stats_movies
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: "#"
+                    data: data
+                    modify: x.query_days + "D"
+                    align: center
+                  - name: Plays
+                    data: data
+                    modify: x.total_plays
+                    align: center
+                  - name: Duration
+                    data: data
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_time);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Average
+                    data: data
+                    align: center
+                    modify: |-
+                      {
+                        var time = Number(x.total_time);
+                        var playcnt = Number(x.total_plays);
+                        var uptime = time / playcnt;
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        if (playcnt == 0) {
+                          "00:00"
+                        } else {
+                          hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                        }
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Recently Added - TV Shows</summary>
+      - type: entities
+        card_mod:
+          style:
+            fold-entity-row$: |
+              ha-icon {
+                color: rgb(var(--rgb-disabled-color));
+                margin-right: 24px;
+              }
+            hui-section-row $: |
+              .divider { display: none; }
+            .: |
+              .card-content {
+                padding: 0;
+              }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Recently Added - TV Shows
+              secondary: >
+                {{state_attr('sensor.plex_recently_added', 'data')[1].title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_recently_added
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  tbody tr td:nth-child(1): "width: 20%;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: test
+                    data: data
+                    modify: x.title
+                    hidden: true
+                  - name: Date
+                    data: data
+                    modify: |-
+                      {
+                        var date = new Date(x.airdate);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                      }
+                  - name: Detail
+                    data: data
+                    modify: '{ x.title + "<br/><span>" + x.number + ", " + x.episode + "</span>" }'
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <table width="100%">
-              <tr>
-              <th>Date</th>
-              <th>Detail</th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_recently_added', 'data') %}
-              {%- if item.flag | default('', true) %}
-              {%- if item.airdate | default('', true) %}
-              {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
-              <tr>
-              <td>{{ airdate }}</td>
-              <td>{{item.title}}<br/>
-                <span>{{item.number}}, {{item.episode}}</span></td>
-              </tr>
-              {%- endif %}{%endif%}{% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod:
+          style:
+            fold-entity-row$: |
+              ha-icon {
+                color: rgb(var(--rgb-disabled-color));
+                margin-right: 24px;
+              }
+            hui-section-row $: |
+              .divider { display: none; }
+            .: |
+              .card-content {
+                padding: 0;
+              }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Recently Added - Movies
+              secondary: >
+                {{state_attr('sensor.plex_recently_added_movies', 'data')[1].title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_recently_added_movies
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  tbody tr td:nth-child(1): "width: 25%;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: test
+                    data: data
+                    modify: x.title
+                    hidden: true
+                  - name: Date
+                    data: data
+                    modify: |-
+                      {
+                        var date = new Date(x.airdate);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0')) + "/" + date.getFullYear()
+                      }
+                  - name: Detail
+                    data: data
+                    modify: x.title
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Recently Added - Movies</summary>
-              <table width="100%">
-              <tr>
-              <th>Date</th>
-              <th>Detail</th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_recently_added_movies', 'data') %}
-              {%- if item.flag | default('', true) %}
-              {%- if item.airdate | default('', true) %}
-              {%- set airdate = as_timestamp(item.airdate) | timestamp_custom('%a %b %d') %}
-              <tr>
-              <td>{{ airdate }}</td>
-              <td>{{item.title}}<br/></td>
-              </tr>
-              {%- endif %}{%endif%}{% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod:
+          style:
+            fold-entity-row$: |
+              ha-icon {
+                color: rgb(var(--rgb-disabled-color));
+                margin-right: 24px;
+              }
+            hui-section-row $: |
+              .divider { display: none; }
+            .: |
+              .card-content {
+                padding: 0;
+              }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Top TV - Last 30 Days
+              secondary: >
+                {{state_attr('sensor.plex_tautulli_toptv_30days', 'rows')[0].title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_toptv_30days
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: Detail
+                    data: rows
+                    modify: x.title
+                  - name: Plays
+                    data: rows
+                    align: center
+                    modify: x.total_plays
+                  - name: Length
+                    data: rows
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_duration);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Date
+                    data: rows
+                    modify: |-
+                      {
+                        var date = new Date(x.last_play*1000);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Top TV - Last 30 Days</summary>
-              <table width="100%">
-              <tr>
-              <th>Show</th>
-              <th>Total Plays</th>
-              <th>Watch Length</th>
-              <th>Last Play</th>
-              <th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_tautulli_toptv_30days', 'rows') %}
-              {%- set uptime = item.total_duration | int -%}
-              {%- set minutes = ((uptime % 3600) / 60) | int -%}
-              {%- set hours = ((uptime) / 3600) | int -%}
-              {%- set days = (uptime / 86400) | int -%}
-              <tr>
-              <td>{{ item.title }}</td>
-              <td>{{ item.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod:
+          style:
+            fold-entity-row$: |
+              ha-icon {
+                color: rgb(var(--rgb-disabled-color));
+                margin-right: 24px;
+              }
+            hui-section-row $: |
+              .divider { display: none; }
+            .: |
+              .card-content {
+                padding: 0;
+              }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Top TV - By Duration
+              secondary: >
+                {{state_attr('sensor.plex_tautulli_toptv', 'rows')[0].title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_toptv
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: Detail
+                    data: rows
+                    modify: x.title
+                  - name: Plays
+                    data: rows
+                    align: center
+                    modify: x.total_plays
+                  - name: Length
+                    data: rows
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_duration);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Date
+                    data: rows
+                    modify: |-
+                      {
+                        var date = new Date(x.last_play*1000);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Top TV - By Duration</summary>
-              <table width="100%">
-              <tr>
-              <th>Show</th>
-              <th>Total Plays</th>
-              <th>Watch Length</th>
-              <th>Last Play</th>
-              <th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_tautulli_toptv', 'rows') %}
-              {%- set uptime = item.total_duration | int -%}
-              {%- set minutes = ((uptime % 3600) / 60) | int -%}
-              {%- set hours = ((uptime) / 3600) | int -%}
-              {%- set days = (uptime / 86400) | int -%}
-              <tr>
-              <td>{{ item.title }}</td>
-              <td>{{ item.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod:
+          style:
+            fold-entity-row$: |
+              ha-icon {
+                color: rgb(var(--rgb-disabled-color));
+                margin-right: 24px;
+              }
+            hui-section-row $: |
+              .divider { display: none; }
+            .: |
+              .card-content {
+                padding: 0;
+              }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Top TV - By Eps Watched
+              secondary: >
+                {{state_attr('sensor.plex_tautulli_toptv_plays', 'rows')[0].title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_toptv_plays
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: Detail
+                    data: rows
+                    modify: x.title
+                  - name: Plays
+                    data: rows
+                    align: center
+                    modify: x.total_plays
+                  - name: Length
+                    data: rows
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_duration);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Date
+                    data: rows
+                    modify: |-
+                      {
+                        var date = new Date(x.last_play*1000);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }
 
-              <details>
-              <summary>Plex Top TV - By Eps Watched</summary>
-              <table width="100%">
-              <tr>
-              <th>Show</th>
-              <th>Total Plays</th>
-              <th>Watch Length</th>
-              <th>Last Play</th>
-              <th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_tautulli_toptv_plays', 'rows') %}
-              {%- set uptime = item.total_duration | int -%}
-              {%- set minutes = ((uptime % 3600) / 60) | int -%}
-              {%- set hours = ((uptime) / 3600) | int -%}
-              {%- set days = (uptime / 86400) | int -%}
-              <tr>
-              <td>{{ item.title }}</td>
-              <td>{{ item.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
-
-              <details>
-              <summary>Plex Top Movies</summary>
-              <table width="100%">
-              <tr>
-              <th>Movie</th>
-              <th>Total Plays</th>
-              <th>Watch Length</th>
-              <th>Last Play</th>
-              <th>
-              </tr>
-              {%- for item in state_attr('sensor.plex_tautulli_topmovies', 'rows') %}
-              {%- set uptime = item.total_duration | int -%}
-              {%- set minutes = ((uptime % 3600) / 60) | int -%}
-              {%- set hours = ((uptime) / 3600) | int -%}
-              {%- set days = (uptime / 86400) | int -%}
-              <tr>
-              <td>{{ item.title }}</td>
-              <td>{{ item.total_plays }}</td>
-              <td>{{'%02d' % hours}}:{{'%02d' % minutes}}</td>
-              <td>{{ item.last_play|timestamp_custom ('%d/%m/%Y') }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-              </details>
+      - type: entities
+        card_mod:
+          style:
+            fold-entity-row$: |
+              ha-icon {
+                color: rgb(var(--rgb-disabled-color));
+                margin-right: 24px;
+              }
+            hui-section-row $: |
+              .divider { display: none; }
+            .: |
+              .card-content {
+                padding: 0;
+              }
+        entities:
+          - type: custom:fold-entity-row
+            head:
+              type: custom:mushroom-template-card
+              primary: Plex Top Movies
+              secondary: >
+                {{state_attr('sensor.plex_tautulli_topmovies', 'rows')[0].title }}
+              icon: mdi:plex
+              icon_color: orange
+              card_mod:
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
+            padding: 0
+            entities:
+              - type: custom:hui-element
+                card_type: custom:flex-table-card
+                entities:
+                  include: sensor.plex_tautulli_topmovies
+                css:
+                  table+: "border-collapse: collapse; padding: 0px;"
+                  span: "font-size: smaller"
+                strict: true
+                columns:
+                  - name: Detail
+                    data: rows
+                    modify: x.title
+                  - name: Plays
+                    data: rows
+                    align: center
+                    modify: x.total_plays
+                  - name: Length
+                    data: rows
+                    align: center
+                    modify: |-
+                      {
+                        var uptime = Number(x.total_duration);
+                        var minutes = Math.floor((uptime % 3600) / 60);
+                        var hours = Math.floor(((uptime) / 3600));
+                        hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
+                      }
+                  - name: Date
+                    data: rows
+                    modify: |-
+                      {
+                        var date = new Date(x.last_play*1000);
+                        String(date.getDate()).padStart(2,'0')+"/"+
+                        (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+date.getFullYear()
+                      }
+                card_mod:
+                  style: |
+                    ha-card {
+                      overflow: auto;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      padding-bottom: 20px
+                    }
+                    tbody tr:hover {
+                      background-color: coral !important
+                    }

@@ -35,11 +35,9 @@ entities:
           include: sensor.scoreboard_alm
         css:
           table+: "border-collapse: collapse; padding: 0px;"
-          tbody tr td:nth-child(2): "width: 10%;"
+          tbody tr td:nth-child(1): "width: 10%;"
+        sort_by: x.stats.find(y=>y.name == 'points').displayValue
         columns:
-          - name: "#"
-            data: entries
-            modify: x.stats[10].value
           - name: Logo
             data: entries
             modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
@@ -48,27 +46,27 @@ entities:
             modify: x.team.displayName
           - name: Pl
             data: entries
-            modify: x.stats[0].value
+            modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
           - name: W
             data: entries
-            modify: x.stats[6].value
+            modify: x.stats.find(y=>y.name == 'wins').displayValue
           - name: D
             data: entries
-            modify: x.stats[1].value
+            modify: x.stats.find(y=>y.name == 'ties').displayValue
           - name: L
             data: entries
-            modify: x.stats[5].value
+            modify: x.stats.find(y=>y.name == 'losses').displayValue
           - name: GD
             data: entries
             modify: |-
               {
-                x.stats[4].value +
+                x.stats.find(y=>y.name == 'pointsFor').displayValue +
                 ":" +
-                x.stats[3].value
+                x.stats.find(y=>y.name == 'pointsAgainst').displayValue
               }
           - name: Pts
             data: entries
-            modify: x.stats[2].value
+            modify: x.stats.find(y=>y.name == 'points').displayValue
         card_mod:
           style: |
             ha-card {

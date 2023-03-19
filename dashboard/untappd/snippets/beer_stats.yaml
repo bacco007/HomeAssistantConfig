@@ -5,3 +5,6 @@ cards:
   - !include highestrankedbeers.yaml
   - !include lowestabvbeers.yaml
   - !include highestabvbeers.yaml
+  - !include checkin_abv.yaml
+  - !include checkin_byyear.yaml
+  - !include checkin_rank.yaml

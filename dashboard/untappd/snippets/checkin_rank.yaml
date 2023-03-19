@@ -1,0 +1,70 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    hui-section-row $: |
+      .divider { display: none; }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      primary: Check-In Stats - Ranking
+      icon: mdi:beer
+      icon_color: orange
+      card_mod:
+        style: |
+          ha-card {
+            background: none;
+            border: 0;
+            box-shadow: none;
+          }
+    padding: 0
+    entities:
+      - type: custom:hui-element
+        card_type: custom:config-template-card
+        entities:
+          - sensor.untappd_stats_by_beerrating
+        variables:
+          maxval: states['sensor.untappd_stats_by_beerrating'].attributes.max
+        card:
+          type: entities
+          entities:
+            - type: custom:auto-entities
+              card:
+                type: custom:bar-card
+                columns: 2
+                entity_row: true
+                height: 20px
+                min: 0
+                max: ${maxval}
+                color: var(--label-badge-red)
+                unit_of_measurement: " "
+                positions:
+                  icon: "off"
+                  indicator: "off"
+                  name: inside
+                  value: inside
+              filter:
+                template: |-
+                  {% set SENSOR = 'sensor.untappd_stats_by_beerrating' -%}
+                  {%- for attr in states[SENSOR].attributes -%}
+                    {%- set ATTR_VALUE = states[SENSOR].attributes[attr] -%}
+                    {%- if is_number(ATTR_VALUE) and attr != "count" and attr != "max" -%}
+                    {{
+                      {
+                        'entity': SENSOR,
+                        'attribute': attr,
+                        'name': attr
+                      }
+                    }},
+                    {%- endif -%}
+                  {%- endfor %}

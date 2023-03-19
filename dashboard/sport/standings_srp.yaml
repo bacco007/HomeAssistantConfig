@@ -35,11 +35,9 @@ entities:
           include: sensor.scoreboard_srp
         css:
           table+: "border-collapse: collapse; padding: 0px;"
-          tbody tr td:nth-child(2): "width: 10%;"
+          tbody tr td:nth-child(1): "width: 10%;"
+        sort_by: x.stats.find(y=>y.name == 'rank').displayValue
         columns:
-          - name: "#"
-            data: entries
-            modify: x.stats[22].value
           - name: Logo
             data: entries
             modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
@@ -48,33 +46,33 @@ entities:
             modify: x.team.name
           - name: Pl
             data: entries
-            modify: x.stats[7].value
+            modify: x.stats.find(y=>y.name == 'gamesPlayed').displayValue
           - name: W
             data: entries
-            modify: x.stats[17].value
+            modify: x.stats.find(y=>y.name == 'gamesWon').displayValue
           - name: D
             data: entries
-            modify: x.stats[15].value
+            modify: x.stats.find(y=>y.name == 'gamesDrawn').displayValue
           - name: L
             data: entries
-            modify: x.stats[9].value
+            modify: x.stats.find(y=>y.name == 'gamesLost').displayValue
           - name: B
             data: entries
-            modify: x.stats[19].value
+            modify: x.stats.find(y=>y.name == 'gamesBye').displayValue
           - name: GD
             data: entries
             modify: |-
               {
-                x.stats[13].value +
+                x.stats.find(y=>y.name == 'pointsFor').displayValue +
                 ":" +
-                x.stats[12].value
+                x.stats.find(y=>y.name == 'pointsAgainst').displayValue
               }
           - name: BP
             data: entries
-            modify: x.stats[18].value
+            modify: x.stats.find(y=>y.name == 'bonusPoints').displayValue
           - name: Pts
             data: entries
-            modify: x.stats[11].value
+            modify: x.stats.find(y=>y.name == 'points').displayValue
         card_mod:
           style: |
             ha-card {
