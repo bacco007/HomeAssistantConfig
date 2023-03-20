@@ -252,16 +252,6 @@ card:
                 --chip-background: rgba(var(--rgb-green), 0.2);
               }
         - type: template
-          icon: mdi:shield-home
-          icon_color: purple
-          tap_action:
-            action: none
-          card_mod:
-            style: |
-              ha-card {
-                --chip-background: rgba(var(--rgb-purple), 0.2);
-              }
-        - type: template
           icon: mdi:home-assistant
           icon_color: teal
           tap_action:
@@ -312,6 +302,26 @@ card:
               }
         - type: template
           icon: mdi:cog
+        - type: action
+          icon_color: white
+          icon: mdi:magnify
+          tap_action:
+            action: call-service
+            service: browser_mod.popup
+            target: {}
+            data:
+              content:
+                type: custom:search-card
+                max_results: 20
+                actions:
+                  - matches: ^toggle (.+\..+)
+                    name: Toggle {1}
+                    service: homeassistant.toggle
+                    service_data: null
+                    entity_id:
+                      "1": null
+              dismissable: true
+              autoclose: false
         - type: entity
           entity: person.thomas_baxter
           content_info: none

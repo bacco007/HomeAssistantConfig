@@ -19,6 +19,7 @@ views:
   - !include mobile/untappd.yaml
   - !include mobile/weather.yaml
   - !include mobile/docker.yaml
+  - !include mobile/test.yaml
 
   # - !include mobile/snippets/footer.yaml
   # - type: custom:button-card

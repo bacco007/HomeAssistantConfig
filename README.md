@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Monday, March 20th 2023_
+_Stats as at 05:00, Tuesday, March 21st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.5 | 462     | 3697         | 2552 | 101 |
+| 2023.3.5 | 460     | 3714         | 2552 | 101 |
 
 Type | Qty
 -- | --
@@ -379,7 +379,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.adguard](https://www.home-assistant.io/components/sensor.adguard) |
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
-| [sensor.astroweather](https://www.home-assistant.io/components/sensor.astroweather) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
@@ -559,7 +558,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [water_heater.smartthinq_sensors](https://www.home-assistant.io/components/water_heater.smartthinq_sensors) |
 | [waze_travel_time](https://www.home-assistant.io/components/waze_travel_time) |
 | [weather](https://www.home-assistant.io/components/weather) |
-| [weather.astroweather](https://www.home-assistant.io/components/weather.astroweather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.template](https://www.home-assistant.io/components/weather.template) |

@@ -23,3 +23,10 @@ cards:
 #     icon: mdi:reload-alert
 #     icon_color: red
 # alignment: end
+card_mod:
+  style: |
+    :host {
+      /* Make the media player sticky at the bottom of the page */
+      position: sticky;
+      bottom: 12px;
+    }
