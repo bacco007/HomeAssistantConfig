@@ -5,21 +5,19 @@ from __future__ import annotations
 import logging
 from typing import Final
 
-
 from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
                                              SensorEntityDescription)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (ATTR_IDENTIFIERS, ATTR_MANUFACTURER,
                                  ATTR_MODEL, ATTR_NAME, ENERGY_KILO_WATT_HOUR,
-                                 ENERGY_WATT_HOUR, POWER_WATT)
+                                 ENERGY_WATT_HOUR)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import DOMAIN
-from .const import ATTR_ENTRY_TYPE
+from .const import DOMAIN, ATTR_ENTRY_TYPE
 from .coordinator import SolcastUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -147,7 +145,7 @@ async def async_setup_entry(
     entities = []
 
     for sensor_types in SENSORS:
-        sen = SolcastSensor(coordinator, SENSORS[sensor_types],entry)
+        sen = SolcastSensor(coordinator, SENSORS[sensor_types],entry, coordinator._version)
         entities.append(sen)
 
     for site in coordinator.solcast._sites:
@@ -159,8 +157,19 @@ async def async_setup_entry(
                 native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
                 entity_category=EntityCategory.CONFIG,
             )
-        sen = RooftopSensor(coordinator, k,entry)
+        sen = RooftopSensor(coordinator, k,entry, coordinator._version)
         entities.append(sen)
+
+    k = SensorEntityDescription(
+            key="solcast_has_update",
+            name="Integration Update",
+            icon="mdi:update",
+            #device_class=SensorDeviceClass.ENERGY,
+            #native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+            entity_category=EntityCategory.CONFIG,
+        )
+    # sen = SolcastUpdate(coordinator, k,entry, coordinator._version)
+    # entities.append(sen)
     
     async_add_entities(entities)
 
@@ -173,6 +182,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         coordinator: SolcastUpdateCoordinator,
         entity_description: SensorEntityDescription,
         entry: ConfigEntry,
+        version: str,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -195,7 +205,7 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
             ATTR_MANUFACTURER: "Oziee",
             ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
-            #"sw_version": version,
+            "sw_version": version,
             "configuration_url": "https://toolkit.solcast.com.au/live-forecast",
             #"configuration_url": f"https://toolkit.solcast.com.au/rooftop-sites/{entry.options[CONF_RESOURCE_ID]}/detail",
             #"hw_version": entry.options[CONF_RESOURCE_ID],
@@ -246,8 +256,6 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         """Handle updated data from the coordinator."""
         self._sensor_data = self.coordinator.get_sensor_value(self.entity_description.key)
         self.async_write_ha_state()
-
-
 class RooftopSensor(CoordinatorEntity, SensorEntity):
     """Representation of a Seplos Sensor device."""
 
@@ -257,6 +265,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
         coordinator: SolcastUpdateCoordinator,
         entity_description: SensorEntityDescription,
         entry: ConfigEntry,
+        version: str,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -279,7 +288,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             ATTR_MANUFACTURER: "Oziee",
             ATTR_MODEL: "Solcast PV Forecast",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
-            #"sw_version": version,
+            "sw_version": version,
             "configuration_url": "https://toolkit.solcast.com.au/live-forecast",
             #"configuration_url": f"https://toolkit.solcast.com.au/rooftop-sites/{entry.options[CONF_RESOURCE_ID]}/detail",
             #"hw_version": entry.options[CONF_RESOURCE_ID],

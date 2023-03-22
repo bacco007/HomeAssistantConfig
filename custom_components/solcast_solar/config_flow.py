@@ -9,7 +9,7 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import DOMAIN, CONST_DISABLEAUTOPOLL
+from .const import CONST_DISABLEAUTOPOLL, DOMAIN
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):

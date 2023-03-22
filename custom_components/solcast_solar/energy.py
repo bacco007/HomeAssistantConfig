@@ -1,13 +1,13 @@
 """Energy platform."""
 from __future__ import annotations
+
+import logging
 from collections import OrderedDict
 
 from homeassistant.core import HomeAssistant
 
 from . import SolcastUpdateCoordinator
 from .const import DOMAIN
-
-import logging
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,16 +21,16 @@ async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str):
         return None
         
     d = coordinator.get_energy_tab_data()
+    c ={}
     
     try:
-        e = coordinator._previousenergy
-        e.update(d['wh_hours'])
-        e = OrderedDict(sorted(e.items()))
-        d = {"wh_hours": e}
-        #d['wh_hours'].update(e)
+        c.update(coordinator._previousenergy)
+        c.update(d['wh_hours'])
+        c = OrderedDict(sorted(c.items()))
+        c = {"wh_hours": c}
     except Exception as e:
-        _LOGGER.warn(e)
+        _LOGGER.warn(f"SOLCAST - async_get_solar_forecast {e}")
         k={}
-        d = {"wh_hours": k}
+        c = {"wh_hours": k}
         
-    return d 
+    return c 

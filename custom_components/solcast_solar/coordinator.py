@@ -3,16 +3,15 @@ from __future__ import annotations
 
 import logging
 import traceback
+from contextlib import suppress
 from datetime import timedelta
 
 import async_timeout
 import homeassistant.util.dt as dt_util
 from homeassistant.components.recorder import get_instance, history
-from contextlib import suppress
-from homeassistant.exceptions import HomeAssistantError
-
-from homeassistant.const import SUN_EVENT_SUNSET, MAJOR_VERSION, MINOR_VERSION
+from homeassistant.const import MAJOR_VERSION, MINOR_VERSION, SUN_EVENT_SUNSET
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.event import async_track_utc_time_change
 from homeassistant.helpers.sun import (get_astral_location,
                                        get_location_astral_event_next)
@@ -27,14 +26,17 @@ _LOGGER = logging.getLogger(__name__)
 class SolcastUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from Solcast Solar API."""
 
-    def __init__(self, hass: HomeAssistant, solcast: SolcastApi) -> None:
+    def __init__(self, hass: HomeAssistant, solcast: SolcastApi, autopolling: bool) -> None:
         """Initialize."""
         self.solcast = solcast
         self._hass = hass
+        #self.config_entry
         self._auto_fetch_tracker = None
         self._starthour = 6
         self._finishhour = 19
         self._previousenergy = None
+        self._autopollingdisabled = autopolling
+        self._version = ""
 
         self._v = f"{MAJOR_VERSION}.{MINOR_VERSION}"
 
@@ -47,6 +49,11 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via library."""
+        if self._autopollingdisabled:
+            _LOGGER.debug("coordinator _async_update_data stopped because autopolling is disabled")
+            _LOGGER.debug("The log will now show the coordinator default debug message 'Finished fetching solcast_solar data in 0.000 seconds (success: True)', but the api was NOT polled.. i repeat NOT POLLED!!")
+            return self.solcast._data
+        
         async with async_timeout.timeout(60):
             try:
                 await self.update_forecast()
@@ -56,36 +63,36 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def reset_api_counter(self, *args):
         try:
+            _LOGGER.debug("SOLCAST - resetting api counter")
             await self.solcast.reset_api_counter()
-            _LOGGER.debug("SOLCAST: api counter was reset")
         except Exception as error:
-            _LOGGER.error("Solcast - Error resetting API counter")
+            _LOGGER.error("SOLCAST - Error resetting API counter")
             
     async def reset_past_data(self, *args):
         try:
             await get_instance(self._hass).async_add_executor_job(self.gethistory)
-            _LOGGER.debug("SOLCAST: got past data")
         except Exception as error:
-            _LOGGER.error("Solcast - Error resetting past data")
+            _LOGGER.error("SOLCAST - reset_past_data: Error resetting past data")
 
-    async def setup(self, autopolldisabled=False):
+    async def setup(self):
         try:
             await get_instance(self._hass).async_add_executor_job(self.gethistory)
-            if autopolldisabled:
-                _LOGGER.debug("Solcast - Auto poll the solcast API for data is disabled. You must manually setup a call to the service to get new data")
+            if self._autopollingdisabled:
+                _LOGGER.info("SOLCAST - Auto poll the solcast API for data is disabled.")
+                _LOGGER.debug("SOLCAST - You must manually setup a call to the service to get new data")
             else:
-                _LOGGER.debug("Solcast - Registering HA to auto poll the solcast API for data")
+                _LOGGER.debug("SOLCAST - Registering HA to auto poll the solcast API for data")
                 await self.setup_auto_fetch()
 
             async_track_utc_time_change(self._hass, self.reset_api_counter, hour=0, minute=0, second=10, local=False)
             async_track_utc_time_change(self._hass, self.reset_past_data, hour=0, minute=10, second=15, local=True)
             async_track_utc_time_change(self._hass, self.update_integration_listeners, minute=0, second=15, local=True)
         except Exception as error:
-            _LOGGER.error("Solcast - Error coordinator setup: %s", traceback.format_exc())
+            _LOGGER.error("SOLCAST - Error coordinator setup: %s", traceback.format_exc())
 
     async def setup_auto_fetch(self):
         try:
-            _LOGGER.debug("Solcast - Registering API auto fetching hourly between sun up and sun set")
+            _LOGGER.debug("SOLCAST - Registering API auto fetching hourly between sun up and sun set")
             location, elevation = get_astral_location(self._hass)
             next_setting = get_location_astral_event_next(
                 location, elevation, SUN_EVENT_SUNSET, dt_util.utcnow()
@@ -95,25 +102,25 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             
             self._auto_fetch_tracker = async_track_utc_time_change(self._hass, self.update_forecast, minute=10, second=10, local=True)
 
-            _LOGGER.debug("Solcast - API will only connect between the hours %s and %s and at midnight",self._starthour,self._finishhour)
+            _LOGGER.debug("SOLCAST - API will only connect between the hours %s and %s and at midnight",self._starthour,self._finishhour)
 
         except Exception:
-            _LOGGER.error("Solcast - setup_auto_fetch: %s", traceback.format_exc())
+            _LOGGER.error("SOLCAST - setup_auto_fetch: %s", traceback.format_exc())
 
 
     async def update_integration_listeners(self,*args):
         try:
-            _LOGGER.debug("SOLCAST: updating listerners")
+            _LOGGER.debug("SOLCAST - updating sensors")
             self.async_update_listeners()
         except Exception:
-            _LOGGER.error("Solcast - update_integration_listeners: %s", traceback.format_exc())
+            _LOGGER.error("SOLCAST - update_integration_listeners: %s", traceback.format_exc())
 
 
     async def update_forecast(self,*args):
         """Update forecast state."""
 
         try:
-            _LOGGER.debug("SOLCAST: begin code for updating forcast")
+            #_LOGGER.info("SOLCAST: Update forcast data called. Is the time is right")
             last_update = self.solcast.get_last_updated_datetime() 
             date_now = dt_util.now() - timedelta(seconds=3500)
             if last_update < date_now:
@@ -121,7 +128,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 date_now = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
                 if last_update < date_now:
                     #more than a day since uopdate
-                    _LOGGER.debug("SOLCAST: been longer than a day so forcing an api call to update data")
+                    _LOGGER.debug("SOLCAST - Longer than a day since last update. Updating forecast and actual data.")
                     await self.solcast.force_api_poll(True)
                 else:
                     #sometime today.. 
@@ -129,40 +136,44 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                     if _hournow == 0 or _hournow == self._starthour or _hournow == self._finishhour:
                         #if midnight, or sunrise hour or sunset set run it
                         if  _hournow == self._finishhour:
-                            _LOGGER.debug("SOLCAST: its start or finish hour, update api data call")
+                            _LOGGER.debug("SOLCAST - its finish hour, update forecast and actual data")
                             await self.solcast.force_api_poll(True)
                         else:
-                            _LOGGER.debug("SOLCAST: its midnight force and update api data call")
+                            _LOGGER.debug("SOLCAST - its midnight - update api data call")
                             await self.solcast.force_api_poll(False)
                     elif (_hournow > self._starthour and _hournow < self._finishhour):
                         #else its between sun rise and set
-                        _LOGGER.debug("SOLCAST: between sun rise/set code test un forcast_update")
+                        _LOGGER.debug("SOLCAST - between sun rise/set. Calling forcast_update")
                         if self.solcast._sites:
                             #if we have sites to even poll
                             #if _hournow % 3 == 0: 
                             if _hournow == 12: 
-                                _LOGGER.debug("SOLCAST: calling the update data code to include past data")
+                                _LOGGER.debug("SOLCAST - The call for forecast and actual")
                                 await self.solcast.force_api_poll(True) #also do the actual past values
                             else:
-                                _LOGGER.debug("SOLCAST: calliung the update data code but not include past data")
+                                _LOGGER.debug("SOLCAST - The call for forecast only")
                                 await self.solcast.force_api_poll(False) #just update forecast values
                                 
             else:
-                _LOGGER.debug("Solcast - API poll called, but did not happen as the last update is less than an hour old")
+                _LOGGER.debug("SOLCAST - API poll called, but did not happen as the last update is less than an hour old")
             
-            self.update_integration_listeners()
+            await self.update_integration_listeners()
 
         except Exception:
-            _LOGGER.error("update_forecast: %s", traceback.format_exc())
+            _LOGGER.error("SOLCAST - update_forecast: %s", traceback.format_exc())
 
     async def service_event_update(self, *args):
-        _LOGGER.debug("Solcast - Event called to force an update of data from Solcast API")
+        _LOGGER.debug("SOLCAST - Event called to force an update of data from Solcast API")
         await self.solcast.force_api_poll()
-        #self.async_set_updated_data(True)
-        self.update_integration_listeners()
+        await self.update_integration_listeners()
+
+    async def service_event_update_actuals(self, *args):
+        _LOGGER.debug("SOLCAST - Event called to force an update of data from Solcast API")
+        await self.solcast.force_api_poll(True)
+        await self.update_integration_listeners()
 
     async def service_event_delete_old_solcast_json_file(self, *args):
-        _LOGGER.debug("Solcast - Event called to delete the solcast.json file")
+        _LOGGER.debug("SOLCAST - Event called to delete the solcast.json file. The data will poll the Solcast API refresh")
         await self.solcast.delete_solcast_file()
 
     def get_energy_tab_data(self):
@@ -234,11 +245,12 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         try:
             start_date = dt_util.now().astimezone().replace(hour=0,minute=0,second=0,microsecond=0) - timedelta(days=7)
             end_date = dt_util.now().astimezone().replace(hour=23,minute=59,second=59,microsecond=0) - timedelta(days=1)
+            _LOGGER.debug(f"SOLCAST - gethistory: from- {start_date} to- {end_date}")
 
             lower_entity_id = "sensor.solcast_forecast_this_hour"
             history_list = history.state_changes_during_period(
                 self._hass,
-                dt_util.as_utc(start_date),
+                start_time=dt_util.as_utc(start_date),
                 end_time=dt_util.as_utc(end_date),
                 entity_id=lower_entity_id,
                 no_attributes=True,
@@ -250,12 +262,12 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
                 # filter out all None, NaN and "unknown" states
                 # only keep real values
                 with suppress(ValueError):
-                    d[state.last_updated.replace(minute=0,second=0,microsecond=0).isoformat()] = float(state.state)
-            
-            _LOGGER.debug(f"SOLCAST: gethistory got {len(d)} items")
+                    d[state.last_updated.replace(minute=0,second=0,microsecond=0).astimezone().isoformat()] = float(state.state)
+
+            _LOGGER.debug(f"SOLCAST - gethistory got {len(d)} items")
             self._previousenergy = d
         except Exception:
-            _LOGGER.error("Solcast - gethistory: %s", traceback.format_exc())
+            _LOGGER.error("SOLCAST - gethistory: %s", traceback.format_exc())
         
 
 

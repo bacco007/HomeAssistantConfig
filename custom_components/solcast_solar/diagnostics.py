@@ -25,4 +25,5 @@ async def async_get_config_entry_diagnostics(
     return {
         "info": async_redact_data(config_entry.options, TO_REDACT),
         "data": async_redact_data(coordinator.data, TO_REDACT),
+        "past_forecasts": async_redact_data(coordinator._previousenergy, TO_REDACT),
     }
