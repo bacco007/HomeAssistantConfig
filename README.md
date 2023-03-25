@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, March 25th 2023_
+_Stats as at 05:00, Sunday, March 26th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.6 | 457     | 3946         | 2558 | 101 |
+| 2023.3.6 | 462     | 3667         | 2542 | 101 |
 
 Type | Qty
 -- | --
@@ -82,7 +82,7 @@ Alert | 0
 Automation | 101
 Binary Sensor | 173
 Camera | 5
-Device Tracker | 51
+Device Tracker | 69
 Group | 1
 Input Boolean | 14
 Input Datetime | 3
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2558
+Sensor | 2542
 Sun | 1
-Switch | 157
+Switch | 146
 Weather | 7
 Zone | 3
 
@@ -217,6 +217,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.mqtt](https://www.home-assistant.io/components/device_tracker.mqtt) |
 | [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
+| [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
@@ -461,6 +462,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.thermal_comfort](https://www.home-assistant.io/components/sensor.thermal_comfort) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
+| [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.upnp](https://www.home-assistant.io/components/sensor.upnp) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -512,6 +515,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.spook](https://www.home-assistant.io/components/switch.spook) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
+| [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
 | [switch.zha](https://www.home-assistant.io/components/switch.zha) |
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
 | [system_health](https://www.home-assistant.io/components/system_health) |
@@ -541,6 +545,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.myjdownloader](https://www.home-assistant.io/components/update.myjdownloader) |
 | [update.sensibo](https://www.home-assistant.io/components/update.sensibo) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
+| [update.unifi](https://www.home-assistant.io/components/update.unifi) |
 | [upnp](https://www.home-assistant.io/components/upnp) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
 | [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
@@ -626,6 +631,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Team Tracker](https://github.com/vasqued2/ha-teamtracker)
 - [Thermal Comfort](https://github.com/dolezsa/thermal_comfort/blob/master/README.md)
 - [Trakt](https://github.com/dylandoamaral/trakt-integration)
+- [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [Uptime Kuma](https://github.com/meichthys/uptime_kuma/blob/main/README.md)
 - [Watchman](https://github.com/dummylabs/thewatchman)
