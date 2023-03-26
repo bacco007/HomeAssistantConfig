@@ -1,77 +1,105 @@
 ---
-type: custom:config-template-card
-variables:
-  - states['sensor.count_all_entities_9'].state
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    hui-section-row $: |
+      .divider { display: none; }
+    .: |
+      .card-content {
+        padding: 0;
+      }
 entities:
-  - sensor.count_all_entities_9
-card:
-  type: custom:auto-entities
-  card:
-    type: entities
-    style: |
-      ha-card {
-        background-color: var(--dwains-theme-primary);
-        box-shadow: none;
-      }
-      .card-header {
-        padding: 5px 16px 10px;
-        font-size: 18px;
-        font-weight: 700 !important;
-      }
-  sort:
-    method: state
-    reverse: true
-    numeric: true
-  filter:
-    exclude:
-      - entity_id: sensor.count_all_components
-      - entity_id: sensor.count_all_entities_9
-      - entity_id: sensor.count_yaml_lines
-      - entity_id: sensor.count_yaml_files
-    include:
-      - entity_id: sensor.count_*
-        options:
-          type: custom:bar-card
-          style: |
-            ha-icon {
-              color: var(--dwains-theme-accent) !important;
-            }
-            ha-icon	 {
-              margin-top: -7px;
-              padding-right: 5px;
-            }
-            bar-card-indicator	 {
-              margin-top: -12px;
-              padding-right: 5px;
-            }
-            bar-card-name	 {
-              margin-top: -4.5px;
-              padding-left: 5px;
-            }
-            bar-card-backgroundbar	 {
-              margin-top: -3.5px;
-              # border-radius: 2.5px;
-            }
-            bar-card-currentbar	 {
-              margin-top: -3.5px;
-              # border-radius: 2.5px;
-            }
-            bar-card-targetbar	 {
-              margin-top: -3.5px;
-              # border-radius: 2.5px;
-            }
-            bar-card-targetmarker	 {
-              margin-top: -3.5px;
-              # border-radius: 2.5px;
-            }
-            bar-card-value	 {
-              margin-top: -4.5px;
-              padding-left: 5px;
-            }
-          positions:
-            title: inside
-            value: inside
-          entity_row: true
-          min: 0
-          max: "${vars[0]}"
-          color: rgb(26,204,147,0.33)
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      primary: Entity Counter
+      icon: mdi:home-assistant
+      icon_color: blue
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none !important;
+          }
+    padding: 0
+    entities:
+      - type: custom:config-template-card
+        variables:
+          - states['sensor.count_all_entities_9'].state
+        entities:
+          - sensor.count_all_entities_9
+        card:
+          type: custom:auto-entities
+          card:
+            type: entities
+            style: |
+              ha-card {
+                background-color: var(--dwains-theme-primary);
+                box-shadow: none;
+              }
+              .card-header {
+                padding: 5px 16px 10px;
+                font-size: 18px;
+                font-weight: 700 !important;
+              }
+          sort:
+            method: state
+            reverse: true
+            numeric: true
+          filter:
+            exclude:
+              - entity_id: sensor.count_all_components
+              - entity_id: sensor.count_all_entities_9
+              - entity_id: sensor.count_yaml_lines
+              - entity_id: sensor.count_yaml_files
+            include:
+              - entity_id: sensor.count_*
+                options:
+                  type: custom:bar-card
+                  style: |
+                    ha-icon {
+                      color: var(--dwains-theme-accent) !important;
+                    }
+                    ha-icon	 {
+                      margin-top: -7px;
+                      padding-right: 5px;
+                    }
+                    bar-card-indicator	 {
+                      margin-top: -12px;
+                      padding-right: 5px;
+                    }
+                    bar-card-name	 {
+                      margin-top: -4.5px;
+                      padding-left: 5px;
+                    }
+                    bar-card-backgroundbar	 {
+                      margin-top: -3.5px;
+                      # border-radius: 2.5px;
+                    }
+                    bar-card-currentbar	 {
+                      margin-top: -3.5px;
+                      # border-radius: 2.5px;
+                    }
+                    bar-card-targetbar	 {
+                      margin-top: -3.5px;
+                      # border-radius: 2.5px;
+                    }
+                    bar-card-targetmarker	 {
+                      margin-top: -3.5px;
+                      # border-radius: 2.5px;
+                    }
+                    bar-card-value	 {
+                      margin-top: -4.5px;
+                      padding-left: 5px;
+                    }
+                  positions:
+                    title: inside
+                    value: inside
+                  entity_row: true
+                  min: 0
+                  max: "${vars[0]}"
+                  color: rgb(26,204,147,0.33)

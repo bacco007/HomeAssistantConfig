@@ -1,0 +1,21 @@
+---
+trigger:
+  - platform: event
+    event_type:
+      - homeassistant_started
+      - homeassistant_stop
+sensor:
+  - name: ha_startstop
+    state: >
+      {% if trigger.event.event_type == 'homeassistant_started' %}
+        {{ iif(this.state|default('unknown') == 'shutdown', 'start', 'interrupt') }}
+      {% else %}
+        shutdown
+      {% endif %}
+    attributes:
+      history: >
+        {% set current = this.attributes.get('history', []) %}
+        {% set new = [{
+          "event": trigger.event.event_type[14:],
+          "time": now().isoformat() }] %}
+        {{ (new + current)[:10] }}

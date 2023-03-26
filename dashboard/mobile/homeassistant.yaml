@@ -117,6 +117,7 @@ cards:
                     - !include ../homeassistant/graph_dbsize.yaml
                     - !include ../homeassistant/graph_countyamlfiles.yaml
                     - !include ../homeassistant/graph_countyamllines.yaml
+                    - !include ../homeassistant/entity_count.yaml
               - attributes:
                   label: HACS
                   isMinWidthIndicator: true
@@ -155,6 +156,7 @@ cards:
           - !include ../homeassistant/graph_dbsize.yaml
           - !include ../homeassistant/graph_countyamlfiles.yaml
           - !include ../homeassistant/graph_countyamllines.yaml
+          - !include ../homeassistant/entity_count.yaml
 
   - type: custom:state-switch
     entity: mediaquery
