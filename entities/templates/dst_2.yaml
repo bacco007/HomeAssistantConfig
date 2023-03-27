@@ -1,0 +1,63 @@
+---
+binary_sensor:
+  - unique_id: dst_summertime
+    name: dst_summertime
+    state: >
+      {{now().timetuple().tm_isdst == 1}}
+
+  - unique_id: dst_normaltime
+    name: dst_normaltime
+    state: >
+      {{now().timetuple().tm_isdst == 0}}
+sensor:
+  - unique_id: dst_details_local
+    name: dst_details_local
+    device_class: timestamp
+    state: >
+      {%- set ns = namespace(previous=3,spring=none,fall=none) %}
+      {%- set today = strptime(states('sensor.date'),'%Y-%m-%d').astimezone().replace(hour=ns.previous) %}
+      {%- for i in range(365) %}
+      {%- set day = (today + timedelta(days=i)).astimezone() %}
+      {%- if ns.previous - day.hour == -1 %}
+      {%- set ns.spring = today + timedelta(days=i) %}
+      {%- elif ns.previous - day.hour == 1 %}
+      {%- set ns.fall = today + timedelta(days=i) %}
+      {%- endif %}
+      {%- set ns.previous = day.hour %}
+      {%- endfor %}
+      {{([ns.spring,ns.fall]|min).isoformat()}}
+    icon: >
+      mdi:{{(now().timetuple().tm_isdst == 1)|iif('update','history')}}
+    attributes:
+      icon_color: >
+        {{'gold' if now().timetuple().tm_isdst == 1 else 'steelblue'}}
+      dst_active: >
+        {{now().timetuple().tm_isdst == 1}}
+      dst_change_tomorrow: >
+        {%- set dt = now() + timedelta(days=1) %}
+        {{now().astimezone().tzinfo != dt.astimezone().tzinfo}}
+      dst_changed_today: >
+        {%- set dt = now() + timedelta(days=-1) %}
+        {{now().astimezone().tzinfo != dt.astimezone().tzinfo}}
+      next: >
+        {%- set ns = namespace(previous = 3,spring=none,fall=none) %}
+        {%- set today = strptime(states('sensor.date'),'%Y-%m-%d').astimezone().replace(hour=ns.previous) %}
+        {%- for i in range(365) %}
+        {%- set day = (today + timedelta(days=i)).astimezone() %}
+        {%- if ns.previous - day.hour == -1 %}
+        {%- set ns.spring = today + timedelta(days=i) %}
+        {%- elif ns.previous - day.hour == 1 %}
+        {%- set ns.fall = today + timedelta(days=i) %}
+        {%- endif %}
+        {%- set ns.previous = day.hour %}
+        {%- endfor %}
+
+        {%- set next = [ns.spring, ns.fall]|min %}
+        {%- set phrase = '+1 Hr' if next == ns.spring else '-1 Hr' %}
+        {%- set clock = 'forward' if next == ns.spring else 'backward' %}
+        {"nextDST": "{{ns.spring.isoformat()}}",
+         "nextEST": "{{ns.fall.isoformat()}}",
+         "nextEvent": "{{next.isoformat()}}",
+         "daysToNextEvent":{{(next-today).days}},
+         "phrase": "{{phrase}}",
+         "clock":"{{clock}}"}

@@ -20,3 +20,10 @@ cards:
       solar: sensor.daily_generation
     watt_threshold: 999
     dashboard_link: /energy
+
+
+type: custom:power-flow-card-plus
+entities:
+  grid:
+    entity:
+      consumption: sensor.daily_import_from_grid
