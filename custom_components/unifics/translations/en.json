@@ -1,0 +1,39 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Unifi Counter Sensor",
+        "description": "If you need help with the configuration have a look here: https://github.com/clyra/unifi-counter-sensor",
+        "data": {
+          "name": "Name",
+          "username": "Username",
+          "password": "Password",
+          "host": "Host",
+          "port": "Port",
+          "site": "site",
+          "verify_ssl": "Verify SSL Certificate",
+          "udm": "Is this a UDM device?"
+        }
+      }
+    },
+    "error": {
+        "auth": "Username/Password is wrong.",
+        "connection": "Connection refused. Check host and port.",
+        "unreachable": "Host unreachable. Check host.",
+        "ssl": "SSL problem. Check SSL option",
+        "unknow": "Unknow error. Check logs"
+      },
+    "abort": {
+      "single_instance_allowed": "Only a single instance is allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "data": {
+          "sensor": "Sensor enabled"
+        }
+      }
+    }
+  }
+}
