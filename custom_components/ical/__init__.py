@@ -109,7 +109,7 @@ class ICalEvents:
                     _LOGGER.debug("... and it has")
                     # strongly type class fix
                     events.append(
-                        CalendarEvent(event["start"], event["end"], event["summary"])
+                        CalendarEvent(event["start"], event["end"], event["summary"], event["description"], event["location"])
                     )
                     # events.append(event)
         return events
