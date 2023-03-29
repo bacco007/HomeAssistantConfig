@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, March 29th 2023_
+_Stats as at 05:00, Thursday, March 30th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.6 | 460     | 4038         | 2548 | 101 |
+| 2023.3.6 | 462     | 3748         | 2549 | 101 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2548
+Sensor | 2549
 Sun | 1
 Switch | 158
 Weather | 7
@@ -462,6 +462,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -534,6 +535,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [tts.cloud](https://www.home-assistant.io/components/tts.cloud) |
 | [tts.google_translate](https://www.home-assistant.io/components/tts.google_translate) |
 | [unifi](https://www.home-assistant.io/components/unifi) |
+| [unifics](https://www.home-assistant.io/components/unifics) |
 | [update](https://www.home-assistant.io/components/update) |
 | [update.esphome](https://www.home-assistant.io/components/update.esphome) |
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
@@ -629,6 +631,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Team Tracker](https://github.com/vasqued2/ha-teamtracker)
 - [Thermal Comfort](https://github.com/dolezsa/thermal_comfort/blob/master/README.md)
 - [Trakt](https://github.com/dylandoamaral/trakt-integration)
+- [Unifi Counter Sensor](https://www.home-assistant.io/integrations/unifics)
 - [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [Uptime Kuma](https://github.com/meichthys/uptime_kuma/blob/main/README.md)
