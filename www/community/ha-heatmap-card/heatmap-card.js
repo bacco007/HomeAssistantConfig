@@ -118,7 +118,7 @@ class HeatmapCard extends LitElement {
                     )}
                     </table>
                     ${this.render_legend()}
-                    <div id="tooltip" class="${this.tooltipOpen ? 'active' : 'hidden'}">${parseFloat(this.selected_val).toFixed(2)} ${this.meta.unit_of_measurement}</div>
+                    ${this.render_tooltip()}
                 </div>
             </ha-card>
         `;
@@ -158,6 +158,18 @@ class HeatmapCard extends LitElement {
                     )}
                 </div>
             </div>
+        `
+    }
+
+    render_tooltip() {
+        var content = html`${parseFloat(this.selected_val).toFixed(2)} ${this.meta.unit_of_measurement}`;
+        // selected_val is read via the data-val attribute in the DOM. The way it's set via Lit,
+        // null translates into ''.
+        if (this.selected_val === '') {
+            content = this.myhass.localize('ui.components.data-table.no-data'); // "No data"
+        }
+        return html`
+            <div id="tooltip" class="${this.tooltipOpen ? 'active' : 'hidden'}">${content}</div>
         `
     }
 
@@ -294,23 +306,44 @@ class HeatmapCard extends LitElement {
         return Math.min(...vals);
     }
 
+    // Todo: cleanup and comment.
     calculate_measurement_values(consumerData) {
         var grid = [];
         var gridTemp = [];
+        var prevDate = null;
+        var hour;
         for (const entry of consumerData) {
             const start = new Date(entry.start);
-            const hour = start.getHours();
-            if (hour === 0) {
-                const dateRep = start.toLocaleDateString(this.meta.language, {month: 'short', day: '2-digit'});
-                gridTemp = [];
+            hour = start.getHours();
+            const dateRep = start.toLocaleDateString(this.meta.language, {month: 'short', day: '2-digit'});
+
+            if (dateRep !== prevDate && prevDate !== null) {
+                gridTemp = Array(24).fill(null);
                 grid.push({'date': dateRep, 'nativeDate': start, 'vals': gridTemp});
             }
             gridTemp[hour] = entry.mean;
+            prevDate = dateRep;
         }
+        /*
+            For the last date in the series, remove any entries that we didn't get from
+            Home Assistant. This would typically be hours set in the future.
+        */
+        gridTemp.splice(hour + 1);
         return grid.reverse();
     }
 
     // Todo: cleanup and comment.
+    /*
+        Notable difference vs. calculate_measurement_values() - we fill missing values with 0 rather
+        than null. For measurement values, we want to highlight gaps. For total_increasing ones, gaps
+        are common with PV inverters, and it makes more sense to show this as 0 rather than potentially
+        a lot of gaps in the graph that are really zero values.
+
+        While this is something that the inverter integrations should be handling, it's an imperfect
+        world.
+
+        Will likely make this configurable at some point.
+    */
     calculate_increasing_values(consumerData) {
         var grid = [];
         var prev = null;
