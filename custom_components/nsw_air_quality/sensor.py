@@ -83,6 +83,6 @@ class NSWAQISensor(Entity):
 
         self._attributes["pm25"] = pm25
         self._attributes["pm10"] = pm10
-        self._attributes["state_class"] = measurement
+        self._attributes["state_class"] = 'measurement'
         self._attributes[ATTR_ATTRIBUTION] = "Data provided by NSW Dept of Environment"
         self._state = maxval
