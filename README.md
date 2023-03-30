@@ -69,18 +69,18 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Thursday, March 30th 2023_
+_Stats as at 05:00, Friday, March 31st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.3.6 | 462     | 3748         | 2549 | 101 |
+| 2023.4.0b0 | 461     | 3756         | 2590 | 101 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 101
-Binary Sensor | 174
+Binary Sensor | 177
 Camera | 5
 Device Tracker | 83
 Group | 1
@@ -92,9 +92,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2549
+Sensor | 2590
 Sun | 1
-Switch | 158
+Switch | 165
 Weather | 7
 Zone | 3
 
@@ -139,7 +139,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
-| [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
@@ -425,7 +424,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
-| [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
 | [sensor.openexchangerates](https://www.home-assistant.io/components/sensor.openexchangerates) |
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
@@ -452,6 +450,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
 | [sensor.statistics](https://www.home-assistant.io/components/sensor.statistics) |
+| [sensor.sun](https://www.home-assistant.io/components/sensor.sun) |
 | [sensor.sun2](https://www.home-assistant.io/components/sensor.sun2) |
 | [sensor.synology_dsm](https://www.home-assistant.io/components/sensor.synology_dsm) |
 | [sensor.systemmonitor](https://www.home-assistant.io/components/sensor.systemmonitor) |
@@ -462,8 +461,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifi_status](https://www.home-assistant.io/components/sensor.unifi_status) |
 | [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
-| [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.uptime_kuma](https://www.home-assistant.io/components/sensor.uptime_kuma) |
@@ -515,6 +514,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
 | [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
+| [switch.unifi_status](https://www.home-assistant.io/components/switch.unifi_status) |
 | [switch.zha](https://www.home-assistant.io/components/switch.zha) |
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
 | [system_health](https://www.home-assistant.io/components/system_health) |
@@ -546,7 +546,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.sensibo](https://www.home-assistant.io/components/update.sensibo) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
 | [update.unifi](https://www.home-assistant.io/components/update.unifi) |
-| [upnp](https://www.home-assistant.io/components/upnp) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
 | [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
 | [usb](https://www.home-assistant.io/components/usb) |
@@ -632,7 +631,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Thermal Comfort](https://github.com/dolezsa/thermal_comfort/blob/master/README.md)
 - [Trakt](https://github.com/dylandoamaral/trakt-integration)
 - [Unifi Counter Sensor](https://www.home-assistant.io/integrations/unifics)
-- [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
+- [UniFi Status](https://github.com/zvldz/unifi_status)
 - [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
 - [Uptime Kuma](https://github.com/meichthys/uptime_kuma/blob/main/README.md)
 - [Watchman](https://github.com/dummylabs/thewatchman)
