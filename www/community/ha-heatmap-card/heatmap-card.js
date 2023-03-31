@@ -68,7 +68,7 @@ class HeatmapCard extends LitElement {
             grid: [],
             meta: {},
             tooltipOpen: false,
-            selected_val: ''
+            selected_element_data: ''
         };
     }
 
@@ -94,14 +94,17 @@ class HeatmapCard extends LitElement {
             <ha-card header="${this.meta.title}" id="card">
                 <div class="card-content">
                     <table>
-                        <tr class="first">
-                            <th class="hm-row-title">${this.myhass.localize('ui.dialogs.helper_settings.input_datetime.date')}</th>
-                            ${this.date_table_headers()}
-                        </tr>
-                    ${this.grid.map((entry) => 
+                        <thead>
+                            <tr class="hr${this.myhass.locale.time_format}">
+                                <th class="hm-row-title">${this.myhass.localize('ui.dialogs.helper_settings.input_datetime.date')}</th>
+                                ${this.date_table_headers()}
+                            </tr>
+                        </thead>
+                        <tbody>
+                    ${this.grid.map((entry, row) =>
                         html`<tr>
                             <td class="hm-row-title">${entry.date}</td>
-                            ${entry.vals.map((util) => {
+                            ${entry.vals.map((util, idx) => {
                                 var css_class="hm-box";
                                 var r = util;
                                 if (r === null) { css_class += " null"; }
@@ -112,10 +115,11 @@ class HeatmapCard extends LitElement {
                                     if (r > 1) { r = 1 };
                                 }
                                 const col = this.meta.scale.gradient(r);
-                                return html`<td @click="${this.toggle_tooltip}" class="${css_class}" data-val="${util}" style="color: ${col}"></td>`
+                                return html`<td @click="${this.toggle_tooltip}" class="${css_class}" data-val="${util}" data-row="${row}" data-col="${idx}" style="color: ${col}"></td>`
                             })}
                         </tr>`
                     )}
+                        </tbody>
                     </table>
                     ${this.render_legend()}
                     ${this.render_tooltip()}
@@ -128,15 +132,15 @@ class HeatmapCard extends LitElement {
     date_table_headers() {
         if (this.myhass.locale.time_format === '12') {
             return html`
-                <th>12 PM</th><th>1 AM</th><th>2 AM</th><th>3 AM</th><th>4 AM</th><th>5 AM</th><th>6 AM</th><th>7 AM</th>
-                <th>8 AM</th><th>9 AM</th><th>10 AM</th><th>11 AM</th><th>12 AM</th><th>1 PM</th><th>2 PM</th><th>3 PM</th>
-                <th>4 PM</th><th>5 PM</th><th>6 PM</th><th>7 PM</th><th>8 PM</th><th>9 PM</th><th>10 PM</th><th>11 PM</th>
+                <th>12<br/>AM</th><th>·</th><th>·</th><th>·</th><th>4<br/>AM</th><th>·</th><th>·</th><th>·</th>
+                <th>8<br/>AM</th><th>·</th><th>·</th><th>·</th><th>12<br/>PM</th><th>·</th><th>·</th><th>·</th>
+                <th>4<br/>PM</th><th>·</th><th>·</th><th>·</th><th>8<br/>PM</th><th>·</th><th>·</th><th>11<br/>PM</th>
             `            
         } else {
             return html`
-                <th>00</th><th>01</th><th>02</th><th>03</th><th>04</th><th>05</th><th>06</th><th>07</th>
-                <th>08</th><th>09</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th>
-                <th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th>
+                <th>00</th><th>·</th><th>·</th><th>·</th><th>04</th><th>·</th><th>·</th><th>·</th>
+                <th>08</th><th>·</th><th>·</th><th>·</th><th>12</th><th>·</th><th>·</th><th>·</th>
+                <th>16</th><th>·</th><th>·</th><th>·</th><th>20</th><th>·</th><th>·</th><th>23</th>
             `
         }
     }
@@ -162,11 +166,27 @@ class HeatmapCard extends LitElement {
     }
 
     render_tooltip() {
-        var content = html`${parseFloat(this.selected_val).toFixed(2)} ${this.meta.unit_of_measurement}`;
-        // selected_val is read via the data-val attribute in the DOM. The way it's set via Lit,
-        // null translates into ''.
-        if (this.selected_val === '') {
-            content = this.myhass.localize('ui.components.data-table.no-data'); // "No data"
+        var content = '';
+        if (this.selected_element_data) {
+            // Todo: See if we can use the precision from the entity here.
+            const date = this.grid[this.selected_element_data.row].date;
+            const hr = parseInt(this.selected_element_data.col);
+            var from = new Date('2022-03-20 00:00:00').setHours(hr);
+            var to = new Date('2022-03-20 00:00:00').setHours(hr + 1);
+            var rendered_value;
+            // selected_val is read via the data-val attribute in the DOM. The way it's set via Lit,
+            // null translates into ''.
+            if (this.selected_element_data.val === '') {
+                rendered_value = this.myhass.localize('ui.components.data-table.no-data'); // "No data"
+            } else {
+                const val = +(parseFloat(this.selected_element_data.val).toFixed(2));
+                rendered_value = `${val} ${this.meta.unit_of_measurement}`;
+            }
+            var time_format = new Intl.DateTimeFormat('sv-SE', {'hour': 'numeric', 'minute': 'numeric'});
+            if (this.myhass.locale.time_format == '12') {
+                time_format = new Intl.DateTimeFormat('en-US', {'hour': 'numeric'});
+            }
+            content = html`<div class="meta">${date} ${time_format.format(from)} - ${time_format.format(to)}</div><div class="value">${rendered_value}</div>`;
         }
         return html`
             <div id="tooltip" class="${this.tooltipOpen ? 'active' : 'hidden'}">${content}</div>
@@ -221,15 +241,17 @@ class HeatmapCard extends LitElement {
         this.tooltipOpen = true;
         target.id = 'selected';
         /*
-            Todo: Improved handling when we're close to the page edges.
+            Todo:
+              - Improved handling when we're close to the page edges.
+              - Fewer assumptions about the size of the tooltip.
         */
         var rect = target.getBoundingClientRect();
         var cardRect = card.getBoundingClientRect();
         var top = rect.top - cardRect.top;
         var left = rect.left - cardRect.left;
-        tooltip.style.top = (top - 30 - rect.height).toString() + "px";
+        tooltip.style.top = (top - 50 - rect.height).toString() + "px";
         tooltip.style.left = (left - (rect.width / 2) - 70) .toString() + "px";
-        this.selected_val = target.dataset.val;
+        this.selected_element_data = target.dataset;
     }
 
     /*
@@ -504,18 +526,20 @@ class HeatmapCard extends LitElement {
                 pointer-events: none;
                 user-drag: none;
                 user-select: none;
+                color: var(--secondary-text-color);
             }
             th {
-                opacity: 0.7;
+                position:relative;
                 font-weight: normal;
                 vertical-align: bottom;
             }
             th:not(.hm-row-title) {
-                font-size: 80%;
-                transform: rotate(-90deg);
-                padding-left: 3px;
                 text-align: center;
                 white-space: nowrap;
+            }
+            /* Used for 12hr displays; we need space for two lines */
+            tr.hr12 th:not(.hm-row-title) {
+                font-size: 70%;
             }
             tr {
                 line-height: 1.1;
@@ -527,7 +551,6 @@ class HeatmapCard extends LitElement {
                 max-height: 20px;
                 min-width: 50px;
                 width: 50px;
-                opacity: 0.7;
             }
             .hm-box {
                 background-color: currentcolor;
@@ -603,7 +626,6 @@ class HeatmapCard extends LitElement {
                 visibility: hidden;
             }
 
-
             /* Detail view */
             #tooltip {
                 display: none;
@@ -619,6 +641,12 @@ class HeatmapCard extends LitElement {
             }
             #tooltip.active {
                 display: block;
+            }
+            #tooltip div.meta {
+                font-size: 90%;
+            }
+            #tooltip div.value {
+                font-size: 120%;
             }
 
             /* Errors - only visible in edit mode */
