@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, March 31st 2023_
+_Stats as at 05:00, Saturday, April 1st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.0b0 | 461     | 3756         | 2590 | 101 |
+| 2023.4.0b2 | 455     | 3804         | 2603 | 101 |
 
 Type | Qty
 -- | --
@@ -92,7 +92,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2590
+Sensor | 2603
 Sun | 1
 Switch | 165
 Weather | 7
@@ -139,13 +139,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
+| [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.radarr](https://www.home-assistant.io/components/binary_sensor.radarr) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.sensibo](https://www.home-assistant.io/components/binary_sensor.sensibo) |
-| [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
@@ -173,7 +173,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [button.plex](https://www.home-assistant.io/components/button.plex) |
 | [button.proxmoxve](https://www.home-assistant.io/components/button.proxmoxve) |
 | [button.sensibo](https://www.home-assistant.io/components/button.sensibo) |
-| [button.smartthinq_sensors](https://www.home-assistant.io/components/button.smartthinq_sensors) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
 | [button.zha](https://www.home-assistant.io/components/button.zha) |
 | [calendar](https://www.home-assistant.io/components/calendar) |
@@ -193,7 +192,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [climate.dyson_local](https://www.home-assistant.io/components/climate.dyson_local) |
 | [climate.mqtt](https://www.home-assistant.io/components/climate.mqtt) |
 | [climate.sensibo](https://www.home-assistant.io/components/climate.sensibo) |
-| [climate.smartthinq_sensors](https://www.home-assistant.io/components/climate.smartthinq_sensors) |
 | [climate.zha](https://www.home-assistant.io/components/climate.zha) |
 | [clock_drift](https://www.home-assistant.io/components/clock_drift) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
@@ -227,7 +225,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [fan](https://www.home-assistant.io/components/fan) |
 | [fan.dyson_local](https://www.home-assistant.io/components/fan.dyson_local) |
 | [fan.mqtt](https://www.home-assistant.io/components/fan.mqtt) |
-| [fan.smartthinq_sensors](https://www.home-assistant.io/components/fan.smartthinq_sensors) |
 | [fan.zha](https://www.home-assistant.io/components/fan.zha) |
 | [fastdotcom](https://www.home-assistant.io/components/fastdotcom) |
 | [favicon](https://www.home-assistant.io/components/favicon) |
@@ -262,7 +259,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
 | [humidifier.mqtt](https://www.home-assistant.io/components/humidifier.mqtt) |
-| [humidifier.smartthinq_sensors](https://www.home-assistant.io/components/humidifier.smartthinq_sensors) |
 | [iaquk](https://www.home-assistant.io/components/iaquk) |
 | [ibeacon](https://www.home-assistant.io/components/ibeacon) |
 | [ical](https://www.home-assistant.io/components/ical) |
@@ -275,6 +271,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
+| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
@@ -424,6 +421,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
+| [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
 | [sensor.openexchangerates](https://www.home-assistant.io/components/sensor.openexchangerates) |
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
@@ -439,7 +437,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.sensibo](https://www.home-assistant.io/components/sensor.sensibo) |
 | [sensor.slack](https://www.home-assistant.io/components/sensor.slack) |
-| [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
@@ -508,7 +505,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.mqtt](https://www.home-assistant.io/components/switch.mqtt) |
 | [switch.myjdownloader](https://www.home-assistant.io/components/switch.myjdownloader) |
 | [switch.sensibo](https://www.home-assistant.io/components/switch.sensibo) |
-| [switch.smartthinq_sensors](https://www.home-assistant.io/components/switch.smartthinq_sensors) |
 | [switch.sonos](https://www.home-assistant.io/components/switch.sonos) |
 | [switch.spook](https://www.home-assistant.io/components/switch.spook) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
@@ -554,8 +550,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [vacuum.mqtt](https://www.home-assistant.io/components/vacuum.mqtt) |
 | [version](https://www.home-assistant.io/components/version) |
 | [watchman](https://www.home-assistant.io/components/watchman) |
-| [water_heater](https://www.home-assistant.io/components/water_heater) |
-| [water_heater.smartthinq_sensors](https://www.home-assistant.io/components/water_heater.smartthinq_sensors) |
 | [waze_travel_time](https://www.home-assistant.io/components/waze_travel_time) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.astroweather](https://www.home-assistant.io/components/weather.astroweather) |
