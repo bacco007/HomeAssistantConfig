@@ -1,0 +1,11 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Preencha os dados.",
+        "data": { "district_name": "Distrito", "data_feed": "Feed", "convert_no_rating": "Conversão de estado" }
+      }
+    },
+    "abort": { "already_configured": "Distrito já se encontrava configurado" }
+  }
+}

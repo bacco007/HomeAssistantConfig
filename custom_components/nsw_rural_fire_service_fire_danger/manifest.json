@@ -12,7 +12,7 @@
   "codeowners": [
     "@exxamalte"
   ],
-  "version": "0.13b1",
+  "version": "0.14",
   "iot_class": "cloud_polling",
   "integration_type": "service"
 }

@@ -7,7 +7,7 @@ from typing import Any
 import xmltodict
 from homeassistant.components.rest import RestData
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SCAN_INTERVAL, MAJOR_VERSION, MINOR_VERSION
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.json import json_loads
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -43,16 +43,33 @@ class NswRfsFireDangerFeedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._convert_no_rating = config_entry.data.get(
             CONF_CONVERT_NO_RATING, DEFAULT_CONVERT_NO_RATING
         )
-        self._rest = RestData(
-            hass,
-            DEFAULT_METHOD,
-            URL_DATA[self._data_feed_type()],
-            None,
-            None,
-            None,
-            None,
-            DEFAULT_VERIFY_SSL,
-        )
+        self._rest: RestData | None = None
+        # Distinguish multiple cases:
+        # 1. If version >= 2023.4: 9 arguments
+        # 2. If version <= 2023.3: 8 arguments
+        if MAJOR_VERSION >= 2023 and MINOR_VERSION >= 4:
+            self._rest = RestData(
+                hass,
+                DEFAULT_METHOD,
+                URL_DATA[self._data_feed_type()],
+                None,
+                None,
+                None,
+                None,
+                None,
+                DEFAULT_VERIFY_SSL,
+            )
+        else:
+            self._rest = RestData(
+                hass,
+                DEFAULT_METHOD,
+                URL_DATA[self._data_feed_type()],
+                None,
+                None,
+                None,
+                None,
+                DEFAULT_VERIFY_SSL,
+            )
         super().__init__(
             self.hass,
             _LOGGER,

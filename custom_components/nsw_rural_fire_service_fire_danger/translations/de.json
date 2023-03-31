@@ -1,0 +1,11 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "W\\u00e4hle deine Details aus.",
+        "data": { "district_name": "Bezirk", "data_feed": "Feed", "convert_no_rating": "Konvertiere Status 'No Rating'" }
+      }
+    },
+    "abort": { "already_configured": "Bezirk ist bereits konfiguriert" }
+  }
+}
