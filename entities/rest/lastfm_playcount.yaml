@@ -2,7 +2,9 @@
 resource: !secret lastfm_playcount_url
 sensor:
   name: lastfm_user_playcount
+  unique_id: lastfm_user_playcount
   value_template: >
     {{ value_json.user.playcount}}
   unit_of_measurement: Songs
+  state_class: total_increasing
 scan_interval: 600

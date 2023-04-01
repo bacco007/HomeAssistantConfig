@@ -425,10 +425,10 @@ cards:
                   - type: custom:vertical-stack-in-card
                     cards:
                       - type: custom:mushroom-template-card
-                        entity: sensor.flighttracker_flights_now
+                        entity: sensor.flighttracker_aircraft_total
                         secondary: Planes Overhead
                         primary: |
-                          {{ states('sensor.flighttracker_flights_now') }} Flights
+                          {{ states('sensor.flighttracker_aircraft_total') }} Flights
                         icon: mdi:airplane-alert
                         icon_color: "#B694E7"
                         tap_action:
@@ -446,7 +446,7 @@ cards:
                         cards:
                           - type: custom:mini-graph-card
                             entities:
-                              - entity: sensor.flighttracker_flights_now
+                              - entity: sensor.flighttracker_aircraft_total
                                 name: Download
                                 color: "#B694E7"
                             hours_to_show: 24

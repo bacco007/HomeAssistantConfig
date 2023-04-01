@@ -1,0 +1,22 @@
+---
+type: custom:heatmap-card
+entity: sensor.daily_generation
+title: ""
+data:
+  max: 5
+days: 21
+scale:
+  type: absolute
+  steps:
+    - value: 0
+      color: rgba(43,55,78,1)
+    - value: 1
+      color: "#ffffb2"
+    - value: 2
+      color: "#fecc5c"
+    - value: 3
+      color: "#fd8d3c"
+    - value: 4
+      color: "#f03b20"
+    - value: 5
+      color: "#bd0026"

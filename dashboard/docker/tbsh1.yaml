@@ -12,6 +12,71 @@ cards:
         view_layout:
           grid-column: 1/-1
 
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            background: none !important;
+            margin-right: 24px !important;
+            --toggle-icon-width: 21px !important;
+            color: rgb(var(--rgb-disabled-color));
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          icon: mdi:docker
+          primary: TBSH1 Docker - Updates
+          secondary: >
+            Count: {{states|selectattr('entity_id', 'search', 'update.wud_container_tbsh1_') | selectattr('state', 'eq', 'on') | list | count }}
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                --ha-card-box-shadow: 0px;
+              }
+          icon_color: orange
+          tap_action:
+            action: toggle
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            filter:
+              include:
+                - entity_id: update.wud_container_tbsh1_*
+                  state: "on"
+                  options:
+                    type: custom:mushroom-update-card
+                    show_buttons_control: true
+                    layout: horizontal
+                    entities:
+                      - this.entity_id
+                    card_mod:
+                      style: |
+                        ha-card {
+                          background: none;
+                          padding: 4px 16px !important;
+                          --ha-card-box-shadow: 0px;
+                        }
+            card:
+              type: custom:layout-card
+              cards: []
+              layout_type: masonry
+            sort:
+              method: friendly_name
+        card_mod:
+          style: |
+            :host {
+              --ha-card-border-width: 0;
+              --ha-card-background: none;
+              --ha-card-box-shadow: 0;
+            }
+
   - square: false
     columns: 3
     type: grid

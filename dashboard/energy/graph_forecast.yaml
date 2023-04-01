@@ -2,19 +2,57 @@
 type: custom:apexcharts-card
 graph_span: 7d
 update_interval: 10mins
+experimental:
+  color_threshold: true
 header:
   show: false
 span:
   start: day
 all_series_config:
-  stroke_width: 2
   type: line
   curve: smooth
   unit: kW
+  stroke_width: 3
+  data_generator: |
+    return entity.attributes.forecast.map((entry) => {
+      return [new Date(entry.period_start), entry.pv_estimate];
+    });
+  show:
+    extremas: true
+  color_threshold:
+    - value: 0
+      color: "#FFF"
+    - value: 0.5
+      color: khaki
+    - value: 1
+      color: yellow
+    - value: 1.5
+      color: gold
+    - value: 2
+      color: orange
+    - value: 2.5
+      color: darkorange
+    - value: 3
+      color: tomato
+    - value: 3.5
+      color: sandybrown
+    - value: 4
+      color: peru
+    - value: 4.5
+      color: orangered
+    - value: 5
+      color: maroon
+    - value: 5.5
+      color: purple
+    - value: 6
+      color: darkred
 apex_config:
+  plotOptions:
+    bar:
+      columnWidth: 100%
   tooltip:
     x:
-      format: "ddd dd MMM - HH:mm"
+      format: ddd dd MMM - HH:mm
   legend:
     show: false
   grid:
@@ -36,73 +74,30 @@ apex_config:
         pan: false
         reset: true
   xaxis:
-    {
-      type: "datetime",
-      labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-      forceNiceScale: true,
-      decimalsInFloat: false,
-    }
+    type: datetime
+    labels:
+      datetimeFormatter:
+        month: ddd
+        day: ddd
+    forceNiceScale: true
+    decimalsInFloat: false
   yaxis:
-    - seriesName: "kW"
+    - seriesName: kW
       decimalsInFloat: 0
-      # max: 5
       title:
-        text: "kW"
-  stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
+        text: kW
+  stroke:
+    show: true
+    lineCap: square
+    dashArray:
+      - 0
+      - 0
+      - 0
 series:
   - entity: sensor.solcast_forecast_today
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });
   - entity: sensor.solcast_forecast_tomorrow
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });
   - entity: sensor.solcast_forecast_d3
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });
   - entity: sensor.solcast_forecast_d4
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });
   - entity: sensor.solcast_forecast_d5
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });
   - entity: sensor.solcast_forecast_d6
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });
   - entity: sensor.solcast_forecast_d7
-    color: "#FFFFFF"
-    show:
-      in_header: false
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.period_start), entry.pv_estimate];
-      });

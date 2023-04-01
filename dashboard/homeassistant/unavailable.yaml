@@ -1,54 +1,202 @@
 ---
-type: entities
-show_header_toggle: false
-entities:
-  - type: custom:auto-entities
-    show_empty: true
-    unique: true
-    filter:
-      template: "{{ state_attr('sensor.unavailable_entities','entity_id') }}"
-    sort:
-      method: state
-    card:
-      type: custom:fold-entity-row
-      head:
-        type: custom:mushroom-template-card
-        entity: sensor.unavailable_entities
-        name: Unavailable Entities
-        icon: mdi:trophy-broken
-        primary: |
-          {{ state_attr(entity, 'friendly_name') }}
-        secondary: >
-          {{ states(entity) }} Entities
+type: vertical-stack
+cards:
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          icon: mdi:trophy-broken
+          icon_color: red
+          secondary: Unavailable Entities
+          primary: |
+            {{ states('sensor.unavailable_entities') }} Entities
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            show_empty: true
+            unique: true
+            filter:
+              template: "{{ state_attr('sensor.unavailable_entities','entity_id') }}"
+            sort:
+              method: state
+            card:
+              type: entities
         card_mod:
+          class: content
           style: |
             ha-card {
               border: 0;
-              box-shadow: 0;
             }
-            mushroom-card {
-              margin: -5px -13px 0 -4px;
+            #measure {
+              padding-left: 20px !important;
+              padding-right: 20px !important;
+              }
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          icon: mdi:trophy-broken
+          icon_color: red
+          secondary: Unknown Entities
+          primary: |
+            {{ state_attr('sensor.unknown_unavailable_none_entities', 'unknown_count') }} Entities
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            show_empty: true
+            unique: true
+            filter:
+              template: >
+                {{ state_attr('sensor.unknown_unavailable_none_entities', 'unknown') }}
+            sort:
+              method: state
+            card:
+              type: entities
+        card_mod:
+          class: content
+          style: |
+            ha-card {
+              border: 0;
             }
-      padding: 0
-      card_mod:
-        class: content
-        style: |
-          ha-card {
-            border: 0;
-            box-shadow: 0;
+            #measure {
+              padding-left: 20px !important;
+              padding-right: 20px !important;
+              }
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
           }
-          #states {
-            padding-top: 1.2em;
-            padding-bottom: 0em;
+        .: |
+          .card-content {
+            padding: 0;
           }
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-      border: 0;
-      box-shadow: 0;
-    }
-    #states {
-      padding-top: 1.2em;
-      padding-bottom: 0em;
-    }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          icon: mdi:trophy-broken
+          icon_color: red
+          secondary: Unavailable Entities
+          primary: |
+            {{ state_attr('sensor.unknown_unavailable_none_entities', 'unavailable_count') }} Entities
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            show_empty: true
+            unique: true
+            filter:
+              template: >
+                {{ state_attr('sensor.unknown_unavailable_none_entities', 'unavailable') }}
+            sort:
+              method: state
+            card:
+              type: entities
+        card_mod:
+          class: content
+          style: |
+            ha-card {
+              border: 0;
+            }
+            #measure {
+              padding-left: 20px !important;
+              padding-right: 20px !important;
+              }
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          entity: ""
+          icon: mdi:trophy-broken
+          icon_color: red
+          secondary: None Entities
+          primary: |
+            {{ state_attr('sensor.unknown_unavailable_none_entities', 'none_count') }} Entities
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            show_empty: true
+            unique: true
+            filter:
+              template: >
+                {{ state_attr('sensor.unknown_unavailable_none_entities', 'none') }}
+            sort:
+              method: state
+            card:
+              type: entities
+        card_mod:
+          class: content
+          style: |
+            ha-card {
+              border: 0;
+            }
+            #measure {
+              padding-left: 20px !important;
+              padding-right: 20px !important;
+              }

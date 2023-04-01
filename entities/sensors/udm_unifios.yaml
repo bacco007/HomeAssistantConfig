@@ -1,6 +1,7 @@
 ---
 platform: command_line
 name: udm_unifios
+unique_id: udm_unifios
 command: |-
   python3 << EOF
   import json, yaml, requests

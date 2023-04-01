@@ -70,6 +70,7 @@ cards:
         type: vertical-stack
         cards:
           - !include snippets/solar.yaml
+          - !include ../energy/production_heatmap.yaml
           - !include ../energy/graph_production.yaml
           - !include ../energy/snippets/solcast.yaml
           - !include ../energy/graph_forecast.yaml
@@ -94,6 +95,7 @@ cards:
                 view_layout:
                   grid-column: 1/-1
           - !include snippets/solar.yaml
+          - !include ../energy/production_heatmap.yaml
 
   - type: custom:state-switch
     entity: mediaquery

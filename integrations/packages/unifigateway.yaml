@@ -1,6 +1,6 @@
 ---
 sensor:
-  - platform: unifi_status
+  - platform: unifigateway
     host: !secret unifi_ipaddress
     port: 443
     verify_ssl: false
