@@ -314,8 +314,8 @@ sensor:
     icon: "mdi:car-sports"
     picture: /local/sportlogos/btcc.png
     state: >-
-      {%- if state_attr("sensor.ical_btcc_event_0", 'summary') %}
-        {{ state_attr("sensor.ical_btcc_event_0", 'summary') }}
+      {%- if state_attr("sensor.ical_btcc_event_0", 'summary') | replace("BTCC - ","") %}
+        {{ state_attr("sensor.ical_btcc_event_0", 'summary') | replace("BTCC - ","")  }}
       {%- else %}
         Nothing Scheduled
       {%- endif %}
@@ -343,7 +343,7 @@ sensor:
           No Round Scheduled
         {%- endif %}
       nextevent: >-
-        {%- set op = state_attr("sensor.ical_btcc_event_0", 'summary') %}
+        {%- set op = state_attr("sensor.ical_btcc_event_0", 'summary') | replace("BTCC - ","")  %}
         {%- set st = state_attr("sensor.ical_btcc_event_0", 'start') %}
         {%- if st != None %}
           {{ op }}
@@ -358,7 +358,7 @@ sensor:
           No Location Noted
         {%- endif %}
       nexteventafter: >-
-        {%- set op = state_attr("sensor.ical_btcc_event_1", 'summary') %}
+        {%- set op = state_attr("sensor.ical_btcc_event_1", 'summary') | replace("BTCC - ","")  %}
         {%- set st = state_attr("sensor.ical_btcc_event_1", 'start') %}
         {%- set et = state_attr("sensor.ical_btcc_event_1", 'eta') %}
         {%- if st != None %}
@@ -391,8 +391,8 @@ sensor:
     icon: "mdi:car-sports"
     picture: /local/sportlogos/dtm.png
     state: >-
-      {%- if state_attr("sensor.ical_dtm_event_0", 'summary') %}
-        {{ state_attr("sensor.ical_dtm_event_0", 'summary') }}
+      {%- if state_attr("sensor.ical_dtm_event_0", 'summary') | replace("DTM - ","")  %}
+        {{ state_attr("sensor.ical_dtm_event_0", 'summary') | replace("DTM - ","") }}
       {%- else %}
         Nothing Scheduled
       {%- endif %}
@@ -420,7 +420,7 @@ sensor:
           No Round Scheduled
         {%- endif %}
       nextevent: >-
-        {%- set op = state_attr("sensor.ical_dtm_event_0", 'summary') %}
+        {%- set op = state_attr("sensor.ical_dtm_event_0", 'summary') | replace("DTM - ","") %}
         {%- set st = state_attr("sensor.ical_dtm_event_0", 'start') %}
         {%- if st != None %}
           {{ op }}
@@ -435,7 +435,7 @@ sensor:
           No Location Noted
         {%- endif %}
       nexteventafter: >-
-        {%- set op = state_attr("sensor.ical_dtm_event_1", 'summary') %}
+        {%- set op = state_attr("sensor.ical_dtm_event_1", 'summary') | replace("DTM - ","") %}
         {%- set st = state_attr("sensor.ical_dtm_event_1", 'start') %}
         {%- set et = state_attr("sensor.ical_dtm_event_1", 'eta') %}
         {%- if st != None %}
@@ -468,8 +468,8 @@ sensor:
     icon: "mdi:car-sports"
     picture: /local/sportlogos/extreme_e.png
     state: >-
-      {%- if state_attr("sensor.ical_extreme_e_event_0", 'summary') %}
-        {{ state_attr("sensor.ical_extreme_e_event_0", 'summary') }}
+      {%- if state_attr("sensor.ical_extreme_e_event_0", 'summary') | replace("Extreme E - ","") %}
+        {{ state_attr("sensor.ical_extreme_e_event_0", 'summary') | replace("Extreme E - ","") }}
       {%- else %}
         Nothing Scheduled
       {%- endif %}
@@ -497,7 +497,7 @@ sensor:
           No Round Scheduled
         {%- endif %}
       nextevent: >-
-        {%- set op = state_attr("sensor.ical_extreme_e_event_0", 'summary') %}
+        {%- set op = state_attr("sensor.ical_extreme_e_event_0", 'summary') | replace("Extreme E - ","") %}
         {%- set st = state_attr("sensor.ical_extreme_e_event_0", 'start') %}
         {%- if st != None %}
           {{ op }}
@@ -512,7 +512,7 @@ sensor:
           No Location Noted
         {%- endif %}
       nexteventafter: >-
-        {%- set op = state_attr("sensor.ical_extreme_e_event_1", 'summary') %}
+        {%- set op = state_attr("sensor.ical_extreme_e_event_1", 'summary') | replace("Extreme E - ","") %}
         {%- set st = state_attr("sensor.ical_extreme_e_event_1", 'start') %}
         {%- set et = state_attr("sensor.ical_extreme_e_event_1", 'eta') %}
         {%- if st != None %}
@@ -853,8 +853,8 @@ sensor:
     icon: "mdi:car-sports"
     picture: /local/sportlogos/gt_world_challenge_asia.png
     state: >-
-      {%- if state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') %}
-        {{ state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') }}
+      {%- if state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') | replace("GTWC Asia - ","") %}
+        {{ state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') | replace("GTWC Asia - ","") }}
       {%- else %}
         Nothing Scheduled
       {%- endif %}
@@ -882,7 +882,7 @@ sensor:
           No Round Scheduled
         {%- endif %}
       nextevent: >-
-        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') %}
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'summary') | replace("GTWC Asia - ","") %}
         {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_0", 'start') %}
         {%- if st != None %}
           {{ op }}
@@ -897,7 +897,7 @@ sensor:
           No Location Noted
         {%- endif %}
       nexteventafter: >-
-        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'summary') %}
+        {%- set op = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'summary') | replace("GTWC Asia - ","") %}
         {%- set st = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'start') %}
         {%- set et = state_attr("sensor.ical_gt_world_challenge_asia_event_1", 'eta') %}
         {%- if st != None %}

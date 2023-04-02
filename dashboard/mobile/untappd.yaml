@@ -1,91 +1,34 @@
 ---
-# lovelace_gen
 theme: noctis
 icon: mdi:beer
 subview: true
 path: untappd
 title: Untappd
-badges: []
 type: custom:grid-layout
-layout:
-  # default
-  margin: 0
-  grid-gap: 0.5vw
-  grid-template-columns: 15% repeat(3, 1fr) 0
-  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
-  grid-template-areas: |
-    "sidebar . . . ."
-    "sidebar  c2r2 c3r2 c4r2 ."
-    "sidebar  c2r3 c3r3 c4r3 ."
-    "footer footer footer footer  ."
-  mediaquery:
-    # phone
-    "(max-width: 800px)":
-      grid-gap: 1vw
-      grid-template-columns: 100%
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar"
-        "footer"
-        "c2r2"
-    "(max-width: 1400px)":
-      grid-gap: 1vw
-      grid-template-columns: 25% repeat(2, 1fr) 0
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar c2r2 c3r2"
-        "sidebar c4r2 c3r3"
-        "sidebar c4r3 ."
-        "footer footer footer"
+layout: !include includes/grid-3col.yaml
+badges: []
 cards:
-  ###
-  # SIDEBAR
-  # Column 1
-  ###
-  - type: vertical-stack
-    view_layout:
-      grid-area: sidebar
-    cards:
-      - !include snippets/header.yaml
-      - type: custom:state-switch
-        entity: mediaquery
-        states:
-          "(min-width: 801px)":
-            type: vertical-stack
+  ### Sidebar - Menu
+  - !include includes/menu.yaml
 
-            cards:
-              - !include snippets/menu.yaml
-  ###
-  # Footer
-  ###
+  ### Header - Left
+  - !include includes/header-left.yaml
 
-  - !include snippets/footer.yaml
+  ### Header - Right
+  - !include includes/header-right.yaml
 
-  # - type: custom:mushroom-chips-card
-  #   chips:
-  #     - type: template
-  #       icon: mdi:beer
-  #       content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'total_beers')}}"
-  #     - type: template
-  #       icon: mdi:account
-  #       content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'friends')}}"
-  #     - type: template
-  #       icon: mdi:badge-account
-  #       content: >-
-  #         {{state_attr('sensor.untappd_last_check_in_bacco007',
-  #         'total_badges')}}
-  #     - type: template
-  #       icon: mdi:check-bold
-  #       content: "{{state_attr('sensor.untappd_last_check_in_bacco007', 'checkins')}}"
-  #   alignment: center
+  ### Footer
+  - !include includes/footer.yaml
 
+  # Mobile Only
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r2
+      grid-area: mobile
     states:
       "(max-width: 800px)":
         type: vertical-stack
+
         cards:
           - type: custom:tabbed-card
             options: {}
@@ -96,75 +39,84 @@ cards:
               - attributes:
                   label: Stats
                   isMinWidthIndicator: true
-                card: !include ../untappd/snippets/stats.yaml
+                card: !include untappd/snippets/stats.yaml
               - attributes:
                   label: Project 52
                   isMinWidthIndicator: true
-                card: !include ../untappd/snippets/project_52.yaml
+                card: !include untappd/snippets/project_52.yaml
               - attributes:
                   label: Beer Stats
                   isMinWidthIndicator: true
-                card: !include ../untappd/snippets/beer_stats.yaml
+                card: !include untappd/snippets/beer_stats.yaml
 
+  # Column 1, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r2
+      grid-area: c1r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
-
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Stats
-                view_layout:
-                  grid-column: 1/-1
-          - !include ../untappd/snippets/stats.yaml
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Stats
+            view_layout:
+              grid-column: 1/-1
+          - !include untappd/snippets/stats.yaml
 
+  # Column 2, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c3r2
+      grid-area: c2r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
-
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Project 52
-                view_layout:
-                  grid-column: 1/-1
-          - !include ../untappd/snippets/project_52.yaml
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Project 52
+            view_layout:
+              grid-column: 1/-1
+          - !include untappd/snippets/project_52.yaml
 
+  # Column 3, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c4r2
+      grid-area: c3r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
-
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Beer Stats
-                view_layout:
-                  grid-column: 1/-1
-          - !include ../untappd/snippets/beer_stats.yaml
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Beer Stats
+            view_layout:
+              grid-column: 1/-1
+          - !include untappd/snippets/beer_stats.yaml
+
+  # Column 1, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 2, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c2r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 3, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c3r2
+      show:
+        mediaquery: "(min-width: 801px)"

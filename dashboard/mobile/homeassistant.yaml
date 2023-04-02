@@ -1,92 +1,30 @@
 ---
-# lovelace_gen
 theme: noctis
 icon: mdi:home-assistant
 subview: true
 path: homeassistant
 title: Home Assistant
-badges: []
 type: custom:grid-layout
-layout:
-  # default
-  margin: 0
-  grid-gap: 0.5vw
-  grid-template-columns: 15% repeat(3, 1fr) 0
-  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
-  grid-template-areas: |
-    "sidebar . . . ."
-    "sidebar  c2r2 c3r2 c4r2 ."
-    "sidebar  c2r3 c3r3 c4r3 ."
-    "footer footer footer footer  ."
-  mediaquery:
-    # phone
-    "(max-width: 800px)":
-      grid-gap: 1vw
-      grid-template-columns: 100%
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar"
-        "footer"
-        "c2r2"
-        "c2r3"
-    "(max-width: 1400px)":
-      grid-gap: 1vw
-      grid-template-columns: 25% repeat(2, 1fr) 0
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar c2r2 c3r2"
-        "sidebar c4r2 c3r3"
-        "sidebar c4r3 ."
-        "footer footer footer"
+layout: !include includes/grid-3col.yaml
+badges: []
 cards:
-  ###
-  # SIDEBAR
-  # Column 1
-  ###
-  - type: vertical-stack
-    view_layout:
-      grid-area: sidebar
-    cards:
-      - !include snippets/header.yaml
-      - type: custom:state-switch
-        entity: mediaquery
-        states:
-          "(min-width: 801px)":
-            type: vertical-stack
+  ### Sidebar - Menu
+  - !include includes/menu.yaml
 
-            cards:
-              - !include snippets/menu.yaml
-  ###
-  # Footer
-  ###
+  ### Header - Left
+  - !include includes/header-left.yaml
 
-  - !include snippets/footer.yaml
+  ### Header - Right
+  - !include includes/header-right.yaml
 
-  - type: vertical-stack
-    view_layout:
-      grid-area: c2r2
-    cards:
-      - !include ../homeassistant/uptime.yaml
-      - !include ../homeassistant/ha_versions.yaml
-      - !include ../homeassistant/integrationdomain.yaml
-      - !include ../homeassistant/domainsbyintegration.yaml
-      - !include ../homeassistant/snapshots.yaml
-      - type: custom:state-switch
-        entity: mediaquery
-        states:
-          "(min-width: 801px)":
-            type: vertical-stack
-
-            cards:
-              - !include ../homeassistant/watchman_entities.yaml
-              - !include ../homeassistant/watchman_services.yaml
-              - !include ../homeassistant/unavailable.yaml
+  ### Footer
+  - !include includes/footer.yaml
 
   # Mobile Only
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r3
+      grid-area: mobile
     states:
       "(max-width: 800px)":
         type: vertical-stack
@@ -105,67 +43,102 @@ cards:
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../homeassistant/watchman_entities.yaml
-                    - !include ../homeassistant/watchman_services.yaml
-                    - !include ../homeassistant/unavailable.yaml
+                    - !include homeassistant/watchman_entities.yaml
+                    - !include homeassistant/watchman_services.yaml
+                    - !include homeassistant/unavailable.yaml
               - attributes:
                   label: Stats
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../homeassistant/graph_dbsize.yaml
-                    - !include ../homeassistant/graph_countyamlfiles.yaml
-                    - !include ../homeassistant/graph_countyamllines.yaml
-                    - !include ../homeassistant/entity_count.yaml
+                    - !include homeassistant/graph_dbsize.yaml
+                    - !include homeassistant/graph_countyamlfiles.yaml
+                    - !include homeassistant/graph_countyamllines.yaml
+                    - !include homeassistant/entity_count.yaml
               - attributes:
                   label: HACS
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../homeassistant/hacs_updates.yaml
+                    - !include homeassistant/hacs_updates.yaml
               - attributes:
                   label: Addons
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../homeassistant/addons.yaml
+                    - !include homeassistant/addons.yaml
 
-  # Non-Mobile
+  # Column 1, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c3r2
+      grid-area: c1r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include homeassistant/uptime.yaml
+          - !include homeassistant/ha_versions.yaml
+          - !include homeassistant/integrationdomain.yaml
+          - !include homeassistant/domainsbyintegration.yaml
+          - !include homeassistant/snapshots.yaml
+          - !include homeassistant/watchman_entities.yaml
+          - !include homeassistant/watchman_services.yaml
+          - !include homeassistant/unavailable.yaml
+
+  # Column 2, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Stats
+            view_layout:
+              grid-column: 1/-1
+          - !include homeassistant/graph_dbsize.yaml
+          - !include homeassistant/graph_countyamlfiles.yaml
+          - !include homeassistant/graph_countyamllines.yaml
+          - !include homeassistant/entity_count.yaml
+
+  # Column 3, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
 
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Stats
-                view_layout:
-                  grid-column: 1/-1
-          - !include ../homeassistant/graph_dbsize.yaml
-          - !include ../homeassistant/graph_countyamlfiles.yaml
-          - !include ../homeassistant/graph_countyamllines.yaml
-          - !include ../homeassistant/entity_count.yaml
+          - !include homeassistant/hacs_updates.yaml
+          - !include homeassistant/addons.yaml
 
-  - type: custom:state-switch
-    entity: mediaquery
+  # Column 1, Row 2
+  - type: custom:gap-card
     view_layout:
-      grid-area: c4r2
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
 
-        cards:
-          - !include ../homeassistant/hacs_updates.yaml
-          - !include ../homeassistant/addons.yaml
+  # Column 2, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c2r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 3, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c3r2
+      show:
+        mediaquery: "(min-width: 801px)"

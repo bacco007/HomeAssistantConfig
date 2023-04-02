@@ -1,0 +1,552 @@
+---
+type: vertical-stack
+view_layout:
+  grid-area: sidebar
+cards:
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: template
+        icon: mdi:home
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-dashboard
+      - type: template
+        double_tap_action:
+          action: none
+        content: tbSmartHome
+        card_mod:
+          style: |
+            ha-card {
+              margin-top: -10px;
+              background: none !important;
+              border: none !important;
+              box-shadow: none !important;
+              --chip-height: 60px;
+            }
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+      - type: action
+        icon_color: white
+        icon: mdi:magnify
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          target: {}
+          data:
+            content:
+              type: custom:search-card
+              max_results: 20
+              actions:
+                - matches: ^toggle (.+\..+)
+                  name: Toggle {1}
+                  service: homeassistant.toggle
+                  service_data: null
+                  entity_id:
+                    "1": null
+            dismissable: true
+            autoclose: false
+    alignment: justify
+    card_mod:
+      style: |
+        ha-card {height: 42px}
+  - type: grid
+    columns: 1
+    square: false
+    style: |
+      ha-card {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    cards:
+      # Home Assistant
+      - type: custom:mushroom-template-card
+        primary: Home Assistant
+        secondary: ""
+        multiline_secondary: true
+        badge_icon: >
+          {% if (states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int) > 0 %}
+            mdi:update
+          {% endif %}
+        badge_color: red
+        icon: mdi:home-assistant
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: homeassistant
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Home Assistant
+      - type: custom:mushroom-template-card
+        primary: Docker
+        secondary: ""
+        multiline_secondary: true
+        # badge_icon: >
+        #   {% if (states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int) > 0 %}
+        #     mdi:update
+        #   {% endif %}
+        # badge_color: red
+        icon: mdi:docker
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: docker
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Me
+      - type: custom:mushroom-template-card
+        primary: Me
+        secondary: ""
+        multiline_secondary: true
+        icon: mdi:account
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: me
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Media (TV/Movies)
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:swipe-card
+            parameters:
+              spaceBetween: 8
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Media (TV/Movies)
+                secondary: >
+                  {{ (states('sensor.frontpage_sonarr_upcoming_count') | float + states('sensor.frontpage_radarr_upcoming_count') | float) | int }} Upcoming
+                icon: mdi:television
+                layout: horizontal
+                tap_action:
+                  action: navigate
+                  navigation_path: tv-movies
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style:
+                    mushroom-state-info$: |
+                      .container {
+                        display: table !important;
+                      }
+                      .secondary {
+                        display: table-cell;
+                        text-align: right;
+                        width: 100%;
+                      }
+              - type: custom:vertical-stack-in-card
+                horizontal: true
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: ""
+                    secondary: ""
+                    layout: vertical
+                    icon: |-
+                      {% if is_state(config.entity, "playing") %}
+                        mdi:speaker
+                      {% else %}
+                        mdi:speaker
+                      {% endif %}
+                    entity: media_player.bluesound_vardagsrum
+                    icon_color: |-
+                      {% if is_state(config.entity, "playing") %}
+                        indigo
+                      {% else %}
+                        grey
+                      {% endif %}
+                    tap_action:
+                      action: toggle
+                    card_mod:
+                      style: |
+                        ha-card {
+                          {% if is_state(config.entity,'playing') %}
+                              background: rgba(var(--rgb-light-green),0.2);
+                          {% else %}
+                              background: rgba(var(--rgb-disabled),0.2);
+                          {% endif %}
+                        }
+                  - type: custom:mushroom-template-card
+                    primary: ""
+                    secondary: ""
+                    layout: vertical
+                    icon: |-
+                      {% if is_state(config.entity, "on") %}
+                        mdi:power-socket-de
+                      {% else %}
+                        mdi:power-socket-de
+                      {% endif %}
+                    entity: switch.vardagsrumsfonster_switch
+                    icon_color: |-
+                      {% if is_state(config.entity, "on") %}
+                        green
+                      {% else %}
+                        grey
+                      {% endif %}
+                    tap_action:
+                      action: toggle
+                    card_mod:
+                      style: |
+                        ha-card {
+                          {% if is_state(config.entity,'on') %}
+                              background: rgba(var(--rgb-green),0.1);
+                          {% else %}
+                              background: rgba(var(--rgb-disabled),0.1);
+                          {% endif %}
+                        }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --ha-card-border-width: 0;
+                    }
+
+      # News
+      - type: custom:mushroom-template-card
+        primary: News
+        secondary: ""
+        multiline_secondary: true
+        icon: mdi:newspaper
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: news
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Solar
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:swipe-card
+            parameters:
+              spaceBetween: 8
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Solar
+                secondary: >
+                  {{ states('sensor.daily_generation') }} kWh
+                icon: mdi:solar-power-variant
+                layout: horizontal
+                tap_action:
+                  action: navigate
+                  navigation_path: solar
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style:
+                    mushroom-state-info$: |
+                      .container {
+                        display: table !important;
+                      }
+                      .secondary {
+                        display: table-cell;
+                        text-align: right;
+                        width: 100%;
+                      }
+              - type: custom:vertical-stack-in-card
+                horizontal: true
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: ""
+                    secondary: ""
+                    layout: vertical
+                    icon: |-
+                      {% if is_state(config.entity, "playing") %}
+                        mdi:speaker
+                      {% else %}
+                        mdi:speaker
+                      {% endif %}
+                    entity: media_player.bluesound_biorum
+                    icon_color: |-
+                      {% if is_state(config.entity, "playing") %}
+                        indigo
+                      {% else %}
+                        grey
+                      {% endif %}
+                    tap_action:
+                      action: more-info
+
+      # Sport
+      - type: custom:mushroom-template-card
+        primary: Sport
+        secondary: >
+          {{
+          states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder",
+          "<=", 7)|list|count }} This Week
+        multiline_secondary: true
+        icon: mdi:football-australian
+        icon_color: >-
+          {% if
+          states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder",
+          "<=", 0)|list|count > 0 %}
+            green
+          {% else %}
+            grey
+          {% endif %}
+        badge_icon: >
+          {% if (states|selectattr('entity_id','search','sensor.sport_')|selectattr("attributes.sortorder", "<=", 0)|list|count) > 0 %}
+            mdi:clock
+          {% endif %}
+        badge_color: red
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: sport
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Tamworth
+      - type: custom:mushroom-template-card
+        primary: Tamworth
+        secondary: ""
+        multiline_secondary: true
+        icon: mdi:city
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: tamworth
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Network
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:swipe-card
+            parameters:
+              spaceBetween: 8
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Network
+                icon: mdi:lan
+                layout: horizontal
+                tap_action:
+                  action: navigate
+                  navigation_path: network
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --ha-card-border-width: 0;
+                    }
+              - type: custom:vertical-stack-in-card
+                horizontal: true
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: ""
+                    secondary: ""
+                    layout: vertical
+                    icon: |-
+                      {% if is_state(config.entity, "playing") %}
+                        mdi:speaker
+                      {% else %}
+                        mdi:speaker
+                      {% endif %}
+                    entity: media_player.bluesound_biorum
+                    icon_color: |-
+                      {% if is_state(config.entity, "playing") %}
+                        indigo
+                      {% else %}
+                        grey
+                      {% endif %}
+                    tap_action:
+                      action: more-info
+
+      # Flight Tracker
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:swipe-card
+            parameters:
+              spaceBetween: 8
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Flight Tracker
+                secondary: |
+                  {{ states("sensor.flighttracker_flights_now") }} Overhead
+                multiline_secondary: true
+                icon: mdi:airplane
+                icon_color: >-
+                  {% if states("sensor.flighttracker_flights_now") | float > 0
+                  %}
+                    green
+                  {% else %}
+                    grey
+                  {% endif %}
+                layout: horizontal
+                tap_action:
+                  action: navigate
+                  navigation_path: flight-tracker
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style:
+                    mushroom-state-info$: |
+                      .container {
+                        display: table !important;
+                      }
+                      .secondary {
+                        display: table-cell;
+                        text-align: right;
+                        width: 100%;
+                      }
+              - type: custom:vertical-stack-in-card
+                horizontal: true
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: |
+                      {{ states(config.entity) }}
+                    secondary: |
+                      {{ state_attr(config.entity, 'distance') | round(2) }} km
+                    layout: horizontal
+                    icon: mdi:airplane
+                    entity: sensor.plane_overhead
+                    tap_action:
+                      action: more-info
+
+      # Untappd
+      - type: custom:mushroom-template-card
+        primary: Untappd
+        secondary: >
+          {{state_attr("sensor.untappd_last_check_in_bacco007", "total_beers")}} Beers
+        multiline_secondary: true
+        icon: mdi:beer
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: untappd
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Weather
+      - type: custom:mushroom-template-card
+        primary: Weather
+        secondary: ""
+        multiline_secondary: true
+        icon: mdi:weather-cloudy-alert
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: weather
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }

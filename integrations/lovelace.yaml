@@ -2,17 +2,17 @@
 lovelace:
   mode: storage
   dashboards:
-    ui-dashboard:
-      require_admin: false
-      show_in_sidebar: true
-      icon: mdi:robot-excited
-      title: Dashboard
-      filename: dashboard/ui-lovelace.yaml
-      mode: yaml
+    # ui-dashboard:
+    #   require_admin: false
+    #   show_in_sidebar: true
+    #   icon: mdi:robot-excited
+    #   title: Dashboard
+    #   filename: dashboard/ui-lovelace.yaml
+    #   mode: yaml
     mobile-dashboard:
       require_admin: false
       show_in_sidebar: true
       icon: mdi:google-downasaur
-      title: Mobile
+      title: Dashboard
       filename: dashboard/mobile-ui-lovelace.yaml
       mode: yaml

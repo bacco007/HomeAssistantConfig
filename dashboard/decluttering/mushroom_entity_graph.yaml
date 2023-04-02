@@ -1,0 +1,61 @@
+---
+# Mushroom Entity Card + Graph
+
+mushroom_entity_graph:
+  default:
+    - title: ""
+    - entity: sun.sun
+    - colour: "#FFFFFF"
+    - hours_to_show: 24
+    - points_per_hour: 6
+    - line_width: 4
+  card:
+    type: custom:stack-in-card
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: "[[entity]]"
+        primary_info: state
+        secondary_info: name
+        name: "[[title]]"
+        icon: "[[icon]]"
+        icon_color: "[[colour]]"
+        card_mod:
+          style: |
+            ha-card {
+              z-index: 1;
+              --ha-card-border-width: 0;
+            }
+      - type: custom:mini-graph-card
+        entities:
+          - entity: "[[entity]]"
+            name: "[[title]]"
+            color: "[[colour]]"
+        height: 50
+        hours_to_show: "[[hours_to_show]]"
+        line_width: "[[line_width]]"
+        points_per_hour: "[[points_per_hour]]"
+        animate: true
+        show:
+          name: false
+          icon: false
+          state: false
+          legend: false
+          fill: fade
+        card_mod:
+          style: |
+            ha-card {
+              position: absolute !important;
+              height: 100%;
+              width: 78%;
+              top: 0px;
+              left: auto;
+              right: 0px;
+              --ha-card-border-width: 0;
+            }
+            ha-card:after {
+              content: "";
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(to right, var(--card-background-color) 20%, transparent);
+            }

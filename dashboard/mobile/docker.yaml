@@ -1,70 +1,30 @@
 ---
-# lovelace_gen
 theme: noctis
 icon: mdi:docker
 subview: true
 path: docker
 title: Docker
-badges: []
 type: custom:grid-layout
-layout:
-  # default
-  margin: 0
-  grid-gap: 0.5vw
-  grid-template-columns: 15% repeat(4, 1fr) 0
-  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
-  grid-template-areas: |
-    "sidebar . . . . ."
-    "sidebar c2r2 c3r2 c4r2 c5r2 ."
-    "footer footer footer footer footer ."
-  mediaquery:
-    # phone
-    "(max-width: 800px)":
-      grid-gap: 1vw
-      grid-template-columns: 100%
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar"
-        "footer"
-        "c2r3"
-    "(max-width: 1400px)":
-      grid-gap: 1vw
-      grid-template-columns: 25% repeat(2, 1fr) 0
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar c2r2 c3r2"
-        "sidebar c4r2 c3r3"
-        "sidebar c4r3 c5r2"
-        "footer footer footer"
+layout: !include includes/grid-4col.yaml
+badges: []
 cards:
-  ###
-  # SIDEBAR
-  # Column 1
-  ###
-  - type: vertical-stack
-    view_layout:
-      grid-area: sidebar
-    cards:
-      - !include snippets/header.yaml
-      - type: custom:state-switch
-        entity: mediaquery
-        states:
-          "(min-width: 801px)":
-            type: vertical-stack
+  ### Sidebar - Menu
+  - !include includes/menu.yaml
 
-            cards:
-              - !include snippets/menu.yaml
-  ###
-  # Footer
-  ###
+  ### Header - Left
+  - !include includes/header-left.yaml
 
-  - !include snippets/footer.yaml
+  ### Header - Right
+  - !include includes/header-right.yaml
+
+  ### Footer
+  - !include includes/footer.yaml
 
   # Mobile Only
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r3
+      grid-area: mobile
     states:
       "(max-width: 800px)":
         type: vertical-stack
@@ -83,70 +43,99 @@ cards:
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../docker/tbsh1.yaml
+                    - !include docker/tbsh1.yaml
               - attributes:
                   label: tbsh2
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../docker/tbsh2.yaml
+                    - !include docker/tbsh2.yaml
               - attributes:
                   label: tbsh03
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../docker/tbsh03.yaml
+                    - !include docker/tbsh03.yaml
               - attributes:
                   label: pi4-srv
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../docker/pi4-srv.yaml
+                    - !include docker/pi4-srv.yaml
 
-  # Non-Mobile
+  # Column 1, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r2
+      grid-area: c1r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include docker/tbsh1.yaml
+
+  # Column 2, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include docker/tbsh2.yaml
+
+  # Column 3, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
 
         cards:
-          - !include ../docker/tbsh1.yaml
+          - !include docker/pi4-srv.yaml
 
+  # Column 4, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c3r2
+      grid-area: c4r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
 
         cards:
-          - !include ../docker/tbsh2.yaml
+          - !include docker/tbsh03.yaml
 
-  - type: custom:state-switch
-    entity: mediaquery
+  # Column 1, Row 2
+  - type: custom:gap-card
     view_layout:
-      grid-area: c4r2
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
 
-        cards:
-          - !include ../docker/tbsh03.yaml
-
-  - type: custom:state-switch
-    entity: mediaquery
+  # Column 2, Row 2
+  - type: custom:gap-card
     view_layout:
-      grid-area: c5r2
-    states:
-      "(min-width: 801px)":
-        type: vertical-stack
+      grid=area: c2r2
+      show:
+        mediaquery: "(min-width: 801px)"
 
-        cards:
-          - !include ../docker/pi4-srv.yaml
+  # Column 3, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c3r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 4, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c4r2
+      show:
+        mediaquery: "(min-width: 801px)"

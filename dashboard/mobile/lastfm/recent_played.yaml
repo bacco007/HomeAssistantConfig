@@ -1,0 +1,37 @@
+---
+type: custom:stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: last.fm - Recently Played
+    icon: fab:lastfm
+    icon_color: red
+  - type: custom:hui-element
+    card_type: custom:flex-table-card
+    entities:
+      include: sensor.lastfm_user_recenttracks
+    css:
+      table+: "border-collapse: collapse; padding: 0px;"
+      tbody tr td:nth-child(1): "width: 40%;"
+    sort_by: history
+    columns:
+      - name: Date
+        data: track
+        modify: Object.values(x.date)[1]
+        align: center
+      - name: Artist
+        data: track
+        modify: Object.values(x.artist)[1]
+      - name: Track
+        data: track
+        modify: x.name
+    card_mod:
+      style: |
+        ha-card {
+          overflow: auto;
+          padding-left: 20px;
+          padding-right: 20px;
+          padding-bottom: 20px
+        }
+        tbody tr:hover {
+          background-color: coral !important
+        }

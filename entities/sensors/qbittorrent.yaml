@@ -1,0 +1,18 @@
+---
+platform: custom_qbittorrent
+name: qbit
+host: !secret qbit_host
+username: !secret qbit_username
+password: !secret qbit_password
+monitored_variables:
+  - "active_torrents"
+  - "completed_torrents"
+  - "current_status"
+  - "download_speed"
+  - "downloading_torrents"
+  - "inactive_torrents"
+  - "paused_torrents"
+  - "resumed_torrents"
+  - "seeding_torrents"
+  - "total_torrents"
+  - "upload_speed"

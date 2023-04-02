@@ -1,140 +1,131 @@
 ---
-# lovelace_gen
 theme: noctis
 icon: mdi:solar-power-variant
 subview: true
 path: solar
 title: Solar
-badges: []
 type: custom:grid-layout
-layout:
-  # default
-  margin: 0
-  grid-gap: 0.5vw
-  grid-template-columns: 15% repeat(3, 1fr) 0
-  grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
-  grid-template-areas: |
-    "sidebar . . . ."
-    "sidebar  c2r2 c3r2 c4r2 ."
-    "sidebar  c2r3 c3r3 c4r3 ."
-    "footer footer footer footer  ."
-  mediaquery:
-    # phone
-    "(max-width: 800px)":
-      grid-gap: 1vw
-      grid-template-columns: 100%
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar"
-        "footer"
-        "c2r2"
-    "(max-width: 1400px)":
-      grid-gap: 1vw
-      grid-template-columns: 25% repeat(2, 1fr) 0
-      grid-template-rows: auto
-      grid-template-areas: |
-        "sidebar c2r2 c3r2"
-        "sidebar c4r2 c3r3"
-        "sidebar c4r3 ."
-        "footer footer footer"
+layout: !include includes/grid-3col.yaml
+badges: []
 cards:
-  ###
-  # SIDEBAR
-  # Column 1
-  ###
-  - type: vertical-stack
-    view_layout:
-      grid-area: sidebar
-    cards:
-      - !include snippets/header.yaml
-      - type: custom:state-switch
-        entity: mediaquery
-        states:
-          "(min-width: 801px)":
-            type: vertical-stack
+  ### Sidebar - Menu
+  - !include includes/menu.yaml
 
-            cards:
-              - !include snippets/menu.yaml
-  ###
-  # Footer
-  ###
+  ### Header - Left
+  - !include includes/header-left.yaml
 
-  - !include snippets/footer.yaml
+  ### Header - Right
+  - !include includes/header-right.yaml
 
+  ### Footer
+  - !include includes/footer.yaml
+
+  # Mobile Only
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r2
+      grid-area: mobile
     states:
       "(max-width: 800px)":
         type: vertical-stack
+
         cards:
           - !include snippets/solar.yaml
-          - !include ../energy/production_heatmap.yaml
-          - !include ../energy/graph_production.yaml
-          - !include ../energy/snippets/solcast.yaml
-          - !include ../energy/graph_forecast.yaml
-          - !include ../energy/graph_yield_year.yaml
+          - !include solar/production_heatmap.yaml
+          - !include solar/graph_production.yaml
+          - !include solar/snippets/solcast.yaml
+          - !include solar/graph_forecast.yaml
+          - !include solar/graph_yield_year.yaml
+          # - type: custom:tabbed-card
+          #   options: {}
+          #   styles:
+          #     --mdc-theme-primary: var(--label-badge-blue)
+          #     --mdc-tab-text-label-color-default: var(--label-badge-red)
+          #   tabs:
+          #     - attributes:
+          #         label: Sonarr
+          #         isMinWidthIndicator: true
+          #       card: !include tv-movies/partial_sonarr.yaml
+          #     - attributes:
+          #         label: Radarr
+          #         isMinWidthIndicator: true
+          #       card: !include tv-movies/partial_radarr.yaml
+          #     - attributes:
+          #         label: Plex
+          #         isMinWidthIndicator: true
+          #       card: !include tv-movies/partial_plex.yaml
 
+  # Column 1, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c2r2
+      grid-area: c1r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Today
-                view_layout:
-                  grid-column: 1/-1
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Today
+            view_layout:
+              grid-column: 1/-1
           - !include snippets/solar.yaml
-          - !include ../energy/production_heatmap.yaml
+          - !include solar/production_heatmap.yaml
 
+  # Column 2, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c3r2
+      grid-area: c2r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Yield
-                view_layout:
-                  grid-column: 1/-1
-          - !include ../energy/graph_production.yaml
-          - !include ../energy/graph_yield_year.yaml
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Yield
+            view_layout:
+              grid-column: 1/-1
+          - !include solar/graph_production.yaml
+          - !include solar/graph_yield_year.yaml
 
+  # Column 3, Row 1
   - type: custom:state-switch
     entity: mediaquery
     view_layout:
-      grid-area: c4r2
+      grid-area: c3r1
     states:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - type: custom:state-switch
-            entity: mediaquery
-            states:
-              "(min-width: 801px)":
-                type: "custom:button-card"
-                template: header_card_no_link
-                variables:
-                  name: Forecast
-                view_layout:
-                  grid-column: 1/-1
-          - !include ../energy/snippets/solcast.yaml
-          - !include ../energy/graph_forecast.yaml
+          - type: "custom:button-card"
+            template: header_card_no_link
+            variables:
+              name: Forecast
+            view_layout:
+              grid-column: 1/-1
+          - !include solar/snippets/solcast.yaml
+          - !include solar/graph_forecast.yaml
+
+  # Column 1, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 2, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c2r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 3, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c3r2
+      show:
+        mediaquery: "(min-width: 801px)"
