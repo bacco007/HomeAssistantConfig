@@ -821,7 +821,7 @@ found at http://polymer.github.io/PATENTS.txt
       d(), h();
     });
   },
-      p = function () {
+      p = function () {s
     o && !r.some(function (e) {
       return !!e.$$observationTargets.length;
     }) && (window.cancelAnimationFrame(o), o = void 0);
@@ -847,7 +847,7 @@ found at http://polymer.github.io/PATENTS.txt
     var e;"none" === (null === (e = this._card) || void 0 === e ? void 0 : e.style.display) ? this.classList.add("child-card-hidden") : this.classList.contains("child-card-hidden") && this.classList.remove("child-card-hidden");
   }setConfig(e) {
     if (!e.template) throw new Error("Missing template object in your config");const t = function () {
-      var e = document.querySelector("home-assistant");if (e = (e = (e = (e = (e = (e = (e = (e = e && e.shadowRoot) && e.querySelector("home-assistant-main")) && e.shadowRoot) && e.querySelector("app-drawer-layout, mwc-drawer partial-panel-resolver")) && e.shadowRoot || e) && e.querySelector("ha-panel-lovelace")) && e.shadowRoot) && e.querySelector("hui-root")) {
+      var e = document.querySelector("home-assistant");if (e = (e = (e = (e = (e = (e = (e = (e = e && e.shadowRoot) && e.querySelector("home-assistant-main")) && e.shadowRoot) && e.querySelector("app-drawer-layout, ha-drawer partial-panel-resolver")) && e.shadowRoot || e) && e.querySelector("ha-panel-lovelace")) && e.shadowRoot) && e.querySelector("hui-root")) {
         var t = e.lovelace;return t.current_view = e.___curView, t;
       }return null;
     }() || function () {
