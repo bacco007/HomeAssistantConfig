@@ -4363,7 +4363,7 @@ let Je = class extends nt {
                         t.querySelector("home-assistant-main")) &&
                       t.shadowRoot) &&
                     t.querySelector(
-                      "app-drawer-layout partial-panel-resolver, mwc-drawer partial-panel-resolver"
+                      "app-drawer-layout partial-panel-resolver, ha-drawer partial-panel-resolver"
                     )) &&
                     t.shadowRoot) ||
                   t) && t.querySelector("ha-panel-lovelace")) &&
