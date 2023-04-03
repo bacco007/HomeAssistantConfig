@@ -19,4 +19,3 @@ views:
   - !include mobile/untappd.yaml
   - !include mobile/weather.yaml
   - !include mobile/docker.yaml
-  - !include mobile/test.yaml
