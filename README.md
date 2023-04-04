@@ -69,11 +69,11 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, April 4th 2023_
+_Stats as at 05:00, Wednesday, April 5th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.0b5 | 463     | 3724         | 2567 | 101 |
+| 2023.4.0b6 | 462     | 3741         | 2559 | 101 |
 
 Type | Qty
 -- | --
@@ -92,10 +92,10 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2567
+Sensor | 2559
 Sun | 1
-Switch | 161
-Weather | 7
+Switch | 154
+Weather | 6
 Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
@@ -562,7 +562,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.astroweather](https://www.home-assistant.io/components/weather.astroweather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
-| [weather.darksky](https://www.home-assistant.io/components/weather.darksky) |
 | [weather.template](https://www.home-assistant.io/components/weather.template) |
 | [weather.weatherflow](https://www.home-assistant.io/components/weather.weatherflow) |
 | [weatherflow](https://www.home-assistant.io/components/weatherflow) |
