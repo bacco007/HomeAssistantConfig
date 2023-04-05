@@ -331,6 +331,10 @@ class EvalFunc:
         """Return the function name."""
         return self.name
 
+    def set_name(self, name):
+        """Set the function name."""
+        self.name = name
+
     async def eval_defaults(self, ast_ctx):
         """Evaluate the default function arguments."""
         self.defaults = []
@@ -341,12 +345,16 @@ class EvalFunc:
         for val in self.func_def.args.kw_defaults:
             self.kw_defaults.append({"ok": bool(val), "val": None if not val else await ast_ctx.aeval(val)})
 
-    async def trigger_init(self):
+    async def trigger_init(self, trig_ctx, func_name):
         """Initialize decorator triggers for this function."""
         trig_args = {}
         trig_decs = {}
+        trig_ctx_name = trig_ctx.get_name()
+        self.logger = logging.getLogger(LOGGER_PATH + "." + trig_ctx_name)
+        self.global_ctx.set_logger_name(trig_ctx_name)
+        self.global_ctx_name = trig_ctx_name
         got_reqd_dec = False
-        exc_mesg = f"function '{self.name}' defined in {self.global_ctx_name}"
+        exc_mesg = f"function '{func_name}' defined in {trig_ctx_name}"
         trig_decorators_reqd = {
             "event_trigger",
             "mqtt_trigger",
@@ -439,7 +447,7 @@ class EvalFunc:
             if dec_name == "service":
                 desc = self.doc_string
                 if desc is None or desc == "":
-                    desc = f"pyscript function {self.name}()"
+                    desc = f"pyscript function {func_name}()"
                 desc = desc.lstrip(" \n\r")
                 if desc.startswith("yaml"):
                     try:
@@ -449,7 +457,9 @@ class EvalFunc:
                         file_desc.close()
                     except Exception as exc:
                         self.logger.error(
-                            "Unable to decode yaml doc_string for %s(): %s", self.name, str(exc),
+                            "Unable to decode yaml doc_string for %s(): %s",
+                            func_name,
+                            str(exc),
                         )
                         raise exc
                 else:
@@ -466,7 +476,7 @@ class EvalFunc:
                         # use a new AstEval context so it can run fully independently
                         # of other instances (except for global_ctx which is common)
                         #
-                        ast_ctx = AstEval(f"{self.global_ctx_name}.{func_name}", self.global_ctx)
+                        ast_ctx = AstEval(f"{trig_ctx_name}.{func_name}", self.global_ctx)
                         Function.install_ast_funcs(ast_ctx)
                         func_args = {
                             "trigger_type": "service",
@@ -483,14 +493,14 @@ class EvalFunc:
 
                     return pyscript_service_handler
 
-                for srv_name in dec_args if dec_args else [f"{DOMAIN}.{self.name}"]:
+                for srv_name in dec_args if dec_args else [f"{DOMAIN}.{func_name}"]:
                     if type(srv_name) is not str or srv_name.count(".") != 1:
                         raise ValueError(f"{exc_mesg}: @service argument must be a string with one period")
                     domain, name = srv_name.split(".", 1)
                     if name in (SERVICE_RELOAD, SERVICE_JUPYTER_KERNEL_START):
                         raise SyntaxError(f"{exc_mesg}: @service conflicts with builtin service")
                     Function.service_register(
-                        self.global_ctx_name, domain, name, pyscript_service_factory(self.name, self)
+                        trig_ctx_name, domain, name, pyscript_service_factory(func_name, self)
                     )
                     async_set_service_schema(Function.hass, domain, name, service_desc)
                     self.trigger_service.add(srv_name)
@@ -505,15 +515,15 @@ class EvalFunc:
         if not got_reqd_dec and len(trig_decs) > 0:
             self.logger.error(
                 "%s defined in %s: needs at least one trigger decorator (ie: %s)",
-                self.name,
-                self.global_ctx_name,
+                func_name,
+                trig_ctx_name,
                 ", ".join(sorted(trig_decorators_reqd)),
             )
             return
 
         if len(trig_decs) == 0:
             if len(self.trigger_service) > 0:
-                self.global_ctx.trigger_register(self)
+                trig_ctx.trigger_register(self)
             return
 
         #
@@ -535,15 +545,13 @@ class EvalFunc:
                 got_trig = True
             if not got_trig:
                 break
-            for dec_name in {"state_active", "time_active", "task_unique"}:
+            for dec_name in ["state_active", "time_active", "task_unique"]:
                 if dec_name in trig_decs:
                     trig_args[dec_name] = trig_decs[dec_name][0]
 
-            self.trigger.append(
-                self.global_ctx.get_trig_info(f"{self.global_ctx_name}.{self.name}", trig_args)
-            )
+            self.trigger.append(trig_ctx.get_trig_info(f"{trig_ctx_name}.{func_name}", trig_args))
 
-        if self.global_ctx.trigger_register(self):
+        if trig_ctx.trigger_register(self):
             self.trigger_start()
 
     def trigger_start(self):
@@ -574,7 +582,7 @@ class EvalFunc:
                 and isinstance(dec.func, ast.Name)
                 and dec.func.id in TRIG_SERV_DECORATORS
             ):
-                args = [await ast_ctx.aeval(arg) for arg in dec.args]
+                args = await ast_ctx.eval_elt_list(dec.args)
                 kwargs = {keyw.arg: await ast_ctx.aeval(keyw.value) for keyw in dec.keywords}
                 dec_trig.append([dec.func.id, args, kwargs if len(kwargs) > 0 else None])
             elif isinstance(dec, ast.Name) and dec.id in TRIG_SERV_DECORATORS:
@@ -597,8 +605,8 @@ class EvalFunc:
             args.append(self.func_def.args.vararg.arg)
         if self.func_def.args.kwarg:
             args.append(self.func_def.args.kwarg.arg)
-        for i in range(len(self.func_def.args.kwonlyargs)):
-            args.append(self.func_def.args.kwonlyargs[i].arg)
+        for kwonlyarg in self.func_def.args.kwonlyargs:
+            args.append(kwonlyarg.arg)
         nonlocal_names = set()
         global_names = set()
         var_names = set(args)
@@ -671,8 +679,8 @@ class EvalFunc:
         if args is None:
             args = []
         kwargs = kwargs.copy() if kwargs else {}
-        for i in range(len(self.func_def.args.args)):
-            var_name = self.func_def.args.args[i].arg
+        for i, func_def_arg in enumerate(self.func_def.args.args):
+            var_name = func_def_arg.arg
             val = None
             if i < len(args):
                 val = args[i]
@@ -688,8 +696,8 @@ class EvalFunc:
                     f"{self.name}() missing {self.num_posn_arg - i} required positional arguments"
                 )
             sym_table[var_name] = val
-        for i in range(len(self.func_def.args.kwonlyargs)):
-            var_name = self.func_def.args.kwonlyargs[i].arg
+        for i, kwonlyarg in enumerate(self.func_def.args.kwonlyargs):
+            var_name = kwonlyarg.arg
             if var_name in kwargs:
                 val = kwargs[var_name]
                 del kwargs[var_name]
@@ -806,6 +814,10 @@ class EvalFuncVar:
     def get_name(self):
         """Return the function name."""
         return self.func.get_name()
+
+    def set_name(self, name):
+        """Set the function name."""
+        self.func.set_name(name)
 
     def set_ast_ctx(self, ast_ctx):
         """Set the ast context."""
@@ -1115,18 +1127,23 @@ class AstEval:
         for dec_func in dec_other:
             func = await self.call_func(dec_func, None, func)
             if isinstance(func, EvalFuncVar):
+                # set the function name back to its original instead of the decorator function we just called
+                func.set_name(name)
                 func = func.remove_func()
                 dec_trig += func.decorators
+            elif isinstance(func, EvalFunc):
+                func.set_name(name)
         self.dec_eval_depth -= 1
         if isinstance(func, EvalFunc):
             func.decorators = dec_trig
             if self.dec_eval_depth == 0:
                 func.trigger_stop()
-                await func.trigger_init()
+                await func.trigger_init(self.global_ctx, name)
                 func_var = EvalFuncVar(func)
+                func_var.set_ast_ctx(self)
             else:
                 func_var = EvalFuncVar(func)
-            func_var.set_ast_ctx(self)
+                func_var.set_ast_ctx(self)
         else:
             func_var = func
 
@@ -1339,7 +1356,7 @@ class AstEval:
         """Recursive assignment."""
         if isinstance(lhs, ast.Tuple):
             try:
-                vals = [*(val.__iter__())]
+                vals = [*(iter(val))]
             except Exception:
                 raise TypeError("cannot unpack non-iterable object")  # pylint: disable=raise-missing-from
             got_star = 0
@@ -1361,7 +1378,8 @@ class AstEval:
                     star_len = len(vals) - len(lhs.elts) + 1
                     star_name = lhs_elt.value.id
                     await self.recurse_assign(
-                        ast.Name(id=star_name, ctx=ast.Store()), vals[val_idx : val_idx + star_len],
+                        ast.Name(id=star_name, ctx=ast.Store()),
+                        vals[val_idx : val_idx + star_len],
                     )
                     val_idx += star_len
                 else:
@@ -1678,16 +1696,16 @@ class AstEval:
     async def ast_boolop(self, arg):
         """Evaluate boolean operators and and or."""
         if isinstance(arg.op, ast.And):
-            val = 1
+            val = True
             for arg1 in arg.values:
                 this_val = await self.aeval(arg1)
-                if this_val == 0:
-                    return 0
+                if not this_val:
+                    return this_val
                 val = this_val
             return val
         for arg1 in arg.values:
             val = await self.aeval(arg1)
-            if val != 0:
+            if val:
                 return val
         return 0
 
@@ -1889,7 +1907,7 @@ class AstEval:
             # it is later garbage collected
             #
             inst_weak = weakref.ref(inst)
-            for name in inst.__dir__():
+            for name in dir(inst):
                 value = getattr(inst, name)
                 if type(value) is not EvalFuncVar:
                     continue
@@ -2210,12 +2228,14 @@ class AstEval:
                 words.add(name)
         return words
 
-    async def eval(self, new_state_vars=None):
+    async def eval(self, new_state_vars=None, merge_local=False):
         """Execute parsed code, with the optional state variables added to the scope."""
         self.exception = None
         self.exception_obj = None
         self.exception_long = None
         if new_state_vars:
+            if not merge_local:
+                self.local_sym_table = {}
             self.local_sym_table.update(new_state_vars)
         if self.ast:
             try:
