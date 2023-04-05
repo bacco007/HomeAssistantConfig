@@ -13,6 +13,7 @@ DEFAULT_ATTRIBUTION: Final = "NSW Rural Fire Service"
 DEFAULT_DATA_FEED: Final = "standard"
 
 DEFAULT_CONVERT_NO_RATING: Final = False
+DEFAULT_ENCODING: Final = "utf-8"
 DEFAULT_FORCE_UPDATE: Final = True
 DEFAULT_METHOD: Final = "GET"
 DEFAULT_NAME_PREFIX: Final = "Fire danger"
