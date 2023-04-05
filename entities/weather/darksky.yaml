@@ -1,4 +1,0 @@
----
-# https://www.home-assistant.io/integrations/weather.darksky/
-platform: darksky
-api_key: !secret darksky_apikey
