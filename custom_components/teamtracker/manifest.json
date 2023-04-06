@@ -1,12 +1,12 @@
 {
-    "domain": "teamtracker",
-    "name": "Team Tracker",
-    "codeowners": ["@vasqued2"],
-    "config_flow": true,
-    "dependencies": [],
-    "documentation": "https://github.com/vasqued2/ha-teamtracker",
-    "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/vasqued2/ha-teamtracker/issues",
-    "requirements": ["arrow", "aiofiles"],
-    "version": "0.1"
-  }
+  "domain": "teamtracker",
+  "name": "Team Tracker",
+  "codeowners": ["@vasqued2"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/vasqued2/ha-teamtracker",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/vasqued2/ha-teamtracker/issues",
+  "requirements": ["arrow", "aiofiles"],
+  "version": "0.1"
+}
