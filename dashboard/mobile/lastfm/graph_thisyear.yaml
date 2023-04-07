@@ -1,0 +1,51 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.lastfm_user_playcount
+    primary_info: name
+    secondary_info: none
+    name: Play Count (This Year)
+    fill_container: true
+    icon: fab:lastfm
+    icon_color: red
+  - type: custom:apexcharts-card
+    graph_span: 1year
+    span:
+      end: day
+      offset: +1d
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    apex_config:
+      chart:
+        height: 200
+      legend:
+        show: false
+      yaxis:
+        forceNiceScale: true
+        decimalsInFloat: false
+    all_series_config:
+      stroke_width: 3
+      curve: smooth
+      extend_to: now
+      unit: ""
+      group_by:
+        func: max
+        duration: 1d
+    series:
+      - entity: sensor.archive_last_fm_playcount_365day
+        color: var(--label-badge-red)
+        data_generator: |
+          let res = [];
+          for (const [key, value] of
+              Object.entries(entity.attributes)) {
+              res.push([new Date(key).getTime(), value]);
+          }
+          return res.sort((a, b) => { return a[0] - b[0] });
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }

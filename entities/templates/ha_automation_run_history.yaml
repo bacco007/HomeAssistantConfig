@@ -1,0 +1,31 @@
+---
+sensor:
+  - name: ha_automation_run_history
+    unique_id: ha_automation_run_history
+    state: >
+      {% for state in (states.automation
+        |selectattr('attributes.last_triggered', 'defined')
+        | rejectattr('attributes.last_triggered', 'in', ['None', 'none', 'unknown'])
+        | selectattr('attributes.last_triggered')
+        | selectattr('state', 'ne', 'unavailable')
+        | sort(attribute='attributes.last_triggered', reverse=true)) [0:1] -%}
+        {% if state.attributes.last_triggered and (now() - state.attributes.last_triggered).total_seconds() < 43200 %}
+          {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M', true)) -%}
+          {{state.name}} ({{t}})
+        {% endif -%}
+      {% endfor %}
+    attributes:
+      history: >
+        {% set val = namespace(data=[]) %}
+        {%- for state in (states.automation
+          |selectattr('attributes.last_triggered', 'defined')
+          | rejectattr('attributes.last_triggered', 'in', ['None', 'none', 'unknown'])
+          | selectattr('attributes.last_triggered')
+          | selectattr('state', 'ne', 'unavailable')
+          | sort(attribute='attributes.last_triggered', reverse=true)) [0:40] -%}
+          {%- if state.attributes.last_triggered and (now() - state.attributes.last_triggered).total_seconds() < 43200 -%}
+            {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M', true)) -%}
+            {%- set val.data = val.data + [{ "time": t, "automation": state.name }] -%}
+          {% endif -%}
+        {%- endfor-%}
+        {{ val.data }}

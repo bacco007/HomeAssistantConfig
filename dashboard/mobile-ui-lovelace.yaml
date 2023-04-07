@@ -10,6 +10,7 @@ views:
   - !include mobile/homeassistant.yaml
   - !include mobile/me.yaml
   - !include mobile/media.yaml
+  - !include mobile/music.yaml
   - !include mobile/network.yaml
   - !include mobile/news.yaml
   - !include mobile/solar.yaml
@@ -19,3 +20,4 @@ views:
   - !include mobile/untappd.yaml
   - !include mobile/weather.yaml
   - !include mobile/docker.yaml
+  - !include mobile/devices.yaml

@@ -1,0 +1,44 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.lastfm_user_playcount
+    primary_info: name
+    secondary_info: none
+    name: Play Count (Today + Yesterday)
+    fill_container: true
+    icon: fab:lastfm
+    icon_color: red
+  - type: custom:apexcharts-card
+    graph_span: 24h
+    span:
+      end: day
+    now:
+      show: true
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    apex_config:
+      chart:
+        height: 200
+      legend:
+        show: false
+      yaxis:
+        forceNiceScale: true
+        decimalsInFloat: false
+    all_series_config:
+      stroke_width: 3
+      type: line
+      fill_raw: last
+    series:
+      - entity: sensor.lastfm_user_playcount
+        color: var(--label-badge-red)
+      - entity: sensor.lastfm_user_playcount
+        color: var(--label-badge-yellow)
+        offset: -1d
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }

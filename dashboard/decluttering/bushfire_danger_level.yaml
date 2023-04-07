@@ -1,0 +1,89 @@
+---
+# Bushfire Danger Level
+
+bushfire_danger_level:
+  default:
+    - entity: sensor.fire_danger_northern_slopes_danger_level_today
+  card:
+    cards:
+      - card:
+          entity: "[[entity]]"
+          image: /local/icons/fire_danger/fdr-no-rating.svg
+          show_name: false
+          show_state: false
+          type: picture-entity
+          card_mod:
+            style: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        conditions:
+          - entity: "[[entity]]"
+            state: None
+        type: conditional
+      - card:
+          entity: "[[entity]]"
+          image: /local/icons/fire_danger/fdr-moderate.svg
+          show_name: false
+          show_state: false
+          type: picture-entity
+          card_mod:
+            style: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        conditions:
+          - entity: "[[entity]]"
+            state: Moderate
+        type: conditional
+      - card:
+          entity: "[[entity]]"
+          image: /local/icons/fire_danger/fdr-high.svg
+          show_name: false
+          show_state: false
+          type: picture-entity
+          card_mod:
+            style: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        conditions:
+          - entity: "[[entity]]"
+            state: High
+        type: conditional
+      - card:
+          entity: "[[entity]]"
+          image: /local/icons/fire_danger/fdr-extreme.svg
+          show_name: false
+          show_state: false
+          type: picture-entity
+          card_mod:
+            style: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        conditions:
+          - entity: "[[entity]]"
+            state: Extreme
+        type: conditional
+      - card:
+          entity: "[[entity]]"
+          image: /local/icons/fire_danger/fdr-catastrophic.svg
+          show_name: false
+          show_state: false
+          type: picture-entity
+          card_mod:
+            style: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        conditions:
+          - entity: "[[entity]]"
+            state: Catastrophic
+        type: conditional
+    type: vertical-stack

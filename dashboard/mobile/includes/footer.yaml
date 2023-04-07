@@ -300,5 +300,5 @@ cards:
             position: sticky;
             z-index: 999;
             position: -webkit-sticky;
-            bottom: 12px;
+            bottom: 0px;
           }

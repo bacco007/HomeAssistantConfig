@@ -18,4 +18,4 @@ sensor:
         {% set new = [{
           "event": trigger.event.event_type[14:],
           "time": now().isoformat() }] %}
-        {{ (new + current)[:10] }}
+        {{ (new + current)[:20] }}

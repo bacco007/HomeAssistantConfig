@@ -1,0 +1,35 @@
+---
+# Bushfire Fireban
+
+bushfire_fireban:
+  default:
+    - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_today
+    - name: Today
+  card:
+    type: custom:mushroom-template-card
+    primary: "[[name]]"
+    secondary: "Fire Ban: {{states(entity)}}"
+    icon: |-
+      {% if states(config.entity) == 'on' %}
+      mdi:fire-off
+      {% elif states(config.entity) == 'off' %}
+      mdi:fire
+      {% else %}
+      mdi:gate
+      {% endif %}
+    entity: "[[entity]]"
+    icon_color: |-
+      {% if states(entity) == 'off' %}
+        green
+      {% elif states(entity) == 'on' %}
+        red
+      {% else %}
+        gray
+      {% endif %}
+    fill_container: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none

@@ -1,0 +1,7 @@
+{% macro plural(name) %}
+  {% if name[(name|length|int 1):] == "y" %}
+  {{ name[:1] }}ies
+{% else %}
+  {{ name }}s
+{% endif %}
+{% endmacro %}

@@ -1,6 +1,7 @@
 ---
 platform: command_line
+unique_id: count_yaml_lines
 name: "Count YAML Lines"
-command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
+command: find . -name '*.yaml' -not -path "./custom_components/*" -type f -print0 | xargs -0 cat | sed '/^\s*#/d;/^\s*$/d' | wc -l
 unit_of_measurement: Lines
 unique_id: count_yaml_lines

@@ -7,3 +7,4 @@ children:
   - media_player.homepod_mini_bedroom_left
   - media_player.homepod_mini_bedroom_right
   - media_player.office_sonos
+  - media_player.spotify_thomas_baxter

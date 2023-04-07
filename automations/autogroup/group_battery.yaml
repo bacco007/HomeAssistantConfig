@@ -1,0 +1,20 @@
+---
+alias: AutoGroup - Battery Devices
+id: autogroup_battery_devices
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: "/2"
+action:
+  - service: group.set
+    data_template:
+      object_id: battery_devices
+      entities: >-
+        {%-
+          for state in states.sensor
+            if is_state_attr(state.entity_id, 'device_class', 'battery') and
+            (state.entity_id.endswith("_battery") or state.entity_id.endswith("_power"))
+        %}
+        {{ state.entity_id }}{%- if not loop.last -%}, {%- endif -%}
+        {%- endfor %}

@@ -1,0 +1,105 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:button-card
+    template: header_card
+    variables:
+      name: HDHomeRun
+      label: Manage
+      arrow: mdi:arrow-top-right
+      action: url
+      link: http://192.168.1.120
+    view_layout:
+      grid-column: 1/-1
+  - type: custom:mushroom-update-card
+    entity: update.1251b32b_update
+    name: HDHomeRun Firmware
+    icon: mdi:television-box
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    fill_container: true
+  - square: false
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_channel_count
+        name: Channels
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        icon_color: pink
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_favourite_channels
+        name: Favourites
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        icon_color: green
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_disabled_channels
+        name: Disabled
+        double_tap_action:
+          action: none
+        hold_action:
+          action: none
+        tap_action:
+          action: none
+        icon_color: deep-orange
+    columns: 3
+  - square: false
+    columns: 2
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: button.1251b32b_channel_scan
+        name: Channel Scan
+        icon_color: grey
+        fill_container: false
+        tap_action:
+          action: toggle
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        secondary_info: none
+      - type: custom:mushroom-entity-card
+        entity: button.1251b32b_restart
+        name: Restart
+        double_tap_action:
+          action: none
+        hold_action:
+          action: none
+        tap_action:
+          action: toggle
+        icon_color: grey
+        secondary_info: none
+  - square: false
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_tuner0
+        name: Tuner 1
+        fill_container: false
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_tuner1
+        name: Tuner 2
+        fill_container: false
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_tuner2
+        name: Tuner 3
+        fill_container: false
+      - type: custom:mushroom-entity-card
+        entity: sensor.1251b32b_tuner3
+        name: Tuner 4
+        fill_container: false
+    columns: 2

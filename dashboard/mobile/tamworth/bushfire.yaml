@@ -1,0 +1,56 @@
+---
+type: vertical-stack
+cards:
+  - type: "custom:button-card"
+    template: header_card_no_link
+    variables:
+      name: Bushfire Danger
+    view_layout:
+      grid-column: 1/-1
+  - type: grid
+    columns: 2
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: bushfire_fireban
+            variables:
+              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_today
+              - name: Today
+          - type: custom:decluttering-card
+            template: bushfire_danger_level
+            variables:
+              - entity: sensor.fire_danger_northern_slopes_danger_level_today
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: bushfire_fireban
+            variables:
+              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_tomorrow
+              - name: Tomorrow
+          - type: custom:decluttering-card
+            template: bushfire_danger_level
+            variables:
+              - entity: sensor.fire_danger_northern_slopes_danger_level_tomorrow
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: bushfire_fireban
+            variables:
+              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_day_3
+              - name: Day 3
+          - type: custom:decluttering-card
+            template: bushfire_danger_level
+            variables:
+              - entity: sensor.fire_danger_northern_slopes_danger_level_day_3
+      - type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: bushfire_fireban
+            variables:
+              - entity: binary_sensor.fire_danger_northern_slopes_fire_ban_day_4
+              - name: Day 4
+          - type: custom:decluttering-card
+            template: bushfire_danger_level
+            variables:
+              - entity: sensor.fire_danger_northern_slopes_danger_level_day_4

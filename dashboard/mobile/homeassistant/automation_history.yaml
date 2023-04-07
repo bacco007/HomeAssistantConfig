@@ -1,0 +1,55 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    hui-section-row $: |
+      .divider { display: none; }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      primary: Automation Run History
+      secondary: >
+        {{ states('sensor.ha_automation_run_history') }}
+      icon: mdi:home-assistant
+      icon_color: blue
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none !important;
+          }
+    padding: 0
+    entities:
+      - type: custom:hui-element
+        card_type: custom:flex-table-card
+        entities:
+          include: sensor.ha_automation_run_history
+        css:
+          table+: "border-collapse: collapse;"
+        columns:
+          - name: Time
+            data: history
+            modify: x.time
+          - name: Automation
+            data: history
+            modify: x.automation
+        card_mod:
+          style: |
+            ha-card {
+              overflow: auto;
+              padding-left: 20px;
+              padding-right: 20px;
+              padding-bottom: 20px
+            }
+            tbody tr:hover {
+              background-color: coral !important
+            }

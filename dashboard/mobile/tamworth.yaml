@@ -75,6 +75,13 @@ cards:
                   type: vertical-stack
                   cards:
                     - !include tamworth/dams.yaml
+              - attributes:
+                  label: Bushfire
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include tamworth/bushfire.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -153,11 +160,15 @@ cards:
               - !include tamworth/dams.yaml
 
   # Column 1, Row 2
-  - type: custom:gap-card
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
-      grid=area: c1r2
-      show:
-        mediaquery: "(min-width: 801px)"
+      grid-area: c1r2
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include tamworth/bushfire.yaml
 
   # Column 2, Row 2
   - type: custom:gap-card

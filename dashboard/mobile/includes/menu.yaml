@@ -92,22 +92,49 @@ cards:
                 width: 100%;
               }
 
-      # Home Assistant
+      # Devices
       - type: custom:mushroom-template-card
         primary: Docker
         secondary: ""
         multiline_secondary: true
-        # badge_icon: >
-        #   {% if (states('sensor.ha_update_counter_hacs') | int + states('sensor.ha_update_counter_ha') | int) > 0 %}
-        #     mdi:update
-        #   {% endif %}
-        # badge_color: red
+        badge_icon: >
+          {% if (states('sensor.wud_container_update_count') | int) > 0 %}
+            mdi:update
+          {% endif %}
+        badge_color: red
         icon: mdi:docker
         icon_color: grey
         layout: horizontal
         tap_action:
           action: navigate
           navigation_path: docker
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
+
+      # Music
+      - type: custom:mushroom-template-card
+        primary: Devices
+        secondary: ""
+        multiline_secondary: true
+        icon: mdi:devices
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: devices
         hold_action:
           action: none
         double_tap_action:
@@ -246,6 +273,33 @@ cards:
                     ha-card {
                       --ha-card-border-width: 0;
                     }
+
+      # Music
+      - type: custom:mushroom-template-card
+        primary: Music
+        secondary: ""
+        multiline_secondary: true
+        icon: mdi:music
+        icon_color: grey
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: music
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
 
       # News
       - type: custom:mushroom-template-card

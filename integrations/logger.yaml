@@ -34,6 +34,7 @@ logger:
       - "Updating spotify media_player took longer than the scheduled update interval 0:00:30"
     homeassistant.helpers.entity:
       - "Update of media_player.spotify_thomas_baxter is taking over 10 seconds"
+      - "Expected positive event duration"
     spotipy.client:
       - "Max Retries reached"
     custom_components.ical:

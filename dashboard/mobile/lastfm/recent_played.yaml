@@ -12,12 +12,7 @@ cards:
     css:
       table+: "border-collapse: collapse; padding: 0px;"
       tbody tr td:nth-child(1): "width: 40%;"
-    sort_by: history
     columns:
-      - name: Date
-        data: track
-        modify: Object.values(x.date)[1]
-        align: center
       - name: Artist
         data: track
         modify: Object.values(x.artist)[1]

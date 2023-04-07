@@ -1,0 +1,8 @@
+---
+platform: statistics
+entity_id: counter.logs_error_counter
+name: statistics_logs_error_counter_hourly
+state_characteristic: change
+sampling_size: 36000
+max_age:
+  minutes: 60

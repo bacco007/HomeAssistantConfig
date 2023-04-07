@@ -86,18 +86,33 @@ WHERE table_schema = 'homeassistant'
 GROUP BY table_name
 ORDER BY table_name;
 
-select
-  entity_id
-, b.cnt
-, round(b.cnt * 100 / (select count(*) from states), 2) as "cnt_pct"
-, b.bytes
-, round(b.bytes * 100 / (select sum(length(shared_attrs)) from state_attributes), 2) as "bytes_pct"
-from (
-  select entity_id, count(*) as "cnt", sum(length(shared_attrs)) as "bytes"
-  from ( select distinct s.entity_id, sa.attributes_id, sa.shared_attrs
-         from states s join state_attributes sa on sa.attributes_id = s.attributes_id
-       ) a
-  group by entity_id
-) b
-order by bytes desc
-limit 20;
+SELECT
+  COUNT(state_id) AS cnt,
+  COUNT(state_id) * 100 / (
+    SELECT
+      COUNT(state_id)
+    FROM
+      states
+  ) AS cnt_pct,
+  SUM(
+    LENGTH(state_attributes.shared_attrs)
+  ) AS bytes,
+  SUM(
+    LENGTH(state_attributes.shared_attrs)
+  ) * 100 / (
+    SELECT
+      SUM(
+        LENGTH(state_attributes.shared_attrs)
+      )
+    FROM
+      states
+  ) AS bytes_pct,
+  states_meta.entity_id
+FROM
+  states
+LEFT JOIN state_attributes ON (states.attributes_id=state_attributes.attributes_id)
+LEFT JOIN states_meta ON (states.metadata_id=states_meta.metadata_id)
+GROUP BY
+  states.metadata_id
+ORDER BY
+  cnt DESC
