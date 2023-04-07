@@ -13,8 +13,6 @@ recorder:
       - sensor.unifi_networkstats_switchap
       - sensor.load_power
       - sensor.tamhospital_waitingtime
-    # entity_globs:
-    #   - sensor.tbsh1_monitordocker*
   exclude:
     entities:
       - sun.sun
@@ -53,8 +51,6 @@ recorder:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
       - sensor.date*
-      # - sensor.here_travel_*
-      # - sensor.waze_travel_*
       - sensor.plexstats_*
       - sensor.rssfeed_*
       - sensor.time*
@@ -68,7 +64,6 @@ recorder:
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
-      # - sensor.tbsh1*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*

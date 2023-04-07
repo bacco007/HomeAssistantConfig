@@ -69,34 +69,34 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Friday, April 7th 2023_
+_Stats as at 05:00, Saturday, April 8th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.0 | 462     | 3765         | 2570 | 101 |
+| 2023.4.1 | 465     | 3752         | 2575 | 101 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 101
-Binary Sensor | 176
+Binary Sensor | 186
 Camera | 5
-Device Tracker | 82
+Device Tracker | 75
 Group | 1
 Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 19
+Media Player | 17
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2570
+Sensor | 2575
 Sun | 1
-Switch | 159
+Switch | 162
 Weather | 6
-Zone | 5
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -276,6 +276,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
+| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
@@ -386,6 +387,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
+| [sensor.custom_qbittorrent](https://www.home-assistant.io/components/sensor.custom_qbittorrent) |
 | [sensor.daily](https://www.home-assistant.io/components/sensor.daily) |
 | [sensor.derivative](https://www.home-assistant.io/components/sensor.derivative) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
@@ -502,6 +504,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch](https://www.home-assistant.io/components/switch) |
 | [switch.adaptive_lighting](https://www.home-assistant.io/components/switch.adaptive_lighting) |
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
+| [switch.custom_qbittorrent](https://www.home-assistant.io/components/switch.custom_qbittorrent) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.eufy_security](https://www.home-assistant.io/components/switch.eufy_security) |
@@ -617,6 +620,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
 - [Proxmox VE](https://github.com/dougiteixeira/proxmoxve)
 - [Pyscript Python scripting](https://github.com/custom-components/pyscript)
+- [Qbittorrent_custom](https://github.com/radsonpatrick/qbittorrent_custom_component)
 - [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
 - [Rocket Launch Live - Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
 - [SamsungTV Smart](https://github.com/ollo69/ha-samsungtv-smart)

@@ -48,50 +48,6 @@ cards:
                   entity_temperature: sensor.tempest_st_00056115_temperature
                   entity_weather: weather.east_tamworth_hourly
 
-      # [Row] Controls
-      # - type: "custom:layout-card"
-      #   layout_type: "custom:grid-layout"
-      #   layout:
-      #     margin: 0
-      #     grid-template-columns: "repeat(auto-fit, [col-start] minmax(348px, 1fr) [col-end])"
-      #   cards:
-      #     - type: "custom:button-card"
-      #       template: header_card_no_link
-      #       variables:
-      #         name: CONTROLS
-      #       view_layout:
-      #         grid-column: 1/-1
-      #     - type: vertical-stack
-      #       in_card: true
-      #       cards:
-      #         - type: "custom:mushroom-fan-card"
-      #           entity: fan.bedroom
-      #           icon_animation: true
-      #           show_oscillate_control: true
-      #           show_percentage_control: true
-      #           hold_action:
-      #             action: more-info
-      #           icon: ""
-      #     - type: vertical-stack
-      #       in_card: true
-      #       cards:
-      #         - type: "custom:mushroom-entity-card"
-      #           entity: switch.spare_power
-      #           tap_action:
-      #             action: toggle
-      #           hold_action:
-      #             action: more-info
-      #     - type: vertical-stack
-      #       in_card: true
-      #       cards:
-      #         - type: "custom:mini-climate"
-      #           entity: climate.bedroom
-      #           temperature:
-      #             unit: °C
-      #             round: 1
-      #   view_layout:
-      #     grid-column: 1/-1
-
       # [Column] Comfort
       - type: vertical-stack
         cards:
@@ -504,23 +460,6 @@ cards:
                   chart:
                     height: 160px
 
-          # - type: history-graph
-          #   entities:
-          #     - entity: sensor.bedroom_humidifier_power
-          #   hours_to_show: 36
-          #   title: Bedroom Humidifier
-          #   card_mod:
-          #     style: >
-          #       ha-card {overflow: hidden;}
-          #       .content {padding: 0 0 16px 0 !important; margin: 0 -10px 0
-          #       -16px; width: calc(75% + 16px); border-right: 1px dashed red;}
-          #       .card-header {
-          #         padding: 16px !important;
-          #         margin: 0 !important;
-          #         font-size: var(--body-font-size);
-          #         font-weight: var(--body-font-weight);
-          #         line-height: var(--body-line-height);
-          #       }
       # [Column] Air Quality
       - type: vertical-stack
         cards:
