@@ -14,169 +14,177 @@ cards:
       - points_per_hour: 1
       - icon: fab:lastfm
 
+  - type: vertical-stack
+    cards:
+      - !include ../tamworth/nbn_fttnupgrade.yaml
+
   - !include ../../snippets/media_currently_playing_details.yaml
 
-  - type: "custom:swipe-card"
-    parameters:
-      direction: vertical
-      autoHeight: true
-      height: 112
-      effect: cube
-      autoplay:
-        delay: 10000
-      cubeEffect:
-        - slideShadows: false
-    # view_layout:
-    #   grid-column: 1/3
-    #   grid-row: 3/4
+  - type: vertical-stack
     cards:
-      - type: "custom:button-card"
-        template:
-          - live_tile_media_player
-        entity: media_player.office_sonos
-        icon: "phu:sonos-one"
-        name: Sonos (Office)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_media_player
-        entity: media_player.bedroom_symfonisk
-        icon: "phu:symfonisk-lampe"
-        name: Sonos (Bedroom)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_media_player
-        entity: media_player.homepod_mini_bedroom_left
-        icon: "mdi:album"
-        name: Homepod Mini (Left)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_media_player
-        entity: media_player.homepod_mini_bedroom_right
-        icon: "mdi:album"
-        name: Homepod Mini (Right)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_media_player
-        entity: media_player.bedroom_apple_tv
-        icon: "ios:tv-circle-fill"
-        name: Apple TV
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_media_player
-        entity: media_player.spotify_thomas_baxter
-        icon: "mdi:spotify"
-        name: Spotify
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_card
-          - live_tile_conditional_media
-        entity: sensor.frontpage_plex_unwatched_tv
-        icon: "mdi:plex"
-        name: Plex (New, Unwatched TV)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_card
-          - live_tile_conditional_media
-        entity: sensor.frontpage_plex_unwatched_movies
-        icon: "mdi:plex"
-        name: Plex (New, Unwatched Movies)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_card
-          - live_tile_conditional_media
-        entity: sensor.frontpage_sonarr_upcoming
-        icon: "mdi:television"
-        name: Sonarr (Upcoming TV)
-        variables:
-          aspect_ratio: 4/1
-      - type: "custom:button-card"
-        template:
-          - live_tile_card
-          - live_tile_conditional_media
-        entity: sensor.frontpage_radarr_upcoming
-        icon: "mdi:filmstrip"
-        name: Radarr (Upcoming Movies)
-        variables:
-          aspect_ratio: 4/1
-      - type: custom:mushroom-template-card
-        primary: last.fm Top Artists
-        secondary: >
-          {{ state_attr('sensor.last_fm_top_artists', 'artist_1') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_1_playcount') }} Plays)
+      - type: "custom:swipe-card"
+        parameters:
+          direction: vertical
+          autoHeight: true
+          height: 112
+          effect: cube
+          autoplay:
+            delay: 10000
+          cubeEffect:
+            - slideShadows: false
+        # view_layout:
+        #   grid-column: 1/3
+        #   grid-row: 3/4
+        cards:
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.office_sonos
+            icon: "phu:sonos-one"
+            name: Sonos (Office)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.bedroom_symfonisk
+            icon: "phu:symfonisk-lampe"
+            name: Sonos (Bedroom)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.homepod_mini_bedroom_left
+            icon: "mdi:album"
+            name: Homepod Mini (Left)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.homepod_mini_bedroom_right
+            icon: "mdi:album"
+            name: Homepod Mini (Right)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.bedroom_apple_tv
+            icon: "ios:tv-circle-fill"
+            name: Apple TV
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_media_player
+            entity: media_player.spotify_thomas_baxter
+            icon: "mdi:spotify"
+            name: Spotify
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: sensor.frontpage_plex_unwatched_tv
+            icon: "mdi:plex"
+            name: Plex (New, Unwatched TV)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: sensor.frontpage_plex_unwatched_movies
+            icon: "mdi:plex"
+            name: Plex (New, Unwatched Movies)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: sensor.frontpage_sonarr_upcoming
+            icon: "mdi:television"
+            name: Sonarr (Upcoming TV)
+            variables:
+              aspect_ratio: 4/1
+          - type: "custom:button-card"
+            template:
+              - live_tile_card
+              - live_tile_conditional_media
+            entity: sensor.frontpage_radarr_upcoming
+            icon: "mdi:filmstrip"
+            name: Radarr (Upcoming Movies)
+            variables:
+              aspect_ratio: 4/1
+          - type: custom:mushroom-template-card
+            primary: last.fm Top Artists
+            secondary: >
+              {{ state_attr('sensor.last_fm_top_artists', 'artist_1') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_1_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_artists', 'artist_2') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_2_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_artists', 'artist_2') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_2_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_artists', 'artist_3') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_3_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_artists', 'artist_3') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_3_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_artists', 'artist_4') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_4_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_artists', 'artist_4') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_4_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_artists', 'artist_5') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_5_playcount') }} Plays)
-        icon: fab:lastfm
-        icon_color: "red"
-        fill_container: true
-        multiline_secondary: true
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-      - type: custom:mushroom-template-card
-        primary: last.fm Top Albums
-        secondary: >
-          {{ state_attr('sensor.last_fm_top_albums', 'album_1') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_1_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_artists', 'artist_5') }} ({{ state_attr('sensor.last_fm_top_artists', 'artist_5_playcount') }} Plays)
+            icon: fab:lastfm
+            icon_color: "red"
+            fill_container: true
+            multiline_secondary: true
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: custom:mushroom-template-card
+            primary: last.fm Top Albums
+            secondary: >
+              {{ state_attr('sensor.last_fm_top_albums', 'album_1') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_1_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_albums', 'album_2') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_2_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_albums', 'album_2') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_2_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_albums', 'album_3') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_3_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_albums', 'album_3') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_3_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_albums', 'album_4') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_4_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_albums', 'album_4') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_4_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_albums', 'album_5') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_5_playcount') }} Plays)
-        icon: fab:lastfm
-        icon_color: "red"
-        fill_container: true
-        multiline_secondary: true
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-      - type: custom:mushroom-template-card
-        primary: last.fm Top Tracks
-        secondary: >
-          {{ state_attr('sensor.last_fm_top_tracks', 'track_1') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_1_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_albums', 'album_5') }} ({{ state_attr('sensor.last_fm_top_albums', 'album_5_playcount') }} Plays)
+            icon: fab:lastfm
+            icon_color: "red"
+            fill_container: true
+            multiline_secondary: true
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - type: custom:mushroom-template-card
+            primary: last.fm Top Tracks
+            secondary: >
+              {{ state_attr('sensor.last_fm_top_tracks', 'track_1') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_1_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_tracks', 'track_2') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_2_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_tracks', 'track_2') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_2_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_tracks', 'track_3') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_3_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_tracks', 'track_3') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_3_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_tracks', 'track_4') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_4_playcount') }} Plays)
+              {{ state_attr('sensor.last_fm_top_tracks', 'track_4') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_4_playcount') }} Plays)
 
-          {{ state_attr('sensor.last_fm_top_tracks', 'track_5') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_5_playcount') }} Plays)
-        icon: fab:lastfm
-        icon_color: "red"
-        fill_container: true
-        multiline_secondary: true
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
+              {{ state_attr('sensor.last_fm_top_tracks', 'track_5') }} ({{ state_attr('sensor.last_fm_top_tracks', 'track_5_playcount') }} Plays)
+            icon: fab:lastfm
+            icon_color: "red"
+            fill_container: true
+            multiline_secondary: true
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+
+      - type: custom:gap-card

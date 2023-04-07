@@ -1,0 +1,81 @@
+---
+square: false
+type: grid
+cards:
+  - type: custom:mushroom-template-card
+    primary: NBN FTTN Upgrade (Home)
+    secondary: |-
+      {% set alt_reason_code = states(entity) %}
+      {% if alt_reason_code == 'NULL_NA' %}
+      Nup :(
+      {% elif alt_reason_code == 'FTTP_NA' %}
+      Soon
+      {% elif alt_reason_code == 'FTTP_SA' %}
+      Yes!
+      {% else %}
+      {% if alt_reason_code %}
+        {{ alt_reason_code }} was returned
+      {% else %}
+        Error
+      {% endif %}
+      {% endif %}
+    icon: mdi:check-network
+    layout: vertical
+    multiline_secondary: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    entity: sensor.nbn_location_home_2
+    icon_color: |-
+      {% set alt_reason_code = states(entity) %}
+      {% if alt_reason_code == 'NULL_NA' %}
+        red
+      {% elif alt_reason_code == 'FTTP_NA' %}
+        yellow
+      {% elif alt_reason_code == 'FTTP_SA' %}
+        green
+      {% else %}
+        grey
+      {% endif %}
+  - type: custom:mushroom-template-card
+    primary: NBN FTTN Upgrade (Work)
+    secondary: |-
+      {% set alt_reason_code = states(entity) %}
+      {% if alt_reason_code == 'NULL_NA' %}
+      Nup :(
+      {% elif alt_reason_code == 'FTTP_NA' %}
+      Soon
+      {% elif alt_reason_code == 'FTTP_SA' %}
+      Yes!
+      {% else %}
+      {% if alt_reason_code %}
+        {{ alt_reason_code }} was returned
+      {% else %}
+        Error
+      {% endif %}
+      {% endif %}
+    icon: mdi:check-network
+    layout: vertical
+    multiline_secondary: true
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+    entity: sensor.nbn_location_dadwork_2
+    icon_color: |-
+      {% set alt_reason_code = states(entity) %}
+      {% if alt_reason_code == 'NULL_NA' %}
+        red
+      {% elif alt_reason_code == 'FTTP_NA' %}
+        yellow
+      {% elif alt_reason_code == 'FTTP_SA' %}
+        green
+      {% else %}
+        grey
+      {% endif %}
+columns: 2
