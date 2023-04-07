@@ -31,15 +31,3 @@ sensor.yahoofinance_tls_ax:
   friendly_name: Telstra
 sensor.yahoofinance_tne_ax:
   friendly_name: TechnologyOne
-device_tracker.tbmacbookpro:
-  entity_picture: /local/apple_entity_picture/macbook.png
-device_tracker.tbapplewatch:
-  entity_picture: /local/apple_entity_picture/watch.png
-device_tracker.tbairpods:
-  entity_picture: /local/apple_entity_picture/airpods.png
-device_tracker.tbairpodspro:
-  entity_picture: /local/apple_entity_picture/airpodspro.png
-device_tracker.tbiphone11:
-  entity_picture: /local/apple_entity_picture/i11.png
-device_tracker.ipod_touch:
-  entity_picture: /local/apple_entity_picture/ipodtouch.png

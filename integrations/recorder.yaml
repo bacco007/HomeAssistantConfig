@@ -23,7 +23,6 @@ recorder:
       - sensor.date_time
       - sensor.radarr_movies
       - sensor.unavailable_entities
-      - weather.dark_sky
       - sensor.adsb_fa_feeder
       - sensor.internet_time
       - weather.east_tamworth_hourly
