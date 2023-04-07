@@ -1,4 +1,5 @@
-import { html, LitElement } from "https://unpkg.com/lit?module";
+//import { html, LitElement } from "https://unpkg.com/lit?module";
+import { html, LitElement } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
 import { Translator } from "./localize/translator.js";
 
 class TeamTrackerCard extends LitElement {
@@ -26,7 +27,7 @@ class TeamTrackerCard extends LitElement {
     this._config = config;
 
     if (config.debug) {
-      console.info("%c TeamTracker Card \n%c Version 0.7.1    ",
+      console.info("%c TeamTracker Card \n%c Version 0.7.2    ",
         "color: orange; font-weight: bold; background: black",
         "color: white; font-weight: bold; background: dimgray");
         console.info(config);
