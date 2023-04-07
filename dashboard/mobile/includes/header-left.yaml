@@ -41,7 +41,7 @@ buttons:
         bottom: 0
         font-weight: 600
         white-space: nowrap
-  - name: "{{ state_attr('weather.east_tamworth_hourly','temperature') }}°C"
+  - name: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
     icon: mdi:thermometer
     layout: icon|name
     styles:
@@ -51,8 +51,8 @@ buttons:
       button:
         pointer-events: none
         color: var(--secondary-text-color)
-  - name: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
-    icon: mdi:home-thermometer
+  - name: "{{ states('sensor.tempest_st_00056115_rain_today') }}mm"
+    icon: mdi:weather-pouring
     layout: icon|name
     styles:
       name:

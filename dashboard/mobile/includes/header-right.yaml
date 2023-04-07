@@ -81,6 +81,33 @@ chips:
           font-size: 11px;
         }
   - type: template
+    icon: mdi:docker
+    icon_color: lightblue
+    tap_action:
+      action: navigate
+      navigation_path: docker
+    card_mod:
+      style: |
+        ha-card {
+          --chip-background: rgba(var(--rgb-teal), 0.2);
+        }
+        ha-card:after {
+          content: "{{ state_attr('sensor.stats_docker', 'containers_updatable') | int  }}";
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: rgb(var(--rgb-orange));
+          color: var(--card-background-color);
+          font-weight: bolder;
+          border-radius: 50%;
+          top: -5px;
+          right: -5px;
+          width: 16px;
+          height: 16px;
+          font-size: 11px;
+        }
+  - type: template
     entity: light.all_lights
     icon: mdi:lightbulb
     icon_color: amber
