@@ -29,21 +29,76 @@
         },
         "title": "HDHomeRun"
     },
+    "entity": {
+        "binary_sensor": {
+            "channel_scanning": {
+                "name": "Channel Scanning"
+            }
+        },
+        "button": {
+            "channel_scan": {
+                "name": "Channel Scan"
+            },
+            "restart": {
+                "name": "Restart"
+            }
+        },
+        "select": {
+            "channel_sources": {
+                "name": "Channel Sources"
+            }
+        },
+        "sensor": {
+            "channel_count": {
+                "name": "Channel Count"
+            },
+            "disabled_channels": {
+                "name": "Disabled Channels"
+            },
+            "fav_channels": {
+                "name": "Favourite Channels"
+            },
+            "tuner_count": {
+                "name": "Tuner Count"
+            },
+            "tuner_status": {
+                "state": {
+                    "idle": "Idle",
+                    "in_use": "In use",
+                    "scanning": "Scanning"
+                }
+            }
+        },
+        "update": {
+            "update": {
+                "name": "Firmware"
+            }
+        }
+    },
     "options": {
         "step": {
             "options": {
                 "data": {
                     "channel_entity_picture_path": "Channel logo path",
-                    "channel_format":"Pick the format you'd like the channel to be displayed in"
+                    "channel_format": "Pick the format you'd like the channel to be displayed in"
                 },
                 "title": "Options"
             },
             "timeouts": {
                 "data": {
-                    "scan_interval": "Scan interval (in seconds)",
-                    "scan_interval_tuner_status": "Tuner status update (in seconds)"
+                    "scan_interval": "Scan interval",
+                    "scan_interval_tuner_status": "Tuner status update"
                 },
                 "title": "Timeouts"
+            }
+        }
+    },
+    "selector": {
+        "channel_format": {
+            "options": {
+                "channel_name": "Channel name, e.g. BBC One HD",
+                "channel_number": "Channel number, e.g. 101",
+                "channel_number_name": "Channel number and name, e.g. 101: BBC One HD"
             }
         }
     }

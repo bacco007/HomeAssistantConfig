@@ -65,16 +65,6 @@ class HDHomeRunButtonDescription(
 # endregion
 
 
-BUTTON_DESCRIPTIONS: tuple[HDHomeRunButtonDescription, ...] = (
-    HDHomeRunButtonDescription(
-        device_class=ButtonDeviceClass.RESTART,
-        key="",
-        name="Restart",
-        press_action="async_restart",
-    ),
-)
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -89,9 +79,14 @@ async def async_setup_entry(
         HDHomeRunButton(
             config_entry=config_entry,
             coordinator=coordinator,
-            description=button_description,
+            description=HDHomeRunButtonDescription(
+                device_class=ButtonDeviceClass.RESTART,
+                key="",
+                name="Restart",
+                press_action="async_restart",
+                translation_key="restart",
+            ),
         )
-        for button_description in BUTTON_DESCRIPTIONS
     ]
 
     if coordinator.data.channel_sources:
@@ -110,6 +105,7 @@ async def async_setup_entry(
                         "signal": SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED,
                         "channel_source": lambda s: getattr(s, "_channel_source", None),
                     },
+                    translation_key="channel_scan",
                 ),
             )
         )

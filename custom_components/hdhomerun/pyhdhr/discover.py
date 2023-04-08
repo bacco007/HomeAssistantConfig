@@ -126,7 +126,8 @@ class Discover:
                             _LOGGER.debug(
                                 self._log_formatter.format(
                                     "adding %s to discovered devices"
-                                )
+                                ),
+                                host,
                             )
                             discovered_devices.append(hdhr_device)
                         else:
@@ -285,20 +286,22 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         """
         ip_address, _ = addr
 
-        # region #-- initialise the device object --#
-        discovered_device: HDHomeRunDevice = HDHomeRunDevice(host=ip_address)
-        setattr(discovered_device, "_discovery_method", DiscoverMode.UDP)
-        response = HDHomeRunProtocol.parse_response(data)
-        # endregion
+        if ip_address not in [device.ip for device in self.discovered_devices]:
+            # region #-- initialise the device object --#
+            discovered_device: HDHomeRunDevice = HDHomeRunDevice(host=ip_address)
+            setattr(discovered_device, "_discovery_method", DiscoverMode.UDP)
+            response = HDHomeRunProtocol.parse_response(data)
+            _LOGGER.debug("UDP response: %s", response)
+            # endregion
 
-        # region #-- check that the tuner was initialised with a discovery response --#
-        if response.get("header") != HDHOMERUN_TYPE_DISCOVER_RPY:
-            raise ValueError
-        # endregion
+            # region #-- check that the tuner was initialised with a discovery response --#
+            if response.get("header") != HDHOMERUN_TYPE_DISCOVER_RPY:
+                raise ValueError
+            # endregion
 
-        setattr(discovered_device, "_processed_datagram", response)
+            setattr(discovered_device, "_processed_datagram", response)
 
-        self.discovered_devices.append(discovered_device)
+            self.discovered_devices.append(discovered_device)
 
     def do_discover(self) -> None:
         """Send the packets."""

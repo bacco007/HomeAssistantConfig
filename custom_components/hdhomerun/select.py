@@ -75,6 +75,7 @@ async def async_setup_entry(
                     entity_category=EntityCategory.CONFIG,
                     key="channel_sources",
                     name="Channel Sources",
+                    translation_key="channel_sources",
                 ),
             )
         )

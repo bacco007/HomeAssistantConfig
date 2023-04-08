@@ -66,15 +66,6 @@ class HDHomerunBinarySensorEntityDescription(
 
 BINARY_SENSORS: tuple[HDHomerunBinarySensorEntityDescription, ...] = ()
 
-BINARY_SENSORS_VERSIONS: tuple[HDHomerunBinarySensorEntityDescription, ...] = (
-    HDHomerunBinarySensorEntityDescription(
-        key="",
-        name="Update available",
-        device_class=BinarySensorDeviceClass.UPDATE,
-        state_value=lambda d: bool(d.latest_firmware),
-    ),
-)
-
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -102,11 +93,13 @@ async def async_setup_entry(
                     CONF_DATA_COORDINATOR_GENERAL
                 ],
                 description=HDHomerunBinarySensorEntityDescription(
+                    device_class=BinarySensorDeviceClass.RUNNING,
                     extra_attributes=lambda r: {
                         "progress": r,
                     },
                     key="channel_scanning",
                     name="Channel Scanning",
+                    translation_key="channel_scanning",
                 ),
                 recurrence_interval=5,
                 recurrence_trigger=SIGNAL_HDHOMERUN_CHANNEL_SCANNING_STARTED,
@@ -117,16 +110,20 @@ async def async_setup_entry(
 
     # region #-- add version sensors if need be --#
     if UPDATE_DOMAIN is None:
-        for description in BINARY_SENSORS_VERSIONS:
-            sensors.append(
-                HDHomerunBinarySensor(
-                    config_entry=config_entry,
-                    coordinator=hass.data[DOMAIN][config_entry.entry_id][
-                        CONF_DATA_COORDINATOR_GENERAL
-                    ],
-                    description=description,
-                )
+        sensors.append(
+            HDHomerunBinarySensor(
+                config_entry=config_entry,
+                coordinator=hass.data[DOMAIN][config_entry.entry_id][
+                    CONF_DATA_COORDINATOR_GENERAL
+                ],
+                description=HDHomerunBinarySensorEntityDescription(
+                    key="",
+                    name="Update available",
+                    device_class=BinarySensorDeviceClass.UPDATE,
+                    state_value=lambda d: bool(d.latest_firmware),
+                ),
             )
+        )
     # endregion
 
     async_add_entities(sensors, update_before_add=True)
@@ -135,16 +132,18 @@ async def async_setup_entry(
     if (
         UPDATE_DOMAIN is not None
     ):  # remove the existing version sensors if the update entity is available
-        for description in BINARY_SENSORS_VERSIONS:
-            sensors_to_remove.append(
-                HDHomerunBinarySensor(
-                    config_entry=config_entry,
-                    coordinator=hass.data[DOMAIN][config_entry.entry_id][
-                        CONF_DATA_COORDINATOR_GENERAL
-                    ],
-                    description=description,
-                )
+        sensors_to_remove.append(
+            HDHomerunBinarySensor(
+                config_entry=config_entry,
+                coordinator=hass.data[DOMAIN][config_entry.entry_id][
+                    CONF_DATA_COORDINATOR_GENERAL
+                ],
+                description=HDHomerunBinarySensorEntityDescription(
+                    key="",
+                    name="Update available",
+                ),
             )
+        )
 
     if sensors_to_remove:
         entity_cleanup(config_entry=config_entry, entities=sensors_to_remove, hass=hass)

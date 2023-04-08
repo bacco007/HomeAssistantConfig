@@ -73,6 +73,7 @@ async def async_setup_entry(
                     key="",
                     name="Update",
                     release_url="https://www.silicondust.com/support/downloads/firmware-changelog/",
+                    translation_key="update",
                 ),
             )
         )
@@ -118,3 +119,6 @@ class HDHomerunUpdate(HDHomerunEntity, UpdateEntity, ABC):
     def release_url(self) -> str | None:
         """Get the URL to release notes."""
         return self.entity_description.release_url
+
+
+# endregion

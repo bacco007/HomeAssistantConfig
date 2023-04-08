@@ -7,6 +7,7 @@ import logging
 from datetime import timedelta
 from typing import Any, Callable, List, Mapping
 
+import homeassistant.helpers.device_registry as dr
 import homeassistant.helpers.entity_registry as er
 from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -80,6 +81,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 if device:
                     device = device[0]
             await device.async_gather_details()
+            device_registry: dr.DeviceRegistry = dr.async_get(hass=hass)
+            device_entry: List[dr.DeviceEntry] = [
+                device_details
+                for _, device_details in device_registry.devices.items()
+                if (DOMAIN, config_entry.unique_id) in device_details.identifiers
+            ]
+            if device_entry:
+                if device.installed_version != device_entry[0].sw_version:
+                    _LOGGER.debug(
+                        log_formatter.format(
+                            "Firmware version changed from %s to %s, updating device"
+                        ),
+                        device_entry[0].sw_version,
+                        device.installed_version,
+                    )
+
+                    device_registry.async_update_device(
+                        device_id=device_entry[0].id,
+                        sw_version=device.installed_version,
+                    )
         except Exception as exc:
             _LOGGER.warning(log_formatter.format("%s"), exc)
             raise UpdateFailed(str(exc)) from exc
@@ -148,13 +169,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     # region #-- setup the platforms --#
     setup_platforms: List[str] = list(filter(None, PLATFORMS))
     _LOGGER.debug(log_formatter.format("setting up platforms: %s"), setup_platforms)
-    # TODO: remove try/except when minimum version is 2022.8.0
-    try:
-        await hass.config_entries.async_forward_entry_setups(
-            config_entry, setup_platforms
-        )
-    except AttributeError:
-        hass.config_entries.async_setup_platforms(config_entry, setup_platforms)
+    await hass.config_entries.async_forward_entry_setups(config_entry, setup_platforms)
     # endregion
 
     _LOGGER.debug(log_formatter.format("exited"))
@@ -198,17 +213,7 @@ class HDHomerunEntity(CoordinatorEntity):
         if not getattr(self, "entity_domain", None):
             self.entity_domain: str = ""
 
-        try:
-            _ = self.has_entity_name
-            self._attr_has_entity_name = True
-            self._attr_name = self.entity_description.name
-        except AttributeError:
-            self._attr_name = (
-                f"{ENTITY_SLUG} "
-                f"{config_entry.title.replace(ENTITY_SLUG, '').strip()}: "
-                f"{self.entity_description.name}"
-            )
-
+        self._attr_has_entity_name = True
         self._attr_unique_id = (
             f"{config_entry.unique_id}::"
             f"{self.entity_domain.lower()}::"
