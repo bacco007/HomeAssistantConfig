@@ -39,15 +39,15 @@ cards:
               - attributes:
                   label: Stats
                   isMinWidthIndicator: true
-                card: !include untappd/snippets/stats.yaml
+                card: !include untappd/stats.yaml
               - attributes:
                   label: Project 52
                   isMinWidthIndicator: true
-                card: !include untappd/snippets/project_52.yaml
+                card: !include untappd/project_52.yaml
               - attributes:
                   label: Beer Stats
                   isMinWidthIndicator: true
-                card: !include untappd/snippets/beer_stats.yaml
+                card: !include untappd/beer_stats.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -64,7 +64,7 @@ cards:
               name: Stats
             view_layout:
               grid-column: 1/-1
-          - !include untappd/snippets/stats.yaml
+          - !include untappd/stats.yaml
 
   # Column 2, Row 1
   - type: custom:state-switch
@@ -81,7 +81,7 @@ cards:
               name: Project 52
             view_layout:
               grid-column: 1/-1
-          - !include untappd/snippets/project_52.yaml
+          - !include untappd/project_52.yaml
 
   # Column 3, Row 1
   - type: custom:state-switch
@@ -98,7 +98,7 @@ cards:
               name: Beer Stats
             view_layout:
               grid-column: 1/-1
-          - !include untappd/snippets/beer_stats.yaml
+          - !include untappd/beer_stats.yaml
 
   # Column 1, Row 2
   - type: custom:gap-card

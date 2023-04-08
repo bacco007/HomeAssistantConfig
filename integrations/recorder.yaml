@@ -39,7 +39,6 @@ recorder:
       - sensor.lastfm_user_weeklytrackchart
       - sensor.sungrowsolar_alldata
       - binary_sensor.espresense_bedroom
-      - sensor.adsb_message_rate
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
       - sensor.uptime_sensor

@@ -28,7 +28,7 @@ cards:
       action: none
     double_tap_action:
       action: none
-    entity: sensor.nbn_location_home_2
+    entity: sensor.nbn_location_home
     icon_color: |-
       {% set alt_reason_code = states(entity) %}
       {% if alt_reason_code == 'NULL_NA' %}
@@ -66,7 +66,7 @@ cards:
       action: none
     double_tap_action:
       action: none
-    entity: sensor.nbn_location_dadwork_2
+    entity: sensor.nbn_location_dadwork
     icon_color: |-
       {% set alt_reason_code = states(entity) %}
       {% if alt_reason_code == 'NULL_NA' %}

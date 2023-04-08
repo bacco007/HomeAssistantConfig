@@ -69,34 +69,34 @@ I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a 
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 8th 2023_
+_Stats as at 05:00, Sunday, April 9th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.1 | 465     | 3752         | 2575 | 101 |
+| 2023.4.1 | 464     | 3723         | 2547 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 101
-Binary Sensor | 186
+Automation | 102
+Binary Sensor | 185
 Camera | 5
 Device Tracker | 75
-Group | 1
+Group | 2
 Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 17
+Media Player | 18
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2575
+Sensor | 2547
 Sun | 1
-Switch | 162
+Switch | 156
 Weather | 6
-Zone | 3
+Zone | 5
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -276,7 +276,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
