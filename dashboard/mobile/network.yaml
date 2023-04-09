@@ -7,7 +7,7 @@ path: network
 title: Network
 badges: []
 cards:
-  - !include snippets/header.yaml
+  # - !include snippets/header.yaml
 
   - type: vertical-stack
     cards:

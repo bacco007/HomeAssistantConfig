@@ -1,0 +1,141 @@
+---
+theme: noctis
+icon: si:sonos
+subview: true
+path: sonos
+title: Sonos
+type: custom:grid-layout
+layout: !include includes/grid-1col.yaml
+badges: []
+cards:
+  ### Sidebar - Menu
+  - !include includes/menu.yaml
+
+  ### Header - Left
+  - !include includes/header-left.yaml
+
+  ### Header - Right
+  - !include includes/header-right.yaml
+
+  ### Footer
+  - !include includes/footer.yaml
+
+  # Column 1, Row 1
+  - type: custom:custom-sonos-card
+    view_layout:
+      grid-area: c1r1
+    styles:
+      button-section:
+        backgroundColor: rgba(30, 30, 30, 0.5)
+        border: 1px solid gray
+      ha-card:
+        background: none
+        border: none
+      player-footer:
+        backgroundColor: rgb(30, 30, 30)
+      title:
+        color: rgb(220, 220, 220)
+      group-speaker:
+        color: rgb(220, 220, 220)
+      group-speakers:
+        color: rgb(220, 220, 220)
+      member:
+        color: rgb(220, 220, 220)
+      media-button-title:
+        color: rgb(30, 30, 30)
+        font-size: 0.75rem
+      player-artist-album:
+        color: rgb(0, 0, 0)
+    name: ""
+    groupsTitle: ""
+    groupingTitle: ""
+    mediaTitle: ""
+    headerImage: ""
+    shuffleFavorites: false
+    noMediaText: No media selected
+    allVolumesText: All volumes
+    entityNameRegexToReplace: "SONOS "
+    entityNameReplacement: ""
+    layout:
+      mobileThresholdPx: 500
+      groups:
+        width: 20%
+        mobileWidth: 100%
+      players:
+        width: 20%
+        mobileWidth: 100%
+      mediaBrowser:
+        width: 60%
+        mobileWidth: 100%
+      mediaItem:
+        width: 10%
+        mobileWidth: 25%
+    mediaArtworkOverrides:
+      - ifMissing: true
+        imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
+      - mediaTitleEquals: TV
+        imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
+        sizePercentage: 40
+    customThumbnailIfMissing:
+      1-Playlist: /local/radioicons/1_Playlist.png
+      102.7 KIIS-FM Los Angeles: /local/radioicons/102_7_KIIS_FM_Los_Angeles.png
+      1170 SEN: /local/radioicons/1170_SEN.png
+      ABC New England North West: /local/radioicons/ABC_New_England_North_West.png
+      ABC News: /local/radioicons/ABC_News.png
+      ABC Radio National (Sydney, NSW): /local/radioicons/ABC_Radio_National_Sydney_NSW.png
+      ABC Radio Sydney: /local/radioicons/ABC_Radio_Sydney.png
+      ABC Sport: /local/radioicons/ABC_Sport.png
+      Absolute Radio 00s: /local/radioicons/Absolute_Radio_00s.png
+      Absolute Radio 10s: /local/radioicons/Absolute_Radio_10s.png
+      Absolute Radio 20s: /local/radioicons/Absolute_Radio_20s.png
+      Absolute Radio 80s: /local/radioicons/Absolute_Radio_80s.png
+      Absolute Radio 90s: /local/radioicons/Absolute_Radio_90s.png
+      Absolute Radio Classic Rock: /local/radioicons/Absolute_Radio_Classic_Rock.png
+      Absolute Radio UK (AAC): /local/radioicons/Absolute_Radio_UK_AAC.png
+      BBC Radio 1: /local/radioicons/BBC_Radio_1.png
+      BBC Radio 2: /local/radioicons/BBC_Radio_2.png
+      BBC Radio 4 Extra (Comedy): /local/radioicons/BBC_Radio_4_Extra_Comedy.png
+      BBC Radio 5 live: /local/radioicons/BBC_Radio_5_live.png
+      BBC Radio 5 live sports extra: /local/radioicons/BBC_Radio_5_live_sports_extra.png
+      BBC Radio 6 Music: /local/radioicons/BBC_Radio_6_Music.png
+      BBC World Service News: /local/radioicons/BBC_World_Service_News.png
+      CNN International: /local/radioicons/CNN_International.png
+      COVID-19 Social Distancing Sucks: /local/radioicons/COVID_19_Social_Distancing_Sucks.png
+      Double J (Sydney, NSW): /local/radioicons/Double_J_Sydney_NSW.png
+      ESPN Radio: /local/radioicons/ESPN_Radio.png
+      GOLD 104.3: /local/radioicons/GOLD_104_3.png
+      MSNBC: /local/radioicons/MSNBC.png
+      Nova 90s: /local/radioicons/Nova_90s.png
+      Nova 96.9: /local/radioicons/Nova_96_9.png
+      Nova Throwbacks: /local/radioicons/Nova_Throwbacks.png
+      Playlists: /local/radioicons/Playlists.png
+      Radio Hauraki 99.0 (Rock Music): /local/radioicons/Radio_Hauraki_99_0_Rock_Music.png
+      Radio X: /local/radioicons/Radio_X.png
+      Sky News Radio: /local/radioicons/Sky_News_Radio.png
+      Sky Sports Radio: /local/radioicons/Sky_Sports_Radio.png
+      talkSPORT: /local/radioicons/talkSPORT.png
+      Tamworth's 88.9FM: /local/radioicons/Tamworth_s_88_9FM.png
+      The ACC - The Alternative Commentary: /local/radioicons/The_ACC_The_Alternative_Commentary.png
+      The Edge 94.2 (Top 40 & Pop Music): /local/radioicons/The_Edge_94_2_Top_40_Pop_Music.png
+      The Hits Auckland 97.4 (World Music): /local/radioicons/The_Hits_Auckland_97_4_World_Music.png
+      The Rock 90.2 (Rock Music): /local/radioicons/The_Rock_90_2_Rock_Music.png
+      triple j (New South Wales): /local/radioicons/triple_j_New_South_Wales.png
+      Triple M 104.9 Sydney: /local/radioicons/Triple_M_104_9_Sydney.png
+      Triple M 105.1 Melbourne: /local/radioicons/Triple_M_105_1_Melbourne.png
+      Triple M 80s (Sydney): /local/radioicons/Triple_M_80s_Sydney.png
+      Triple M 90s (Sydney): /local/radioicons/Triple_M_90s_Sydney.png
+      Triple M Classic Rock Digital (Sydney): /local/radioicons/Triple_M_Classic_Rock_Digital_Sydney.png
+      Triple M Hard n Heavy (Sydney): /local/radioicons/Triple_M_Hard_n_Heavy_Sydney.png
+      Virgin Radio Anthems UK: /local/radioicons/Virgin_Radio_Anthems_UK.png
+      Virgin Radio Chilled UK: /local/radioicons/Virgin_Radio_Chilled_UK.png
+      Virgin Radio Groove UK: /local/radioicons/Virgin_Radio_Groove_UK.png
+      Virgin Radio UK: /local/radioicons/Virgin_Radio_UK.png
+    mediaBrowserTitlesToIgnore:
+      - Local Media
+
+  # Column 1, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"

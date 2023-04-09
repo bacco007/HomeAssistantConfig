@@ -1,30 +1,6 @@
 ---
 type: vertical-stack
 cards:
-  - type: custom:mini-media-player
-    hide:
-      power: true
-      source: true
-      progress: true
-      shuffle: false
-      icon_state: false
-      runtime: false
-    toggle_power: false
-    info: short
-    shortcuts:
-      columns: 1
-      buttons:
-        - icon: mdi:spotify
-          type: service
-          id: input_text.set_value
-          data:
-            entity_id: input_text.spotify_active_sonos_player_id
-            value: media_player.office_sonos
-          name: Selected playlist
-    source: icon
-    sound_mode: icon
-    entity: media_player.office_sonos
-    artwork: material
   - square: true
     columns: 3
     type: grid
