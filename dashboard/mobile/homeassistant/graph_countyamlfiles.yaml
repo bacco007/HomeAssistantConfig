@@ -29,7 +29,7 @@ cards:
       extend_to: false
       group_by:
         func: last
-        duration: 6h
+        duration: 1h
     series:
       - entity: sensor.count_yaml_files
         yaxis_id: lines

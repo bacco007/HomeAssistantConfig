@@ -26,18 +26,13 @@ _Please :star: this repo if you find it useful_
 - [🏠TBSmartHome - Home Assistant Configuration](#tbsmarthome---home-assistant-configuration)
   - [Table of Contents](#table-of-contents)
   - [TL;DR](#tldr)
-  - [Ecosystem](#ecosystem)
-    - [Hardware](#hardware)
-    - [Zigbee](#zigbee)
   - [Stats](#stats)
   - [Integrations Used](#integrations-used)
     - [Custom Components Used](#custom-components-used)
   - [Screenshots](#screenshots)
   - [HA Supervisor](#ha-supervisor)
-    - [Addon Repositories](#addon-repositories)
     - [Addons](#addons)
   - [Licence](#licence)
-  - [Other Good HA Resources/Configs](#other-good-ha-resourcesconfigs)
 
 ---
 
@@ -101,6 +96,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 <details>
 <summary>Expand Custom Components List</summary>
+
 ### Integrations
 {%- for component in hacs_components | selectattr('category', 'equalto', 'integration') | sort(attribute='name') %}
 - [{{component.name}}]({{component.documentation}})
@@ -141,7 +137,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 
 {%- for addon in addons | sort(attribute='name') %}
-- {{addon.name}} ({{addon.version}}) - {{addon.description}}
+- {{addon.name}} ({{addon.version}})
 {%- endfor %}
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>

@@ -1,18 +1,39 @@
 ---
-square: false
-columns: 2
-type: grid
+type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
-    entity: sensor.ha_uptime_hours
-    name: HA Uptime
-    secondary_info: name
-    primary_info: state
-    fill_container: true
-  - type: custom:mushroom-entity-card
-    entity: sensor.ha_restart_time
-    icon: mdi:home-assistant
-    fill_container: true
-    name: Last Restart Time
-    secondary_info: name
-    primary_info: state
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(min-width: 801px)":
+        type: "custom:button-card"
+        template: header_card_no_link
+        variables:
+          name: Uptime & Start Time
+        view_layout:
+          grid-column: 1/-1
+  - square: false
+    columns: 2
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.ha_uptime_hours
+        name: HA Uptime
+        secondary_info: name
+        primary_info: state
+        fill_container: true
+      - type: custom:mushroom-entity-card
+        entity: sensor.ha_restart_time
+        icon: mdi:home-assistant
+        fill_container: true
+        name: Last Restart Time
+        secondary_info: name
+        primary_info: state
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.start_time
+      - colour: "#8694E7"
+      - title: Start Time (seconds)
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:timer
