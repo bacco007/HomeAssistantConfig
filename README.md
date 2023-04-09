@@ -10,11 +10,12 @@ It's very much a work-in-progress, but feel free to steal ideas or code to use f
 
 _Please :star: this repo if you find it useful_
 
-[![HA Version](https://img.shields.io/badge/Home%20Assistant--brightgreen)](https://github.com/home-assistant/home-assistant/releases/)
-![Hits](http://hits.dwyl.io/bacco007/HomeAssistantConfig.svg)
-![GitHub last commit](https://img.shields.io/github/last-commit/bacco007/HomeAssistantConfig?style=flat-square) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bacco007/HomeAssistantConfig?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/bacco007/HomeAssistantConfig?style=flat-square)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bacco007/HomeAssistantConfig?style=flat-square)
 ![Licence](https://img.shields.io/badge/license-Unlicense-blue.svg?style=flat-square)
+
 ![Twitter Follow](https://img.shields.io/twitter/follow/bacco007?style=social)
+![Mastodon Follow](https://img.shields.io/mastodon/follow/000451950?domain=https%3A%2F%2Fmastodon.social&style=social)
 
 [![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
 
@@ -46,34 +47,15 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
-## Ecosystem
-
-My smarthome setup seems to be ever-growing, but at this stage it's unlikely that I'll make any major changes from here
-
-### Hardware
-
-- Dell Optiplex 9020 SFF (i5, 24Gb RAM, 500Gb HDD) running Proxmox
-  - I run three VMs from this machine, one for Home Assistant (Using HassOS) and the other two for other home server stuff
-- Lenovo ThinkMachine M73 Tiny (Intel Pentium G3240T, 4Gb RAM, 500Gb HDD)
-  - Ubuntu Server 18.10, this machine runs my UniFi controller and Nginx Reverse Proxy Setup
-- Raspberry Pi 3
-  - Pi-Hole
-
-### Zigbee
-
-I'm running a combination of Xiaomi Aqara and Samsung SmartThings sensors and a ConBee II as the host
-
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
-
 ---
 
 ## Stats
 
-_Stats as at 05:00, Sunday, April 9th 2023_
+_Stats as at 17:57, Sunday, April 9th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.1 | 464     | 3723         | 2547 | 102 |
+| 2023.4.2 | 463     | 3724         | 2546 | 102 |
 
 Type | Qty
 -- | --
@@ -92,11 +74,11 @@ Media Player | 18
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2547
+Sensor | 2546
 Sun | 1
-Switch | 156
+Switch | 162
 Weather | 6
-Zone | 5
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -414,7 +396,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.ios](https://www.home-assistant.io/components/sensor.ios) |
 | [sensor.iss](https://www.home-assistant.io/components/sensor.iss) |
 | [sensor.lastfm](https://www.home-assistant.io/components/sensor.lastfm) |
-| [sensor.launch_library](https://www.home-assistant.io/components/sensor.launch_library) |
 | [sensor.local_ip](https://www.home-assistant.io/components/sensor.local_ip) |
 | [sensor.mobile_app](https://www.home-assistant.io/components/sensor.mobile_app) |
 | [sensor.monitor_docker](https://www.home-assistant.io/components/sensor.monitor_docker) |
@@ -581,84 +562,160 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 <details>
 <summary>Expand Custom Components List</summary>
-
-- [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting#readme)
+### Integrations
+- [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
-- [Apple TV](https://www.home-assistant.io/integrations/apple_tv)
-- [AstroWeather](https://github.com/mawinkler/astroweather)
+- [Apple Tv Beta](https://github.com/postlund/hass-atv-beta)
+- [Astroweather](https://github.com/mawinkler/astroweather)
 - [Average Sensor](https://github.com/Limych/ha-average)
-- [Blitzortung](https://github.com/mrk-its/homeassistant-blitzortung)
-- [Browser mod](https://github.com/thomasloven/hass-browser_mod/blob/master/README.md)
-- [Bureau of Meteorology](https://github.com/bremor/bureau_of_meteorology)
-- [Clock Drift]()
+- [Blitzortung.Org Lightning Detector](https://github.com/mrk-its/homeassistant-blitzortung)
+- [Browser Mod](https://github.com/thomasloven/hass-browser_mod)
+- [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology)
+- [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather)
+- [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor)
-- [Doomsday Clock](https://github.com/renemarc/home-assistant-doomsday-clock)
-- [Dyson Local](https://github.com/shenxn/ha-dyson)
 - [Eufy Security](https://github.com/fuatakgun/eufy_security)
-- [Favicon changer](https://github.com/thomasloven/hass-favicon)
-- [Feedparser](https://github.com/custom-components/feedparser/blob/master/README.md)
-- [Fontawesome icons](https://github.com/thomasloven/hass-fontawesome)
-- [Garbage Collection](https://github.com/bruxy70/Garbage-Collection/)
-- [Generate readme](https://github.com/custom-components/readme)
-- [GTFS-Realtime](https://github.com/mark1foley/ha-gtfs-rt-v2)
-- [HACS](https://hacs.xyz/docs/configuration/start)
-- [HDHomeRun](https://github.com/uvjim/hass_hdhomerun)
-- [Holidays](https://github.com/bruxy70/Holidays/)
-- [HomeAssistant Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
-- [ical Sensor](https://www.home-assistant.io/integrations/ical)
-- [iCloud3 v3](https://gcobb321.github.io/icloud3_v3/#/)
-- [Indoor Air Quality UK Index](https://github.com/Limych/ha-iaquk)
-- [Lovelace Gen]()
+- [Feedparser](https://github.com/custom-components/feedparser)
+- [Fontawesome](https://github.com/thomasloven/hass-fontawesome)
+- [Garbage Collection](https://github.com/bruxy70/Garbage-Collection)
+- [Generate Readme](https://github.com/custom-components/readme)
+- [Gtfs Realtime](https://github.com/mark1foley/ha-gtfs-rt-v2)
+- [Ha Dyson](https://github.com/shenxn/ha-dyson)
+- [Ha Dyson Cloud](https://github.com/shenxn/ha-dyson-cloud)
+- [HACS](https://github.com/hacs/integration)
+- [Hass Favicon](https://github.com/thomasloven/hass-favicon)
+- [Hdhomerun](https://github.com/uvjim/hass_hdhomerun)
+- [Holidays](https://github.com/bruxy70/Holidays)
+- [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
+- [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
+- [Illuminance](https://github.com/pnbruckner/ha-illuminance)
+- [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
+- [Iphone Device Tracker](https://github.com/mudape/iphonedetect)
+- [Jellyfin](https://github.com/koying/jellyfin_ha)
+- [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
-- [Multiscrape scraping component](https://github.com/danieldotnl/ha-multiscrape)
-- [MyJDownloader](https://github.com/doudz/homeassistant-myjdownloader)
-- [Node-RED Companion](https://zachowj.github.io/node-red-contrib-home-assistant-websocket/guide/custom_integration/)
-- [NSW Air Quality]()
-- [NSW Rural Fire Service - Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
-- [OpenNEM](https://github.com/bacco007/sensor.opennem)
-- [Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
-- [Proxmox VE](https://github.com/dougiteixeira/proxmoxve)
-- [Pyscript Python scripting](https://github.com/custom-components/pyscript)
-- [Qbittorrent_custom](https://github.com/radsonpatrick/qbittorrent_custom_component)
-- [Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
-- [Rocket Launch Live - Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
-- [SamsungTV Smart](https://github.com/ollo69/ha-samsungtv-smart)
-- [Satellite Tracker (N2YO)](https://github.com/djtimca/hasatellitetracker)
-- [Simple Icons](https://github.com/vigonotion/hass-simpleicons)
-- [SmartThinQ LGE Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
-- [Solcast PV Forecast](https://github.com/oziee/ha-solcast-solar)
-- [Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
-- [Spook](https://github.com/frenck/spook)
+- [Multiscrape](https://github.com/danieldotnl/ha-multiscrape)
+- [Myjdownloader](https://github.com/doudz/homeassistant-myjdownloader)
+- [Node Red Companion](https://github.com/zachowj/hass-node-red)
+- [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
+- [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem)
+- [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve)
+- [Pyscript](https://github.com/custom-components/pyscript)
+- [Qbittorrent Custom](https://github.com/radsonpatrick/qbittorrent_custom_component)
+- [Rocket Launch Live   Next 5 Launches](https://github.com/djtimca/harocketlaunchlive)
+- [Samsungtv Smart](https://github.com/ollo69/ha-samsungtv-smart)
+- [Satellite Tracker (N2Yo)](https://github.com/djtimca/hasatellitetracker)
+- [Sensor.Plex Recently Added](https://github.com/custom-components/sensor.plex_recently_added)
+- [Sensor.Radarr Upcoming Media](https://github.com/custom-components/sensor.radarr_upcoming_media)
+- [Sensor.Sonarr Upcoming Media](https://github.com/custom-components/sensor.sonarr_upcoming_media)
+- [Sensor.Unifigateway](https://github.com/custom-components/sensor.unifigateway)
+- [Sensor.Untappd](https://github.com/custom-components/sensor.untappd)
+- [Simpleicons](https://github.com/vigonotion/hass-simpleicons)
+- [Smartthinq Lge Sensors](https://github.com/ollo69/ha-smartthinq-sensors)
+- [Solcast Pv Solar](https://github.com/oziee/ha-solcast-solar)
+- [Spook 👻 Not Your Homie](https://github.com/frenck/spook)
+- [Spotcast](https://github.com/fondberg/spotcast)
 - [Start Time](https://github.com/AlexxIT/StartTime)
-- [Sun2](https://github.com/pnbruckner/ha-sun2/blob/time_at_elevation/README.md)
+- [Sun2](https://github.com/pnbruckner/ha-sun2)
 - [Team Tracker](https://github.com/vasqued2/ha-teamtracker)
-- [Thermal Comfort](https://github.com/dolezsa/thermal_comfort/blob/master/README.md)
+- [Temperature Feels Like](https://github.com/Limych/ha-temperature-feels-like)
+- [Thermal Comfort](https://github.com/dolezsa/thermal_comfort)
 - [Trakt](https://github.com/dylandoamaral/trakt-integration)
-- [Unifi Counter Sensor](https://www.home-assistant.io/integrations/unifics)
-- [UniFi Gateway](https://github.com/custom-components/sensor.unifigateway)
-- [UniFi Status](https://github.com/zvldz/unifi_status)
-- [Untappd](https://github.com/custom-components/sensor.untappd/blob/master/README.md)
-- [Uptime Kuma](https://github.com/meichthys/uptime_kuma/blob/main/README.md)
+- [Unifi Counter Sensor](https://github.com/clyra/unifics)
+- [Unifi Status](https://github.com/zvldz/unifi_status)
+- [Uptime Kuma](https://github.com/meichthys/uptime_kuma)
 - [Watchman](https://github.com/dummylabs/thewatchman)
-- [Water NSW](https://github.com/bacco007/sensor.waternsw)
-- [WeatherFlow Weather](https://github.com/briis/hass-weatherflow)
-- [World's Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index)
-- [Yahoo Finance](https://github.com/iprak/yahoofinance)</details>
+- [Waternsw Real Time Data](https://github.com/bacco007/sensor.waternsw)
+- [Weatherbit Weather Forecast For Home Assistant](https://github.com/briis/weatherbit)
+- [Weatherflow Integration](https://github.com/briis/hass-weatherflow)
+- [World'S Air Quality Index](https://github.com/pawkakol1/worlds-air-quality-index)
+- [Yahoo Finance](https://github.com/iprak/yahoofinance)
+
+### Lovelace
+- [Apexcharts Card](https://github.com/RomRider/apexcharts-card)
+- [Astroweather Card](https://github.com/mawinkler/astroweather-card)
+- [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive)
+- [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities)
+- [Bar Card](https://github.com/custom-cards/bar-card)
+- [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card)
+- [Button Card](https://github.com/custom-cards/button-card)
+- [Canvas Gauge Card](https://github.com/custom-cards/canvas-gauge-card)
+- [Card Mod](https://github.com/thomasloven/lovelace-card-mod)
+- [Card Tools](https://github.com/thomasloven/lovelace-card-tools)
+- [Clock Weather Card](https://github.com/pkissling/clock-weather-card)
+- [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards)
+- [Compass Card](https://github.com/tomvanswam/compass-card)
+- [Config Template Card](https://github.com/iantrich/config-template-card)
+- [Custom Animated Weather Card](https://github.com/DavidFW1960/bom-weather-card)
+- [Custom Brand Icons](https://github.com/elax46/custom-brand-icons)
+- [Decluttering Card](https://github.com/custom-cards/decluttering-card)
+- [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card)
+- [Expander Card](https://github.com/Alia5/lovelace-expander-card)
+- [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card)
+- [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
+- [Formula One Card](https://github.com/marcokreeft87/formulaone-card)
+- [Fr24 Card](https://github.com/fratsloos/fr24_card)
+- [Ha Floorplan](https://github.com/ExperienceLovelace/ha-floorplan)
+- [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
+- [History Explorer Card](https://github.com/alexarch21/history-explorer-card)
+- [Home Assistant Swipe Navigation](https://github.com/zanna-37/hass-swipe-navigation)
+- [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather)
+- [Hui Element](https://github.com/thomasloven/lovelace-hui-element)
+- [Layout Card](https://github.com/thomasloven/lovelace-layout-card)
+- [List Card](https://github.com/iantrich/list-card)
+- [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater)
+- [Lovelace Home Feed Card](https://github.com/gadgetchnnel/lovelace-home-feed-card)
+- [Mini Graph Card](https://github.com/kalkih/mini-graph-card)
+- [Mini Media Player](https://github.com/kalkih/mini-media-player)
+- [More Info Card](https://github.com/thomasloven/lovelace-more-info-card)
+- [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row)
+- [Mushroom](https://github.com/piitaya/lovelace-mushroom)
+- [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row)
+- [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card)
+- [Plex Meets Home Assistant](https://github.com/JurajNyiri/PlexMeetsHomeAssistant)
+- [Power Flow Card](https://github.com/ulic75/power-flow-card)
+- [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
+- [Rgb Light Card](https://github.com/bokub/rgb-light-card)
+- [Search Card](https://github.com/postlund/search-card)
+- [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row)
+- [Slider Button Card](https://github.com/custom-cards/slider-button-card)
+- [Slider Entity Row](https://github.com/thomasloven/lovelace-slider-entity-row)
+- [Sonos Card](https://github.com/johanfrick/custom-sonos-card)
+- [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card)
+- [Stack In Card](https://github.com/custom-cards/stack-in-card)
+- [State Switch](https://github.com/thomasloven/lovelace-state-switch)
+- [Sun Card](https://github.com/AitorDB/home-assistant-sun-card)
+- [Swipe Card](https://github.com/bramkragten/swipe-card)
+- [Tabbed Card](https://github.com/kinghat/tabbed-card)
+- [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card)
+- [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row)
+- [Thermostat Popup Card](https://github.com/DBuit/thermostat-popup-card)
+- [Uptime Card](https://github.com/dylandoamaral/uptime-card)
+- [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card)
+- [Weather Card](https://github.com/bramkragten/weather-card)
+
+### Themes
+- [Animated Weather Card](https://github.com/wowgamr/animated-weather-card)
+- [Metrology   Metro + Fluent + Windows Themes   By Mmak.Es](https://github.com/Madelena/Metrology-for-Hass)
+- [Noctis](https://github.com/aFFekopp/noctis)
+- [Noctis Grey](https://github.com/chaptergy/noctis-grey)
+- [Nordic Theme](https://github.com/coltondick/nordic-theme-main)
+</details>
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
+
+
 
 ---
 
 ## Screenshots
 
 ![Screenshot - Home](./.assets/home.png?raw=True)
-
-<details>
-<summary>More Screenshots Here</summary>
-
-![Screenshot - More](./.assets/more.png?raw=True)
-
-</details>
+![Screenshot - Home Assistant](./.assets/homeassistant.png?raw=True)
+![Screenshot - Sports](./.assets/sports.png?raw=True)
+![Screenshot - Untappd](./.assets/untappd.png?raw=True)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -668,9 +725,27 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Addons
 
-Here are the addons I use inside Hass.io, some of the other things I run can be done inside Hass.io, but I've elected not to do so.
-
-
+Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
+- ESPHome (2023.3.2) - 
+- Eufy Security Add-on (1.3.0) - 
+- File editor (5.5.0) - 
+- Glances (0.18.1) - 
+- Home Assistant Git Exporter (1.16.0) - 
+- Home Assistant Google Drive Backup (0.110.3) - 
+- JupyterLab (0.10.0) - 
+- MariaDB (2.5.2) - 
+- Mosquitto broker (6.2.0) - 
+- MQTT Explorer (browser-1.0.1) - 
+- Node-RED (14.1.3) - 
+- phpMyAdmin (0.8.5) - 
+- Portainer (2.0.0) - 
+- RTSP Simple Server Add-on (v0.17.6) - 
+- Samba share (10.0.0) - 
+- Shortumation (v0.7.6) - 
+- SSH & Web Terminal (13.1.0) - 
+- SunGather (0.1.3) - 
+- WeatherFlow to MQTT (3.1.6) - 
+- Zigbee2MQTT (1.30.3-1) - 
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -687,21 +762,6 @@ In jurisdictions that recognize copyright laws, the author or authors of this so
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to [https://unlicense.org](https://unlicense.org)
-
-<p align="right"><a href="#top" title="Back to top">Top</a></p>
-
----
-
-## Other Good HA Resources/Configs
-
-These resources have either provided inspiration or some great code that has helped me get my configuration up and running
-
-- [aFFekopp/homeassistant](https://github.com/aFFekopp/homeassistant)
-  - This is where I've copied the great theme from
-- [danrspencer/hass-config](https://github.com/danrspencer/hass-config)
-- [JamesMcCarthy79/Home-Assistant-Config](https://github.com/JamesMcCarthy79/Home-Assistant-Config)
-- [jimz011/homeassistant](https://github.com/jimz011/homeassistant)
-- [Limych/HomeAssistantConfiguration](https://github.com/Limych/HomeAssistantConfiguration)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 

@@ -1,0 +1,57 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.integrations
+      - colour: "#8694E7"
+      - title: HA Integrations In Use
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:package-variant-closed
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.custom_integrations
+      - colour: "#8694E7"
+      - title: Custom Integrations In Use
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:package-variant-closed
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.entities
+      - colour: "#8694E7"
+      - title: Entities in Use
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:counter
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.sensors
+      - colour: "#8694E7"
+      - title: Sensors in Use
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:counter
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.automations
+      - colour: "#8694E7"
+      - title: Automations in Use
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:robot
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.devices
+      - colour: "#8694E7"
+      - title: Devices
+      - hours_to_show: 168
+      - points_per_hour: 1
+      - icon: mdi:cellphone

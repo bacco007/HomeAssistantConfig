@@ -56,6 +56,7 @@ cards:
                     - !include homeassistant/graph_dbsize.yaml
                     - !include homeassistant/graph_countyamlfiles.yaml
                     - !include homeassistant/graph_countyamllines.yaml
+                    - !include homeassistant/integration_stats.yaml
                     - !include homeassistant/entity_count.yaml
                     - !include homeassistant/automation_history.yaml
               - attributes:
@@ -111,6 +112,7 @@ cards:
           - !include homeassistant/graph_dbsize.yaml
           - !include homeassistant/graph_countyamlfiles.yaml
           - !include homeassistant/graph_countyamllines.yaml
+          - !include homeassistant/integration_stats.yaml
           - !include homeassistant/entity_count.yaml
 
   # Column 3, Row 1

@@ -8,7 +8,7 @@ mushroom_entity_graph:
     - colour: "#FFFFFF"
     - hours_to_show: 24
     - points_per_hour: 6
-    - line_width: 4
+    - line_width: 3
   card:
     type: custom:stack-in-card
     cards:
