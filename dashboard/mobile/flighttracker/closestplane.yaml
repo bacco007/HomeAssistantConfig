@@ -1,0 +1,18 @@
+---
+type: custom:mushroom-template-card
+primary: Bird Watch - Closest Plane
+secondary: |-
+  {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}} ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
+  {{state_attr(entity, 'aircraft_owner')}} - {{state_attr(entity, 'aircraft')}}
+  {{state_attr(entity, 'origin_airport')}} > {{state_attr(entity, 'destination_airport')}}
+icon: mdi:airplane
+entity: sensor.plane_overhead_detail
+icon_color: green
+fill_container: true
+multiline_secondary: true
+tap_action:
+  action: none
+hold_action:
+  action: none
+double_tap_action:
+  action: none

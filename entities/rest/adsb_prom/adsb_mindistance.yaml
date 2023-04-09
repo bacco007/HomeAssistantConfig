@@ -1,0 +1,11 @@
+---
+resource: http://192.168.1.65:9090/api/v1/query?query=readsb_distance_min
+sensor:
+  name: flighttracker_distance_min
+  unique_id: flighttracker_distance_min
+  value_template: >
+    {{ value_json.data.result[0].value[1] | int }}
+  unit_of_measurement: m
+  state_class: measurement
+  icon: mdi:airplane-alert
+scan_interval: 10

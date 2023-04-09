@@ -1,0 +1,62 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      entity: ""
+      icon: mdi:airplane
+      primary: FlightAware
+      card_mod:
+        style: |
+          ha-card {
+            border: 0;
+            box-shadow: none;
+          }
+    padding: 0
+    entities:
+      - entity: sensor.adsb_fa_adsbfeed
+        name: ADS-B Feed
+        type: custom:multiple-entity-row
+        secondary_info:
+          attribute: message
+          name: "Message: "
+      - entity: sensor.adsb_fa_mlat
+        name: MLAT Feed
+        type: custom:multiple-entity-row
+        secondary_info:
+          attribute: message
+          name: "Message: "
+      - entity: sensor.adsb_fa_piaware
+        name: PiAware Status
+        type: custom:multiple-entity-row
+        secondary_info:
+          attribute: message
+          name: "Message: "
+      - entity: sensor.adsb_fa_flightaware
+        name: Connection to FlightAware
+        type: custom:multiple-entity-row
+        secondary_info:
+          attribute: message
+          name: "Message: "
+    card_mod:
+      class: content
+      style: |
+        ha-card {
+          border: 0;
+        }
+        #measure {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+          }

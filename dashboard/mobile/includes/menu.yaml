@@ -520,7 +520,7 @@ cards:
                 layout: horizontal
                 tap_action:
                   action: navigate
-                  navigation_path: flight-tracker
+                  navigation_path: flighttracker
                 hold_action:
                   action: none
                 double_tap_action:

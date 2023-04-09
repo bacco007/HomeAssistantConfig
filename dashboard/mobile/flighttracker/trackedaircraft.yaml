@@ -1,0 +1,19 @@
+---
+type: custom:fr24-card
+entity: sensor.adsb_aircraft_tracked
+zone: zone.home
+units: metric
+larger_units: true
+popup: true
+units_in_table: true
+sort: "distance"
+columns:
+  [
+    "icon",
+    "registration",
+    "flight",
+    "aircraft_type",
+    "altitude",
+    "speed",
+    "distance",
+  ]

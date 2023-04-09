@@ -1,0 +1,116 @@
+---
+theme: noctis
+icon: mdi:airplane
+subview: true
+path: flighttracker
+title: Flight Tracker
+type: custom:grid-layout
+layout: !include includes/grid-3col.yaml
+badges: []
+cards:
+  ### Sidebar - Menu
+  - !include includes/menu.yaml
+
+  ### Header - Left
+  - !include includes/header-left.yaml
+
+  ### Header - Right
+  - !include includes/header-right.yaml
+
+  ### Footer
+  - !include includes/footer.yaml
+
+  # Mobile Only
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: mobile
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+
+        cards:
+          - type: custom:tabbed-card
+            options: {}
+            styles:
+              --mdc-theme-primary: var(--label-badge-blue)
+              --mdc-tab-text-label-color-default: var(--label-badge-red)
+            tabs:
+              - attributes:
+                  label: Stats
+                  isMinWidthIndicator: true
+                card:
+                  - !include flighttracker/flightsoverhead.yaml
+                  - !include flighttracker/closestplane.yaml
+                  - !include flighttracker/planeofinterest.yaml
+                  - !include flighttracker/flightaware.yaml
+                  - !include flighttracker/flightradar24.yaml
+              - attributes:
+                  label: Data
+                  isMinWidthIndicator: true
+                card:
+                  - !include flighttracker/trackedaircraft.yaml
+                  - !include flighttracker/flights_tracked.yaml
+                  - !include flighttracker/flights_tracked_week.yaml
+                  - !include flighttracker/flights_tracked_year.yaml
+
+  # Column 1, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c1r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include flighttracker/flightsoverhead.yaml
+          - !include flighttracker/closestplane.yaml
+          - !include flighttracker/planeofinterest.yaml
+          - !include flighttracker/flightaware.yaml
+          - !include flighttracker/flightradar24.yaml
+
+  # Column 2, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include flighttracker/trackedaircraft.yaml
+          - !include flighttracker/flights_tracked.yaml
+          - !include flighttracker/distance.yaml
+
+  # Column 3, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include flighttracker/flights_tracked_week.yaml
+          - !include flighttracker/flights_tracked_year.yaml
+
+  # Column 1, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 2, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c2r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 3, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c3r2
+      show:
+        mediaquery: "(min-width: 801px)"

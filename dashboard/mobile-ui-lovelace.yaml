@@ -21,3 +21,4 @@ views:
   - !include mobile/weather.yaml
   - !include mobile/docker.yaml
   - !include mobile/devices.yaml
+  - !include mobile/flighttracker.yaml

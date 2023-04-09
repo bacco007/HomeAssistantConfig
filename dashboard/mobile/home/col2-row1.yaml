@@ -102,7 +102,7 @@ cards:
             <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
             icon='mdi:airplane-alert'></ha-icon> FLIGHT TRACKER
           label: More
-          link: /ui-dashboard/docker
+          link: /ui-dashboard/flighttracker
         view_layout:
           grid-column: 1/-1
         card_mod:
@@ -110,48 +110,9 @@ cards:
             ha-card {
               box-shadow: none;
             }
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.flighttracker_aircraft_total
-          - colour: green
-          - title: Bird Watch - Flights Overhead
-          - line_width: 3
-          - icon: mdi:airplane-alert
-      - type: custom:mushroom-template-card
-        primary: Bird Watch - Closest Plane
-        secondary: |-
-          {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}} ({{state_attr('sensor.plane_overhead', 'distance')}} km away)
-          {{state_attr(entity, 'aircraft_owner')}} - {{state_attr(entity, 'aircraft')}}
-          {{state_attr(entity, 'origin_airport')}} > {{state_attr(entity, 'destination_airport')}}
-        icon: mdi:airplane
-        entity: sensor.plane_overhead_detail
-        icon_color: green
-        fill_container: true
-        multiline_secondary: true
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
-      - type: custom:mushroom-template-card
-        primary: Bird Watch - Latest Aircraft of Interest
-        secondary: >-
-          {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}}, {{state_attr(entity, 'call')}})
-
-          {{state_attr(entity, 'equipment')}} ({{state_attr(entity, 'date')}}, {{state_attr(entity, 'time')}})
-        icon: mdi:airplane-alert
-        entity: sensor.flighttracker_planefence_aircraft
-        icon_color: green
-        fill_container: true
-        multiline_secondary: true
-        tap_action:
-          action: none
-        hold_action:
-          action: none
-        double_tap_action:
-          action: none
+      - !include ../flighttracker/flightsoverhead.yaml
+      - !include ../flighttracker/closestplane.yaml
+      - !include ../flighttracker/planeofinterest.yaml
 
   - type: vertical-stack
     cards:

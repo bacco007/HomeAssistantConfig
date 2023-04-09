@@ -1,0 +1,51 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.flighttracker_aircraft_total
+    primary_info: name
+    secondary_info: none
+    name: Flights Tracked (This Year)
+    fill_container: true
+    icon: mdi:airplane-alert
+    icon_color: red
+  - type: custom:apexcharts-card
+    graph_span: 1year
+    span:
+      end: day
+      offset: +1d
+    all_series_config:
+      type: line
+      extend_to: now
+      group_by:
+        func: max
+        duration: 1d
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    span:
+      end: hour
+    apex_config:
+      chart: { type: "area", height: 250 }
+      stroke: { show: true, curve: smooth, dashArray: [0, 2] }
+      legend: { show: false }
+      dataLabels: { enabled: false }
+      yaxis:
+        - seriesName: "Flights"
+          decimalsInFloat: 0
+          title:
+            text: "No. Flights"
+    series:
+      - entity: sensor.archive_flighttracker_flights_365day
+        name: Flights
+        stroke_width: 3
+        show:
+          extremas: true
+        data_generator: |
+          let res = [];
+          for (const [key, value] of
+              Object.entries(entity.attributes)) {
+              res.push([new Date(key).getTime(), value]);
+          }
+          return res.sort((a, b) => { return a[0] - b[0] });

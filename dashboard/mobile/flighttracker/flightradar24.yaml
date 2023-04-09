@@ -1,0 +1,50 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      entity: ""
+      icon: mdi:airplane
+      primary: FlightRadar24
+      card_mod:
+        style: |
+          ha-card {
+            border: 0;
+            box-shadow: none;
+          }
+    padding: 0
+    entities:
+      - entity: sensor.adsb_fr24_feeder_radar_code
+        type: custom:multiple-entity-row
+        name: FR24 Radar Code
+      - entity: sensor.adsb_fr24_feeder_version
+        type: custom:multiple-entity-row
+        name: FR24 Version
+      - entity: binary_sensor.adsb_fr24_feeder_link_connected
+        type: custom:multiple-entity-row
+      - entity: binary_sensor.adsb_fr24_feeder_receiver_connected
+        type: custom:multiple-entity-row
+      - entity: binary_sensor.adsb_fr24_mlat_connected
+        type: custom:multiple-entity-row
+    card_mod:
+      class: content
+      style: |
+        ha-card {
+          border: 0;
+        }
+        #measure {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+          }

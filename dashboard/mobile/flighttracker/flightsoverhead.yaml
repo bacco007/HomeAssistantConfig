@@ -1,0 +1,9 @@
+---
+type: custom:decluttering-card
+template: mushroom_entity_graph
+variables:
+  - entity: sensor.flighttracker_aircraft_total
+  - colour: green
+  - title: Bird Watch - Flights Overhead
+  - line_width: 3
+  - icon: mdi:airplane-alert

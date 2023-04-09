@@ -1,0 +1,56 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.flighttracker_aircraft_total
+    primary_info: name
+    secondary_info: none
+    name: Flights Tracked (This Week)
+    fill_container: true
+    icon: mdi:airplane-alert
+    icon_color: red
+  - type: custom:apexcharts-card
+    graph_span: 7d1s
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    span:
+      end: hour
+    apex_config:
+      chart: { type: "area", height: 250 }
+      stroke: { show: true, curve: smooth, dashArray: [0, 2] }
+      legend: { show: false }
+      dataLabels: { enabled: false }
+      xaxis:
+        {
+          type: "datetime",
+          labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+        }
+      yaxis:
+        - seriesName: "Flights"
+          decimalsInFloat: 0
+          title:
+            text: "No. Flights"
+      fill:
+        {
+          type: "gradient",
+          gradient:
+            {
+              shadeIntensity: 1,
+              inverseColors: false,
+              opacityFrom: 0.45,
+              opacityTo: 0.05,
+              stops: [20, 100, 100, 100],
+            },
+        }
+    series:
+      - entity: sensor.flighttracker_flights_1hr
+        name: Flights
+        type: area
+        # color: "#008FFB"
+        # extend_to_end: false
+        stroke_width: 3
+        group_by:
+          func: max
+          duration: 1h

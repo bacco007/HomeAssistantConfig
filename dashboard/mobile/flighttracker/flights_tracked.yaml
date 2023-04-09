@@ -1,0 +1,59 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.flighttracker_aircraft_total
+    primary_info: name
+    secondary_info: none
+    name: Flights Tracked (Yesterday & Today)
+    fill_container: true
+    icon: mdi:airplane-alert
+    icon_color: red
+  - type: custom:apexcharts-card
+    graph_span: 24h
+    span:
+      end: day
+    now:
+      show: true
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    apex_config:
+      chart:
+        height: 250
+      legend:
+        show: false
+      yaxis:
+        forceNiceScale: true
+        decimalsInFloat: false
+    all_series_config:
+      stroke_width: 3
+      type: line
+      fill_raw: last
+      extend_to: now
+      group_by:
+        func: avg
+        duration: 10min
+    yaxis:
+      - decimals: 0
+        align_to: 5
+    series:
+      - entity: sensor.flighttracker_aircraft_total
+        name: Yesterday
+        offset: "-1d"
+        stroke_width: 1.5
+        type: area
+        color: lightgrey
+        opacity: 0.08
+        show:
+          extremas: true
+          legend_value: false
+      - entity: sensor.flighttracker_aircraft_total
+        stroke_width: 3.5
+        type: area
+        color: "#FF4400"
+        opacity: 0.08
+        show:
+          extremas: true
+          legend_value: false
