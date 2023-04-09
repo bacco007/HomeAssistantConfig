@@ -26,18 +26,13 @@ _Please :star: this repo if you find it useful_
 - [🏠TBSmartHome - Home Assistant Configuration](#tbsmarthome---home-assistant-configuration)
   - [Table of Contents](#table-of-contents)
   - [TL;DR](#tldr)
-  - [Ecosystem](#ecosystem)
-    - [Hardware](#hardware)
-    - [Zigbee](#zigbee)
   - [Stats](#stats)
   - [Integrations Used](#integrations-used)
     - [Custom Components Used](#custom-components-used)
   - [Screenshots](#screenshots)
   - [HA Supervisor](#ha-supervisor)
-    - [Addon Repositories](#addon-repositories)
     - [Addons](#addons)
   - [Licence](#licence)
-  - [Other Good HA Resources/Configs](#other-good-ha-resourcesconfigs)
 
 ---
 
@@ -51,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 17:57, Sunday, April 9th 2023_
+_Stats as at 05:00, Monday, April 10th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.2 | 463     | 3724         | 2546 | 102 |
+| 2023.4.2 | 463     | 3731         | 2546 | 102 |
 
 Type | Qty
 -- | --
@@ -70,7 +65,7 @@ Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 18
+Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
@@ -562,6 +557,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 <details>
 <summary>Expand Custom Components List</summary>
+
 ### Integrations
 - [Adaptive Lighting](https://github.com/basnijholt/adaptive-lighting)
 - [Anniversaries](https://github.com/pinkywafer/Anniversaries)
@@ -726,26 +722,26 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- ESPHome (2023.3.2) - 
-- Eufy Security Add-on (1.3.0) - 
-- File editor (5.5.0) - 
-- Glances (0.18.1) - 
-- Home Assistant Git Exporter (1.16.0) - 
-- Home Assistant Google Drive Backup (0.110.3) - 
-- JupyterLab (0.10.0) - 
-- MariaDB (2.5.2) - 
-- Mosquitto broker (6.2.0) - 
-- MQTT Explorer (browser-1.0.1) - 
-- Node-RED (14.1.3) - 
-- phpMyAdmin (0.8.5) - 
-- Portainer (2.0.0) - 
-- RTSP Simple Server Add-on (v0.17.6) - 
-- Samba share (10.0.0) - 
-- Shortumation (v0.7.6) - 
-- SSH & Web Terminal (13.1.0) - 
-- SunGather (0.1.3) - 
-- WeatherFlow to MQTT (3.1.6) - 
-- Zigbee2MQTT (1.30.3-1) - 
+- ESPHome (2023.3.2)
+- Eufy Security Add-on (1.3.0)
+- File editor (5.5.0)
+- Glances (0.18.1)
+- Home Assistant Git Exporter (1.16.0)
+- Home Assistant Google Drive Backup (0.110.3)
+- JupyterLab (0.10.0)
+- MariaDB (2.5.2)
+- Mosquitto broker (6.2.0)
+- MQTT Explorer (browser-1.0.1)
+- Node-RED (14.1.3)
+- phpMyAdmin (0.8.5)
+- Portainer (2.0.0)
+- RTSP Simple Server Add-on (v0.17.6)
+- Samba share (10.0.0)
+- Shortumation (v0.7.6)
+- SSH & Web Terminal (13.1.0)
+- SunGather (0.1.3)
+- WeatherFlow to MQTT (3.1.6)
+- Zigbee2MQTT (1.30.3-1)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
