@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, April 10th 2023_
+_Stats as at 05:00, Tuesday, April 11th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.2 | 463     | 3731         | 2546 | 102 |
+| 2023.4.2 | 462     | 3708         | 2530 | 102 |
 
 Type | Qty
 -- | --
@@ -69,11 +69,11 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2546
+Sensor | 2530
 Sun | 1
-Switch | 162
+Switch | 151
 Weather | 6
-Zone | 3
+Zone | 5
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -256,7 +256,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
-| [launch_library](https://www.home-assistant.io/components/launch_library) |
 | [light](https://www.home-assistant.io/components/light) |
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.group](https://www.home-assistant.io/components/light.group) |
@@ -637,7 +636,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Bar Card](https://github.com/custom-cards/bar-card)
 - [Bom Radar Card](https://github.com/Makin-Things/bom-radar-card)
 - [Button Card](https://github.com/custom-cards/button-card)
-- [Canvas Gauge Card](https://github.com/custom-cards/canvas-gauge-card)
 - [Card Mod](https://github.com/thomasloven/lovelace-card-mod)
 - [Card Tools](https://github.com/thomasloven/lovelace-card-tools)
 - [Clock Weather Card](https://github.com/pkissling/clock-weather-card)
