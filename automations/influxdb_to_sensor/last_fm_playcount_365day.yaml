@@ -25,3 +25,20 @@ action:
       unit_of_measurement: Songs
       friendly_name: Last.fm - Playcount - 365 Day
       icon: "si:lastfm"
+  - service: pyscript.influxdb2_query_to_entity
+    data:
+      query: >-
+        import "timezone" option location = timezone.location(name:"Australia/Sydney") from(bucket: "homeassistant")
+          |> range(start: -1y)
+          |> filter(fn: (r) => r["entity_id"] == "lastfm_user_playcount")
+          |> filter(fn: (r) => r["_field"] == "value")
+          |> drop(columns: ["friendly_name"])
+          |> filter(fn: (r) => r._value != 0.0 )
+          |> aggregateWindow(every: 1d, fn: last, createEmpty: true)
+          |> fill(usePrevious: true)
+          |> derivative(unit: 1d)
+          |> yield(name: "last")
+      entity_id: sensor.archive_last_fm_dailyplaycount_365day
+      unit_of_measurement: Songs
+      friendly_name: Last.fm - Daily Playcount - 365 Day
+      icon: "si:lastfm"
