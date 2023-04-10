@@ -1,0 +1,11 @@
+---
+resource: https://timeapi.io/api/TimeZone/zone?timeZone=America/New_York
+sensor:
+  name: dst_dates_usa_east
+  unique_id: dst_dates_usa_east
+  value_template: "{{ value_json.isDayLightSavingActive }}"
+  json_attributes_path: "$.dstInterval"
+  json_attributes:
+    - dstStart
+    - dstEnd
+scan_interval: 21600

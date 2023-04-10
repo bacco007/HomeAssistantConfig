@@ -1,0 +1,11 @@
+---
+resource: https://timeapi.io/api/TimeZone/zone?timeZone=Australia/Sydney
+sensor:
+  name: dst_dates_local
+  unique_id: dst_dates_local
+  value_template: "{{ value_json.isDayLightSavingActive }}"
+  json_attributes_path: "$.dstInterval"
+  json_attributes:
+    - dstStart
+    - dstEnd
+scan_interval: 21600
