@@ -17,8 +17,9 @@ iaquk:
       - iaq_index
   bedroom:
     sources:
-      temperature: sensor.zha_bedroom_temperature
-      humidity: sensor.zha_bedroom_humidity
+      temperature: sensor.bedroom_vindstyrka_temperature
+      humidity: sensor.bedroom_vindstyrka_humidity
+      pm: sensor.bedroom_vindstyrka_particulate_matter
       # co2:
       # tvoc:
     sensors:

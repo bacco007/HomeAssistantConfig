@@ -20,6 +20,21 @@
                                   }
                                 },
                                 {
+                                'language': 'it',
+                                'phrases':
+                                {
+                                'year': ['anno', 'anni', 'aa'],
+                                'month': ['mese', 'mesi', 'mm'],
+                                'week': ['settimana', 'settimane', 'set'],
+                                'day': ['giorno', 'giorni', 'gg'],
+                                'hour': ['ora', 'ore', 'h'],
+                                'minute': ['minuto', 'minuti', 'min'],
+                                'second': ['secondo', 'secondi', 'sec'],
+                                'combine': ' e ',
+                                'error': 'Data non valida'
+                                }
+                                },
+                                {
                                   'language': 'nl',
                                   'phrases':
                                   {
@@ -32,6 +47,21 @@
                                     'second': ['seconde', 'seconden', 'sec'],
                                     'combine': ' en ',
                                     'error': 'Incorrecte datum'
+                                  }
+                                },
+                                {
+                                  'language': 'de',
+                                  'phrases':
+                                  {
+                                    'year': ['Jahr', 'Jahre', 'J.'],
+                                    'month': ['Monat', 'Monate', 'M.'],
+                                    'week': ['Woche', 'Wochen', 'Wo.'],
+                                    'day': ['Tag', 'Tage', 'Tg.'],
+                                    'hour': ['Stunde', 'Stunden', 'Std.'],
+                                    'minute': ['Minute', 'Minuten', 'Min.'],
+                                    'second': ['Sekunde', 'Sekunden', 'Sek.'],
+                                    'combine': ' und ',
+                                    'error': 'Falsches Datum'
                                   }
                                 }
                               ]
@@ -117,7 +147,7 @@
     {#- create list of texts per selected time period #}
       {%- set ns = namespace(text = []) %}
       {%- for i in selection -%}
-        {%- set ns.text = ns.text + [ i[1].a ~ ' ' ~ i[1].d] %}
+        {%- set ns.text = ns.text + [ i[1].a ~ ' ' ~ i[1].d] %} 
       {%- endfor %}
     {#- join texts in a string, using phr.combine for the last item #}
       {{ ns.text[:-1] | join(', ') ~ phr.combine ~ ns.text[-1] if ns.text | count > 1 else ns.text | first }}
