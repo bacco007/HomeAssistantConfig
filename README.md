@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, April 12th 2023_
+_Stats as at 05:00, Thursday, April 13th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.2 | 462     | 3697         | 2541 | 102 |
+| 2023.4.2 | 462     | 3698         | 2541 | 102 |
 
 Type | Qty
 -- | --
@@ -726,11 +726,11 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Glances (0.18.1)
 - Home Assistant Git Exporter (1.16.0)
 - Home Assistant Google Drive Backup (0.110.3)
-- JupyterLab (0.10.0)
+- JupyterLab (0.10.2)
 - MariaDB (2.5.2)
 - Mosquitto broker (6.2.0)
 - MQTT Explorer (browser-1.0.1)
-- Node-RED (14.1.3)
+- Node-RED (14.1.4)
 - phpMyAdmin (0.8.5)
 - Portainer (2.0.0)
 - RTSP Simple Server Add-on (v0.17.6)
