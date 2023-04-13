@@ -1,0 +1,55 @@
+#=======================================================
+#=== date_and_time
+#===
+#===  Receives a datetime object
+#===    eg now()
+#===  Returns date and time in natural language
+#===    13 minutes past 4 on Tuesday the 11th of April.
+#=======================================================
+
+{% macro date_and_time(date_time) %}
+
+  {#              #}
+  {# CONVERT TIME #}
+  {#              #}
+  {% set hrs = date_time.hour %}
+  {% set min = date_time.minute %}
+
+  {% if hrs > 12 or (hrs == 12 and min > 30) %}
+    {% set hrs = hrs - 12 %}
+  {% endif %}
+
+  {% if min == 0 %}
+    {% set time_nl = hrs ~ " o'clock" %}
+  {% elif min in (5, 10, 20, 25) %}
+    {% set time_nl = min ~ ' past ' ~ hrs %}
+  {% elif min in (35, 40, 50, 55) %}
+    {% set time_nl = (60 - min) ~ ' to ' ~ (hrs + 1) %}
+  {% elif min == 15 %}
+    {% set time_nl = 'quarter past ' ~ hrs %}
+  {% elif min == 30 %}
+    {% set time_nl = 'half past ' ~ hrs %}
+  {% elif min == 45 %}
+    {% set time_nl = 'quarter to ' ~ (hrs + 1) %}
+  {% elif min == 1 %}
+    {% set time_nl = 'a minute past ' ~ hrs %}
+  {% elif min == 59 %}
+    {% set time_nl = 'a minute to ' ~ (hrs + 1) %}
+  {% elif min < 30 %}
+    {% set time_nl = min ~ ' minutes past ' ~ hrs %}
+  {% elif min > 30 %}
+    {% set time_nl = (60 - min) ~ ' minutes to ' ~ (hrs + 1) %}
+  {% endif %}
+
+  {#              #}
+  {# CONVERT DATE #}
+  {#              #}
+  {% set day = date_time.strftime("%A") %}
+  {% set date = date_time.day | ordinal %}
+  {% set month = date_time.strftime("%B") %}
+
+  {% set date_nl = day ~ ' the ' ~ date ~ ' of ' ~ month ~ '. ' %}
+
+  {{ time_nl ~ ' on ' ~ date_nl }}
+
+{% endmacro %}
