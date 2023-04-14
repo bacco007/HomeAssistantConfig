@@ -20275,7 +20275,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
         this.valueUpdated = () => {
             const originalConfig = lodash.clone(this.config);
             this.config.protocol = this.protocol.value;
-            this.config.ip = this.ip.value.replace(/^https?\:\/\//i, '').replace(/\/$/, '');
+            this.config.ip = this.ip.value.replace(/^https?:\/\//i, '').replace(/\/$/, '');
             this.config.token = this.token.value;
             this.config.port = this.port.value;
             if (this.loaded) {
@@ -20527,7 +20527,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.content.appendChild(this.protocol);
             this.ip.label = 'Plex IP Address / Hostname';
             if (this.config.ip) {
-                this.ip.value = this.config.ip.replace(/^https?\:\/\//i, '').replace(/\/$/, '');
+                this.ip.value = this.config.ip.replace(/^https?:\/\//i, '').replace(/\/$/, '');
             }
             else {
                 this.ip.value = this.config.ip;
@@ -20559,7 +20559,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
             this.content.appendChild(this.libraryName);
             this.content.appendChild(warningLibrary);
             this.appendChild(this.content);
-            this.plex = new Plex(this.config.ip.replace(/^https?\:\/\//i, '').replace(/\/$/, ''), this.plexPort, this.config.token, this.plexProtocol, this.config.sort);
+            this.plex = new Plex(this.config.ip.replace(/^https?:\/\//i, '').replace(/\/$/, ''), this.plexPort, this.config.token, this.plexProtocol, this.config.sort);
             this.sections = await this.plex.getSections();
             lodash.forEach(this.sections, section => {
                 if (lodash.isEqual(section.title, this.config.libraryName) && lodash.isEqual(section.type, 'artist')) {
@@ -20581,6 +20581,7 @@ class PlexMeetsHomeAssistantEditor extends HTMLElement {
                     this.content.appendChild(this.useShuffle);
                     return false;
                 }
+                return true;
             });
             this.livetv = await this.plex.getLiveTV();
             this.collections = await this.plex.getCollections();
@@ -21971,11 +21972,12 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         this.error = '';
         this.contentBGHeight = 0;
         this.initialDataLoaded = false;
+        this.haWindow = PlexMeetsHomeAssistant.querySelectorAllShadows('hui-view')[0];
         this.renderNewElementsIfNeeded = () => {
             const loadAdditionalRowsCount = 2; // todo: make this configurable
             const height = getHeight(this.content);
             if (!this.detailsShown &&
-                window.innerHeight + window.scrollY > height + getOffset(this.content).top - 300 &&
+                window.innerHeight + this.haWindow.scrollTop > height - 300 &&
                 this.renderedItems > 0 &&
                 this.renderedItems < this.data[this.config.libraryName].length &&
                 (!this.maxCount || this.renderedItems < this.maxCount) &&
@@ -22018,7 +22020,7 @@ class PlexMeetsHomeAssistant extends HTMLElement {
             if (this.hassObj) {
                 this.entityRegistry = await fetchEntityRegistry(this.hassObj.connection);
             }
-            window.addEventListener('scroll', () => {
+            const scrollListener = () => {
                 // todo: improve performance by calculating this when needed only
                 if (this.detailsShown && this.activeMovieElem && !isVideoFullScreen(this) && this.isVisible) {
                     const seasonContainers = this.getElementsByClassName('seasonContainer');
@@ -22058,7 +22060,11 @@ class PlexMeetsHomeAssistant extends HTMLElement {
                     }
                 }
                 this.renderNewElementsIfNeeded();
-            });
+            };
+            this.haWindow.addEventListener('scroll', scrollListener);
+            // window.addEventListener('scroll', scrollListener);
+            // window.addEventListener('wheel', scrollListener);
+            // window.addEventListener('touchmove', scrollListener);
             window.addEventListener('resize', () => {
                 this.resizeHandler();
             });
@@ -23947,6 +23953,17 @@ class PlexMeetsHomeAssistant extends HTMLElement {
         return document.createElement('plex-meets-homeassistant-editor');
     }
 }
+PlexMeetsHomeAssistant.querySelectorAllShadows = (selector, el = document.body) => {
+    // recurse on childShadows
+    const childShadows = Array.from(el.querySelectorAll('*'))
+        .map(el2 => el2.shadowRoot)
+        .filter(Boolean);
+    // console.log('[querySelectorAllShadows]', selector, el, `(${childShadows.length} shadowRoots)`);
+    const childResults = childShadows.map((child) => PlexMeetsHomeAssistant.querySelectorAllShadows(selector, child));
+    // fuse all results into singular, flat array
+    const result = Array.from(el.querySelectorAll(selector));
+    return result.concat(childResults).flat();
+};
 customElements.define('plex-meets-homeassistant-editor', PlexMeetsHomeAssistantEditor);
 customElements.define('plex-meets-homeassistant', PlexMeetsHomeAssistant);
 window.customCards = window.customCards || [];
