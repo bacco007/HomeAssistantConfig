@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 15th 2023_
+_Stats as at 05:00, Sunday, April 16th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.4 | 462     | 3715         | 2536 | 102 |
+| 2023.4.4 | 462     | 3717         | 2536 | 102 |
 
 Type | Qty
 -- | --
