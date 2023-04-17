@@ -169,36 +169,49 @@ class UnifiSensor(Entity):
             self._attr = {}
             self.ap_list = {}
 
-            ap_names = dict([(ap['mac'], ap.get('name', 'unknow')) for ap in aps])
+            ap_names = dict([(ap['mac'], ap.get('name', ap['mac'])) for ap in aps])
 
             for ap in sorted(aps, key=lambda x: x.get('name', 'unknow').lower()):
                 if ap.get('type') in [ 'udm', 'uap']:
-                    name = "AP " + ap.get('name', 'unknow')
+                    name = "AP " + ap.get('name', ap.get('mac'))
                     self._attr[name] = 0
+        except Exception as e:
+            _LOGGER("Error while trying to update aps: %s", e)
+            _LOGGER("AP: %s", ap)
+            _LOGGER.error("raw data aps: %s", aps)
+            self._total = 0
 
+        try:    
             for wlan in sorted(wlans, key=lambda x: x.get('name', 'unknow').lower()):
-                self._attr[wlan.get('name', 'nolanname')] = 0
+                self._attr[wlan.get('name', 'wlan noname')] = 0
+        except Exception as e:
+            _LOGGER("Error while trying to update wlans: %s", e)
+            _LOGGER("WLAN: %s", wlan)
+            _LOGGER.error("raw data wlans: %s", wlans)
+            self._total = 0
 
+        try:
             for client in clients:
                 total += 1
                 if client.get('is_wired') == True:
                     self._attr['wired'] = self._attr.get('wired', 0) + 1
                     continue
-                ap_name = "AP " + ap_names.get(client.get('ap_mac', 'noname'))
-                client_essid = client.get('essid', 'unknow')
-                self._attr[ap_name] = self._attr.get(ap_name, 0) + 1
-                self._attr[client_essid] = self._attr.get(client_essid, 0) + 1
-
+                if client.get('ap_mac') is not None:
+                    ap_name = "AP " + ap_names.get(client.get('ap_mac', 'noname'))
+                    self._attr[ap_name] = self._attr.get(ap_name, 0) + 1
+                if client.get('essid') is not None:    
+                    client_essid = client.get('essid', 'wlan noname')
+                    self._attr[client_essid] = self._attr.get(client_essid, 0) + 1
+        
             self._total = total
 
         except Exception as e:
-            _LOGGER.error("Error while trying to update sensor: %s", e)
-            _LOGGER.error("ap_name: %s,  client_essid: %s", ap_name, client_essid)
+            _LOGGER("Error while trying to update clients: %s", e)
+            _LOGGER("client: %s", client)    
             _LOGGER.error("raw data aps: %s", aps)
             _LOGGER.error("raw data wlans: %s", wlans)
             _LOGGER.error("raw data clients: %s", clients)
-            self._total = 0
-
+            
     def unifi_status(self, state):
         """ boiler status conversions """
         _LOGGER.debug(state)
