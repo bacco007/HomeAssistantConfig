@@ -3,6 +3,79 @@ type: grid
 columns: 1
 square: false
 cards:
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-light-card
+        entity: light.office_lamp
+        show_brightness_control: true
+        tap_action:
+          action: toggle
+        use_light_color: true
+        fill_container: true
+        show_color_temp_control: false
+        show_color_control: false
+        collapsible_controls: false
+        hold_action:
+          action: more-info
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape:active {
+                transform: scale(1.2);
+              }
+            .: |
+              mushroom-light-brightness-control {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                opacity: 0.3;
+                --control-height: 66px;
+                --control-border-radius: var(--ha-card-border-radius, 12px);
+                --rgb-disabled: var(--rgb-card-background-color);
+              }
+              mushroom-state-item {
+                z-index: 1;
+                max-width: fit-content;
+                margin-bottom: 0px;
+                pointer-events: none;
+              }
+              mushroom-shape-icon {
+                pointer-events: auto;
+              }
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_lamp
+        show_brightness_control: true
+        tap_action:
+          action: toggle
+        use_light_color: true
+        card_mod:
+          style:
+            mushroom-shape-icon$: |
+              .shape:active {
+                transform: scale(1.2);
+              }
+            .: |
+              mushroom-light-brightness-control {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                opacity: 0.3;
+                --control-height: 66px;
+                --control-border-radius: var(--ha-card-border-radius, 12px);
+                --rgb-disabled: var(--rgb-card-background-color);
+              }
+              mushroom-state-item {
+                z-index: 1;
+                max-width: fit-content;
+                margin-bottom: 0px;
+                pointer-events: none;
+              }
+              mushroom-shape-icon {
+                pointer-events: auto;
+              }
+
   - type: custom:decluttering-card
     template: mushroom_entity_graph
     variables:

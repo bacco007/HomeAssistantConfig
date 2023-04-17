@@ -18,7 +18,7 @@ entities:
     head:
       type: custom:mushroom-template-card
       primary: MLB
-      icon: mdi:baseball-diamond
+      icon: si:mlb
       icon_color: green
       card_mod:
         style: |
