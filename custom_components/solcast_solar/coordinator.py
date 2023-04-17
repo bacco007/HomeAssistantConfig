@@ -77,6 +77,12 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def setup(self):
         try:
             await get_instance(self._hass).async_add_executor_job(self.gethistory)
+        except Exception:
+            _LOGGER.error("SOLCAST - Error coordinator setup to get past history data")
+            d={}
+            self._previousenergy = d
+
+        try:
             if self._autopollingdisabled:
                 _LOGGER.info("SOLCAST - Auto poll the solcast API for data is disabled.")
                 _LOGGER.debug("SOLCAST - You must manually setup a call to the service to get new data")
@@ -268,6 +274,3 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             self._previousenergy = d
         except Exception:
             _LOGGER.error("SOLCAST - gethistory: %s", traceback.format_exc())
-        
-
-
