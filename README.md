@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, April 18th 2023_
+_Stats as at 05:00, Wednesday, April 19th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.4 | 462     | 3714         | 2545 | 102 |
+| 2023.4.5 | 461     | 3709         | 2539 | 102 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2545
+Sensor | 2539
 Sun | 1
 Switch | 165
 Weather | 6
@@ -377,7 +377,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
-| [sensor.gtfs_rt](https://www.home-assistant.io/components/sensor.gtfs_rt) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
 | [sensor.hdhomerun](https://www.home-assistant.io/components/sensor.hdhomerun) |
