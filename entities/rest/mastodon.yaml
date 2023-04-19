@@ -1,0 +1,21 @@
+---
+resource: "https://mastodon.social/api/v1/accounts/lookup?acct=@bacco007"
+scan_interval: 7200 # 2h, in seconds. Can be modified to check more or less frequently.
+sensor:
+  - name: Mastodon Followers
+    value_template: "{{ value_json.followers_count }}"
+    icon: mdi:account
+    state_class: measurement
+  - name: Mastodon Following
+    value_template: "{{ value_json.following_count }}"
+    icon: mdi:account
+    state_class: measurement
+  - name: Mastodon Posts
+    value_template: "{{ value_json.statuses_count }}"
+    icon: mdi:post
+    state_class: measurement
+  - name: Mastodon Last Posted
+    value_template: "{{ value_json.last_status_at }}"
+    icon: mdi:calendar
+    state_class: measurement
+    device_class: date
