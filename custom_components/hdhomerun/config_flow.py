@@ -350,15 +350,17 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
 
         # region #-- get the important information --#
         self._friendly_name = (
-            f"{discovery_info.upnp.get('modelName', '')} "
-            f"{discovery_info.upnp.get('serialNumber', '')}"
+            f"{discovery_info.upnp.get(ssdp.ATTR_UPNP_MODEL_NAME, '')} "
+            f"{discovery_info.upnp.get(ssdp.ATTR_UPNP_SERIAL, '')}"
         )
-        service_list = discovery_info.upnp.get("serviceList", {}).get("service")
+        service_list = discovery_info.upnp.get(ssdp.ATTR_UPNP_SERVICE_LIST, {}).get(
+            "service"
+        )
         if service_list:
             _LOGGER.debug(self.format("%s"), json.dumps(service_list))
             service = service_list[0]
             self._host = urlparse(url=service.get("controlURL", "")).hostname
-        serial: str = discovery_info.upnp.get("serialNumber", "")
+        serial: str = discovery_info.upnp.get(ssdp.ATTR_UPNP_SERIAL, "")
         # endregion
 
         # region #-- set a unique_id, update details if device has changed IP --#
