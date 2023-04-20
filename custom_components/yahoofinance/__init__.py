@@ -16,7 +16,10 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 import voluptuous as vol
 
-from custom_components.yahoofinance.coordinator import YahooSymbolUpdateCoordinator
+from custom_components.yahoofinance.coordinator import (
+    CrumbCoordinator,
+    YahooSymbolUpdateCoordinator,
+)
 
 from .const import (
     CONF_DECIMAL_PLACES,
@@ -212,13 +215,18 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     _LOGGER.info("Total %d unique scan intervals", len(symbols_by_scan_interval))
 
     coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = {}
+    crumb_coordinator = CrumbCoordinator(hass)
+    await crumb_coordinator.try_get_crumb()  # Get crumb first
+
     for key_scan_interval, symbols in symbols_by_scan_interval.items():
         _LOGGER.info(
             "Creating coordinator with scan_interval %s for symbols %s",
             key_scan_interval,
             symbols,
         )
-        coordinator = YahooSymbolUpdateCoordinator(symbols, hass, key_scan_interval)
+        coordinator = YahooSymbolUpdateCoordinator(
+            symbols, hass, key_scan_interval, crumb_coordinator
+        )
         coordinators[key_scan_interval] = coordinator
 
         _LOGGER.info(

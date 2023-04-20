@@ -8,6 +8,7 @@ from __future__ import annotations
 import asyncio
 from datetime import timedelta
 from http import HTTPStatus
+from http.cookies import SimpleCookie
 import logging
 from typing import Final
 
@@ -19,6 +20,13 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util.dt import utcnow
+
+from custom_components.yahoofinance.const import (
+    CRUMB_URL,
+    HEADER_ACCEPT,
+    HEADER_ACCEPT_ENCODING,
+    USER_AGENT,
+)
 
 from .const import (
     BASE,
@@ -32,6 +40,56 @@ _LOGGER = logging.getLogger(__name__)
 WEBSESSION_TIMEOUT: Final = 15
 DELAY_ASYNC_REQUEST_REFRESH: Final = 5
 FAILURE_ASYNC_REQUEST_REFRESH: Final = 20
+
+
+class CrumbCoordinator:
+    """Class to gather crumb/cookie details."""
+
+    def __init__(self, hass: HomeAssistant) -> None:
+        """Initialize."""
+
+        self.cookies: SimpleCookie[str] = None
+        """Cookies for requests."""
+        self.crumb: str | None = None
+        """Crumb for requests."""
+        self._hass = hass
+
+    def reset_crumb(self) -> None:
+        """Reset crumb/cookies."""
+        self.crumb = self.cookies = None
+
+    async def try_get_crumb(self) -> str | None:
+        """Try to get crumb/cookies for data requests."""
+
+        websession = async_get_clientsession(self._hass)
+        self.reset_crumb()
+
+        try:
+            async with async_timeout.timeout(WEBSESSION_TIMEOUT):
+                headers = {
+                    "User-Agent": USER_AGENT,
+                    "accept-encoding": HEADER_ACCEPT_ENCODING,
+                    "accept": HEADER_ACCEPT,
+                }
+
+                _LOGGER.debug("Getting crumb from from %s", CRUMB_URL)
+                response = await websession.get(CRUMB_URL, headers=headers)
+                self.cookies = response.cookies
+
+                if response.status == HTTPStatus.OK:
+                    content = await response.text()
+                    start_pos = content.find('"crumb":"')
+                    if start_pos != -1:
+                        start_pos = start_pos + 9
+                        end_pos = content.find('"', start_pos + 10)
+                        if end_pos != -1:
+                            self.crumb = content[start_pos:end_pos]
+                            _LOGGER.debug("Crumb=%s", self.crumb)
+
+        except (asyncio.TimeoutError, aiohttp.ClientError):
+            _LOGGER.error("Timed out getting crumb")
+
+        return self.crumb
 
 
 class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
@@ -85,7 +143,11 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         return conversion_symbol
 
     def __init__(
-        self, symbols: list[str], hass: HomeAssistant, update_interval: timedelta
+        self,
+        symbols: list[str],
+        hass: HomeAssistant,
+        update_interval: timedelta,
+        cc: CrumbCoordinator,
     ) -> None:
         """Initialize."""
         self._symbols = symbols
@@ -94,6 +156,7 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         self.websession = async_get_clientsession(hass)
         self._update_interval = update_interval
         self._failure_update_interval = timedelta(seconds=FAILURE_ASYNC_REQUEST_REFRESH)
+        self._cc = cc
 
         super().__init__(
             hass,
@@ -170,19 +233,66 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
         """Get the JSON data."""
 
         url = BASE + ",".join(self._symbols)
+        cookies = None
+
+        crumb = self._cc.crumb
+        if crumb is None:
+            crumb = await self._cc.try_get_crumb()
+        if crumb is not None:
+            url = url + "&crumb=" + crumb
+            cookies = self._cc.cookies
+
         _LOGGER.debug("Requesting data from '%s'", url)
 
         try:
             async with async_timeout.timeout(WEBSESSION_TIMEOUT):
-                response = await self.websession.get(url)
+                headers = {"User-Agent": USER_AGENT}
+                response = await self.websession.get(
+                    url, headers=headers, cookies=cookies
+                )
+
+                result_json = await response.json()
 
                 if response.status == HTTPStatus.OK:
-                    return await response.json()
+                    return result_json
 
-                _LOGGER.error("Received status %s for %s", response.status, url)
+                # {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Crumb'}}}
+                # {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Cookie'}}}
+                finance_error_code = self.get_finance_error_code(result_json)
+
+                if finance_error_code:
+                    # Reset crumb so that it gets recalculated
+                    if finance_error_code == "Unauthorized":
+                        self._cc.reset_crumb()
+
+                    _LOGGER.error(
+                        "Received status %s (error=%s) for %s",
+                        response.status,
+                        finance_error_code,
+                        url,
+                    )
+
+                else:
+                    _LOGGER.error(
+                        "Received status %s for %s, result=%s",
+                        response.status,
+                        url,
+                        result_json,
+                    )
 
         except (asyncio.TimeoutError, aiohttp.ClientError):
             _LOGGER.error("Timed out getting data from %s", url)
+
+        return None
+
+    def get_finance_error_code(self, error_json) -> str | None:
+        """Parse error code from the json."""
+        if error_json:
+            finance = error_json.get("finance")
+            if finance:
+                finance_error = finance.get("error")
+                if finance_error:
+                    return finance_error.get("code")
 
         return None
 
