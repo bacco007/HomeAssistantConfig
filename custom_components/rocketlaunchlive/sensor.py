@@ -123,6 +123,7 @@ class RocketLaunchSensor(CoordinatorEntity):
         attrs["vehicle"] = launch["vehicle"]["name"]
         attrs["launch_pad"] = f"{launch['pad']['location']['name']} ({launch['pad']['name']})"
         attrs["launch_location"] = launch["pad"]["location"]["country"]
+        attrs["launch_US_state"] = launch["pad"]["location"]["state"]
 
         missions = ""
         for mission in launch["missions"]:
