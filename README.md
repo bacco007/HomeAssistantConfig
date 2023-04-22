@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 22nd 2023_
+_Stats as at 05:00, Sunday, April 23rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.5 | 462     | 3742         | 2544 | 102 |
+| 2023.4.6 | 465     | 3742         | 2560 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 102
-Binary Sensor | 185
+Binary Sensor | 187
 Camera | 5
 Device Tracker | 75
 Group | 2
@@ -69,9 +69,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2544
+Sensor | 2560
 Sun | 1
-Switch | 160
+Switch | 165
 Weather | 6
 Zone | 3
 
@@ -107,6 +107,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor](https://www.home-assistant.io/components/binary_sensor) |
 | [binary_sensor.astroweather](https://www.home-assistant.io/components/binary_sensor.astroweather) |
 | [binary_sensor.bayesian](https://www.home-assistant.io/components/binary_sensor.bayesian) |
+| [binary_sensor.ble_monitor](https://www.home-assistant.io/components/binary_sensor.ble_monitor) |
 | [binary_sensor.browser_mod](https://www.home-assistant.io/components/binary_sensor.browser_mod) |
 | [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud) |
 | [binary_sensor.dyson_local](https://www.home-assistant.io/components/binary_sensor.dyson_local) |
@@ -137,6 +138,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.workday](https://www.home-assistant.io/components/binary_sensor.workday) |
 | [binary_sensor.xbox](https://www.home-assistant.io/components/binary_sensor.xbox) |
 | [binary_sensor.zha](https://www.home-assistant.io/components/binary_sensor.zha) |
+| [ble_monitor](https://www.home-assistant.io/components/ble_monitor) |
 | [blitzortung](https://www.home-assistant.io/components/blitzortung) |
 | [blueprint](https://www.home-assistant.io/components/blueprint) |
 | [bluetooth](https://www.home-assistant.io/components/bluetooth) |
@@ -188,6 +190,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [derivative](https://www.home-assistant.io/components/derivative) |
 | [device_automation](https://www.home-assistant.io/components/device_automation) |
 | [device_tracker](https://www.home-assistant.io/components/device_tracker) |
+| [device_tracker.ble_monitor](https://www.home-assistant.io/components/device_tracker.ble_monitor) |
 | [device_tracker.ibeacon](https://www.home-assistant.io/components/device_tracker.ibeacon) |
 | [device_tracker.icloud3](https://www.home-assistant.io/components/device_tracker.icloud3) |
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
@@ -356,6 +359,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.anniversaries](https://www.home-assistant.io/components/sensor.anniversaries) |
 | [sensor.astroweather](https://www.home-assistant.io/components/sensor.astroweather) |
 | [sensor.average](https://www.home-assistant.io/components/sensor.average) |
+| [sensor.ble_monitor](https://www.home-assistant.io/components/sensor.ble_monitor) |
 | [sensor.blitzortung](https://www.home-assistant.io/components/sensor.blitzortung) |
 | [sensor.browser_mod](https://www.home-assistant.io/components/sensor.browser_mod) |
 | [sensor.bureau_of_meteorology](https://www.home-assistant.io/components/sensor.bureau_of_meteorology) |
@@ -377,7 +381,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
-| [sensor.gtfs_rt](https://www.home-assistant.io/components/sensor.gtfs_rt) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
 | [sensor.hdhomerun](https://www.home-assistant.io/components/sensor.hdhomerun) |
@@ -596,6 +599,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Node Red Companion](https://github.com/zachowj/hass-node-red)
 - [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem)
+- [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor)
 - [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve)
 - [Pyscript](https://github.com/custom-components/pyscript)
 - [Qbittorrent Custom](https://github.com/radsonpatrick/qbittorrent_custom_component)
@@ -655,6 +659,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
 - [History Explorer Card](https://github.com/alexarch21/history-explorer-card)
 - [Home Assistant Swipe Navigation](https://github.com/zanna-37/hass-swipe-navigation)
+- [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card)
 - [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather)
 - [Hui Element](https://github.com/thomasloven/lovelace-hui-element)
 - [Layout Card](https://github.com/thomasloven/lovelace-layout-card)
@@ -680,7 +685,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card)
 - [Stack In Card](https://github.com/custom-cards/stack-in-card)
 - [State Switch](https://github.com/thomasloven/lovelace-state-switch)
-- [Sun Card](https://github.com/AitorDB/home-assistant-sun-card)
 - [Swipe Card](https://github.com/bramkragten/swipe-card)
 - [Tabbed Card](https://github.com/kinghat/tabbed-card)
 - [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card)
@@ -720,7 +724,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- ESPHome (2023.3.2)
+- ESPHome (2023.4.0)
 - Eufy Security Add-on (1.3.0)
 - File editor (5.5.0)
 - Glances (0.18.1)
