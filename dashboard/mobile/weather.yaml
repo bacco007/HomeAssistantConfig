@@ -67,15 +67,11 @@ cards:
                     - type: custom:stack-in-card
                       cards:
                         - !include tamworth/snippets/sun_moon.yaml
-                        - type: custom:sun-card
-                          style: |
-                            .sun-card-title {
-                              display: none;
-                            }
-                          showAzimuth: true
-                          showElevation: true
-                          timeFormat: 24h
-                          title: ""
+                        - type: custom:horizon-card
+                          use12hourClock: false
+                          fields:
+                            azimuth: true
+                            elevation: true
                     - type: custom:stack-in-card
                       cards:
                         - !include tamworth/snippets/uv.yaml
