@@ -1,0 +1,22 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "title": "Google Trends",
+          "description": "Please enter the configuration for the Google Trends integration.",
+          "data": {
+            "country_code": "Country Code",
+            "update_interval": "Update Interval (in minutes)",
+            "trends_count": "Number of Trends"
+          }
+        }
+      },
+      "error": {
+        "single_instance_allowed": "Only a single instance of the Google Trends integration is allowed."
+      },
+      "abort": {
+        "single_instance_allowed": "Only a single instance of the Google Trends integration is allowed."
+      }
+    }
+  }
+  
