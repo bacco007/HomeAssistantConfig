@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, April 23rd 2023_
+_Stats as at 05:00, Monday, April 24th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.6 | 465     | 3742         | 2560 | 102 |
+| 2023.4.6 | 467     | 3781         | 2561 | 102 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2560
+Sensor | 2561
 Sun | 1
 Switch | 165
 Weather | 6
@@ -228,6 +228,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [github](https://www.home-assistant.io/components/github) |
 | [glances](https://www.home-assistant.io/components/glances) |
 | [google](https://www.home-assistant.io/components/google) |
+| [google_trends](https://www.home-assistant.io/components/google_trends) |
 | [group](https://www.home-assistant.io/components/group) |
 | [hacs](https://www.home-assistant.io/components/hacs) |
 | [hardware](https://www.home-assistant.io/components/hardware) |
@@ -381,6 +382,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
+| [sensor.google_trends](https://www.home-assistant.io/components/sensor.google_trends) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
 | [sensor.hdhomerun](https://www.home-assistant.io/components/sensor.hdhomerun) |
@@ -577,6 +579,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Fontawesome](https://github.com/thomasloven/hass-fontawesome)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection)
 - [Generate Readme](https://github.com/custom-components/readme)
+- [Google Trends](https://github.com/b0mbays/google_trends)
 - [Gtfs Realtime](https://github.com/mark1foley/ha-gtfs-rt-v2)
 - [Ha Dyson](https://github.com/shenxn/ha-dyson)
 - [Ha Dyson Cloud](https://github.com/shenxn/ha-dyson-cloud)
@@ -586,7 +589,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -655,6 +658,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
 - [Formula One Card](https://github.com/marcokreeft87/formulaone-card)
 - [Fr24 Card](https://github.com/fratsloos/fr24_card)
+- [Google Trending Card](https://github.com/b0mbays/google-trends-card)
 - [Ha Floorplan](https://github.com/ExperienceLovelace/ha-floorplan)
 - [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
 - [History Explorer Card](https://github.com/alexarch21/history-explorer-card)
@@ -734,7 +738,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - MariaDB (2.5.2)
 - Mosquitto broker (6.2.0)
 - MQTT Explorer (browser-1.0.1)
-- Node-RED (14.1.4)
+- Node-RED (14.1.5)
 - phpMyAdmin (0.8.5)
 - Portainer (2.0.0)
 - RTSP Simple Server Add-on (v0.17.6)
