@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, April 24th 2023_
+_Stats as at 05:00, Tuesday, April 25th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.6 | 467     | 3781         | 2561 | 102 |
+| 2023.4.6 | 468     | 3762         | 2567 | 102 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2561
+Sensor | 2567
 Sun | 1
 Switch | 165
 Weather | 6
@@ -383,6 +383,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.github](https://www.home-assistant.io/components/sensor.github) |
 | [sensor.glances](https://www.home-assistant.io/components/sensor.glances) |
 | [sensor.google_trends](https://www.home-assistant.io/components/sensor.google_trends) |
+| [sensor.gtfs_rt](https://www.home-assistant.io/components/sensor.gtfs_rt) |
 | [sensor.hacs](https://www.home-assistant.io/components/sensor.hacs) |
 | [sensor.hassio](https://www.home-assistant.io/components/sensor.hassio) |
 | [sensor.hdhomerun](https://www.home-assistant.io/components/sensor.hdhomerun) |
@@ -589,7 +590,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -730,7 +731,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - ESPHome (2023.4.0)
 - Eufy Security Add-on (1.3.0)
-- File editor (5.5.0)
+- File editor (5.6.0)
 - Glances (0.18.1)
 - Home Assistant Git Exporter (1.16.0)
 - Home Assistant Google Drive Backup (0.110.3)
