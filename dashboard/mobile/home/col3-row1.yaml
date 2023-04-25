@@ -3,6 +3,48 @@ type: grid
 columns: 1
 square: false
 cards:
+  - type: custom:auto-entities
+    sort:
+      method: attribute
+      attribute: sortorder
+    card_param: cards
+    filter:
+      template: >-
+        {%- for s in states|selectattr('entity_id','search','sensor.rssfeed_*') -%}
+        {%- for e in state_attr(s.entity_id, 'entries')[0:2] -%}
+          {{
+          {
+            "type": "custom:mushroom-template-card",
+            "entity": s.entity_id,
+            "secondary": "Latest News from {{state_attr(entity , 'friendly_name')}}",
+            "primary": e.title,
+            "icon": "{{state_attr(entity , 'icon')}}",
+            "tap_action": {
+                "action": "url",
+                "url_path": e.link
+            },
+            "fill_container": true,
+            "multiline_secondary": true,
+            "prmary": "",
+            "icon_color": "",
+            "card_mod": {
+                "style": "ha-card { background: none; box-shadow: none;}"
+            }
+          }
+          }},
+        {%- endfor %} {%- endfor %}
+    show_empty: false
+    card:
+      type: custom:swipe-card
+      parameters:
+        direction: vertical
+        autoHeight: true
+        height: 50
+        effect: cube
+        autoplay:
+          delay: 2000
+        cubeEffect:
+          - slideShadows: false
   - type: horizontal-stack
     cards:
       - type: custom:mushroom-light-card

@@ -124,3 +124,4 @@ cards:
           {% else %}
             mdi:check-bold
           {% endif %}
+  - !include release_cal.yaml

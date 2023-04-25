@@ -46,21 +46,21 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, April 25th 2023_
+_Stats as at 05:00, Wednesday, April 26th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.6 | 468     | 3762         | 2567 | 102 |
+| 2023.4.6 | 468     | 3774         | 2578 | 103 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 102
+Automation | 103
 Binary Sensor | 187
 Camera | 5
 Device Tracker | 75
-Group | 2
+Group | 3
 Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2567
+Sensor | 2578
 Sun | 1
 Switch | 165
 Weather | 6
@@ -743,7 +743,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - phpMyAdmin (0.8.5)
 - Portainer (2.0.0)
 - RTSP Simple Server Add-on (v0.17.6)
-- Samba share (10.0.0)
+- Samba share (10.0.1)
 - Shortumation (v0.7.6)
 - SSH & Web Terminal (13.1.0)
 - SunGather (0.1.3)
