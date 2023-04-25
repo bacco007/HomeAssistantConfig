@@ -29,6 +29,22 @@ const fireEvent = (node, type, detail, options) => {
   return event;
 };
 
+// Lazy loading
+const cardHelpers = await window.loadCardHelpers();
+const entitiesCard = await cardHelpers.createCardElement({
+  type: "entities",
+  entities: [],
+}); // A valid config avoids errors
+
+// Then we make it load its editor through the static getConfigElement method
+entitiesCard.constructor.getConfigElement();
+
+if (!customElements.get("ha-gauge")) {
+  const cardHelpers = await window.loadCardHelpers();
+  cardHelpers.createCardElement({ type: "gauge" });
+}
+// -Lazy loading
+
 function hasConfigOrEntityChanged(element, changedProps) {
   if (changedProps.has("_config")) {
     return true;
@@ -62,16 +78,43 @@ class AstroWeatherCard extends LitElement {
   }
 
   static getStubConfig(hass, unusedEntities, allEntities) {
-    let entity = unusedEntities.find((eid) => eid.split(".")[0] === "weather");
+    // let entity = unusedEntities.find((eid) => eid.split(".")[0] === "weather");
+    // if (!entity) {
+    //   entity = allEntities.find((eid) => eid.split(".")[0] === "weather");
+    // }
+    // return { entity };
+    let stubConfig = {};
+    let entity = unusedEntities.find(
+      (eid) => eid.split("_")[0] === "weather.astroweather"
+    );
     if (!entity) {
-      entity = allEntities.find((eid) => eid.split(".")[0] === "weather");
+      entity = allEntities.find(
+        (eid) => eid.split("_")[0] === "weather.astroweather"
+      );
     }
-    return { entity };
+    return {
+      entity,
+      details: true,
+      current: true,
+      deepskydetails: true,
+      forecast: true,
+      graph: true,
+      number_of_forecasts: "7",
+      line_color_condition: "#f07178",
+      line_color_condition_night: "#eeffff",
+      line_color_cloudless: "#c3e88d",
+      line_color_seeing: "#ffcb6b",
+      line_color_transparency: "#82aaff",
+    };
+    // return { stubConfig };
   }
 
   setConfig(config) {
     if (!config.entity) {
       throw new Error("Please define an AstroWeather entity");
+    }
+    if (!config.entity.startsWith("weather.astroweather")) {
+      throw new Error("Entity is not an AstroWeather entity");
     }
     this._config = config;
   }
@@ -82,29 +125,19 @@ class AstroWeatherCard extends LitElement {
 
   firstUpdated() {
     if (this._config.graph !== false) {
-      this.measureCard();
       this.drawChart();
     }
   }
 
   updated(changedProperties) {
     if (this._config.graph !== false) {
-      if (changedProperties.has("config")) {
+      if (changedProperties.has("_config")) {
         this.drawChart();
       }
       if (changedProperties.has("weather")) {
         this.updateChart();
       }
     }
-  }
-
-  measureCard() {
-    // const card = this.shadowRoot.querySelector("ha-card");
-    // let fontSize = this.config.forecast.labels_font_size;
-    // if (!card) {
-    //   return;
-    // }
-    // this.forecastItems = Math.round(card.offsetWidth / (fontSize * 5.5));
   }
 
   render() {
@@ -139,6 +172,7 @@ class AstroWeatherCard extends LitElement {
           .not-found {
             flex: 1;
             background-color: yellow;
+            color: black;
             padding: 8px;
           }
         </style>
@@ -514,9 +548,13 @@ class AstroWeatherCard extends LitElement {
     var style = getComputedStyle(document.body);
     var backgroundColor = style.getPropertyValue("--card-background-color");
     var textColor = style.getPropertyValue("--primary-text-color");
-    var condColor = style.getPropertyValue("--primary-text-color");
-    var attrColor = style.getPropertyValue("--paper-item-icon-color");
+    var colorCondition = this._config.line_color_condition;
+    var colorConditionNight = this._config.line_color_condition_night;
+    var colorCloudless = this._config.line_color_cloudless;
+    var colorSeeing = this._config.line_color_seeing;
+    var colorTransparency = this._config.line_color_transparency;
     var dividerColor = style.getPropertyValue("--divider-color");
+
     const ctx = this.renderRoot
       .querySelector("#forecastChart")
       .getContext("2d");
@@ -530,6 +568,19 @@ class AstroWeatherCard extends LitElement {
     Chart.defaults.elements.point.hitRadius = 10;
     Chart.defaults.plugins.legend.position = "bottom";
 
+    var colorConditionGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    colorConditionGradient.addColorStop(0, colorCondition);
+    colorConditionGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+    var colorCloudlessGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    colorCloudlessGradient.addColorStop(0, colorCloudless);
+    colorCloudlessGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+    var colorSeeingGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    colorSeeingGradient.addColorStop(0, colorSeeing);
+    colorSeeingGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+    var colorTransparencyGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    colorTransparencyGradient.addColorStop(0, colorTransparency);
+    colorTransparencyGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
     this.forecastChart = new Chart(ctx, {
       type: "bar",
       data: {
@@ -540,15 +591,16 @@ class AstroWeatherCard extends LitElement {
             type: "line",
             data: condition,
             yAxisID: "PercentageAxis",
+            backgroundColor: colorConditionGradient,
             fill: true,
             borderWidth: 2,
-            borderColor: condColor,
+            borderColor: colorCondition,
             pointBorderColor: function (context) {
               var index = context.dataIndex;
               var hour = new Date(dateTime[index]).getHours();
               return hour >= 19 || hour <= 3
-                ? style.getPropertyValue("--paper-item-icon-active-color")
-                : condColor;
+                ? colorConditionNight
+                : colorCondition;
             },
             pointRadius: 5,
             pointStyle: "star",
@@ -558,9 +610,10 @@ class AstroWeatherCard extends LitElement {
             type: "line",
             data: clouds,
             yAxisID: "PercentageAxis",
+            backgroundColor: colorCloudlessGradient,
             fill: true,
-            borderColor: attrColor,
-            pointBorderColor: attrColor,
+            borderColor: colorCloudless,
+            pointBorderColor: colorCloudless,
             pointRadius: 4,
             pointStyle: "rect",
           },
@@ -569,9 +622,10 @@ class AstroWeatherCard extends LitElement {
             type: "line",
             data: seeing,
             yAxisID: "PercentageAxis",
+            backgroundColor: colorSeeingGradient,
             fill: true,
-            borderColor: attrColor,
-            pointBorderColor: attrColor,
+            borderColor: colorSeeing,
+            pointBorderColor: colorSeeing,
             pointRadius: 4,
             pointStyle: "triangle",
           },
@@ -580,9 +634,10 @@ class AstroWeatherCard extends LitElement {
             type: "line",
             data: transparency,
             yAxisID: "PercentageAxis",
+            backgroundColor: colorTransparencyGradient,
             fill: true,
-            borderColor: attrColor,
-            pointBorderColor: attrColor,
+            borderColor: colorTransparency,
+            pointBorderColor: colorTransparency,
             pointRadius: 4,
             pointStyle: "circle",
           },
@@ -590,7 +645,7 @@ class AstroWeatherCard extends LitElement {
       },
       options: {
         animation: false,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
         layout: {
           padding: {
             bottom: 10,
