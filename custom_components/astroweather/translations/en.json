@@ -11,7 +11,8 @@
                     "forecast_interval": "Interval between forecast updates (min)",
                     "cloudcover_weight": "Cloud coverage weight for condition calculation",
                     "seeing_weight": "Seeing weight for condition calculation",
-                    "transparency_weight": "Transparency weight for condition calculation"
+                    "transparency_weight": "Transparency weight for condition calculation",
+                    "metno_enabled": "Use Norwegian Meteorological Institute forecast data"
                 }
             }
         }
@@ -27,7 +28,8 @@
                     "forecast_interval": "Interval between forecast updates (min)",
                     "cloudcover_weight": "Cloud coverage weight for condition calculation",
                     "seeing_weight": "Seeing weight for condition calculation",
-                    "transparency_weight": "Transparency weight for condition calculation"
+                    "transparency_weight": "Transparency weight for condition calculation",
+                    "metno_enabled": "Use Norwegian Meteorological Institute forecast data"
                 }
             }
         }

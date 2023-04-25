@@ -27,6 +27,7 @@ from .const import (
     DEFAULT_CONDITION_CLOUDCOVER_WEIGHT,
     DEFAULT_CONDITION_SEEING_WEIGHT,
     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
+    DEFAULT_METNO_ENABLED,
     FORECAST_INTERVAL_MIN,
     FORECAST_INTERVAL_MAX,
     CONF_LATITUDE,
@@ -36,6 +37,7 @@ from .const import (
     CONF_CONDITION_CLOUDCOVER_WEIGHT,
     CONF_CONDITION_SEEING_WEIGHT,
     CONF_CONDITION_TRANSPARENCY_WEIGHT,
+    CONF_METNO_ENABLED,
     DEFAULT_ELEVATION,
     DEFAULT_TIMEZONE_INFO,
 )
@@ -63,6 +65,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         or entry.options.get(CONF_CONDITION_CLOUDCOVER_WEIGHT, None) is None
         or entry.options.get(CONF_CONDITION_SEEING_WEIGHT, None) is None
         or entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT, None) is None
+        or entry.options.get(CONF_METNO_ENABLED, None) is None
     ):
         hass.config_entries.async_update_entry(
             entry,
@@ -89,6 +92,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                 CONF_CONDITION_TRANSPARENCY_WEIGHT: entry.data.get(
                     CONF_CONDITION_TRANSPARENCY_WEIGHT,
                     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
+                ),
+                CONF_METNO_ENABLED: entry.data.get(
+                    CONF_METNO_ENABLED,
+                    DEFAULT_METNO_ENABLED,
                 ),
             },
         )
@@ -122,6 +129,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                 CONF_CONDITION_TRANSPARENCY_WEIGHT: entry.data.get(
                     CONF_CONDITION_TRANSPARENCY_WEIGHT,
                     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
+                ),
+                CONF_METNO_ENABLED: entry.data.get(
+                    CONF_METNO_ENABLED,
+                    DEFAULT_METNO_ENABLED,
                 ),
             },
         )
@@ -158,6 +169,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                     CONF_CONDITION_TRANSPARENCY_WEIGHT,
                     DEFAULT_CONDITION_TRANSPARENCY_WEIGHT,
                 ),
+                CONF_METNO_ENABLED: entry.data.get(
+                    CONF_METNO_ENABLED,
+                    DEFAULT_METNO_ENABLED,
+                ),
             },
         )
 
@@ -177,6 +192,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         "Options transparency_weight %s",
         str(entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT)),
     )
+    _LOGGER.debug("Met.no enabled %s", str(entry.options.get(CONF_METNO_ENABLED)))
 
     astroweather = AstroWeather(
         session,
@@ -187,6 +203,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         cloudcover_weight=entry.options.get(CONF_CONDITION_CLOUDCOVER_WEIGHT),
         seeing_weight=entry.options.get(CONF_CONDITION_SEEING_WEIGHT),
         transparency_weight=entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT),
+        metno_enabled=entry.options.get(CONF_METNO_ENABLED),
     )
     _LOGGER.debug("Connected to AstroWeather platform")
 

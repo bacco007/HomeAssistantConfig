@@ -10,6 +10,7 @@ CONF_TIMEZONE_INFO = "timezone_info"
 CONF_CONDITION_CLOUDCOVER_WEIGHT = "cloudcover_weight"
 CONF_CONDITION_SEEING_WEIGHT = "seeing_weight"
 CONF_CONDITION_TRANSPARENCY_WEIGHT = "transparency_weight"
+CONF_METNO_ENABLED = "metno_enabled"
 
 ASTROWEATHER_PLATFORMS = ["binary_sensor", "sensor", "weather"]
 DEVICE_TYPE_WEATHER = "weather"
@@ -20,6 +21,7 @@ FORECAST_INTERVAL_MIN = 30
 FORECAST_INTERVAL_MAX = 240
 DEFAULT_ELEVATION = 0
 DEFAULT_TIMEZONE_INFO = "Etc/UTC"
+DEFAULT_METNO_ENABLED = True
 
 # In progress, make condition calculation customizable
 DEFAULT_CONDITION_CLOUDCOVER_WEIGHT = 3
