@@ -54,7 +54,7 @@ function hasConfigOrEntityChanged(element, changedProps) {
   if (oldHass) {
     return (
       oldHass.states[element._config.entity] !==
-        element.hass.states[element._config.entity] ||
+      element.hass.states[element._config.entity] ||
       oldHass.states["sun.sun"] !== element.hass.states["sun.sun"]
     );
   }
@@ -166,7 +166,7 @@ class AstroWeatherCard extends LitElement {
         </ha-card>
       `;
     }
-    if (stateObj.attributes.attribution != "Powered by 7Timer") {
+    if (stateObj.attributes.attribution != "Powered by 7Timer and Met.no") {
       return html`
         <style>
           .not-found {
@@ -188,19 +188,19 @@ class AstroWeatherCard extends LitElement {
       <ha-card @click="${this._handleClick}">
         ${this._config.current !== false ? this.renderCurrent(stateObj) : ""}
         ${this._config.details !== false
-          ? this.renderDetails(stateObj, lang)
-          : ""}
+        ? this.renderDetails(stateObj, lang)
+        : ""}
         ${this._config.deepskydetails !== false
-          ? this.renderDeepSkyForecast(stateObj, lang)
-          : ""}
+        ? this.renderDeepSkyForecast(stateObj, lang)
+        : ""}
         ${this._config.forecast !== false
-          ? this.renderForecast(stateObj.attributes.forecast, lang)
-          : ""}
+        ? this.renderForecast(stateObj.attributes.forecast, lang)
+        : ""}
         ${this._config.graph !== false
-          ? html`<div class="chart-container">
+        ? html`<div class="chart-container">
               <canvas id="forecastChart"></canvas>
             </div>`
-          : ""}
+        : ""}
       </ha-card>
     `;
   }
@@ -211,8 +211,8 @@ class AstroWeatherCard extends LitElement {
     return html`
       <div class="current ${this.numberElements > 1 ? "spacer" : ""}">
         ${this._config.name
-          ? html` <span class="title"> ${this._config.name} </span> `
-          : ""}
+        ? html` <span class="title"> ${this._config.name} </span> `
+        : ""}
 
         <span class="condition"> ${stateObj.attributes.condition_plain}</span>
       </div>
@@ -358,22 +358,22 @@ class AstroWeatherCard extends LitElement {
           <ha-icon icon="mdi:windsock"></ha-icon>
           Wind: ${stateObj.attributes.wind_bearing}
           ${this.getUnit("wind_speed") == "m/s"
-            ? stateObj.attributes.wind_speed
-            : Math.round(stateObj.attributes.wind_speed * 2.23694)}
+        ? stateObj.attributes.wind_speed
+        : Math.round(stateObj.attributes.wind_speed * 2.23694)}
           ${this.getUnit("wind_speed")}
         </li>
         <li>
           ${stateObj.attributes.prec_type == "Snow"
-            ? html` <ha-icon icon="mdi:weather-snowy"></ha-icon> `
-            : stateObj.attributes.prec_type == "Rain"
-            ? html` <ha-icon icon="mdi:weather-rainy"></ha-icon> `
-            : stateObj.attributes.prec_type == "Frzr"
+        ? html` <ha-icon icon="mdi:weather-snowy"></ha-icon> `
+        : stateObj.attributes.prec_type == "Rain"
+          ? html` <ha-icon icon="mdi:weather-rainy"></ha-icon> `
+          : stateObj.attributes.prec_type == "Frzr"
             ? html` <ha-icon icon="mdi:weather-snowy-rainy"></ha-icon> `
             : stateObj.attributes.prec_type == "Icep"
-            ? html` <ha-icon icon="mdi:weather-hail"></ha-icon> `
-            : stateObj.attributes.prec_type == "None"
-            ? html` <ha-icon icon="mdi:weather-rainy"></ha-icon> `
-            : ""}
+              ? html` <ha-icon icon="mdi:weather-hail"></ha-icon> `
+              : stateObj.attributes.prec_type == "None"
+                ? html` <ha-icon icon="mdi:weather-rainy"></ha-icon> `
+                : ""}
           Precipitation: ${stateObj.attributes.prec_type}
         </li>
         <li>
@@ -424,7 +424,7 @@ class AstroWeatherCard extends LitElement {
         class="deepskyforecast clear ${this.numberElements > 1 ? "spacer" : ""}"
       >
         ${stateObj.attributes.deepsky_forecast_today_plain
-          ? html`
+        ? html`
               <li>
                 <ha-icon icon="mdi:weather-night"></ha-icon>
                 ${stateObj.attributes.deepsky_forecast_today_dayname}:
@@ -435,9 +435,9 @@ class AstroWeatherCard extends LitElement {
                 ${stateObj.attributes.deepsky_forecast_today_desc}
               </li>
             `
-          : ""}
+        : ""}
         ${stateObj.attributes.deepsky_forecast_tomorrow_plain
-          ? html`
+        ? html`
               <li>
                 <ha-icon icon="mdi:weather-night"></ha-icon>
                 ${stateObj.attributes.deepsky_forecast_tomorrow_dayname}:
@@ -448,7 +448,7 @@ class AstroWeatherCard extends LitElement {
                 ${stateObj.attributes.deepsky_forecast_tomorrow_desc}
               </li>
             `
-          : ""}
+        : ""}
       </ul>
     `;
   }
@@ -471,21 +471,21 @@ class AstroWeatherCard extends LitElement {
           <ha-icon icon="mdi:thermometer"></ha-icon>
         </div>
         ${forecast
-          .slice(
-            0,
-            this._config.number_of_forecasts
-              ? this._config.number_of_forecasts
-              : 5
-          )
-          .map(
-            (daily) => html`
+        .slice(
+          0,
+          this._config.number_of_forecasts
+            ? this._config.number_of_forecasts
+            : 5
+        )
+        .map(
+          (daily) => html`
               <div class="forecastrow">
                 <div class="forecastrowname">
                   ${new Date(daily.datetime).toLocaleTimeString(lang, {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })}
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}
                   <div class="value_item_bold">${daily.condition} %</div>
                   <div class="value_item">${daily.cloudless_percentage} %</div>
                   <div class="value_item">${daily.seeing_percentage} %</div>
@@ -499,7 +499,7 @@ class AstroWeatherCard extends LitElement {
                 </div>
               </div>
             `
-          )}
+        )}
       </div>
     `;
     // <!-- ${this._config.hourly_forecast
