@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, April 26th 2023_
+_Stats as at 05:00, Thursday, April 27th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.4.6 | 468     | 3774         | 2578 | 103 |
+| 2023.4.6 | 468     | 3809         | 2577 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2578
+Sensor | 2577
 Sun | 1
-Switch | 165
+Switch | 164
 Weather | 6
 Zone | 3
 
@@ -590,7 +590,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -682,6 +682,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Power Flow Card](https://github.com/ulic75/power-flow-card)
 - [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
 - [Rgb Light Card](https://github.com/bokub/rgb-light-card)
+- [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart)
 - [Search Card](https://github.com/postlund/search-card)
 - [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row)
 - [Slider Button Card](https://github.com/custom-cards/slider-button-card)
@@ -729,7 +730,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- ESPHome (2023.4.0)
+- ESPHome (2023.4.1)
 - Eufy Security Add-on (1.3.0)
 - File editor (5.6.0)
 - Glances (0.18.1)
