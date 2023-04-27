@@ -5,6 +5,10 @@ initial_state: true
 trigger:
   - platform: webhook
     webhook_id: office_lamp_toggle
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
   - platform: event
     event_type: ios.action_fired
     event_data:

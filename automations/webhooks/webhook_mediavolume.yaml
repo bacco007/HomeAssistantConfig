@@ -5,6 +5,10 @@ initial_state: true
 trigger:
   platform: webhook
   webhook_id: set_media_volume
+  allowed_methods:
+    - POST
+    - PUT
+  local_only: true
 action:
   - service: media_player.volume_set
     data:

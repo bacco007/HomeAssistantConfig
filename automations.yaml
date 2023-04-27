@@ -1,15 +1,15 @@
-- id: '1664679704109'
+- id: "1664679704109"
   alias: Controller - IKEA E1744 SYMFONISK Rotary Remote
-  description: ''
+  description: ""
   use_blueprint:
     path: EPMatt/ikea_e1744.yaml
     input:
       integration: ZHA
       controller_device: 60c680d2da19565a2feafe27325f13ed
       helper_last_controller_event: input_text.remote_lastcontrollerevent
-- id: '1664679805983'
+- id: "1664679805983"
   alias: Hook - Media Player
-  description: ''
+  description: ""
   use_blueprint:
     path: EPMatt/media_player.yaml
     input:
@@ -17,9 +17,9 @@
       controller_entity: media_
       controller_model: IKEA E1744 SYMFONISK Rotary Remote
       media_player: media_player.office_sonos
-- id: '1670914225475'
+- id: "1670914225475"
   alias: PiLocator Alerts
-  description: ''
+  description: ""
   use_blueprint:
     path: giqcass/rpilocator-notification-blueprint.yaml
     input:
@@ -27,13 +27,3 @@
       notify_device: 9e09ff6838383746ba31fe9914a10e47
       cm4_mmc: MMC
       cm4_wifi: With Wifi
-- id: '1677136443948'
-  description: ''
-  trigger:
-  - platform: webhook
-    webhook_id: -kHDzn1rrxpQEtTEeL5dr0Cn8
-  condition: []
-  action:
-  - service: browser_mod.refresh
-    data: {}
-  mode: single

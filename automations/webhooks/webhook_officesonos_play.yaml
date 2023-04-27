@@ -5,6 +5,10 @@ initial_state: true
 trigger:
   platform: webhook
   webhook_id: sonos_play_source
+  allowed_methods:
+    - POST
+    - PUT
+  local_only: true
 action:
   - service: media_player.select_source
     entity_id: media_player.office_sonos
