@@ -5,6 +5,10 @@ id: Virgin_Radio_Chilled_UK
 trigger:
   - platform: webhook
     webhook_id: sonos_Virgin_Radio_Chilled_UK
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

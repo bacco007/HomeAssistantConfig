@@ -5,6 +5,10 @@ id: TripleM_Greatest_Hits_Digital
 trigger:
   - platform: webhook
     webhook_id: sonos_TripleM_Greatest_Hits_Digital
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

@@ -5,6 +5,10 @@ id: Capital_London
 trigger:
   - platform: webhook
     webhook_id: sonos_Capital_London
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

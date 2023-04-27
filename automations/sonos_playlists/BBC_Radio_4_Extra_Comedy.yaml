@@ -5,6 +5,10 @@ id: BBC_Radio_4_Extra_Comedy
 trigger:
   - platform: webhook
     webhook_id: sonos_BBC_Radio_4_Extra_Comedy
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

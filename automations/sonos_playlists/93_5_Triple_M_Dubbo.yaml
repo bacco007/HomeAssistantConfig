@@ -5,6 +5,10 @@ id: 93_5_Triple_M_Dubbo
 trigger:
   - platform: webhook
     webhook_id: sonos_93_5_Triple_M_Dubbo
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

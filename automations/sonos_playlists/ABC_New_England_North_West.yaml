@@ -5,6 +5,10 @@ id: ABC_New_England_North_West
 trigger:
   - platform: webhook
     webhook_id: sonos_ABC_New_England_North_West
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

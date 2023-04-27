@@ -5,6 +5,10 @@ id: The_Edge_94_2_Top_40_Pop_Music
 trigger:
   - platform: webhook
     webhook_id: sonos_The_Edge_94_2_Top_40_Pop_Music
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

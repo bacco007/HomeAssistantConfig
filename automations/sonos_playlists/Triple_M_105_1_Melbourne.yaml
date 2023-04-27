@@ -5,6 +5,10 @@ id: Triple_M_105_1_Melbourne
 trigger:
   - platform: webhook
     webhook_id: sonos_Triple_M_105_1_Melbourne
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

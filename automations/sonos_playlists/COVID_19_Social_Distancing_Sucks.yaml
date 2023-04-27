@@ -5,6 +5,10 @@ id: COVID_19_Social_Distancing_Sucks
 trigger:
   - platform: webhook
     webhook_id: sonos_COVID_19_Social_Distancing_Sucks
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

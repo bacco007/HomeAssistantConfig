@@ -5,6 +5,10 @@ id: Radio_Hauraki_99_0_Rock_Music
 trigger:
   - platform: webhook
     webhook_id: sonos_Radio_Hauraki_99_0_Rock_Music
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

@@ -5,6 +5,10 @@ id: Double_J_Sydney_NSW
 trigger:
   - platform: webhook
     webhook_id: sonos_Double_J_Sydney_NSW
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

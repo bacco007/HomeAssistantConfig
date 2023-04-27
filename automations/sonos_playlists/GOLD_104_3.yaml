@@ -5,6 +5,10 @@ id: GOLD_104_3
 trigger:
   - platform: webhook
     webhook_id: sonos_GOLD_104_3
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

@@ -5,6 +5,10 @@ id: Nova_96_9
 trigger:
   - platform: webhook
     webhook_id: sonos_Nova_96_9
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

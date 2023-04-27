@@ -5,6 +5,10 @@ id: BBC_Radio_5_live_sports_extra
 trigger:
   - platform: webhook
     webhook_id: sonos_BBC_Radio_5_live_sports_extra
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

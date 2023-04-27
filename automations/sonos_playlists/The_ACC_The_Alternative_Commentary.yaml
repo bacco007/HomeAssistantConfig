@@ -5,6 +5,10 @@ id: The_ACC_The_Alternative_Commentary
 trigger:
   - platform: webhook
     webhook_id: sonos_The_ACC_The_Alternative_Commentary
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:

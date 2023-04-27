@@ -5,6 +5,10 @@ id: Triple_M_Classic_Rock_Digital_Sydney
 trigger:
   - platform: webhook
     webhook_id: sonos_Triple_M_Classic_Rock_Digital_Sydney
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
 action:
   - service: media_player.select_source
     data:
