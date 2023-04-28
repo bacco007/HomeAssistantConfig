@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, April 28th 2023_
+_Stats as at 05:00, Saturday, April 29th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.0b0 | 465     | 3787         | 2579 | 103 |
+| 2023.5.0b1 | 470     | 3757         | 2565 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 6
-Sensor | 2579
+Sensor | 2565
 Sun | 1
-Switch | 165
+Switch | 152
 Weather | 6
 Zone | 3
 
@@ -98,6 +98,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [api](https://www.home-assistant.io/components/api) |
+| [apple_tv](https://www.home-assistant.io/components/apple_tv) |
 | [application_credentials](https://www.home-assistant.io/components/application_credentials) |
 | [assist_pipeline](https://www.home-assistant.io/components/assist_pipeline) |
 | [astroweather](https://www.home-assistant.io/components/astroweather) |
@@ -117,6 +118,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
+| [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
@@ -276,6 +278,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
+| [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
 | [media_player.kodi](https://www.home-assistant.io/components/media_player.kodi) |
@@ -327,6 +330,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [readme](https://www.home-assistant.io/components/readme) |
 | [recorder](https://www.home-assistant.io/components/recorder) |
 | [remote](https://www.home-assistant.io/components/remote) |
+| [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [repairs](https://www.home-assistant.io/components/repairs) |
@@ -404,6 +408,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nodered](https://www.home-assistant.io/components/sensor.nodered) |
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
+| [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
 | [sensor.openexchangerates](https://www.home-assistant.io/components/sensor.openexchangerates) |
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
