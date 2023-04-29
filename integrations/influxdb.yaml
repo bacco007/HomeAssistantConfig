@@ -22,16 +22,26 @@ influxdb:
       - sensor.untappd_total_beers
   exclude:
     domains:
+      - alarm_control_panel
       - anniversaries
       - automation
+      - button
       - calendar
       - camera
+      - climate
+      - counter
       - device_tracker
+      - fan
       - group
       - geo_location
       - light
       - media_player
+      - number
       - persistent_notification
+      - person
+      - proximity
+      - script
+      - select
       - switch
       - weblink
       - zone
@@ -66,9 +76,15 @@ influxdb:
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
       - sensor.unknown_unavailable_none_entities
+      - sensor.google_trend
+      - sensor.sonarr_shows
+      - sensor.tempest_st_00056115_wind_speed
+      - sensor.tempest_st_00056115_wind_bearing
+      - sensor.tempest_st_00056115_wind_direction
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
+      - sensor.192_168_1_131*
       - sensor.date*
       - sensor.here_travel_*
       - sensor.waze_travel_*
@@ -81,6 +97,7 @@ influxdb:
       - sensor.*_uptime
       - sensor.pvetbsh*
       - sensor.piserv*
+      - sensor.pvenuc*
       - sensor.tbsh01*
       - sensor.tbsh02*
       - sensor.tbsh03*
@@ -129,3 +146,18 @@ influxdb:
       - sensor.*_thermal_comfort_*
       - sensor.adaptive_lighting*
       - sensor.scoreboard_*
+      - sensor.ble_*
+      - sensor.1251b32b_*
+      - sensor.bus_home*
+      - sensor.bus_work*
+      - sensor.busmonitor*
+      - sensor.east_tamworth*
+      - sensor.qbit*
+      - sensor.anniversary*
+      - sensor.astroweather*
+      - sensor.fire_danger*
+      - sensor.helper*
+      - sensor.*icloud3*
+      - sensor.192_168_1_131*
+      - sensor.daily_mix*
+      - sensor.frontpage*

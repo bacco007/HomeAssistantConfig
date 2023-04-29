@@ -57,7 +57,7 @@ sensor:
           {% set HI = c1 + (c2 * T ) + (c3 * R) + ( c4 * T * R ) + ( c5 * T**2 ) + ( c6 * R**2 ) + ( c7 * T**2 * R ) + ( c8 * T * R**2 ) + ( c9 * T**2 * R**2 ) %}
           {{ HI | round }}
           {%- else -%}
-          n/a
+          0
           {%- endif -%}
       bom_heatindexrating:
         value_template: >
