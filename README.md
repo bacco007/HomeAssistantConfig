@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, April 29th 2023_
+_Stats as at 05:00, Sunday, April 30th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.0b1 | 470     | 3757         | 2565 | 103 |
+| 2023.5.0b2 | 470     | 3751         | 2554 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 103
-Binary Sensor | 187
+Automation | 102
+Binary Sensor | 185
 Camera | 5
 Device Tracker | 75
 Group | 3
@@ -65,13 +65,13 @@ Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 19
+Media Player | 18
 Person | 1
 Scene | 0
-Script | 6
-Sensor | 2565
+Script | 5
+Sensor | 2554
 Sun | 1
-Switch | 152
+Switch | 165
 Weather | 6
 Zone | 3
 
@@ -597,6 +597,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
 - [Iphone Device Tracker](https://github.com/mudape/iphonedetect)
 - [Jellyfin](https://github.com/koying/jellyfin_ha)
+- [Jokes](https://github.com/LaggAt/ha-jokes)
 - [Lovelace Gen](https://github.com/thomasloven/hass-lovelace_gen)
 - [Monitor Docker](https://github.com/ualex73/monitor_docker)
 - [Multiscrape](https://github.com/danieldotnl/ha-multiscrape)
@@ -731,15 +732,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- ESPHome (2023.4.1)
+- ESPHome (2023.4.2)
 - Eufy Security Add-on (1.3.0)
 - File editor (5.6.0)
 - Glances (0.18.1)
 - Home Assistant Git Exporter (1.16.0)
-- Home Assistant Google Drive Backup (0.110.3)
+- Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.10.2)
 - MariaDB (2.5.2)
-- Mosquitto broker (6.2.0)
+- Mosquitto broker (6.2.1)
 - MQTT Explorer (browser-1.0.1)
 - Node-RED (14.1.5)
 - phpMyAdmin (0.8.5)
