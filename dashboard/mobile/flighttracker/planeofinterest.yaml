@@ -2,9 +2,10 @@
 type: custom:mushroom-template-card
 primary: Bird Watch - Latest Aircraft of Interest
 secondary: >-
+  {% from 'easy_time.jinja' import custom_relative_time%}
   {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}}, {{state_attr(entity, 'call')}})
 
-  {{state_attr(entity, 'equipment')}} ({{state_attr(entity, 'date')}}, {{state_attr(entity, 'time')}})
+  {{state_attr(entity, 'equipment')}} ({{ custom_relative_time(state_attr(entity, 'date')|replace("/","-") + " " + state_attr(entity, 'time'), values='day, hour')}})
 icon: mdi:airplane-alert
 entity: sensor.flighttracker_planefence_aircraft
 icon_color: green

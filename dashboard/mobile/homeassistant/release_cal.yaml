@@ -19,8 +19,8 @@ entities:
       type: custom:mushroom-template-card
       primary: Home Assistant Release Calendar
       secondary: >
-        {% from 'easy_time.jinja' import easy_relative_time %}
-        {{ state_attr('calendar.home_assistant_devs', 'message') }} {{ easy_relative_time(state_attr('calendar.home_assistant_devs', 'start_time')) }}
+        {% from 'easy_time.jinja' import custom_relative_time_attr %}
+        {{ state_attr('calendar.home_assistant_devs', 'message') }} {{ custom_relative_time_attr('calendar.home_assistant_devs', 'start_time', values='day, hour') }}
       icon: mdi:calendar-alert
       icon_color: blue
       card_mod:

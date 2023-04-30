@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, April 30th 2023_
+_Stats as at 05:00, Monday, May 1st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.0b2 | 470     | 3751         | 2554 | 102 |
+| 2023.5.0b4 | 471     | 3760         | 2558 | 102 |
 
 Type | Qty
 -- | --
@@ -65,11 +65,11 @@ Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 18
+Media Player | 19
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2554
+Sensor | 2558
 Sun | 1
 Switch | 165
 Weather | 6
@@ -325,6 +325,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
 | [pyscript](https://www.home-assistant.io/components/pyscript) |
 | [python_script](https://www.home-assistant.io/components/python_script) |
+| [qbittorrent](https://www.home-assistant.io/components/qbittorrent) |
 | [radarr](https://www.home-assistant.io/components/radarr) |
 | [radio_browser](https://www.home-assistant.io/components/radio_browser) |
 | [readme](https://www.home-assistant.io/components/readme) |
@@ -415,6 +416,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.proxmoxve](https://www.home-assistant.io/components/sensor.proxmoxve) |
+| [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
@@ -425,7 +427,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sensibo](https://www.home-assistant.io/components/sensor.sensibo) |
 | [sensor.slack](https://www.home-assistant.io/components/sensor.slack) |
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
-| [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
@@ -701,6 +702,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Uptime Card](https://github.com/dylandoamaral/uptime-card)
 - [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card)
 - [Weather Card](https://github.com/bramkragten/weather-card)
+- [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card)
+- [Windrose Card](https://github.com/aukedejong/lovelace-windrose-card)
 
 ### Themes
 - [Animated Weather Card](https://github.com/wowgamr/animated-weather-card)

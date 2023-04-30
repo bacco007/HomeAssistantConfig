@@ -27,3 +27,14 @@ GROUP BY
 ORDER BY
   cnt DESC
 LIMIT 50;
+
+
+SELECT
+  COUNT(*) AS cnt,
+  COUNT(*) * 100 / (SELECT COUNT(*) FROM states) AS cnt_pct,
+  states_meta.entity_id
+FROM states
+LEFT JOIN states_meta ON (states.metadata_id=states_meta.metadata_id)
+GROUP BY entity_id
+ORDER BY cnt DESC
+limit 50;
