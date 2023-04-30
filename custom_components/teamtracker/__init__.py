@@ -248,9 +248,11 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
                     "last_update"
                 ] = DEFAULT_LAST_UPDATE  # set to fixed time for compares
                 values["kickoff_in"] = DEFAULT_KICKOFF_IN
-                with open(path, "w", encoding="utf-8") as convert_file:
-                    convert_file.write(json.dumps(values, indent=4))
-
+                try:
+                    with open(path, "w", encoding="utf-8") as convert_file:
+                        convert_file.write(json.dumps(values, indent=4))
+                except:
+                    _LOGGER.debug("%s: Error creating results file '%s'", sensor_name, path)
         return values
 
     #
@@ -293,17 +295,23 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
 
         if file_override:
             _LOGGER.debug("%s: Overriding API for '%s'", sensor_name, team_id)
-            async with aiofiles.open("/share/tt/test.json", mode="r") as f:
+            file_path = "/share/tt/test.json"
+            if not os.path.exists(file_path):
+                file_path = "tests/tt/all.json"
+            async with aiofiles.open(file_path, mode="r") as f:
                 contents = await f.read()
             data = json.loads(contents)
         else:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=headers) as r:
-                    _LOGGER.debug(
-                        "%s: Getting state for '%s' from %s", sensor_name, team_id, url
-                    )
-                    if r.status == 200:
-                        data = await r.json()
+                try:
+                    async with session.get(url, headers=headers) as r:
+                        _LOGGER.debug(
+                            "%s: Getting state for '%s' from %s", sensor_name, team_id, url
+                        )
+                        if r.status == 200:
+                            data = await r.json()
+                except:
+                    data = None
 
             num_events = 0
             if data is not None:
@@ -342,15 +350,18 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
                 url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
 
                 async with aiohttp.ClientSession() as session:
-                    async with session.get(url, headers=headers) as r:
-                        _LOGGER.debug(
-                            "%s: Getting state without date constraint for '%s' from %s",
-                            sensor_name,
-                            team_id,
-                            url,
-                        )
-                        if r.status == 200:
-                            data = await r.json()
+                    try:
+                        async with session.get(url, headers=headers) as r:
+                            _LOGGER.debug(
+                                "%s: Getting state without date constraint for '%s' from %s",
+                                sensor_name,
+                                team_id,
+                                url,
+                            )
+                            if r.status == 200:
+                                data = await r.json()
+                    except:
+                        data = None
 
             num_events = 0
             if data is not None:
@@ -391,18 +402,21 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
                 url = URL_HEAD + sport_path + "/" + league_path + URL_TAIL + url_parms
 
                 async with aiohttp.ClientSession() as session:
-                    async with session.get(url, headers=headers) as r:
-                        _LOGGER.debug(
-                            "%s: Getting state without language for '%s' from %s",
-                            sensor_name,
-                            team_id,
-                            url,
-                        )
-                        if r.status == 200:
-                            data = await r.json()
-
+                    try:
+                        async with session.get(url, headers=headers) as r:
+                            _LOGGER.debug(
+                                "%s: Getting state without language for '%s' from %s",
+                                sensor_name,
+                                team_id,
+                                url,
+                            )
+                            if r.status == 200:
+                                data = await r.json()
+                    except:
+                        data = None
 
         return data, file_override
+        
 
     async def async_update_values(self, config, hass, data, lang) -> dict:
         """Return values based on the data passed into method"""
