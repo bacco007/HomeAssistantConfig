@@ -95,7 +95,6 @@ cards:
                     background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
                   }
 
-
   - type: vertical-stack
     cards:
       - type: custom:button-card

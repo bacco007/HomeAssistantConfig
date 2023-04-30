@@ -108,6 +108,7 @@ influxdb:
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
       - sensor.tbsh1*
+      - sensor.tbsh2*
       - sensor.load*
       - sensor.processor_use*
       - sensor.memory_*
