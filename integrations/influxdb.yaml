@@ -165,3 +165,4 @@ influxdb:
       - sensor.192_168_1_131*
       - sensor.daily_mix*
       - sensor.frontpage*
+      - sensor.openweathermap*
