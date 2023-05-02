@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, May 2nd 2023_
+_Stats as at 05:00, Wednesday, May 3rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.0b5 | 474     | 3791         | 2587 | 102 |
+| 2023.5.0b6 | 474     | 3789         | 2588 | 102 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2587
+Sensor | 2588
 Sun | 1
 Switch | 165
 Weather | 7
@@ -118,7 +118,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
-| [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
@@ -527,6 +526,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [unifics](https://www.home-assistant.io/components/unifics) |
 | [update](https://www.home-assistant.io/components/update) |
+| [update.esphome](https://www.home-assistant.io/components/update.esphome) |
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
 | [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
@@ -595,7 +595,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -738,7 +738,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- ESPHome (2023.4.2)
+- Advanced SSH & Web Terminal (14.0.0)
+- ESPHome (2023.4.3)
 - Eufy Security Add-on (1.3.0)
 - File editor (5.6.0)
 - Glances (0.18.1)
@@ -754,10 +755,9 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - RTSP Simple Server Add-on (v0.17.6)
 - Samba share (10.0.1)
 - Shortumation (v0.7.6)
-- SSH & Web Terminal (13.1.0)
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
-- Zigbee2MQTT (1.30.3-1)
+- Zigbee2MQTT (1.30.4-1)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
