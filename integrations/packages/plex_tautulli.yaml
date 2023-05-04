@@ -1,6 +1,5 @@
 ---
 sensor:
-
   - platform: rest
     name: plex_tautulli_history
     json_attributes_path: "$.response.data"
@@ -16,6 +15,28 @@ sensor:
       - data
     value_template: "{{ value_json['response']['result'] }}"
     resource: !secret plex_tautulli_activity_url
+
+  - platform: rest
+    unique_id: plex_tautulli_activity_individual
+    name: Tautulli Activity
+    icon: mdi:plex
+    scan_interval: 5
+    force_update: true
+    resource: !secret plex_tautulli_activity_url
+    method: POST
+    headers:
+      Content-Type: application/json
+    value_template: "{{ value_json.response.result }}"
+    json_attributes_path: "$.response.data"
+    json_attributes:
+      - stream_count
+      - sessions
+      - stream_count_direct_play
+      - stream_count_direct_stream
+      - stream_count_transcode
+      - total_bandwidth
+      - lan_bandwidth
+      - wan_bandwidth
 
   - platform: rest
     name: plex_tautulli_toptv

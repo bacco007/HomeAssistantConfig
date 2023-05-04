@@ -1,0 +1,103 @@
+---
+sensor:
+  - unique_id: plex_session_1
+    name: Plex Session 1 (Tautulli)
+    icon: mdi:plex
+    state: >
+      {% if (state_attr('sensor.tautulli_activity','sessions')|length >= 1)%}{{ state_attr('sensor.tautulli_activity','sessions')[0].state }}{%else%}off{%endif %}
+    attributes:
+      user: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].user }}{%endif%}
+      progress_percent: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].progress_percent }}{%endif%}
+      media_type: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].media_type }}{%endif%}
+      full_title: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].full_title }}{%endif%}
+      grandparent_thumb: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].grandparent_thumb }}{%endif%}
+      thumb: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].thumb }}{%endif%}
+      parent_media_index: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].parent_media_index }}{%endif%}
+      media_index: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].media_index }}{%endif%}
+      year: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].year }}{%endif%}
+      product: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].product }}{%endif%}
+      player: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].player }}{%endif%}
+      device: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].device }}{%endif%}
+      platform: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].platform }}{%endif%}
+      location: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].location }}{%endif%}
+      ip_address: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].ip_address }}{%endif%}
+      ip_address_public: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].ip_address_public }}{%endif%}
+      local: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].local }}{%endif%}
+      relayed: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].relayed }}{%endif%}
+      bandwidth: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].bandwidth }}{%endif%}
+      video_resolution: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].video_resolution }}{%endif%}
+      stream_video_resolution: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].stream_video_resolution }}{%endif%}
+      transcode_decision: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[0].transcode_decision }}{%endif%}
+
+  - unique_id: plex_session_2
+    name: Plex Session 2 (Tautulli)
+    icon: mdi:plex
+    state: >
+      {% if (state_attr('sensor.tautulli_activity','sessions')|length >= 2)%}{{state_attr('sensor.tautulli_activity','sessions')[1].state }}{%else%}off{%endif %}
+    attributes:
+      user: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].user }}{%endif%}
+      progress_percent: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].progress_percent }}{%endif%}
+      media_type: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].media_type }}{%endif%}
+      full_title: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].full_title }}{%endif%}
+      grandparent_thumb: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].grandparent_thumb }}{%endif%}
+      thumb: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].thumb }}{%endif%}
+      parent_media_index: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].parent_media_index }}{%endif%}
+      media_index: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].media_index }}{%endif%}
+      year: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].year }}{%endif%}
+      product: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].product }}{%endif%}
+      player: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].player }}{%endif%}
+      device: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].device }}{%endif%}
+      platform: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].platform }}{%endif%}
+      location: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].location }}{%endif%}
+      ip_address: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].ip_address }}{%endif%}
+      ip_address_public: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].ip_address_public }}{%endif%}
+      local: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].local }}{%endif%}
+      relayed: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].relayed }}{%endif%}
+      bandwidth: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].bandwidth }}{%endif%}
+      video_resolution: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].video_resolution }}{%endif%}
+      stream_video_resolution: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].stream_video_resolution }}{%endif%}
+      transcode_decision: >
+        {% if this.state !='off'%}{{ state_attr('sensor.tautulli_activity','sessions')[1].transcode_decision }}{%endif%}

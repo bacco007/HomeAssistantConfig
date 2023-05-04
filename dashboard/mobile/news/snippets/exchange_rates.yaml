@@ -11,41 +11,97 @@ cards:
         icon_color: blue
         fill_container: true
 
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audeur_x
-        primary: "{{state_attr(entity, 'symbol')}}"
-        secondary: "{{state_attr(entity, 'friendly_name')}}"
-        icon: '{{state_attr(entity,"icon")}}'
-        icon_color: |
-          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
-        card_mod:
-          style: |
-            ha-card {
-              border: 0;
-            }
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audeur_x
-        primary: |
-          {{states(entity)}}
-        tap_action:
-          action: more-info
-        secondary: |
-          {% if state_attr(entity, 'trending') == "up" %}+{% endif
-          %}{{state_attr(entity,'regularMarketChangePercent')}}%
-        card_mod:
-          style:
-            mushroom-state-info$: |
-              * {
-                text-align: end;
-              }
-            .: |
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: |
               ha-card {
-                margin: 3px 8px 0px 0px;
                 border: 0;
-                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                box-shadow: none;
               }
+          cards:
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audeur_x
+              primary: "{{state_attr(entity, 'symbol')}}"
+              secondary: "{{state_attr(entity, 'friendly_name')}}"
+              icon: '{{state_attr(entity,"icon")}}'
+              icon_color: >
+                {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{%
+                endif %}
+              card_mod:
+                style: |
+                  ha-card {
+                    border: 0;
+                    box-shadow: none;
+                  }
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audeur_x
+              primary: |
+                {{states(entity)}}
+              tap_action:
+                action: more-info
+              secondary: |
+                {% if state_attr(entity, 'trending') == "up" %}+{% endif
+                %}{{state_attr(entity,'regularMarketChangePercent')}}%
+              card_mod:
+                style:
+                  mushroom-state-info$: |
+                    * {
+                      text-align: end;
+                    }
+                  .: |
+                    ha-card {
+                      margin: 3px 8px 0px 0px;
+                      border: 0;
+                      box-shadow: none;
+                      --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                    }
+        padding: 0
+        entities:
+          - type: custom:apexcharts-card
+            graph_span: 144h
+            header:
+              show: false
+            apex_config:
+              stroke:
+                curve: smooth
+              plotOptions:
+                bar:
+                  columnWidth: 50%
+              legend:
+                showForSingleSeries: false
+              grid:
+                borderColor: "#7B7B7B"
+            series:
+              - entity: sensor.yahoofinance_audeur_x
+                show:
+                  extremas: true
+                stroke_width: 2
+                fill_raw: last
+                float_precision: 4
+                group_by:
+                  func: last
+                  duration: 1hr
+            yaxis:
+              - decimals: 4
+
   - type: custom:mushroom-template-card
     card_mod:
       style: |
@@ -55,41 +111,97 @@ cards:
           border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
         }
 
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audgbp_x
-        primary: "{{state_attr(entity, 'symbol')}}"
-        secondary: "{{state_attr(entity, 'friendly_name')}}"
-        icon: '{{state_attr(entity,"icon")}}'
-        icon_color: |
-          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
-        card_mod:
-          style: |
-            ha-card {
-              border: 0;
-            }
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audgbp_x
-        primary: |
-          {{states(entity)}}
-        tap_action:
-          action: more-info
-        secondary: |
-          {% if state_attr(entity, 'trending') == "up" %}+{% endif
-          %}{{state_attr(entity,'regularMarketChangePercent')}}%
-        card_mod:
-          style:
-            mushroom-state-info$: |
-              * {
-                text-align: end;
-              }
-            .: |
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: |
               ha-card {
-                margin: 3px 8px 0px 0px;
                 border: 0;
-                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                box-shadow: none;
               }
+          cards:
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audgbp_x
+              primary: "{{state_attr(entity, 'symbol')}}"
+              secondary: "{{state_attr(entity, 'friendly_name')}}"
+              icon: '{{state_attr(entity,"icon")}}'
+              icon_color: >
+                {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{%
+                endif %}
+              card_mod:
+                style: |
+                  ha-card {
+                    border: 0;
+                    box-shadow: none;
+                  }
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audgbp_x
+              primary: |
+                {{states(entity)}}
+              tap_action:
+                action: more-info
+              secondary: |
+                {% if state_attr(entity, 'trending') == "up" %}+{% endif
+                %}{{state_attr(entity,'regularMarketChangePercent')}}%
+              card_mod:
+                style:
+                  mushroom-state-info$: |
+                    * {
+                      text-align: end;
+                    }
+                  .: |
+                    ha-card {
+                      margin: 3px 8px 0px 0px;
+                      border: 0;
+                      box-shadow: none;
+                      --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                    }
+        padding: 0
+        entities:
+          - type: custom:apexcharts-card
+            graph_span: 144h
+            header:
+              show: false
+            apex_config:
+              stroke:
+                curve: smooth
+              plotOptions:
+                bar:
+                  columnWidth: 50%
+              legend:
+                showForSingleSeries: false
+              grid:
+                borderColor: "#7B7B7B"
+            series:
+              - entity: sensor.yahoofinance_audgbp_x
+                show:
+                  extremas: true
+                stroke_width: 2
+                fill_raw: last
+                float_precision: 4
+                group_by:
+                  func: last
+                  duration: 1hr
+            yaxis:
+              - decimals: 4
+
   - type: custom:mushroom-template-card
     card_mod:
       style: |
@@ -99,82 +211,184 @@ cards:
           border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
         }
 
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audnzd_x
-        primary: "{{state_attr(entity, 'symbol')}}"
-        secondary: "{{state_attr(entity, 'friendly_name')}}"
-        icon: '{{state_attr(entity,"icon")}}'
-        icon_color: |
-          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
-        card_mod:
-          style: |
-            ha-card {
-              border: 0;
-            }
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audnzd_x
-        primary: |
-          {{states(entity)}}
-        tap_action:
-          action: more-info
-        secondary: |
-          {% if state_attr(entity, 'trending') == "up" %}+{% endif
-          %}{{state_attr(entity,'regularMarketChangePercent')}}%
-        card_mod:
-          style:
-            mushroom-state-info$: |
-              * {
-                text-align: end;
-              }
-            .: |
-              ha-card {
-                margin: 3px 8px 0px 0px;
-                border: 0;
-                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
-              }
-  - type: custom:mushroom-template-card
+  - type: entities
     card_mod:
-      style: |
-        ha-card {
-          margin: -25px 0px 0px 66px;
-          border: 0;
-          border-bottom: solid 2px rgba(var(--rgb-disabled), 0.2);
-        }
-
-  - type: horizontal-stack
-    cards:
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audusd_x
-        primary: "{{state_attr(entity, 'symbol')}}"
-        secondary: "{{state_attr(entity, 'friendly_name')}}"
-        icon: '{{state_attr(entity,"icon")}}'
-        icon_color: |
-          {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{% endif %}
-        card_mod:
-          style: |
-            ha-card {
-              border: 0;
-            }
-      - type: custom:mushroom-template-card
-        entity: sensor.yahoofinance_audusd_x
-        primary: |
-          {{states(entity)}}
-        tap_action:
-          action: more-info
-        secondary: |
-          {% if state_attr(entity, 'trending') == "up" %}+{% endif
-          %}{{state_attr(entity,'regularMarketChangePercent')}}%
-        card_mod:
-          style:
-            mushroom-state-info$: |
-              * {
-                text-align: end;
-              }
-            .: |
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: |
               ha-card {
-                margin: 3px 8px 0px 0px;
                 border: 0;
-                --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                box-shadow: none;
               }
+          cards:
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audnzd_x
+              primary: "{{state_attr(entity, 'symbol')}}"
+              secondary: "{{state_attr(entity, 'friendly_name')}}"
+              icon: '{{state_attr(entity,"icon")}}'
+              icon_color: >
+                {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{%
+                endif %}
+              card_mod:
+                style: |
+                  ha-card {
+                    border: 0;
+                    box-shadow: none;
+                  }
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audnzd_x
+              primary: |
+                {{states(entity)}}
+              tap_action:
+                action: more-info
+              secondary: |
+                {% if state_attr(entity, 'trending') == "up" %}+{% endif
+                %}{{state_attr(entity,'regularMarketChangePercent')}}%
+              card_mod:
+                style:
+                  mushroom-state-info$: |
+                    * {
+                      text-align: end;
+                    }
+                  .: |
+                    ha-card {
+                      margin: 3px 8px 0px 0px;
+                      border: 0;
+                      box-shadow: none;
+                      --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                    }
+        padding: 0
+        entities:
+          - type: custom:apexcharts-card
+            graph_span: 144h
+            header:
+              show: false
+            apex_config:
+              stroke:
+                curve: smooth
+              plotOptions:
+                bar:
+                  columnWidth: 50%
+              legend:
+                showForSingleSeries: false
+              grid:
+                borderColor: "#7B7B7B"
+            series:
+              - entity: sensor.yahoofinance_audnzd_x
+                show:
+                  extremas: true
+                stroke_width: 2
+                fill_raw: last
+                float_precision: 4
+                group_by:
+                  func: last
+                  duration: 1hr
+            yaxis:
+              - decimals: 4
+
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+                box-shadow: none;
+              }
+          cards:
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audusd_x
+              primary: "{{state_attr(entity, 'symbol')}}"
+              secondary: "{{state_attr(entity, 'friendly_name')}}"
+              icon: '{{state_attr(entity,"icon")}}'
+              icon_color: >
+                {% if state_attr(entity, 'trending') == "up" %}green{% else %}red{%
+                endif %}
+              card_mod:
+                style: |
+                  ha-card {
+                    border: 0;
+                    box-shadow: none;
+                  }
+            - type: custom:mushroom-template-card
+              entity: sensor.yahoofinance_audusd_x
+              primary: |
+                {{states(entity)}}
+              tap_action:
+                action: more-info
+              secondary: |
+                {% if state_attr(entity, 'trending') == "up" %}+{% endif
+                %}{{state_attr(entity,'regularMarketChangePercent')}}%
+              card_mod:
+                style:
+                  mushroom-state-info$: |
+                    * {
+                      text-align: end;
+                    }
+                  .: |
+                    ha-card {
+                      margin: 3px 8px 0px 0px;
+                      border: 0;
+                      box-shadow: none;
+                      --secondary-text-color: {% if state_attr(config.entity, 'trending') == "up" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};
+                    }
+        padding: 0
+        entities:
+          - type: custom:apexcharts-card
+            graph_span: 144h
+            header:
+              show: false
+            apex_config:
+              stroke:
+                curve: smooth
+              plotOptions:
+                bar:
+                  columnWidth: 50%
+              legend:
+                showForSingleSeries: false
+              grid:
+                borderColor: "#7B7B7B"
+            series:
+              - entity: sensor.yahoofinance_audusd_x
+                show:
+                  extremas: true
+                stroke_width: 2
+                fill_raw: last
+                float_precision: 4
+                group_by:
+                  func: last
+                  duration: 1hr
+            yaxis:
+              - decimals: 4

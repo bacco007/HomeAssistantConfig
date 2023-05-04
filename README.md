@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, May 4th 2023_
+_Stats as at 05:00, Friday, May 5th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.0b8 | 474     | 3786         | 2588 | 102 |
+| 2023.5.0 | 474     | 3764         | 2568 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 102
-Binary Sensor | 185
+Binary Sensor | 179
 Camera | 5
 Device Tracker | 75
 Group | 3
@@ -65,13 +65,13 @@ Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 19
+Media Player | 20
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2588
+Sensor | 2568
 Sun | 1
-Switch | 165
+Switch | 166
 Weather | 7
 Zone | 3
 
@@ -738,23 +738,17 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (14.0.0)
-- ESPHome (2023.4.3)
+- Advanced SSH & Web Terminal (14.1.0)
+- ESPHome (2023.4.4)
 - Eufy Security Add-on (1.3.0)
-- File editor (5.6.0)
 - Glances (0.18.1)
-- Home Assistant Git Exporter (1.16.0)
 - Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.10.2)
-- MariaDB (2.5.2)
+- MariaDB (2.6.0)
 - Mosquitto broker (6.2.1)
-- MQTT Explorer (browser-1.0.1)
 - Node-RED (14.1.5)
 - phpMyAdmin (0.8.5)
-- Portainer (2.0.0)
-- RTSP Simple Server Add-on (v0.17.6)
 - Samba share (10.0.1)
-- Shortumation (v0.7.6)
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
 - Zigbee2MQTT (1.30.4-1)

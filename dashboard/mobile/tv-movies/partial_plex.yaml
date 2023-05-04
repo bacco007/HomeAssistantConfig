@@ -185,6 +185,225 @@ cards:
         double_tap_action:
           action: none
 
+  - type: custom:auto-entities
+    filter:
+      exclude:
+        - state: unknown
+        - state: unavailable
+        - state: "off"
+      include:
+        - entity_id: "*plex*session*"
+          options:
+            entity: this.entity_id
+            type: custom:button-card
+            variables:
+              entity: this.entity_id
+            custom_fields:
+              picture:
+                card:
+                  type: picture
+                  image: |
+                    [[[
+                      if (states[variables.entity].attributes.grandparent_thumb != ''){
+                        return "https://tautulli.stratotally.com/api/v2?apikey=3210aea1a55943c7b51fbd821884a0c9&cmd=pms_image_proxy&img=" + states[variables.entity].attributes.grandparent_thumb + "&amp;width=300&amp;height=450&amp;fallback=poster&amp;refresh=true";
+                      } else {
+                        if (states[variables.entity].attributes.thumb != ''){
+                          return "https://tautulli.stratotally.com/api/v2?apikey=3210aea1a55943c7b51fbd821884a0c9&cmd=pms_image_proxy&img=" + states[variables.entity].attributes.thumb + "&amp;width=300&amp;height=450&amp;fallback=poster&amp;refresh=true"
+                        } else {
+                          return states['sensor.' + states[variables.entity].attributes.user + '_session_thumbnail'].state
+                        }
+                      }
+                    ]]]
+                  style: |
+                    ha-card {
+                      box-shadow: 0;
+                      border-radius: 0;
+                      margin: 5px 0 0 -5px;
+                    }
+                    ha-card img {
+                      min-height: 100px;
+                      min-width: 100px;
+                    }
+              bar:
+                card:
+                  type: custom:bar-card
+                  entities:
+                    - entity: this.entity_id
+                  attribute: progress_percent
+                  unit_of_measurement: "%"
+                  positions:
+                    icon: "off"
+                    indicator: "off"
+                    name: inside
+                  height: 19px
+                  color: "#e49f29"
+                  name: |
+                    [[[
+                      return states[variables.entity].state
+                    ]]]
+                  style: |-
+                    ha-card {
+                      --ha-card-background: none;
+                      border: none;
+                      box-shadow: none;
+                    }
+                    ha-card #states {
+                      padding: 0;
+                    }
+                    bar-card-currentbar, bar-card-backgroundbar {
+                      border-radius: 5px;
+                      left: 0;
+                    }
+                    bar-card-name {
+                      margin-left: 3%;
+                      text-shadow: 1px 1px 1px #0003;
+                    }
+                    bar-card-value {
+                      margin-right: 3%;
+                      text-shadow: 1px 1px 1px #0003;
+                    }
+              user: |
+                [[[
+                  return "<b>" + states[variables.entity].attributes.user + "</b>"
+                ]]]
+              title: |
+                [[[
+                  if (states[variables.entity].state == 'playing') {
+                    return "<ha-icon icon='mdi:play' style='width: 15px; height: 15px; position: relative; top: -2px;'></ha-icon> " + states[variables.entity].attributes.full_title;
+                  } else {
+                    if (states[variables.entity].state == 'paused') {
+                      return "<ha-icon icon='mdi:pause' style='width: 15px; height: 15px; position: relative; top: -2px;'></ha-icon> " + states[variables.entity].attributes.full_title;
+                    } else {
+                      return states[variables.entity].attributes.full_title;
+                    }
+                  }
+
+                ]]]
+              stream_label: <b>Stream</b>
+              stream: |
+                [[[
+                  return states[variables.entity].attributes.video_resolution + " > " + states[variables.entity].attributes.transcode_decision + " > " +states[variables.entity].attributes.stream_video_resolution + ""
+                ]]]
+              product_label: <b>Product</b>
+              product: |
+                [[[
+                  return states[variables.entity].attributes.product
+                ]]]
+              player_label: <b>Player</b>
+              player: |
+                [[[
+                  return states[variables.entity].attributes.player
+                ]]]
+              location_label: <b>Location</b>
+              location: |
+                [[[
+                  return states[variables.entity].attributes.location + ": " + states[variables.entity].attributes.ip_address
+                ]]]
+              media_detail: |
+                [[[
+                  if(states[variables.entity].attributes.media_type == 'movie') {
+                    return "<ha-icon icon='mdi:filmstrip' style='width: 15px; height: 15px; position: relative; top: -2px;'></ha-icon> (" + states[variables.entity].attributes.year + ")";
+                  } else {
+                    return "<ha-icon icon='mdi:television-classic' style='width: 15px; height: 15px; position: relative; top: -2px;'></ha-icon> S" + states[variables.entity].attributes.parent_media_index + " • E" + states[variables.entity].attributes.media_index;
+                  }
+                ]]]
+              bandwidth_label: <b>Bandwidth</b>
+              bandwidth: |
+                [[[
+                  var bytes = states[variables.entity].attributes.bandwidth * 1000;
+                  var sizes = ['Bytes', 'Kbps', 'Mbps', 'Gbps', 'Tbps'];
+                  if (bytes == 0) return 'n/a';
+                  var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1000)));
+                  if (i == 0) return bytes + ' ' + sizes[i];
+                  return (bytes / Math.pow(1000, i)).toFixed(1) + ' ' + sizes[i];
+                ]]]
+            style: |
+              ha-card {
+                box-shadow: 0;
+                padding: 0;
+                margin: 0;
+                border: 0;
+              }
+              ha-card #container {
+              margin: 5px 0 0 0;
+              }
+              #name {
+                display:none;
+              }
+            styles:
+              card:
+                - height: 100x
+                - padding: 0
+              custom_fields:
+                bar:
+                  - text-transform: capitalize
+                  - font-size: 13px
+                user:
+                  - text-align: end
+                  - font-size: 15px
+                title:
+                  - text-align: start
+                  - font-size: 13px
+                stream:
+                  - text-transform: capitalize
+                  - text-align: start
+                  - font-size: 13px
+                product:
+                  - text-transform: capitalize
+                  - text-align: start
+                  - font-size: 13px
+                player:
+                  - text-transform: capitalize
+                  - text-align: start
+                  - font-size: 13px
+                location:
+                  - text-transform: uppercase
+                  - text-align: start
+                  - font-size: 13px
+                media_detail:
+                  - text-transform: uppercase
+                  - text-align: start
+                  - font-size: 13px
+                bandwidth:
+                  - text-transform: capitalize
+                  - text-align: start
+                  - font-size: 13px
+                product_label:
+                  - text-transform: uppercase
+                  - text-align: end
+                  - font-size: 10px
+                player_label:
+                  - text-transform: uppercase
+                  - text-align: end
+                  - font-size: 10px
+                stream_label:
+                  - text-transform: uppercase
+                  - text-align: end
+                  - font-size: 10px
+                location_label:
+                  - text-transform: uppercase
+                  - text-align: end
+                  - font-size: 10px
+                bandwidth_label:
+                  - text-transform: uppercase
+                  - text-align: end
+                  - font-size: 10px
+              grid:
+                - grid-template-areas: |
+                    "picture product_label product"
+                    "picture player_label player"
+                    "picture stream_label stream"
+                    "picture location_label location"
+                    "picture bandwidth_label bandwidth"
+                    "picture bar bar"
+                    "picture title title"
+                    "picture media_detail user"
+                - grid-template-columns: 1fr 60px 3fr
+                - grid-gap: 5px 10px
+    card:
+      type: vertical-stack
+    card_param: cards
+
   - type: vertical-stack
     cards:
       - type: entities
