@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, May 5th 2023_
+_Stats as at 05:00, Saturday, May 6th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.0 | 474     | 3764         | 2568 | 102 |
+| 2023.5.1 | 475     | 3786         | 2587 | 102 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 20
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2568
+Sensor | 2587
 Sun | 1
 Switch | 166
 Weather | 7
@@ -118,6 +118,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
 | [binary_sensor.mqtt](https://www.home-assistant.io/components/binary_sensor.mqtt) |
 | [binary_sensor.myjdownloader](https://www.home-assistant.io/components/binary_sensor.myjdownloader) |
+| [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |

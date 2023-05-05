@@ -166,3 +166,4 @@ influxdb:
       - sensor.daily_mix*
       - sensor.frontpage*
       - sensor.openweathermap*
+      - sensor.yourspotify_*

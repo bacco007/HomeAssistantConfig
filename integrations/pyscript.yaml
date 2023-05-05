@@ -26,3 +26,5 @@ pyscript:
     getdata_untappd_project52:
       clientid: !secret untappd_id
       clientsecret: !secret untappd_secret
+    getdata_yourspotify:
+      friendly_name: "Your Spotify"

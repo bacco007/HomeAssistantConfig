@@ -110,6 +110,7 @@ recorder:
       - sensor.espresense_*
       - sensor.scoreboard_*
       - sensor.ble_*
+      - sensor.yourspotify_*
     domains:
       - anniversaries
       - automation
