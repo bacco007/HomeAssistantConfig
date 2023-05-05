@@ -63,10 +63,10 @@ class NswFireServiceFireDangerEntity(CoordinatorEntity[dict[str, Any]]):
         """Handle updated data from the coordinator."""
         if self.coordinator.data:
             _LOGGER.debug(f"Updating state and attributes from {self.coordinator.data}")
-            self._update_state(self.coordinator.data[self._sensor_type])
+            self._update_state(self.coordinator.data.get(self._sensor_type, None))
             self._attr_extra_state_attributes.update(self.coordinator.data)
             # Remove the attribute equal to sensor's state.
-            del self._attr_extra_state_attributes[self._sensor_type]
+            self._attr_extra_state_attributes.pop(self._sensor_type, None)
         self.async_write_ha_state()
 
     @abstractmethod
