@@ -20,8 +20,8 @@
         "step": {
             "init": {
                 "data": {
-                    "update_interval": "Interval in minuten tussen sensor updates (Standaard 5 min)",
-                    "forecast_interval": "Interval in minuten tussen weersvoorspelling updates (Standaard 30 min)",
+                    "update_interval": "Interval in minuten tussen sensor updates (Standaard 60 min)",
+                    "forecast_interval": "Interval in minuten tussen weersvoorspelling updates (Standaard 60 min)",
                     "forecast_language": "Taal voor weersvoorspelling"
                 }
             }

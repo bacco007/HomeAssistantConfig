@@ -20,8 +20,8 @@
         "step": {
             "init": {
                 "data": {
-                    "update_interval": "Intervall in Minuten zwischen den Sensoraktualisierungen (Standard 5 min)",
-                    "forecast_interval": "Intervall zwischen den Vorhersageaktualisierungen in Minuten (Standard 30 min)",
+                    "update_interval": "Intervall in Minuten zwischen den Sensoraktualisierungen (Standard 60 min)",
+                    "forecast_interval": "Intervall zwischen den Vorhersageaktualisierungen in Minuten (Standard 60 min)",
                     "forecast_language": "Vorhersage Sprache"
                 }
             }

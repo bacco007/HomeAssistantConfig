@@ -19,8 +19,8 @@
         "step": {
             "init": {
                 "data": {
-                    "update_interval": "Interval in minutes between sensor updates (Default 5 min)",
-                    "forecast_interval": "Interval between in minutes forecast updates (Default 30 min)",
+                    "update_interval": "Interval in minutes between sensor updates (Default 60 min)",
+                    "forecast_interval": "Interval between in minutes forecast updates (Default 60 min)",
                     "forecast_language": "Forecast Language"
                 }
             }

@@ -20,8 +20,8 @@
         "step": {
             "init": {
                 "data": {
-                    "update_interval": "Intervalle en minutes entre les mises à jour du capteur (Défaut 5 min)",
-                    "forecast_interval": "Intervalle entre les mises à jour des prévisions en minutes (Défaut 30 min)",
+                    "update_interval": "Intervalle en minutes entre les mises à jour du capteur (Défaut 60 min)",
+                    "forecast_interval": "Intervalle entre les mises à jour des prévisions en minutes (Défaut 60 min)",
                     "forecast_language": "Langue des prévisions"
                 }
             }

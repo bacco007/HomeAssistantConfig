@@ -20,8 +20,8 @@
         "step": {
             "init": {
                 "data": {
-                    "update_interval": "Interval i minutter mellem sensor opdateringer (Standard 5 min)",
-                    "forecast_interval": "Interval i minutter mellem forecast opdateringer (Standard 30 min)",
+                    "update_interval": "Interval i minutter mellem sensor opdateringer (Standard 60 min)",
+                    "forecast_interval": "Interval i minutter mellem forecast opdateringer (Standard 60 min)",
                     "forecast_language": "Sprog for Vejrudsigt"
                 }
             }
