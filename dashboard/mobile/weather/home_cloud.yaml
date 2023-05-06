@@ -1,0 +1,181 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    yaxis:
+      - id: first
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + "m";
+              }
+      - id: second
+        opposite: true
+        decimals: 1
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value * 10) / 10).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + "km";
+              }
+      - id: third
+        show: false
+        opposite: true
+        min: 0
+        max: 100
+        decimals: 0
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "%";
+              }
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+      title: History (24 Hrs)
+    series:
+      - entity: sensor.weatherflow_cloud_base
+        name: Cloud Base
+        type: line
+        color: "#3D82FF"
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        fill_raw: last
+        yaxis_id: first
+      - entity: sensor.openweathermap_cloud_coverage
+        name: Cloud Coverage
+        color: "#B6B8BA"
+        stroke_width: 2
+        opacity: 0.2
+        type: area
+        fill_raw: last
+        group_by:
+          duration: 15m
+          func: avg
+        yaxis_id: third
+      - entity: sensor.weatherflow_visibility
+        name: Visibility
+        color: "#8F3BB8"
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        fill_raw: last
+        yaxis_id: second
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    span:
+      start: minute
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    yaxis:
+      - min: 0
+        max: 100
+        decimals: 0
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "%";
+              }
+    series:
+      - entity: weather.astroweather_31_08133085871397_150_9416770935059
+        name: Clouds
+        type: area
+        stroke_width: 2
+        opacity: 0.2
+        color: "#B6B8BA"
+        show:
+          legend_value: true
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.cloudcover_percentage];
+          });
+
+title-card:
+  type: entities
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  entities:
+    - type: custom:config-template-card
+      entities:
+        - sensor.openweathermap_cloud_coverage
+        - sensor.weatherflow_cloud_base
+        - sensor.weatherflow_visibility
+      variables:
+        cloud_coverage: states['sensor.openweathermap_cloud_coverage'].state
+        cloud_base: states['sensor.weatherflow_cloud_base'].state
+        visibility: states['sensor.weatherflow_visibility'].state
+      card:
+        type: custom:paper-buttons-row
+        styles:
+          justify-content: flex-start
+        buttons:
+          - entity: sensor.openweathermap_cloud_coverage
+            name: Cloud Coverage
+            icon: mdi:weather-cloudy
+            layout: icon|state
+            fill_raw: last
+            state: ${ cloud_coverage + "%" }
+            styles:
+              state:
+                color: "#DDDDDD"
+                font-size: 2.2em
+                font-weight: 300
+              icon:
+                "--mdc-icon-size": 4em
+              button:
+                justify-content: flex-start
+                width: 100%
+          - entity: sensor.weatherflow_cloud_base
+            name: Cloud Base
+            layout: name_state
+            fill_raw: last
+            state: >-
+              {{ "{0:,.0f}".format(states.sensor.weatherflow_cloud_base.state |
+              float ) }} m
+            styles:
+              name:
+                white-space: nowrap
+              state:
+                color: "#DDDDDD"
+          - entity: sensor.weatherflow_visibility
+            name: Visibility
+            layout: name_state
+            fill_raw: last
+            state:
+              postfix: " km"
+            styles:
+              name:
+                white-space: nowrap
+              state:
+                color: "#DDDDDD"
+card_mod:
+  style: |
+    ha-card { box-shadow: none; border: 0; }

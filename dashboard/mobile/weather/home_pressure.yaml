@@ -1,0 +1,147 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    yaxis:
+      - id: first
+      - id: second
+        decimals: 2
+        opposite: true
+    header:
+      show: true
+      show_states: false
+      title: History (24 Hrs)
+    series:
+      - entity: sensor.weatherflow_barometric_pressure
+        name: Barometric Pressure
+        type: area
+        color: "#3D82FF"
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        opacity: 0.2
+        yaxis_id: first
+      - entity: sensor.barometric_pressure_24h_spread
+        name: 24 Hr Spread
+        type: line
+        color: "#B6B8BA"
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        yaxis_id: second
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    span:
+      start: minute
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    series:
+      - entity: weather.openweathermap
+        name: Barometric Pressure
+        type: area
+        show:
+          in_header: false
+        color: "#8F3BB8"
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.pressure];
+          });
+        stroke_width: 2
+        opacity: 0.2
+
+title-card:
+  type: custom:stack-in-card
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  cards:
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-bottom: 0;}
+      entities:
+        - type: custom:config-template-card
+          variables:
+            setPressureTrendIcon: |
+              pressure_trend => {
+                if (pressure_trend == 'steady') {
+                  return 'mdi:arrow-right';
+                }
+                else if (pressure_trend == 'rising') {
+                  return 'mdi:arrow-top-right';
+                }
+                else if (pressure_trend == 'falling') {
+                  return 'mdi:arrow-bottom-right';
+                }
+                else {
+                  return 'midi:thermometer-lines';
+                }
+              }
+            pressure_trend: states['sensor.weatherflow_pressure_trend'].state
+          entities:
+            - sensor.weatherflow_barometric_pressure
+          card:
+            type: custom:paper-buttons-row
+            styles:
+              justify-content: flex-start
+            buttons:
+              - entity: sensor.weatherflow_barometric_pressure
+                name: Feels Like
+                icon: ${ setPressureTrendIcon(pressure_trend) }
+                layout: icon|state
+                state:
+                  postfix: " hPa"
+                styles:
+                  state:
+                    color: "#DDDDDD"
+                    font-size: 2.2em
+                    font-weight: 300
+                  icon:
+                    "--mdc-icon-size": 4em
+                  button:
+                    width: 100%
+                    justify-content: flex-start
+              - entity: sensor.weatherflow_pressure_trend
+                name: Trend
+                layout: name_state
+                styles:
+                  name:
+                    white-space: nowrap
+                  state:
+                    color: "#DDDDDD"
+                  button:
+                    justfify-content: flex-end
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-top: 0;}
+      entities:
+        - type: custom:paper-buttons-row
+          buttons:
+            - entity: sensor.barometric_pressure_24h_spread
+              name: "24 Hour Spread: "
+              state:
+                postfix: " hPa"
+              layout: name|state
+              styles:
+                state:
+                  color: "#DDDDDD"

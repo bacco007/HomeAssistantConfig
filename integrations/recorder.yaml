@@ -46,6 +46,7 @@ recorder:
       - sensor.systemuptime
       - sensor.unknown_unavailable_none_entities
       - sensor.google_trend
+      - - sensor.tautulli_activity
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -57,10 +58,13 @@ recorder:
       - sensor.sport_*
       - sensor.*_uptime
       - sensor.pvetbsh*
+      - sensor.pvenuc*
       - sensor.piserv*
       - sensor.tbsh01*
       - sensor.tbsh02*
       - sensor.tbsh03*
+      - sensor.tbsh1*
+      - sensor.tbsh2*
       - sensor.vmtbsh01*
       - sensor.vmtbsh02*
       - sensor.vmtbsh03*
@@ -111,6 +115,8 @@ recorder:
       - sensor.scoreboard_*
       - sensor.ble_*
       - sensor.yourspotify_*
+      - sensor.192_168_1_131_*
+      - sensor.tempest_st_00056115_wind*
     domains:
       - anniversaries
       - automation

@@ -1,0 +1,202 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    yaxis:
+      - id: first
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value * 10) / 10).toFixed(1) + "°";
+              }
+      - id: second
+        opposite: true
+        min: 0
+        max: 100
+        decimals: 0
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "%";
+              }
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+      title: History (24 Hrs)
+    series:
+      - entity: sensor.weatherflow_air_temperature
+        name: Air
+        type: area
+        color: '#3D82FF'
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        opacity: 0.2
+        yaxis_id: first
+      - entity: sensor.weatherflow_wet_bulb_temperature
+        name: Wet Bulb
+        color: '#8F3BB8'
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        yaxis_id: first
+      - entity: sensor.weatherflow_dewpoint
+        name: Dew Point
+        color: '#cc32ff'
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        yaxis_id: first
+      - entity: sensor.weatherflow_relative_humidity
+        name: Humidity
+        color: '#B6B8BA'
+        stroke_width: 2
+        type: line
+        group_by:
+          duration: 15m
+          func: avg
+        yaxis_id: second
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    yaxis:
+      - id: first
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value * 10) / 10).toFixed(1) + "°";
+              }
+    span:
+      start: minute
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    series:
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Temperature
+        type: area
+        show:
+          in_header: false
+        color: '#8F3BB8'
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.temperature];
+          });
+        stroke_width: 2
+        opacity: 0.2
+        yaxis_id: first
+  - type: custom:heatmap-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    entity: sensor.weatherflow_air_temperature
+    data:
+      max: auto
+    title: ''
+    days: 30
+    scale:
+      type: absolute
+      steps:
+        - value: -6
+          color: '#d6f4f7'
+        - value: -3
+          color: '#aeeaf0'
+        - value: 0
+          color: '#85e9e8'
+        - value: 3
+          color: '#5cd4e0'
+        - value: 6
+          color: '#8abbbf'
+        - value: 9
+          color: '#68aeaf'
+        - value: 12
+          color: '#4c9ba3'
+        - value: 15
+          color: '#6b9e56'
+        - value: 18
+          color: '#85af70'
+        - value: 21
+          color: '#9ec08a'
+        - value: 24
+          color: '#b8d1a4'
+        - value: 27
+          color: '#d1e2be'
+        - value: 30
+          color: '#dcedc8'
+        - value: 33
+          color: '#f9f189'
+        - value: 36
+          color: '#fed954'
+        - value: 39
+          color: '#fdbb22'
+        - value: 42
+          color: '#f47e20'
+        - value: 45
+          color: '#ff5527'
+        - value: 48
+          color: '#c92026'
+title-card:
+  type: entities
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  entities:
+    - type: custom:paper-buttons-row
+      buttons:
+        - entity: sensor.weatherflow_air_temperature
+          name: Feels Like
+          layout: icon|state
+          state:
+            postfix: °C
+          styles:
+            state:
+              color: '#DDDDDD'
+              font-size: 2.2em
+              font-weight: 300
+            icon:
+              '--mdc-icon-size': 4em
+            button:
+              width: 100%
+              justify-content: flex-start
+        - entity: sensor.weatherflow_dewpoint
+          name: Dew Point
+          layout: name_state
+          state:
+            postfix: °C
+          styles:
+            name:
+              white-space: nowrap
+            state:
+              color: '#DDDDDD'
+        - entity: sensor.weatherflow_feels_like_temperature
+          name: Apparent
+          layout: name_state
+          state:
+            postfix: °C
+          styles:
+            state:
+              color: '#DDDDDD'
+            button:
+              justify-context: flex-end

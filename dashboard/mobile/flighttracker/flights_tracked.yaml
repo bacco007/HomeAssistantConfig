@@ -33,7 +33,7 @@ cards:
       fill_raw: last
       extend_to: now
       group_by:
-        func: avg
+        func: max
         duration: 10min
     yaxis:
       - decimals: 0

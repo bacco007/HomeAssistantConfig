@@ -13,7 +13,6 @@ cards:
     graph_span: 1year
     span:
       end: day
-      offset: +1d
     header:
       show: false
       show_states: true
@@ -44,8 +43,3 @@ cards:
               res.push([new Date(key).getTime(), value]);
           }
           return res.sort((a, b) => { return a[0] - b[0] });
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }

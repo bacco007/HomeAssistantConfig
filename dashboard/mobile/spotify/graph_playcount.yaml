@@ -24,20 +24,7 @@ cards:
     apex_config:
       chart:
         type: area
-        height: 300,
-        zoom:
-          type: x
-          enabled: true
-          autoScaleYaxis: true
-        toolbar:
-          show: true
-          autoSelected: zoom
-          tools:
-            zoom: true
-            zoomin: false
-            zoomout: false
-            pan: false
-            reset: true
+        height: 300
       legend:
         show: false
     yaxis:
@@ -86,8 +73,3 @@ cards:
           return entity.attributes.data.map((entry) => {
             return [new Date(entry.date), entry.time_listening_ms*1.66667e-5];
           });
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }

@@ -1,0 +1,276 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    header:
+      show: true
+      show_states: false
+      title: History (24 Hrs)
+    yaxis:
+      - id: first
+        show: false
+      - id: second
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value * 10) / 10).toFixed(1) + "mm";
+              }
+    series:
+      - entity: sensor.weatherflow_precipitation_intensity
+        name: Intensity
+        transform: |
+          if (x === 'none')
+            return 0;
+          else if (x === 'trace')
+            return 1;
+          else if (x === 'very_light')
+            return 2;
+          else if (x === "light")
+            return 3;
+          else if (x === "moderate")
+            return 4;
+          else if (x === "heavy")
+            return 5;
+          else if (x === "very_heavy")
+            return 6;
+          else if (x === "extreme")
+            return 7;
+          else
+            return -1;
+        type: column
+        color: "#8F3BB8"
+        stroke_width: 2
+        group_by:
+          func: max
+          duration: 15m
+        yaxis_id: first
+        show:
+          in_header: false
+          legend_value: false
+      - entity: sensor.weatherflow_precipitation_today
+        name: Today
+        color: "#3D82FF"
+        yaxis_id: second
+        type: area
+        stroke_width: 2
+        opacity: 0.2
+        curve: stepline
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    span:
+      start: minute
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    yaxis:
+      - id: first
+        min: 0
+        max: 100
+        opposite: true
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "%";
+              }
+      - id: second
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value * 1000) / 1000).toFixed(1) + "mm";
+              }
+    series:
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Precipitation Probability
+        type: area
+        stroke_width: 2
+        opacity: 0.2
+        color: "#8F3BB8"
+        show:
+          legend_value: true
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.precipitation_probability];
+          });
+        yaxis_id: first
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Precipitation
+        type: line
+        stroke_width: 2
+        color: "#B6B8BA"
+        show:
+          legend_value: true
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.precipitation];
+          });
+        yaxis_id: second
+  - type: custom:heatmap-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    entity: sensor.tamworth_airport_rain_since_9am
+    data:
+      max: auto
+    title: ""
+    days: 30
+    scale:
+      type: absolute
+      steps:
+        - value: 0
+          color: rgba(43,55,78,1)
+        - value: 1
+          color: "#febe58"
+        - value: 5
+          color: "#cc9900"
+        - value: 10
+          color: "#ffff00"
+        - value: 15
+          color: "#ccff00"
+        - value: 25
+          color: "#33ff00"
+        - value: 50
+          color: "#00cc99"
+        - value: 100
+          color: "#0099ff"
+        - value: 150
+          color: "#3333ff"
+        - value: 200
+          color: "#9900ff"
+title-card:
+  type: custom:stack-in-card
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  cards:
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-bottom: 0;}
+      entities:
+        - type: custom:config-template-card
+          variables:
+            precipitation_intensity: states['sensor.weatherflow_precipitation_intensity'].state
+            setIcon: |
+              precipitation_intensity => {
+                if (precipitation_intensity == 'none') {
+                  return 'mdi:water-off';
+                }
+                else if (precipitation_intensity == 'very_light') {
+                  return 'mdi:weather-rainy';
+                }
+                else if (precipitation_intensity == 'light') {
+                  return 'mdi:weather-rainy';
+                }
+                else if (precipitation_intensity == 'moderate') {
+                  return 'mdi:weather-rainy';
+                }
+                else if (precipitation_intensity == 'heavy') {
+                  return 'mdi:weather-pouring';
+                }
+                else if (precipitation_intensity == 'very_heavy') {
+                  return 'mdi:weather-pouring';
+                }
+                else if (precipitation_intensity == 'extreme') {
+                  return 'mdi:weather-pouring';
+                }
+                else {
+                  return 'mdi:mdi:water';
+                }
+              }
+          entities:
+            - sensor.weatherflow_precipitation_intensity
+          card:
+            type: custom:paper-buttons-row
+            styles:
+              justify-content: flex-start
+            buttons:
+              - entity: sensor.weatherflow_precipitation_intensity
+                name: Lightning
+                icon: ${ setIcon(precipitation_intensity) }
+                layout: icon|state
+                state: ${ precipitation_intensity.replace("_", " ").toUpperCase() }
+                styles:
+                  state:
+                    color: "#DDDDDD"
+                    font-size: 2.2em
+                    font-weight: 300
+                  icon:
+                    "--mdc-icon-size": 4em
+                  button:
+                    justify-content: flex-start
+                    width: 100%
+              - entity: sensor.weatherflow_precipitation_today
+                name: Today
+                layout: name_state
+                state:
+                  postfix: mm
+                styles:
+                  name:
+                    white-space: nowrap
+                  state:
+                    color: "#DDDDDD"
+              - entity: sensor.weatherflow_precipitation_yesterday
+                name: Yesterday
+                layout: name_state
+                state:
+                  postfix: mm
+                styles:
+                  name:
+                    white-space: nowrap
+                  state:
+                    color: "#DDDDDD"
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-top: 0;}
+      entities:
+        - type: custom:paper-buttons-row
+          buttons:
+            - entity: sensor.weatherflow_precipitation_rate
+              name: "Rate: "
+              layout: name|state
+              state:
+                postfix: " mm/hr"
+              styles:
+                state:
+                  color: "#DDDDDD"
+                button:
+                  justify-content: flex-end
+            - entity: sensor.weatherflow_precipitation_duration_today
+              name: "Today: "
+              layout: name|state
+              state:
+                postfix: " min"
+              styles:
+                state:
+                  color: "#DDDDDD"
+            - entity: sensor.weatherflow_precipitation_duration_yesterday
+              name: "Yesterday: "
+              layout: name|state
+              state:
+                postfix: " min"
+              styles:
+                state:
+                  color: "#DDDDDD"

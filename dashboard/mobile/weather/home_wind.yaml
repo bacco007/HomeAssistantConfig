@@ -1,0 +1,223 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    header:
+      show: true
+      show_states: false
+      title: History (24 Hrs)
+    yaxis:
+      - id: first
+      - id: second
+        min: 0
+        max: 360
+        decimals: 0
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "°";
+              }
+        opposite: true
+    series:
+      - entity: sensor.weatherflow_wind_speed
+        name: Speed
+        show:
+          legend_value: false
+        type: area
+        color: "#3D82FF"
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 2
+        opacity: 0.2
+        yaxis_id: first
+      - entity: sensor.weatherflow_wind_gust
+        name: Gust
+        show:
+          legend_value: false
+        type: area
+        color: "#3D82FF"
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 0
+        opacity: 0.2
+        yaxis_id: first
+      - entity: sensor.weatherflow_wind_direction
+        name: Direction
+        show:
+          legend_value: false
+        type: line
+        color: "#B6B8BA"
+        group_by:
+          duration: 120m
+          func: avg
+        stroke_width: 2
+        opacity: 1
+        yaxis_id: second
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    span:
+      start: minute
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    yaxis:
+      - id: first
+      - id: second
+        min: 0
+        max: 360
+        decimals: 0
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "°";
+              }
+        opposite: true
+    series:
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Speed
+        type: area
+        show:
+          in_header: false
+        color: "#8F3BB8"
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.wind_speed];
+          });
+        stroke_width: 2
+        opacity: 0.2
+        yaxis_id: first
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Gust
+        type: area
+        show:
+          in_header: false
+        color: "#8F3BB8"
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.wind_gust];
+          });
+        stroke_width: 0
+        opacity: 0.2
+        yaxis_id: first
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Bearing
+        type: line
+        show:
+          in_header: false
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.wind_bearing];
+          });
+        color: "#B6B8BA"
+        group_by:
+          duration: 120m
+          func: avg
+        stroke_width: 2
+        opacity: 1
+        yaxis_id: second
+
+title-card:
+  type: custom:stack-in-card
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  cards:
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-bottom: 0;}
+      entities:
+        - type: custom:config-template-card
+          variables:
+            wind_cardinal: states['sensor.weatherflow_wind_cardinal'].state
+            wind_direction: states['sensor.weatherflow_wind_direction'].state
+            wind_speed: states['sensor.weatherflow_wind_speed'].state
+            wind_gust: states['sensor.weatherflow_wind_gust'].state
+            wind_lull: states['sensor.weatherflow_wind_lull'].state
+            beaufort_description: states['sensor.weatherflow_beaufort_description'].state
+          entities:
+            - sensor.weatherflow_wind_cardinal
+            - sensor.weatherflow_wind_direction
+            - sensor.weatherflow_wind_speed
+            - sensor.weatherflow_wind_gust
+            - sensor.weatherflow_wind_lull
+            - sensor.weatherflow_beaufort_description
+          card:
+            type: custom:paper-buttons-row
+            styles:
+              justify-content: flex-start
+            buttons:
+              - entity: sensor.weatherflow_wind_speed
+                name: Lightning
+                icon: mdi:weather-windy
+                layout: icon|state
+                state: ${ wind_cardinal.toUpperCase() + ' ' + wind_speed + ' km/h'}
+                styles:
+                  state:
+                    color: "#DDDDDD"
+                    font-size: 2.2em
+                    font-weight: 300
+                  icon:
+                    "--mdc-icon-size": 4em
+                  button:
+                    justify-content: flex-start
+                    width: 100%
+              - entity: sensor.weatherflow_wind_gust
+                name: Gusting
+                state: ${ wind_lull + ' - ' + wind_gust }
+                layout: name_state
+                styles:
+                  state:
+                    color: "#DDDDDD"
+                    white-space: nowrap
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-top: 0;}
+      entities:
+        - type: custom:paper-buttons-row
+          buttons:
+            - entity: sensor.weatherflow_wind_direction
+              name: "Bearing: "
+              state:
+                postfix: '"'
+              layout: name|state
+              styles:
+                state:
+                  color: "#DDDDDD"
+                button:
+                  justify-content: flex-end
+            - entity: sensor.weatherflow_beaufort_description
+              name: "Beaufort: "
+              layout: name|state
+              state: >-
+                {% set s = states('sensor.weatherflow_beaufort_description') |
+                string | upper() %} {{ s | replace("_", " ") }}
+              styles:
+                state:
+                  color: "#DDDDDD"
+                button:
+                  justify-content: flex-end

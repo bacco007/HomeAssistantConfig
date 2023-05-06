@@ -1,0 +1,229 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+      annotations:
+        positions: back
+        yaxis:
+          - "y": 2.5
+            y2: 0
+            strokeDashArray: 0
+            fillColor: "#558B2F"
+          - "y": 5.5
+            y2: 2.5
+            strokeDashArray: 0
+            fillColor: "#F9A825"
+          - "y": 7.5
+            y2: 5.5
+            strokeDashArray: 0
+            fillColor: "#EF6C00"
+          - "y": 10.5
+            y2: 7.5
+            strokeDashArray: 0
+            fillColor: "#B71C1C"
+          - "y": 15
+            y2: 10.5
+            strokeDashArray: 0
+            fillColor: "#6A1B9A"
+    header:
+      show: true
+      show_states: false
+      title: History (24 Hrs)
+    yaxis:
+      - decimals: 0
+        max: 15
+        min: 0
+    series:
+      - entity: sensor.weatherflow_uv_index
+        name: UV Index
+        type: line
+        color: black
+        group_by:
+          duration: 15m
+          func: avg
+        stroke_width: 3
+        opacity: 1
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    span:
+      start: minute
+    apex_config:
+      legend:
+        show: false
+      yaxis:
+        max: 15
+        min: 0
+      annotations:
+        positions: back
+        yaxis:
+          - "y": 2.5
+            y2: 0
+            strokeDashArray: 0
+            fillColor: "#558B2F"
+          - "y": 5.5
+            y2: 2.5
+            strokeDashArray: 0
+            fillColor: "#F9A825"
+          - "y": 7.5
+            y2: 5.5
+            strokeDashArray: 0
+            fillColor: "#EF6C00"
+          - "y": 10.5
+            y2: 7.5
+            strokeDashArray: 0
+            fillColor: "#B71C1C"
+          - "y": 15
+            y2: 10.5
+            strokeDashArray: 0
+            fillColor: "#6A1B9A"
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    series:
+      - entity: weather.east_tamworth_hourly
+        name: BoM
+        type: line
+        show:
+          in_header: false
+        color: black
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.uv];
+          });
+        stroke_width: 2
+      - entity: weather.weatherflow_hourly_based_forecast
+        name: Weatherflow
+        type: line
+        show:
+          in_header: false
+        color: red
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.uv_index];
+          });
+        stroke_width: 2
+  - type: custom:heatmap-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    entity: sensor.tempest_st_00056115_uv_index
+    title: ""
+    data:
+      max: auto
+    days: 30
+    scale:
+      type: absolute
+      steps:
+        - value: 0
+          color: rgba(43,55,78,1)
+        - value: 1
+          color: "#4eb400"
+        - value: 2
+          color: "#a0ce00"
+        - value: 3
+          color: "#f7e400"
+        - value: 4
+          color: "#f8b600"
+        - value: 5
+          color: "#f88700"
+        - value: 6
+          color: "#f85900"
+        - value: 7
+          color: "#e82c0e"
+        - value: 8
+          color: "#d8001d"
+        - value: 9
+          color: "#ff0099"
+        - value: 10
+          color: "#b54cff"
+        - value: 11
+          color: "#998cff"
+
+title-card:
+  type: custom:stack-in-card
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  cards:
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-top: 0;}
+      entities:
+        - type: custom:config-template-card
+          variables:
+            uv_description: states['sensor.weatherflow_uv_description'].state
+          entities:
+            - sensor.weatherflow_uv_description
+          card:
+            type: custom:paper-buttons-row
+            styles:
+              justify-content: flex-start
+            buttons:
+              - entity: sensor.weatherflow_last_lightning_strike
+                name: Lightning
+                icon: mdi:weather-sunny
+                layout: icon|state
+                state: ${ uv_description.replace("-", " ").toUpperCase() }
+                styles:
+                  state:
+                    color: "#DDDDDD"
+                    font-size: 2.2em
+                    font-weight: 300
+                  icon:
+                    "--mdc-icon-size": 4em
+                  button:
+                    justify-content: flex-start
+                    width: 100%
+              - entity: sensor.weatherflow_uv_index
+                name: UV Index
+                layout: name_state
+                styles:
+                  name:
+                    white-space: nowrap
+                  state:
+                    color: "#DDDDDD"
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-bottom: 0;}
+      entities:
+        - type: custom:paper-buttons-row
+          buttons:
+            - entity: sensor.weatherflow_brightness
+              name: "Brightness: "
+              layout: name|state
+              state: >-
+                {{ "{0:,.0f}".format(states.sensor.weatherflow_brightness.state
+                | float ) }} lux
+              styles:
+                state:
+                  color: "#DDDDDD"
+                button:
+                  justify-content: flex-end
+            - entity: sensor.weatherflow_solar_radiation
+              name: "Solar Radiation: "
+              layout: name|state
+              state: >-
+                {{
+                "{0:,.0f}".format(states.sensor.weatherflow_solar_radiation.state
+                | float ) }} W/m2
+              styles:
+                state:
+                  color: "#DDDDDD"

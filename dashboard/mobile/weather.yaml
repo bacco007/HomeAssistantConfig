@@ -59,38 +59,35 @@ cards:
                       show_radar_location: true
                       zoom_level: "8"
               - attributes:
+                  label: Home
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include weather/home_temp.yaml
+                    - !include weather/home_rainfall.yaml
+                    - !include weather/home_humidity.yaml
+                    - !include weather/home_pressure.yaml
+                    - !include weather/home_cloud.yaml
+                    - !include weather/home_wind.yaml
+                    - !include weather/home_lightning.yaml
+                    - !include weather/home_uv.yaml
+              - attributes:
                   label: Sun / UV
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - type: custom:stack-in-card
-                      cards:
-                        - !include tamworth/snippets/sun_moon.yaml
-                        - type: custom:horizon-card
-                          use12hourClock: false
-                          fields:
-                            azimuth: true
-                            elevation: true
-                    - type: custom:stack-in-card
-                      cards:
-                        - !include tamworth/snippets/uv.yaml
-                        - !include tamworth/graph_uvindex.yaml
+                    - !include tamworth/snippets/sun_moon.yaml
+                    - !include tamworth/snippets/uv.yaml
               - attributes:
                   label: Air Quality
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - type: custom:stack-in-card
-                      cards:
-                        - !include tamworth/snippets/aqi_nswdpe.yaml
-                        - !include tamworth/graph_nswaqi.yaml
-
-                    - type: custom:stack-in-card
-                      cards:
-                        - !include tamworth/snippets/aqi_waqi.yaml
-                        - !include tamworth/graph_waqi.yaml
+                    - !include tamworth/snippets/aqi_nswdpe.yaml
+                    - !include tamworth/snippets/aqi_waqi.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -127,28 +124,14 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: Sun / UV
-            view_layout:
-              grid-column: 1/-1
-          - type: custom:stack-in-card
-            cards:
-              - !include tamworth/snippets/sun_moon.yaml
-              - type: custom:sun-card
-                style: |
-                  .sun-card-title {
-                    display: none;
-                  }
-                showAzimuth: true
-                showElevation: true
-                timeFormat: 24h
-                title: ""
-          - type: custom:stack-in-card
-            cards:
-              - !include tamworth/snippets/uv.yaml
-              - !include tamworth/graph_uvindex.yaml
+          - !include weather/home_temp.yaml
+          - !include weather/home_rainfall.yaml
+          - !include weather/home_humidity.yaml
+          - !include weather/home_pressure.yaml
+          - !include weather/home_cloud.yaml
+          - !include weather/home_wind.yaml
+          - !include weather/home_lightning.yaml
+          - !include weather/home_uv.yaml
 
   # Column 3, Row 1
   - type: custom:state-switch
@@ -159,21 +142,10 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - type: "custom:button-card"
-            template: header_card_no_link
-            variables:
-              name: Air Quality
-            view_layout:
-              grid-column: 1/-1
-          - type: custom:stack-in-card
-            cards:
-              - !include tamworth/snippets/aqi_nswdpe.yaml
-              - !include tamworth/graph_nswaqi.yaml
-
-          - type: custom:stack-in-card
-            cards:
-              - !include tamworth/snippets/aqi_waqi.yaml
-              - !include tamworth/graph_waqi.yaml
+          - !include tamworth/snippets/sun_moon.yaml
+          - !include tamworth/snippets/uv.yaml
+          - !include tamworth/snippets/aqi_nswdpe.yaml
+          - !include tamworth/snippets/aqi_waqi.yaml
 
   # Column 1, Row 2
   - type: custom:gap-card

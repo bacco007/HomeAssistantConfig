@@ -1,3 +1,4 @@
+---
 trigger:
   - platform: state
     entity_id: sensor.solcast_forecast_today
@@ -14,7 +15,7 @@ trigger:
 sensor:
   - name: solcast_forecast_remaining_today_every_minute
     unique_id: solcast_forecast_remaining_today_every_minute
-    #friendly_name: "Solcast Forecast Remaining Today (Every Minute)"
+    # friendly_name: "Solcast Forecast Remaining Today (Every Minute)"
     state_class: "total"
     device_class: energy
     unit_of_measurement: "kWh"

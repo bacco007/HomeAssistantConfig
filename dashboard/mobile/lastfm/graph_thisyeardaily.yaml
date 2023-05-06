@@ -10,10 +10,13 @@ cards:
     icon: fab:lastfm
     icon_color: red
   - type: custom:apexcharts-card
-    graph_span: 1year
+    experimental:
+      brush: true
+    brush:
+      selection_span: 90d
+    graph_span: 1y
     span:
       end: day
-      offset: +1d
     header:
       show: false
       show_states: true
@@ -37,6 +40,9 @@ cards:
     series:
       - entity: sensor.archive_last_fm_dailyplaycount_365day
         color: var(--label-badge-red)
+        show:
+          extremas: true
+          in_brush: true
         data_generator: |
           let res = [];
           for (const [key, value] of
@@ -44,8 +50,3 @@ cards:
               res.push([new Date(key).getTime(), value]);
           }
           return res.sort((a, b) => { return a[0] - b[0] });
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }

@@ -1,0 +1,129 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    chart_type: scatter
+    header:
+      show: true
+      title: History (24 Hrs)
+    series:
+      - entity: sensor.weatherflow_last_lightning_strike_distance
+        name: Last Strike Distance
+        color: "#DBAF07"
+    apex_config:
+      markers:
+        shape: circle
+        size: 2
+        strokeWidth: 0
+title-card:
+  type: custom:stack-in-card
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  cards:
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-bottom: 0;}
+      entities:
+        - type: custom:config-template-card
+          variables:
+            descriptive_duration: |
+              inDate => {
+                var startDate = new Date(inDate);
+                var nowDate = new Date();
+
+                var seconds = Math.floor((nowDate - startDate) / 1000);
+
+                var interval = seconds / 31536000;
+
+                if (interval > 1) {
+                  return Math.floor(interval) + " yr";
+                }
+                interval = seconds / 2592000;
+                if (interval > 1) {
+                  return Math.floor(interval) + " months";
+                }
+                interval = seconds / 86400;
+                if (interval > 1) {
+                  return Math.floor(interval) + " days";
+                }
+                interval = seconds / 3600;
+                if (interval > 1) {
+                  return Math.floor(interval) + " hr";
+                }
+                interval = seconds / 60;
+                if (interval > 1) {
+                  return Math.floor(interval) + " min";
+                }
+                return Math.floor(seconds) + " sec";
+                return seconds;
+              }
+            lightning_date: states['sensor.weatherflow_last_lightning_strike'].state
+          entities:
+            - sensor.weatherflow_last_lightning_strike
+          card:
+            type: custom:paper-buttons-row
+            styles:
+              justify-content: flex-start
+            buttons:
+              - entity: sensor.weatherflow_last_lightning_strike
+                name: Lightning
+                icon: mdi:lightning-bolt
+                layout: icon|state
+                state: ${ descriptive_duration(lightning_date) + ' ago' }
+                styles:
+                  state:
+                    color: "#DDDDDD"
+                    font-size: 2.2em
+                    font-weight: 300
+                  icon:
+                    "--mdc-icon-size": 4em
+                  button:
+                    justify-content: flex-start
+                    width: 100%
+              - entity: sensor.weatherflow_last_lightning_strike_distance
+                name: Distance
+                layout: name_state
+                state:
+                  postfix: " km"
+                styles:
+                  state:
+                    color: "#DDDDDD"
+    - type: entities
+      card_mod:
+        style: |
+          #states {padding-top: 0;}
+      entities:
+        - type: custom:paper-buttons-row
+          buttons:
+            - entity: sensor.weatherflow_lightning_strike_count
+              name: "Last Minute: "
+              layout: name|state
+              styles:
+                state:
+                  color: "#DDDDDD"
+                button:
+                  justify-content: flex-end
+            - entity: sensor.weatherflow_lightning_strike_count_last_hour
+              name: "Last Hour: "
+              layout: name|state
+              styles:
+                state:
+                  color: "#DDDDDD"
+            - entity: sensor.weatherflow_lightning_strike_count_last_3_hours
+              name: "Last 3 Hours: "
+              layout: name|state
+              styles:
+                state:
+                  color: "#DDDDDD"

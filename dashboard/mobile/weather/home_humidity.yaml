@@ -1,0 +1,147 @@
+---
+type: custom:expander-card
+gap: 0.6em
+padding: 0.1em
+clear: false
+overlay-margin: 2em
+child-padding: 0.5em
+button-background: transparent
+cards:
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    apex_config:
+      legend:
+        show: false
+    yaxis:
+      - id: second
+        min: 0
+        max: 100
+        decimals: 0
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return value + "%";
+              }
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+      title: History (24 Hrs)
+    series:
+      - entity: sensor.weatherflow_relative_humidity
+        name: Humidity
+        color: "#B6B8BA"
+        stroke_width: 2
+        type: line
+        group_by:
+          duration: 15m
+          func: avg
+        yaxis_id: second
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    graph_span: 24h
+    yaxis:
+      - id: first
+        apex_config:
+          labels:
+            formatter: |
+              EVAL:function (value) {
+                return (Math.round(value * 10) / 10).toFixed(1) + "°";
+              }
+    span:
+      start: minute
+    header:
+      show: true
+      title: Forecast (24 Hrs)
+    series:
+      - entity: weather.east_tamworth_hourly
+        name: Humidity
+        type: area
+        show:
+          in_header: false
+        color: "#8F3BB8"
+        data_generator: |
+          return entity.attributes.forecast.map((entry) => {
+            return [new Date(entry.datetime).getTime(), entry.humidity];
+          });
+        stroke_width: 2
+        opacity: 0.2
+        yaxis_id: first
+  - type: custom:heatmap-card
+    card_mod:
+      style: |
+        ha-card { box-shadow: none; border: 0; }
+    entity: sensor.weatherflow_relative_humidity
+    data:
+      max: auto
+    title: ""
+    days: 30
+    scale:
+      type: absolute
+      steps:
+        - value: 0
+          color: "#993404"
+        - value: 5
+          color: "#ec7014"
+        - value: 10
+          color: "#fe9929"
+        - value: 20
+          color: "#fec44f"
+        - value: 30
+          color: "#fee391"
+        - value: 40
+          color: "#f7f7f7"
+        - value: 50
+          color: "#d1e5f0"
+        - value: 60
+          color: "#92c5de"
+        - value: 70
+          color: "#4393c3"
+        - value: 80
+          color: "#2166ac"
+        - value: 90
+          color: "#053061"
+title-card:
+  type: entities
+  card_mod:
+    style: |
+      ha-card { box-shadow: none; border: 0; }
+  entities:
+    - type: custom:paper-buttons-row
+      buttons:
+        - entity: sensor.weatherflow_relative_humidity
+          name: Feels Like
+          layout: icon|state
+          state:
+            postfix: "%"
+          styles:
+            state:
+              color: "#DDDDDD"
+              font-size: 2.2em
+              font-weight: 300
+            icon:
+              "--mdc-icon-size": 4em
+            button:
+              width: 100%
+              justify-content: flex-start
+        - entity: sensor.weatherflow_absolute_humidity
+          name: Absolute
+          layout: name_state
+          state:
+            postfix: g/m3
+          styles:
+            name:
+              white-space: nowrap
+            state:
+              color: "#DDDDDD"
+            button:
+              justify-context: flex-end
+card_mod:
+  style: |
+    ha-card { box-shadow: none; border: 0; }

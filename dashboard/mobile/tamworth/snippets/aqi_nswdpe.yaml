@@ -1,41 +1,154 @@
 ---
-type: entities
-title: NSW Dept of Environment
-entities:
-  - entity: sensor.nsw_air_quality_tamworth
-    name: Tamworth
-    type: custom:multiple-entity-row
-    styles:
-      white-space: normal
-    style:
-      hui-generic-entity-row:
-        $: |
-          .info, .info > * {
-            white-space: normal !important;
+type: vertical-stack
+cards:
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
           }
     entities:
-      - attribute: pm10
-        name: PM10
-        unit: AQI
-      - attribute: pm25
-        name: PM2.5
-        unit: AQI
-    secondary_info:
-      entity: sensor.nsw_air_quality_tamworth_airpollev
-  - entity: sensor.nsw_air_quality_tamworth_change_aqi
-    type: custom:multiple-entity-row
-    styles:
-      white-space: normal
-    style:
-      hui-generic-entity-row:
-        $: |
-          .info, .info > * {
-            white-space: normal !important;
-          }
-    name: Extremes (24hrs)
-    state_header: 24hr Chg
-    entities:
-      - entity: sensor.nsw_air_quality_tamworth_min_aqi
-        name: Min
-      - entity: sensor.nsw_air_quality_tamworth_max_aqi
-        name: Max
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          primary: Air Quality - NSW Dept of Environment
+          secondary: |
+            {{states('sensor.nsw_air_quality_tamworth_airpollev') }}
+          icon: mdi:chart-bubble
+          icon_color: yellow
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: entities
+            entities:
+              - entity: sensor.nsw_air_quality_tamworth
+                name: Tamworth
+                type: custom:multiple-entity-row
+                styles:
+                  white-space: normal
+                style:
+                  hui-generic-entity-row:
+                    $: |
+                      .info, .info > * {
+                        white-space: normal !important;
+                      }
+                entities:
+                  - attribute: pm10
+                    name: PM10
+                    unit: AQI
+                  - attribute: pm25
+                    name: PM2.5
+                    unit: AQI
+                secondary_info:
+                  entity: sensor.nsw_air_quality_tamworth_airpollev
+              - entity: sensor.nsw_air_quality_tamworth_change_aqi
+                type: custom:multiple-entity-row
+                styles:
+                  white-space: normal
+                style:
+                  hui-generic-entity-row:
+                    $: |
+                      .info, .info > * {
+                        white-space: normal !important;
+                      }
+                name: Extremes (24hrs)
+                state_header: 24hr Chg
+                entities:
+                  - entity: sensor.nsw_air_quality_tamworth_min_aqi
+                    name: Min
+                  - entity: sensor.nsw_air_quality_tamworth_max_aqi
+                    name: Max
+          - type: custom:apexcharts-card
+            graph_span: 72h
+            card_mod:
+              style: |
+                ha-card {
+                  box-shadow: none;
+                  border: 0;
+                }
+            span:
+              end: hour
+            header:
+              show: false
+              title: "NSW AQI (72 Hours)"
+              show_states: true
+              colorize_states: true
+
+            apex_config:
+              chart:
+                {
+                  type: "area",
+                  height: 300,
+                  toolbar: { show: true, tools: { reset: true } },
+                  zoom: { type: "x", enabled: true, autoScaleYaxis: true },
+                }
+              stroke: { show: true, width: 2.5, curve: smooth }
+              legend: { show: false }
+              dataLabels: { enabled: false }
+              fill:
+                {
+                  type: "gradient",
+                  gradient:
+                    {
+                      shadeIntensity: 1,
+                      inverseColors: false,
+                      opacityFrom: 0.45,
+                      opacityTo: 0.05,
+                      stops: [20, 100, 100, 100],
+                    },
+                }
+              xaxis:
+                {
+                  type: "datetime",
+                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
+                }
+              yaxis: { max: 200, min: 0 }
+              annotations:
+                positions: back
+                yaxis:
+                  - y: 34
+                    y2: 0
+                    strokeDashArray: 0
+                    fillColor: "#31add3"
+                  - y: 67
+                    y2: 34
+                    strokeDashArray: 0
+                    fillColor: "#99b964"
+                  - y: 67
+                    y2: 100
+                    strokeDashArray: 0
+                    fillColor: "#ec783a"
+                  - y: 100
+                    y2: 150
+                    strokeDashArray: 0
+                    fillColor: "#782d49"
+                  - y: 200
+                    y2: 150
+                    strokeDashArray: 0
+                    fillColor: "#d04730"
+
+            series:
+              - entity: sensor.nsw_air_quality_tamworth
+                type: area
+                name: Air Quality
+                # extend_to_end: false
+                curve: smooth
+                color: black
+                group_by:
+                  func: last
+                  duration: 1h

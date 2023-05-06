@@ -35,8 +35,3 @@ cards:
     series:
       - entity: sensor.lastfm_user_playcount
         color: var(--label-badge-red)
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }
