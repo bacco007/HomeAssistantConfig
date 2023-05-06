@@ -21,6 +21,14 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "artist": "None",
+                    "image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -43,6 +51,14 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "artist": "None",
+                    "image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -64,6 +80,14 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "artist": "None",
+                    "image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -85,6 +109,14 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "artist": "None",
+                    "image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -92,8 +124,8 @@ def getdata_yourspotify():
     state.set("sensor.yourspotify_topartists_thismonth", value=DATA[0]["artist"], new_attributes=attr)
 
     # Top Artists (This Year)
-    date = datetime.datetime.now()
-    date_string = date.strftime("%Y")+"-01-01T00:00:00.000Z"
+    date = datetime.datetime.now() - datetime.timedelta(days=365)
+    date_string = date.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     URL_USE = "http://192.168.1.131:2222/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
@@ -106,6 +138,14 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "artist": "None",
+                    "image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -128,6 +168,16 @@ def getdata_yourspotify():
                         "count": row['count'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "track": "None",
+                    "artist": "None",
+                    "trackartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -152,6 +202,16 @@ def getdata_yourspotify():
                         "count": row['count'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "track": "None",
+                    "artist": "None",
+                    "trackartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -176,6 +236,16 @@ def getdata_yourspotify():
                         "count": row['count'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "track": "None",
+                    "artist": "None",
+                    "trackartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -200,6 +270,16 @@ def getdata_yourspotify():
                         "count": row['count'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "track": "None",
+                    "artist": "None",
+                    "trackartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -207,8 +287,8 @@ def getdata_yourspotify():
     state.set("sensor.yourspotify_topsongs_thismonth", value=DATA[0]["trackartist"], new_attributes=attr)
 
     # Top Songs (This Year)
-    date = datetime.datetime.now()
-    date_string = date.strftime("%Y")+"-01-01T00:00:00.000Z"
+    date = datetime.datetime.now() - datetime.timedelta(days=365)
+    date_string = date.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     URL_USE = "http://192.168.1.131:2222/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
@@ -224,6 +304,16 @@ def getdata_yourspotify():
                         "count": row['count'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "track": "None",
+                    "artist": "None",
+                    "trackartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -247,6 +337,17 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "album": "None",
+                    "artist": "None",
+                    "albumartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -272,6 +373,17 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "album": "None",
+                    "artist": "None",
+                    "albumartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -297,6 +409,17 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "album": "None",
+                    "artist": "None",
+                    "albumartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -322,6 +445,17 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "album": "None",
+                    "artist": "None",
+                    "albumartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"
@@ -329,8 +463,8 @@ def getdata_yourspotify():
     state.set("sensor.yourspotify_topalbums_thismonth", value=DATA[0]["albumartist"], new_attributes=attr)
 
     # Top Albums (This Year)
-    date = datetime.datetime.now()
-    date_string = date.strftime("%Y")+"-01-01T00:00:00.000Z"
+    date = datetime.datetime.now() - datetime.timedelta(days=365)
+    date_string = date.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     URL_USE = "http://192.168.1.131:2222/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
@@ -347,6 +481,17 @@ def getdata_yourspotify():
                         "differents": row['differents'],
                         "time_listening_ms": row['duration_ms'],
                 })
+    if len(r) == 0:
+        DATA.append({
+                    "album": "None",
+                    "artist": "None",
+                    "albumartist": "None",
+                    "artist_image": "None",
+                    "album_image": "None",
+                    "count": 0,
+                    "differents": 0,
+                    "time_listening_ms": 0,
+            })
     attr = {}
     attr["data"] = DATA
     attr["icon"] = "mdi:spotify"

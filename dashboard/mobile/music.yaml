@@ -48,6 +48,7 @@ cards:
           - !include lastfm/graph_thisweek.yaml
           - !include lastfm/graph_thisyear.yaml
           - !include lastfm/graph_thisyeardaily.yaml
+          - !include spotify/graph_playcount.yaml
 
   # Column 2, Row 1
   - type: custom:state-switch
@@ -61,6 +62,9 @@ cards:
           - !include lastfm/recent_played.yaml
           - !include lastfm/topartists_alltime.yaml
           - !include lastfm/topalbums_alltime.yaml
+          - !include lastfm/toptracks_weekly.yaml
+          - !include lastfm/toptracks_monthly.yaml
+          - !include lastfm/toptracks_alltime.yaml
 
   # Column 3, Row 1
   - type: custom:state-switch
@@ -71,9 +75,9 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - !include lastfm/toptracks_weekly.yaml
-          - !include lastfm/toptracks_monthly.yaml
-          - !include lastfm/toptracks_alltime.yaml
+          - !include spotify/topsongs.yaml
+          - !include spotify/topartists.yaml
+          - !include spotify/topalbums.yaml
 
   # Column 1, Row 2
   - type: custom:gap-card

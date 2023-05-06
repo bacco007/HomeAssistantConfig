@@ -1,0 +1,93 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.yourspotify_musicbyday_thisyear
+    primary_info: name
+    secondary_info: none
+    name: Play Count (This Year)
+    fill_container: true
+    icon: mdi:spotify
+    icon_color: green
+  - type: custom:apexcharts-card
+    experimental:
+      brush: true
+    brush:
+      selection_span: 90d
+    graph_span: 1y
+    span:
+      end: day
+    header:
+      show: false
+      show_states: true
+      colorize_states: true
+    apex_config:
+      chart:
+        type: area
+        height: 300,
+        zoom:
+          type: x
+          enabled: true
+          autoScaleYaxis: true
+        toolbar:
+          show: true
+          autoSelected: zoom
+          tools:
+            zoom: true
+            zoomin: false
+            zoomout: false
+            pan: false
+            reset: true
+      legend:
+        show: false
+    yaxis:
+      - id: first
+        min: 0
+        decimals: 0
+      - id: second
+        min: 0
+        decimals: 0
+        opposite: true
+    all_series_config:
+      stroke_width: 2
+      curve: smooth
+      extend_to: false
+      unit: Songs
+    series:
+      - entity: sensor.yourspotify_musicbyday_thisyear
+        name: Unique
+        color: var(--label-badge-yellow)
+        yaxis_id: first
+        data_generator: |
+          return entity.attributes.data.map((entry) => {
+            return [new Date(entry.date), entry.differents];
+          });
+      - entity: sensor.yourspotify_musicbyday_thisyear
+        name: Songs
+        color: var(--label-badge-green)
+        stroke_width: 3
+        yaxis_id: first
+        show:
+          extremas: true
+          in_brush: true
+        data_generator: |
+          return entity.attributes.data.map((entry) => {
+            return [new Date(entry.date), entry.count];
+          });
+      - entity: sensor.yourspotify_musicbyday_thisyear
+        name: Minutes
+        unit: Minutes
+        type: area
+        stroke_width: 1
+        opacity: 0.2
+        color: "#8F3BB8"
+        yaxis_id: second
+        data_generator: |
+          return entity.attributes.data.map((entry) => {
+            return [new Date(entry.date), entry.time_listening_ms*1.66667e-5];
+          });
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }

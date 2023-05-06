@@ -1,33 +1,61 @@
 ---
-type: custom:stack-in-card
+type: vertical-stack
 cards:
-  - type: custom:mushroom-template-card
-    primary: last.fm - Top Artists (All Time)
-    icon: fab:lastfm
-    icon_color: red
-  - type: custom:hui-element
-    card_type: custom:flex-table-card
-    entities:
-      include: sensor.lastfm_user_topartists
-    css:
-      table+: "border-collapse: collapse; padding: 0px;"
-    sort_by: history
-    columns:
-      - name: Artist
-        data: artist
-        modify: x.name
-      - name: Date
-        data: artist
-        modify: x.playcount
-        align: center
+  - type: entities
     card_mod:
-      style: |
-        ha-card {
-          overflow: auto;
-          padding-left: 20px;
-          padding-right: 20px;
-          padding-bottom: 20px
-        }
-        tbody tr:hover {
-          background-color: coral !important
-        }
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        hui-section-row $: |
+          .divider { display: none; }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          primary: Top Artists (All Time)
+          secondary: >
+            {{ state_attr('sensor.lastfm_user_topartists', 'artist')[0].name }}
+          icon: fab:lastfm
+          icon_color: red
+          card_mod:
+            style: |
+              ha-card {
+                background: none;
+                border: 0;
+                box-shadow: none;
+              }
+        padding: 0
+        entities:
+          - type: custom:hui-element
+            card_type: custom:flex-table-card
+            entities:
+              include: sensor.lastfm_user_topartists
+            css:
+              table+: "border-collapse: collapse; padding: 0px;"
+            sort_by: history
+            columns:
+              - name: Artist
+                data: artist
+                modify: x.name
+              - name: Plays
+                data: artist
+                modify: x.playcount
+                align: center
+            card_mod:
+              style: |
+                ha-card {
+                  overflow: auto;
+                  padding-left: 20px;
+                  padding-right: 20px;
+                  padding-bottom: 20px
+                }
+                tbody tr:hover {
+                  background-color: coral !important
+                }

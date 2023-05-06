@@ -1,0 +1,14 @@
+---
+id: "pyscript_getdata_yourspotify"
+alias: "PyScript, GetData: Your Spotify"
+description: "PyScript, GetData: Your Spotify"
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    minutes: "5"
+condition: []
+mode: single
+action:
+  - service: pyscript.getdata_yourspotify
+    data: {}
