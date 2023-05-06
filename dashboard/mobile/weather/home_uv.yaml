@@ -1,4 +1,3 @@
----
 type: custom:expander-card
 gap: 0.6em
 padding: 0.1em
@@ -154,7 +153,6 @@ cards:
           color: "#b54cff"
         - value: 11
           color: "#998cff"
-
 title-card:
   type: custom:stack-in-card
   card_mod:
@@ -164,7 +162,7 @@ title-card:
     - type: entities
       card_mod:
         style: |
-          #states {padding-top: 0;}
+          #states {padding-bottom: 0;}
       entities:
         - type: custom:config-template-card
           variables:
@@ -202,7 +200,7 @@ title-card:
     - type: entities
       card_mod:
         style: |
-          #states {padding-bottom: 0;}
+          #states {padding-top: 0;}
       entities:
         - type: custom:paper-buttons-row
           buttons:

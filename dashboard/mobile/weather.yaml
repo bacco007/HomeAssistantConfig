@@ -37,27 +37,27 @@ cards:
               --mdc-theme-primary: var(--label-badge-blue)
               --mdc-tab-text-label-color-default: var(--label-badge-red)
             tabs:
-              - attributes:
-                  label: Radar
-                  isMinWidthIndicator: true
-                card:
-                  type: vertical-stack
-                  cards:
-                    - type: "custom:bom-radar-card"
-                      frame_count: 25
-                      center_latitude: "-31.09"
-                      center_longitude: "150.93"
-                      marker_latitude: "-31.09"
-                      marker_longitude: "150.93"
-                      show_marker: true
-                      show_range: true
-                      show_zoom: true
-                      show_recenter: true
-                      show_playback: true
-                      extra_labels: true
-                      show_radar_coverage: true
-                      show_radar_location: true
-                      zoom_level: "8"
+              # - attributes:
+              #     label: Radar
+              #     isMinWidthIndicator: true
+              #   card:
+              #     type: vertical-stack
+              #     cards:
+              #       - type: "custom:bom-radar-card"
+              #         frame_count: 25
+              #         center_latitude: "-31.09"
+              #         center_longitude: "150.93"
+              #         marker_latitude: "-31.09"
+              #         marker_longitude: "150.93"
+              #         show_marker: true
+              #         show_range: true
+              #         show_zoom: true
+              #         show_recenter: true
+              #         show_playback: true
+              #         extra_labels: true
+              #         show_radar_coverage: true
+              #         show_radar_location: true
+              #         zoom_level: "8"
               - attributes:
                   label: Home
                   isMinWidthIndicator: true
@@ -99,21 +99,21 @@ cards:
         type: vertical-stack
         cards:
           - !include weather/snippets/forecast_hour_day.yaml
-          - type: "custom:bom-radar-card"
-            frame_count: 25
-            center_latitude: "-31.09"
-            center_longitude: "150.93"
-            marker_latitude: "-31.09"
-            marker_longitude: "150.93"
-            show_marker: true
-            show_range: true
-            show_zoom: true
-            show_recenter: true
-            show_playback: true
-            extra_labels: true
-            show_radar_coverage: true
-            show_radar_location: true
-            zoom_level: "8"
+          # - type: "custom:bom-radar-card"
+          #   frame_count: 25
+          #   center_latitude: "-31.09"
+          #   center_longitude: "150.93"
+          #   marker_latitude: "-31.09"
+          #   marker_longitude: "150.93"
+          #   show_marker: true
+          #   show_range: true
+          #   show_zoom: true
+          #   show_recenter: true
+          #   show_playback: true
+          #   extra_labels: true
+          #   show_radar_coverage: true
+          #   show_radar_location: true
+          #   zoom_level: "8"
 
   # Column 2, Row 1
   - type: custom:state-switch

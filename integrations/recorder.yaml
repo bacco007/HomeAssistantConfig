@@ -46,7 +46,7 @@ recorder:
       - sensor.systemuptime
       - sensor.unknown_unavailable_none_entities
       - sensor.google_trend
-      - - sensor.tautulli_activity
+      - sensor.tautulli_activity
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
