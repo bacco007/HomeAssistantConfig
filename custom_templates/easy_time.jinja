@@ -561,6 +561,78 @@
       'novembre',
       'dicembre',
     ]
+  },
+  'pt':{
+    '_language': 'Português',
+    'and': 'e',
+    'in': 'em',
+    'ago': 'antes',
+    'now': 'agora',
+    'lose': 'perde',
+    'gain': 'ganha',
+    'time':{
+      'format': '24-hr',
+      'year': [
+        'aa',
+        'ano',
+        'anos',
+      ],
+      'week': [
+        'sem',
+        'semana',
+        'semanas',
+      ],
+      'day': [
+        'd',
+        'dia',
+        'dias',
+      ],
+      'hour': [
+        'h',
+        'hora',
+        'horas',
+      ],
+      'minute': [
+        'min',
+        'minuto',
+        'minutos',
+      ],
+      'second': [
+        'seg',
+        'segundo',
+        'segundos',
+      ],
+    },
+    'delta':{
+      'today': 'hoje',
+      'tomorrow': 'amanhã',
+      'yesterday': 'ontem',
+      'next': 'seguinte',
+      'last': 'anterior',
+    },
+    'days':[
+      "Segunda",
+      "Terça",
+      "Quarta",
+      "Quinta",
+      "Sexta",
+      "Sábado",
+      "Somingo",
+    ],
+    'months':[
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro',
+    ]
   }
 } %}
 
@@ -596,6 +668,12 @@
 {% set _default_time_format = _time_formats.get('24-hr') %}
 
 {% set _default_values = _durations.keys() | list %}
+
+{%- macro _catchup(n) %}
+{%- for i in range(n) %}
+-
+{%- endfor %}
+{%- endmacro %}
 
 {%- macro _get_language_time_format(override, language) %}
 {%- set lang_fmat = languages.get(language, {}).get('time', {}).get('format', _bad_value) %}
@@ -802,6 +880,28 @@
 {%- else %}
   {{- _time(uptime, attribute, language, _default_values, False, utc) }}
 {%- endif %}
+{%- endmacro %}
+
+{%- macro easy_time_between(t1, t2, attr1=None, attr2=None, language=default_language, utc1=False, utc2=False, max_period='year') %}
+{%- set values = _default_values[_default_values.index(max_period):] if max_period in _default_values else _default_values %}
+{%- set seconds = _time_between(_delta_seconds, t1, attr1, utc1, t2, attr2, utc2) | float | abs %}
+{{- _just_time(seconds, language, values, True) }}
+{%- endmacro %}
+
+{%- macro big_time_between(t1, t2, attr1=None, attr2=None, language=default_language, utc1=False, utc2=False, max_period='year') %}
+{%- set values = _default_values[_default_values.index(max_period):] if max_period in _default_values else _default_values %}
+{%- set seconds = _time_between(_delta_seconds, t1, attr1, utc1, t2, attr2, utc2) | float | abs %}
+{{- _just_time(seconds, language, values, False) }}
+{%- endmacro %}
+
+{%- macro custom_time_between(t1, t2, values='', attr1=None, attr2=None, language=default_language, utc1=False, utc2=False, max_period='year') %}
+{%- set values = values.replace(' ','').split(',') | list if values is string else [] %}
+{%- set seconds = _time_between(_delta_seconds, t1, attr1, utc1, t2, attr2, utc2) | float | abs %}
+{{- _just_time(seconds, language, values, False) }}
+{%- endmacro %}
+
+{%- macro time_between(t1, t2, attr1=None, attr2=None, utc1=False, utc2=False) %}
+{{- _time_between(_delta_timedelta, t1, attr1, utc1, t2, attr2, utc2) }}
 {%- endmacro %}
 
 {# macro to generate a friendly relative time phrase #}
