@@ -10,6 +10,7 @@ from datetime import timedelta
 from http import HTTPStatus
 from http.cookies import SimpleCookie
 import logging
+import re
 from typing import Final
 
 import aiohttp
@@ -20,19 +21,16 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util.dt import utcnow
+from homeassistant.util.file import write_utf8_file
 
-from custom_components.yahoofinance.const import (
-    CRUMB_URL,
-    HEADER_ACCEPT,
-    HEADER_ACCEPT_ENCODING,
-    USER_AGENT,
-)
+from custom_components.yahoofinance.const import CONSENT_HOST, CRUMB_URL
 
 from .const import (
     BASE,
     DATA_REGULAR_MARKET_PRICE,
     NUMERIC_DATA_DEFAULTS,
     NUMERIC_DATA_GROUPS,
+    REQUEST_HEADERS,
     STRING_DATA_KEYS,
 )
 
@@ -54,41 +52,88 @@ class CrumbCoordinator:
         """Crumb for requests."""
         self._hass = hass
 
-    def reset_crumb(self) -> None:
-        """Reset crumb/cookies."""
+    def reset(self) -> None:
+        """Reset crumb and cookies."""
         self.crumb = self.cookies = None
 
-    async def try_get_crumb(self) -> str | None:
-        """Try to get crumb/cookies for data requests."""
+    async def try_get_crumb_cookies(self) -> str | None:
+        """Try to get crumb and cookies for data requests."""
 
         websession = async_get_clientsession(self._hass)
-        self.reset_crumb()
+        self.reset()
 
         try:
             async with async_timeout.timeout(WEBSESSION_TIMEOUT):
-                headers = {
-                    "User-Agent": USER_AGENT,
-                    "accept-encoding": HEADER_ACCEPT_ENCODING,
-                    "accept": HEADER_ACCEPT,
-                }
-
                 _LOGGER.debug("Getting crumb from from %s", CRUMB_URL)
-                response = await websession.get(CRUMB_URL, headers=headers)
-                self.cookies = response.cookies
+                response = await websession.get(CRUMB_URL, headers=REQUEST_HEADERS)
+                _LOGGER.debug(
+                    "Response status: %d, URL: %s", response.status, response.url
+                )
 
                 if response.status == HTTPStatus.OK:
                     content = await response.text()
+
+                    if response.url.host == CONSENT_HOST:
+                        _LOGGER.debug("Cookies consent page detected")
+                        pattern = (
+                            r'<input.*?type="hidden".*?name="(.*?)".*?value="(.*?)".*?>'
+                        )
+                        matches = re.findall(pattern, content)
+                        form_data = {"reject": "reject"}
+                        for name, value in matches:
+                            _LOGGER.debug("Form field: name=%s value=%s", name, value)
+                            form_data[name] = value
+                        response = await websession.post(response.url, data=form_data)
+                        _LOGGER.debug(
+                            "Response Status: %d, URL: %s",
+                            response.status,
+                            response.url,
+                        )
+
+                        if response.status != HTTPStatus.OK:
+                            return
+                        content = await response.text()
+
+                    self.cookies = response.cookies
+                    _LOGGER.debug("Cookies: %s", str(self.cookies))
+
                     start_pos = content.find('"crumb":"')
+                    _LOGGER.debug("Start position: %d", start_pos)
+                    end_pos = -1
+
                     if start_pos != -1:
                         start_pos = start_pos + 9
                         end_pos = content.find('"', start_pos + 10)
+                        _LOGGER.debug("End position: %d", end_pos)
                         if end_pos != -1:
-                            self.crumb = content[start_pos:end_pos]
+                            self.crumb = (
+                                content[start_pos:end_pos]
+                                .encode()
+                                .decode("unicode_escape")
+                            )
                             _LOGGER.debug("Crumb=%s", self.crumb)
 
-        except (asyncio.TimeoutError, aiohttp.ClientError):
-            _LOGGER.error("Timed out getting crumb")
+                    # Crumb was not located
+                    if not self.crumb:
+                        _LOGGER.info(
+                            "Crumb not found, start position: %d, ending position: %d. Refer to YahooFinanceCrumbContent.log in the config folder.",
+                            start_pos,
+                            end_pos,
+                        )
 
+                        if _LOGGER.isEnabledFor(logging.INFO):
+                            await self._hass.async_add_executor_job(
+                                write_utf8_file,
+                                self._hass.config.path("YahooFinanceCrumbContent.log"),
+                                content,
+                            )
+
+        except asyncio.TimeoutError as ex:
+            _LOGGER.error("Timed out getting crumb. %s", ex)
+        except aiohttp.ClientError as ex:
+            _LOGGER.error("Error accessing crumb url. %s", ex)
+
+        _LOGGER.debug("Got crumb %s", self.crumb)
         return self.crumb
 
 
@@ -232,23 +277,14 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
     async def get_json(self) -> dict:
         """Get the JSON data."""
 
-        url = BASE + ",".join(self._symbols)
-        cookies = None
-
-        crumb = self._cc.crumb
-        if crumb is None:
-            crumb = await self._cc.try_get_crumb()
-        if crumb is not None:
-            url = url + "&crumb=" + crumb
-            cookies = self._cc.cookies
-
+        url = await self.build_request_url()
+        cookies = self._cc.cookies
         _LOGGER.debug("Requesting data from '%s'", url)
 
         try:
             async with async_timeout.timeout(WEBSESSION_TIMEOUT):
-                headers = {"User-Agent": USER_AGENT}
                 response = await self.websession.get(
-                    url, headers=headers, cookies=cookies
+                    url, headers=REQUEST_HEADERS, cookies=cookies
                 )
 
                 result_json = await response.json()
@@ -256,43 +292,67 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator):
                 if response.status == HTTPStatus.OK:
                     return result_json
 
-                # {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Crumb'}}}
-                # {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Cookie'}}}
-                finance_error_code = self.get_finance_error_code(result_json)
+                # Sample errors:
+                #   {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Crumb'}}}
+                #   {'finance':{'result': None, 'error': {'code': 'Unauthorized', 'description': 'Invalid Cookie'}}}
+                finance_error_code_tuple = (
+                    YahooSymbolUpdateCoordinator.get_finance_error_code(result_json)
+                )
 
-                if finance_error_code:
-                    # Reset crumb so that it gets recalculated
-                    if finance_error_code == "Unauthorized":
-                        self._cc.reset_crumb()
+                if finance_error_code_tuple:
+                    (
+                        finance_error_code,
+                        finance_error_description,
+                    ) = finance_error_code_tuple
 
                     _LOGGER.error(
-                        "Received status %s (error=%s) for %s",
+                        "Received status %d (%s %s) for %s",
                         response.status,
                         finance_error_code,
+                        finance_error_description,
                         url,
                     )
 
+                    # Reset crumb so that it gets recalculated
+                    if finance_error_code == "Unauthorized":
+                        self._cc.reset()
+
                 else:
                     _LOGGER.error(
-                        "Received status %s for %s, result=%s",
+                        "Received status %d for %s, result=%s",
                         response.status,
                         url,
                         result_json,
                     )
 
-        except (asyncio.TimeoutError, aiohttp.ClientError):
+        except asyncio.TimeoutError:
             _LOGGER.error("Timed out getting data from %s", url)
+        except aiohttp.ClientError:
+            _LOGGER.error("Error getting data from %s", url)
 
         return None
 
-    def get_finance_error_code(self, error_json) -> str | None:
+    async def build_request_url(self) -> str:
+        """Build the request url."""
+        url = BASE + ",".join(self._symbols)
+
+        crumb = self._cc.crumb
+        if crumb is None:
+            crumb = await self._cc.try_get_crumb_cookies()
+        if crumb is not None:
+            url = url + "&crumb=" + crumb
+
+        return url
+
+    @staticmethod
+    def get_finance_error_code(error_json) -> tuple[str, str] | None:
         """Parse error code from the json."""
         if error_json:
             finance = error_json.get("finance")
             if finance:
                 finance_error = finance.get("error")
                 if finance_error:
-                    return finance_error.get("code")
+                    return finance_error.get("code"), finance_error.get("description")
 
         return None
 

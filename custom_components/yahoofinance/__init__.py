@@ -27,6 +27,7 @@ from .const import (
     CONF_INCLUDE_POST_VALUES,
     CONF_INCLUDE_PRE_VALUES,
     CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+    CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CONF_TARGET_CURRENCY,
@@ -35,6 +36,7 @@ from .const import (
     DEFAULT_CONF_INCLUDE_POST_VALUES,
     DEFAULT_CONF_INCLUDE_PRE_VALUES,
     DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+    DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
     DEFAULT_CONF_SHOW_TRENDING_ICON,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -93,6 +95,10 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Optional(
                     CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
                     default=DEFAULT_CONF_INCLUDE_TWO_HUNDRED_DAY_VALUES,
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
+                    default=DEFAULT_CONF_INCLUDE_FIFTY_TWO_WEEK_VALUES,
                 ): cv.boolean,
             }
         )
@@ -216,7 +222,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     coordinators: dict[timedelta, YahooSymbolUpdateCoordinator] = {}
     crumb_coordinator = CrumbCoordinator(hass)
-    await crumb_coordinator.try_get_crumb()  # Get crumb first
+    await crumb_coordinator.try_get_crumb_cookies()  # Get crumb first
 
     for key_scan_interval, symbols in symbols_by_scan_interval.items():
         _LOGGER.info(
