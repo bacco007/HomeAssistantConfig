@@ -295,7 +295,7 @@ class PublicTransportData(object):
 
         positions = (
             self._get_vehicle_positions()
-            if self._vehicle_position_url != ""
+            if self._vehicle_position_url
             else {}
         )
         self._update_route_statuses(positions)
