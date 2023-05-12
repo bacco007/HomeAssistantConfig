@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import pytz
 import requests
 from requests.exceptions import HTTPError
+import calendar
 
 @service
 def getdata_untappd_project52():
@@ -63,6 +64,7 @@ def getdata_untappd_project52():
     ABV_COUNT = []
     BEER_COUNT = {}
     BEER_YEAR = []
+    BEER_MONTH = []
 
     while CONF_LAST_CNT >= 1:
         URL = build_url()
@@ -126,6 +128,7 @@ def getdata_untappd_project52():
                 RATING_COUNT.append([beer][0]["rating_score"])
                 ABV_COUNT.append([beer][0]["beer"]["beer_abv"])
                 BEER_YEAR.append(date_firstcheckin.year)
+                BEER_MONTH.append(date_firstcheckin.month)
                 CONF_AVGRATING += float([beer][0]["rating_score"])
                 if float([beer][0]["rating_score"]) > CONF_MAXRATING:
                     CONF_MAXRATING = float([beer][0]["rating_score"])
@@ -207,6 +210,13 @@ def getdata_untappd_project52():
                     "item": x[0],
                     "count": x[1],
         })
+
+    ATTR_STATS_MONTH = []
+    for x in sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False):
+        ATTR_STATS_MONTH.append({
+                    "item": calendar.month_name[x[0]],
+                    "count": x[1],
+        })        
 
     # Project 52
     attributes_project52 = {}
@@ -375,6 +385,21 @@ def getdata_untappd_project52():
     attributes_firstcheckin_year["unit_of_measurement"] = "beers"
     attributes_firstcheckin_year["friendly_name"] = "Untappd: Check-ins by Year"
     state.set("sensor.untappd_stats_by_checkinsbyyear", value=len(sorted(countOccurrence(BEER_YEAR).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_year)
+
+    # Check-Ins by Month
+    attributes_firstcheckin_month = {}
+    attributes_firstcheckin_month["data"] = ATTR_STATS_MONTH        
+    max_new = 0
+    for b in sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False):
+        attributes_firstcheckin_month[calendar.month_name[b[0]]] = b[1]
+        if b[1] > max_new:
+            max_new = b[1]
+    #attributes_firstcheckin_month["count"] = len(sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False))
+    attributes_firstcheckin_month["max"] = max_new
+    attributes_firstcheckin_month["icon"] = "mdi:untappd"
+    attributes_firstcheckin_month["unit_of_measurement"] = "beers"
+    attributes_firstcheckin_month["friendly_name"] = "Untappd: Check-ins by Month"
+    state.set("sensor.untappd_stats_by_checkinsbymonth", value=len(sorted(countOccurrence(BEER_MONTH).items(), key=lambda x: x[0], reverse=False)), new_attributes=attributes_firstcheckin_month)
 
 def get_config(name):
     value = pyscript.app_config.get(name)

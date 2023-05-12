@@ -7,4 +7,5 @@ cards:
   - !include highestabvbeers.yaml
   - !include checkin_abv.yaml
   - !include checkin_byyear.yaml
+  - !include checkin_bymonth.yaml
   - !include checkin_rank.yaml
