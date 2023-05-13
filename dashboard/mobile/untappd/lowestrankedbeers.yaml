@@ -18,6 +18,8 @@ entities:
     head:
       type: custom:mushroom-template-card
       primary: Lowest Ranked Beers
+      secondary: |
+        {{state_attr('sensor.untappd_lowest_rated_beers', 'data')[0].brewery }} - {{state_attr('sensor.untappd_lowest_rated_beers', 'data')[0].beer_name }}, {{state_attr('sensor.untappd_lowest_rated_beers', 'data')[0].rating }}/5
       icon: mdi:beer
       icon_color: red
       card_mod:

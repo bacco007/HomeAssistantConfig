@@ -11,10 +11,6 @@ cards:
     entity: sensor.untappd_last_check_in_bacco007
     icon_color: green
     fill_container: true
-    badge_color: |-
-      abv: 4.3%
-      beer: Pickle Beer
-      brewery: Garage Project
   - type: custom:mushroom-template-card
     primary: Latest Badge
     secondary: "{{states(entity)}}"

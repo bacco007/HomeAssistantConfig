@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 13th 2023_
+_Stats as at 05:00, Sunday, May 14th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.2 | 475     | 3798         | 2582 | 103 |
+| 2023.5.2 | 475     | 3729         | 2545 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 20
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2582
+Sensor | 2545
 Sun | 1
-Switch | 161
+Switch | 166
 Weather | 7
 Zone | 3
 
@@ -745,7 +745,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Glances (0.18.2)
 - Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.10.2)
-- MariaDB (2.6.0)
+- MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
 - Node-RED (14.1.5)
 - phpMyAdmin (0.8.5)

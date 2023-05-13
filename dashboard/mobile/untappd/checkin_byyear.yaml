@@ -18,6 +18,8 @@ entities:
     head:
       type: custom:mushroom-template-card
       primary: Check-In Stats - By Year
+      secondary: |
+        {{state_attr('sensor.untappd_stats_by_checkinsbyyear', 'max_desc') }}, {{state_attr('sensor.untappd_stats_by_checkinsbyyear', 'max') }} Check-ins
       icon: mdi:beer
       icon_color: orange
       card_mod:
@@ -58,7 +60,7 @@ entities:
                   {% set SENSOR = 'sensor.untappd_stats_by_checkinsbyyear' -%}
                   {%- for attr in states[SENSOR].attributes -%}
                     {%- set ATTR_VALUE = states[SENSOR].attributes[attr] -%}
-                    {%- if is_number(ATTR_VALUE) and attr != "count" and attr != "max" and attr != 0 -%}
+                    {%- if is_number(ATTR_VALUE) and attr != "count" and attr != "max_desc" and attr != "max" and attr != 0 -%}
                     {{
                       {
                         'entity': SENSOR,
