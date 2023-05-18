@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, May 18th 2023_
+_Stats as at 05:00, Friday, May 19th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.3 | 475     | 3712         | 2551 | 103 |
+| 2023.5.3 | 475     | 3725         | 2551 | 103 |
 
 Type | Qty
 -- | --
@@ -65,7 +65,7 @@ Input Boolean | 14
 Input Datetime | 3
 Input Text | 7
 Light | 9
-Media Player | 20
+Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
