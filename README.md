@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, May 19th 2023_
+_Stats as at 05:00, Saturday, May 20th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.3 | 475     | 3725         | 2551 | 103 |
+| 2023.5.3 | 475     | 3734         | 2551 | 103 |
 
 Type | Qty
 -- | --
@@ -740,15 +740,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (14.1.0)
-- ESPHome (2023.5.0)
+- ESPHome (2023.5.1)
 - Eufy Security Add-on (1.3.0)
-- Glances (0.18.2)
+- Glances (0.19.0)
 - Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.10.2)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
 - Node-RED (14.1.5)
-- phpMyAdmin (0.8.5)
+- phpMyAdmin (0.8.6)
 - Samba share (10.0.1)
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
