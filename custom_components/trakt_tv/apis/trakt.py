@@ -50,7 +50,7 @@ class TraktApi:
 
         if retry > 0:
             retry = retry - 1
-            guidance = f"Retrying at least {retry} times."
+            guidance = f"Retrying at least {retry} time(s)."
             LOGGER.warn(f"{error} {guidance}")
             await sleep(wait_time)
             return await self.request(method, url, retry, **kwargs)
@@ -58,7 +58,7 @@ class TraktApi:
             guidance = f"Too many retries, if you find this error, please raise an issue at https://github.com/dylandoamaral/trakt-integration/issues."
             raise TraktException(f"{error} {guidance}")
 
-    async def request(self, method, url, retry=5, **kwargs) -> ClientResponse:
+    async def request(self, method, url, retry=10, **kwargs) -> ClientResponse:
         """Make a request."""
         access_token = await self.async_get_access_token()
         client_id = self.hass.data[DOMAIN]["configuration"]["client_id"]
@@ -82,12 +82,14 @@ class TraktApi:
                 text = await response.text()
                 return deserialize_json(text)
             elif response.status == 429:
-                wait_time = int(response.headers["Retry-After"])
+                wait_time = (
+                    int(response.headers["Retry-After"]) + 20
+                )  # Arbitrary value to have a security
                 await self.retry_request(
                     wait_time, response, method, url, retry, **kwargs
                 )
             else:
-                await self.retry_request(30, response, method, url, retry, **kwargs)
+                await self.retry_request(300, response, method, url, retry, **kwargs)
 
     async def fetch_calendar(
         self, path: str, from_date: str, nb_days: int, all_medias: bool
@@ -292,7 +294,7 @@ class TraktApi:
         return res
 
     async def retrieve_data(self):
-        async with timeout(60):
+        async with timeout(1800):
             titles = [
                 "upcoming",
                 "all_upcoming",
