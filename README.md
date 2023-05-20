@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 20th 2023_
+_Stats as at 05:00, Sunday, May 21st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.3 | 475     | 3734         | 2551 | 103 |
+| 2023.5.3 | 475     | 3708         | 2536 | 103 |
 
 Type | Qty
 -- | --
@@ -69,11 +69,11 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2551
+Sensor | 2536
 Sun | 1
-Switch | 166
+Switch | 151
 Weather | 7
-Zone | 3
+Zone | 5
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -596,7 +596,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -739,7 +739,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (14.1.0)
+- Advanced SSH & Web Terminal (15.0.0)
 - ESPHome (2023.5.1)
 - Eufy Security Add-on (1.3.0)
 - Glances (0.19.0)
@@ -747,7 +747,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.10.2)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.1.5)
+- Node-RED (14.2.0)
 - phpMyAdmin (0.8.6)
 - Samba share (10.0.1)
 - SunGather (0.1.3)

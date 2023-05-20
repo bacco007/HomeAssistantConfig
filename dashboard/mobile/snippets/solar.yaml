@@ -2,47 +2,80 @@
 type: custom:stack-in-card
 cards:
   - type: custom:power-flow-card-plus
+    title: Live Action
+    dashboard_link: /energy
     entities:
       home:
         entity: sensor.load_power
+        color_icon: true
+        display_zero: true
+        color_circle: true
       fossil_fuel_percentage:
         entity: sensor.grid_fossil_fuel_percentage
         icon: mdi:pine-tree
         color_icon: true
         display_zero: true
-        name: Non Fossil
+        name: Non-Fossil
         state_type: power
+        color_circle: true
       grid:
         entity:
           consumption: sensor.active_import_from_grid
           production: sensor.active_export_to_grid
+        color_icon: true
+        display_zero: true
+        color_circle: true
       solar:
         entity: sensor.active_generation
-    w_decimals: 0
-    kw_decimals: 2
-    watt_threshold: 1000
+        color_icon: true
+        display_zero: true
+        color_circle: true
     clickable_entities: true
-    title: Live Action
+    display_zero_lines: true
+    use_new_flow_rate_model: true
+    w_decimals: 2
+    kw_decimals: 2
+    min_flow_rate: 0.75
+    max_flow_rate: 6
+    max_expected_power: 2000
+    min_expected_power: 0.01
+    watt_threshold: 0
   - type: custom:power-flow-card-plus
+    title: Today
+    dashboard_link: /energy
     entities:
       home:
         entity: sensor.daily_direct_energy_consumption
+        color_icon: true
+        display_zero: true
+        color_circle: true
       fossil_fuel_percentage:
         entity: sensor.grid_fossil_fuel_percentage
         icon: mdi:pine-tree
         color_icon: true
         display_zero: true
-        name: Non Fossil
+        name: Non-Fossil
         state_type: power
+        color_circle: true
       grid:
         entity:
           consumption: sensor.daily_import_from_grid
           production: sensor.daily_export_to_grid
+        color_icon: true
+        display_zero: true
+        color_circle: true
       solar:
         entity: sensor.daily_generation
-    w_decimals: 0
-    kw_decimals: 2
-    watt_threshold: 1000
+        color_icon: true
+        display_zero: true
+        color_circle: true
     clickable_entities: true
-    title: Today
-    dashboard_link: /energy
+    display_zero_lines: true
+    use_new_flow_rate_model: true
+    w_decimals: 2
+    kw_decimals: 2
+    min_flow_rate: 0.75
+    max_flow_rate: 6
+    max_expected_power: 16000
+    min_expected_power: 0.01
+    watt_threshold: 0
