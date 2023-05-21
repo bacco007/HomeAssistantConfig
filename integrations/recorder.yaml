@@ -117,6 +117,7 @@ recorder:
       - sensor.yourspotify_*
       - sensor.192_168_1_131_*
       - sensor.tempest_st_00056115_wind*
+      - sensor.qemu*
     domains:
       - anniversaries
       - automation

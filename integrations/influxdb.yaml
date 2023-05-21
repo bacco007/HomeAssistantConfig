@@ -167,3 +167,4 @@ influxdb:
       - sensor.frontpage*
       - sensor.openweathermap*
       - sensor.yourspotify_*
+      - sensor.qemu*

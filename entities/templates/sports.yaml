@@ -1004,7 +1004,7 @@ sensor:
   # IGTC
   - name: sport_igtc
     unique_id: sport_igtc
-    icon: "mdi:flag-checkeredigtc"
+    icon: "mdi:flag-checkered"
     picture: /local/sportlogos/igtc.png
     state: >-
       {%- if state_attr("sensor.ical_igtc_event_0", 'summary') %}

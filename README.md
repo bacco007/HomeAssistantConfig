@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, May 21st 2023_
+_Stats as at 05:00, Monday, May 22nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.3 | 475     | 3708         | 2536 | 103 |
+| 2023.5.3 | 475     | 3741         | 2552 | 103 |
 
 Type | Qty
 -- | --
@@ -69,11 +69,11 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2536
+Sensor | 2552
 Sun | 1
-Switch | 151
+Switch | 166
 Weather | 7
-Zone | 5
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -742,7 +742,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Advanced SSH & Web Terminal (15.0.0)
 - ESPHome (2023.5.1)
 - Eufy Security Add-on (1.3.0)
-- Glances (0.19.0)
+- Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.10.2)
 - MariaDB (2.6.1)
