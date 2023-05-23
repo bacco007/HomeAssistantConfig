@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, May 23rd 2023_
+_Stats as at 05:00, Wednesday, May 24th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.3 | 475     | 3721         | 2538 | 103 |
+| 2023.5.3 | 475     | 3747         | 2550 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2538
+Sensor | 2550
 Sun | 1
-Switch | 154
+Switch | 161
 Weather | 7
 Zone | 3
 
@@ -740,7 +740,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.1)
-- ESPHome (2023.5.2)
+- ESPHome (2023.5.3)
 - Eufy Security Add-on (1.3.0)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.110.4)
