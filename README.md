@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, May 26th 2023_
+_Stats as at 05:00, Saturday, May 27th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.4 | 475     | 3740         | 2546 | 103 |
+| 2023.5.4 | 469     | 3735         | 2550 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2546
+Sensor | 2550
 Sun | 1
-Switch | 155
+Switch | 159
 Weather | 7
 Zone | 3
 
@@ -197,7 +197,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.mobile_app](https://www.home-assistant.io/components/device_tracker.mobile_app) |
 | [device_tracker.mqtt](https://www.home-assistant.io/components/device_tracker.mqtt) |
 | [device_tracker.satellitetracker](https://www.home-assistant.io/components/device_tracker.satellitetracker) |
-| [device_tracker.unifi](https://www.home-assistant.io/components/device_tracker.unifi) |
 | [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
@@ -434,7 +433,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
-| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -449,8 +447,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.thermal_comfort](https://www.home-assistant.io/components/sensor.thermal_comfort) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
-| [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
-| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -503,7 +499,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.spook](https://www.home-assistant.io/components/switch.spook) |
 | [switch.synology_dsm](https://www.home-assistant.io/components/switch.synology_dsm) |
 | [switch.template](https://www.home-assistant.io/components/switch.template) |
-| [switch.unifi](https://www.home-assistant.io/components/switch.unifi) |
 | [switch.unifi_status](https://www.home-assistant.io/components/switch.unifi_status) |
 | [switch.zha](https://www.home-assistant.io/components/switch.zha) |
 | [synology_dsm](https://www.home-assistant.io/components/synology_dsm) |
@@ -535,7 +530,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [update.myjdownloader](https://www.home-assistant.io/components/update.myjdownloader) |
 | [update.sensibo](https://www.home-assistant.io/components/update.sensibo) |
 | [update.synology_dsm](https://www.home-assistant.io/components/update.synology_dsm) |
-| [update.unifi](https://www.home-assistant.io/components/update.unifi) |
 | [uptime](https://www.home-assistant.io/components/uptime) |
 | [uptime_kuma](https://www.home-assistant.io/components/uptime_kuma) |
 | [usb](https://www.home-assistant.io/components/usb) |
