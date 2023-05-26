@@ -1,10 +1,13 @@
 import json
+import time
 from datetime import datetime, timedelta
 from math import ceil
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from .const import DOMAIN
 from .exception import TraktException
+
+CACHE_EXPIRATION = 300  # 5 minutes
 
 
 def update_domain_data(hass, key, content):
@@ -55,3 +58,37 @@ def deserialize_json(document: str) -> Dict[str, Any]:
         return json.loads(document)
     except json.decoder.JSONDecodeError:
         raise TraktException(f"Can't deserialize the following json:\n{document}")
+
+
+def cache_insert(cache: Dict[str, Any], key: str, value: Any) -> None:
+    """
+    Insert a value to a cache.
+
+    :param cache: The cache representation
+    :param key: The key of the cache
+    :param value: The value to store
+    :return: The value if it exists and is not expired
+    """
+    key_time = f"{key}_time"
+    cache[key] = value
+    cache[key_time] = time.time()
+
+
+def cache_retrieve(cache: Dict[str, Any], key: str) -> Optional[Any]:
+    """
+    Retrieve a value from a cache.
+
+    :param cache: The cache representation
+    :param key: The key of the cache
+    :return: The value if it exists and is not expired
+    """
+    key_time = f"{key}_time"
+    if key in cache:
+        if time.time() - cache[key_time] <= CACHE_EXPIRATION:
+            return cache[key]
+        else:
+            cache.pop(key, None)
+            cache.pop(key_time, None)
+            return None
+    else:
+        return None

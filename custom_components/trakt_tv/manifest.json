@@ -7,6 +7,6 @@
   "codeowners": [
     "@dylandoamaral"
   ],
-  "version": "0.8.2",
+  "version": "0.8.3",
   "iot_class": "cloud_polling"
 }
