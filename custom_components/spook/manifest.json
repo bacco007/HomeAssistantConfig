@@ -13,10 +13,11 @@
     "homeassistant",
     "input_number",
     "input_select",
+    "lovelace",
     "number",
     "recorder",
-    "select",
-    "repairs"
+    "repairs",
+    "select"
   ],
   "documentation": "https://github.com/frenck/spook",
   "integration_type": "hub",
@@ -24,5 +25,5 @@
   "issue_tracker": "https://github.com/frenck/spook/issues",
   "quality_scale": "platinum",
   "requirements": [],
-  "version": "0.12.3456"
+  "version": "0.13.5791"
 }
