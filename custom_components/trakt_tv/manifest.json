@@ -4,9 +4,8 @@
   "config_flow": true,
   "documentation": "https://github.com/dylandoamaral/trakt-integration",
   "issue_tracker": "https://github.com/dylandoamaral/trakt-integration/issues",
-  "codeowners": [
-    "@dylandoamaral"
-  ],
-  "version": "0.8.3",
-  "iot_class": "cloud_polling"
+  "codeowners": ["@dylandoamaral"],
+  "version": "0.8.4",
+  "iot_class": "cloud_polling",
+  "integration_type": "hub"
 }

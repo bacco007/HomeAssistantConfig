@@ -162,16 +162,17 @@ class TraktApi:
 
                 try:
                     raw_episode = await self.fetch_show_progress(ids["trakt"])
-                    if raw_episode.get("next_episode") is not None:
-                        if raw_episode["next_episode"].get("season") is not None:
-                            raw_episode_full = await self.fetch_show_informations(
-                                ids["trakt"],
-                                raw_episode["next_episode"].get("season"),
-                                raw_episode["next_episode"].get("number"),
-                            )
-                            show["episode"] = raw_episode_full
-                            show["first_aired"] = raw_episode_full["first_aired"]
-                            raw_medias.append(show)
+                    if raw_episode is not None:
+                        if raw_episode.get("next_episode") is not None:
+                            if raw_episode["next_episode"].get("season") is not None:
+                                raw_episode_full = await self.fetch_show_informations(
+                                    ids["trakt"],
+                                    raw_episode["next_episode"].get("season"),
+                                    raw_episode["next_episode"].get("number"),
+                                )
+                                show["episode"] = raw_episode_full
+                                show["first_aired"] = raw_episode_full["first_aired"]
+                                raw_medias.append(show)
                 except IndexError:
                     LOGGER.warning("Show %s doesn't contain any trakt ID", ids["slug"])
                     continue

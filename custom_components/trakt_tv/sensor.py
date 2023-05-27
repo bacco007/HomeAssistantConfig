@@ -10,7 +10,7 @@ from .models.kind import BASIC_KINDS, NEXT_TO_WATCH_KINDS, TraktKind
 
 LOGGER = logging.getLogger(__name__)
 
-SCAN_INTERVAL = timedelta(minutes=5)
+SCAN_INTERVAL = timedelta(minutes=8)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
