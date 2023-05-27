@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, May 27th 2023_
+_Stats as at 05:00, Sunday, May 28th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.4 | 469     | 3735         | 2550 | 103 |
+| 2023.5.4 | 469     | 3743         | 2550 | 103 |
 
 Type | Qty
 -- | --
@@ -741,7 +741,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.11.0)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.2.0)
+- Node-RED (14.2.1)
 - phpMyAdmin (0.8.6)
 - Samba share (10.0.2)
 - SunGather (0.1.3)
