@@ -266,7 +266,8 @@ class SolcastApi:
             g = [d for d in self._data["forecasts"]         if d['period_start'].date() == da]
             h = [d for d in self._data["detailedForecasts"] if d['period_start'].date() == da]
             return {"forecast":         g,
-                    "detailedForecast": h}
+                    "detailedForecast": h,
+                    "dayname":da.strftime("%A")}
         except Exception:
             return {}
 
@@ -288,7 +289,8 @@ class SolcastApi:
             g = [d for d in self._data["forecasts"]         if d['period_start'].date() == da]
             h = [d for d in self._data["detailedForecasts"] if d['period_start'].date() == da]
             return {"forecast":         g,
-                    "detailedForecast": h}
+                    "detailedForecast": h,
+                    "dayname":da.strftime("%A")}
         except Exception:
             return {}
     

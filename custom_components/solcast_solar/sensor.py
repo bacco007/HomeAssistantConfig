@@ -5,6 +5,9 @@ from __future__ import annotations
 import logging
 from typing import Final
 
+from datetime import datetime as dt
+from datetime import timedelta, timezone
+
 from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
                                              SensorEntityDescription)
 from homeassistant.config_entries import ConfigEntry
@@ -160,14 +163,14 @@ async def async_setup_entry(
         sen = RooftopSensor(coordinator, k,entry, coordinator._version)
         entities.append(sen)
 
-    k = SensorEntityDescription(
-            key="solcast_has_update",
-            name="Integration Update",
-            icon="mdi:update",
-            #device_class=SensorDeviceClass.ENERGY,
-            #native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            entity_category=EntityCategory.CONFIG,
-        )
+    # k = SensorEntityDescription(
+    #         key="solcast_has_update",
+    #         name="Integration Update",
+    #         icon="mdi:update",
+    #         #device_class=SensorDeviceClass.ENERGY,
+    #         #native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+    #         entity_category=EntityCategory.CONFIG,
+    #     )
     # sen = SolcastUpdate(coordinator, k,entry, coordinator._version)
     # entities.append(sen)
     
@@ -216,7 +219,10 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the device."""
-        return f"Solcast {self.entity_description.name}"
+        # if self.entity_description.key == "total_kwh_forecast_d5":
+        #     s = dt.now().replace(minute=0, second=0, microsecond=0).date() + timedelta(days=5)
+        #     return s.strftime("%A")
+        return f"{self.entity_description.name}"
 
     @property
     def friendly_name(self):
@@ -299,7 +305,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the device."""
-        return f"Solcast {self.entity_description.name}"
+        return f"{self.entity_description.name}"
 
     @property
     def friendly_name(self):
