@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, May 30th 2023_
+_Stats as at 05:00, Wednesday, May 31st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.4 | 475     | 3709         | 2528 | 103 |
+| 2023.5.4 | 475     | 3763         | 2557 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2528
+Sensor | 2557
 Sun | 1
-Switch | 147
+Switch | 166
 Weather | 7
 Zone | 3
 
@@ -596,7 +596,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -739,15 +739,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (15.0.1)
-- ESPHome (2023.5.4)
+- Advanced SSH & Web Terminal (15.0.2)
+- ESPHome (2023.5.5)
 - Eufy Security Add-on (1.3.0)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.11.0)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.2.1)
+- Node-RED (14.2.2)
 - phpMyAdmin (0.8.6)
 - Samba share (10.0.2)
 - SunGather (0.1.3)
