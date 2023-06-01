@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, June 1st 2023_
+_Stats as at 05:00, Friday, June 2nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.5.4 | 475     | 3773         | 2562 | 103 |
+| 2023.6.0b1 | 476     | 3759         | 2564 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2562
+Sensor | 2564
 Sun | 1
-Switch | 166
+Switch | 159
 Weather | 7
 Zone | 3
 
@@ -179,6 +179,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [clock_drift](https://www.home-assistant.io/components/clock_drift) |
 | [cloud](https://www.home-assistant.io/components/cloud) |
 | [co2signal](https://www.home-assistant.io/components/co2signal) |
+| [command_line](https://www.home-assistant.io/components/command_line) |
 | [config](https://www.home-assistant.io/components/config) |
 | [conversation](https://www.home-assistant.io/components/conversation) |
 | [counter](https://www.home-assistant.io/components/counter) |
@@ -261,6 +262,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [kodi](https://www.home-assistant.io/components/kodi) |
+| [lastfm](https://www.home-assistant.io/components/lastfm) |
 | [light](https://www.home-assistant.io/components/light) |
 | [light.browser_mod](https://www.home-assistant.io/components/light.browser_mod) |
 | [light.group](https://www.home-assistant.io/components/light.group) |
@@ -334,6 +336,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [remote](https://www.home-assistant.io/components/remote) |
 | [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
+| [remote.samsungtv](https://www.home-assistant.io/components/remote.samsungtv) |
 | [remote.xbox](https://www.home-assistant.io/components/remote.xbox) |
 | [repairs](https://www.home-assistant.io/components/repairs) |
 | [rest](https://www.home-assistant.io/components/rest) |
@@ -371,7 +374,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.custom_qbittorrent](https://www.home-assistant.io/components/sensor.custom_qbittorrent) |
-| [sensor.daily](https://www.home-assistant.io/components/sensor.daily) |
 | [sensor.derivative](https://www.home-assistant.io/components/sensor.derivative) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
@@ -379,7 +381,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.fastdotcom](https://www.home-assistant.io/components/sensor.fastdotcom) |
-| [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.forecast_solar](https://www.home-assistant.io/components/sensor.forecast_solar) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
@@ -450,14 +451,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
-| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
 | [sensor.uptime_kuma](https://www.home-assistant.io/components/sensor.uptime_kuma) |
 | [sensor.utility_meter](https://www.home-assistant.io/components/sensor.utility_meter) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
-| [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
 | [sensor.watchman](https://www.home-assistant.io/components/sensor.watchman) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
@@ -466,6 +465,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.worlds_air_quality_index](https://www.home-assistant.io/components/sensor.worlds_air_quality_index) |
 | [sensor.xbox](https://www.home-assistant.io/components/sensor.xbox) |
 | [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
+| [sensor.youtube](https://www.home-assistant.io/components/sensor.youtube) |
 | [sensor.zha](https://www.home-assistant.io/components/sensor.zha) |
 | [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
@@ -560,6 +560,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [worlds_air_quality_index](https://www.home-assistant.io/components/worlds_air_quality_index) |
 | [xbox](https://www.home-assistant.io/components/xbox) |
 | [yahoofinance](https://www.home-assistant.io/components/yahoofinance) |
+| [youtube](https://www.home-assistant.io/components/youtube) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
 | [zone](https://www.home-assistant.io/components/zone) |
@@ -596,7 +597,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
