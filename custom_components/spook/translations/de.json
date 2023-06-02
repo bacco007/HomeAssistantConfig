@@ -32,22 +32,7 @@
     },
     "lovelace_unknown_entity_references": {
       "title": "Unbekannte Entitäten verwendet in: {dashboard}",
-      "fix_flow": {
-        "step": {
-          "confirm": {
-            "title": "Unbekannte Entitäten verwendet in: {dashboard}",
-            "description": "Spook hat einen Geist in deinen Dashboards gefunden 👻\n\nBeim Herumschweben begegnete Spook dem folgenden Dashboard:\n\n[{dashboard}]({edit})\n\nDieses Dashboard verweist auf die folgenden Entitäten, die Home Assistant unbekannt sind:\n\n{entities}\n\n\n\nUm diesen Fehler zu beheben, [bearbeite das Dashboard]({edit}) und entferne die Verwendung dieser nicht existierenden Entitäten.\n\nSpook 👻 Nicht dein Kumpel."
-          }
-        }
-      }
-    },
-    "obsolete_integration_yaml_config": {
-      "title": "Obsoletes YAML für: {domain}",
-      "description": "Spook hat einen Geist in deiner YAML-Konfiguration gefunden 👻\n\nBeim Herumschweben begegnete Spook der YAML-Konfiguration für die `{domain}`-Integration, die obsolet ist (da sie nicht mehr über YAML konfiguriert wird) und daher entfernt/bereinigt werden sollte. Dieses Problem verschwindet automatisch, sobald du deine Konfiguration angepasst und Home Assistant neu gestartet hast.\n\nSpook 👻 Nicht dein Kumpel."
-    },
-    "obsolete_platform_yaml_config": {
-      "title": "Obsoletes YAML für: {domain} ({platform})",
-      "description": "Spook hat einen Geist in deiner YAML-Konfiguration gefunden 👻\n\nBeim Herumschweben begegnete Spook der YAML-Plattformkonfiguration für die `{platform}` mit der Integrationsdomäne `{domain}`, die obsolet ist (da sie nicht mehr über die YAML-Plattformkonfiguration konfiguriert wird) und daher entfernt/bereinigt werden sollte. Dieses Problem verschwindet automatisch, sobald du deine Konfiguration angepasst und Home Assistant neu gestartet hast.\n\nSpook 👻 Nicht dein Kumpel."
+      "description": "Spook hat einen Geist in deinen Dashboards gefunden 👻\n\nBeim Herumschweben begegnete Spook dem folgenden Dashboard:\n\n[{dashboard}]({edit})\n\nDieses Dashboard verweist auf die folgenden Entitäten, die Home Assistant unbekannt sind:\n\n{entities}\n\n\n\nUm diesen Fehler zu beheben, [bearbeite das Dashboard]({edit}) und entferne die Verwendung dieser nicht existierenden Entitäten.\n\nSpook 👻 Nicht dein Kumpel."
     },
     "script_unknown_area_references": {
       "title": "Unbekannte Bereiche verwendet in: {script}",

@@ -4,7 +4,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.lovelace import DOMAIN
-from homeassistant.components.lovelace.const import ConfigNotFound
+from homeassistant.components.lovelace.const import (
+    EVENT_LOVELACE_UPDATED,
+    ConfigNotFound,
+)
 from homeassistant.config_entries import SIGNAL_CONFIG_ENTRY_CHANGED, ConfigEntry
 from homeassistant.const import (
     ENTITY_MATCH_ALL,
@@ -33,6 +36,7 @@ class SpookRepair(AbstractSpookRepair):
     repair = "lovelace_unknown_entity_references"
     events = {
         EVENT_COMPONENT_LOADED,
+        EVENT_LOVELACE_UPDATED,
         er.EVENT_ENTITY_REGISTRY_UPDATED,
         "event_counter_reloaded",
         "event_derivative_reloaded",
@@ -132,7 +136,6 @@ class SpookRepair(AbstractSpookRepair):
                         "dashboard": title,
                         "edit": f"/{url_path}/0?edit=1",
                     },
-                    is_fixable=True,
                 )
                 LOGGER.debug(
                     (
@@ -149,7 +152,7 @@ class SpookRepair(AbstractSpookRepair):
     def __async_extract_entities(self, config: dict[str, Any]) -> set[str]:
         """Extract entities from a dashboard config."""
         entities = set()
-        if views := config.get("views"):
+        if isinstance(config, dict) and (views := config.get("views")):
             for view in views:
                 if badges := view.get("badges"):
                     for badge in badges:
@@ -197,10 +200,11 @@ class SpookRepair(AbstractSpookRepair):
         """Extract entities from a dashboard badge config."""
         if isinstance(config, str):
             return {config}
-        if (entity_id := config.get("entity")) and isinstance(entity_id, str):
-            return {config["entity"]}
-        if (entities := config.get("entities")) and isinstance(entities, list):
-            return set(config["entities"])
+        if isinstance(config, dict):
+            if (entity_id := config.get("entity")) and isinstance(entity_id, str):
+                return {config["entity"]}
+            if (entities := config.get("entities")) and isinstance(entities, list):
+                return set(config["entities"])
         return set()
 
     @callback
@@ -209,6 +213,9 @@ class SpookRepair(AbstractSpookRepair):
         config: dict[str, Any],
     ) -> set[str]:
         """Extract entities from a dashboard card config."""
+        if not isinstance(config, dict):
+            return set()
+
         entities = self.__async_extract_common(config)
         entities.update(self.__async_extract_entities_from_actions(config))
 
@@ -251,7 +258,7 @@ class SpookRepair(AbstractSpookRepair):
             "double_tap_action",
             "subtitle_tap_action",
         ):
-            if action := config.get(key):
+            if isinstance(config, dict) and (action := config.get(key)):
                 entities.update(self.__async_extract_entities_from_action(action))
         return entities
 
@@ -285,6 +292,9 @@ class SpookRepair(AbstractSpookRepair):
     @callback
     def __async_extract_entities_from_element(self, config: dict[str, Any]) -> set[str]:
         """Extract entities from a dashboard element config."""
+        if not isinstance(config, dict):
+            return set()
+
         entities = self.__async_extract_common(config)
         entities.update(self.__async_extract_entities_from_actions(config))
         entities.update(self.__async_extract_entities_from_action(config))
