@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, June 2nd 2023_
+_Stats as at 05:00, Saturday, June 3rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.0b1 | 476     | 3759         | 2564 | 103 |
+| 2023.6.0b2 | 477     | 3766         | 2563 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2564
+Sensor | 2563
 Sun | 1
-Switch | 159
+Switch | 166
 Weather | 7
 Zone | 3
 
@@ -451,6 +451,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
+| [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
 | [sensor.unifigateway](https://www.home-assistant.io/components/sensor.unifigateway) |
 | [sensor.untappd](https://www.home-assistant.io/components/sensor.untappd) |
 | [sensor.uptime](https://www.home-assistant.io/components/sensor.uptime) |
@@ -597,7 +598,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -745,7 +746,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Eufy Security Add-on (1.3.0)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.110.4)
-- JupyterLab (0.11.0)
+- JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
 - Node-RED (14.2.2)
@@ -753,7 +754,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Samba share (10.0.2)
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
-- Zigbee2MQTT (1.30.4-1)
+- Zigbee2MQTT (1.31.0-1)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
