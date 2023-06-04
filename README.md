@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, June 4th 2023_
+_Stats as at 05:00, Monday, June 5th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.0b4 | 477     | 3766         | 2563 | 103 |
+| 2023.6.0b4 | 479     | 3782         | 2589 | 103 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2563
+Sensor | 2589
 Sun | 1
 Switch | 167
 Weather | 7
@@ -374,6 +374,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
 | [sensor.custom_qbittorrent](https://www.home-assistant.io/components/sensor.custom_qbittorrent) |
+| [sensor.daily](https://www.home-assistant.io/components/sensor.daily) |
 | [sensor.derivative](https://www.home-assistant.io/components/sensor.derivative) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
@@ -381,6 +382,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
 | [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.fastdotcom](https://www.home-assistant.io/components/sensor.fastdotcom) |
+| [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.forecast_solar](https://www.home-assistant.io/components/sensor.forecast_solar) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
@@ -598,7 +600,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
