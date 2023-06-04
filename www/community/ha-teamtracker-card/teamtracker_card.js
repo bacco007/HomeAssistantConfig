@@ -82,7 +82,6 @@ export class TeamTrackerCard extends LitElement {
         //
         //  Set sport, team, and oppo 
         //
-        var sport = stateObj.attributes.sport || "default";
         var team = 1;
         var oppo = 2;
         if (((o.homeSide == "RIGHT") && (stateObj.attributes.team_homeaway == "home")) ||
@@ -103,6 +102,11 @@ export class TeamTrackerCard extends LitElement {
             time_format = "language"
         }
         var t = new Translator(lang);
+
+        var sport = stateObj.attributes.sport || "default";
+        if (t.translate(sport + ".startTerm") == "{"+ sport + ".startTerm" + "}") {
+            sport = "default";
+        }
 
         //
         //  Set card data
