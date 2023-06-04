@@ -15,7 +15,7 @@ from ..const            import (DOT, ICLOUD3_ERROR_MSG, EVLOG_DEBUG, EVLOG_ERROR
                                 TRIGGER, BATTERY, BATTERY_LEVEL, BATTERY_STATUS,
                                 INTERVAL, ZONE_DISTANCE, CALC_DISTANCE, WAZE_DISTANCE,
                                 TRAVEL_TIME, TRAVEL_TIME_MIN, DIR_OF_TRAVEL, MOVED_DISTANCE,
-                                DEVICE_STATUS, LOW_POWER_MODE,
+                                DEVICE_STATUS, LOW_POWER_MODE, ICLOUD_LOST_MODE_CAPABLE,
                                 AUTHENTICATED,
                                 LAST_UPDATE_TIME, LAST_UPDATE_DATETIME, NEXT_UPDATE_TIME, LAST_LOCATED_DATETIME, LAST_LOCATED_TIME,
                                 INFO, GPS_ACCURACY, GPS, POLL_COUNT, VERT_ACCURACY, ALTITUDE,
@@ -31,7 +31,7 @@ from inspect import getframeinfo, stack
 import traceback
 from .common import obscure_field
 
-FILTER_DATA_DICTS = ['items', 'userInfo', 'dsid', 'dsInfo', 'webservices', 'locations',]
+FILTER_DATA_DICTS = ['items', 'userInfo', 'dsid', 'dsInfo', 'webservices', 'locations','location', ]
 FILTER_DATA_LISTS = ['devices', 'content', 'followers', 'following', 'contactDetails',]
 FILTER_FIELDS = [
         ICLOUD3_VERSION, AUTHENTICATED,
@@ -45,7 +45,7 @@ FILTER_FIELDS = [
         LAST_UPDATE_TIME, LAST_UPDATE_DATETIME,
         NEXT_UPDATE_TIME, NEXT_UPDATE_TIME,
         LAST_LOCATED_TIME, LAST_LOCATED_DATETIME,
-        INFO, GPS_ACCURACY, GPS, POLL_COUNT, VERT_ACCURACY, ALTITUDE,
+        INFO, GPS_ACCURACY, GPS, POLL_COUNT, VERT_ACCURACY, ALTITUDE, ICLOUD_LOST_MODE_CAPABLE,
         'ResponseCode', 'reason',
         'id', 'firstName', 'lastName', 'name', 'fullName', 'appleId', 'emails', 'phones',
         'deviceStatus', 'batteryStatus', 'batteryLevel', 'membersInfo',
@@ -57,7 +57,7 @@ FILTER_FIELDS = [
         'familyEligible', 'findme', 'requestInfo',
         'invitationSentToEmail', 'invitationAcceptedByEmail', 'invitationFromHandles',
         'invitationFromEmail', 'invitationAcceptedHandles',
-        'items', 'userInfo', 'dsid', 'dsInfo', 'webservices', 'locations',
+        'items', 'userInfo', 'prsId', 'dsid', 'dsInfo', 'webservices', 'locations',
         'devices', 'content', 'followers', 'following', 'contactDetails', ]
 
 
@@ -107,15 +107,15 @@ def post_event(devicename, event_msg='+'):
     try:
         if event_msg.endswith(', '):
             event_msg = event_msg[:-2]
+        event_msg = event_msg.replace(', , ', ', ')
     except:
         Gb.HALogger.info(event_msg)
         pass
 
     Gb.EvLog.post_event(devicename, event_msg)
 
-    if (Gb.log_debug_flag
-            and event_msg.startswith(EVLOG_TIME_RECD) is False):
-        event_msg = (f"{Gb.trace_prefix}{devicename} > {str(event_msg)}")
+    if (Gb.log_debug_flag and event_msg.startswith(EVLOG_TIME_RECD) is False):
+        event_msg = (f"{devicename} > {str(event_msg)}")
         write_ic3_debug_log_recd(event_msg)
 
     # Starting up, update event msg to print all messages together
@@ -137,7 +137,7 @@ def post_error_msg(devicename, event_msg="+"):
     '''
     devicename, event_msg = resolve_system_event_msg(devicename, event_msg)
     if event_msg.find("iCloud3 Error") >= 0:
-        for td_devicename, Device in Gb.Devices_by_devicename.items():   #
+        for Device in Gb.Devices_by_devicename.values():
             Device.display_info_msg(ICLOUD3_ERROR_MSG)
 
     post_event(devicename, event_msg)
@@ -161,7 +161,7 @@ def post_monitor_msg(devicename, event_msg='+'):
     devicename, event_msg = resolve_system_event_msg(devicename, event_msg)
     post_event(devicename, f"{EVLOG_MONITOR}{event_msg}")
 
-    # write_ic3_debug_log_recd(f"{devicename} >{event_msg}")
+    # write_ic3_debug_log_recd(f"{devicename} > {event_msg}")
 
 #-------------------------------------------------------------------------------------------
 def resolve_system_event_msg(devicename, event_msg):
@@ -173,9 +173,12 @@ def resolve_system_event_msg(devicename, event_msg):
 #--------------------------------------------------------------------
 def resolve_log_msg_module_name(module_name, log_msg):
     if log_msg == "+":
-        return (module_name.replace(NBSP, ''))
-    else:
-        return (f"[{module_name}] {log_msg.replace(NBSP, '')}")
+        try:
+            return (module_name.replace(NBSP, ''))
+        except:
+            pass
+
+    return (f"{module_name} {log_msg.replace(NBSP, '')}")
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
@@ -272,7 +275,7 @@ def write_ic3_debug_log_recd(recd, force_write=False):
     recd = _debug_recd_filter(recd)
 
     try:
-        Gb.iC3DebugLogFile.write(f"{date_time_now} {_called_from()} {recd}\n")
+        Gb.iC3DebugLogFile.write(f"{date_time_now} {_called_from()} {Gb.trace_prefix}{recd}\n")
     except: #I/O operation on closed file:
         pass
 
@@ -282,7 +285,7 @@ def write_ic3_debug_log_recd(recd, force_write=False):
 #--------------------------------------------------------------------
 def archive_debug_log_file():
         debug_log_file   = Gb.hass.config.path(DEBUG_LOG_FILENAME)
-        debug_log_file_1 = Gb.hass.config.path(DEBUG_LOG_FILENAME).replace('.log', '-1.log')
+        debug_log_file_1 = Gb.hass.config.path(DEBUG_LOG_FILENAME).replace('.log', '(1).log')
 
         if os.path.isfile(debug_log_file_1):
             os.remove(debug_log_file_1)
@@ -341,6 +344,7 @@ def log_filter(log_msg):
                 log_msg = log_msg[:p] + log_msg[p+3:]
 
             log_msg = log_msg.replace('* > ', '')
+            log_msg = _debug_recd_filter(log_msg)
     except:
         pass
 
@@ -382,8 +386,8 @@ def log_debug_msg(devicename, log_msg="+"):
         return
 
     devicename, log_msg = resolve_system_event_msg(devicename, log_msg)
-    dn_str = '' if devicename == '*' else (f"{devicename} > ")
-    log_msg = (f"{Gb.trace_prefix}{dn_str}{str(log_msg).replace(CRLF, ', ')}")
+    dn_str = '' if devicename == '*' else f"{devicename} > "
+    log_msg = f"{dn_str}{str(log_msg).replace(CRLF, ', ')}"
 
     write_ic3_debug_log_recd(log_filter(log_msg))
 
@@ -640,14 +644,16 @@ def _traceha(log_text, v1='+++', v2='', v3='', v4='', v5=''):
             log_msg = (f"|{v1}|-|{v2}|-|{v3}|-|{v4}|-|{v5}|")
 
         if type(log_text) is str and log_text in Gb.Devices_by_devicename:
-            trace_msg = (f"{called_from}{log_text} ::: TRACE ::: {log_msg}")
-            # trace_msg = (f"{Gb.trace_prefix}{log_text} ::: TRACE ::: {log_msg}")
+            trace_msg = (f"{called_from}{log_text} {log_msg}")
+
         else:
-            trace_msg = (f"{called_from} ::: TRACE ::: {log_text}, {log_msg}")
-            # trace_msg = (f"{Gb.trace_prefix} ::: TRACE ::: {log_text}, {log_msg}")
+            trace_msg = (f"{called_from}{log_text}, {log_msg}")
+        save_gb_trace_prefix, Gb.trace_prefix = (Gb.trace_prefix, '::::::::: ')
 
         Gb.HALogger.info(trace_msg)
         write_ic3_debug_log_recd(trace_msg, force_write=True)
+
+        Gb.trace_prefix = save_gb_trace_prefix
 
     except Exception as err:
         log_exception(err)

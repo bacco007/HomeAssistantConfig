@@ -37,6 +37,7 @@ class Waze(object):
         self.waze_region                = waze_region.upper()
         self.waze_min_distance          = waze_min_distance
         self.waze_max_distance          = waze_max_distance
+        self.connection_error_displayed = False
 
         self.waze_manual_pause_flag        = False  #If Paused via iCloud command
         self.waze_close_to_zone_pause_flag = False  #pause if dist from zone < 1 flag
@@ -153,7 +154,7 @@ class Waze(object):
 
                     if waze_status == WAZE_NO_DATA:
                         event_msg = (f"Waze Route Error > Problem connecting to Waze Servers. "
-                                    f"Distance will be  calculated, Travel Time not available")
+                                    f"Distance will be calculated, Travel Time not available")
                         post_event(Device.devicename, event_msg)
 
                         return (WAZE_NO_DATA, 0, 0, 0)
@@ -180,8 +181,8 @@ class Waze(object):
 
                 # Get distance moved since last update
                 waze_moved_timer = time.perf_counter()
-                if Device.loc_data_distance_moved < .5:
-                    dist_moved_km = Device.loc_data_distance_moved
+                if Device.loc_data_dist_moved_km < .5:
+                    dist_moved_km = Device.loc_data_dist_moved_km
                 else:
                     last_status, last_time, dist_moved_km = \
                                     self.get_waze_distance(
@@ -222,7 +223,7 @@ class Waze(object):
                 event_msg += (  f"TravTime-{self.waze_mins_to_time_str(route_time)}, "
                                 f"Dist-{format_dist_km(route_dist_km)}, "
                                 f"WazeMoved-{format_dist_km(dist_moved_km)}, "
-                                f"CalcMoved-{format_dist_km(Device.loc_data_distance_moved)}, "
+                                f"CalcMoved-{format_dist_km(Device.loc_data_dist_moved_km)}, "
                                 f"Took-{waze_all_timer_took:0.2f} secs "
                                 f"{wazehist_save_msg}")
             post_event(Device.devicename, event_msg)
@@ -252,7 +253,7 @@ class Waze(object):
         waze_source_msg = ''
 
         if (Device.is_location_gps_good
-                and Device.loc_data_distance_moved == 0
+                and Device.loc_data_dist_moved_km <= .020        # 20m
                 and DeviceFmZone.waze_results):
 
             # If haven't move and accuracte location, use waze data
@@ -316,31 +317,26 @@ class Waze(object):
             while retry_cnt < 3:
                 try:
                     retry_msg = '' if retry_cnt == 0 else (f" (#{retry_cnt})")
-                    # if route_from == ZONE:
-                    #     Device.display_info_msg( f"GetWazeInfoFrom-{DeviceFmZone.from_zone_display_as}{retry_msg}")
-                    # elif route_from == 'moved':
-                    #     Device.display_info_msg( f"GetWazeMovedFrom-LastLocation{retry_msg}")
                     waze_call_start_time = time_now_secs()
 
                     route_time, route_dist_km = \
                             self.WazeRouteCalc.calc_route_info(from_lat, from_long, to_lat, to_long)
-
                     retry_cnt += 1
                     if route_time < 0:
                         continue
 
                     route_time    = round(route_time, 2)
-                    # route_dist_km = round(route_dist_km, 2)
                     route_dist_km = route_dist_km
 
                     Device.count_waze_locates += 1
                     Device.time_waze_calls += (time_now_secs() - waze_call_start_time)
 
+                    self.connection_error_displayed = False
                     return (WAZE_USED, route_time, route_dist_km)
 
                 except Exception as err:
                     if retry_cnt > 3:
-                        log_msg = (f"Waze Server Error (#{retry_cnt}), Retrying, Type-{err}")
+                        log_msg = (f"Waze Server Error #{retry_cnt}, Retrying, Type-{err}")
                         log_info_msg(log_msg)
 
         except Exception as err:
@@ -355,6 +351,10 @@ class Waze(object):
 #--------------------------------------------------------------------
     def _set_waze_not_available_error(self, err):
         ''' Turn Waze off if connection error '''
+
+        if self.connection_error_displayed:
+            return
+        self.connection_error_displayed = True
 
         error_msg = f"Waze Server Connection Error-{err}"
         # log_error_msg(error_msg)

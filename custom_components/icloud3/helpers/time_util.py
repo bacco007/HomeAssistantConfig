@@ -54,7 +54,7 @@ def secs_to_time_str(secs):
         elif secs < 60:
             time_str = f"{secs:.0f} sec"
         elif secs < 3600:
-            time_str = f"{secs/60:.1f} min"
+            time_str = f"{secs/60:.0f} min"
         elif secs == 3600:
             time_str = "1 hr"
         else:
