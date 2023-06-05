@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, June 5th 2023_
+_Stats as at 05:00, Tuesday, June 6th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.0b4 | 479     | 3782         | 2589 | 103 |
+| 2023.6.0b4 | 479     | 3765         | 2584 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2589
+Sensor | 2584
 Sun | 1
-Switch | 167
+Switch | 162
 Weather | 7
 Zone | 3
 
@@ -600,7 +600,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -670,8 +670,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
 - [Formula One Card](https://github.com/marcokreeft87/formulaone-card)
 - [Fr24 Card](https://github.com/fratsloos/fr24_card)
-- [Google Trending Card](https://github.com/b0mbays/google-trends-card)
-- [Ha Floorplan](https://github.com/ExperienceLovelace/ha-floorplan)
 - [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
 - [History Explorer Card](https://github.com/alexarch21/history-explorer-card)
 - [Home Assistant Swipe Navigation](https://github.com/zanna-37/hass-swipe-navigation)
@@ -690,10 +688,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row)
 - [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card)
 - [Plex Meets Home Assistant](https://github.com/JurajNyiri/PlexMeetsHomeAssistant)
-- [Power Flow Card](https://github.com/ulic75/power-flow-card)
 - [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
-- [Rgb Light Card](https://github.com/bokub/rgb-light-card)
-- [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart)
 - [Search Card](https://github.com/postlund/search-card)
 - [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row)
 - [Slider Button Card](https://github.com/custom-cards/slider-button-card)

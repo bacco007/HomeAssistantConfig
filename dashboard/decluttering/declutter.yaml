@@ -281,7 +281,7 @@ scoreboard_mlb:
         }
     entities:
       include: "[[entity]]"
-    sort_by: sort
+    sort_by: entries-
     columns:
       - hidden: true
         name: sort

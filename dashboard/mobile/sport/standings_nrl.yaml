@@ -36,8 +36,12 @@ entities:
         css:
           table+: "border-collapse: collapse; padding: 0px;"
           tbody tr td:nth-child(1): "width: 10%;"
-        sort_by: x.stats.find(y=>y.name == 'rank').displayValue
+        sort_by: entries+
         columns:
+          - name: sort
+            hidden: true
+            data: entries
+            modify: x.stats.find(y=>y.name == 'rank').displayValue
           - name: Logo
             data: entries
             modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
