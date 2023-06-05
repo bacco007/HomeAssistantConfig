@@ -1,0 +1,72 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Праздники (1/2)",
+                "description": "Введите имя объекта и настройте параметры. Подробнее https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Понятное имя",
+                    "icon_normal": "Значок (mdi:calendar-blank) - необязательно",
+                    "icon_tomorrow": "Коллекция значков завтра (mdi:calendar-arrow-right) - необязательно",
+                    "icon_today": "Коллекция значков сегодня (mdi:calendar-check) - необязательно",
+                    "country": "Страна",
+                    "observed": "Наблюдается (необязательно)"
+                }
+            },
+            "subdiv": {
+                "title": "Праздники - (1½/2)",
+                "description": "Подробнее https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Праздники - подразделение"
+                }
+            },
+            "pop": {
+                "title": "Праздники - (2/2)",
+                "description": "Подробнее https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Игнорировать праздники (список) - необязательно"
+                }
+            }
+        },
+        "error": {
+            "value": "Неверное значение. Пожалуйста, проверьте свой ввод!",
+            "icon": "Значки должны быть указаны в виде 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Допускается только одиночная конфигурация праздников."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Праздники (1/2)",
+                "description": "Введите имя объекта и настройте параметры. Подробнее https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Значок (mdi:calendar-blank) - необязательно",
+                    "icon_tomorrow": "Коллекция значков завтра (mdi:calendar-arrow-right) - необязательно",
+                    "icon_today": "Коллекция значков сегодня (mdi:calendar-check) - необязательно",
+                    "country": "Страна",
+                    "observed": "Наблюдается (необязательно)"
+                }
+            },
+            "subdiv": {
+                "title": "Праздники - (1½/2)",
+                "description": "Подробнее https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Праздники - подразделение"
+                }
+            },
+            "pop": {
+                "title": "Праздники - (2/2)",
+                "description": "Подробнее https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Игнорировать праздники (список) - необязательно"
+                }
+            }
+        },
+        "error": {
+            "value": "Неверное значение. Пожалуйста, проверьте свой ввод!",
+            "icon": "Значки должны быть указаны в виде 'prefix:name'."
+        }
+    }
+}

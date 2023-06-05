@@ -1,0 +1,72 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Свята (1/2)",
+                "description": "Введіть назву об’єкта та налаштуйте параметри. Більше інформації про https://github.com/bruxy70/Holidays",
+                "data": {
+                    "name": "Дружнє ім'я",
+                    "icon_normal": "Icon (mdi:calendar-blank) - необов'язковий",
+                    "icon_tomorrow": "Збір ікон завтра (mdi:calendar-arrow-right) - необов'язковий",
+                    "icon_today": "Колекція ікон сьогодні (mdi:calendar-check) - необов'язковий",
+                    "country": "Країна",
+                    "observed": "Спостерігається (необов'язково)"
+                }
+            },
+            "subdiv": {
+                "title": "Свята - (1½/2)",
+                "description": "Більше інформації про https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Свята - підрозділ"
+                }
+            },
+            "pop": {
+                "title": "Свята - (2/2)",
+                "description": "Більше інформації про https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ігнорувати свята (список) - необов'язково"
+                }
+            }
+        },
+        "error": {
+            "value": "Недійсне значення. Перевірте введені дані!",
+            "icon": "Значки повинні бути вказані у формі 'prefix:name'."
+        },
+        "abort": {
+            "single_instance_allowed": "Дозволяється лише одна конфігурація свят."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Свята (1/2)",
+                "description": "Введіть назву об’єкта та налаштуйте параметри. Більше інформації про https://github.com/bruxy70/Holidays",
+                "data": {
+                    "icon_normal": "Icon (mdi:calendar-blank) - необов'язковий",
+                    "icon_tomorrow": "Збір ікон завтра (mdi:calendar-arrow-right) - необов'язковий",
+                    "icon_today": "Колекція ікон сьогодні (mdi:calendar-check) - необов'язковий",
+                    "country": "Країна",
+                    "observed": "Спостерігається (необов'язково)"
+                }
+            },
+            "subdiv": {
+                "title": "Свята - (1½/2)",
+                "description": "Більше інформації про https://github.com/bruxy70/Holidays",
+                "data": {
+                    "subdiv": "Свята - підрозділ"
+                }
+            },
+            "pop": {
+                "title": "Свята - (2/2)",
+                "description": "Більше інформації про https://github.com/bruxy70/Holidays",
+                "data": {
+                    "holiday_pop_named": "Ігнорувати свята (список) - необов'язково"
+                }
+            }
+        },
+        "error": {
+            "value": "Недійсне значення. Перевірте введені дані!",
+            "icon": "Значки повинні бути вказані у формі 'prefix:name'."
+        }
+    }
+}
