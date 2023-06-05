@@ -40,7 +40,6 @@ cards:
             css:
               table+: "border-collapse: collapse; padding: 0px;"
             strict: true
-            sort_by: history
             columns:
               - name: test
                 data: track

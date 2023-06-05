@@ -11,151 +11,200 @@ parameters:
     - slideShadows: false
 cards:
   - type: custom:paper-buttons-row
-    view_layout:
-      grid-area: header-left
     styles:
       width: 350px
-      margin-left: 10px
+      margin-top: -10px
+      justify-content: space-between
       background: none
+      text-shadow: 0px 0px 20px var(--card-background-color);
     buttons:
-      - name: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
-        styles:
-          name:
-            font-weight: 300
-            font-size: 30px
-            letter-spacing: "-1px"
-            margin-left: 2px
-            position: relative
-            left: "-10px"
-            color: var(--secondary-text-color)
-          button:
-            pointer-events: none
       - layout: name_state
-        name: "{{ states('sensor.helper_dayofweek') }}"
-        state: "{{ states('sensor.helper_daymonthstring') }}"
+        name: >-
+          {{ states('sensor.helper_dayofweek') }} {{
+          states('sensor.helper_daymonthstring') }}
+        state: '{{ now().strftime(''%H'') }}:{{ now().strftime(''%M'')}}'
         styles:
-          button:
-            width: 200px
-            height: 32px
-            pointer-events: none
-            position: relative
-            color: var(--secondary-text-color)
           name:
-            position: absolute
-            left: "-10px"
-            top: 0
             font-weight: 400
-            white-space: nowrap
+            font-size: 16px
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
+            color: var(--secondary-text-color)
+          button:
+            pointer-events: none
+            align-items: left
+            width: 140px
+            line-height: 1.6em
           state:
-            position: absolute
-            left: "-10px"
-            bottom: 0
+            font-weight: 700
+            font-size: 30px
+            letter-spacing: '-1px'
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
+            color: var(--secondary-text-color)
+      - layout: icon|name_state
+        name: 🌧️ {{ states('sensor.tempest_st_00056115_rain_today') }}mm
+        state: '{{ states(''sensor.tempest_st_00056115_temperature'') }}°C'
+        image: |
+          {% set mapper =
+            { 'breezy':'cloudy',
+              'clear-night':'night',
+              'clear':'day',
+              'mostly-clear':'day',
+              'clear-day':'day',
+              'cloudy':'cloudy',
+              'fog':'fog',
+              'hail':'rainy-7',
+              'haze':'haze',
+              'lightning':'thunder',
+              'mostly-cloudy':'cloudy',
+              'partlycloudy':'cloudy-day-3',
+              'partly-cloudy-day':'partly-cloudy-day',
+              'partly-cloudy-night':'partly-cloudy-night',
+              'rain':'rainy-4',
+              'scattered-showers':'rainy-3',
+              'showers':'rainy-6',
+              'sleet':'sleet',
+              'snow':'snowy-6',
+              'mostly-sunny':'day',
+              'sunny':'day',
+              'thunderstorm':'thunder',
+              'tornado':'tornado',
+              'wind':'wind',
+              'windy':'wind'} %}
+          {% set state = states('weather.east_tamworth') %}
+          {% set weather = mapper[state] if state in mapper else 'weather' %}
+          {% set path = '/local/icons/weather_icons/animated/' %}
+          {% set ext = '.svg'%}
+            {{[path,weather,ext]|join('')}}
+        styles:
+          name:
+            font-weight: 400
+            font-size: 16px
+            margin-left: 0
+            display: block
+            text-align: right
+            width: 140px
+            color: var(--secondary-text-color)
+          button:
+            pointer-events: none
+            align-items: right
+            width: 140px
+            line-height: 1.6em
+          state:
             font-weight: 600
-            white-space: nowrap
-      - name: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
-        icon: mdi:thermometer
-        layout: icon|name
-        styles:
-          name:
-            font-size: 14px
-            margin-left: "-2px"
-          button:
-            pointer-events: none
+            font-size: 30px
+            letter-spacing: '-1px'
+            margin-left: 0
+            display: block
+            text-align: right
+            width: 140px
             color: var(--secondary-text-color)
-      - name: "{{ states('sensor.tempest_st_00056115_rain_today') }}mm"
-        icon: mdi:weather-pouring
-        layout: icon|name
-        styles:
-          name:
-            font-size: 14px
-            margin-left: 2px
-          button:
-            pointer-events: none
-            margin-right: "-6px"
-            color: var(--secondary-text-color)
+          icon:
+            position: absolute
+            left: 2px
+            transform: scale(0.17)
+            transform-origin: 0 19.5%
+            top: '-48px;'
+            padding: 0;
+            height: 380px !important;
+            width: 380px !important;
   - type: custom:paper-buttons-row
-    view_layout:
-      grid-area: header-left
     styles:
       width: 350px
-      margin-left: 10px
+      justify-content: space-between
       background: none
+      margin-top: -10px
+      # margin: 24px 20px 16px
+      text-shadow: 0px 0px 20px var(--card-background-color);
     buttons:
-      - name: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
+      - layout: name_state
+        name: Home
+        state: '{{ now().strftime(''%H'') }}:{{ now().strftime(''%M'')}}'
         styles:
           name:
-            font-weight: 300
+            font-weight: 400
+            font-size: 16px
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
+            color: var(--secondary-text-color)
+          button:
+            pointer-events: none
+            align-items: left
+            width: 140px
+            line-height: 1.6em
+          state:
+            font-weight: 700
             font-size: 30px
-            letter-spacing: "-1px"
-            margin-left: 2px
-            position: relative
-            left: "-10px"
+            letter-spacing: '-1px'
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
             color: var(--secondary-text-color)
-          button:
-            pointer-events: none
       - layout: name_state
-        name: "{{ states('sensor.helper_dayofweek') }}"
-        state: "{{ states('sensor.helper_daymonthstring') }}"
+        name: USA East
+        state: '{{ states(''sensor.time_new_york'') }}'
         styles:
-          button:
-            width: 200px
-            height: 32px
-            pointer-events: none
-            position: relative
-            color: var(--secondary-text-color)
           name:
-            position: absolute
-            left: "-10px"
-            top: 0
             font-weight: 400
-            white-space: nowrap
+            font-size: 16px
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
+            color: var(--secondary-text-color)
+          button:
+            pointer-events: none
+            align-items: left
+            width: 140px
+            line-height: 1.6em
           state:
-            position: absolute
-            left: "-10px"
-            bottom: 0
-            font-weight: 600
-            white-space: nowrap
+            font-weight: 700
+            font-size: 30px
+            letter-spacing: '-1px'
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
+            color: var(--secondary-text-color)
       - layout: name_state
-        name: "{{ states('sensor.time_london') }}"
-        state: UK
+        name: UK
+        state: '{{ states(''sensor.time_london'') }}'
         styles:
-          button:
-            width: 200px
-            height: 32px
-            pointer-events: none
-            position: relative
-            color: var(--secondary-text-color)
           name:
-            position: absolute
-            left: "-10px"
-            top: 0
-            font-weight: 600
-            white-space: nowrap
-          state:
-            position: absolute
-            left: "-10px"
-            bottom: 0
             font-weight: 400
-            white-space: nowrap
-      - layout: name_state
-        name: "{{ states('sensor.time_new_york') }}"
-        state: USA East
-        styles:
-          button:
-            width: 200px
-            height: 32px
-            pointer-events: none
-            position: relative
+            font-size: 16px
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
             color: var(--secondary-text-color)
-          name:
-            position: absolute
-            left: "-10px"
-            top: 0
-            font-weight: 600
-            white-space: nowrap
+          button:
+            pointer-events: none
+            align-items: left
+            width: 140px
+            line-height: 1.6em
           state:
-            position: absolute
-            left: "-10px"
-            bottom: 0
-            font-weight: 400
-            white-space: nowrap
+            font-weight: 700
+            font-size: 30px
+            letter-spacing: '-1px'
+            margin-left: 0
+            display: block
+            text-align: left
+            float: left
+            width: 140px
+            color: var(--secondary-text-color)

@@ -31,7 +31,8 @@ cards:
       extend_to: now
       fill_raw: last
       group_by:
-        func: last
+        func: max
+        duration: 0.25d
     series:
       - entity: sensor.lastfm_user_playcount
         color: var(--label-badge-red)

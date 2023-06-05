@@ -31,6 +31,9 @@ cards:
       stroke_width: 3
       type: line
       fill_raw: last
+      group_by:
+        func: max
+        duration: 15min
     series:
       - entity: sensor.lastfm_user_playcount
         color: var(--label-badge-red)

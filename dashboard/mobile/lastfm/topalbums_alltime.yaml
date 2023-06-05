@@ -39,7 +39,6 @@ cards:
               include: sensor.lastfm_user_topalbums
             css:
               table+: "border-collapse: collapse; padding: 0px;"
-            sort_by: history
             columns:
               - name: Artist
                 data: album

@@ -126,7 +126,7 @@ cards:
       - title: Last.FM Listen Count
       - line_width: 3
       - hours_to_show: 168
-      - points_per_hour: 1
+      - points_per_hour: 4
       - icon: fab:lastfm
 
   - type: vertical-stack
