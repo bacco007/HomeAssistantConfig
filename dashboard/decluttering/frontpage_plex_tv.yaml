@@ -1,0 +1,39 @@
+---
+frontpage_plex_unwatched_tv:
+  default:
+    - VALUE: "{{ range(0, 8) | random }}"
+  card:
+    type: custom:mushroom-template-card
+    entity: sensor.frontpage_plex_unwatched_tv
+    primary: Plex (New, Unwatched TV)
+    secondary: >-
+      {% from 'easy_time.jinja' import custom_relative_time -%}
+      {% set STATE = ct_eval('[[VALUE]]') -%}
+      {% set airdate = state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].airdate -%}
+      {{state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].title}}
+
+      {{state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].episode}} ({{state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].number}})
+
+      Added {{ custom_relative_time(airdate, values='day, hour')}}
+    multiline_secondary: true
+    badge_icon: none
+    badge_color: none
+    icon: mdi:plex
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    fill_container: true
+    layout: horizontal
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            {% set STATE = ct_eval('[[VALUE]]') -%}
+            {% set poster = state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].poster -%}
+              background: url( '{{ poster }}' ), linear-gradient(to left, transparent, var(--background-color) 50%);
+              background-size: 30%, cover;
+              background-position: right;
+              background-repeat: no-repeat;
+              background-blend-mode: saturation;
+          }
