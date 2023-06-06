@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, June 6th 2023_
+_Stats as at 05:00, Wednesday, June 7th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.0b4 | 479     | 3765         | 2584 | 103 |
+| 2023.6.0b5 | 480     | 3769         | 2589 | 103 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2584
+Sensor | 2589
 Sun | 1
-Switch | 162
+Switch | 167
 Weather | 7
 Zone | 3
 
@@ -187,6 +187,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [cover.mqtt](https://www.home-assistant.io/components/cover.mqtt) |
 | [cover.zha](https://www.home-assistant.io/components/cover.zha) |
 | [cupertino](https://www.home-assistant.io/components/cupertino) |
+| [custom_templates](https://www.home-assistant.io/components/custom_templates) |
 | [daily](https://www.home-assistant.io/components/daily) |
 | [default_config](https://www.home-assistant.io/components/default_config) |
 | [derivative](https://www.home-assistant.io/components/derivative) |
@@ -584,6 +585,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Bureau Of Meteorology](https://github.com/bremor/bureau_of_meteorology)
 - [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather)
 - [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
+- [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates)
 - [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor)
 - [Eufy Security](https://github.com/fuatakgun/eufy_security)
 - [Feedparser](https://github.com/custom-components/feedparser)
@@ -600,7 +602,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
