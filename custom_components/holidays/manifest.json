@@ -14,5 +14,5 @@
     "python-dateutil>=2.8.2",
     "holidays>=0.14.2"
   ],
-  "version": "1.9.5"
+  "version": "1.9.6"
 }
