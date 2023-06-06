@@ -1,0 +1,10 @@
+{
+  "domain": "custom_templates",
+  "name": "Custom Templates",
+  "codeowners": ["@PiotrMachowski"],
+  "documentation": "https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates/issues",
+  "requirements": [],
+  "version": "v1.2.1"
+}
