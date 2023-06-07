@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, June 7th 2023_
+_Stats as at 05:00, Thursday, June 8th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.0b5 | 480     | 3769         | 2589 | 103 |
+| 2023.6.0b6 | 481     | 3770         | 2600 | 103 |
 
 Type | Qty
 -- | --
@@ -59,7 +59,7 @@ Alert | 0
 Automation | 103
 Binary Sensor | 179
 Camera | 5
-Device Tracker | 77
+Device Tracker | 78
 Group | 3
 Input Boolean | 14
 Input Datetime | 3
@@ -69,7 +69,7 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2589
+Sensor | 2600
 Sun | 1
 Switch | 167
 Weather | 7
@@ -461,6 +461,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.uptime_kuma](https://www.home-assistant.io/components/sensor.uptime_kuma) |
 | [sensor.utility_meter](https://www.home-assistant.io/components/sensor.utility_meter) |
 | [sensor.version](https://www.home-assistant.io/components/sensor.version) |
+| [sensor.waqi](https://www.home-assistant.io/components/sensor.waqi) |
 | [sensor.watchman](https://www.home-assistant.io/components/sensor.watchman) |
 | [sensor.waternsw](https://www.home-assistant.io/components/sensor.waternsw) |
 | [sensor.waze_travel_time](https://www.home-assistant.io/components/sensor.waze_travel_time) |
@@ -602,7 +603,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -673,7 +674,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Formula One Card](https://github.com/marcokreeft87/formulaone-card)
 - [Fr24 Card](https://github.com/fratsloos/fr24_card)
 - [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
-- [History Explorer Card](https://github.com/alexarch21/history-explorer-card)
 - [Home Assistant Swipe Navigation](https://github.com/zanna-37/hass-swipe-navigation)
 - [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card)
 - [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather)
@@ -681,20 +681,15 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Layout Card](https://github.com/thomasloven/lovelace-layout-card)
 - [List Card](https://github.com/iantrich/list-card)
 - [Lovelace Card Templater](https://github.com/gadgetchnnel/lovelace-card-templater)
-- [Lovelace Home Feed Card](https://github.com/gadgetchnnel/lovelace-home-feed-card)
 - [Mini Graph Card](https://github.com/kalkih/mini-graph-card)
 - [Mini Media Player](https://github.com/kalkih/mini-media-player)
-- [More Info Card](https://github.com/thomasloven/lovelace-more-info-card)
 - [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row)
 - [Mushroom](https://github.com/piitaya/lovelace-mushroom)
 - [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row)
 - [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card)
-- [Plex Meets Home Assistant](https://github.com/JurajNyiri/PlexMeetsHomeAssistant)
 - [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
 - [Search Card](https://github.com/postlund/search-card)
 - [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row)
-- [Slider Button Card](https://github.com/custom-cards/slider-button-card)
-- [Slider Entity Row](https://github.com/thomasloven/lovelace-slider-entity-row)
 - [Sonos Card](https://github.com/johanfrick/custom-sonos-card)
 - [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card)
 - [Stack In Card](https://github.com/custom-cards/stack-in-card)
@@ -703,7 +698,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Tabbed Card](https://github.com/kinghat/tabbed-card)
 - [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card)
 - [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row)
-- [Thermostat Popup Card](https://github.com/DBuit/thermostat-popup-card)
 - [Uptime Card](https://github.com/dylandoamaral/uptime-card)
 - [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card)
 - [Weather Card](https://github.com/bramkragten/weather-card)
