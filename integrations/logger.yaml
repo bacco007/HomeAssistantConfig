@@ -35,6 +35,7 @@ logger:
     homeassistant.helpers.entity:
       - "Update of media_player.spotify_thomas_baxter is taking over 10 seconds"
       - "Expected positive event duration"
+      - "Update for sensor.home_to_work fails"
     spotipy.client:
       - "Max Retries reached"
     custom_components.ical:
@@ -49,3 +50,11 @@ logger:
       - "Can not determine network usage for container ('networks')"
       - "No 'networks' found in raw packet"
       - "Too many errors on 'networks' stats, disabling monitoring"
+    custom_components.unifigateway.sensor:
+      - "Failed to access health info"
+    custom_components.unifi_status.switch:
+      - "Failed to scan aps"
+    custom_components.unifics.sensor:
+      - "Unexpected error fetching sensor data"
+    custom_components.waternsw.sensor:
+      - "Cannot retrieve date, check config"

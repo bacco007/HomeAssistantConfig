@@ -22,11 +22,11 @@ cards:
         name: >-
           {{ states('sensor.helper_dayofweek') }} {{
           states('sensor.helper_daymonthstring') }}
-        state: '{{ now().strftime(''%H'') }}:{{ now().strftime(''%M'')}}'
+        state: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
         styles:
           name:
             font-weight: 400
-            font-size: 16px
+            font-size: 14px
             margin-left: 0
             display: block
             text-align: left
@@ -40,8 +40,8 @@ cards:
             line-height: 1.6em
           state:
             font-weight: 700
-            font-size: 30px
-            letter-spacing: '-1px'
+            font-size: 26px
+            letter-spacing: "-1px"
             margin-left: 0
             display: block
             text-align: left
@@ -50,7 +50,7 @@ cards:
             color: var(--secondary-text-color)
       - layout: icon|name_state
         name: 🌧️ {{ states('sensor.tempest_st_00056115_rain_today') }}mm
-        state: '{{ states(''sensor.tempest_st_00056115_temperature'') }}°C'
+        state: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
         image: |
           {% set mapper =
             { 'breezy':'cloudy',
@@ -86,7 +86,7 @@ cards:
         styles:
           name:
             font-weight: 400
-            font-size: 16px
+            font-size: 14px
             margin-left: 0
             display: block
             text-align: right
@@ -99,8 +99,8 @@ cards:
             line-height: 1.6em
           state:
             font-weight: 600
-            font-size: 30px
-            letter-spacing: '-1px'
+            font-size: 26px
+            letter-spacing: "-1px"
             margin-left: 0
             display: block
             text-align: right
@@ -111,7 +111,7 @@ cards:
             left: 2px
             transform: scale(0.17)
             transform-origin: 0 19.5%
-            top: '-48px;'
+            top: "-48px;"
             padding: 0;
             height: 380px !important;
             width: 380px !important;
@@ -121,16 +121,16 @@ cards:
       justify-content: space-between
       background: none
       margin-top: -10px
-      # margin: 24px 20px 16px
+      # margin: 24px 20px 14px
       text-shadow: 0px 0px 20px var(--card-background-color);
     buttons:
       - layout: name_state
         name: Home
-        state: '{{ now().strftime(''%H'') }}:{{ now().strftime(''%M'')}}'
+        state: "{{ now().strftime('%H') }}:{{ now().strftime('%M')}}"
         styles:
           name:
             font-weight: 400
-            font-size: 16px
+            font-size: 14px
             margin-left: 0
             display: block
             text-align: left
@@ -144,8 +144,8 @@ cards:
             line-height: 1.6em
           state:
             font-weight: 700
-            font-size: 30px
-            letter-spacing: '-1px'
+            font-size: 26px
+            letter-spacing: "-1px"
             margin-left: 0
             display: block
             text-align: left
@@ -154,11 +154,11 @@ cards:
             color: var(--secondary-text-color)
       - layout: name_state
         name: USA East
-        state: '{{ states(''sensor.time_new_york'') }}'
+        state: "{{ states('sensor.time_new_york') }}"
         styles:
           name:
             font-weight: 400
-            font-size: 16px
+            font-size: 14px
             margin-left: 0
             display: block
             text-align: left
@@ -172,8 +172,8 @@ cards:
             line-height: 1.6em
           state:
             font-weight: 700
-            font-size: 30px
-            letter-spacing: '-1px'
+            font-size: 26px
+            letter-spacing: "-1px"
             margin-left: 0
             display: block
             text-align: left
@@ -182,11 +182,11 @@ cards:
             color: var(--secondary-text-color)
       - layout: name_state
         name: UK
-        state: '{{ states(''sensor.time_london'') }}'
+        state: "{{ states('sensor.time_london') }}"
         styles:
           name:
             font-weight: 400
-            font-size: 16px
+            font-size: 14px
             margin-left: 0
             display: block
             text-align: left
@@ -200,8 +200,8 @@ cards:
             line-height: 1.6em
           state:
             font-weight: 700
-            font-size: 30px
-            letter-spacing: '-1px'
+            font-size: 26px
+            letter-spacing: "-1px"
             margin-left: 0
             display: block
             text-align: left

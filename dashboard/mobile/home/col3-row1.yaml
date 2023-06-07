@@ -742,5 +742,3 @@ cards:
           #     action: none
           #   double_tap_action:
           #     action: none
-
-      - type: custom:gap-card
