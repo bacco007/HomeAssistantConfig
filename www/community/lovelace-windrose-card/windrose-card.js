@@ -1,23 +1,76 @@
-class ColorUtil {
-    getColorArray(count) {
-        const startHue = 240;
-        const endHue = 0;
-        const saturation = 100;
-        const lightness = 60;
-        const colors = [];
-        for (let i = 0; i < count; i++) {
-            const hue = (startHue - (((startHue - endHue) / (count - 1)) * i));
-            colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
-        }
-        return colors;
-    }
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __decorate(decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
 
-class DrawUtil {
-    static toRadians(degrees) {
-        return degrees * (Math.PI / 180);
-    }
-}
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t$1=window,e$3=t$1.ShadowRoot&&(void 0===t$1.ShadyCSS||t$1.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$3=Symbol(),n$4=new WeakMap;class o$4{constructor(t,e,n){if(this._$cssResult$=!0,n!==s$3)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$3&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=n$4.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n$4.set(s,t));}return t}toString(){return this.cssText}}const r$2=t=>new o$4("string"==typeof t?t:t+"",void 0,s$3),i$2=(t,...e)=>{const n=1===t.length?t[0]:e.reduce(((e,s,n)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[n+1]),t[0]);return new o$4(n,t,s$3)},S$1=(s,n)=>{e$3?s.adoptedStyleSheets=n.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):n.forEach((e=>{const n=document.createElement("style"),o=t$1.litNonce;void 0!==o&&n.setAttribute("nonce",o),n.textContent=e.cssText,s.appendChild(n);}));},c$1=e$3?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$2(e)})(t):t;
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var s$2;const e$2=window,r$1=e$2.trustedTypes,h$1=r$1?r$1.emptyScript:"",o$3=e$2.reactiveElementPolyfillSupport,n$3={toAttribute(t,i){switch(i){case Boolean:t=t?h$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,i){let s=t;switch(i){case Boolean:s=null!==t;break;case Number:s=null===t?null:Number(t);break;case Object:case Array:try{s=JSON.parse(t);}catch(t){s=null;}}return s}},a$1=(t,i)=>i!==t&&(i==i||t==t),l$2={attribute:!0,type:String,converter:n$3,reflect:!1,hasChanged:a$1};class d$1 extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this.u();}static addInitializer(t){var i;this.finalize(),(null!==(i=this.h)&&void 0!==i?i:this.h=[]).push(t);}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((i,s)=>{const e=this._$Ep(s,i);void 0!==e&&(this._$Ev.set(e,s),t.push(e));})),t}static createProperty(t,i=l$2){if(i.state&&(i.attribute=!1),this.finalize(),this.elementProperties.set(t,i),!i.noAccessor&&!this.prototype.hasOwnProperty(t)){const s="symbol"==typeof t?Symbol():"__"+t,e=this.getPropertyDescriptor(t,s,i);void 0!==e&&Object.defineProperty(this.prototype,t,e);}}static getPropertyDescriptor(t,i,s){return {get(){return this[i]},set(e){const r=this[t];this[i]=e,this.requestUpdate(t,r,s);},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)||l$2}static finalize(){if(this.hasOwnProperty("finalized"))return !1;this.finalized=!0;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,i=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const s of i)this.createProperty(s,t[s]);}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(i){const s=[];if(Array.isArray(i)){const e=new Set(i.flat(1/0).reverse());for(const i of e)s.unshift(c$1(i));}else void 0!==i&&s.push(c$1(i));return s}static _$Ep(t,i){const s=i.attribute;return !1===s?void 0:"string"==typeof s?s:"string"==typeof t?t.toLowerCase():void 0}u(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)));}addController(t){var i,s;(null!==(i=this._$ES)&&void 0!==i?i:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(s=t.hostConnected)||void 0===s||s.call(t));}removeController(t){var i;null===(i=this._$ES)||void 0===i||i.splice(this._$ES.indexOf(t)>>>0,1);}_$Eg(){this.constructor.elementProperties.forEach(((t,i)=>{this.hasOwnProperty(i)&&(this._$Ei.set(i,this[i]),delete this[i]);}));}createRenderRoot(){var t;const s=null!==(t=this.shadowRoot)&&void 0!==t?t:this.attachShadow(this.constructor.shadowRootOptions);return S$1(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostConnected)||void 0===i?void 0:i.call(t)}));}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostDisconnected)||void 0===i?void 0:i.call(t)}));}attributeChangedCallback(t,i,s){this._$AK(t,s);}_$EO(t,i,s=l$2){var e;const r=this.constructor._$Ep(t,s);if(void 0!==r&&!0===s.reflect){const h=(void 0!==(null===(e=s.converter)||void 0===e?void 0:e.toAttribute)?s.converter:n$3).toAttribute(i,s.type);this._$El=t,null==h?this.removeAttribute(r):this.setAttribute(r,h),this._$El=null;}}_$AK(t,i){var s;const e=this.constructor,r=e._$Ev.get(t);if(void 0!==r&&this._$El!==r){const t=e.getPropertyOptions(r),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(s=t.converter)||void 0===s?void 0:s.fromAttribute)?t.converter:n$3;this._$El=r,this[r]=h.fromAttribute(i,t.type),this._$El=null;}}requestUpdate(t,i,s){let e=!0;void 0!==t&&(((s=s||this.constructor.getPropertyOptions(t)).hasChanged||a$1)(this[t],i)?(this._$AL.has(t)||this._$AL.set(t,i),!0===s.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,s))):e=!1),!this.isUpdatePending&&e&&(this._$E_=this._$Ej());}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,i)=>this[i]=t)),this._$Ei=void 0);let i=!1;const s=this._$AL;try{i=this.shouldUpdate(s),i?(this.willUpdate(s),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostUpdate)||void 0===i?void 0:i.call(t)})),this.update(s)):this._$Ek();}catch(t){throw i=!1,this._$Ek(),t}i&&this._$AE(s);}willUpdate(t){}_$AE(t){var i;null===(i=this._$ES)||void 0===i||i.forEach((t=>{var i;return null===(i=t.hostUpdated)||void 0===i?void 0:i.call(t)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t);}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return !0}update(t){void 0!==this._$EC&&(this._$EC.forEach(((t,i)=>this._$EO(i,this[i],t))),this._$EC=void 0),this._$Ek();}updated(t){}firstUpdated(t){}}d$1.finalized=!0,d$1.elementProperties=new Map,d$1.elementStyles=[],d$1.shadowRootOptions={mode:"open"},null==o$3||o$3({ReactiveElement:d$1}),(null!==(s$2=e$2.reactiveElementVersions)&&void 0!==s$2?s$2:e$2.reactiveElementVersions=[]).push("1.6.1");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+var t;const i$1=window,s$1=i$1.trustedTypes,e$1=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,o$2=`lit$${(Math.random()+"").slice(9)}$`,n$2="?"+o$2,l$1=`<${n$2}>`,h=document,r=(t="")=>h.createComment(t),d=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,c=t=>u(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]),v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,a=/-->/g,f=/>/g,_=RegExp(">|[ \t\n\f\r](?:([^\\s\"'>=/]+)([ \t\n\f\r]*=[ \t\n\f\r]*(?:[^ \t\n\f\r\"'`<>=]|(\"|')|))|$)","g"),m=/'/g,p=/"/g,$=/^(?:script|style|textarea|title)$/i,g=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),y=g(1),x=Symbol.for("lit-noChange"),b=Symbol.for("lit-nothing"),T=new WeakMap,A=h.createTreeWalker(h,129,null,!1),E=(t,i)=>{const s=t.length-1,n=[];let h,r=2===i?"<svg>":"",d=v;for(let i=0;i<s;i++){const s=t[i];let e,u,c=-1,g=0;for(;g<s.length&&(d.lastIndex=g,u=d.exec(s),null!==u);)g=d.lastIndex,d===v?"!--"===u[1]?d=a:void 0!==u[1]?d=f:void 0!==u[2]?($.test(u[2])&&(h=RegExp("</"+u[2],"g")),d=_):void 0!==u[3]&&(d=_):d===_?">"===u[0]?(d=null!=h?h:v,c=-1):void 0===u[1]?c=-2:(c=d.lastIndex-u[2].length,e=u[1],d=void 0===u[3]?_:'"'===u[3]?p:m):d===p||d===m?d=_:d===a||d===f?d=v:(d=_,h=void 0);const y=d===_&&t[i+1].startsWith("/>")?" ":"";r+=d===v?s+l$1:c>=0?(n.push(e),s.slice(0,c)+"$lit$"+s.slice(c)+o$2+y):s+o$2+(-2===c?(n.push(void 0),i):y);}const u=r+(t[s]||"<?>")+(2===i?"</svg>":"");if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return [void 0!==e$1?e$1.createHTML(u):u,n]};class C{constructor({strings:t,_$litType$:i},e){let l;this.parts=[];let h=0,d=0;const u=t.length-1,c=this.parts,[v,a]=E(t,i);if(this.el=C.createElement(v,e),A.currentNode=this.el.content,2===i){const t=this.el.content,i=t.firstChild;i.remove(),t.append(...i.childNodes);}for(;null!==(l=A.nextNode())&&c.length<u;){if(1===l.nodeType){if(l.hasAttributes()){const t=[];for(const i of l.getAttributeNames())if(i.endsWith("$lit$")||i.startsWith(o$2)){const s=a[d++];if(t.push(i),void 0!==s){const t=l.getAttribute(s.toLowerCase()+"$lit$").split(o$2),i=/([.?@])?(.*)/.exec(s);c.push({type:1,index:h,name:i[2],strings:t,ctor:"."===i[1]?M:"?"===i[1]?k:"@"===i[1]?H:S});}else c.push({type:6,index:h});}for(const i of t)l.removeAttribute(i);}if($.test(l.tagName)){const t=l.textContent.split(o$2),i=t.length-1;if(i>0){l.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)l.append(t[s],r()),A.nextNode(),c.push({type:2,index:++h});l.append(t[i],r());}}}else if(8===l.nodeType)if(l.data===n$2)c.push({type:2,index:h});else {let t=-1;for(;-1!==(t=l.data.indexOf(o$2,t+1));)c.push({type:7,index:h}),t+=o$2.length-1;}h++;}}static createElement(t,i){const s=h.createElement("template");return s.innerHTML=t,s}}function P(t,i,s=t,e){var o,n,l,h;if(i===x)return i;let r=void 0!==e?null===(o=s._$Co)||void 0===o?void 0:o[e]:s._$Cl;const u=d(i)?void 0:i._$litDirective$;return (null==r?void 0:r.constructor)!==u&&(null===(n=null==r?void 0:r._$AO)||void 0===n||n.call(r,!1),void 0===u?r=void 0:(r=new u(t),r._$AT(t,s,e)),void 0!==e?(null!==(l=(h=s)._$Co)&&void 0!==l?l:h._$Co=[])[e]=r:s._$Cl=r),void 0!==r&&(i=P(t,r._$AS(t,i.values),r,e)),i}class V{constructor(t,i){this.u=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}v(t){var i;const{el:{content:s},parts:e}=this._$AD,o=(null!==(i=null==t?void 0:t.creationScope)&&void 0!==i?i:h).importNode(s,!0);A.currentNode=o;let n=A.nextNode(),l=0,r=0,d=e[0];for(;void 0!==d;){if(l===d.index){let i;2===d.type?i=new N(n,n.nextSibling,this,t):1===d.type?i=new d.ctor(n,d.name,d.strings,this,t):6===d.type&&(i=new I(n,this,t)),this.u.push(i),d=e[++r];}l!==(null==d?void 0:d.index)&&(n=A.nextNode(),l++);}return o}p(t){let i=0;for(const s of this.u)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class N{constructor(t,i,s,e){var o;this.type=2,this._$AH=b,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cm=null===(o=null==e?void 0:e.isConnected)||void 0===o||o;}get _$AU(){var t,i;return null!==(i=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==i?i:this._$Cm}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=P(this,t,i),d(t)?t===b||null==t||""===t?(this._$AH!==b&&this._$AR(),this._$AH=b):t!==this._$AH&&t!==x&&this.g(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):c(t)?this.k(t):this.g(t);}O(t,i=this._$AB){return this._$AA.parentNode.insertBefore(t,i)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}g(t){this._$AH!==b&&d(this._$AH)?this._$AA.nextSibling.data=t:this.T(h.createTextNode(t)),this._$AH=t;}$(t){var i;const{values:s,_$litType$:e}=t,o="number"==typeof e?this._$AC(t):(void 0===e.el&&(e.el=C.createElement(e.h,this.options)),e);if((null===(i=this._$AH)||void 0===i?void 0:i._$AD)===o)this._$AH.p(s);else {const t=new V(o,this),i=t.v(this.options);t.p(s),this.T(i),this._$AH=t;}}_$AC(t){let i=T.get(t.strings);return void 0===i&&T.set(t.strings,i=new C(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const o of t)e===i.length?i.push(s=new N(this.O(r()),this.O(r()),this,this.options)):s=i[e],s._$AI(o),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){var s;for(null===(s=this._$AP)||void 0===s||s.call(this,!1,!0,i);t&&t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){var i;void 0===this._$AM&&(this._$Cm=t,null===(i=this._$AP)||void 0===i||i.call(this,t));}}class S{constructor(t,i,s,e,o){this.type=1,this._$AH=b,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=o,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=b;}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,i=this,s,e){const o=this.strings;let n=!1;if(void 0===o)t=P(this,t,i,0),n=!d(t)||t!==this._$AH&&t!==x,n&&(this._$AH=t);else {const e=t;let l,h;for(t=o[0],l=0;l<o.length-1;l++)h=P(this,e[s+l],i,l),h===x&&(h=this._$AH[l]),n||(n=!d(h)||h!==this._$AH[l]),h===b?t=b:t!==b&&(t+=(null!=h?h:"")+o[l+1]),this._$AH[l]=h;}n&&!e&&this.j(t);}j(t){t===b?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"");}}class M extends S{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===b?void 0:t;}}const R=s$1?s$1.emptyScript:"";class k extends S{constructor(){super(...arguments),this.type=4;}j(t){t&&t!==b?this.element.setAttribute(this.name,R):this.element.removeAttribute(this.name);}}class H extends S{constructor(t,i,s,e,o){super(t,i,s,e,o),this.type=5;}_$AI(t,i=this){var s;if((t=null!==(s=P(this,t,i,0))&&void 0!==s?s:b)===x)return;const e=this._$AH,o=t===b&&e!==b||t.capture!==e.capture||t.once!==e.once||t.passive!==e.passive,n=t!==b&&(e===b||o);o&&this.element.removeEventListener(this.name,this,e),n&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){var i,s;"function"==typeof this._$AH?this._$AH.call(null!==(s=null===(i=this.options)||void 0===i?void 0:i.host)&&void 0!==s?s:this.element,t):this._$AH.handleEvent(t);}}class I{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){P(this,t);}}const z=i$1.litHtmlPolyfillSupport;null==z||z(C,N),(null!==(t=i$1.litHtmlVersions)&&void 0!==t?t:i$1.litHtmlVersions=[]).push("2.6.1");const Z=(t,i,s)=>{var e,o;const n=null!==(e=null==s?void 0:s.renderBefore)&&void 0!==e?e:i;let l=n._$litPart$;if(void 0===l){const t=null!==(o=null==s?void 0:s.renderBefore)&&void 0!==o?o:null;n._$litPart$=l=new N(i.insertBefore(r(),t),t,void 0,null!=s?s:{});}return l._$AI(t),l};
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var l,o$1;class s extends d$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const i=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=Z(i,this.renderRoot,this.renderOptions);}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0);}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1);}render(){return x}}s.finalized=!0,s._$litElement$=!0,null===(l=globalThis.litElementHydrateSupport)||void 0===l||l.call(globalThis,{LitElement:s});const n$1=globalThis.litElementPolyfillSupport;null==n$1||n$1({LitElement:s});(null!==(o$1=globalThis.litElementVersions)&&void 0!==o$1?o$1:globalThis.litElementVersions=[]).push("3.2.2");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const e=e=>n=>"function"==typeof n?((e,n)=>(customElements.define(e,n),n))(e,n):((e,n)=>{const{kind:t,elements:s}=n;return {kind:t,elements:s,finisher(n){customElements.define(e,n);}}})(e,n);
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const o=({finisher:e,descriptor:t})=>(o,n)=>{var r;if(void 0===n){const n=null!==(r=o.originalKey)&&void 0!==r?r:o.key,i=null!=t?{kind:"method",placement:"prototype",key:n,descriptor:t(o.key)}:{...o,key:n};return null!=e&&(i.finisher=function(t){e(t,n);}),i}{const r=o.constructor;void 0!==t&&Object.defineProperty(o,n,t(n)),null==e||e(r,n);}};
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function i(i,n){return o({descriptor:o=>{const t={get(){var o,n;return null!==(n=null===(o=this.renderRoot)||void 0===o?void 0:o.querySelector(i))&&void 0!==n?n:null},enumerable:!0,configurable:!0};if(n){const n="symbol"==typeof o?Symbol():"__"+o;t.get=function(){var o,t;return void 0===this[n]&&(this[n]=null!==(t=null===(o=this.renderRoot)||void 0===o?void 0:o.querySelector(i))&&void 0!==t?t:null),this[n]};}return t}})}
+
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var n;null!=(null===(n=window.HTMLSlotElement)||void 0===n?void 0:n.prototype.assignedElements)?(o,n)=>o.assignedElements(n):(o,n)=>o.assignedNodes(n).filter((o=>o.nodeType===Node.ELEMENT_NODE));
 
 class GlobalConfig {
 }
@@ -27,24 +80,16 @@ GlobalConfig.defaultHoursToShow = 4;
 GlobalConfig.defaultRefreshInterval = 300;
 GlobalConfig.defaultWindDirectionCount = 16;
 GlobalConfig.defaultWindDirectionUnit = 'degrees';
-GlobalConfig.defaultInputSpeedUnit = 'mps';
-GlobalConfig.defaultOutputSpeedUnit = 'bft';
+GlobalConfig.defaultInputSpeedUnit = 'auto';
+GlobalConfig.defaultOutputSpeedUnit = 'mps';
 GlobalConfig.defaultWindspeedBarFull = true;
 GlobalConfig.defaultMatchingStategy = 'direction-first';
 GlobalConfig.defaultDirectionSpeedTimeDiff = 1;
+GlobalConfig.defaultCenterCalmPercentage = true;
+GlobalConfig.defaultSpeedRangeBeaufort = true;
 GlobalConfig.verticalBarHeight = 30;
 GlobalConfig.horizontalBarHeight = 15;
 
-class SpeedUnit {
-    constructor(name, toMpsFunc, fromMpsFunc, speedRangeStep, speedRangeMax) {
-        this.name = name;
-        this.toMpsFunc = toMpsFunc;
-        this.fromMpsFunc = fromMpsFunc;
-        this.speedRangeStep = speedRangeStep;
-        this.speedRangeMax = speedRangeMax;
-        this.speedRanges = [];
-    }
-}
 class SpeedRange {
     constructor(range, minSpeed, maxSpeed, color) {
         this.range = range;
@@ -53,177 +98,7 @@ class SpeedRange {
         this.color = color;
     }
     isRangeMatch(speed) {
-        //console.log(this.minSpeed, speed, this.maxSpeed,  speed >= this.minSpeed && (speed < this.maxSpeed || this.maxSpeed === -1));
         return speed >= this.minSpeed && (speed < this.maxSpeed || this.maxSpeed === -1);
-    }
-}
-class WindSpeedConverter {
-    constructor(inputUnit, outputUnit, rangeStep, rangeMax, speedRanges) {
-        this.inputUnit = inputUnit;
-        this.outputUnit = outputUnit;
-        this.rangeStep = rangeStep;
-        this.rangeMax = rangeMax;
-        this.speedRanges = speedRanges;
-        this.bft = new SpeedUnit("Beaufort", (speed) => speed, (speed) => speed, undefined, undefined);
-        this.mps = new SpeedUnit("m/s", (speed) => speed, (speed) => speed, 5, 30);
-        this.kph = new SpeedUnit("km/h", (speed) => speed / 3.6, (speed) => speed * 3.6, 10, 100);
-        this.mph = new SpeedUnit("m/h", (speed) => speed / 2.2369, (speed) => speed * 2.2369, 10, 70);
-        this.fps = new SpeedUnit("ft/s", (speed) => speed / 3.2808399, (speed) => speed * 3.2808399, 10, 100);
-        this.knots = new SpeedUnit("knots", (speed) => speed / 1.9438444924406, (speed) => speed * 1.9438444924406, 5, 60);
-        this.inputSpeedUnit = this.getSpeedUnit(this.inputUnit);
-        this.outputSpeedUnit = this.getSpeedUnit(this.outputUnit);
-        if (outputUnit === 'bft') {
-            this.outputSpeedUnit.speedRanges = this.generateBeaufortSpeedRanges(inputUnit);
-        }
-        else if (speedRanges && speedRanges.length > 0) {
-            this.outputSpeedUnit.speedRanges = speedRanges;
-        }
-        else if (rangeStep && rangeMax) {
-            this.outputSpeedUnit.speedRanges = this.generateSpeedRanges(rangeStep, rangeMax);
-        }
-        else {
-            this.outputSpeedUnit.speedRanges = this.generateSpeedRanges(this.outputSpeedUnit.speedRangeStep, this.outputSpeedUnit.speedRangeMax);
-        }
-        //console.log('Speed ranges: ', this.outputSpeedUnit.speedRanges);
-    }
-    getOutputSpeedUnit() {
-        return this.outputSpeedUnit;
-    }
-    getSpeedConverter() {
-        if (this.inputUnit === this.outputUnit || this.outputUnit === 'bft') {
-            return (inputSpeed) => inputSpeed;
-        }
-        else if (this.inputUnit === 'mps') {
-            return this.outputSpeedUnit.fromMpsFunc;
-        }
-        const toMpsFunction = this.inputSpeedUnit.toMpsFunc;
-        const fromMpsFunction = this.outputSpeedUnit.fromMpsFunc;
-        return (speed) => fromMpsFunction(toMpsFunction(speed));
-    }
-    getRangeFunction() {
-        return (speed) => {
-            const speedRange = this.outputSpeedUnit.speedRanges.find(speedRange => speedRange.isRangeMatch(speed));
-            if (speedRange) {
-                return speedRange.range;
-            }
-            throw new Error("Speed is not in a speedrange: " + speed + " unit: " + this.outputUnit);
-        };
-    }
-    getSpeedRanges() {
-        return this.outputSpeedUnit.speedRanges;
-    }
-    getSpeedUnit(unit) {
-        switch (unit) {
-            case 'bft': return this.bft;
-            case 'mps': return this.mps;
-            case 'kph': return this.kph;
-            case 'mph': return this.mph;
-            case 'fps': return this.fps;
-            case 'knots': return this.knots;
-            default: throw new Error("Unknown speed unit: " + unit);
-        }
-    }
-    generateSpeedRanges(step, max) {
-        const colors = new ColorUtil().getColorArray(Math.floor(max / step) + 1);
-        const speedRanges = [];
-        let currentSpeed = 0;
-        let range = 0;
-        while (currentSpeed <= max - step) {
-            speedRanges.push(new SpeedRange(range, currentSpeed, currentSpeed + step, colors[range]));
-            range++;
-            currentSpeed += step;
-        }
-        speedRanges.push(new SpeedRange(range, currentSpeed, -1, colors[range]));
-        return speedRanges;
-    }
-    generateBeaufortSpeedRanges(inputUnit) {
-        const colors = new ColorUtil().getColorArray(13);
-        if (inputUnit === 'mps') {
-            return [
-                new SpeedRange(0, 0, 0.5, colors[0]),
-                new SpeedRange(1, 0.5, 1.6, colors[1]),
-                new SpeedRange(2, 1.6, 3.4, colors[2]),
-                new SpeedRange(3, 3.4, 5.5, colors[3]),
-                new SpeedRange(4, 5.5, 8, colors[4]),
-                new SpeedRange(5, 8, 10.8, colors[5]),
-                new SpeedRange(6, 10.8, 13.9, colors[6]),
-                new SpeedRange(7, 13.9, 17.2, colors[7]),
-                new SpeedRange(8, 17.2, 20.8, colors[8]),
-                new SpeedRange(9, 20.8, 24.5, colors[9]),
-                new SpeedRange(10, 24.5, 28.5, colors[10]),
-                new SpeedRange(11, 28.5, 32.7, colors[11]),
-                new SpeedRange(12, 32.7, -1, colors[12])
-            ];
-        }
-        else if (inputUnit === 'kph') {
-            return [
-                new SpeedRange(0, 0, 2, colors[0]),
-                new SpeedRange(1, 2, 6, colors[1]),
-                new SpeedRange(2, 6, 12, colors[2]),
-                new SpeedRange(3, 12, 20, colors[3]),
-                new SpeedRange(4, 20, 29, colors[4]),
-                new SpeedRange(5, 29, 39, colors[5]),
-                new SpeedRange(6, 39, 50, colors[6]),
-                new SpeedRange(7, 50, 62, colors[7]),
-                new SpeedRange(8, 62, 75, colors[8]),
-                new SpeedRange(9, 75, 89, colors[9]),
-                new SpeedRange(10, 89, 103, colors[10]),
-                new SpeedRange(11, 103, 118, colors[11]),
-                new SpeedRange(12, 118, -1, colors[12])
-            ];
-        }
-        else if (inputUnit === 'mph') {
-            return [
-                new SpeedRange(0, 0, 1, colors[0]),
-                new SpeedRange(1, 1, 4, colors[1]),
-                new SpeedRange(2, 4, 8, colors[2]),
-                new SpeedRange(3, 8, 13, colors[3]),
-                new SpeedRange(4, 13, 19, colors[4]),
-                new SpeedRange(5, 19, 25, colors[5]),
-                new SpeedRange(6, 25, 32, colors[6]),
-                new SpeedRange(7, 32, 39, colors[7]),
-                new SpeedRange(8, 39, 47, colors[8]),
-                new SpeedRange(9, 47, 55, colors[9]),
-                new SpeedRange(10, 55, 64, colors[10]),
-                new SpeedRange(11, 64, 73, colors[11]),
-                new SpeedRange(12, 73, -1, colors[12])
-            ];
-        }
-        else if (inputUnit === 'fps') {
-            return [
-                new SpeedRange(0, 0, 1.6, colors[0]),
-                new SpeedRange(1, 1.6, 5.2, colors[1]),
-                new SpeedRange(2, 5.2, 11.2, colors[2]),
-                new SpeedRange(3, 11.2, 18, colors[3]),
-                new SpeedRange(4, 18, 26.2, colors[4]),
-                new SpeedRange(5, 26.2, 35.4, colors[5]),
-                new SpeedRange(6, 35.4, 45.6, colors[6]),
-                new SpeedRange(7, 45.6, 56.4, colors[7]),
-                new SpeedRange(8, 56.4, 68.2, colors[8]),
-                new SpeedRange(9, 68.2, 80.4, colors[9]),
-                new SpeedRange(10, 80.4, 93.5, colors[10]),
-                new SpeedRange(11, 93.5, 107, colors[11]),
-                new SpeedRange(12, 107, -1, colors[12])
-            ];
-        }
-        else if (inputUnit === 'knots') {
-            return [
-                new SpeedRange(0, 0, 1, colors[0]),
-                new SpeedRange(1, 1, 4, colors[1]),
-                new SpeedRange(2, 4, 7, colors[2]),
-                new SpeedRange(3, 7, 11, colors[3]),
-                new SpeedRange(4, 11, 17, colors[4]),
-                new SpeedRange(5, 17, 22, colors[5]),
-                new SpeedRange(6, 22, 28, colors[6]),
-                new SpeedRange(7, 28, 34, colors[7]),
-                new SpeedRange(8, 34, 41, colors[8]),
-                new SpeedRange(9, 41, 48, colors[9]),
-                new SpeedRange(10, 48, 56, colors[10]),
-                new SpeedRange(11, 56, 64, colors[11]),
-                new SpeedRange(12, 64, -1, colors[12])
-            ];
-        }
-        throw new Error("No Bft reanges for input speed unit:: " + inputUnit);
     }
 }
 
@@ -241,6 +116,110 @@ class CardColors {
     }
 }
 
+class Log {
+    static setLevel(level) {
+        switch (level) {
+            case 'NONE':
+                this.level = 0;
+                break;
+            case 'ERROR':
+                this.level = 1;
+                break;
+            case 'WARN':
+                this.level = 2;
+                break;
+            case 'INFO':
+                this.level = 3;
+                break;
+            case 'DEBUG':
+                this.level = 4;
+                break;
+            case 'TRACE':
+                this.level = 5;
+                break;
+            default:
+                this.level = 0;
+                this.error('Unkonwn log level set: ', level, ' default to WARN');
+                break;
+        }
+        if (this.level > 2) {
+            console.log('LOG level set to:', level);
+        }
+    }
+    static checkLogLevel(logLevel) {
+        if (logLevel === undefined) {
+            return 'WARN';
+        }
+        if (logLevel === 'NONE' || logLevel === 'ERROR' || logLevel === 'WARN' || logLevel === 'INFO' ||
+            logLevel === 'DEBUG' || logLevel === 'TRACE') {
+            return logLevel;
+        }
+        throw new Error('Unkonwn log level configurated: ' + logLevel);
+    }
+    static error(message, ...optionalParams) {
+        if (this.level >= 1) {
+            if (optionalParams.length === 0) {
+                console.error('ERROR ' + message);
+            }
+            else {
+                console.error('ERROR ' + message, optionalParams[0]);
+            }
+        }
+    }
+    static warn(message, ...optionalParams) {
+        if (this.level >= 2) {
+            if (optionalParams.length === 0) {
+                console.warn('WARN ' + message);
+            }
+            else {
+                console.warn('WARN ' + message, optionalParams[0]);
+            }
+        }
+    }
+    static info(message, ...optionalParams) {
+        if (this.level >= 3) {
+            this.log('INFO ' + message, optionalParams);
+        }
+    }
+    static debug(message, ...optionalParams) {
+        if (this.level >= 4) {
+            this.log('DEBUG ' + message, optionalParams);
+        }
+    }
+    static trace(message, ...optionalParams) {
+        if (this.level === 5) {
+            this.log('TRACE ' + message, optionalParams);
+        }
+    }
+    static log(message, ...optionalParams) {
+        if (optionalParams[0].length === 0) {
+            console.log(message);
+        }
+        else {
+            console.log(message, optionalParams[0]);
+        }
+    }
+}
+Log.level = 0;
+
+class WindSpeedEntity {
+    constructor(entity, name, useStatistics, speedUnit) {
+        this.entity = entity;
+        this.name = name;
+        this.useStatistics = useStatistics;
+        this.speedUnit = speedUnit;
+    }
+}
+
+class WindDirectionEntity {
+    constructor(entity, useStatistics, directionUnit, directionCompensation) {
+        this.entity = entity;
+        this.useStatistics = useStatistics;
+        this.directionUnit = directionUnit;
+        this.directionCompensation = directionCompensation;
+    }
+}
+
 class CardConfigWrapper {
     static exampleConfig() {
         return {
@@ -250,24 +229,30 @@ class CardConfigWrapper {
             refresh_interval: GlobalConfig.defaultRefreshInterval,
             windspeed_bar_location: GlobalConfig.defaultWindspeedBarLocation,
             windspeed_bar_full: GlobalConfig.defaultWindspeedBarFull,
-            wind_direction_entity: '',
+            wind_direction_entity: {
+                entity: '',
+                direction_unit: GlobalConfig.defaultWindDirectionUnit,
+                use_statistics: false,
+                direction_compensation: 0
+            },
             windspeed_entities: [
                 {
                     entity: '',
-                    name: ''
+                    name: '',
+                    speed_unit: GlobalConfig.defaultInputSpeedUnit,
+                    use_statistics: false
                 }
             ],
-            wind_direction_unit: GlobalConfig.defaultWindDirectionUnit,
-            input_speed_unit: GlobalConfig.defaultInputSpeedUnit,
             output_speed_unit: GlobalConfig.defaultOutputSpeedUnit,
+            speed_range_beaufort: GlobalConfig.defaultSpeedRangeBeaufort,
             speed_range_step: undefined,
             speed_range_max: undefined,
             speed_ranges: undefined,
-            direction_compensation: 0,
             windrose_draw_north_offset: 0,
             cardinal_direction_letters: GlobalConfig.defaultCardinalDirectionLetters,
             matching_strategy: GlobalConfig.defaultMatchingStategy,
-            direction_speed_time_diff: GlobalConfig.defaultDirectionSpeedTimeDiff,
+            center_calm_percentage: GlobalConfig.defaultCenterCalmPercentage,
+            log_level: GlobalConfig.defaultLogLevel
         };
     }
     constructor(cardConfig) {
@@ -280,24 +265,23 @@ class CardConfigWrapper {
         this.windDirectionEntity = this.checkWindDirectionEntity();
         this.windspeedEntities = this.checkWindspeedEntities();
         this.windRoseDrawNorthOffset = this.checkwindRoseDrawNorthOffset();
-        this.directionCompensation = this.checkDirectionCompensation();
         this.windspeedBarLocation = this.checkWindspeedBarLocation();
-        this.windspeedBarFull = this.checkWindspeedBarFull();
+        this.windspeedBarFull = this.checkBooleanDefaultTrue(cardConfig.windspeed_bar_full);
+        this.centerCalmPercentage = this.checkBooleanDefaultTrue(cardConfig.center_calm_percentage);
         this.cardinalDirectionLetters = this.checkCardinalDirectionLetters();
         this.windDirectionCount = this.checkWindDirectionCount();
-        this.windDirectionUnit = this.checkWindDirectionUnit();
-        this.inputSpeedUnit = this.checkInputSpeedUnit();
         this.outputSpeedUnit = this.checkOutputSpeedUnit();
         this.outputSpeedUnitLabel = this.checkOutputSpeedUnitLabel();
+        this.speedRangeBeaufort = this.checkBooleanDefaultTrue(cardConfig.speed_range_beaufort);
         this.speedRangeStep = this.checkSpeedRangeStep();
         this.speedRangeMax = this.checkSpeedRangeMax();
         this.speedRanges = this.checkSpeedRanges();
         this.checkSpeedRangeCombi();
         this.matchingStrategy = this.checkMatchingStrategy();
-        this.directionSpeedTimeDiff = this.checkDirectionSpeedTimeDiff();
         this.filterEntitiesQueryParameter = this.createEntitiesQueryParameter();
-        this.entities = this.createEntitiesArray();
         this.cardColor = this.checkCardColors();
+        this.logLevel = Log.checkLogLevel(this.cardConfig.log_level);
+        Log.info('Config check OK');
     }
     windBarCount() {
         return this.windspeedEntities.length;
@@ -334,22 +318,64 @@ class CardConfigWrapper {
     }
     checkWindDirectionEntity() {
         if (this.cardConfig.wind_direction_entity) {
-            return this.cardConfig.wind_direction_entity;
+            const entityConfig = this.cardConfig.wind_direction_entity;
+            if (entityConfig.entity === undefined) {
+                throw new Error("WindRoseCard: No wind_direction_entity.entity configured.");
+            }
+            const entity = entityConfig.entity;
+            const useStatistics = this.checkBooleanDefaultFalse(entityConfig.use_statistics);
+            const directionUnit = this.checkWindDirectionUnit(entityConfig.direction_unit);
+            const directionCompensation = this.checkDirectionCompensation(entityConfig.direction_compensation);
+            return new WindDirectionEntity(entity, useStatistics, directionUnit, directionCompensation);
         }
         throw new Error("WindRoseCard: No wind_direction_entity configured.");
+    }
+    checkWindDirectionUnit(unit) {
+        if (unit) {
+            if (unit !== 'degrees'
+                && unit !== 'letters') {
+                throw new Error('Invalid wind direction unit configured: ' + unit +
+                    '. Valid options: degrees, letters');
+            }
+            return unit;
+        }
+        return GlobalConfig.defaultWindDirectionUnit;
     }
     checkWindspeedEntities() {
         if (!this.cardConfig.windspeed_entities || this.cardConfig.windspeed_entities.length == 0) {
             throw new Error('WindRoseCard: No wind_speed_entities configured, minimal 1 needed.');
         }
-        return this.cardConfig.windspeed_entities;
+        const entities = [];
+        for (const entityConfig of this.cardConfig.windspeed_entities) {
+            const entity = entityConfig.entity;
+            const name = entityConfig.name;
+            const useStatistics = this.checkBooleanDefaultFalse(entityConfig.use_statistics);
+            const inputSpeedUnit = this.checkInputSpeedUnit(entityConfig.speed_unit);
+            entities.push(new WindSpeedEntity(entity, name, useStatistics, inputSpeedUnit));
+        }
+        return entities;
     }
-    checkDirectionCompensation() {
-        if (this.cardConfig.direction_compensation && isNaN(this.cardConfig.direction_compensation)) {
+    checkInputSpeedUnit(inputSpeedUnit) {
+        if (inputSpeedUnit) {
+            if (inputSpeedUnit !== 'mps'
+                && inputSpeedUnit !== 'kph'
+                && inputSpeedUnit !== 'mph'
+                && inputSpeedUnit !== 'fps'
+                && inputSpeedUnit !== 'knots'
+                && inputSpeedUnit !== 'auto') {
+                throw new Error('Invalid windspeed unit configured: ' + inputSpeedUnit +
+                    '. Valid options: mps, fps, kph, mph, knots, auto');
+            }
+            return inputSpeedUnit;
+        }
+        return GlobalConfig.defaultInputSpeedUnit;
+    }
+    checkDirectionCompensation(directionCompensation) {
+        if (directionCompensation && isNaN(directionCompensation)) {
             throw new Error('WindRoseCard: Invalid direction compensation, should be a number in degress between 0 and 360.');
         }
-        else if (this.cardConfig.direction_compensation) {
-            return this.cardConfig.direction_compensation;
+        else if (directionCompensation) {
+            return directionCompensation;
         }
         return 0;
     }
@@ -372,8 +398,17 @@ class CardConfigWrapper {
         }
         return GlobalConfig.defaultWindspeedBarLocation;
     }
-    checkWindspeedBarFull() {
-        return this.cardConfig.windspeed_bar_full;
+    checkBooleanDefaultFalse(value) {
+        if (value === undefined || value === null) {
+            return false;
+        }
+        return value;
+    }
+    checkBooleanDefaultTrue(value) {
+        if (value === undefined || value === null) {
+            return true;
+        }
+        return value;
     }
     checkCardinalDirectionLetters() {
         if (this.cardConfig.cardinal_direction_letters) {
@@ -394,41 +429,15 @@ class CardConfigWrapper {
         }
         return GlobalConfig.defaultWindDirectionCount;
     }
-    checkWindDirectionUnit() {
-        if (this.cardConfig.wind_direction_unit) {
-            if (this.cardConfig.wind_direction_unit !== 'degrees'
-                && this.cardConfig.wind_direction_unit !== 'letters') {
-                throw new Error('Invalid wind direction unit configured: ' + this.cardConfig.wind_direction_unit +
-                    '. Valid options: degrees, letters');
-            }
-            return this.cardConfig.wind_direction_unit;
-        }
-        return GlobalConfig.defaultWindDirectionUnit;
-    }
-    checkInputSpeedUnit() {
-        if (this.cardConfig.input_speed_unit) {
-            if (this.cardConfig.input_speed_unit !== 'mps'
-                && this.cardConfig.input_speed_unit !== 'kph'
-                && this.cardConfig.input_speed_unit !== 'mph'
-                && this.cardConfig.input_speed_unit !== 'fps'
-                && this.cardConfig.input_speed_unit !== 'knots') {
-                throw new Error('Invalid input windspeed unit configured: ' + this.cardConfig.input_speed_unit +
-                    '. Valid options: mps, fps, kph, mph, knots');
-            }
-            return this.cardConfig.input_speed_unit;
-        }
-        return GlobalConfig.defaultInputSpeedUnit;
-    }
     checkOutputSpeedUnit() {
         if (this.cardConfig.output_speed_unit) {
             if (this.cardConfig.output_speed_unit !== 'mps'
                 && this.cardConfig.output_speed_unit !== 'kph'
                 && this.cardConfig.output_speed_unit !== 'mph'
                 && this.cardConfig.output_speed_unit !== 'fps'
-                && this.cardConfig.output_speed_unit !== 'knots'
-                && this.cardConfig.output_speed_unit !== 'bft') {
+                && this.cardConfig.output_speed_unit !== 'knots') {
                 throw new Error('Invalid output windspeed unit configured: ' + this.cardConfig.output_speed_unit +
-                    '. Valid options: mps, fps, kph, mph, knots, bft');
+                    '. Valid options: mps, fps, kph, mph, knots');
             }
             return this.cardConfig.output_speed_unit;
         }
@@ -497,7 +506,7 @@ class CardConfigWrapper {
         return GlobalConfig.defaultMatchingStategy;
     }
     checkDirectionSpeedTimeDiff() {
-        if (this.cardConfig.direction_speed_time_diff) {
+        if (this.cardConfig.direction_speed_time_diff || this.cardConfig.direction_speed_time_diff === 0) {
             if (isNaN(this.cardConfig.direction_speed_time_diff)) {
                 throw new Error("Direction speed time difference is not a number: " +
                     this.cardConfig.direction_speed_time_diff);
@@ -511,10 +520,19 @@ class CardConfigWrapper {
             .map(config => config.entity)
             .join(',');
     }
-    createEntitiesArray() {
+    createRawEntitiesArray() {
         const entities = [];
-        entities.push(this.windDirectionEntity);
-        return entities.concat(this.windspeedEntities.map(config => config.entity));
+        if (!this.windDirectionEntity.useStatistics) {
+            entities.push(this.windDirectionEntity.entity);
+        }
+        return entities.concat(this.windspeedEntities.filter(config => !config.useStatistics).map(config => config.entity));
+    }
+    createStatisticsEntitiesArray() {
+        const entities = [];
+        if (this.windDirectionEntity.useStatistics) {
+            entities.push(this.windDirectionEntity.entity);
+        }
+        return entities.concat(this.windspeedEntities.filter(config => config.useStatistics).map(config => config.entity));
     }
     checkCardColors() {
         const cardColors = new CardColors();
@@ -548,167 +566,158 @@ class CardConfigWrapper {
     }
 }
 
-class MeasurementMatcher {
-    constructor(directionData, speedData, timeDiff) {
-        this.directionData = directionData;
-        this.speedData = speedData;
-        this.timeDiff = timeDiff;
-    }
-    match(matchingStrategy) {
-        if (matchingStrategy == 'speed-first') {
-            return this.matchSpeedLeading();
-        }
-        else if (matchingStrategy === 'direction-first') {
-            return this.matchDirectionLeading();
-        }
-        throw Error('Unkown matchfing strategy: ' + matchingStrategy);
-    }
-    matchSpeedLeading() {
-        const matchedData = [];
-        this.speedData.forEach((speed) => {
-            const direction = this.findMatchingDirection(speed.lu);
-            if (direction) {
-                if (direction.s === '' || direction.s === null || isNaN(+direction.s)) {
-                    console.log("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
-                }
-                else {
-                    matchedData.push(new DirectionSpeed(direction.s, +speed.s));
-                }
-            }
-            else {
-                console.log('No matching direction found for speed ' + speed.s + " at timestamp " + speed.lu);
-            }
-        });
-        return matchedData;
-    }
-    findMatchingDirection(timestamp) {
-        const selection = this.directionData.filter((direction) => direction.lu >= timestamp - this.timeDiff && direction.lu <= timestamp + 1);
-        if (selection.length == 1) {
-            return selection[0];
-        }
-        else if (selection.length > 1) {
-            selection.sort((a, b) => b.lu - a.lu);
-            return selection[0];
-        }
-        return undefined;
-    }
-    matchDirectionLeading() {
-        const matchedData = [];
-        this.directionData.forEach((direction) => {
-            const speed = this.findMatchingSpeed(direction.lu);
-            if (speed) {
-                if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
-                    console.log("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
-                }
-                else {
-                    matchedData.push(new DirectionSpeed(direction.s, +speed.s));
-                }
-            }
-            else {
-                console.log('No matching speed found for direction ' + direction.s + " at timestamp " + direction.lu);
-            }
-        });
-        return matchedData;
-    }
-    findMatchingSpeed(timestamp) {
-        return this.speedData.find((speed) => speed.lu > timestamp - this.timeDiff && speed.lu < timestamp + this.timeDiff);
-    }
-}
-class DirectionSpeed {
-    constructor(direction, speed) {
-        this.direction = direction;
-        this.speed = speed;
+class DrawUtil {
+    static toRadians(degrees) {
+        return degrees * (Math.PI / 180);
     }
 }
 
-class WindBarData {
-    constructor(speedRangePercentages) {
-        this.speedRangePercentages = speedRangePercentages;
-    }
-}
-
-class WindDirectionData {
-    constructor() {
-        this.minDegrees = 0;
-        this.centerDegrees = 0;
-        this.maxDegrees = 0;
-        this.speedRangePercentages = [];
-        this.directionPercentage = 0;
-    }
-}
-
-class WindDirectionCalculator {
-    constructor(minDegrees, centerDegrees, maxDegrees, config, windSpeedConverter) {
-        this.data = new WindDirectionData();
-        this.speeds = [];
-        this.speedRangeCounts = [];
-        this.speedRangeCount = 0;
-        this.data.centerDegrees = centerDegrees;
+class WindRoseRendererStandaard {
+    constructor(config, speedRanges) {
         this.config = config;
-        this.windSpeedConverter = windSpeedConverter;
-        this.speedRangeFunction = this.windSpeedConverter.getRangeFunction();
-        this.speedConverterFunction = this.windSpeedConverter.getSpeedConverter();
-        this.speedRangeCount = this.windSpeedConverter.getSpeedRanges().length;
-        if (minDegrees < 0) {
-            this.data.minDegrees = minDegrees + 360;
+        this.speedRanges = speedRanges;
+        this.rangeCount = this.speedRanges.length;
+    }
+    updateDimensions(dimensions) {
+        this.dimensions = dimensions;
+    }
+    drawWindRose(windRoseData, canvasContext) {
+        if (this.dimensions === undefined) {
+            Log.error("drawWindRose(): Can't draw, dimensions not set");
+            return;
         }
-        else {
-            this.data.minDegrees = minDegrees;
+        if (windRoseData === undefined) {
+            Log.error("drawWindRose(): Can't draw, no windrose data set.");
+            return;
         }
-        this.data.maxDegrees = maxDegrees;
+        Log.trace('drawWindRose()', windRoseData);
+        this.windRoseData = windRoseData;
+        canvasContext.clearRect(0, 0, 7000, 5000);
+        canvasContext.save();
+        canvasContext.translate(this.dimensions.centerX, this.dimensions.centerY);
+        canvasContext.rotate(DrawUtil.toRadians(this.config.windRoseDrawNorthOffset));
+        this.drawBackground(canvasContext);
+        this.drawWindDirections(canvasContext);
+        this.drawCircleLegend(canvasContext);
+        canvasContext.restore();
     }
-    clear() {
-        this.speeds = [];
-        this.speedRangeCounts = [];
-        this.data.speedRangePercentages = [];
-    }
-    checkDirection(direction) {
-        if (this.data.minDegrees > this.data.maxDegrees) {
-            return direction > this.data.minDegrees || direction <= this.data.maxDegrees;
+    drawWindDirections(canvasContext) {
+        for (let i = 0; i < this.windRoseData.directionPercentages.length; i++) {
+            this.drawWindDirection(this.windRoseData.directionSpeedRangePercentages[i], this.windRoseData.directionPercentages[i], this.windRoseData.directionDegrees[i], canvasContext);
         }
-        return direction > this.data.minDegrees && direction <= this.data.maxDegrees;
     }
-    addSpeed(speed) {
-        this.speeds.push(speed);
-    }
-    calculateDirectionPercentage(maxMeasurements) {
-        this.data.directionPercentage = this.speeds.length / (maxMeasurements / 100);
-    }
-    calculateSpeedPercentages() {
-        const speedRangeCounts = Array(this.speedRangeCount).fill(0);
-        let speedAboveZeroCount = 0;
-        for (const speed of this.speeds) {
-            const speedRangeIndex = this.speedRangeFunction(speed);
-            if (speedRangeIndex !== undefined && speedRangeIndex > 0) {
-                speedRangeCounts[speedRangeIndex]++;
-                speedAboveZeroCount++;
+    drawWindDirection(speedRangePercentages, directionPercentage, degrees, canvasContext) {
+        if (directionPercentage === 0)
+            return;
+        const percentages = Array(speedRangePercentages.length).fill(0);
+        for (let i = speedRangePercentages.length - 1; i >= 0; i--) {
+            percentages[i] = speedRangePercentages[i];
+            if (speedRangePercentages[i] > 0) {
+                for (let x = i - 1; x >= 0; x--) {
+                    percentages[i] += speedRangePercentages[x];
+                }
             }
         }
-        if (speedAboveZeroCount === 0) {
-            return Array(this.speedRangeCount).fill(0);
+        const maxDirectionRadius = (directionPercentage * this.dimensions.outerRadius) / this.windRoseData.maxCirclePercentage;
+        for (let i = this.speedRanges.length - 1; i >= 0; i--) {
+            this.drawSpeedPart(canvasContext, degrees - 90, (maxDirectionRadius * (percentages[i] / 100)), this.speedRanges[i].color);
         }
-        this.data.speedRangePercentages = [];
-        for (const speedRangeCount of speedRangeCounts) {
-            this.data.speedRangePercentages.push(speedRangeCount / (speedAboveZeroCount / 100));
+    }
+    drawSpeedPart(canvasContext, degrees, radius, color) {
+        canvasContext.strokeStyle = this.config.roseLinesColor;
+        canvasContext.lineWidth = 2;
+        canvasContext.beginPath();
+        canvasContext.moveTo(0, 0);
+        canvasContext.arc(0, 0, radius, DrawUtil.toRadians(degrees - (this.config.leaveArc / 2)), DrawUtil.toRadians(degrees + (this.config.leaveArc / 2)));
+        canvasContext.lineTo(0, 0);
+        canvasContext.stroke();
+        canvasContext.fillStyle = color;
+        canvasContext.fill();
+    }
+    drawBackground(canvasContext) {
+        // Clear
+        canvasContext.clearRect(0, 0, 5000, 5000);
+        // Cross
+        canvasContext.lineWidth = 1;
+        canvasContext.strokeStyle = this.config.roseLinesColor;
+        canvasContext.moveTo(0 - this.dimensions.outerRadius, 0);
+        canvasContext.lineTo(this.dimensions.outerRadius, 0);
+        canvasContext.stroke();
+        canvasContext.moveTo(0, 0 - this.dimensions.outerRadius);
+        canvasContext.lineTo(0, this.dimensions.outerRadius);
+        canvasContext.stroke();
+        // Cirlces
+        const circleCount = this.windRoseData.circleCount;
+        canvasContext.strokeStyle = this.config.roseLinesColor;
+        const radiusStep = this.dimensions.outerRadius / circleCount;
+        for (let i = 1; i <= circleCount; i++) {
+            canvasContext.beginPath();
+            canvasContext.arc(0, 0, (radiusStep * i), 0, 2 * Math.PI);
+            canvasContext.stroke();
         }
-        return this.data.speedRangePercentages;
+        // Wind direction text
+        const textCirlceSpace = 15;
+        canvasContext.fillStyle = this.config.roseDirectionLettersColor;
+        canvasContext.font = '22px Arial';
+        canvasContext.textAlign = 'center';
+        canvasContext.textBaseline = 'middle';
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[0], 0, 0 - this.dimensions.outerRadius - textCirlceSpace + 2);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[2], 0, this.dimensions.outerRadius + textCirlceSpace);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[1], this.dimensions.outerRadius + textCirlceSpace, 0);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[3], 0 - this.dimensions.outerRadius - textCirlceSpace, 0);
+    }
+    drawCircleLegend(canvasContext) {
+        canvasContext.font = "10px Arial";
+        canvasContext.fillStyle = this.config.rosePercentagesColor;
+        canvasContext.textAlign = 'center';
+        canvasContext.textBaseline = 'bottom';
+        const radiusStep = this.dimensions.outerRadius / this.windRoseData.circleCount;
+        const centerXY = 0;
+        const xy = Math.cos(DrawUtil.toRadians(45)) * radiusStep;
+        for (let i = 1; i <= this.windRoseData.circleCount; i++) {
+            const xPos = centerXY + (xy * i);
+            const yPos = centerXY + (xy * i);
+            this.drawText(canvasContext, (this.windRoseData.percentagePerCircle * i) + "%", xPos, yPos);
+        }
+    }
+    drawText(canvasContext, text, x, y) {
+        canvasContext.save();
+        canvasContext.translate(x, y);
+        canvasContext.rotate(DrawUtil.toRadians(-this.config.windRoseDrawNorthOffset));
+        canvasContext.fillText(text, 0, 0);
+        canvasContext.restore();
     }
 }
 
-class WindBarCanvas {
-    constructor(config, windSpeedConverter) {
+class WindBarRenderer {
+    constructor(config, outputSpeedUnit) {
+        Log.debug('WindBarRenderer init', config, outputSpeedUnit);
         this.config = config;
-        this.windSpeedConverter = windSpeedConverter;
         if (config.outputUnitLabel) {
             this.outputUnitName = config.outputUnitLabel;
         }
-        else {
-            this.outputUnitName = this.windSpeedConverter.getOutputSpeedUnit().name;
+        else if (config.speedRangeBeaufort) {
+            this.outputUnitName = 'Beaufort';
         }
-        this.speedRanges = this.windSpeedConverter.getOutputSpeedUnit().speedRanges;
+        else {
+            this.outputUnitName = outputSpeedUnit.name;
+        }
+        this.speedRanges = outputSpeedUnit.speedRanges;
+    }
+    updateDimensions(dimensions) {
+        this.dimensions = dimensions;
+        Log.debug('WindBarRenderer.updateDimensions()', this.dimensions);
     }
     drawWindBar(windBarData, canvasContext) {
-        // console.log('Data', windBarData);
+        if (this.dimensions === undefined) {
+            Log.error("drawWindBar(): Can't draw bar, dimensions not set.");
+            return;
+        }
+        if (windBarData === undefined) {
+            Log.error("drawWindBar(): Can't draw bar, windRoseData not set.");
+            return;
+        }
+        Log.trace('drawWindBar(): ', windBarData, this.dimensions);
         if (this.config.orientation === 'horizontal') {
             this.drawBarLegendHorizontal(windBarData.speedRangePercentages, canvasContext);
         }
@@ -721,61 +730,66 @@ class WindBarCanvas {
         if (!this.config.full) {
             highestRangeMeasured = this.getIndexHighestRangeWithMeasurements(speedRangePercentages);
         }
-        const lengthMaxRange = (this.config.length / highestRangeMeasured);
+        const lengthMaxRange = (this.dimensions.length / highestRangeMeasured);
         const maxScale = this.speedRanges[highestRangeMeasured - 1].minSpeed;
         canvasContext.font = '13px Arial';
         canvasContext.textAlign = 'left';
         canvasContext.textBaseline = 'bottom';
         canvasContext.fillStyle = this.config.barNameColor;
         canvasContext.save();
-        canvasContext.translate(this.config.posX, this.config.posY);
+        canvasContext.translate(this.dimensions.posX, this.dimensions.posY);
         canvasContext.rotate(DrawUtil.toRadians(-90));
         canvasContext.fillText(this.config.label, 0, 0);
         canvasContext.restore();
         canvasContext.textAlign = 'center';
         canvasContext.textBaseline = 'middle';
-        let posY = this.config.posY;
+        let posY = this.dimensions.posY;
         for (let i = 0; i < highestRangeMeasured; i++) {
             if (i === highestRangeMeasured - 1) {
                 length = lengthMaxRange * -1;
             }
             else {
-                length = (this.speedRanges[i + 1].minSpeed - this.speedRanges[i].minSpeed) * ((this.config.length - lengthMaxRange) / maxScale) * -1;
+                length = (this.speedRanges[i + 1].minSpeed - this.speedRanges[i].minSpeed) * ((this.dimensions.length - lengthMaxRange) / maxScale) * -1;
             }
             canvasContext.beginPath();
             canvasContext.fillStyle = this.speedRanges[i].color;
-            canvasContext.fillRect(this.config.posX, posY, this.config.height, length);
+            canvasContext.fillRect(this.dimensions.posX, posY, this.dimensions.height, length);
             canvasContext.fill();
             canvasContext.textAlign = 'left';
             canvasContext.fillStyle = this.config.barUnitValuesColor;
-            if (this.config.outputUnit === 'bft') {
+            if (this.config.speedRangeBeaufort === true) {
                 if (i == 12) {
-                    canvasContext.fillText(i + '', this.config.posX + this.config.height + 5, posY - 6);
+                    canvasContext.fillText(i + '', this.dimensions.posX + this.dimensions.height + 5, posY - 6);
                 }
                 else {
-                    canvasContext.fillText(i + '', this.config.posX + this.config.height + 5, posY + (length / 2));
+                    canvasContext.fillText(i + '', this.dimensions.posX + this.dimensions.height + 5, posY + (length / 2));
                 }
             }
             else {
-                canvasContext.fillText(this.speedRanges[i].minSpeed + '', this.config.posX + this.config.height + 5, posY);
+                canvasContext.fillText(this.speedRanges[i].minSpeed + '', this.dimensions.posX + this.dimensions.height + 5, posY);
             }
             canvasContext.textAlign = 'center';
             canvasContext.fillStyle = this.config.barPercentagesColor;
             if (speedRangePercentages[i] > 0) {
-                canvasContext.fillText(`${Math.round(speedRangePercentages[i])}%`, this.config.posX + (this.config.height / 2), posY + (length / 2));
+                canvasContext.fillText(`${Math.round(speedRangePercentages[i])}%`, this.dimensions.posX + (this.dimensions.height / 2), posY + (length / 2));
             }
             canvasContext.stroke();
             posY += length;
         }
+        if (!this.config.speedRangeBeaufort && !this.config.full && highestRangeMeasured < speedRangePercentages.length) {
+            canvasContext.textAlign = 'left';
+            canvasContext.fillStyle = this.config.barUnitValuesColor;
+            canvasContext.fillText(this.speedRanges[highestRangeMeasured].minSpeed + '', this.dimensions.posX + this.dimensions.height + 5, posY);
+        }
         canvasContext.lineWidth = 1;
         canvasContext.strokeStyle = this.config.barBorderColor;
-        canvasContext.rect(this.config.posX, this.config.posY, this.config.height, this.config.length * -1);
+        canvasContext.rect(this.dimensions.posX, this.dimensions.posY, this.dimensions.height, this.dimensions.length * -1);
         canvasContext.stroke();
         canvasContext.beginPath();
         canvasContext.textAlign = 'center';
         canvasContext.textBaseline = 'bottom';
         canvasContext.fillStyle = this.config.barUnitNameColor;
-        canvasContext.fillText(this.outputUnitName, this.config.posX + (this.config.height / 2), this.config.posY - this.config.length - 2);
+        canvasContext.fillText(this.outputUnitName, this.dimensions.posX + (this.dimensions.height / 2), this.dimensions.posY - this.dimensions.length - 2);
         canvasContext.fill();
     }
     drawBarLegendHorizontal(speedRangePercentages, canvasContext) {
@@ -783,53 +797,57 @@ class WindBarCanvas {
         if (!this.config.full) {
             highestRangeMeasured = this.getIndexHighestRangeWithMeasurements(speedRangePercentages);
         }
-        const lengthMaxRange = (this.config.length / highestRangeMeasured);
+        const lengthMaxRange = (this.dimensions.length / highestRangeMeasured);
         const maxScale = this.speedRanges[highestRangeMeasured - 1].minSpeed;
         canvasContext.font = '13px Arial';
         canvasContext.textAlign = 'left';
         canvasContext.textBaseline = 'bottom';
         canvasContext.lineWidth = 1;
         canvasContext.fillStyle = this.config.barNameColor;
-        canvasContext.fillText(this.config.label, this.config.posX, this.config.posY);
+        canvasContext.fillText(this.config.label, this.dimensions.posX, this.dimensions.posY);
         canvasContext.textAlign = 'center';
         canvasContext.textBaseline = 'top';
-        let posX = this.config.posX;
+        let posX = this.dimensions.posX;
         for (let i = 0; i < highestRangeMeasured; i++) {
             if (i === highestRangeMeasured - 1) {
                 length = lengthMaxRange;
             }
             else {
-                length = (this.speedRanges[i + 1].minSpeed - this.speedRanges[i].minSpeed) * ((this.config.length - lengthMaxRange) / maxScale);
+                length = (this.speedRanges[i + 1].minSpeed - this.speedRanges[i].minSpeed) * ((this.dimensions.length - lengthMaxRange) / maxScale);
             }
             canvasContext.beginPath();
             canvasContext.fillStyle = this.speedRanges[i].color;
-            canvasContext.fillRect(posX, this.config.posY, length, this.config.height);
+            canvasContext.fillRect(posX, this.dimensions.posY, length, this.dimensions.height);
             canvasContext.fill();
             canvasContext.textAlign = 'center';
             canvasContext.fillStyle = this.config.barUnitValuesColor;
-            if (this.config.outputUnit === 'bft') {
-                canvasContext.fillText(i + '', posX + (length / 2), this.config.posY + this.config.height + 2);
+            if (this.config.speedRangeBeaufort === true) {
+                canvasContext.fillText(i + '', posX + (length / 2), this.dimensions.posY + this.dimensions.height + 2);
             }
             else {
-                canvasContext.fillText(this.speedRanges[i].minSpeed + '', posX, this.config.posY + this.config.height + 2);
+                canvasContext.fillText(this.speedRanges[i].minSpeed + '', posX, this.dimensions.posY + this.dimensions.height + 2);
             }
             canvasContext.textAlign = 'center';
             canvasContext.fillStyle = this.config.barPercentagesColor;
             if (speedRangePercentages[i] > 0) {
-                canvasContext.fillText(`${Math.round(speedRangePercentages[i])}%`, posX + (length / 2), this.config.posY + 2);
+                canvasContext.fillText(`${Math.round(speedRangePercentages[i])}%`, posX + (length / 2), this.dimensions.posY + 2);
             }
             canvasContext.stroke();
             posX += length;
         }
+        if (!this.config.speedRangeBeaufort && !this.config.full && highestRangeMeasured < speedRangePercentages.length) {
+            canvasContext.fillStyle = this.config.barUnitValuesColor;
+            canvasContext.fillText(this.speedRanges[highestRangeMeasured].minSpeed + '', posX, this.dimensions.posY + this.dimensions.height + 2);
+        }
         canvasContext.lineWidth = 1;
         canvasContext.strokeStyle = this.config.barBorderColor;
-        canvasContext.rect(this.config.posX, this.config.posY, this.config.length, this.config.height);
+        canvasContext.rect(this.dimensions.posX, this.dimensions.posY, this.dimensions.length, this.dimensions.height);
         canvasContext.stroke();
         canvasContext.beginPath();
         canvasContext.textAlign = 'right';
         canvasContext.textBaseline = 'bottom';
         canvasContext.fillStyle = this.config.barUnitNameColor;
-        canvasContext.fillText(this.outputUnitName, this.config.posX + this.config.length, this.config.posY);
+        canvasContext.fillText(this.outputUnitName, this.dimensions.posX + this.dimensions.length, this.dimensions.posY);
         canvasContext.fill();
     }
     getIndexHighestRangeWithMeasurements(speedRangePercentages) {
@@ -842,53 +860,395 @@ class WindBarCanvas {
     }
 }
 
-class WindBarCalculator {
-    constructor(config, windSpeedConverter) {
-        this.speeds = [];
-        this.modified = false;
-        this.speedRangePercentages = [];
-        this.config = config;
-        this.windSpeedConverter = windSpeedConverter;
-        this.speedRangeFunction = this.windSpeedConverter.getRangeFunction();
-        this.speedConverterFunction = this.windSpeedConverter.getSpeedConverter();
-        this.rangeCount = this.windSpeedConverter.getSpeedRanges().length;
-    }
-    addSpeeds(speeds) {
-        for (const speed of speeds) {
-            this.speeds.push(this.speedConverterFunction(speed));
-        }
-        this.modified = true;
-    }
-    calculate() {
-        if (this.modified) {
-            this.calculateSpeedRangePercentages();
-        }
-        return new WindBarData(this.speedRangePercentages);
-    }
-    calculateSpeedRangePercentages() {
-        const speedRangeCounts = Array(this.rangeCount).fill(0);
-        for (const speed of this.speeds) {
-            const windBft = this.speedRangeFunction(speed);
-            if (windBft !== undefined && windBft >= 0) {
-                speedRangeCounts[windBft]++;
-            }
-            else {
-                console.log('Error: bft conversion failed, ', speed);
-            }
-        }
-        this.speedRangePercentages = [];
-        for (const speedRangeCount of speedRangeCounts) {
-            this.speedRangePercentages.push(speedRangeCount / (this.speeds.length / 100));
-        }
+class WindRoseData {
+    constructor(speedRangePercentages, directionSpeedRangePercentages, directionPercentages, directionDegrees, circleCount, percentagePerCircle, maxCirclePercentage) {
+        this.speedRangePercentages = speedRangePercentages;
+        this.directionSpeedRangePercentages = directionSpeedRangePercentages;
+        this.directionPercentages = directionPercentages;
+        this.directionDegrees = directionDegrees;
+        this.circleCount = circleCount;
+        this.percentagePerCircle = percentagePerCircle;
+        this.maxCirclePercentage = maxCirclePercentage;
     }
 }
 
-class WindRoseData {
-    constructor() {
-        this.windDirections = [];
-        this.numberOfCircles = 0;
-        this.percentagePerCircle = 0;
-        this.calmSpeedPercentage = 10;
+class PercentageCalculator {
+    calculate(windCounts) {
+        const maxDirectionTotal = Math.max(...windCounts.directionTotals);
+        Log.trace("Max direction total:", maxDirectionTotal);
+        const speedRangePercentages = this.calculateSpeedRangePercentages(windCounts.speedRangeCounts, windCounts.total);
+        Log.trace("Speed range percentages:", speedRangePercentages);
+        const directionSpeedRangePercentages = this.calculateDirectionSpeedRangePercentages(windCounts.directionSpeedRangeCounts, windCounts.directionTotals);
+        Log.trace("Direction speed range percentages:", directionSpeedRangePercentages);
+        const directionPercentages = this.calculateDirectionPercentages(windCounts.directionTotals, windCounts.total);
+        Log.trace("Direction percentages:", directionPercentages);
+        const directionDegrees = windCounts.speedRangeDegrees;
+        Log.trace("Direction degrees:", directionDegrees);
+        const circleData = this.calculateCirclePercentages(maxDirectionTotal, windCounts.total);
+        Log.trace("Number of circles:", circleData[0]);
+        Log.trace("Percentage per circle:", circleData[1]);
+        Log.trace("Max circle percentage:", circleData[2]);
+        return new WindRoseData(speedRangePercentages, directionSpeedRangePercentages, directionPercentages, directionDegrees, circleData[0], circleData[1], circleData[2]);
+    }
+    calculateSpeedRangePercentages(speedRangeCounts, total) {
+        const onePercent = total / 100;
+        const speedRangePercentages = [];
+        for (const speedRangeCount of speedRangeCounts) {
+            speedRangePercentages.push(speedRangeCount / onePercent);
+        }
+        return speedRangePercentages;
+    }
+    calculateDirectionSpeedRangePercentages(directionSpeedRangeCounts, directionTotals) {
+        const directionSpeedRangePercentages = [];
+        for (let index = 0; index < directionTotals.length; index++) {
+            const speedRangePercentages = [];
+            const onePerc = directionTotals[index] / 100;
+            for (const speedRangeCount of directionSpeedRangeCounts[index]) {
+                if (onePerc === 0) {
+                    speedRangePercentages.push(0);
+                }
+                else {
+                    speedRangePercentages.push(speedRangeCount / onePerc);
+                }
+            }
+            directionSpeedRangePercentages.push(speedRangePercentages);
+        }
+        return directionSpeedRangePercentages;
+    }
+    calculateDirectionPercentages(directionTotals, total) {
+        const onePercTotal = total / 100;
+        const directionPercentages = [];
+        for (const directionTotal of directionTotals) {
+            directionPercentages.push(directionTotal / onePercTotal);
+        }
+        return directionPercentages;
+    }
+    calculateCirclePercentages(maxDirectionTotal, total) {
+        const maxRosePercentage = maxDirectionTotal / (total / 100);
+        let percentagePerCircle = 0;
+        let numberOfCircles = 0;
+        if (maxRosePercentage <= 30) {
+            percentagePerCircle = Math.ceil(maxRosePercentage / 6);
+            numberOfCircles = Math.ceil(maxRosePercentage / percentagePerCircle);
+        }
+        else {
+            percentagePerCircle = Math.ceil(maxRosePercentage / 5);
+            numberOfCircles = 5;
+        }
+        return [numberOfCircles, percentagePerCircle, numberOfCircles * percentagePerCircle];
+    }
+}
+
+class ColorUtil {
+    getColorArray(count) {
+        const startHue = 240;
+        const endHue = 0;
+        const saturation = 100;
+        const lightness = 60;
+        const colors = [];
+        for (let i = 0; i < count; i++) {
+            const hue = (startHue - (((startHue - endHue) / (count - 1)) * i));
+            colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+        }
+        return colors;
+    }
+}
+
+class SpeedUnit {
+    constructor(name, configs, toMpsFunc, fromMpsFunc, speedRangeStep, speedRangeMax) {
+        this.name = name;
+        this.configs = configs;
+        this.toMpsFunc = toMpsFunc;
+        this.fromMpsFunc = fromMpsFunc;
+        this.speedRangeStep = speedRangeStep;
+        this.speedRangeMax = speedRangeMax;
+        this.speedRanges = [];
+    }
+}
+
+class WindSpeedConverter {
+    constructor(outputUnit, rangeBeaufort, rangeStep, rangeMax, speedRanges) {
+        this.outputUnit = outputUnit;
+        this.rangeBeaufort = rangeBeaufort;
+        this.rangeStep = rangeStep;
+        this.rangeMax = rangeMax;
+        this.speedRanges = speedRanges;
+        this.bft = new SpeedUnit('Beaufort', ['bft'], (speed) => speed, (speed) => speed, undefined, undefined);
+        this.mps = new SpeedUnit('m/s', ['mps', 'm/s'], (speed) => speed, (speed) => speed, 5, 30);
+        this.kph = new SpeedUnit('km/h', ['kph', 'km/h'], (speed) => speed / 3.6, (speed) => speed * 3.6, 10, 100);
+        this.mph = new SpeedUnit('m/h', ['mph', 'm/h'], (speed) => speed / 2.2369, (speed) => speed * 2.2369, 10, 70);
+        this.fps = new SpeedUnit('ft/s', ['fps', 'ft/s'], (speed) => speed / 3.2808399, (speed) => speed * 3.2808399, 10, 100);
+        this.knots = new SpeedUnit('knots', ['knots', 'kts', 'knts'], (speed) => speed / 1.9438444924406, (speed) => speed * 1.9438444924406, 5, 60);
+        this.units = [this.bft, this.mps, this.kph, this.mph, this.fps, this.knots];
+        this.outputSpeedUnit = this.getSpeedUnit(this.outputUnit);
+        if (rangeBeaufort === true) {
+            this.outputSpeedUnit.speedRanges = this.generateBeaufortSpeedRanges(outputUnit);
+        }
+        else if (speedRanges && speedRanges.length > 0) {
+            this.outputSpeedUnit.speedRanges = speedRanges;
+        }
+        else if (rangeStep && rangeMax) {
+            this.outputSpeedUnit.speedRanges = this.generateSpeedRanges(rangeStep, rangeMax);
+        }
+        else {
+            this.outputSpeedUnit.speedRanges = this.generateSpeedRanges(this.outputSpeedUnit.speedRangeStep, this.outputSpeedUnit.speedRangeMax);
+        }
+        Log.trace('Speed ranges: ', this.outputSpeedUnit.speedRanges);
+    }
+    getOutputSpeedUnit() {
+        return this.outputSpeedUnit;
+    }
+    getSpeedConverter(inputUnit) {
+        if (inputUnit === this.outputUnit) {
+            return (inputSpeed) => inputSpeed;
+        }
+        else if (inputUnit === 'mps') {
+            return this.outputSpeedUnit.fromMpsFunc;
+        }
+        const inputSpeedUnit = this.getSpeedUnit(inputUnit);
+        const toMpsFunction = inputSpeedUnit.toMpsFunc;
+        const fromMpsFunction = this.outputSpeedUnit.fromMpsFunc;
+        return (speed) => fromMpsFunction(toMpsFunction(speed));
+    }
+    getRangeFunction() {
+        return (speed) => {
+            const speedRange = this.outputSpeedUnit.speedRanges.find((speedRange) => speedRange.isRangeMatch(speed));
+            if (speedRange) {
+                return speedRange.range;
+            }
+            throw new Error("Speed is not in a speedrange: " + speed + " unit: " + this.outputUnit);
+        };
+    }
+    getSpeedRanges() {
+        return this.outputSpeedUnit.speedRanges;
+    }
+    getSpeedUnit(unit) {
+        const speedUnit = this.units.find(speedUnit => speedUnit.configs.includes(unit));
+        if (speedUnit === undefined) {
+            throw new Error("Unknown speed unit: " + unit);
+        }
+        else {
+            Log.debug(`Matched speedunit ${speedUnit.name}`);
+        }
+        return speedUnit;
+    }
+    generateSpeedRanges(step, max) {
+        const colors = new ColorUtil().getColorArray(Math.floor(max / step) + 1);
+        const speedRanges = [];
+        let currentSpeed = 0;
+        let range = 0;
+        while (currentSpeed <= max - step) {
+            speedRanges.push(new SpeedRange(range, currentSpeed, currentSpeed + step, colors[range]));
+            range++;
+            currentSpeed += step;
+        }
+        speedRanges.push(new SpeedRange(range, currentSpeed, -1, colors[range]));
+        return speedRanges;
+    }
+    generateBeaufortSpeedRanges(beaufortType) {
+        const colors = new ColorUtil().getColorArray(13);
+        if (beaufortType === undefined || beaufortType === 'mps') {
+            return [
+                new SpeedRange(0, 0, 0.5, colors[0]),
+                new SpeedRange(1, 0.5, 1.6, colors[1]),
+                new SpeedRange(2, 1.6, 3.4, colors[2]),
+                new SpeedRange(3, 3.4, 5.5, colors[3]),
+                new SpeedRange(4, 5.5, 8, colors[4]),
+                new SpeedRange(5, 8, 10.8, colors[5]),
+                new SpeedRange(6, 10.8, 13.9, colors[6]),
+                new SpeedRange(7, 13.9, 17.2, colors[7]),
+                new SpeedRange(8, 17.2, 20.8, colors[8]),
+                new SpeedRange(9, 20.8, 24.5, colors[9]),
+                new SpeedRange(10, 24.5, 28.5, colors[10]),
+                new SpeedRange(11, 28.5, 32.7, colors[11]),
+                new SpeedRange(12, 32.7, -1, colors[12])
+            ];
+        }
+        else if (beaufortType === 'kph') {
+            return [
+                new SpeedRange(0, 0, 2, colors[0]),
+                new SpeedRange(1, 2, 6, colors[1]),
+                new SpeedRange(2, 6, 12, colors[2]),
+                new SpeedRange(3, 12, 20, colors[3]),
+                new SpeedRange(4, 20, 29, colors[4]),
+                new SpeedRange(5, 29, 39, colors[5]),
+                new SpeedRange(6, 39, 50, colors[6]),
+                new SpeedRange(7, 50, 62, colors[7]),
+                new SpeedRange(8, 62, 75, colors[8]),
+                new SpeedRange(9, 75, 89, colors[9]),
+                new SpeedRange(10, 89, 103, colors[10]),
+                new SpeedRange(11, 103, 118, colors[11]),
+                new SpeedRange(12, 118, -1, colors[12])
+            ];
+        }
+        else if (beaufortType === 'mph') {
+            return [
+                new SpeedRange(0, 0, 1, colors[0]),
+                new SpeedRange(1, 1, 4, colors[1]),
+                new SpeedRange(2, 4, 8, colors[2]),
+                new SpeedRange(3, 8, 13, colors[3]),
+                new SpeedRange(4, 13, 19, colors[4]),
+                new SpeedRange(5, 19, 25, colors[5]),
+                new SpeedRange(6, 25, 32, colors[6]),
+                new SpeedRange(7, 32, 39, colors[7]),
+                new SpeedRange(8, 39, 47, colors[8]),
+                new SpeedRange(9, 47, 55, colors[9]),
+                new SpeedRange(10, 55, 64, colors[10]),
+                new SpeedRange(11, 64, 73, colors[11]),
+                new SpeedRange(12, 73, -1, colors[12])
+            ];
+        }
+        else if (beaufortType === 'fps') {
+            return [
+                new SpeedRange(0, 0, 1.6, colors[0]),
+                new SpeedRange(1, 1.6, 5.2, colors[1]),
+                new SpeedRange(2, 5.2, 11.2, colors[2]),
+                new SpeedRange(3, 11.2, 18, colors[3]),
+                new SpeedRange(4, 18, 26.2, colors[4]),
+                new SpeedRange(5, 26.2, 35.4, colors[5]),
+                new SpeedRange(6, 35.4, 45.6, colors[6]),
+                new SpeedRange(7, 45.6, 56.4, colors[7]),
+                new SpeedRange(8, 56.4, 68.2, colors[8]),
+                new SpeedRange(9, 68.2, 80.4, colors[9]),
+                new SpeedRange(10, 80.4, 93.5, colors[10]),
+                new SpeedRange(11, 93.5, 107, colors[11]),
+                new SpeedRange(12, 107, -1, colors[12])
+            ];
+        }
+        else if (beaufortType === 'knots') {
+            return [
+                new SpeedRange(0, 0, 1, colors[0]),
+                new SpeedRange(1, 1, 4, colors[1]),
+                new SpeedRange(2, 4, 7, colors[2]),
+                new SpeedRange(3, 7, 11, colors[3]),
+                new SpeedRange(4, 11, 17, colors[4]),
+                new SpeedRange(5, 17, 22, colors[5]),
+                new SpeedRange(6, 22, 28, colors[6]),
+                new SpeedRange(7, 28, 34, colors[7]),
+                new SpeedRange(8, 34, 41, colors[8]),
+                new SpeedRange(9, 41, 48, colors[9]),
+                new SpeedRange(10, 48, 56, colors[10]),
+                new SpeedRange(11, 56, 64, colors[11]),
+                new SpeedRange(12, 64, -1, colors[12])
+            ];
+        }
+        throw new Error("No Bft reanges for type: " + beaufortType);
+    }
+}
+
+class WindRoseConfig {
+    constructor(centerRadius, windDirectionCount, windDirectionUnit, leaveArc, cardinalDirectionLetters, directionCompensation, windRoseDrawNorthOffset, roseLinesColor, roseDirectionLettersColor, rosePercentagesColor) {
+        this.centerRadius = centerRadius;
+        this.windDirectionCount = windDirectionCount;
+        this.windDirectionUnit = windDirectionUnit;
+        this.leaveArc = leaveArc;
+        this.cardinalDirectionLetters = cardinalDirectionLetters;
+        this.directionCompensation = directionCompensation;
+        this.windRoseDrawNorthOffset = windRoseDrawNorthOffset;
+        this.roseLinesColor = roseLinesColor;
+        this.roseDirectionLettersColor = roseDirectionLettersColor;
+        this.rosePercentagesColor = rosePercentagesColor;
+    }
+}
+
+class WindBarConfig {
+    constructor(label, orientation, full, inputUnit, outputUnit, outputUnitLabel, speedRangeBeaufort, barBorderColor, barUnitNameColor, barNameColor, barUnitValuesColor, barPercentagesColor) {
+        this.label = label;
+        this.orientation = orientation;
+        this.full = full;
+        this.inputUnit = inputUnit;
+        this.outputUnit = outputUnit;
+        this.outputUnitLabel = outputUnitLabel;
+        this.speedRangeBeaufort = speedRangeBeaufort;
+        this.barBorderColor = barBorderColor;
+        this.barUnitNameColor = barUnitNameColor;
+        this.barNameColor = barNameColor;
+        this.barUnitValuesColor = barUnitValuesColor;
+        this.barPercentagesColor = barPercentagesColor;
+    }
+}
+
+class WindRoseConfigFactory {
+    constructor(cardConfig) {
+        this.cardConfig = cardConfig;
+    }
+    createWindRoseConfig() {
+        return new WindRoseConfig(25, this.cardConfig.windDirectionCount, this.cardConfig.windDirectionEntity.directionUnit, (360 / this.cardConfig.windDirectionCount) - 8, this.cardConfig.cardinalDirectionLetters, this.cardConfig.windDirectionEntity.directionCompensation, this.cardConfig.windRoseDrawNorthOffset, this.cardConfig.cardColor.roseLines, this.cardConfig.cardColor.roseDirectionLetters, this.cardConfig.cardColor.rosePercentages);
+    }
+    createWindBarConfigs() {
+        const windBarConfigs = [];
+        for (let i = 0; i < this.cardConfig.windspeedEntities.length; i++) {
+            const entity = this.cardConfig.windspeedEntities[i];
+            let windBarConfig;
+            if (this.cardConfig.windspeedBarLocation === 'bottom') {
+                windBarConfig = new WindBarConfig(entity.name, 'horizontal', this.cardConfig.windspeedBarFull, entity.speedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.speedRangeBeaufort, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
+            }
+            else if (this.cardConfig.windspeedBarLocation === 'right') {
+                windBarConfig = new WindBarConfig(entity.name, 'vertical', this.cardConfig.windspeedBarFull, entity.speedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.speedRangeBeaufort, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
+            }
+            else {
+                throw Error('Unknown windspeed bar location: ' + this.cardConfig.windspeedBarLocation);
+            }
+            windBarConfigs.push(windBarConfig);
+        }
+        return windBarConfigs;
+    }
+}
+
+class WindRoseDimensions {
+    constructor(centerX, centerY, offsetWidth, outerRadius, canvasHeight) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.offsetWidth = offsetWidth;
+        this.outerRadius = outerRadius;
+        this.canvasHeight = canvasHeight;
+    }
+}
+
+class WindBarDimensions {
+    constructor(posX, posY, height, length) {
+        this.posX = posX;
+        this.posY = posY;
+        this.height = height;
+        this.length = length;
+    }
+}
+
+class DimensionsCalculator {
+    calculateWindRoseDimensions(canvasWidth, maxWidth, windBarCount, windspeedBarLocation) {
+        let offsetWidth = 0;
+        let roseWidth = canvasWidth;
+        if (maxWidth && canvasWidth > maxWidth) {
+            roseWidth = maxWidth;
+            offsetWidth = (canvasWidth - roseWidth) / 2;
+        }
+        if (windspeedBarLocation == 'right') {
+            roseWidth = roseWidth - ((60 + 12) * windBarCount);
+            offsetWidth = (canvasWidth - roseWidth - ((60 + 12) * windBarCount)) / 2;
+        }
+        let outerRadius = (roseWidth / 2) - 35;
+        let roseCenterX = offsetWidth + (roseWidth / 2);
+        let roseCenterY = outerRadius + 25;
+        let canvasHeight = 0;
+        if (windspeedBarLocation === 'right') {
+            canvasHeight = roseCenterY + outerRadius + 25;
+        }
+        else if (windspeedBarLocation === 'bottom') {
+            canvasHeight = roseCenterY + outerRadius + (40 * windBarCount) + 35;
+        }
+        else {
+            Log.error('Unknown windspeed bar location', windspeedBarLocation);
+        }
+        return new WindRoseDimensions(roseCenterX, roseCenterY, offsetWidth, outerRadius, canvasHeight);
+    }
+    calculatorWindBarDimensions(dimensions, barLocation, index) {
+        if (barLocation === 'bottom') {
+            return new WindBarDimensions(dimensions.offsetWidth + 5, dimensions.centerY + dimensions.outerRadius + 30 + ((GlobalConfig.horizontalBarHeight + 40) * index), GlobalConfig.horizontalBarHeight, ((dimensions.outerRadius + 30) * 2));
+        }
+        if (barLocation === 'right') {
+            return new WindBarDimensions(dimensions.centerX + dimensions.outerRadius + 35 + ((GlobalConfig.verticalBarHeight + 60) * index), dimensions.centerY + dimensions.outerRadius + 20, GlobalConfig.verticalBarHeight, dimensions.outerRadius * 2 + 24);
+        }
+        throw Error('Unknown windspeed bar location: ' + barLocation);
     }
 }
 
@@ -935,40 +1295,79 @@ class WindDirectionConverter {
     }
 }
 
-class WindRoseCalculator {
+class WindCounts {
+    constructor() {
+        this.total = 0;
+        this.speedRangeDegrees = [];
+        this.speedRangeCounts = [];
+        this.directionTotals = [];
+        this.directionSpeedRangeCounts = [];
+    }
+    init(speedRangeCount, directionCount) {
+        this.total = 0;
+        this.speedRangeCounts = new Array(speedRangeCount).fill(0);
+        this.directionTotals = new Array(directionCount).fill(0);
+        this.directionSpeedRangeCounts = new Array(directionCount).fill([]);
+        for (let i = 0; i < this.directionSpeedRangeCounts.length; i++) {
+            this.directionSpeedRangeCounts[i] = new Array(speedRangeCount).fill(0);
+        }
+    }
+    add(windDirectionIndex, speedRangeIndex) {
+        this.total++;
+        this.speedRangeCounts[speedRangeIndex]++;
+        this.directionTotals[windDirectionIndex]++;
+        this.directionSpeedRangeCounts[windDirectionIndex][speedRangeIndex]++;
+    }
+}
+
+class WindDirection {
+    constructor(minDegrees, maxDegrees) {
+        this.minDegrees = minDegrees;
+        this.maxDegrees = maxDegrees;
+    }
+    checkDirection(direction) {
+        if (this.minDegrees < 0) {
+            return (direction - 360) > this.minDegrees || direction <= this.maxDegrees;
+        }
+        return direction > this.minDegrees && direction <= this.maxDegrees;
+    }
+}
+
+class MeasurementCounter {
     constructor(config, windSpeedConverter) {
         this.windDirectionConverter = new WindDirectionConverter();
-        this.data = new WindRoseData();
         this.windDirections = [];
-        this.modified = false;
-        this.totalMeasurements = 0;
-        this.maxMeasurementsDirection = 0;
-        this.calmSpeedMeasurements = 0;
+        this.windData = new WindCounts();
         this.config = config;
         this.windSpeedConverter = windSpeedConverter;
         this.speedRangeFunction = this.windSpeedConverter.getRangeFunction();
-        this.speedConverterFunction = this.windSpeedConverter.getSpeedConverter();
         const leaveDegrees = 360 / config.windDirectionCount;
         for (let i = 0; i < config.windDirectionCount; i++) {
             const degrees = (i * leaveDegrees);
             const minDegrees = degrees - (leaveDegrees / 2);
             const maxDegrees = degrees + (leaveDegrees / 2);
-            this.windDirections.push(new WindDirectionCalculator(minDegrees, degrees, maxDegrees, this.config, windSpeedConverter));
+            this.windDirections.push(new WindDirection(minDegrees, maxDegrees));
+            this.windData.speedRangeDegrees.push(degrees);
         }
     }
-    clear() {
-        this.totalMeasurements = 0;
-        this.maxMeasurementsDirection = 0;
-        this.calmSpeedMeasurements = 0;
-        this.data.percentagePerCircle = 0;
-        this.data.numberOfCircles = 0;
-        this.data.calmSpeedPercentage = 0;
-        for (const windDirection of this.windDirections) {
-            windDirection.clear();
-        }
+    init(inputSpeedUnit) {
+        this.windData.init(this.windSpeedConverter.getSpeedRanges().length, this.config.windDirectionCount);
+        this.speedConverterFunction = this.windSpeedConverter.getSpeedConverter(inputSpeedUnit);
     }
-    addDataPoint(direction, speed) {
+    getMeasurementCounts() {
+        Log.debug('Wind counts: ', this.windData);
+        return this.windData;
+    }
+    addWindMeasurements(direction, speed) {
         const convertedSpeed = this.speedConverterFunction(speed);
+        const speedRangeIndex = this.speedRangeFunction(convertedSpeed);
+        const convertedDirection = this.convertDirection(direction);
+        const compensatedDirection = this.compensateDirection(convertedDirection);
+        const windDirectionIndex = this.windDirections.findIndex(windDirection => windDirection.checkDirection(compensatedDirection));
+        Log.trace("Wind measurement: ", direction, speed, windDirectionIndex, speedRangeIndex);
+        this.windData.add(windDirectionIndex, speedRangeIndex);
+    }
+    convertDirection(direction) {
         let degrees = 0;
         if (this.config.windDirectionUnit === 'letters') {
             degrees = this.windDirectionConverter.getDirection(direction);
@@ -979,137 +1378,46 @@ class WindRoseCalculator {
         else {
             degrees = direction;
         }
+        return degrees;
+    }
+    compensateDirection(degrees) {
+        let compensatedDegrees = degrees;
         if (this.config.directionCompensation !== 0) {
-            degrees = +degrees + this.config.directionCompensation;
-            if (degrees < 0) {
-                degrees = 360 + degrees;
+            compensatedDegrees = +compensatedDegrees + this.config.directionCompensation;
+            if (compensatedDegrees < 0) {
+                compensatedDegrees = 360 + compensatedDegrees;
             }
-            else if (degrees >= 360) {
-                degrees = degrees - 360;
-            }
-        }
-        for (const windDirection of this.windDirections) {
-            if (windDirection.checkDirection(degrees)) {
-                windDirection.addSpeed(convertedSpeed);
-                this.totalMeasurements++;
+            else if (compensatedDegrees >= 360) {
+                compensatedDegrees = compensatedDegrees - 360;
             }
         }
-        if (this.speedRangeFunction(convertedSpeed) == 0) {
-            this.calmSpeedMeasurements++;
-        }
-        this.modified = true;
-    }
-    calculate() {
-        this.maxMeasurementsDirection = Math.max(...this.windDirections.map(windDirection => windDirection.speeds.length));
-        for (const windDirection of this.windDirections) {
-            windDirection.calculateDirectionPercentage(this.maxMeasurementsDirection);
-        }
-        this.calculateSpeedPercentages();
-        this.calculateWindRosePercentages();
-        this.data.windDirections = this.windDirections.map(windDirection => windDirection.data);
-        //console.log(this.calmSpeedMeasurements, this.totalMeasurements);
-        this.data.calmSpeedPercentage = this.calmSpeedMeasurements / (this.totalMeasurements / 100);
-        return this.data;
-    }
-    calculateWindRosePercentages() {
-        const maxRosePercentage = this.maxMeasurementsDirection / (this.totalMeasurements / 100);
-        if (maxRosePercentage <= 30) {
-            this.data.percentagePerCircle = Math.ceil(maxRosePercentage / 6);
-            this.data.numberOfCircles = Math.ceil(maxRosePercentage / this.data.percentagePerCircle);
-        }
-        else {
-            this.data.percentagePerCircle = Math.ceil(maxRosePercentage / 5);
-            this.data.numberOfCircles = 5;
-        }
-    }
-    calculateSpeedPercentages() {
-        for (const windDirection of this.windDirections) {
-            windDirection.calculateSpeedPercentages();
-        }
+        return compensatedDegrees;
     }
 }
 
-class WindBarConfig {
-    constructor(label, posX, posY, height, length, orientation, full, inputUnit, outputUnit, outputUnitLabel, barBorderColor, barUnitNameColor, barNameColor, barUnitValuesColor, barPercentagesColor) {
-        this.label = label;
-        this.posX = posX;
-        this.posY = posY;
-        this.height = height;
-        this.length = length;
-        this.orientation = orientation;
-        this.full = full;
-        this.inputUnit = inputUnit;
-        this.outputUnit = outputUnit;
-        this.outputUnitLabel = outputUnitLabel;
-        this.barBorderColor = barBorderColor;
-        this.barUnitNameColor = barUnitNameColor;
-        this.barNameColor = barNameColor;
-        this.barUnitValuesColor = barUnitValuesColor;
-        this.barPercentagesColor = barPercentagesColor;
-    }
-}
-
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const t$3=window,e$5=t$3.ShadowRoot&&(void 0===t$3.ShadyCSS||t$3.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$3=Symbol(),n$4=new WeakMap;class o$4{constructor(t,e,n){if(this._$cssResult$=!0,n!==s$3)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$5&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=n$4.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n$4.set(s,t));}return t}toString(){return this.cssText}}const r$3=t=>new o$4("string"==typeof t?t:t+"",void 0,s$3),i$3=(t,...e)=>{const n=1===t.length?t[0]:e.reduce(((e,s,n)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[n+1]),t[0]);return new o$4(n,t,s$3)},S$1=(s,n)=>{e$5?s.adoptedStyleSheets=n.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):n.forEach((e=>{const n=document.createElement("style"),o=t$3.litNonce;void 0!==o&&n.setAttribute("nonce",o),n.textContent=e.cssText,s.appendChild(n);}));},c$1=e$5?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$3(e)})(t):t;
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var s$2;const e$4=window,r$2=e$4.trustedTypes,h$1=r$2?r$2.emptyScript:"",o$3=e$4.reactiveElementPolyfillSupport,n$3={toAttribute(t,i){switch(i){case Boolean:t=t?h$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,i){let s=t;switch(i){case Boolean:s=null!==t;break;case Number:s=null===t?null:Number(t);break;case Object:case Array:try{s=JSON.parse(t);}catch(t){s=null;}}return s}},a$1=(t,i)=>i!==t&&(i==i||t==t),l$2={attribute:!0,type:String,converter:n$3,reflect:!1,hasChanged:a$1};class d$1 extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this.u();}static addInitializer(t){var i;this.finalize(),(null!==(i=this.h)&&void 0!==i?i:this.h=[]).push(t);}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((i,s)=>{const e=this._$Ep(s,i);void 0!==e&&(this._$Ev.set(e,s),t.push(e));})),t}static createProperty(t,i=l$2){if(i.state&&(i.attribute=!1),this.finalize(),this.elementProperties.set(t,i),!i.noAccessor&&!this.prototype.hasOwnProperty(t)){const s="symbol"==typeof t?Symbol():"__"+t,e=this.getPropertyDescriptor(t,s,i);void 0!==e&&Object.defineProperty(this.prototype,t,e);}}static getPropertyDescriptor(t,i,s){return {get(){return this[i]},set(e){const r=this[t];this[i]=e,this.requestUpdate(t,r,s);},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)||l$2}static finalize(){if(this.hasOwnProperty("finalized"))return !1;this.finalized=!0;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,i=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const s of i)this.createProperty(s,t[s]);}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(i){const s=[];if(Array.isArray(i)){const e=new Set(i.flat(1/0).reverse());for(const i of e)s.unshift(c$1(i));}else void 0!==i&&s.push(c$1(i));return s}static _$Ep(t,i){const s=i.attribute;return !1===s?void 0:"string"==typeof s?s:"string"==typeof t?t.toLowerCase():void 0}u(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)));}addController(t){var i,s;(null!==(i=this._$ES)&&void 0!==i?i:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(s=t.hostConnected)||void 0===s||s.call(t));}removeController(t){var i;null===(i=this._$ES)||void 0===i||i.splice(this._$ES.indexOf(t)>>>0,1);}_$Eg(){this.constructor.elementProperties.forEach(((t,i)=>{this.hasOwnProperty(i)&&(this._$Ei.set(i,this[i]),delete this[i]);}));}createRenderRoot(){var t;const s=null!==(t=this.shadowRoot)&&void 0!==t?t:this.attachShadow(this.constructor.shadowRootOptions);return S$1(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostConnected)||void 0===i?void 0:i.call(t)}));}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostDisconnected)||void 0===i?void 0:i.call(t)}));}attributeChangedCallback(t,i,s){this._$AK(t,s);}_$EO(t,i,s=l$2){var e;const r=this.constructor._$Ep(t,s);if(void 0!==r&&!0===s.reflect){const h=(void 0!==(null===(e=s.converter)||void 0===e?void 0:e.toAttribute)?s.converter:n$3).toAttribute(i,s.type);this._$El=t,null==h?this.removeAttribute(r):this.setAttribute(r,h),this._$El=null;}}_$AK(t,i){var s;const e=this.constructor,r=e._$Ev.get(t);if(void 0!==r&&this._$El!==r){const t=e.getPropertyOptions(r),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(s=t.converter)||void 0===s?void 0:s.fromAttribute)?t.converter:n$3;this._$El=r,this[r]=h.fromAttribute(i,t.type),this._$El=null;}}requestUpdate(t,i,s){let e=!0;void 0!==t&&(((s=s||this.constructor.getPropertyOptions(t)).hasChanged||a$1)(this[t],i)?(this._$AL.has(t)||this._$AL.set(t,i),!0===s.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,s))):e=!1),!this.isUpdatePending&&e&&(this._$E_=this._$Ej());}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,i)=>this[i]=t)),this._$Ei=void 0);let i=!1;const s=this._$AL;try{i=this.shouldUpdate(s),i?(this.willUpdate(s),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostUpdate)||void 0===i?void 0:i.call(t)})),this.update(s)):this._$Ek();}catch(t){throw i=!1,this._$Ek(),t}i&&this._$AE(s);}willUpdate(t){}_$AE(t){var i;null===(i=this._$ES)||void 0===i||i.forEach((t=>{var i;return null===(i=t.hostUpdated)||void 0===i?void 0:i.call(t)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t);}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return !0}update(t){void 0!==this._$EC&&(this._$EC.forEach(((t,i)=>this._$EO(i,this[i],t))),this._$EC=void 0),this._$Ek();}updated(t){}firstUpdated(t){}}d$1.finalized=!0,d$1.elementProperties=new Map,d$1.elementStyles=[],d$1.shadowRootOptions={mode:"open"},null==o$3||o$3({ReactiveElement:d$1}),(null!==(s$2=e$4.reactiveElementVersions)&&void 0!==s$2?s$2:e$4.reactiveElementVersions=[]).push("1.6.1");
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var t$2;const i$2=window,s$1=i$2.trustedTypes,e$3=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,o$2=`lit$${(Math.random()+"").slice(9)}$`,n$2="?"+o$2,l$1=`<${n$2}>`,h=document,r$1=(t="")=>h.createComment(t),d=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,c=t=>u(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]),v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,a=/-->/g,f=/>/g,_=RegExp(">|[ \t\n\f\r](?:([^\\s\"'>=/]+)([ \t\n\f\r]*=[ \t\n\f\r]*(?:[^ \t\n\f\r\"'`<>=]|(\"|')|))|$)","g"),m=/'/g,p=/"/g,$=/^(?:script|style|textarea|title)$/i,g=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),y=g(1),x=Symbol.for("lit-noChange"),b=Symbol.for("lit-nothing"),T=new WeakMap,A=h.createTreeWalker(h,129,null,!1),E=(t,i)=>{const s=t.length-1,n=[];let h,r=2===i?"<svg>":"",d=v;for(let i=0;i<s;i++){const s=t[i];let e,u,c=-1,g=0;for(;g<s.length&&(d.lastIndex=g,u=d.exec(s),null!==u);)g=d.lastIndex,d===v?"!--"===u[1]?d=a:void 0!==u[1]?d=f:void 0!==u[2]?($.test(u[2])&&(h=RegExp("</"+u[2],"g")),d=_):void 0!==u[3]&&(d=_):d===_?">"===u[0]?(d=null!=h?h:v,c=-1):void 0===u[1]?c=-2:(c=d.lastIndex-u[2].length,e=u[1],d=void 0===u[3]?_:'"'===u[3]?p:m):d===p||d===m?d=_:d===a||d===f?d=v:(d=_,h=void 0);const y=d===_&&t[i+1].startsWith("/>")?" ":"";r+=d===v?s+l$1:c>=0?(n.push(e),s.slice(0,c)+"$lit$"+s.slice(c)+o$2+y):s+o$2+(-2===c?(n.push(void 0),i):y);}const u=r+(t[s]||"<?>")+(2===i?"</svg>":"");if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return [void 0!==e$3?e$3.createHTML(u):u,n]};class C{constructor({strings:t,_$litType$:i},e){let l;this.parts=[];let h=0,d=0;const u=t.length-1,c=this.parts,[v,a]=E(t,i);if(this.el=C.createElement(v,e),A.currentNode=this.el.content,2===i){const t=this.el.content,i=t.firstChild;i.remove(),t.append(...i.childNodes);}for(;null!==(l=A.nextNode())&&c.length<u;){if(1===l.nodeType){if(l.hasAttributes()){const t=[];for(const i of l.getAttributeNames())if(i.endsWith("$lit$")||i.startsWith(o$2)){const s=a[d++];if(t.push(i),void 0!==s){const t=l.getAttribute(s.toLowerCase()+"$lit$").split(o$2),i=/([.?@])?(.*)/.exec(s);c.push({type:1,index:h,name:i[2],strings:t,ctor:"."===i[1]?M:"?"===i[1]?k:"@"===i[1]?H:S});}else c.push({type:6,index:h});}for(const i of t)l.removeAttribute(i);}if($.test(l.tagName)){const t=l.textContent.split(o$2),i=t.length-1;if(i>0){l.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)l.append(t[s],r$1()),A.nextNode(),c.push({type:2,index:++h});l.append(t[i],r$1());}}}else if(8===l.nodeType)if(l.data===n$2)c.push({type:2,index:h});else {let t=-1;for(;-1!==(t=l.data.indexOf(o$2,t+1));)c.push({type:7,index:h}),t+=o$2.length-1;}h++;}}static createElement(t,i){const s=h.createElement("template");return s.innerHTML=t,s}}function P(t,i,s=t,e){var o,n,l,h;if(i===x)return i;let r=void 0!==e?null===(o=s._$Co)||void 0===o?void 0:o[e]:s._$Cl;const u=d(i)?void 0:i._$litDirective$;return (null==r?void 0:r.constructor)!==u&&(null===(n=null==r?void 0:r._$AO)||void 0===n||n.call(r,!1),void 0===u?r=void 0:(r=new u(t),r._$AT(t,s,e)),void 0!==e?(null!==(l=(h=s)._$Co)&&void 0!==l?l:h._$Co=[])[e]=r:s._$Cl=r),void 0!==r&&(i=P(t,r._$AS(t,i.values),r,e)),i}class V{constructor(t,i){this.u=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}v(t){var i;const{el:{content:s},parts:e}=this._$AD,o=(null!==(i=null==t?void 0:t.creationScope)&&void 0!==i?i:h).importNode(s,!0);A.currentNode=o;let n=A.nextNode(),l=0,r=0,d=e[0];for(;void 0!==d;){if(l===d.index){let i;2===d.type?i=new N(n,n.nextSibling,this,t):1===d.type?i=new d.ctor(n,d.name,d.strings,this,t):6===d.type&&(i=new I(n,this,t)),this.u.push(i),d=e[++r];}l!==(null==d?void 0:d.index)&&(n=A.nextNode(),l++);}return o}p(t){let i=0;for(const s of this.u)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class N{constructor(t,i,s,e){var o;this.type=2,this._$AH=b,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cm=null===(o=null==e?void 0:e.isConnected)||void 0===o||o;}get _$AU(){var t,i;return null!==(i=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==i?i:this._$Cm}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=P(this,t,i),d(t)?t===b||null==t||""===t?(this._$AH!==b&&this._$AR(),this._$AH=b):t!==this._$AH&&t!==x&&this.g(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):c(t)?this.k(t):this.g(t);}O(t,i=this._$AB){return this._$AA.parentNode.insertBefore(t,i)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}g(t){this._$AH!==b&&d(this._$AH)?this._$AA.nextSibling.data=t:this.T(h.createTextNode(t)),this._$AH=t;}$(t){var i;const{values:s,_$litType$:e}=t,o="number"==typeof e?this._$AC(t):(void 0===e.el&&(e.el=C.createElement(e.h,this.options)),e);if((null===(i=this._$AH)||void 0===i?void 0:i._$AD)===o)this._$AH.p(s);else {const t=new V(o,this),i=t.v(this.options);t.p(s),this.T(i),this._$AH=t;}}_$AC(t){let i=T.get(t.strings);return void 0===i&&T.set(t.strings,i=new C(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const o of t)e===i.length?i.push(s=new N(this.O(r$1()),this.O(r$1()),this,this.options)):s=i[e],s._$AI(o),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){var s;for(null===(s=this._$AP)||void 0===s||s.call(this,!1,!0,i);t&&t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){var i;void 0===this._$AM&&(this._$Cm=t,null===(i=this._$AP)||void 0===i||i.call(this,t));}}class S{constructor(t,i,s,e,o){this.type=1,this._$AH=b,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=o,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=b;}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,i=this,s,e){const o=this.strings;let n=!1;if(void 0===o)t=P(this,t,i,0),n=!d(t)||t!==this._$AH&&t!==x,n&&(this._$AH=t);else {const e=t;let l,h;for(t=o[0],l=0;l<o.length-1;l++)h=P(this,e[s+l],i,l),h===x&&(h=this._$AH[l]),n||(n=!d(h)||h!==this._$AH[l]),h===b?t=b:t!==b&&(t+=(null!=h?h:"")+o[l+1]),this._$AH[l]=h;}n&&!e&&this.j(t);}j(t){t===b?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"");}}class M extends S{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===b?void 0:t;}}const R=s$1?s$1.emptyScript:"";class k extends S{constructor(){super(...arguments),this.type=4;}j(t){t&&t!==b?this.element.setAttribute(this.name,R):this.element.removeAttribute(this.name);}}class H extends S{constructor(t,i,s,e,o){super(t,i,s,e,o),this.type=5;}_$AI(t,i=this){var s;if((t=null!==(s=P(this,t,i,0))&&void 0!==s?s:b)===x)return;const e=this._$AH,o=t===b&&e!==b||t.capture!==e.capture||t.once!==e.once||t.passive!==e.passive,n=t!==b&&(e===b||o);o&&this.element.removeEventListener(this.name,this,e),n&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){var i,s;"function"==typeof this._$AH?this._$AH.call(null!==(s=null===(i=this.options)||void 0===i?void 0:i.host)&&void 0!==s?s:this.element,t):this._$AH.handleEvent(t);}}class I{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){P(this,t);}}const z=i$2.litHtmlPolyfillSupport;null==z||z(C,N),(null!==(t$2=i$2.litHtmlVersions)&&void 0!==t$2?t$2:i$2.litHtmlVersions=[]).push("2.6.1");const Z=(t,i,s)=>{var e,o;const n=null!==(e=null==s?void 0:s.renderBefore)&&void 0!==e?e:i;let l=n._$litPart$;if(void 0===l){const t=null!==(o=null==s?void 0:s.renderBefore)&&void 0!==o?o:null;n._$litPart$=l=new N(i.insertBefore(r$1(),t),t,void 0,null!=s?s:{});}return l._$AI(t),l};
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var l,o$1;class s extends d$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const i=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=Z(i,this.renderRoot,this.renderOptions);}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0);}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1);}render(){return x}}s.finalized=!0,s._$litElement$=!0,null===(l=globalThis.litElementHydrateSupport)||void 0===l||l.call(globalThis,{LitElement:s});const n$1=globalThis.litElementPolyfillSupport;null==n$1||n$1({LitElement:s});(null!==(o$1=globalThis.litElementVersions)&&void 0!==o$1?o$1:globalThis.litElementVersions=[]).push("3.2.2");
-
-class WindRoseCanvas {
-    constructor(config, windSpeedConverter) {
+class WindRoseRendererCenterCalm {
+    constructor(config, speedRanges) {
         this.config = config;
-        this.windSpeedConverter = windSpeedConverter;
-        this.speedRanges = this.windSpeedConverter.getSpeedRanges();
+        this.speedRanges = speedRanges;
         this.rangeCount = this.speedRanges.length;
     }
+    updateDimensions(dimensions) {
+        this.dimensions = dimensions;
+    }
     drawWindRose(windRoseData, canvasContext) {
-        // console.log('Drawing windrose', this.config.outerRadius);
+        if (this.dimensions === undefined) {
+            Log.error("drawWindRose(): Can't draw, dimensions not set");
+            return;
+        }
+        if (windRoseData === undefined) {
+            Log.error("drawWindRose(): Can't draw, no windrose data.");
+            return;
+        }
+        Log.trace('drawWindRose()', windRoseData);
         this.windRoseData = windRoseData;
-        canvasContext.clearRect(0, 0, 700, 500);
+        canvasContext.clearRect(0, 0, 7000, 5000);
         canvasContext.save();
-        canvasContext.translate(this.config.centerX, this.config.centerY);
+        canvasContext.translate(this.dimensions.centerX, this.dimensions.centerY);
         canvasContext.rotate(DrawUtil.toRadians(this.config.windRoseDrawNorthOffset));
         this.drawBackground(canvasContext);
         this.drawWindDirections(canvasContext);
@@ -1118,35 +1426,32 @@ class WindRoseCanvas {
         canvasContext.restore();
     }
     drawWindDirections(canvasContext) {
-        for (const windDirection of this.windRoseData.windDirections) {
-            this.drawWindDirection(windDirection, canvasContext);
+        for (let i = 0; i < this.windRoseData.directionPercentages.length; i++) {
+            this.drawWindDirection(this.windRoseData.directionSpeedRangePercentages[i], this.windRoseData.directionPercentages[i], this.windRoseData.directionDegrees[i], canvasContext);
         }
     }
-    drawWindDirection(windDirection, canvasContext) {
-        if (windDirection.speedRangePercentages.length === 0)
+    drawWindDirection(speedRangePercentages, directionPercentage, degrees, canvasContext) {
+        if (directionPercentage === 0)
             return;
-        const percentages = Array(windDirection.speedRangePercentages.length).fill(0);
-        for (let i = windDirection.speedRangePercentages.length - 1; i >= 0; i--) {
-            percentages[i] = windDirection.speedRangePercentages[i];
-            if (windDirection.speedRangePercentages[i] > 0) {
-                for (let x = i - 1; x >= 1; x--) {
-                    percentages[i] += windDirection.speedRangePercentages[x];
+        const percentages = Array(speedRangePercentages.length).fill(0);
+        for (let i = speedRangePercentages.length - 1; i >= 0; i--) {
+            percentages[i] = speedRangePercentages[i];
+            if (speedRangePercentages[i] > 0) {
+                for (let x = i - 1; x >= 0; x--) {
+                    percentages[i] += speedRangePercentages[x];
                 }
             }
         }
-        const maxRadius = (this.config.outerRadius - this.config.centerRadius) * (windDirection.directionPercentage / 100);
-        for (let i = this.speedRanges.length - 1; i >= 1; i--) {
-            this.drawSpeedPart(canvasContext, windDirection.centerDegrees - 90, (maxRadius * (percentages[i] / 100)) + this.config.centerRadius, this.speedRanges[i].color);
+        const maxDirectionRadius = (directionPercentage * (this.dimensions.outerRadius - this.config.centerRadius)) / this.windRoseData.maxCirclePercentage;
+        for (let i = this.speedRanges.length - 1; i >= 0; i--) {
+            this.drawSpeedPart(canvasContext, degrees - 90, (maxDirectionRadius * (percentages[i] / 100)) + this.config.centerRadius, this.speedRanges[i].color);
         }
     }
     drawSpeedPart(canvasContext, degrees, radius, color) {
-        //var x = Math.cos(DrawUtil.toRadians(degreesCompensated - (this.config.leaveArc / 2)));
-        //var y = Math.sin(DrawUtil.toRadians(degreesCompensated - (this.config.leaveArc / 2)));
         canvasContext.strokeStyle = this.config.roseLinesColor;
         canvasContext.lineWidth = 2;
         canvasContext.beginPath();
         canvasContext.moveTo(0, 0);
-        //canvasContext.lineTo(this.config.centerX + x, this.config.centerY + y);
         canvasContext.arc(0, 0, radius, DrawUtil.toRadians(degrees - (this.config.leaveArc / 2)), DrawUtil.toRadians(degrees + (this.config.leaveArc / 2)));
         canvasContext.lineTo(0, 0);
         canvasContext.stroke();
@@ -1159,20 +1464,22 @@ class WindRoseCanvas {
         // Cross
         canvasContext.lineWidth = 1;
         canvasContext.strokeStyle = this.config.roseLinesColor;
-        canvasContext.moveTo(0 - this.config.outerRadius, 0);
-        canvasContext.lineTo(this.config.outerRadius, 0);
+        canvasContext.moveTo(0 - this.dimensions.outerRadius, 0);
+        canvasContext.lineTo(this.dimensions.outerRadius, 0);
         canvasContext.stroke();
-        canvasContext.moveTo(0, 0 - this.config.outerRadius);
-        canvasContext.lineTo(0, this.config.outerRadius);
+        canvasContext.moveTo(0, 0 - this.dimensions.outerRadius);
+        canvasContext.lineTo(0, this.dimensions.outerRadius);
         canvasContext.stroke();
-        // console.log('Cirlce center:', this.config.centerX, this.config.centerY);
         // Cirlces
+        const circleCount = this.windRoseData.circleCount;
         canvasContext.strokeStyle = this.config.roseLinesColor;
-        const radiusStep = (this.config.outerRadius - this.config.centerRadius) / this.windRoseData.numberOfCircles;
-        for (let i = 1; i <= this.windRoseData.numberOfCircles; i++) {
+        const radiusStep = (this.dimensions.outerRadius - this.config.centerRadius) / circleCount;
+        let circleRadius = this.config.centerRadius + radiusStep;
+        for (let i = 1; i <= circleCount; i++) {
             canvasContext.beginPath();
-            canvasContext.arc(0, 0, this.config.centerRadius + (radiusStep * i), 0, 2 * Math.PI);
+            canvasContext.arc(0, 0, circleRadius, 0, 2 * Math.PI);
             canvasContext.stroke();
+            circleRadius += radiusStep;
         }
         // Wind direction text
         const textCirlceSpace = 15;
@@ -1180,23 +1487,22 @@ class WindRoseCanvas {
         canvasContext.font = '22px Arial';
         canvasContext.textAlign = 'center';
         canvasContext.textBaseline = 'middle';
-        this.drawText(canvasContext, this.config.cardinalDirectionLetters[0], 0, 0 - this.config.outerRadius - textCirlceSpace + 2);
-        this.drawText(canvasContext, this.config.cardinalDirectionLetters[2], 0, this.config.outerRadius + textCirlceSpace);
-        this.drawText(canvasContext, this.config.cardinalDirectionLetters[1], this.config.outerRadius + textCirlceSpace, 0);
-        this.drawText(canvasContext, this.config.cardinalDirectionLetters[3], 0 - this.config.outerRadius - textCirlceSpace, 0);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[0], 0, 0 - this.dimensions.outerRadius - textCirlceSpace + 2);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[2], 0, this.dimensions.outerRadius + textCirlceSpace);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[1], this.dimensions.outerRadius + textCirlceSpace, 0);
+        this.drawText(canvasContext, this.config.cardinalDirectionLetters[3], 0 - this.dimensions.outerRadius - textCirlceSpace, 0);
     }
     drawCircleLegend(canvasContext) {
         canvasContext.font = "10px Arial";
         canvasContext.fillStyle = this.config.rosePercentagesColor;
         canvasContext.textAlign = 'center';
         canvasContext.textBaseline = 'bottom';
-        const radiusStep = (this.config.outerRadius - this.config.centerRadius) / this.windRoseData.numberOfCircles;
+        const radiusStep = (this.dimensions.outerRadius - this.config.centerRadius) / this.windRoseData.circleCount;
         const centerXY = Math.cos(DrawUtil.toRadians(45)) * this.config.centerRadius;
         const xy = Math.cos(DrawUtil.toRadians(45)) * radiusStep;
-        for (let i = 1; i <= this.windRoseData.numberOfCircles; i++) {
+        for (let i = 1; i <= this.windRoseData.circleCount; i++) {
             const xPos = centerXY + (xy * i);
             const yPos = centerXY + (xy * i);
-            //canvasContext.fillText((this.windRoseData.percentagePerCircle * i) + "%", xPos, yPos);
             this.drawText(canvasContext, (this.windRoseData.percentagePerCircle * i) + "%", xPos, yPos);
         }
     }
@@ -1213,7 +1519,7 @@ class WindRoseCanvas {
         canvasContext.textBaseline = 'middle';
         canvasContext.strokeStyle = this.config.rosePercentagesColor;
         canvasContext.fillStyle = this.config.rosePercentagesColor;
-        this.drawText(canvasContext, Math.round(this.windRoseData.calmSpeedPercentage) + '%', 0, 0);
+        this.drawText(canvasContext, Math.round(this.windRoseData.speedRangePercentages[0]) + '%', 0, 0);
     }
     drawText(canvasContext, text, x, y) {
         canvasContext.save();
@@ -1224,119 +1530,453 @@ class WindRoseCanvas {
     }
 }
 
-class WindRoseConfig {
-    constructor(outerRadius, centerRadius, centerX, centerY, windDirectionCount, windDirectionUnit, leaveArc, cardinalDirectionLetters, directionCompensation, inputUnit, outputUnit, windRoseDrawNorthOffset, roseLinesColor, roseDirectionLettersColor, rosePercentagesColor) {
-        this.outerRadius = outerRadius;
-        this.centerRadius = centerRadius;
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.windDirectionCount = windDirectionCount;
-        this.windDirectionUnit = windDirectionUnit;
-        this.leaveArc = leaveArc;
-        this.cardinalDirectionLetters = cardinalDirectionLetters;
-        this.directionCompensation = directionCompensation;
-        this.inputUnit = inputUnit;
-        this.outputUnit = outputUnit;
-        this.windRoseDrawNorthOffset = windRoseDrawNorthOffset;
-        this.roseLinesColor = roseLinesColor;
-        this.roseDirectionLettersColor = roseDirectionLettersColor;
-        this.rosePercentagesColor = rosePercentagesColor;
+class PercentageCalculatorCenterCalm extends PercentageCalculator {
+    calculate(windCounts) {
+        windCounts.directionSpeedRangeCounts.forEach((speedRangeCounts) => speedRangeCounts[0] = 0);
+        return super.calculate(windCounts);
     }
 }
 
-class WindRoseConfigFactory {
-    constructor(cardConfig) {
+class WindRoseDirigent {
+    constructor() {
+        this.windBarRenderers = [];
+        //Calculated data
+        this.windRoseData = [];
+        this.initReady = false;
+        this.dimensionsReady = false;
+        this.measurementsReady = false;
+    }
+    init(cardConfig, measurementProvider) {
+        this.initReady = true;
+        this.dimensionsReady = false;
+        this.measurementsReady = false;
         this.cardConfig = cardConfig;
-        this.roseCenterX = 0;
-        this.roseCenterY = 0;
-        this.outerRadius = 0;
-        this.canvasHeight = 100;
-        this.offsetWidth = 0;
+        this.measurementProvider = measurementProvider;
+        this.configFactory = new WindRoseConfigFactory(cardConfig);
+        const windRoseConfig = this.configFactory.createWindRoseConfig();
+        this.windSpeedConverter = new WindSpeedConverter(cardConfig.outputSpeedUnit, cardConfig.speedRangeBeaufort, cardConfig.speedRangeStep, cardConfig.speedRangeMax, cardConfig.speedRanges);
+        this.measurementCounter = new MeasurementCounter(windRoseConfig, this.windSpeedConverter);
+        this.dimensionCalculator = new DimensionsCalculator();
+        if (this.cardConfig.centerCalmPercentage) {
+            this.percentageCalculator = new PercentageCalculatorCenterCalm();
+            this.windRoseRenderer = new WindRoseRendererCenterCalm(windRoseConfig, this.windSpeedConverter.getSpeedRanges());
+        }
+        else {
+            this.percentageCalculator = new PercentageCalculator();
+            this.windRoseRenderer = new WindRoseRendererStandaard(windRoseConfig, this.windSpeedConverter.getSpeedRanges());
+        }
+        this.windBarRenderers = [];
+        const barConfigs = this.configFactory.createWindBarConfigs();
+        for (let i = 0; i < cardConfig.windBarCount(); i++) {
+            this.windBarRenderers.push(new WindBarRenderer(barConfigs[i], this.windSpeedConverter.getOutputSpeedUnit()));
+        }
+        this.windRoseData = [];
     }
-    createWindRoseConfig(canvasWidth) {
-        this.calculateDimensions(canvasWidth);
-        return new WindRoseConfig(this.outerRadius, 25, this.roseCenterX, this.roseCenterY, this.cardConfig.windDirectionCount, this.cardConfig.windDirectionUnit, (360 / this.cardConfig.windDirectionCount) - 5, this.cardConfig.cardinalDirectionLetters, this.cardConfig.directionCompensation, this.cardConfig.inputSpeedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.windRoseDrawNorthOffset, this.cardConfig.cardColor.roseLines, this.cardConfig.cardColor.roseDirectionLetters, this.cardConfig.cardColor.rosePercentages);
-    }
-    createWindBarConfigs(canvasWidth) {
-        this.calculateDimensions(canvasWidth);
-        const windBarConfigs = [];
-        for (let i = 0; i < this.cardConfig.windspeedEntities.length; i++) {
-            const entity = this.cardConfig.windspeedEntities[i];
-            let windBarConfig;
-            if (this.cardConfig.windspeedBarLocation === 'bottom') {
-                windBarConfig = new WindBarConfig(entity.name, this.offsetWidth + 5, this.roseCenterY + this.outerRadius + 30 + ((GlobalConfig.horizontalBarHeight + 40) * i), GlobalConfig.horizontalBarHeight, ((this.outerRadius + 30) * 2), 'horizontal', this.cardConfig.windspeedBarFull, this.cardConfig.inputSpeedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
+    resize(width) {
+        if (this.initReady) {
+            Log.debug('resize()', width);
+            const roseDimensions = this.dimensionCalculator.calculateWindRoseDimensions(width, this.cardConfig.maxWidth, this.cardConfig.windBarCount(), this.cardConfig.windspeedBarLocation);
+            this.windRoseRenderer.updateDimensions(roseDimensions);
+            for (let i = 0; i < this.cardConfig.windBarCount(); i++) {
+                this.windBarRenderers[i].updateDimensions(this.dimensionCalculator.calculatorWindBarDimensions(roseDimensions, this.cardConfig.windspeedBarLocation, i));
             }
-            else if (this.cardConfig.windspeedBarLocation === 'right') {
-                windBarConfig = new WindBarConfig(entity.name, this.roseCenterX + this.outerRadius + 35 + ((GlobalConfig.verticalBarHeight + 60) * i), this.roseCenterY + this.outerRadius + 20, GlobalConfig.verticalBarHeight, this.outerRadius * 2 + 24, 'vertical', this.cardConfig.windspeedBarFull, this.cardConfig.inputSpeedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
+            this.dimensionsReady = true;
+            return roseDimensions.canvasHeight;
+        }
+        else {
+            Log.debug('resize() ignored, not inited yet');
+        }
+        return 400;
+    }
+    refreshData() {
+        if (this.initReady) {
+            Log.debug('refreshData()');
+            return this.measurementProvider.getMeasurements().then((matchedGroups) => {
+                Log.debug('Matched measurements:', matchedGroups);
+                for (let i = 0; i < matchedGroups.length; i++) {
+                    this.measurementCounter.init(this.cardConfig.windspeedEntities[i].speedUnit);
+                    for (const measurement of matchedGroups[i]) {
+                        this.measurementCounter.addWindMeasurements(measurement.direction, measurement.speed);
+                    }
+                    const windCounts = this.measurementCounter.getMeasurementCounts();
+                    this.windRoseData.push(this.percentageCalculator.calculate(windCounts));
+                }
+                this.measurementsReady = true;
+                return Promise.resolve(true);
+            });
+        }
+        else {
+            Log.debug('refreshData() ignored, not inited yet');
+            return Promise.resolve(false);
+        }
+    }
+    render(canvasContext) {
+        if (canvasContext && this.initReady && this.dimensionsReady && this.measurementsReady) {
+            Log.debug('render()', canvasContext, this.windRoseData, this.windBarRenderers);
+            this.windRoseRenderer.drawWindRose(this.windRoseData[0], canvasContext);
+            for (let i = 0; i < this.windBarRenderers.length; i++) {
+                this.windBarRenderers[i].drawWindBar(this.windRoseData[i], canvasContext);
+            }
+        }
+        else {
+            Log.debug("render(): Could not render, no canvasContext, dimensions or windRoseData", canvasContext, this.windRoseData);
+        }
+    }
+}
+
+class DirectionSpeed {
+    constructor(direction, speed) {
+        this.direction = direction;
+        this.speed = speed;
+    }
+}
+
+class MeasurementMatcher {
+    constructor(matchingStrategy) {
+        this.matchingStrategy = matchingStrategy;
+        Log.debug('Matching init:', matchingStrategy);
+        if (this.matchingStrategy !== 'direction-first' && this.matchingStrategy !== 'speed-first') {
+            throw Error('Unkown matchfing strategy: ' + this.matchingStrategy);
+        }
+    }
+    matchStatsHistory(directionStats, speedHistory) {
+        const directionSpeed = [];
+        if (this.matchingStrategy == 'direction-first') {
+            for (const direction of directionStats) {
+                const speed = this.findHistoryInPeriod(direction, speedHistory);
+                if (speed) {
+                    if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
+                        Log.warn("Spped " + speed.s + " at timestamp " + direction.start + " is not a number.");
+                    }
+                    else {
+                        directionSpeed.push(new DirectionSpeed(direction.mean, +speed.s));
+                    }
+                }
+                else {
+                    Log.trace('No matching speed found for direction ' + direction.mean + " at timestamp " + direction.start);
+                }
+            }
+        }
+        else {
+            for (const speed of speedHistory) {
+                const direction = this.findStatsAtTime(speed.lu * 1000, directionStats);
+                if (direction) {
+                    directionSpeed.push(new DirectionSpeed(direction.mean, +speed.s));
+                    if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
+                        Log.warn("Spped " + speed.s + " at timestamp " + direction.start + " is not a number.");
+                    }
+                    else {
+                        directionSpeed.push(new DirectionSpeed(direction.mean, +speed.s));
+                    }
+                }
+                else {
+                    Log.trace('No matching direction found for speed ' + speed.s + " at timestamp " + speed.lu);
+                }
+            }
+        }
+        return directionSpeed;
+    }
+    matchHistoryStats(directionHistory, speedStats) {
+        const directionSpeed = [];
+        if (this.matchingStrategy == 'direction-first') {
+            for (const direction of directionHistory) {
+                const speed = this.findStatsAtTime(direction.lu * 1000, speedStats);
+                if (speed) {
+                    directionSpeed.push(new DirectionSpeed(direction.s, speed.mean));
+                }
+                else {
+                    Log.trace('No matching speed found for direction ' + direction.s + " at timestamp " + direction.lu);
+                }
+            }
+        }
+        else {
+            for (const speed of speedStats) {
+                const direction = this.findHistoryInPeriod(speed, directionHistory);
+                if (direction) {
+                    if (direction.s === '' || direction.s === null || isNaN(+direction.s)) {
+                        Log.warn("Direction " + direction.s + " at timestamp " + direction.lu + " is not a number.");
+                    }
+                    else {
+                        directionSpeed.push(new DirectionSpeed(direction.s, speed.mean));
+                    }
+                }
+                else {
+                    Log.trace('No matching direction found for speed ' + speed.start + " at timestamp " + speed.mean);
+                }
+            }
+        }
+        return directionSpeed;
+    }
+    matchHistoryHistory(directionHistory, speedHistory) {
+        const directionSpeed = [];
+        if (this.matchingStrategy == 'direction-first') {
+            for (const direction of directionHistory) {
+                const speed = this.findHistoryBackAtTime(direction.lu, speedHistory);
+                if (speed) {
+                    if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
+                        Log.warn("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
+                    }
+                    else {
+                        directionSpeed.push(new DirectionSpeed(direction.s, +speed.s));
+                    }
+                }
+                else {
+                    Log.trace('No matching speed found for direction ' + direction.s + " at timestamp " + direction.lu);
+                }
+            }
+        }
+        else {
+            for (const speed of speedHistory) {
+                const direction = this.findHistoryBackAtTime(speed.lu, directionHistory);
+                if (direction) {
+                    if (direction.s === '' || direction.s === null || isNaN(+direction.s)) {
+                        Log.warn("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
+                    }
+                    else {
+                        directionSpeed.push(new DirectionSpeed(direction.s, +speed.s));
+                    }
+                }
+                else {
+                    Log.trace('No matching direction found for speed ' + speed.s + " at timestamp " + speed.lu);
+                }
+            }
+        }
+        return directionSpeed;
+    }
+    matchStatsStats(directionStats, speedStats) {
+        const directionSpeed = [];
+        if (this.matchingStrategy == 'direction-first') {
+            for (const directionStat of directionStats) {
+                const matchedSpeed = this.findMatchingStatistic(directionStat, speedStats);
+                if (matchedSpeed) {
+                    directionSpeed.push(new DirectionSpeed(directionStat.mean, matchedSpeed.mean));
+                }
+                else {
+                    Log.trace(`No matching speed found for direction ${directionStat.mean} at timestamp start:${directionStat.start} end:${directionStat.end}`);
+                }
+            }
+        }
+        else {
+            for (const speedStat of speedStats) {
+                const matchedDirection = this.findMatchingStatistic(speedStat, directionStats);
+                if (matchedDirection) {
+                    directionSpeed.push(new DirectionSpeed(matchedDirection.mean, speedStat.mean));
+                }
+                else {
+                    Log.trace(`No matching direction found for speed ${speedStat.mean} at timestamp start:${speedStat.start} end:${speedStat.end}`);
+                }
+            }
+        }
+        return directionSpeed;
+    }
+    findStatsAtTime(timestamp, stats) {
+        return stats.find((stat) => stat.start <= timestamp && timestamp <= stat.end);
+    }
+    findHistoryInPeriod(stat, history) {
+        const start = stat.start / 1000;
+        const end = stat.end / 1000;
+        const selection = history.filter((measurement) => start < measurement.lu && end >= measurement.lu);
+        if (selection.length == 1) {
+            return selection[0];
+        }
+        else if (selection.length > 1) {
+            selection.sort((a, b) => b.lu - a.lu);
+            return selection[Math.trunc(selection.length / 2)];
+        }
+        return undefined;
+    }
+    findMatchingStatistic(statistic, stats) {
+        return stats.find((stat) => statistic.start === stat.start && statistic.end === stat.end);
+    }
+    findHistoryBackAtTime(timestamp, history) {
+        let match;
+        for (const measurement of history) {
+            if (measurement.lu <= timestamp) {
+                match = measurement;
             }
             else {
-                throw Error('Unknown windspeed bar location: ' + this.cardConfig.windspeedBarLocation);
+                break;
             }
-            windBarConfigs.push(windBarConfig);
         }
-        return windBarConfigs;
-    }
-    calculateDimensions(canvasWidth) {
-        let roseWidth = canvasWidth;
-        if (this.cardConfig.maxWidth && canvasWidth > this.cardConfig.maxWidth) {
-            roseWidth = this.cardConfig.maxWidth;
-            this.offsetWidth = (canvasWidth - roseWidth) / 2;
-        }
-        if (this.cardConfig.windspeedBarLocation == 'right') {
-            roseWidth = roseWidth - ((60 + 12) * this.cardConfig.windBarCount());
-            this.offsetWidth = (canvasWidth - roseWidth - ((60 + 12) * this.cardConfig.windBarCount())) / 2;
-        }
-        this.outerRadius = (roseWidth / 2) - 35;
-        this.roseCenterX = this.offsetWidth + (roseWidth / 2);
-        this.roseCenterY = this.outerRadius + 25;
-        if (this.cardConfig.windspeedBarLocation === 'right') {
-            this.canvasHeight = this.roseCenterY + this.outerRadius + 25;
-        }
-        else if (this.cardConfig.windspeedBarLocation === 'bottom') {
-            this.canvasHeight = this.roseCenterY + this.outerRadius + (40 * this.cardConfig.windBarCount()) + 35;
-        }
-        else ;
+        return match;
     }
 }
 
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const e$2=e=>n=>"function"==typeof n?((e,n)=>(customElements.define(e,n),n))(e,n):((e,n)=>{const{kind:t,elements:s}=n;return {kind:t,elements:s,finisher(n){customElements.define(e,n);}}})(e,n);
+class HomeAssistantMeasurementProvider {
+    constructor(cardConfig) {
+        this.waitingForMeasurements = false;
+        this.cardConfig = cardConfig;
+        this.rawEntities = cardConfig.createRawEntitiesArray();
+        this.statsEntities = cardConfig.createStatisticsEntitiesArray();
+        this.measurementMatcher = new MeasurementMatcher(this.cardConfig.matchingStrategy);
+    }
+    setHass(hass) {
+        this.hass = hass;
+    }
+    getMeasurements() {
+        Log.debug('getMeasurements()');
+        if (this.hass === undefined) {
+            Log.error('Cant read measurements, HASS not set.');
+            return Promise.resolve([]);
+        }
+        if (this.waitingForMeasurements) {
+            Log.error('Measurements already requested, waiting');
+            return Promise.resolve([]);
+        }
+        this.waitingForMeasurements = true;
+        return Promise.all([this.getHistory(), this.getStatistics()]).then(results => {
+            this.checkLoadedData(results);
+            this.waitingForMeasurements = false;
+            Log.debug("Measurements loaded:", results);
+            const directionSpeedData = [];
+            if (this.cardConfig.windDirectionEntity.useStatistics) {
+                const directionStats = results[1][this.cardConfig.windDirectionEntity.entity];
+                for (let speedEntity of this.cardConfig.windspeedEntities) {
+                    if (speedEntity.useStatistics) {
+                        const speedStats = results[1][speedEntity.entity];
+                        const directionSpeeds = this.measurementMatcher.matchStatsStats(directionStats, speedStats);
+                        directionSpeedData.push(directionSpeeds);
+                        this.logMatchingStats(speedEntity.entity, directionStats.length, speedStats.length, directionSpeeds.length);
+                    }
+                    else {
+                        const speedHistory = results[0][speedEntity.entity];
+                        const directionSpeeds = this.measurementMatcher.matchStatsHistory(directionStats, speedHistory);
+                        directionSpeedData.push(directionSpeeds);
+                        this.logMatchingStats(speedEntity.entity, directionStats.length, speedHistory.length, directionSpeeds.length);
+                    }
+                }
+            }
+            else {
+                const directionHistory = results[0][this.cardConfig.windDirectionEntity.entity];
+                for (let speedEntity of this.cardConfig.windspeedEntities) {
+                    if (speedEntity.useStatistics) {
+                        const speedStats = results[1][speedEntity.entity];
+                        const directionSpeeds = this.measurementMatcher.matchHistoryStats(directionHistory, speedStats);
+                        directionSpeedData.push(directionSpeeds);
+                        this.logMatchingStats(speedEntity.entity, directionHistory.length, speedStats.length, directionSpeeds.length);
+                    }
+                    else {
+                        const speedHistory = results[0][speedEntity.entity];
+                        const directionSpeeds = this.measurementMatcher.matchHistoryHistory(directionHistory, speedHistory);
+                        directionSpeedData.push(directionSpeeds);
+                        this.logMatchingStats(speedEntity.entity, directionHistory.length, speedHistory.length, directionSpeeds.length);
+                    }
+                }
+            }
+            return Promise.resolve(directionSpeedData);
+        });
+    }
+    checkLoadedData(results) {
+        const directionEntity = this.cardConfig.windDirectionEntity.entity;
+        if (results[0][directionEntity] === undefined && results[1][directionEntity] === undefined) {
+            throw new Error(`Entity ${directionEntity} did not return data, is this the correct entity name?`);
+        }
+        for (const speedEntity of this.cardConfig.windspeedEntities) {
+            if (results[0][speedEntity.entity] === undefined && results[1][speedEntity.entity] === undefined) {
+                throw new Error(`Entity ${speedEntity.entity} did not return data, is this the correct entity name?`);
+            }
+        }
+    }
+    logMatchingStats(speedEntity, directionMeasurements, speedMeasurements, matchedMeasurements) {
+        Log.info(`Loaded measurements: directions: ${directionMeasurements}, speeds: ${speedMeasurements}, entity: ${speedEntity}`);
+        if (this.cardConfig.matchingStrategy === 'direction-first') {
+            if (matchedMeasurements < directionMeasurements) {
+                Log.warn(`Matching results entity ${speedEntity}, ${directionMeasurements - matchedMeasurements} not matched of total ${directionMeasurements} direction measurements`);
+            }
+            else {
+                Log.info(`Matched measurements, direction-first: ${matchedMeasurements}`);
+            }
+        }
+        else {
+            if (matchedMeasurements < speedMeasurements) {
+                Log.warn(`Matching results entity ${speedEntity}, ${speedMeasurements - matchedMeasurements}  not matched of total ${speedMeasurements} speed measurements`);
+            }
+            else {
+                Log.info(`Matched measurements, speed-first: ${matchedMeasurements}`);
+            }
+        }
+    }
+    getHistory() {
+        if (this.rawEntities.length === 0) {
+            return Promise.resolve({});
+        }
+        const startTime = new Date();
+        startTime.setHours(startTime.getHours() - this.cardConfig.hoursToShow);
+        const endTime = new Date();
+        const historyMessage = {
+            "type": "history/history_during_period",
+            "start_time": startTime,
+            "end_time": endTime,
+            "minimal_response": true,
+            "no_attributes": true,
+            "entity_ids": this.rawEntities
+        };
+        return this.hass.callWS(historyMessage);
+    }
+    getStatistics() {
+        if (this.statsEntities.length === 0) {
+            return Promise.resolve({});
+        }
+        const startTime = new Date();
+        startTime.setHours(startTime.getHours() - this.cardConfig.hoursToShow);
+        const statisticsMessage = {
+            "type": "recorder/statistics_during_period",
+            "start_time": startTime,
+            "period": "5minute",
+            "statistic_ids": this.statsEntities,
+            "types": ["mean"]
+        };
+        return this.hass.callWS(statisticsMessage);
+    }
+}
 
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const i$1=(i,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,finisher(n){n.createProperty(e.key,i);}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:e.key,initializer(){"function"==typeof e.initializer&&(this[e.key]=e.initializer.call(this));},finisher(n){n.createProperty(e.key,i);}};function e$1(e){return (n,t)=>void 0!==t?((i,e,n)=>{e.constructor.createProperty(n,i);})(e,n,t):i$1(e,n)}
+class EntityCheckResult {
+    constructor(entity, unit, error) {
+        this.entity = entity;
+        this.unit = unit;
+        this.error = error;
+    }
+}
 
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function t$1(t){return e$1({...t,state:!0})}
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const o=({finisher:e,descriptor:t})=>(o,n)=>{var r;if(void 0===n){const n=null!==(r=o.originalKey)&&void 0!==r?r:o.key,i=null!=t?{kind:"method",placement:"prototype",key:n,descriptor:t(o.key)}:{...o,key:n};return null!=e&&(i.finisher=function(t){e(t,n);}),i}{const r=o.constructor;void 0!==t&&Object.defineProperty(o,n,t(n)),null==e||e(r,n);}};
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function i(i,n){return o({descriptor:o=>{const t={get(){var o,n;return null!==(n=null===(o=this.renderRoot)||void 0===o?void 0:o.querySelector(i))&&void 0!==n?n:null},enumerable:!0,configurable:!0};if(n){const n="symbol"==typeof o?Symbol():"__"+o;t.get=function(){var o,t;return void 0===this[n]&&(this[n]=null!==(t=null===(o=this.renderRoot)||void 0===o?void 0:o.querySelector(i))&&void 0!==t?t:null),this[n]};}return t}})}
-
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var n;null!=(null===(n=window.HTMLSlotElement)||void 0===n?void 0:n.prototype.assignedElements)?(o,n)=>o.assignedElements(n):(o,n)=>o.assignedNodes(n).filter((o=>o.nodeType===Node.ELEMENT_NODE));
+class EntityChecker {
+    async checkEntities(cardConfig, hass) {
+        this.hass = hass;
+        if (!this.hass) {
+            Log.warn('Can\'t check entities, hass not set.');
+        }
+        const entityCheckResults = await this.getEntityStates(cardConfig);
+        for (const result of entityCheckResults) {
+            if (result.error) {
+                throw new Error(`Entity ${result.entity} not found.`);
+            }
+            if (result.unit) {
+                const speedEntity = cardConfig.windspeedEntities.find(entity => entity.entity === result.entity);
+                if (speedEntity && speedEntity.speedUnit === 'auto') {
+                    speedEntity.speedUnit = result.unit;
+                    Log.info(`Windspeed unit detected for ${speedEntity.entity}: ${result.unit}`);
+                }
+            }
+        }
+    }
+    async getEntityStates(cardConfig) {
+        const stateCallResults = [];
+        for (const entity of cardConfig.windspeedEntities) {
+            stateCallResults.push(await this.callEntityState(entity.entity));
+        }
+        return Promise.resolve(stateCallResults);
+    }
+    async callEntityState(entity) {
+        var _a;
+        try {
+            const result = await this.hass.callApi('GET', 'states/' + entity);
+            const unit = (_a = result === null || result === void 0 ? void 0 : result.attributes) === null || _a === void 0 ? void 0 : _a.unit_of_measurement;
+            return new EntityCheckResult(entity, unit, undefined);
+        }
+        catch (error) {
+            return new EntityCheckResult(entity, undefined, error);
+        }
+    }
+}
 
 window.customCards = window.customCards || [];
 window.customCards.push({
@@ -1345,42 +1985,36 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 0.11.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.0.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
-    //
-    // public static async getConfigElement(): Promise<HTMLElement> {
-    //     //await import('./editor');
-    //     return document.createElement('windrose-card-editor');
-    // }
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();
     }
     constructor() {
         super();
-        this.windBarCanvases = [];
-        this.windBarCalculators = [];
-        this.windBarsData = [];
         this.canvasWidth = 400;
         this.canvasHeight = 400;
         this.ro = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                const cs = entry.contentRect;
-                this.updateCanvasSize(cs.width - 32);
-                if (this.windRoseData) {
+            if (this.cardConfig) {
+                for (const entry of entries) {
+                    Log.trace('ResizeObserver entries:', entries);
+                    const cs = entry.contentRect;
+                    this.recalculateCanvasSize(cs.width);
                     this.requestUpdate();
+                    Log.debug("Request update, because of resize.");
                 }
             }
         });
-        // console.log("constructor()");
+        this.windRoseDirigent = new WindRoseDirigent();
+        this.entityChecker = new EntityChecker();
     }
     set hass(hass) {
-        // console.log('SetHass', hass);
         this._hass = hass;
     }
     render() {
         var _a;
         super.render();
-        //console.log('render()');
+        Log.debug('card render()');
         return y `
             <ha-card header="${(_a = this.cardConfig) === null || _a === void 0 ? void 0 : _a.title}">
                 <div class="card-content">
@@ -1393,21 +2027,25 @@ let WindRoseCard = class WindRoseCard extends s {
         `;
     }
     firstUpdated() {
-        //console.log('firstUpdated()');
-        this.initWindRoseObjects(this.cardConfig, this.canvas.width);
-        this.updateWindData();
+        Log.debug('firstUpdated()');
         this.canvasContext = this.canvas.getContext('2d');
+        Log.debug('Canvas context found: ', this.canvasContext, this.measurementProvider);
+        this.refreshCardConfig();
     }
     update(changedProperties) {
+        Log.debug('update()');
         super.update(changedProperties);
-        this.drawWindRoseAndBar();
+        this.windRoseDirigent.render(this.canvasContext);
     }
     initInterval() {
-        //console.log('Loop start');
-        this.updateInterval = setInterval(() => this.updateWindData(), this.cardConfig.refreshInterval * 1000);
+        Log.debug('initInterval()');
+        if (this.cardConfig && this.updateInterval === undefined) {
+            this.updateInterval = setInterval(() => this.refreshMeasurements(), this.cardConfig.refreshInterval * 1000);
+            Log.info('Interval running with ' + this.cardConfig.refreshInterval + ' seconds.');
+        }
     }
     static get styles() {
-        return i$3 `
+        return i$2 `
           :host {
             display: block;
           }
@@ -1418,101 +2056,50 @@ let WindRoseCard = class WindRoseCard extends s {
     }
     connectedCallback() {
         super.connectedCallback();
+        Log.debug('connectedCallBack()');
         this.ro.observe(this);
         this.initInterval();
-        //console.log('connectedCallBack()');
     }
     disconnectedCallback() {
         super.disconnectedCallback();
+        Log.debug('disconnectedCallback()');
         this.ro.unobserve(this);
         clearInterval(this.updateInterval);
-        //console.log('disconnectedCallback()');
     }
     setConfig(config) {
-        //console.log('setConfig(): ', config);
         this.config = config;
         this.cardConfig = new CardConfigWrapper(config);
-        if (this.canvas) {
-            this.initWindRoseObjects(this.cardConfig, this.canvas.width);
-            this.updateWindData();
-            this.requestUpdate();
+        Log.setLevel(this.cardConfig.logLevel);
+        Log.debug('setConfig(): ', config, this._hass);
+        if (this._hass && this.canvasContext) {
+            this.refreshCardConfig();
         }
     }
     getCardSize() {
-        //console.log('getCardSize()');
+        Log.debug('getCardSize()');
         return 4;
     }
-    initWindRoseObjects(cardConfig, canvasWidth) {
-        //console.log('initWindRoseObjects(cardConfig, canvasWidth)', cardConfig, canvasWidth);
-        this.windRoseConfigFactory = new WindRoseConfigFactory(cardConfig);
-        const windRoseConfig = this.windRoseConfigFactory.createWindRoseConfig(canvasWidth);
-        this.windSpeedConverter = new WindSpeedConverter(this.cardConfig.inputSpeedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.speedRangeStep, this.cardConfig.speedRangeMax, this.cardConfig.speedRanges);
-        this.windRoseCalculator = new WindRoseCalculator(windRoseConfig, this.windSpeedConverter);
-        this.windRoseCanvas = new WindRoseCanvas(windRoseConfig, this.windSpeedConverter);
-        const windBarConfigs = this.windRoseConfigFactory.createWindBarConfigs(canvasWidth);
-        this.windBarCalculators = [];
-        this.windBarCanvases = [];
-        for (let i = 0; i < this.cardConfig.windBarCount(); i++) {
-            this.windBarCalculators.push(new WindBarCalculator(windBarConfigs[i], this.windSpeedConverter));
-            this.windBarCanvases.push(new WindBarCanvas(windBarConfigs[i], this.windSpeedConverter));
-        }
-    }
-    updateWindData() {
-        //console.log('updateWindData()');
-        this.getHistory().then((history) => {
-            const directionData = history[this.cardConfig.windDirectionEntity];
-            const firstSpeedData = history[this.cardConfig.windspeedEntities[0].entity];
-            const directionSpeedData = new MeasurementMatcher(directionData, firstSpeedData, this.cardConfig.directionSpeedTimeDiff).match(this.cardConfig.matchingStrategy);
-            this.windRoseCalculator.clear();
-            for (const directionSpeed of directionSpeedData) {
-                this.windRoseCalculator.addDataPoint(directionSpeed.direction, directionSpeed.speed);
-            }
-            for (let i = 0; i < this.cardConfig.windBarCount(); i++) {
-                this.windBarCalculators[i].addSpeeds(history[this.cardConfig.windspeedEntities[i].entity]
-                    .filter((point) => !isNaN(Number(point.s)))
-                    .map((point) => point.s));
-            }
-            this.windRoseData = this.windRoseCalculator.calculate();
-            for (let i = 0; i < this.cardConfig.windBarCount(); i++) {
-                this.windBarsData[i] = this.windBarCalculators[i].calculate();
-            }
-            this.requestUpdate();
+    refreshCardConfig() {
+        this.entityChecker.checkEntities(this.cardConfig, this._hass).then(() => {
+            this.measurementProvider = new HomeAssistantMeasurementProvider(this.cardConfig);
+            this.measurementProvider.setHass(this._hass);
+            this.windRoseDirigent.init(this.cardConfig, this.measurementProvider);
+            this.recalculateCanvasSize(this.canvas.width);
+            this.refreshMeasurements();
         });
     }
-    getHistory() {
-        const startTime = new Date();
-        startTime.setHours(startTime.getHours() - this.cardConfig.hoursToShow);
-        const endTime = new Date();
-        const historyMessage = {
-            "type": "history/history_during_period",
-            "start_time": startTime,
-            "end_time": endTime,
-            "minimal_response": false,
-            "no_attributes": false,
-            "entity_ids": this.cardConfig.entities,
-            "id": 53
-        };
-        return this._hass.callWS(historyMessage);
+    refreshMeasurements() {
+        this.windRoseDirigent.refreshData().then((refresh) => {
+            Log.debug('refreshData() ready, requesting update.');
+            if (refresh) {
+                this.requestUpdate();
+            }
+        });
     }
-    updateCanvasSize(canvasWidth) {
-        // console.log('updateCanvasSize()', canvasWidth);
-        this.canvas.width = canvasWidth;
-        const windRoseConfig = this.windRoseConfigFactory.createWindRoseConfig(canvasWidth);
-        this.windRoseCanvas = new WindRoseCanvas(windRoseConfig, this.windSpeedConverter);
-        this.canvas.height = this.windRoseConfigFactory.canvasHeight;
-        const windBarConfigs = this.windRoseConfigFactory.createWindBarConfigs(canvasWidth);
-        this.windBarCanvases = [];
-        for (const windBarConfig of windBarConfigs) {
-            this.windBarCanvases.push(new WindBarCanvas(windBarConfig, this.windSpeedConverter));
-        }
-    }
-    drawWindRoseAndBar() {
-        var _a;
-        // console.log('drawWindRoseAndBar()')
-        (_a = this.windRoseCanvas) === null || _a === void 0 ? void 0 : _a.drawWindRose(this.windRoseData, this.canvasContext);
-        for (let i = 0; i < this.windBarCanvases.length; i++) {
-            this.windBarCanvases[i].drawWindBar(this.windBarsData[i], this.canvasContext);
-        }
+    recalculateCanvasSize(width) {
+        const canvasHeight = this.windRoseDirigent.resize(width - 32);
+        this.canvas.width = width - 32;
+        this.canvas.height = canvasHeight;
     }
 };
 __decorate([
@@ -1522,119 +2109,7 @@ __decorate([
     i('.card-content')
 ], WindRoseCard.prototype, "parentDiv", void 0);
 WindRoseCard = __decorate([
-    e$2('windrose-card')
+    e('windrose-card')
 ], WindRoseCard);
 
-var t,r;!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none";}(t||(t={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24";}(r||(r={}));var ne=function(e,t,r,n){n=n||{},r=null==r?{}:r;var i=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return i.detail=r,e.dispatchEvent(i),i};
-
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function e(e){return class extends e{createRenderRoot(){const e=this.constructor,{registry:s,elementDefinitions:n,shadowRootOptions:o}=e;n&&!s&&(e.registry=new CustomElementRegistry,Object.entries(n).forEach((([t,s])=>e.registry.define(t,s))));const i=this.renderOptions.creationScope=this.attachShadow({...o,customElements:e.registry});return S$1(i,this.constructor.elementStyles),i}}}
-
-let WindRoseCardEditor = class WindRoseCardEditor extends e(s) {
-    constructor() {
-        super();
-        this._initialized = false;
-        //console.log('WindRoseCardEditor()');
-    }
-    setConfig(config) {
-        this._config = config;
-        this.loadCardHelpers();
-    }
-    shouldUpdate() {
-        if (!this._initialized) {
-            this._initialize();
-        }
-        return true;
-    }
-    get _title() {
-        var _a;
-        return ((_a = this._config) === null || _a === void 0 ? void 0 : _a.title) || '';
-    }
-    render() {
-        //console.log('Render');
-        if (!this.hass || !this._helpers) {
-            return y ``;
-        }
-        // You can restrict on domain type
-        Object.keys(this.hass.states);
-        return y `
-      <div>TESTTEST TEST</div>
-      <mwc-textfield
-        label="Name (Optional)"
-        .value=${this.title}
-        .configValue=${'title'}
-        @input=${this._valueChanged}
-      ></mwc-textfield>
-    `;
-    }
-    _initialize() {
-        if (this.hass === undefined)
-            return;
-        if (this._config === undefined)
-            return;
-        if (this._helpers === undefined)
-            return;
-        this._initialized = true;
-    }
-    async loadCardHelpers() {
-        this._helpers = await window.loadCardHelpers();
-    }
-    _valueChanged(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-        const target = ev.target;
-        // @ts-ignore
-        if (this[`_${target.configValue}`] === target.value) {
-            return;
-        }
-        if (target.configValue) {
-            if (target.value === '') {
-                const tmpConfig = Object.assign({}, this._config);
-                // @ts-ignore
-                delete tmpConfig[target.configValue];
-                this._config = tmpConfig;
-            }
-            else {
-                this._config = Object.assign(Object.assign({}, this._config), { [target.configValue]: target.checked !== undefined ? target.checked : target.value });
-            }
-        }
-        ne(this, 'config-changed', { config: this._config });
-    }
-};
-WindRoseCardEditor.elementDefinitions = {
-//...textfieldDefinition,
-// ...selectDefinition,
-// ...switchDefinition,
-// ...formfieldDefinition,
-};
-WindRoseCardEditor.styles = i$3 `
-    mwc-select,
-    mwc-textfield {
-      margin-bottom: 16px;
-      display: block;
-    }
-    mwc-formfield {
-      padding-bottom: 8px;
-    }
-    mwc-switch {
-      --mdc-theme-secondary: var(--switch-checked-color);
-    }
-  `;
-__decorate([
-    e$1({ attribute: false })
-], WindRoseCardEditor.prototype, "hass", void 0);
-__decorate([
-    t$1()
-], WindRoseCardEditor.prototype, "_config", void 0);
-__decorate([
-    t$1()
-], WindRoseCardEditor.prototype, "_helpers", void 0);
-WindRoseCardEditor = __decorate([
-    e$2('windrose-card-editor')
-], WindRoseCardEditor);
-
-export { CardColors, CardConfigWrapper, ColorUtil, DirectionSpeed, DrawUtil, GlobalConfig, MeasurementMatcher, SpeedRange, SpeedUnit, WindBarCalculator, WindBarCanvas, WindBarConfig, WindBarData, WindDirectionCalculator, WindDirectionConverter, WindDirectionData, WindRoseCalculator, WindRoseCanvas, WindRoseCard, WindRoseCardEditor, WindRoseConfig, WindRoseConfigFactory, WindRoseData, WindSpeedConverter };
+export { Log, WindRoseCard };
