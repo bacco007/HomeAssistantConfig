@@ -1,9 +1,0 @@
----
-platform: command_line
-unique_id: influxdb_size_homeassistant
-name: influxdb_size_homeassistant
-unit_of_measurement: "MB"
-scan_interval: 300
-command_timeout: 30
-command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.91 -T /usr/bin/du -s /home/tbsmarthome/data/influxdb2/data/engine/data/bdd22d00441cd90b/  | cut -f -1
-value_template: "{{ (value.split('\t')[0]|int/1024)|round(1) }}"

@@ -1,0 +1,8 @@
+---
+sensor:
+  name: ha_syslog_warnings_cmdline
+  unique_id: 5b31acd1-4cfc-4cbd-a25a-fcad4be751c2
+  command: >
+    grep -E "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3} WARNING .*$" /config/home-assistant.log | grep -c -v -E "^.+ We found a custom integration .+ which has not been tested by Home Assistant.+$" || true
+  scan_interval: 3600
+  unit_of_measurement: pc

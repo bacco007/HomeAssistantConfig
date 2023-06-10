@@ -5,7 +5,7 @@ subview: true
 path: sonos
 title: Sonos
 type: custom:grid-layout
-layout: !include includes/grid-1col.yaml
+layout: !include includes/grid-3col.yaml
 badges: []
 cards:
   ### Sidebar - Menu
@@ -21,61 +21,46 @@ cards:
   - !include includes/footer.yaml
 
   # Column 1, Row 1
-  - type: custom:custom-sonos-card
-    view_layout:
-      grid-area: c1r1
-    styles:
-      button-section:
-        backgroundColor: rgba(30, 30, 30, 0.5)
-        border: 1px solid gray
-      ha-card:
-        background: none
-        border: none
-      player-footer:
-        backgroundColor: rgb(30, 30, 30)
-      title:
-        color: rgb(220, 220, 220)
-      group-speaker:
-        color: rgb(220, 220, 220)
-      group-speakers:
-        color: rgb(220, 220, 220)
-      member:
-        color: rgb(220, 220, 220)
-      media-button-title:
-        color: rgb(30, 30, 30)
-        font-size: 0.75rem
-      player-artist-album:
-        color: rgb(0, 0, 0)
-    name: ""
-    groupsTitle: ""
-    groupingTitle: ""
-    mediaTitle: ""
-    headerImage: ""
-    shuffleFavorites: false
-    noMediaText: No media selected
-    allVolumesText: All volumes
-    entityNameRegexToReplace: "SONOS "
+  - type: custom:sonos-card
+    title: ""
+    sections:
+      - volumes
+      - groups
+      - grouping
+      - media browser
+      - player
     entityNameReplacement: ""
-    layout:
-      mobileThresholdPx: 500
-      groups:
-        width: 20%
-        mobileWidth: 100%
-      players:
-        width: 20%
-        mobileWidth: 100%
-      mediaBrowser:
-        width: 60%
-        mobileWidth: 100%
-      mediaItem:
-        width: 10%
-        mobileWidth: 25%
+    entities: []
+    groupsTitle: ""
+    hideGroupCurrentTrack: true
+    groupingTitle: ""
+    predefinedGroups:
+      - name: Bedroom
+        entities:
+          - media_player.bedroom_symfonisk
+      - name: Office
+        entities:
+          - media_player.office_sonos
+    labelWhenNoMediaIsSelected: No media selected
+    labelForTheAllVolumesSlider: All volumes
     mediaArtworkOverrides:
-      - ifMissing: true
-        imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
       - mediaTitleEquals: TV
         imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
         sizePercentage: 40
+      - mediaContentIdEquals: x-sonos-htastream:RINCON_949F3EC2E15B01400:spdif
+        imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108783.png
+      - mediaTitleEquals: p4malmo-aac-192
+        imageUrl: >-
+          https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
+      - ifMissing: true
+        imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
+    customSources:
+      media_player.tv:
+        - title: TV
+          thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
+    dynamicVolumeSlider: true
+    mediaTitle: ""
+    shuffleFavorites: false
     customThumbnailIfMissing:
       1-Playlist: /local/radioicons/1_Playlist.png
       102.7 KIIS-FM Los Angeles: /local/radioicons/102_7_KIIS_FM_Los_Angeles.png
@@ -132,10 +117,18 @@ cards:
       Virgin Radio UK: /local/radioicons/Virgin_Radio_UK.png
     mediaBrowserTitlesToIgnore:
       - Local Media
+      - My Bad Playlist
 
   # Column 1, Row 2
   - type: custom:gap-card
     view_layout:
       grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 1, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c1r3
       show:
         mediaquery: "(min-width: 801px)"

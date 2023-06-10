@@ -1,0 +1,6 @@
+---
+sensor:
+  unique_id: count_yaml_files
+  name: "Count YAML Files"
+  command: find /config/ -name '*.yaml' -not -path "./custom_components/*" | wc -l
+  unit_of_measurement: Files

@@ -1,0 +1,7 @@
+---
+sensor:
+  name: ha_syslog_errors_cmdline
+  unique_id: 5a211dc9-0aaa-473d-9338-feb8d9d2be1b
+  command: grep -c -E "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3} ERROR .*$" /config/home-assistant.log || true
+  scan_interval: 3600
+  unit_of_measurement: items

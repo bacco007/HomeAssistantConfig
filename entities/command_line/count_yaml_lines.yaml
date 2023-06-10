@@ -1,0 +1,6 @@
+---
+sensor:
+  unique_id: count_yaml_lines
+  name: "Count YAML Lines"
+  command: find . -name '*.yaml' -not -path "./custom_components/*" -type f -print0 | xargs -0 cat | sed '/^\s*#/d;/^\s*$/d' | wc -l
+  unit_of_measurement: Lines
