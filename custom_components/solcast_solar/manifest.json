@@ -1,16 +1,14 @@
 {
   "domain": "solcast_solar",
   "name": "Solcast PV Forecast",
-  "version": "3.0.47",
+  "after_dependencies": ["http"],
+  "codeowners": ["@oziee"],
   "config_flow": true,
+  "dependencies": ["homeassistant", "recorder", "select"],
   "documentation": "https://github.com/oziee/ha-solcast-solar",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/oziee/ha-solcast-solar/issues",
   "requirements": ["aiohttp>=3.6.2", "datetime>=4.3", "isodate>=0.6.0"],
-  "dependencies": ["homeassistant", "recorder", "select"],
-  "after_dependencies": ["http"],
-  "iot_class": "cloud_polling",
-  "integration_type": "service",
-  "codeowners": [
-    "@oziee"
-  ]
+  "version": "3.0.47"
 }
