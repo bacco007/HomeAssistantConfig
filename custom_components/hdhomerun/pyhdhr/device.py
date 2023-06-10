@@ -108,7 +108,7 @@ class HDHomeRunDevice:
         _LOGGER.debug(self._log_formatter.format("entered"))
 
         try:
-            url: str = f"http://{self.ip}/{DevicePaths.DISCOVER}"
+            url: str = f"http://{self.ip}/{DevicePaths.DISCOVER.value}"
             _LOGGER.debug(
                 self._log_formatter.format("attempting gather details from: %s"), url
             )
@@ -138,7 +138,7 @@ class HDHomeRunDevice:
                 },
             ),
             self._session.get(
-                url=f"{self.base_url}/{DevicePaths.LINEUP_STATUS}",
+                url=f"{self.base_url}/{DevicePaths.LINEUP_STATUS.value}",
             ),
         ]
 
@@ -255,7 +255,7 @@ class HDHomeRunDevice:
         """Get the current details for the tuners using HTTP."""
         _LOGGER.debug(self._log_formatter.format("entered"))
         resp: aiohttp.ClientResponse = await self._session.get(
-            url=f"{self.base_url}/{DevicePaths.TUNER_STATUS}",
+            url=f"{self.base_url}/{DevicePaths.TUNER_STATUS.value}",
             raise_for_status=True,
         )
         self._tuner_status = await resp.json()
@@ -331,7 +331,7 @@ class HDHomeRunDevice:
         ret: int | None = None
         try:
             resp = await self._session.get(
-                url=f"{self.base_url}/{DevicePaths.LINEUP_STATUS}",
+                url=f"{self.base_url}/{DevicePaths.LINEUP_STATUS.value}",
                 timeout=timeout,
                 raise_for_status=True,
             )
@@ -404,7 +404,7 @@ class HDHomeRunDevice:
         }
         try:
             await self._session.post(
-                url=f"{self.base_url}/{DevicePaths.LINEUP_ACTION}",
+                url=f"{self.base_url}/{DevicePaths.LINEUP_ACTION.value}",
                 params=params,
                 raise_for_status=True,
             )

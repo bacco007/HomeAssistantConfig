@@ -242,7 +242,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
                     self._async_task_discover_all()
                 )
             return self.async_show_progress(
-                step_id=STEP_DETAILS, progress_action="_task_details"
+                step_id=STEP_DETAILS, progress_action="task_discover"
             )
 
         await self._task_details

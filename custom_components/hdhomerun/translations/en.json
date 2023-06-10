@@ -8,7 +8,9 @@
             "generic_hdhomerun_error": "{error_message}",
             "timeout_error": "Timeout connecting to device."
         },
-        "flow_title": "{name}",
+        "progress": {
+            "task_discover": "Discovering tuners..."
+        },    
         "step": {
             "friendly_name": {
                 "data": {
@@ -26,8 +28,7 @@
                 "description": "Enter the address of an HDHomeRun device on the network.<br />Leave blank to invoke discovery.",
                 "title": "Enter an address"
             }
-        },
-        "title": "HDHomeRun"
+        }
     },
     "entity": {
         "binary_sensor": {

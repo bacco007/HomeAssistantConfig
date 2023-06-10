@@ -178,12 +178,13 @@ class Discover:
                             ),
                             device_ip,
                         )
-                        url = f"http://{device_ip}/{DevicePaths.DISCOVER}"
+                        url = f"http://{device_ip}/{DevicePaths.DISCOVER.value}"
                         response: aiohttp.ClientResponse = await self._session.get(
                             url=url,
                             raise_for_status=True,
                         )
-                    except (aiohttp.ClientConnectionError, aiohttp.ClientResponseError):
+                    except (aiohttp.ClientConnectionError, aiohttp.ClientResponseError) as exc:
+                        _LOGGER.debug(self._log_formatter.format("%s"), exc)
                         if (
                             discovered_devices[discovered_idx].discovery_method
                             is DiscoverMode.HTTP
