@@ -76,7 +76,6 @@ influxdb:
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
       - sensor.unknown_unavailable_none_entities
-      - sensor.google_trend
       - sensor.sonarr_shows
       - sensor.tempest_st_00056115_wind_speed
       - sensor.tempest_st_00056115_wind_bearing

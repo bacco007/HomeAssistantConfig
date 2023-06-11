@@ -2,84 +2,126 @@
 type: vertical-stack
 cards:
   - type: custom:vertical-stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          margin: 10px 10px !important;
+        }
     cards:
       - type: custom:mushroom-entity-card
         entity: sensor.ha_db_size
         primary_info: state
         secondary_info: name
-        name: Database Size
         fill_container: true
+        name: Database Size
         icon: mdi:file
         icon_color: yellow
-      - type: custom:apexcharts-card
-        graph_span: 7d
-        span:
-          end: day
-        header:
-          show: false
-          show_states: true
-          colorize_states: true
-        apex_config:
-          chart:
-            height: 150
-          legend:
-            show: false
-          yaxis:
-            forceNiceScale: true
-            decimalsInFloat: false
-        all_series_config:
-          stroke_width: 4
-          type: line
-          extend_to: now
-          group_by:
-            func: last
-            duration: 1h
-        series:
+      - type: custom:plotly-graph
+        entities:
           - entity: sensor.ha_db_size
-            color: var(--label-badge-yellow)
+            connectgaps: true
+            show_value: true
+            filters:
+              - force_numeric
+              - resample: 6h
+            texttemplate: <b>%{y:,.0f}</b>
+            line:
+              width: 3
+              color: yellow
+        hours_to_show: 1w
+        refresh_interval: auto
+        layout:
+          showlegend: false
+          height: 200
+          margin:
+            autoexpand: false
+            l: 50
+            r: 50
+          xaxis:
+            showline: true
+            tickformat: "%a"
+            showgrid: false
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: false
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title: ""
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false
+  - type: custom:vertical-stack-in-card
     card_mod:
       style: |
         ha-card {
           margin: 10px 10px !important;
         }
-  - type: custom:vertical-stack-in-card
     cards:
       - type: custom:mushroom-entity-card
         entity: sensor.influxdb_size_homeassistant
         primary_info: state
         secondary_info: name
-        name: InfluxDB Database Size
         fill_container: true
+        name: InfluxDB Database Size
         icon: mdi:file
         icon_color: yellow
-      - type: custom:apexcharts-card
-        graph_span: 7d
-        span:
-          end: day
-        header:
-          show: false
-          show_states: true
-          colorize_states: true
-        apex_config:
-          chart:
-            height: 150
-          legend:
-            show: false
-          yaxis:
-            forceNiceScale: true
-            decimalsInFloat: false
-        all_series_config:
-          stroke_width: 4
-          type: line
-          extend_to: now
-          group_by:
-            func: last
-            duration: 1h
-        series:
+      - type: custom:plotly-graph
+        entities:
           - entity: sensor.influxdb_size_homeassistant
-            color: var(--label-badge-yellow)
-    card_mod:
-      style: |
-        ha-card {
-          margin: 10px 10px !important;
-        }
+            connectgaps: true
+            show_value: true
+            filters:
+              - force_numeric
+              - resample: 6h
+            texttemplate: <b>%{y:,.0f}</b>
+            line:
+              width: 3
+              color: yellow
+        hours_to_show: 1w
+        refresh_interval: auto
+        layout:
+          showlegend: false
+          height: 200
+          margin:
+            autoexpand: false
+            l: 50
+            r: 50
+          xaxis:
+            showline: true
+            tickformat: "%a"
+            showgrid: false
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: false
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title: ""
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false

@@ -9,48 +9,53 @@ cards:
     fill_container: true
     icon: mdi:airplane-alert
     icon_color: red
-  - type: custom:apexcharts-card
-    graph_span: 7d1s
-    header:
-      show: false
-      show_states: true
-      colorize_states: true
-    span:
-      end: hour
-    apex_config:
-      chart: { type: "area", height: 250 }
-      stroke: { show: true, curve: smooth, dashArray: [0, 2] }
-      legend: { show: false }
-      dataLabels: { enabled: false }
-      xaxis:
-        {
-          type: "datetime",
-          labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-        }
-      yaxis:
-        - seriesName: "Flights"
-          decimalsInFloat: 0
-          title:
-            text: "No. Flights"
-      fill:
-        {
-          type: "gradient",
-          gradient:
-            {
-              shadeIntensity: 1,
-              inverseColors: false,
-              opacityFrom: 0.45,
-              opacityTo: 0.05,
-              stops: [20, 100, 100, 100],
-            },
-        }
-    series:
+  - type: custom:plotly-graph
+    entities:
       - entity: sensor.flighttracker_flights_1hr
-        name: Flights
-        type: area
-        # color: "#008FFB"
-        # extend_to_end: false
-        stroke_width: 3
-        group_by:
-          func: max
-          duration: 1h
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 10m
+        texttemplate: <b>%{y:,.0f}</b>
+        fill: tozeroy
+        fillcolor: rgba(214, 39, 40,.3)
+        line:
+          width: 2
+          shape: spline
+          color: rgba(214, 39, 40, 0.8)
+    hours_to_show: 1w
+    refresh_interval: auto
+    layout:
+      showlegend: false
+      height: 250
+      margin:
+        autoexpand: false
+        l: 30
+        r: 20
+      xaxis:
+        showline: true
+        tickformat: "%a"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

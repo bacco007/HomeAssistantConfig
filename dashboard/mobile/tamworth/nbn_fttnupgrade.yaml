@@ -20,8 +20,6 @@ cards:
       {% endif %}
       {% endif %}
     icon: mdi:check-network
-    layout: vertical
-    multiline_secondary: true
     tap_action:
       action: none
     hold_action:
@@ -58,8 +56,6 @@ cards:
       {% endif %}
       {% endif %}
     icon: mdi:check-network
-    layout: vertical
-    multiline_secondary: true
     tap_action:
       action: none
     hold_action:

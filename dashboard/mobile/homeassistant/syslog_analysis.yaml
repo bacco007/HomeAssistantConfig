@@ -14,7 +14,6 @@ cards:
       - type: custom:mushroom-entity-card
         entity: counter.logs_critical_counter
         fill_container: true
-        layout: vertical
         tap_action:
           action: none
         hold_action:
@@ -25,7 +24,6 @@ cards:
       - type: custom:mushroom-entity-card
         entity: counter.logs_error_counter
         fill_container: true
-        layout: vertical
         tap_action:
           action: none
         hold_action:
@@ -36,7 +34,6 @@ cards:
       - type: custom:mushroom-entity-card
         entity: counter.logs_warning_counter
         fill_container: true
-        layout: vertical
         tap_action:
           action: none
         hold_action:
@@ -44,21 +41,3 @@ cards:
         double_tap_action:
           action: none
         icon_color: yellow
-  - type: custom:decluttering-card
-    template: mushroom_entity_graph
-    variables:
-      - entity: sensor.statistics_logs_critical_counter_hourly
-      - colour: "red"
-      - title: Log Critical Counter (Hourly)
-  - type: custom:decluttering-card
-    template: mushroom_entity_graph
-    variables:
-      - entity: sensor.statistics_logs_error_counter_hourly
-      - colour: "orange"
-      - title: Log Error Counter (Hourly)
-  - type: custom:decluttering-card
-    template: mushroom_entity_graph
-    variables:
-      - entity: sensor.statistics_logs_warning_counter_hourly
-      - colour: "yellow"
-      - title: Log Warning Counter (Hourly)

@@ -35,7 +35,6 @@ logger:
     homeassistant.helpers.entity:
       - "Update of media_player.spotify_thomas_baxter is taking over 10 seconds"
       - "Expected positive event duration"
-      - "Update for sensor.home_to_work fails"
     spotipy.client:
       - "Max Retries reached"
     custom_components.ical:
