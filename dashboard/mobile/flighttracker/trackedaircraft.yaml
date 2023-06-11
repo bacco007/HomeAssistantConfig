@@ -1,19 +1,64 @@
 ---
-type: custom:fr24-card
-entity: sensor.adsb_aircraft_tracked
-zone: zone.home
-units: metric
-larger_units: true
-popup: true
-units_in_table: true
-sort: "distance"
+type: custom:flex-table-card
+strict: true
+sort_by:
+  - aircraft-
+entities:
+  include: sensor.adsb_aircraft_tracked
 columns:
-  [
-    "icon",
-    "registration",
-    "flight",
-    "aircraft_type",
-    "altitude",
-    "speed",
-    "distance",
-  ]
+  - name: HEX
+    data: aircraft
+    modify: |
+      if(x.flight != null )
+        {x.hex}
+        else {
+          '<div style="color:red;">' + x.hex + '</div>';
+      }
+  - name: FLIGHT
+    data: aircraft
+    modify: |
+      if(x.flight != null )
+        {x.flight}
+        else {
+          '<div style="color:red;">' + "-" + '</div>';
+      }
+  - name: REGO
+    data: aircraft
+    modify: |
+      if(x.r != null )
+        {x.r}
+        else {
+          '<div style="color:red;">' + "-" + '</div>';
+      }
+  - name: TYPE
+    data: aircraft
+    modify: |
+      if(x.t != null )
+        {x.t}
+        else {
+          '<div style="color:red;">' + "-" + '</div>';
+      }
+  - name: SPEED
+    data: aircraft
+    modify: |
+      if(x.gs != null )
+        {(x.gs*1.852).toFixed(0)}
+        else {
+          '<div style="color:red;">' + "-" + '</div>'
+        }
+  - name: ALT
+    data: aircraft
+    modify: |
+      if(x.alt_baro != null )
+        {(x.alt_baro*0.3048).toFixed(0)}
+        else {
+          '<div style="color:red;">' + "-" + '</div>'
+        }
+  - name: HEADING
+    data: aircraft
+    modify: |
+      if(x.track != null )
+        {x.track}
+        else {
+         '<div style="color:red;">' + "-" + '</div>'
+        }

@@ -179,100 +179,30 @@ cards:
               }
 
       # Media (TV/Movies)
-      - type: custom:vertical-stack-in-card
-        cards:
-          - type: custom:swipe-card
-            parameters:
-              spaceBetween: 8
-            cards:
-              - type: custom:mushroom-template-card
-                primary: Media (TV/Movies)
-                secondary: >
-                  {{ (states('sensor.frontpage_sonarr_upcoming_count') | float + states('sensor.frontpage_radarr_upcoming_count') | float) | int }} Upcoming
-                icon: mdi:television
-                layout: horizontal
-                tap_action:
-                  action: navigate
-                  navigation_path: tv-movies
-                hold_action:
-                  action: none
-                double_tap_action:
-                  action: none
-                card_mod:
-                  style:
-                    mushroom-state-info$: |
-                      .container {
-                        display: table !important;
-                      }
-                      .secondary {
-                        display: table-cell;
-                        text-align: right;
-                        width: 100%;
-                      }
-              - type: custom:vertical-stack-in-card
-                horizontal: true
-                cards:
-                  - type: custom:mushroom-template-card
-                    primary: ""
-                    secondary: ""
-                    layout: vertical
-                    icon: |-
-                      {% if is_state(config.entity, "playing") %}
-                        mdi:speaker
-                      {% else %}
-                        mdi:speaker
-                      {% endif %}
-                    entity: media_player.bluesound_vardagsrum
-                    icon_color: |-
-                      {% if is_state(config.entity, "playing") %}
-                        indigo
-                      {% else %}
-                        grey
-                      {% endif %}
-                    tap_action:
-                      action: toggle
-                    card_mod:
-                      style: |
-                        ha-card {
-                          {% if is_state(config.entity,'playing') %}
-                              background: rgba(var(--rgb-light-green),0.2);
-                          {% else %}
-                              background: rgba(var(--rgb-disabled),0.2);
-                          {% endif %}
-                        }
-                  - type: custom:mushroom-template-card
-                    primary: ""
-                    secondary: ""
-                    layout: vertical
-                    icon: |-
-                      {% if is_state(config.entity, "on") %}
-                        mdi:power-socket-de
-                      {% else %}
-                        mdi:power-socket-de
-                      {% endif %}
-                    entity: switch.vardagsrumsfonster_switch
-                    icon_color: |-
-                      {% if is_state(config.entity, "on") %}
-                        green
-                      {% else %}
-                        grey
-                      {% endif %}
-                    tap_action:
-                      action: toggle
-                    card_mod:
-                      style: |
-                        ha-card {
-                          {% if is_state(config.entity,'on') %}
-                              background: rgba(var(--rgb-green),0.1);
-                          {% else %}
-                              background: rgba(var(--rgb-disabled),0.1);
-                          {% endif %}
-                        }
-                card_mod:
-                  style: |
-                    ha-card {
-                      --ha-card-border-width: 0;
-                    }
+      - type: custom:mushroom-template-card
+        primary: Media (TV/Movies)
+        secondary: >
+          {{ (states('sensor.frontpage_sonarr_upcoming_count') | float + states('sensor.frontpage_radarr_upcoming_count') | float) | int }} Upcoming
+        icon: mdi:television
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: tv-movies
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style:
+            mushroom-state-info$: |
+              .container {
+                display: table !important;
+              }
+              .secondary {
+                display: table-cell;
+                text-align: right;
+                width: 100%;
+              }
 
       # Music
       - type: custom:vertical-stack-in-card
@@ -461,50 +391,22 @@ cards:
               }
 
       # Network
-      - type: custom:vertical-stack-in-card
-        cards:
-          - type: custom:swipe-card
-            parameters:
-              spaceBetween: 8
-            cards:
-              - type: custom:mushroom-template-card
-                primary: Network
-                icon: mdi:lan
-                layout: horizontal
-                tap_action:
-                  action: navigate
-                  navigation_path: network
-                hold_action:
-                  action: none
-                double_tap_action:
-                  action: none
-                card_mod:
-                  style: |
-                    ha-card {
-                      --ha-card-border-width: 0;
-                    }
-              - type: custom:vertical-stack-in-card
-                horizontal: true
-                cards:
-                  - type: custom:mushroom-template-card
-                    primary: ""
-                    secondary: ""
-                    layout: vertical
-                    icon: |-
-                      {% if is_state(config.entity, "playing") %}
-                        mdi:speaker
-                      {% else %}
-                        mdi:speaker
-                      {% endif %}
-                    entity: media_player.bluesound_biorum
-                    icon_color: |-
-                      {% if is_state(config.entity, "playing") %}
-                        indigo
-                      {% else %}
-                        grey
-                      {% endif %}
-                    tap_action:
-                      action: more-info
+      - type: custom:mushroom-template-card
+        primary: Network
+        icon: mdi:lan
+        layout: horizontal
+        tap_action:
+          action: navigate
+          navigation_path: network
+        hold_action:
+          action: none
+        double_tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-border-width: 0;
+            }
 
       # Flight Tracker
       - type: custom:vertical-stack-in-card

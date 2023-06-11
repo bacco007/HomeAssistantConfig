@@ -6,7 +6,8 @@ show_precipitation_amounts: false
 show_precipitation_probability: false
 show_wind: "false"
 label_spacing: "2"
-offset: "1"
+offset: "0"
+num_segments: 24
 name: " "
 card_mod:
   style:

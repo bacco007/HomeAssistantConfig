@@ -18,6 +18,7 @@ title_card_with_icon:
     card:
       - background: none
       - padding: 8px 0 0
+      - box-shadow: none
     img_cell:
       - width: 48px
       - padding: 4px 24px 4px 16px
@@ -53,6 +54,7 @@ header_card:
     card:
       - background: none
       - padding: 0
+      - box-shadow: none
 
   custom_fields:
     header:
@@ -118,6 +120,7 @@ header_card_no_link:
       - padding: 32px 16px 16px 16px
       - background: none
       - cursor: default
+      - box-shadow: none
     name:
       - text-align: left
       - align-self: center

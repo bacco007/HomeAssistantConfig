@@ -3,14 +3,46 @@ type: grid
 columns: 1
 square: false
 cards:
+  - type: custom:button-card
+    template: header_card
+    variables:
+      name: >
+        <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+        icon='mdi:weather-cloudy-alert'></ha-icon> WEATHER
+      label: More
+      link: /mobile-dashboard/weather
+    view_layout:
+      grid-column: 1/-1
+    card_mod:
+      style: |
+        ha-card {
+          box-shadow: none;
+        }
   - !include ../snippets/weather_forecast.yaml
   - type: custom:clock-weather-card
     entity: weather.east_tamworth
     hide_today_section: true
     forecast_days: 7
+    weather_icon_type: line
+    animated_icon: false
 
   - type: vertical-stack
     cards:
+      - type: custom:button-card
+        template: header_card
+        variables:
+          name: >
+            <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+            icon='mdi:account-alert'></ha-icon> ME
+          label: More
+          link: /mobile-dashboard/weather
+        view_layout:
+          grid-column: 1/-1
+        card_mod:
+          style: |
+            ha-card {
+              box-shadow: none;
+            }
       - square: false
         columns: 2
         type: grid
@@ -104,7 +136,7 @@ cards:
             <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
             icon='mdi:network-outline'></ha-icon> NETWORK
           label: More
-          link: /ui-dashboard/network
+          link: /mobile-dashboard/network
         view_layout:
           grid-column: 1/-1
         card_mod:
@@ -157,3 +189,5 @@ cards:
           - title: Ping
           - icon: mdi:web
           - line_width: 3
+
+      - !include ../tamworth/nbn_fttnupgrade.yaml

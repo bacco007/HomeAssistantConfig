@@ -1,6 +1,0 @@
----
-platform: integration
-source: sensor.bedroom_tv_left_power
-name: bedroom_tv_left_energy
-unit_prefix: k
-round: 3

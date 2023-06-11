@@ -1,6 +1,0 @@
----
-# https://www.home-assistant.io/integrations/bluetooth_le_tracker/
-platform: bluetooth_le_tracker
-track_new_devices: true
-track_battery: true
-interval_seconds: 30

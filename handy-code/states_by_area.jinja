@@ -1,0 +1,4 @@
+{% set al = states|map(attribute='entity_id')|map('area_name')|reject('none')|unique|list|sort %}
+{% set ns = namespace(ad={}) %}
+{% for a in al %}{% set ns.ad = dict(ns.ad, **{a:area_entities(a)}) %}{% endfor %}
+{{ ns.ad }}

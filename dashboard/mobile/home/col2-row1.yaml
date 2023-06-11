@@ -12,7 +12,7 @@ cards:
             <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
             icon='mdi:docker'></ha-icon> DOCKER
           label: More
-          link: /ui-dashboard/docker
+          link: /mobile-dashboard/docker
         view_layout:
           grid-column: 1/-1
         card_mod:
@@ -102,7 +102,7 @@ cards:
             <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
             icon='mdi:airplane-alert'></ha-icon> FLIGHT TRACKER
           label: More
-          link: /ui-dashboard/flighttracker
+          link: /mobile-dashboard/flighttracker
         view_layout:
           grid-column: 1/-1
         card_mod:
@@ -123,7 +123,7 @@ cards:
             <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
             icon='mdi:football'></ha-icon> UPCOMING SPORT
           label: More
-          link: /ui-dashboard/docker
+          link: /mobile-dashboard/docker
         view_layout:
           grid-column: 1/-1
         card_mod:

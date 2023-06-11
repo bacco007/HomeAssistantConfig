@@ -5,12 +5,6 @@ binary_sensor:
     name: Online
     count: 1
     scan_interval: 300
-# sensor:
-#   - platform: scrape
-#     resource: https://www.whoismyisp.org
-#     select: ".isp"
-#     name: "Internet Provider"
-#     scan_interval: 60
 
 sensor:
   - platform: rest
@@ -54,25 +48,3 @@ sensor:
               Error
             {% endif %}
           {% endif %}
-
-# automation:
-#   - alias: Notify of FTTP upgrade availability
-#     description: ""
-#     trigger:
-#       – platform: state
-#         entity_id:
-#           – sensor.nbn_status_home
-#     condition:
-#       – condition: not
-#         conditions:
-#           – condition: state
-#             entity_id: sensor.nbn_alt_reason_code
-#             state: NULL_NA
-#     action:
-#       – service: notify.mobile_app_pixel_5
-#         data:
-#           title: NBN status change
-#           message: >-
-#             NBN status just changed from "{{ trigger.from_state.state }}" to "{{
-#             trigger.to_state.state }}"
-#     mode: single

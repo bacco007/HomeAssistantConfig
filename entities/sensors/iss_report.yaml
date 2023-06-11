@@ -1,8 +1,0 @@
----
-platform: feedparser
-name: NASA ISS Station Report
-feed_url: https://blogs.nasa.gov/stationreport/feed/
-date_format: "%a, %d %b %Y %H:%M:%S %z"
-show_topn: 10
-scan_interval:
-  hours: 1

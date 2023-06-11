@@ -1,0 +1,104 @@
+---
+frontpage_plex_unwatched_tv:
+  default:
+    - VALUE: "{{ range(0, 8) | random }}"
+  card:
+    type: custom:mushroom-template-card
+    entity: sensor.frontpage_plex_unwatched_tv
+    primary: Plex (New, Unwatched TV)
+    secondary: >-
+      {% from 'easy_time.jinja' import custom_relative_time -%}
+      {% set STATE = ct_eval('[[VALUE]]') -%}
+      {% set airdate = state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].airdate -%}
+      {{state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].title}}
+
+      {{state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].episode}} ({{state_attr('sensor.frontpage_plex_unwatched_tv','data')[STATE].number}})
+
+      Added {{ custom_relative_time(airdate, values='day')}}
+    multiline_secondary: true
+    badge_icon: none
+    badge_color: none
+    icon: mdi:plex
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    fill_container: true
+    layout: horizontal
+
+frontpage_plex_unwatched_movies:
+  default:
+    - VALUE: "{{ range(0, 8) | random }}"
+  card:
+    type: custom:mushroom-template-card
+    entity: sensor.frontpage_plex_unwatched_movies
+    primary: Plex (New, Unwatched Movies)
+    secondary: >-
+      {% from 'easy_time.jinja' import custom_relative_time -%}
+      {% set STATE = ct_eval('[[VALUE]]') -%}
+      {% set airdate = state_attr('sensor.frontpage_plex_unwatched_movies','data')[STATE].airdate -%}
+      {{state_attr('sensor.frontpage_plex_unwatched_movies','data')[STATE].title}}
+
+      Added {{ custom_relative_time(airdate, values='day')}}
+    multiline_secondary: true
+    badge_icon: none
+    badge_color: none
+    icon: mdi:plex
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    fill_container: true
+    layout: horizontal
+
+frontpage_radarr:
+  default:
+    - VALUE: "{{ range(0, 1) | random }}"
+  card:
+    type: custom:mushroom-template-card
+    entity: sensor.frontpage_radarr_upcoming
+    primary: Radarr (Upcoming Movies)
+    secondary: >-
+      {% from 'easy_time.jinja' import custom_relative_time -%}
+      {% set STATE = ct_eval('[[VALUE]]') -%}
+      {% set airdate = state_attr('sensor.frontpage_radarr_upcoming','data')[STATE].airdate -%}
+      {{state_attr('sensor.frontpage_radarr_upcoming','data')[STATE].title}}
+
+      Starting {{ custom_relative_time(airdate, values='day')}}
+    multiline_secondary: true
+    badge_icon: none
+    badge_color: none
+    icon: mdi:filmstrip
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    fill_container: true
+    layout: horizontal
+
+frontpage_sonarr:
+  default:
+    - VALUE: "{{ range(0, 8) | random }}"
+  card:
+    type: custom:mushroom-template-card
+    entity: sensor.frontpage_sonarr_upcoming
+    primary: Sonarr (Upcoming TV)
+    secondary: >-
+      {% from 'easy_time.jinja' import custom_relative_time -%}
+      {% set STATE = ct_eval('[[VALUE]]') -%}
+      {% set airdate = state_attr('sensor.frontpage_sonarr_upcoming','data')[STATE].airdate -%}
+      {{state_attr('sensor.frontpage_sonarr_upcoming','data')[STATE].title}}
+
+      {{state_attr('sensor.frontpage_sonarr_upcoming','data')[STATE].episode}} ({{state_attr('sensor.frontpage_sonarr_upcoming','data')[STATE].number}})
+
+      Airing {{ custom_relative_time(airdate, values='day')}}
+    multiline_secondary: true
+    badge_icon: none
+    badge_color: none
+    icon: mdi:television
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    fill_container: true
+    layout: horizontal
