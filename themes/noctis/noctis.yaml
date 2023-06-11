@@ -265,28 +265,28 @@ noctis:
 
   card-mod-theme: noctis
 
-  card-mod-more-info-yaml: |
-    $: |
-      .mdc-dialog .mdc-dialog__scrim {
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        background: rgba(0,0,0,.6);
-      }
-      .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-        box-shadow: none !important;
-        border-radius: var(--ha-card-border-radius);
-      }
-    .: |
-      :host {
-        --ha-card-box-shadow: none;
-      }
+  # card-mod-more-info-yaml: |
+  #   $: |
+  #     .mdc-dialog .mdc-dialog__scrim {
+  #       backdrop-filter: blur(15px);
+  #       -webkit-backdrop-filter: blur(15px);
+  #       background: rgba(0,0,0,.6);
+  #     }
+  #     .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+  #       box-shadow: none !important;
+  #       border-radius: var(--ha-card-border-radius);
+  #     }
+  #   .: |
+  #     :host {
+  #       --ha-card-box-shadow: none;
+  #     }
 
-  card-mod-card: |
-    .header .card-header {
-      letter-spacing: 0.005em;
-      font-size: 1.6em;
-      font-weight: 500;
-      padding: 1em 0 0 1.38em;
-      line-height: initial;
-      cursor: default;
-    }
+  # card-mod-card: |
+  #   .header .card-header {
+  #     letter-spacing: 0.005em;
+  #     font-size: 1.6em;
+  #     font-weight: 500;
+  #     padding: 1em 0 0 1.38em;
+  #     line-height: initial;
+  #     cursor: default;
+  #   }
