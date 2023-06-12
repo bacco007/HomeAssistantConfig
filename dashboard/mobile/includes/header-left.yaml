@@ -51,38 +51,38 @@ cards:
       - layout: icon|name_state
         name: 🌧️ {{ states('sensor.tempest_st_00056115_rain_today') }}mm
         state: "{{ states('sensor.tempest_st_00056115_temperature') }}°C"
-        image: |
-          {% set mapper =
-            { 'breezy':'cloudy',
-              'clear-night':'night',
-              'clear':'day',
-              'mostly-clear':'day',
-              'clear-day':'day',
-              'cloudy':'cloudy',
-              'fog':'fog',
-              'hail':'rainy-7',
-              'haze':'haze',
-              'lightning':'thunder',
-              'mostly-cloudy':'cloudy',
-              'partlycloudy':'cloudy-day-3',
-              'partly-cloudy-day':'partly-cloudy-day',
-              'partly-cloudy-night':'partly-cloudy-night',
-              'rain':'rainy-4',
-              'scattered-showers':'rainy-3',
-              'showers':'rainy-6',
-              'sleet':'sleet',
-              'snow':'snowy-6',
-              'mostly-sunny':'day',
-              'sunny':'day',
-              'thunderstorm':'thunder',
-              'tornado':'tornado',
-              'wind':'wind',
-              'windy':'wind'} %}
-          {% set state = states('weather.east_tamworth') %}
-          {% set weather = mapper[state] if state in mapper else 'weather' %}
-          {% set path = '/local/icons/weather_icons/animated/' %}
-          {% set ext = '.svg'%}
-            {{[path,weather,ext]|join('')}}
+        # image: |
+        #   {% set mapper =
+        #     { 'breezy':'cloudy',
+        #       'clear-night':'night',
+        #       'clear':'day',
+        #       'mostly-clear':'day',
+        #       'clear-day':'day',
+        #       'cloudy':'cloudy',
+        #       'fog':'fog',
+        #       'hail':'rainy-7',
+        #       'haze':'haze',
+        #       'lightning':'thunder',
+        #       'mostly-cloudy':'cloudy',
+        #       'partlycloudy':'cloudy-day-3',
+        #       'partly-cloudy-day':'partly-cloudy-day',
+        #       'partly-cloudy-night':'partly-cloudy-night',
+        #       'rain':'rainy-4',
+        #       'scattered-showers':'rainy-3',
+        #       'showers':'rainy-6',
+        #       'sleet':'sleet',
+        #       'snow':'snowy-6',
+        #       'mostly-sunny':'day',
+        #       'sunny':'day',
+        #       'thunderstorm':'thunder',
+        #       'tornado':'tornado',
+        #       'wind':'wind',
+        #       'windy':'wind'} %}
+        #   {% set state = states('weather.east_tamworth') %}
+        #   {% set weather = mapper[state] if state in mapper else 'weather' %}
+        #   {% set path = '/local/icons/weather_icons/animated/' %}
+        #   {% set ext = '.svg'%}
+        #     {{[path,weather,ext]|join('')}}
         styles:
           name:
             font-weight: 400

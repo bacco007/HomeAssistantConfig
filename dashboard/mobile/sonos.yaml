@@ -74,10 +74,6 @@ cards:
                   https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
               - ifMissing: true
                 imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
-            customSources:
-              media_player.tv:
-                - title: TV
-                  thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
             dynamicVolumeSlider: true
             mediaTitle: ""
             shuffleFavorites: false
@@ -177,10 +173,6 @@ cards:
                   https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
               - ifMissing: true
                 imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
-            customSources:
-              media_player.tv:
-                - title: TV
-                  thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
             dynamicVolumeSlider: true
             mediaTitle: ""
             shuffleFavorites: false
@@ -281,10 +273,6 @@ cards:
                   https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
               - ifMissing: true
                 imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
-            customSources:
-              media_player.tv:
-                - title: TV
-                  thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
             dynamicVolumeSlider: true
             mediaTitle: ""
             shuffleFavorites: false
