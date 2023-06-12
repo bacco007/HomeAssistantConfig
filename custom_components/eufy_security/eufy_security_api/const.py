@@ -6,7 +6,7 @@ from .command_description import CommandDescription
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
-SCHEMA_VERSION = 17
+SCHEMA_VERSION = 15
 
 
 class MessageField(Enum):
@@ -66,7 +66,6 @@ class MessageField(Enum):
 
     # camera specific
     PICTURE_URL = "pictureUrl"
-    PICTURE = "picture"
     DIRECTION = "direction"
     LIVE_STREAMING = "livestreaming"
     VOICES = "voices"
@@ -113,7 +112,6 @@ class PropertyType(Enum):
     number = "number"
     string = "string"
     boolean = "boolean"
-    object = "object"
 
 
 class ProductCommand(Enum):
