@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, June 12th 2023_
+_Stats as at 05:00, Tuesday, June 13th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.1 | 464     | 3712         | 2574 | 102 |
+| 2023.6.1 | 463     | 3716         | 2573 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 102
-Binary Sensor | 173
+Binary Sensor | 176
 Camera | 5
 Device Tracker | 78
 Group | 3
@@ -69,7 +69,7 @@ Media Player | 21
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2574
+Sensor | 2573
 Sun | 1
 Switch | 168
 Weather | 7
@@ -200,7 +200,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
-| [dlna_dms](https://www.home-assistant.io/components/dlna_dms) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
 | [energy](https://www.home-assistant.io/components/energy) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
@@ -634,7 +633,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 ### Lovelace
 - [Apexcharts Card](https://github.com/RomRider/apexcharts-card)
-- [Astroweather Card](https://github.com/mawinkler/astroweather-card)
 - [Atomic Calendar Revive](https://github.com/totaldebug/atomic-calendar-revive)
 - [Auto Entities](https://github.com/thomasloven/lovelace-auto-entities)
 - [Bar Card](https://github.com/custom-cards/bar-card)
@@ -646,7 +644,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Collapsable Cards](https://github.com/RossMcMillan92/lovelace-collapsable-cards)
 - [Compass Card](https://github.com/tomvanswam/compass-card)
 - [Config Template Card](https://github.com/iantrich/config-template-card)
-- [Custom Animated Weather Card](https://github.com/DavidFW1960/bom-weather-card)
 - [Custom Brand Icons](https://github.com/elax46/custom-brand-icons)
 - [Decluttering Card](https://github.com/custom-cards/decluttering-card)
 - [Easy Layout Card](https://github.com/kamtschatka/lovelace-easy-layout-card)
@@ -717,7 +714,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.2)
 - ESPHome (2023.5.5)
-- Eufy Security Add-on (1.3.0)
+- eufy-security-ws (1.5.2)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.110.4)
 - JupyterLab (0.11.1)

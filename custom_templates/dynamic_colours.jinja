@@ -1,0 +1,90 @@
+{# https://www.home-assistant.io/docs/configuration/templating/#reusing-templates #}
+
+{# A (sensible) temperature map in °C for human-felt living conditions (subjectively so). #}
+{% set temp_degrees_c_human_map =
+            {
+                 5: "#3498db",
+                15: "#70a03c",
+                22: "#ff9800",
+                30: "#e74c3c"
+            }
+%}
+
+{# A map of a discrete 5-point scale from green (1) to red (5). #}
+{% set discrete_5_point_map =
+            {
+                0: "",
+                1: "#40b100",
+                2: "#ffe500",
+                3: "#ffa800",
+                4: "#ff5800",
+                5: "#aa0000"
+            }
+%}
+
+{# A map of percentages where low means bad and high means good. #}
+{% set reserve_percentage_map =
+            {
+                10: "#aa0000",
+                50: "#ffa800",
+                90: "#40b100"
+            }
+%}
+
+{#
+Calculate a color value between two RGB colors using the difference between the given start and stop values for each color channel.
+
+For the `(state, color)` tuples, the state must be of the same unit as the first `state` parameter. The color must be a hex RGB value (with a `#`). See the `temp_degrees_c_human_map` variable in this file for an example.
+
+:param state: A numeric state to determine a color for.
+:param start: A `(state, color)` tuple for the start of the range.
+:param stop: A `(state, color)` tuple for the end of the range.
+
+:returns: A CSS color value (specifically an RGB value, but that shouldn't matter).
+#}
+{% macro _interpolate_color(state, start, stop) %}
+    {% set (start_state, start_color) = start %}
+    {% set (stop_state, stop_color) = stop %}
+    {% set (start_r, start_g, start_b) = (int(start_color[1:3], base=16), int(start_color[3:5], base=16), int(start_color[5:7], base=16)) %}
+    {% set (stop_r, stop_g, stop_b) = (int(stop_color[1:3], base=16), int(stop_color[3:5], base=16), int(stop_color[5:7], base=16)) %}
+    {% set s = ((state - start_state)/(stop_state - start_state)) %}
+    {# some channels might be negative; most browsers are probably tolerant, but in case not #}
+    {% set r = max(int(start_r + s*(stop_r - start_r)), 0) %}
+    {% set g = max(int(start_g + s*(stop_g - start_g)), 0) %}
+    {% set b = max(int(start_b + s*(stop_b - start_b)), 0) %}
+    rgb({{ r }}, {{ g }}, {{ b }});
+{% endmacro %}
+
+{#
+Map a state to a color on a smooth range given a map of gradient stops. The lowest and highest state values in the map will serve as clipping values (i.e. below and above those values the color will be fixed at that stop's value).
+
+:param state: A numeric state to determine a color for.
+:param state_map: A dictionary where the key is a specific state value and the value is a for a color at that specific state value. The keys must be numeric and of the same type as the `state` parameter. The color must be a hex RGB value (with a `#`). See the `temp_degrees_c_human_map` variable in this file for an example. If an alpha value is included, it will be discarded.
+
+:returns: A CSS color RGB value.
+#}
+{% macro gradient_color(state, state_map) %}
+    {% set keys = state_map | sort %}
+    {% set index = keys | select("lt", state) | list | length %}
+    {% if index == 0 %}
+        {{ state_map[keys | first] }}
+    {% elif index == keys | length %}
+        {{ state_map[keys | last] }}
+    {% else %}
+        {% set start = (keys[index - 1], state_map[keys[index - 1]]) %}
+        {% set stop = (keys[index], state_map[keys[index]]) %}
+        {{ _interpolate_color(state, start, stop) }}
+    {% endif %}
+{% endmacro %}
+
+{#
+Map a state to a color given a discrete set of colors (i.e. the state value must exist in the map).
+
+:param state: A state to determine a color for. It can be of any type, as long as it exists in the `state_map`.
+:param state_map: A dictionary alpha
+
+:returns: A CSS color value.
+#}
+{% macro mapped_color(state, state_map) %}
+    {{ state_map[state] if state in state_map else "" }}
+{% endmacro %}

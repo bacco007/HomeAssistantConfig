@@ -9,69 +9,86 @@ cards:
     fill_container: true
     icon: mdi:airplane-alert
     icon_color: red
-  - type: "custom:apexcharts-card"
-    header:
-      show: false
-      show_states: true
-      colorize_states: true
-    experimental:
-      brush: true
-    config_templates:
-      - year_chart
-    brush:
-      selection_span: 30d
-    apex_config:
-      chart:
-        type: "area"
-        height: 300,
-        zoom:
-          type: x
-          enabled: true
-          autoScaleYaxis: true
-        toolbar:
-          show: true
-          autoSelected: zoom
-          tools:
-            zoom: true
-            zoomin: false
-            zoomout: false
-            pan: false
-            reset: true
-      stroke: { show: true, lineCap: "square", dashArray: [0] }
-      dataLabels: { enabled: true }
-      legend: { show: false }
-      fill:
-        {
-          type: "gradient",
-          gradient:
-            {
-              shadeIntensity: 1,
-              inverseColors: false,
-              opacityFrom: 0.45,
-              opacityTo: 0.05,
-              stops: [20, 100, 100, 100],
-            },
-        }
-    series:
+  - type: custom:plotly-graph
+    entities:
       - entity: sensor.archive_flighttracker_flights_365day
-        name: Yield
-        type: area
-        # extend_to_end: false
-        stroke_width: 2
-        color: orange
-        show:
-          extremas: true
-          in_brush: true
-        data_generator: |
-          let res = [];
-          for (const [key, value] of
-              Object.entries(entity.attributes)) {
-              res.push([new Date(key).getTime(), value]);
-          }
-          return res.sort((a, b) => { return a[0] - b[0] });
-    graph_span: 365days
-    all_series_config:
-      type: line
-      group_by:
-        func: last
-        duration: 1d
+        connectgaps: true
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_flighttracker_flights_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        texttemplate: <b>%{y:,.0f}</b>
+        fill: tozeroy
+        fillcolor: rgba(255,165,0,0.2)
+        line:
+          width: 2
+          shape: spline
+          color: rgba(255,165,0,9.8)
+    hours_to_show: 1y
+    refresh_interval: auto
+    autorange_after_scroll: true
+    layout:
+      showlegend: false
+      height: 300
+      margin:
+        autoexpand: true
+        l: 40
+        r: 20
+        b: 10
+        t: 2
+      xaxis:
+        showline: true
+        tickformat: "%b %Y"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        rangeslider: true
+        rangeselector:
+          "x": 0
+          "y": 1.1
+          buttons:
+            - count: 7
+              step: day
+            - count: 14
+              step: day
+            - count: 1
+              step: month
+            - count: 6
+              step: month
+            - count: 1
+              step: year
+      yaxis:
+        title: ""
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: true
+    config:
+      scrollZoom: true

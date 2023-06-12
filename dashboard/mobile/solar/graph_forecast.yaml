@@ -22,7 +22,7 @@ all_series_config:
   color_threshold:
     - value: 0
       color: "#FFF"
-    - value: 0.5
+    - value: 0.5x
       color: khaki
     - value: 1
       color: yellow

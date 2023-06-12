@@ -1,98 +1,118 @@
 ---
-type: custom:stack-in-card
-mode: vertical
+type: custom:vertical-stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }
 cards:
-  - type: entities
-    style: |
-      .card-header {
-        padding: 5px 16px;
-        font-size: 18px;
-        font-weight: 700 !important;
-      }
-      .card-content div {
-          margin: 0 !important;
-      }
-      #states {
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
-      }
-      .secondary {
-        color: darkgray !important;
-        margin-left: 2px !important;
+  - type: custom:mushroom-entity-card
+    entity: sensor.tamhospital_waitingtime
+    primary_info: state
+    secondary_info: name
+    fill_container: true
+    name: People Waiting
+    icon: mdi:hospital
+    icon_color: red
+  - type: custom:plotly-graph
+    hours_to_show: 24
+    time_offset: |-
+      $fn () =>  {
+        now = new Date();
+        tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0,0,0,0);                                           // midnight
+        HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+        return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
       }
     entities:
       - entity: sensor.tamhospital_waitingtime
-        name: No. Waiting
-  - type: custom:apexcharts-card
-    graph_span: 1d
-    now:
-      show: true
-      color: red
-    span:
-      end: day
-    header:
-      show: true
-      show_states: true
-      colorize_states: true
-    apex_config:
-      chart:
-        height: 250px
-    all_series_config:
-      # stroke_width: 2
-      opacity: 0.3
-      extend_to: now
-      # type: area
-      # group_by:
-      #   func: last
-      #   duration: 1h
-    yaxis:
-      - decimals: 0
-        align_to: 5
-    series:
-      - entity: sensor.tamhospital_waitingtime
         name: Current
-        stroke_width: 3.5
-        type: area
-        color: "#FF4400"
-        opacity: 0.08
-        group_by:
-          func: last
-          duration: 10m
-        show:
-          extremas: true
-          legend_value: false
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 10m
+        texttemplate: <b>%{y:,.0f}</b>
+        fill: tozeroy
+        line:
+          width: 3
+          color: "#FF4400"
+          shape: spline
       - entity: sensor.tamhospital_waitingtime
         name: Yesterday
-        offset: "-1d"
-        stroke_width: 2.5
-        type: area
-        color: lightgrey
-        opacity: 0.08
-        group_by:
-          func: last
-          duration: 10m
-        show:
-          extremas: true
-          legend_value: false
+        time_offset: 1d
+        connectgaps: true
+        filters:
+          - force_numeric
+          - resample: 10m
+        texttemplate: <b>%{y:,.0f}</b>
+        line:
+          width: 1.5
+          color: lightgray
+          shape: spline
       - entity: sensor.tamhospital_waitingtime
         attribute: usual_patients
         name: Usual Waiting
-        stroke_width: 2.5
-        curve: stepline
-        color: "#ffa600"
-        show:
-          legend_value: false
+        connectgaps: true
+        filters:
+          - force_numeric
+        line:
+          width: 2.5
+          color: "#ffa600"
       - entity: sensor.tamhospital_waitingtime
         attribute: capacity
         name: Capacity
-        stroke_width: 0
-        type: area
-        curve: stepline
-        opacity: 0.1
-        color: "#039be5"
-        show:
-          in_header: false
-          legend_value: false
-        group_by:
-          func: last
-          duration: 1h
+        time_offset: 1d
+        connectgaps: true
+        filters:
+          - force_numeric
+        line:
+          width: 2
+          dash: dash
+          color: "#039be5"
+      - entity: ""
+        name: now
+        yaxis: y9
+        showlegend: false
+        line:
+          width: 2
+          dash: dot
+          color: white
+        filters:
+          - force_numeric
+          - fn: () => { return {xs:[Date.now(),Date.now()], ys:[0,1]} }
+    refresh_interval: auto
+    layout:
+      showlegend: true
+      height: 250
+      margin:
+        autoexpand: true
+        l: 30
+        r: 20
+      xaxis:
+        showline: true
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false
