@@ -978,7 +978,7 @@ class WindSpeedConverter {
         this.kph = new SpeedUnit('km/h', ['kph', 'km/h'], (speed) => speed / 3.6, (speed) => speed * 3.6, 10, 100);
         this.mph = new SpeedUnit('m/h', ['mph', 'm/h'], (speed) => speed / 2.2369, (speed) => speed * 2.2369, 10, 70);
         this.fps = new SpeedUnit('ft/s', ['fps', 'ft/s'], (speed) => speed / 3.2808399, (speed) => speed * 3.2808399, 10, 100);
-        this.knots = new SpeedUnit('knots', ['knots', 'kts', 'knts'], (speed) => speed / 1.9438444924406, (speed) => speed * 1.9438444924406, 5, 60);
+        this.knots = new SpeedUnit('knots', ['knots', 'kts', 'knts', 'kn'], (speed) => speed / 1.9438444924406, (speed) => speed * 1.9438444924406, 5, 60);
         this.units = [this.bft, this.mps, this.kph, this.mph, this.fps, this.knots];
         this.outputSpeedUnit = this.getSpeedUnit(this.outputUnit);
         if (rangeBeaufort === true) {
@@ -1362,6 +1362,9 @@ class MeasurementCounter {
         const convertedSpeed = this.speedConverterFunction(speed);
         const speedRangeIndex = this.speedRangeFunction(convertedSpeed);
         const convertedDirection = this.convertDirection(direction);
+        if (convertedDirection === undefined) {
+            return;
+        }
         const compensatedDirection = this.compensateDirection(convertedDirection);
         const windDirectionIndex = this.windDirections.findIndex(windDirection => windDirection.checkDirection(compensatedDirection));
         Log.trace("Wind measurement: ", direction, speed, windDirectionIndex, speedRangeIndex);
@@ -1372,10 +1375,15 @@ class MeasurementCounter {
         if (this.config.windDirectionUnit === 'letters') {
             degrees = this.windDirectionConverter.getDirection(direction);
             if (isNaN(degrees)) {
-                throw new Error("Could not convert direction " + direction + " to degrees.");
+                Log.info("Could not convert direction " + direction + " to degrees.");
+                return undefined;
             }
         }
         else {
+            if (isNaN(direction)) {
+                Log.info("Direction " + direction + " is not a number.");
+                return undefined;
+            }
             degrees = direction;
         }
         return degrees;
@@ -1645,8 +1653,8 @@ class MeasurementMatcher {
             for (const direction of directionStats) {
                 const speed = this.findHistoryInPeriod(direction, speedHistory);
                 if (speed) {
-                    if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
-                        Log.warn("Spped " + speed.s + " at timestamp " + direction.start + " is not a number.");
+                    if (this.isInvalidSpeed(speed.s)) {
+                        Log.warn("Speed " + speed.s + " at timestamp " + direction.start + " is not a number.");
                     }
                     else {
                         directionSpeed.push(new DirectionSpeed(direction.mean, +speed.s));
@@ -1663,7 +1671,7 @@ class MeasurementMatcher {
                 if (direction) {
                     directionSpeed.push(new DirectionSpeed(direction.mean, +speed.s));
                     if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
-                        Log.warn("Spped " + speed.s + " at timestamp " + direction.start + " is not a number.");
+                        Log.warn("Speed " + speed.s + " at timestamp " + direction.start + " is not a number.");
                     }
                     else {
                         directionSpeed.push(new DirectionSpeed(direction.mean, +speed.s));
@@ -1713,7 +1721,7 @@ class MeasurementMatcher {
             for (const direction of directionHistory) {
                 const speed = this.findHistoryBackAtTime(direction.lu, speedHistory);
                 if (speed) {
-                    if (speed.s === '' || speed.s === null || isNaN(+speed.s)) {
+                    if (this.isInvalidSpeed(speed.s)) {
                         Log.warn("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
                     }
                     else {
@@ -1727,17 +1735,19 @@ class MeasurementMatcher {
         }
         else {
             for (const speed of speedHistory) {
-                const direction = this.findHistoryBackAtTime(speed.lu, directionHistory);
-                if (direction) {
-                    if (direction.s === '' || direction.s === null || isNaN(+direction.s)) {
-                        Log.warn("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
+                if (this.isValidSpeed(speed.s)) {
+                    const direction = this.findHistoryBackAtTime(speed.lu, directionHistory);
+                    if (direction) {
+                        if (direction.s === '' || direction.s === null || isNaN(+direction.s)) {
+                            Log.warn("Speed " + speed.s + " at timestamp " + speed.lu + " is not a number.");
+                        }
+                        else {
+                            directionSpeed.push(new DirectionSpeed(direction.s, +speed.s));
+                        }
                     }
                     else {
-                        directionSpeed.push(new DirectionSpeed(direction.s, +speed.s));
+                        Log.trace('No matching direction found for speed ' + speed.s + " at timestamp " + speed.lu);
                     }
-                }
-                else {
-                    Log.trace('No matching direction found for speed ' + speed.s + " at timestamp " + speed.lu);
                 }
             }
         }
@@ -1799,6 +1809,12 @@ class MeasurementMatcher {
             }
         }
         return match;
+    }
+    isInvalidSpeed(speed) {
+        return speed === '' || speed === null || speed === undefined || isNaN(+speed);
+    }
+    isValidSpeed(speed) {
+        return speed !== '' && speed !== null && speed !== undefined && !isNaN(+speed);
     }
 }
 
@@ -1939,6 +1955,8 @@ class EntityCheckResult {
 }
 
 class EntityChecker {
+    async checkEntities2(cardConfig, hass) {
+    }
     async checkEntities(cardConfig, hass) {
         this.hass = hass;
         if (!this.hass) {
@@ -1985,7 +2003,7 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 1.0.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.0.1 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();
