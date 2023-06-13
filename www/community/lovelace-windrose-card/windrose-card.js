@@ -1540,7 +1540,11 @@ class WindRoseRendererCenterCalm {
 
 class PercentageCalculatorCenterCalm extends PercentageCalculator {
     calculate(windCounts) {
-        windCounts.directionSpeedRangeCounts.forEach((speedRangeCounts) => speedRangeCounts[0] = 0);
+        for (let i = 0; i < windCounts.directionTotals.length; i++) {
+            windCounts.directionSpeedRangeCounts[i][0] = 0;
+            const directionTotal = windCounts.directionSpeedRangeCounts[i].reduce((sum, current) => sum + current, 0);
+            windCounts.directionTotals[i] = directionTotal;
+        }
         return super.calculate(windCounts);
     }
 }
@@ -1955,8 +1959,6 @@ class EntityCheckResult {
 }
 
 class EntityChecker {
-    async checkEntities2(cardConfig, hass) {
-    }
     async checkEntities(cardConfig, hass) {
         this.hass = hass;
         if (!this.hass) {
@@ -2003,7 +2005,7 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 1.0.1 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.0.2 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();
