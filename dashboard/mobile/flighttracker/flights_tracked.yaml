@@ -9,51 +9,94 @@ cards:
     fill_container: true
     icon: mdi:airplane-alert
     icon_color: red
-  - type: custom:apexcharts-card
-    graph_span: 24h
-    span:
-      end: day
-    now:
-      show: true
-    header:
-      show: false
-      show_states: true
-      colorize_states: true
-    apex_config:
-      chart:
-        height: 250
-      legend:
-        show: false
-      yaxis:
-        forceNiceScale: true
-        decimalsInFloat: false
-    all_series_config:
-      stroke_width: 3
-      type: line
-      fill_raw: last
-      extend_to: now
-      group_by:
-        func: max
-        duration: 10min
-    yaxis:
-      - decimals: 0
-        align_to: 5
-    series:
+  - type: custom:plotly-graph
+    hours_to_show: 24
+    time_offset: |-
+      $fn ({ getFromConfig }) => {
+        const ms_to_show = getFromConfig('hours_to_show') * 60 * 60 * 1000;
+        const now_utc = Date.now() - new Date().getTimezoneOffset() * 60 * 1000;
+        return ms_to_show - now_utc % ms_to_show + 'ms'
+      }
+    entities:
       - entity: sensor.flighttracker_aircraft_total
         name: Yesterday
-        offset: "-1d"
-        stroke_width: 1.5
-        type: area
-        color: lightgrey
-        opacity: 0.08
-        show:
-          extremas: true
-          legend_value: false
+        time_offset: 1d
+        legendgroup: 2
+        connectgaps: true
+        filters:
+          - force_numeric
+          - resample: 10m
+        texttemplate: <b>%{y:,.0f}</b>
+        line:
+          width: 1.5
+          color: rgba(128, 128, 128, 0.7)
+          shape: spline
       - entity: sensor.flighttracker_aircraft_total
-        stroke_width: 3.5
-        type: area
-        color: "#FF4400"
-        opacity: 0.08
-        show:
-          extremas: true
-          legend_value: false
+        name: Today
+        legendgroup: 1
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 10m
+        texttemplate: <b>%{y:,.0f}</b>
+        fillcolor: rgba(214, 39, 40,.3)
+        fill: tozeroy
+        line:
+          width: 3
+          color: rgba(214, 39, 40, 0.8)
+          shape: spline
+      - entity: ""
+        name: now
+        yaxis: y9
+        showlegend: false
+        mode: lines+text
+        text:
+          - ""
+          - Now
+        textposition: top
+        line:
+          width: 2
+          dash: dot
+          color: lightblue
+        filters:
+          - force_numeric
+          - fn: () => { return {xs:[Date.now(),Date.now()], ys:[0,1]} }
+    refresh_interval: auto
+    layout:
+      showlegend: true
+      height: 400
+      margin:
+        autoexpand: true
+        l: 30
+        r: 20
+      xaxis:
+        showline: true
+        autorange: true
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

@@ -1,63 +1,88 @@
 ---
-type: entities
-entities:
-  - entity: sensor.stats_livetraffic
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.stats_livetraffic
     name: Incident Count
-
-  - type: custom:apexcharts-card
-    graph_span: 7d
-    span:
-      end: day
-    header:
-      show: false
-    apex_config:
-      chart:
-        height: 250px
-        stacked: true
-    all_series_config:
-      stroke_width: 2
-      opacity: 0.3
-      type: area
-      curve: stepline
-      # extend_to_end: false
-      group_by:
-        func: last
-        duration: 1h
-    series:
-      # - entity: sensor.stats_livetraffic
-      #   name: Total
+    fill_container: true
+    icon_color: red
+  - type: custom:plotly-graph
+    entities:
       - entity: sensor.stats_livetraffic
         attribute: alpine
         name: Alpine
-        show:
-          legend_value: false
+        legendgroup: 1
       - entity: sensor.stats_livetraffic
         attribute: fire
         name: Fire
-        show:
-          legend_value: false
+        legendgroup: 2
       - entity: sensor.stats_livetraffic
         attribute: flood
         name: Flood
-        show:
-          legend_value: false
+        legendgroup: 3
       - entity: sensor.stats_livetraffic
         attribute: incidents
         name: Incidents
-        show:
-          legend_value: false
+        legendgroup: 1
       - entity: sensor.stats_livetraffic
         attribute: incidents_lga
         name: Incidents (LGA)
-        show:
-          legend_value: false
+        legendgroup: 2
       - entity: sensor.stats_livetraffic
         attribute: majorevents
         name: Major Events
-        show:
-          legend_value: false
+        legendgroup: 3
       - entity: sensor.stats_livetraffic
         attribute: roadwork
         name: Roadwork
-        show:
-          legend_value: false
+        legendgroup: 1
+    hours_to_show: 1w
+    refresh_interval: auto
+    defaults:
+      entity:
+        connectgaps: true
+        legendgroup: 1
+        filters:
+          - force_numeric
+          - resample: 1h
+        texttemplate: <b>%{y:,.0f}</b>
+        show_value: true
+        line:
+          width: 3
+    layout:
+      showlegend: true
+      height: 300
+      margin:
+        autoexpand: true
+        l: 30
+        r: 30
+      xaxis:
+        autorange: true
+        showline: true
+        showgrid: false
+        tickformat: "%a"
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

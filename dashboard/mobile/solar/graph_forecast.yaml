@@ -1,99 +1,6 @@
 ---
-type: custom:apexcharts-card
-graph_span: 7d
-update_interval: 10mins
-experimental:
-  color_threshold: true
-header:
-  show: false
-span:
-  start: day
-all_series_config:
-  type: line
-  curve: smooth
-  unit: kW
-  stroke_width: 3
-  data_generator: |
-    return entity.attributes.forecast.map((entry) => {
-      return [new Date(entry.period_start), entry.pv_estimate];
-    });
-  show:
-    extremas: true
-  color_threshold:
-    - value: 0
-      color: "#FFF"
-    - value: 0.5x
-      color: khaki
-    - value: 1
-      color: yellow
-    - value: 1.5
-      color: gold
-    - value: 2
-      color: orange
-    - value: 2.5
-      color: darkorange
-    - value: 3
-      color: tomato
-    - value: 3.5
-      color: sandybrown
-    - value: 4
-      color: peru
-    - value: 4.5
-      color: orangered
-    - value: 5
-      color: maroon
-    - value: 5.5
-      color: purple
-    - value: 6
-      color: darkred
-apex_config:
-  plotOptions:
-    bar:
-      columnWidth: 100%
-  tooltip:
-    x:
-      format: ddd dd MMM - HH:mm
-  legend:
-    show: false
-  grid:
-    borderColor: "#7B7B7B"
-  chart:
-    height: 300
-    foreColor: "#7B7B7B"
-    zoom:
-      type: x
-      enabled: true
-      autoScaleYaxis: true
-    toolbar:
-      show: true
-      autoSelected: zoom
-      tools:
-        zoom: true
-        zoomin: false
-        zoomout: false
-        pan: false
-        reset: true
-  xaxis:
-    type: datetime
-    labels:
-      datetimeFormatter:
-        month: ddd
-        day: ddd
-    forceNiceScale: true
-    decimalsInFloat: false
-  yaxis:
-    - seriesName: kW
-      decimalsInFloat: 0
-      title:
-        text: kW
-  stroke:
-    show: true
-    lineCap: square
-    dashArray:
-      - 0
-      - 0
-      - 0
-series:
+type: custom:plotly-graph
+entities:
   - entity: sensor.solcast_forecast_today
   - entity: sensor.solcast_forecast_tomorrow
   - entity: sensor.solcast_forecast_d3
@@ -101,3 +8,58 @@ series:
   - entity: sensor.solcast_forecast_d5
   - entity: sensor.solcast_forecast_d6
   - entity: sensor.solcast_forecast_d7
+hours_to_show: 1w
+refresh_interval: auto
+defaults:
+  entity:
+    connectgaps: true
+    legendgroup: 1
+    filters:
+      - fn: |-
+          ({ meta }) => ({
+            xs: meta.forecast.map(({ period_start }) => new Date(period_start)),
+            ys: meta.forecast.map(({ pv_estimate }) => pv_estimate),
+          })
+    texttemplate: <b>%{y:,.2f}</b>
+    line:
+      width: 3
+      color: lightyellow
+      shape: spline
+layout:
+  showlegend: false
+  height: 300
+  margin:
+    autoexpand: true
+    l: 30
+    r: 30
+  xaxis:
+    autorange: true
+    showline: true
+    showgrid: false
+    tickformat: '%a'
+    showticklabels: true
+    linecolor: rgb(204,204,204)
+    linewidth: 2
+    autotick: false
+    ticks: outside
+    tickwidth: 2
+    ticklen: 5
+    tickfont:
+      family: Roboto
+      size: 12
+      color: rgb(204,204,204)
+  yaxis:
+    title: ''
+    autorange: true
+    zeroline: true
+    fixedrange: true
+    linecolor: rgb(204,204,204)
+    linewidth: 2
+    tickfont:
+      family: Roboto
+      size: 12
+      color: rgb(204,204,204)
+  dragmode: false
+config:
+  scrollZoom: false
+

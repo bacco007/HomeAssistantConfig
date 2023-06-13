@@ -41,30 +41,67 @@ cards:
               head:
                 label: Individual Service Stations
                 type: section
-      - type: custom:apexcharts-card
-        graph_span: 7d
-        span:
-          end: day
-        header:
-          show: false
-        apex_config:
-          chart:
-            height: 250px
-        all_series_config:
-          stroke_width: 2
-          opacity: 0.3
-          type: area
-          curve: stepline
-          # extend_to_end: false
-          group_by:
-            func: last
-            duration: 1h
-        series:
+      - type: custom:plotly-graph
+        entities:
           - entity: sensor.tamworth_fuel_average_ulp98
             name: Average
+            legendgroup: 1
           - entity: sensor.tamworth_fuel_average_ulp98
             attribute: max
             name: Max
+            legendgroup: 2
           - entity: sensor.tamworth_fuel_average_ulp98
             attribute: min
             name: Min
+            legendgroup: 3
+        hours_to_show: 1w
+        refresh_interval: auto
+        defaults:
+          entity:
+            connectgaps: true
+            legendgroup: 1
+            filters:
+              - force_numeric
+              - resample: 1h
+            texttemplate: <b>%{y:,.1f}</b>
+            show_value: true
+            line:
+              width: 3
+              shape: spline
+        layout:
+          showlegend: true
+          height: 250
+          margin:
+            autoexpand: true
+            l: 30
+            r: 30
+          xaxis:
+            autorange: true
+            showline: true
+            showgrid: false
+            tickformat: "%a"
+            showticklabels: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            autotick: false
+            ticks: outside
+            tickwidth: 2
+            ticklen: 5
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          yaxis:
+            title: ""
+            autorange: true
+            zeroline: true
+            fixedrange: true
+            linecolor: rgb(204,204,204)
+            linewidth: 2
+            tickfont:
+              family: Roboto
+              size: 12
+              color: rgb(204,204,204)
+          dragmode: false
+        config:
+          scrollZoom: false

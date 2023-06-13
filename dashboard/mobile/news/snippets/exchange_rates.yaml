@@ -75,32 +75,59 @@ cards:
                     }
         padding: 0
         entities:
-          - type: custom:apexcharts-card
-            graph_span: 144h
-            header:
-              show: false
-            apex_config:
-              stroke:
-                curve: smooth
-              plotOptions:
-                bar:
-                  columnWidth: 50%
-              legend:
-                showForSingleSeries: false
-              grid:
-                borderColor: "#7B7B7B"
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.yahoofinance_audeur_x
-                show:
-                  extremas: true
-                stroke_width: 2
-                fill_raw: last
-                float_precision: 4
-                group_by:
-                  func: last
-                  duration: 1hr
-            yaxis:
-              - decimals: 4
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                line:
+                  width: 2
+            layout:
+              showlegend: false
+              height: 300
+              margin:
+                autoexpand: true
+                l: 45
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
 
   - type: custom:mushroom-template-card
     card_mod:
@@ -175,32 +202,59 @@ cards:
                     }
         padding: 0
         entities:
-          - type: custom:apexcharts-card
-            graph_span: 144h
-            header:
-              show: false
-            apex_config:
-              stroke:
-                curve: smooth
-              plotOptions:
-                bar:
-                  columnWidth: 50%
-              legend:
-                showForSingleSeries: false
-              grid:
-                borderColor: "#7B7B7B"
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.yahoofinance_audgbp_x
-                show:
-                  extremas: true
-                stroke_width: 2
-                fill_raw: last
-                float_precision: 4
-                group_by:
-                  func: last
-                  duration: 1hr
-            yaxis:
-              - decimals: 4
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                line:
+                  width: 2
+            layout:
+              showlegend: false
+              height: 300
+              margin:
+                autoexpand: true
+                l: 45
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
 
   - type: custom:mushroom-template-card
     card_mod:
@@ -275,32 +329,59 @@ cards:
                     }
         padding: 0
         entities:
-          - type: custom:apexcharts-card
-            graph_span: 144h
-            header:
-              show: false
-            apex_config:
-              stroke:
-                curve: smooth
-              plotOptions:
-                bar:
-                  columnWidth: 50%
-              legend:
-                showForSingleSeries: false
-              grid:
-                borderColor: "#7B7B7B"
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.yahoofinance_audnzd_x
-                show:
-                  extremas: true
-                stroke_width: 2
-                fill_raw: last
-                float_precision: 4
-                group_by:
-                  func: last
-                  duration: 1hr
-            yaxis:
-              - decimals: 4
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                line:
+                  width: 2
+            layout:
+              showlegend: false
+              height: 300
+              margin:
+                autoexpand: true
+                l: 45
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
 
   - type: entities
     card_mod:
@@ -366,29 +447,56 @@ cards:
                     }
         padding: 0
         entities:
-          - type: custom:apexcharts-card
-            graph_span: 144h
-            header:
-              show: false
-            apex_config:
-              stroke:
-                curve: smooth
-              plotOptions:
-                bar:
-                  columnWidth: 50%
-              legend:
-                showForSingleSeries: false
-              grid:
-                borderColor: "#7B7B7B"
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.yahoofinance_audusd_x
-                show:
-                  extremas: true
-                stroke_width: 2
-                fill_raw: last
-                float_precision: 4
-                group_by:
-                  func: last
-                  duration: 1hr
-            yaxis:
-              - decimals: 4
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 30m
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                line:
+                  width: 2
+            layout:
+              showlegend: false
+              height: 300
+              margin:
+                autoexpand: true
+                l: 45
+                r: 30
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                zeroline: true
+                fixedrange: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false

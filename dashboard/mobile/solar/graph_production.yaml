@@ -1,109 +1,198 @@
 ---
-type: custom:config-template-card
-entities:
-  - sensor.sunset
-  - sensor.solar_noon
-  - sensor.sunrise
-card:
-  type: custom:apexcharts-card
-  graph_span: 24h
-  update_interval: 10mins
-  header:
-    show: false
-    show_states: true
-    colorize_states: true
-    title: "Solar Production"
-  span:
-    start: day
-  all_series_config:
-    stroke_width: 2
-    type: line
-    curve: smooth
-    unit: kW
-  apex_config:
-    annotations:
-      xaxis:
-        - x: ${new Date(states['sensor.sunrise'].state).getTime()}
-          label:
-            text: Sunrise ☉
-            borderWidth: 0
-            style:
-              background: "#0000"
-        - x: ${new Date(states['sensor.solar_noon'].state).getTime()}
-          label:
-            text: ☼
-            borderWidth: 0
-            style:
-              background: "#0000"
-        - x: ${new Date(states['sensor.sunset'].state).getTime()}
-          label:
-            text: Sunset ☾
-            borderWidth: 0
-            style:
-              background: "#0000"
-    tooltip:
-      x:
-        format: "ddd dd MMM - HH:mm"
-    legend:
-      show: true
-    grid:
-      borderColor: "#7B7B7B"
-    chart:
-      height: 450
-    xaxis:
-      {
-        type: "datetime",
-        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-        forceNiceScale: true,
-        decimalsInFloat: false,
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Solar Production (Today)
+    fill_container: true
+    icon: mdi:solar-power
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 24
+    time_offset: |-
+      $fn ({ getFromConfig }) => {
+        const ms_to_show = getFromConfig('hours_to_show') * 60 * 60 * 1000;
+        const now_utc = Date.now() - new Date().getTimezoneOffset() * 60 * 1000;
+        return ms_to_show - now_utc % ms_to_show + 'ms'
       }
-    yaxis:
-      - seriesName: "kW"
-        decimalsInFloat: 0
-        # max: 5
-        title:
-          text: "kW"
-    stroke: { show: true, lineCap: "square", dashArray: [0, 0, 0] }
-  series:
-    - entity: sensor.active_generation
-      name: Solar Generation
-      stroke_width: 3
-      color: "#ff9800"
-      extend_to: now
-      transform: "return x / 1000;"
-      group_by:
-        func: last
-        duration: 5min
-    - entity: sensor.active_export_to_grid
-      name: Export to Grid
-      extend_to: now
-      color: "#8353d1"
-      transform: "return x / 1000;"
-      invert: true
-      group_by:
-        func: last
-        duration: 5min
-    - entity: sensor.active_import_from_grid
-      name: Import from Grid
-      extend_to: now
-      color: "#488fc2"
-      transform: "return x / 1000;"
-      group_by:
-        func: last
-        duration: 5min
-    - entity: sensor.load_power
-      name: House Consumption
-      extend_to: now
-      color: "#FFFFFF"
-      transform: "return x / 1000;"
-      group_by:
-        func: last
-        duration: 5min
-    - entity: sensor.solcast_forecast_today
-      name: Forecast
-      show:
-        in_header: false
-      data_generator: |
-        return entity.attributes.forecast.map((entry) => {
-          return [new Date(entry.period_start), entry.pv_estimate];
-        });
+    entities:
+      - entity: sensor.solcast_forecast_today
+        name: Forecast
+        legendgroup: 3
+        connectgaps: true
+        unit_of_measurement: kW
+        filters:
+          - fn: |-
+              ({ meta }) => ({
+                xs: meta.forecast.map(({ period_start }) => new Date(period_start)),
+                ys: meta.forecast.map(({ pv_estimate }) => pv_estimate),
+              })
+        fill: tozeroy
+        line:
+          width: 2
+          color: rgba(255,165,0,0.4)
+          dash: dash
+          shape: spline
+      - entity: sensor.active_generation
+        name: Solar Generation
+        legendgroup: 1
+        connectgaps: true
+        show_value: true
+        unit_of_measurement: kW
+        filters:
+          - force_numeric
+          - map_y_numbers: y / 1000
+          - resample: 5m
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 3
+          color: "#ff9800"
+          shape: spline
+      - entity: sensor.active_export_to_grid
+        name: Export To Grid
+        legendgroup: 2
+        connectgaps: true
+        show_value: true
+        unit_of_measurement: kW
+        filters:
+          - force_numeric
+          - map_y_numbers: y / 1000
+          - resample: 5m
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 2
+          color: "#8353d1"
+          shape: spline
+      - entity: sensor.active_import_from_grid
+        name: Import From Grid
+        legendgroup: 2
+        connectgaps: true
+        show_value: true
+        unit_of_measurement: kW
+        filters:
+          - force_numeric
+          - map_y_numbers: y / 1000
+          - resample: 5m
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 2
+          color: "#488fc2"
+          shape: spline
+      - entity: sensor.load_power
+        name: House Consumption
+        legendgroup: 1
+        connectgaps: true
+        show_value: true
+        unit_of_measurement: kW
+        filters:
+          - force_numeric
+          - map_y_numbers: y / 1000
+          - resample: 5m
+        texttemplate: <b>%{y:,.2f}</b>
+        line:
+          width: 2
+          color: "#fff"
+          shape: spline
+      - entity: ""
+        name: Sunrise
+        yaxis: y9
+        showlegend: false
+        mode: "lines+text"
+        text: ["", "Sunrise"]
+        textposition: top
+        line:
+          width: 2
+          dash: dot
+          color: "#7B7B7B"
+        filters:
+          - force_numeric
+          - fn: >-
+              ({hass}) => { return {xs:[new
+              Date(hass.states['sensor.sunrise'].state).getTime(),new
+              Date(hass.states['sensor.sunrise'].state).getTime()], ys:[0,1]} }
+      - entity: ""
+        name: Solar Noon
+        yaxis: y9
+        showlegend: false
+        mode: "lines+text"
+        text: ["", "Noon"]
+        textposition: top
+        line:
+          width: 2
+          dash: dot
+          color: "#7B7B7B"
+        filters:
+          - force_numeric
+          - fn: >-
+              ({hass}) => { return {xs:[new
+              Date(hass.states['sensor.solar_noon'].state).getTime(),new
+              Date(hass.states['sensor.solar_noon'].state).getTime()], ys:[0,1]}
+              }
+      - entity: ""
+        name: Sunset
+        yaxis: y9
+        showlegend: false
+        mode: "lines+text"
+        text: ["", "Sunset"]
+        textposition: top
+        line:
+          width: 2
+          dash: dot
+          color: "#7B7B7B"
+        filters:
+          - force_numeric
+          - fn: >-
+              ({hass}) => { return {xs:[new
+              Date(hass.states['sensor.sunset'].state).getTime(),new
+              Date(hass.states['sensor.sunset'].state).getTime()], ys:[0,1]} }
+      - entity: ""
+        name: now
+        yaxis: y9
+        showlegend: false
+        mode: "lines+text"
+        text: ["", "Now"]
+        textposition: top
+        line:
+          width: 2
+          dash: dot
+          color: lightblue
+        filters:
+          - force_numeric
+          - fn: () => { return {xs:[Date.now(),Date.now()], ys:[0,1]} }
+    refresh_interval: auto
+    layout:
+      showlegend: true
+      height: 400
+      margin:
+        autoexpand: true
+        l: 30
+        r: 20
+      xaxis:
+        showline: true
+        autorange: true
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

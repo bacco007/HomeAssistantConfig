@@ -46,30 +46,30 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, June 13th 2023_
+_Stats as at 05:00, Wednesday, June 14th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.1 | 463     | 3716         | 2573 | 102 |
+| 2023.6.1 | 463     | 3975         | 2782 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 102
-Binary Sensor | 176
+Binary Sensor | 228
 Camera | 5
 Device Tracker | 78
 Group | 3
 Input Boolean | 0
 Input Datetime | 3
 Input Text | 6
-Light | 9
-Media Player | 21
+Light | 10
+Media Player | 22
 Person | 1
 Scene | 0
 Script | 5
-Sensor | 2573
+Sensor | 2782
 Sun | 1
 Switch | 168
 Weather | 7
@@ -584,7 +584,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)

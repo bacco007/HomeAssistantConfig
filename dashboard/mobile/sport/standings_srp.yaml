@@ -42,6 +42,9 @@ entities:
             hidden: true
             data: entries
             modify: x.stats.find(y=>y.name == 'rank').displayValue
+          - name: Logo
+            data: entries
+            modify: '''<img src="'' + x.team.logos[0].href + ''"style="width: 100%">'''
           - name: Team
             data: entries
             modify: x.team.name

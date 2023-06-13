@@ -65,47 +65,61 @@ cards:
                     name: Releases (24hrs)
                   - entity: sensor.waternsw_chaffey_dam_evaporation_24hrs
                     name: Evaporation (24hrs)
-          - type: custom:apexcharts-card
-            graph_span: 7d
-            header:
-              show: false
-              # title: "Chaffey Dam"
-              show_states: true
-              colorize_states: true
-            span:
-              end: hour
-              ## offset: -23h
-            apex_config:
-              chart: { type: "area", height: 200 }
-              stroke: { show: true, width: 3, curve: smooth }
-              legend: { show: false }
-              dataLabels: { enabled: false }
-              xaxis:
-                {
-                  type: "datetime",
-                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-                }
-              yaxis: { decimalsInFloat: 0 }
-              fill:
-                {
-                  type: "gradient",
-                  gradient:
-                    {
-                      shadeIntensity: 1,
-                      inverseColors: false,
-                      opacityFrom: 0.45,
-                      opacityTo: 0.05,
-                      stops: [20, 100, 100, 100],
-                    },
-                }
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.waternsw_chaffey_dam_storage
-                name: "Chaffey Dam"
-                type: area
-                fill_raw: last
-                group_by:
-                  func: avg
-                  duration: 6h
+                name: Chaffey Dam
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 6h
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                fill: tozeroy
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: false
+              height: 200
+              margin:
+                autoexpand: true
+                l: 30
+                r: 60
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                rangemode: nonnegative
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
 
       - type: custom:stack-in-card
         mode: vertical
@@ -162,47 +176,61 @@ cards:
                     name: Releases (24hrs)
                   - entity: sensor.waternsw_split_rock_dam_evaporation_24hrs
                     name: Evaporation (24hrs)
-          - type: custom:apexcharts-card
-            graph_span: 7d
-            header:
-              show: false
-              # title: "Split Rock Dam"
-              show_states: true
-              colorize_states: true
-            span:
-              end: hour
-              ## offset: -23h
-            apex_config:
-              chart: { type: "area", height: 200 }
-              stroke: { show: true, width: 3, curve: smooth }
-              legend: { show: false }
-              dataLabels: { enabled: false }
-              xaxis:
-                {
-                  type: "datetime",
-                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-                }
-              yaxis: { decimalsInFloat: 0 }
-              fill:
-                {
-                  type: "gradient",
-                  gradient:
-                    {
-                      shadeIntensity: 1,
-                      inverseColors: false,
-                      opacityFrom: 0.45,
-                      opacityTo: 0.05,
-                      stops: [20, 100, 100, 100],
-                    },
-                }
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.waternsw_split_rock_dam_storage
-                name: "Split Rock Dam"
-                type: area
-                fill_raw: last
-                group_by:
-                  func: avg
-                  duration: 6h
+                name: Split Rock Dam
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 6h
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                fill: tozeroy
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: false
+              height: 200
+              margin:
+                autoexpand: true
+                l: 30
+                r: 60
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                rangemode: nonnegative
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
 
       - type: custom:stack-in-card
         mode: vertical
@@ -259,126 +287,202 @@ cards:
                     name: Releases (24hrs)
                   - entity: sensor.waternsw_keepit_dam_evaporation_24hrs
                     name: Evaporation (24hrs)
-          - type: custom:apexcharts-card
-            graph_span: 7d
-            header:
-              show: false
-              # title: "Keepit Dam"
-              show_states: true
-              colorize_states: true
-            span:
-              end: hour
-              ## offset: -23h
-            apex_config:
-              chart: { type: "area", height: 200 }
-              stroke: { show: true, width: 3, curve: smooth }
-              legend: { show: false }
-              dataLabels: { enabled: false }
-              xaxis:
-                {
-                  type: "datetime",
-                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-                }
-              yaxis: { decimalsInFloat: 0 }
-              fill:
-                {
-                  type: "gradient",
-                  gradient:
-                    {
-                      shadeIntensity: 1,
-                      inverseColors: false,
-                      opacityFrom: 0.45,
-                      opacityTo: 0.05,
-                      stops: [20, 100, 100, 100],
-                    },
-                }
-            series:
+          - type: custom:plotly-graph
+            entities:
               - entity: sensor.waternsw_keepit_dam_storage
-                name: "Keepit Dam"
-                type: area
-                fill_raw: last
-                group_by:
-                  func: avg
-                  duration: 6h
+                name: Keepit Dam
+            hours_to_show: 1w
+            refresh_interval: auto
+            defaults:
+              entity:
+                connectgaps: true
+                legendgroup: 1
+                filters:
+                  - force_numeric
+                  - resample: 6h
+                texttemplate: <b>%{y:,.3f}</b>
+                show_value: true
+                fill: tozeroy
+                line:
+                  width: 3
+                  shape: spline
+            layout:
+              showlegend: false
+              height: 200
+              margin:
+                autoexpand: true
+                l: 30
+                r: 60
+              xaxis:
+                autorange: true
+                showline: true
+                showgrid: false
+                tickformat: "%a"
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: false
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              yaxis:
+                title: ""
+                autorange: true
+                rangemode: nonnegative
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: false
+            config:
+              scrollZoom: false
 
-      - type: "custom:apexcharts-card"
-        header:
-          title: Dams - Last 365 Days
-          show: true
-          show_states: false
-        apex_config:
-          chart: { type: "area", height: 300 }
-          stroke: { show: true, lineCap: "square" }
-          dataLabels: { enabled: true }
-          legend: { show: false }
-          fill:
-            {
-              type: "gradient",
-              gradient:
-                {
-                  shadeIntensity: 1,
-                  inverseColors: false,
-                  opacityFrom: 0.45,
-                  opacityTo: 0.05,
-                  stops: [20, 100, 100, 100],
-                },
-            }
-          yaxis:
-            - seriesName: "High"
-              decimalsInFloat: 0
-              title:
-                text: "Dam Storage (%)"
-              min: 0
-              max: 100
-        series:
-          - entity: sensor.archive_waternsw_chaffeydam_30day
-            name: Chaffey Dam
-            type: area
-            # extend_to_end: false
-            stroke_width: 3
-            unit: "%"
-            show:
-              extremas: true
-            data_generator: |
-              let res = [];
-              for (const [key, value] of
-                  Object.entries(entity.attributes)) {
-                  res.push([new Date(key).getTime(), value]);
-              }
-              return res.sort((a, b) => { return a[0] - b[0] });
-          - entity: sensor.archive_waternsw_keepitdam_30day
-            name: Keepit Dam
-            type: area
-            # extend_to_end: false
-            stroke_width: 3
-            unit: "%"
-            show:
-              extremas: true
-            data_generator: |
-              let res = [];
-              for (const [key, value] of
-                  Object.entries(entity.attributes)) {
-                  res.push([new Date(key).getTime(), value]);
-              }
-              return res.sort((a, b) => { return a[0] - b[0] });
-          - entity: sensor.archive_waternsw_splitrockdam_30day
-            name: Split Rock Dam
-            type: area
-            # extend_to_end: false
-            stroke_width: 3
-            unit: "%"
-            show:
-              extremas: true
-            data_generator: |
-              let res = [];
-              for (const [key, value] of
-                  Object.entries(entity.attributes)) {
-                  res.push([new Date(key).getTime(), value]);
-              }
-              return res.sort((a, b) => { return a[0] - b[0] });
-        graph_span: 365days
-        all_series_config:
-          type: line
-          group_by:
-            func: sum
-            duration: 1d
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: custom:mushroom-template-card
+            primary: All Dams - Last 365 Days
+            name: Flights Tracked (This Year)
+            fill_container: true
+            icon: mdi:water
+            icon_color: blue
+          - type: custom:plotly-graph
+            entities:
+              - entity: sensor.archive_waternsw_chaffeydam_30day
+                name: Chaffey Dam
+                connectgaps: true
+                period: day
+                filters:
+                  - fn: |-
+                      ({xs, ys, hass}) => {
+                        let xx = [];
+                        let yy = [];
+                        for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_chaffeydam_30day"].attributes)) {
+                            let d = new Date(key).getTime();
+                            if (d > 0) {
+                                xx.push(d);
+                                yy.push(value);
+                            }
+                        }
+                        return {
+                          xs: xx,
+                          ys: yy
+                        };
+                      }
+                texttemplate: <b>%{y:,.0f}</b>
+                # fill: tozeroy
+                line:
+                  width: 2
+                  shape: spline
+              - entity: sensor.archive_waternsw_keepitdam_30day
+                name: Keepit Dam
+                connectgaps: true
+                period: day
+                filters:
+                  - fn: |-
+                      ({xs, ys, hass}) => {
+                        let xx = [];
+                        let yy = [];
+                        for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_keepitdam_30day"].attributes)) {
+                            let d = new Date(key).getTime();
+                            if (d > 0) {
+                                xx.push(d);
+                                yy.push(value);
+                            }
+                        }
+                        return {
+                          xs: xx,
+                          ys: yy
+                        };
+                      }
+                texttemplate: <b>%{y:,.0f}</b>
+                # fill: tozeroy
+                line:
+                  width: 2
+                  shape: spline
+              - entity: sensor.archive_waternsw_splitrockdam_30day
+                name: Split Rock Dam
+                connectgaps: true
+                period: day
+                filters:
+                  - fn: |-
+                      ({xs, ys, hass}) => {
+                        let xx = [];
+                        let yy = [];
+                        for (const [key, value] of Object.entries(hass.states["sensor.archive_waternsw_splitrockdam_30day"].attributes)) {
+                            let d = new Date(key).getTime();
+                            if (d > 0) {
+                                xx.push(d);
+                                yy.push(value);
+                            }
+                        }
+                        return {
+                          xs: xx,
+                          ys: yy
+                        };
+                      }
+                texttemplate: <b>%{y:,.0f}</b>
+                # fill: tozeroy
+                line:
+                  width: 2
+                  shape: spline
+            hours_to_show: 1y
+            refresh_interval: auto
+            autorange_after_scroll: true
+            layout:
+              showlegend: true
+              height: 300
+              margin:
+                autoexpand: true
+                l: 40
+                r: 20
+                b: 10
+                t: 2
+              xaxis:
+                showline: true
+                tickformat: '%b %Y'
+                showgrid: false
+                showticklabels: true
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                ticks: outside
+                tickwidth: 2
+                ticklen: 5
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+                rangeslider: true
+                rangeselector:
+                  x: 0
+                  'y': 1.2
+                  buttons:
+                    - count: 7
+                      step: day
+                    - count: 14
+                      step: day
+                    - count: 1
+                      step: month
+                    - count: 6
+                      step: month
+                    - count: 1
+                      step: year
+              yaxis:
+                title: ''
+                linecolor: rgb(204,204,204)
+                linewidth: 2
+                autotick: true
+                tickfont:
+                  family: Roboto
+                  size: 12
+                  color: rgb(204,204,204)
+              dragmode: true
+            config:
+              scrollZoom: true
+
