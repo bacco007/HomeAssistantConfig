@@ -1,64 +1,186 @@
 ---
-type: custom:config-template-card
-entities:
-  - sensor.opennem_graph_market
-variables:
-  graph_entity: states['sensor.opennem_graph_market'].attributes.graph_entity
-card:
-  type: custom:apexcharts-card
-  graph_span: 7d
-  span:
-    end: day
-  header:
-    show: true
-    title: "Generation Type"
-    show_states: true
-    colorize_states: true
-  apex_config:
-    chart:
-      {
-        type: "area",
-        height: 300,
-        toolbar: { show: true, tools: { reset: true } },
-        zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-      }
-    stroke: { show: true, width: 2.5, curve: smooth }
-    legend: { show: false }
-    dataLabels: { enabled: false }
-    fill:
-      {
-        type: "gradient",
-        gradient:
-          {
-            shadeIntensity: 1,
-            inverseColors: false,
-            opacityFrom: 0.45,
-            opacityTo: 0.05,
-            stops: [20, 100, 100, 100],
-          },
-      }
-    xaxis:
-      {
-        type: "datetime",
-        labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-      }
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Generation Type (All Regions)
+    fill_container: true
+    icon: mdi:meter-electric-outline
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 7d
+    entities:
+      - entity: sensor.opennem_nsw
+        attribute: fossilfuel
+        yaxis: y1
+        name: Fossil Fuel
+        legendgroup: 1
+        line:
+          color: rgba(255, 255, 255, 0.8)
+      - entity: sensor.opennem_nsw
+        attribute: renewables
+        yaxis: y1
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
+      - entity: sensor.opennem_qld
+        attribute: fossilfuel
+        showlegend: false
+        yaxis: y2
+        name: Qld
+        legendgroup: 1
+        line:
+          color: rgba(255, 255, 255, 0.8)
+      - entity: sensor.opennem_qld
+        attribute: renewables
+        showlegend: false
+        yaxis: y2
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
+      - entity: sensor.opennem_sa
+        attribute: fossilfuel
+        showlegend: false
+        yaxis: y3
+        name: SA
+        line:
+          color: rgba(255, 255, 255, 0.8)
+        legendgroup: 1
+      - entity: sensor.opennem_sa
+        attribute: renewables
+        showlegend: false
+        yaxis: y3
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
+      - entity: sensor.opennem_tas
+        attribute: fossilfuel
+        showlegend: false
+        yaxis: y4
+        name: Tas
+        legendgroup: 1
+        line:
+          color: rgba(255, 255, 255, 0.8)
+      - entity: sensor.opennem_tas
+        attribute: renewables
+        showlegend: false
+        yaxis: y4
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
+      - entity: sensor.opennem_vic
+        attribute: fossilfuel
+        showlegend: false
+        yaxis: y5
+        name: Vic
+        line:
+          color: rgba(255, 255, 255, 0.8)
+        legendgroup: 1
+      - entity: sensor.opennem_vic
+        attribute: renewables
+        showlegend: false
+        yaxis: y5
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
+      - entity: sensor.opennem_wa
+        attribute: fossilfuel
+        showlegend: false
+        yaxis: y6
+        name: WA
+        line:
+          color: rgba(255, 255, 255, 0.8)
+        legendgroup: 1
+      - entity: sensor.opennem_wa
+        attribute: renewables
+        showlegend: false
+        yaxis: y6
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
+    layout:
+      showlegend: true
+      height: 1000
+      margin:
+        autoexpand: true
+        l: 55
+        r: 20
+      grid:
+        rows: 6
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        autorange: true
+        showline: true
+        showgrid: false
+        zeroline: true
+        tickformat: '%a'
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title:
+          text: NSW
+      yaxis2:
+        title:
+          text: Qld
+      yaxis3:
+        title:
+          text: SA
+      yaxis4:
+        title:
+          text: Tas
+      yaxis5:
+        title:
+          text: Vic
+      yaxis6:
+        title:
+          text: WA
+    defaults:
+      entity:
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+          - sliding_window_moving_average:
+              window_size: 10
+              extended: true
+              centered: true
+        line:
+          width: 3
+          color: rgba(255,155,255, 0.8)
+          shape: spline
+      yaxes:
+        side: left
+        overlaying: 'y'
+        visible: true
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+        dragmode: false
+    config:
+      scrollZoom: false
 
-  series:
-    - entity: ${graph_entity}
-      attribute: fossilfuel
-      type: area
-      name: Fossil Fuels
-      extend_to: now
-      curve: smooth
-      group_by:
-        func: avg
-        duration: 30m
-    - entity: ${graph_entity}
-      attribute: renewables
-      type: area
-      name: Renewables
-      extend_to: now
-      curve: smooth
-      group_by:
-        func: avg
-        duration: 30m

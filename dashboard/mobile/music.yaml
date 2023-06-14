@@ -33,7 +33,6 @@ cards:
           - !include lastfm/graph_today.yaml
           - !include lastfm/graph_thisweek.yaml
           - !include lastfm/graph_thisyear.yaml
-          - !include lastfm/graph_thisyeardaily.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -47,7 +46,6 @@ cards:
           - !include lastfm/graph_today.yaml
           - !include lastfm/graph_thisweek.yaml
           - !include lastfm/graph_thisyear.yaml
-          - !include lastfm/graph_thisyeardaily.yaml
           - !include spotify/graph_playcount.yaml
 
   # Column 2, Row 1

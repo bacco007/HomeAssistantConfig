@@ -1,0 +1,8 @@
+---
+platform: average
+name: indoor_average_pressure
+unique_id: indoor_average_pressure
+entities:
+  - sensor.zha_bedroom_pressure
+  - sensor.zha_lounge_weather_pressure
+  - sensor.zha_office_pressure

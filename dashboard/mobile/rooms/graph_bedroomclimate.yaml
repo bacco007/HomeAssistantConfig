@@ -2,14 +2,20 @@
 type: custom:vertical-stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Internet Performance - Last Week
+    primary: Bedroom - Climate
     fill_container: true
     icon: mdi:gauge
     icon_color: yellow
   - type: custom:plotly-graph
-    hours_to_show: 7d
+    hours_to_show: 24
+    time_offset: |-
+      $fn ({ getFromConfig }) => {
+        const ms_to_show = getFromConfig('hours_to_show') * 60 * 60 * 1000;
+        const now_utc = Date.now() - new Date().getTimezoneOffset() * 60 * 1000;
+        return ms_to_show - now_utc % ms_to_show + 'ms'
+      }
     entities:
-      - entity: sensor.speedtest_download
+      - entity: sensor.zha_bedroom_temperature
         yaxis: y1
         legendgroup: 1
         name: Today
@@ -17,16 +23,25 @@ cards:
         show_value: true
         filters:
           - force_numeric
-          - resample: 15m
-          - sliding_window_moving_average:
-              window_size: 10
-              extended: true
-              centered: true
+          - resample: 10m
         line:
           width: 3
           color: rgba(255,155,255, 0.8)
           shape: spline
-      - entity: sensor.speedtest_upload
+      - entity: sensor.zha_bedroom_temperature
+        yaxis: y1
+        legendgroup: 2
+        name: Yesterday
+        connectgaps: true
+        time_offset: 1d
+        filters:
+          - force_numeric
+          - resample: 10m
+        line:
+          width: 2
+          color: rgba(128,128,128,0.9)
+          shape: spline
+      - entity: sensor.zha_bedroom_humidity
         yaxis: y2
         legendgroup: 1
         showlegend: false
@@ -35,16 +50,26 @@ cards:
         show_value: true
         filters:
           - force_numeric
-          - resample: 15m
-          - sliding_window_moving_average:
-              window_size: 10
-              extended: true
-              centered: true
+          - resample: 10m
         line:
           width: 3
           color: rgba(255,155,255, 0.8)
           shape: spline
-      - entity: sensor.speedtest_ping
+      - entity: sensor.zha_bedroom_humidity
+        yaxis: y2
+        legendgroup: 2
+        showlegend: false
+        name: Yesterday
+        connectgaps: true
+        filters:
+          - force_numeric
+          - resample: 10m
+        time_offset: 1d
+        line:
+          width: 2
+          color: rgba(128,128,128,0.9)
+          shape: spline
+      - entity: sensor.zha_bedroom_pressure
         yaxis: y3
         legendgroup: 1
         showlegend: false
@@ -53,17 +78,26 @@ cards:
         show_value: true
         filters:
           - force_numeric
-          - resample: 15m
-          - sliding_window_moving_average:
-              window_size: 10
-              extended: true
-              centered: true
+          - resample: 30m
         line:
           width: 3
           color: rgba(255,155,255, 0.8)
           shape: spline
+      - entity: sensor.zha_bedroom_pressure
+        yaxis: y3
+        legendgroup: 2
+        showlegend: false
+        name: Yesterday
+        connectgaps: true
+        time_offset: 1d
+        filters:
+          - force_numeric
+          - resample: 30m
+        line:
+          width: 2
+          color: rgba(128,128,128,0.9)
+          shape: spline
     layout:
-      showlegend: false
       height: 500
       margin:
         autoexpand: true
@@ -95,7 +129,7 @@ cards:
           size: 12
           color: rgb(204,204,204)
         title:
-          text: Download (Mbit/s)
+          text: Temp (C)
           font:
             family: Roboto
             size: 12
@@ -109,7 +143,7 @@ cards:
           size: 12
           color: rgb(204,204,204)
         title:
-          text: Upload (Mbit/s)
+          text: Humidity (%)
           font:
             family: Roboto
             size: 12
@@ -123,7 +157,7 @@ cards:
           size: 12
           color: rgb(204,204,204)
         title:
-          text: Ping (ms)
+          text: Pressure (hPa)
           font:
             family: Roboto
             size: 12
@@ -131,5 +165,5 @@ cards:
     defaults:
       yaxes:
         side: left
-        overlaying: "y"
+        overlaying: 'y'
         visible: true

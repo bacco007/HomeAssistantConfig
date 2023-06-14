@@ -1,66 +1,182 @@
 ---
-type: custom:apexcharts-card
-header:
-  show: true
-  title: "Internet Performance - Last Year"
-graph_span: 1year
-span:
-  end: day
-  offset: +1d
-yaxis:
-  - id: left
-    min: 0
-    apex_config:
-      decimalsInFloat: 0
-      title:
-        text: "Speed (Mbit/s)"
-  - id: right
-    min: 0
-    apex_config:
-      decimalsInFloat: 1
-      title:
-        text: "Ping (ms)"
-    opposite: true
-apex_config:
-  chart: { type: "area", height: 300 }
-  stroke: { show: true, curve: smooth, dashArray: [0, 0, 2] }
-  legend: { show: false }
-  dataLabels: { enabled: false }
-  fill:
-    {
-      type: "gradient",
-      gradient:
-        {
-          shadeIntensity: 1,
-          inverseColors: false,
-          opacityFrom: 0.45,
-          opacityTo: 0.05,
-          stops: [20, 100, 100, 100],
-        },
-    }
-all_series_config:
-  type: area
-  extend_to: now
-  group_by:
-    func: max
-    duration: 1d
-  show:
-    extremas: true
-  data_generator: |
-    let res = [];
-    for (const [key, value] of
-        Object.entries(entity.attributes)) {
-        res.push([new Date(key).getTime(), value]);
-    }
-    return res.sort((a, b) => { return a[0] - b[0] });
-series:
-  - entity: sensor.archive_internet_download_max_365day
-    yaxis_id: left
-    name: Download
-    stroke_width: 3
-    color: "#db4437"
-  - entity: sensor.archive_internet_upload_max_365day
-    yaxis_id: left
-    name: Upload
-    stroke_width: 3
-    color: "#43a047"
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Internet Performance - Last Year
+    fill_container: true
+    icon: mdi:gauge
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 1y
+    entities:
+      - entity: sensor.archive_internet_download_max_365day
+        yaxis: y1
+        legendgroup: 1
+        name: Max
+        connectgaps: true
+        show_value: false
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_internet_download_max_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(255,155,255, 0.8)
+          shape: spline
+      - entity: sensor.archive_internet_download_min_365day
+        yaxis: y1
+        legendgroup: 2
+        name: Min
+        connectgaps: true
+        show_value: false
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_internet_download_min_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(155,255,255, 0.5)
+          shape: spline
+      - entity: sensor.archive_internet_upload_max_365day
+        yaxis: y2
+        legendgroup: 1
+        showlegend: false
+        name: Today
+        connectgaps: true
+        show_value: false
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_internet_upload_max_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(255,155,255, 0.8)
+          shape: spline
+      - entity: sensor.archive_internet_upload_min_365day
+        yaxis: y2
+        legendgroup: 2
+        showlegend: false
+        name: Min
+        connectgaps: true
+        show_value: false
+        period: day
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_internet_upload_min_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(155,255,255, 0.5)
+          shape: spline
+    layout:
+      showlegend: true
+      height: 400
+      margin:
+        autoexpand: true
+        l: 55
+        r: 20
+      grid:
+        rows: 2
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: Download (Mbit/s)
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+      yaxis2:
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: Upload (Mbit/s)
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+    defaults:
+      yaxes:
+        side: left
+        overlaying: "y"
+        visible: true

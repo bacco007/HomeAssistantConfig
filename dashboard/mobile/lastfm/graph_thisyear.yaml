@@ -9,37 +9,137 @@ cards:
     fill_container: true
     icon: fab:lastfm
     icon_color: red
-  - type: custom:apexcharts-card
-    graph_span: 1year
-    span:
-      end: day
-    header:
-      show: false
-      show_states: true
-      colorize_states: true
-    apex_config:
-      chart:
-        height: 200
-      legend:
-        show: false
-      yaxis:
-        forceNiceScale: true
-        decimalsInFloat: false
-    all_series_config:
-      stroke_width: 3
-      curve: smooth
-      extend_to: now
-      unit: ""
-      group_by:
-        func: max
-        duration: 1d
-    series:
+  - type: custom:plotly-graph
+    hours_to_show: 1y
+    refresh_interval: auto
+    entities:
       - entity: sensor.archive_last_fm_playcount_365day
-        color: var(--label-badge-red)
-        data_generator: |
-          let res = [];
-          for (const [key, value] of
-              Object.entries(entity.attributes)) {
-              res.push([new Date(key).getTime(), value]);
-          }
-          return res.sort((a, b) => { return a[0] - b[0] });
+        yaxis: y1
+        legendgroup: 1
+        name: Max
+        connectgaps: true
+        show_value: false
+        period: day
+        texttemplate: <b>%{y:,.0f}</b>
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_last_fm_playcount_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(255,155,255, 0.8)
+          shape: step
+      - entity: sensor.archive_last_fm_dailyplaycount_365day
+        yaxis: y2
+        legendgroup: 1
+        name: Max
+        connectgaps: true
+        show_value: false
+        period: day
+        texttemplate: <b>%{y:,.0f}</b>
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_last_fm_dailyplaycount_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(255,155,255, 0.8)
+          shape: step
+    layout:
+      dragmode: true
+      showlegend: false
+      height: 400
+      margin:
+        autoexpand: true
+        l: 55
+        r: 20
+      grid:
+        rows: 2
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: Over Time
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+      yaxis2:
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: By Day
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+      yaxis3:
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: Minutes Listened
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+    defaults:
+      yaxes:
+        side: left
+        overlaying: "y"
+        visible: true

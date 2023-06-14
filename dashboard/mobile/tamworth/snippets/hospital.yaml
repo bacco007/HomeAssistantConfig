@@ -1,10 +1,5 @@
 ---
 type: custom:vertical-stack-in-card
-card_mod:
-  style: |
-    ha-card {
-      margin: 10px 10px !important;
-    }
 cards:
   - type: custom:mushroom-entity-card
     entity: sensor.tamhospital_waitingtime

@@ -79,6 +79,10 @@ cards:
                   - force_numeric
                   - resample: 6h
                 texttemplate: <b>%{y:,.3f}</b>
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
                 show_value: true
                 fill: tozeroy
                 line:
@@ -89,7 +93,7 @@ cards:
               height: 200
               margin:
                 autoexpand: true
-                l: 30
+                l: 40
                 r: 60
               xaxis:
                 autorange: true
@@ -109,7 +113,11 @@ cards:
                   color: rgb(204,204,204)
               yaxis:
                 title: ""
-                autorange: true
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny1 - 1
+                  - $fn ({vars}) => vars.maxy1 + 0.5
                 rangemode: nonnegative
                 linecolor: rgb(204,204,204)
                 linewidth: 2
@@ -190,6 +198,10 @@ cards:
                   - force_numeric
                   - resample: 6h
                 texttemplate: <b>%{y:,.3f}</b>
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
                 show_value: true
                 fill: tozeroy
                 line:
@@ -200,7 +212,7 @@ cards:
               height: 200
               margin:
                 autoexpand: true
-                l: 30
+                l: 40
                 r: 60
               xaxis:
                 autorange: true
@@ -220,7 +232,11 @@ cards:
                   color: rgb(204,204,204)
               yaxis:
                 title: ""
-                autorange: true
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny1 - 1
+                  - $fn ({vars}) => vars.maxy1 + 0.5
                 rangemode: nonnegative
                 linecolor: rgb(204,204,204)
                 linewidth: 2
@@ -301,6 +317,10 @@ cards:
                   - force_numeric
                   - resample: 6h
                 texttemplate: <b>%{y:,.3f}</b>
+                x: $fn ({xs}) => xs
+                "y": $fn ({ys}) => ys
+                fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
                 show_value: true
                 fill: tozeroy
                 line:
@@ -311,7 +331,7 @@ cards:
               height: 200
               margin:
                 autoexpand: true
-                l: 30
+                l: 40
                 r: 60
               xaxis:
                 autorange: true
@@ -331,7 +351,11 @@ cards:
                   color: rgb(204,204,204)
               yaxis:
                 title: ""
-                autorange: true
+                autorange: false
+                fixedrange: true
+                range:
+                  - $fn ({vars}) => vars.miny1 - 1
+                  - $fn ({vars}) => vars.maxy1 + 0.5
                 rangemode: nonnegative
                 linecolor: rgb(204,204,204)
                 linewidth: 2
@@ -445,7 +469,7 @@ cards:
                 t: 2
               xaxis:
                 showline: true
-                tickformat: '%b %Y'
+                tickformat: "%b %Y"
                 showgrid: false
                 showticklabels: true
                 linecolor: rgb(204,204,204)
@@ -461,7 +485,7 @@ cards:
                 rangeslider: true
                 rangeselector:
                   x: 0
-                  'y': 1.2
+                  "y": 1.2
                   buttons:
                     - count: 7
                       step: day
@@ -474,7 +498,7 @@ cards:
                     - count: 1
                       step: year
               yaxis:
-                title: ''
+                title: ""
                 linecolor: rgb(204,204,204)
                 linewidth: 2
                 autotick: true
@@ -485,4 +509,3 @@ cards:
               dragmode: true
             config:
               scrollZoom: true
-

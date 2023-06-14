@@ -73,91 +73,146 @@ cards:
                     name: Min
                   - entity: sensor.waqi_tamworth_max_aqi
                     name: Max
-          - type: custom:apexcharts-card
-            graph_span: 72h
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none;
-                  border: 0;
-                }
-            span:
-              end: hour
-            header:
-              show: false
-              title: "UV Index (72 Hours)"
-              show_states: true
-              colorize_states: true
-
-            apex_config:
-              chart:
-                {
-                  type: "area",
-                  height: 300,
-                  toolbar: { show: true, tools: { reset: true } },
-                  zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-                }
-              stroke: { show: true, width: 2.5, curve: smooth }
-              legend: { show: false }
-              dataLabels: { enabled: false }
-              fill:
-                {
-                  type: "gradient",
-                  gradient:
-                    {
-                      shadeIntensity: 1,
-                      inverseColors: false,
-                      opacityFrom: 0.45,
-                      opacityTo: 0.05,
-                      stops: [20, 100, 100, 100],
-                    },
-                }
-              xaxis:
-                {
-                  type: "datetime",
-                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-                }
-
-              yaxis: { max: 15, min: 0 }
-              annotations:
-                positions: back
-                yaxis:
-                  - y: 2.5
-                    y2: 0
-                    strokeDashArray: 0
-                    fillColor: "#558B2F"
-                  - y: 5.5
-                    y2: 2.5
-                    strokeDashArray: 0
-                    fillColor: "#F9A825"
-                  - y: 7.5
-                    y2: 5.5
-                    strokeDashArray: 0
-                    fillColor: "#EF6C00"
-                  - y: 10.5
-                    y2: 7.5
-                    strokeDashArray: 0
-                    fillColor: "#B71C1C"
-                  - y: 15
-                    y2: 10.5
-                    strokeDashArray: 0
-                    fillColor: "#6A1B9A"
-            series:
-              - entity: sensor.current_uv_index
-                type: area
-                name: UV Index
-                # extend_to_end: false
-                curve: smooth
-                color: black
-                group_by:
-                  func: last
-                  duration: 1h
-              - entity: sensor.tempest_st_00056115_uv_index
-                type: area
-                name: Outside UVI
-                # extend_to_end: false
-                curve: smooth
-                color: red
-                group_by:
-                  func: last
-                  duration: 1h
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: World AQI (72 Hours)
+                    fill_container: true
+                    icon: mdi:chart-bubble
+                    icon_color: red
+                  - type: custom:plotly-graph
+                    hours_to_show: 72
+                    entities:
+                      - entity: sensor.waqi_tamworth_north_west_slopes
+                        name: Max
+                        legendgroup: 1
+                        connectgaps: true
+                        show_value: true
+                        x: $fn ({xs}) => xs
+                        "y": $fn ({ys}) => ys
+                        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+                        filters:
+                          - force_numeric
+                          - resample: 30m
+                        texttemplate: <b>%{y:,01f}</b>
+                        line:
+                          width: 3
+                          color: rgba(255,255,255, 0.8)
+                          shape:
+                    refresh_interval: auto
+                    layout:
+                      showlegend: false
+                      height: 300
+                      margin:
+                        autoexpand: true
+                        l: 40
+                        r: 20
+                      xaxis:
+                        showline: true
+                        autorange: true
+                        tickformat: "%a %H"
+                        showgrid: false
+                        showticklabels: true
+                        linecolor: rgb(204,204,204)
+                        linewidth: 2
+                        autotick: true
+                        ticks: outside
+                        tickwidth: 2
+                        ticklen: 5
+                        tickfont:
+                          family: Roboto
+                          size: 12
+                          color: rgb(204,204,204)
+                      yaxis:
+                        title: ""
+                        autorange: false
+                        fixedrange: true
+                        range:
+                          - 0
+                          - $fn ({vars}) => vars.maxy1 + 0.5
+                        zeroline: true
+                        linecolor: rgb(204,204,204)
+                        linewidth: 2
+                        tickfont:
+                          family: Roboto
+                          size: 12
+                          color: rgb(204,204,204)
+                      dragmode: false
+                      shapes:
+                        - type: rect
+                          xref: paper
+                          yref: y1
+                          x0: 0
+                          x1: 1
+                          y1: 50
+                          y0: 0
+                          fillcolor: "#009966"
+                          opacity: 0.2
+                          layer: below
+                          line:
+                            width: 0
+                        - type: rect
+                          xref: paper
+                          yref: y1
+                          x0: 0
+                          x1: 1
+                          y1: 100
+                          y0: 50
+                          fillcolor: "#ffde33"
+                          opacity: 0.2
+                          layer: below
+                          line:
+                            width: 0
+                        - type: rect
+                          xref: paper
+                          yref: y1
+                          x0: 0
+                          x1: 1
+                          y1: 150
+                          y0: 100
+                          fillcolor: "#ff9933"
+                          opacity: 0.2
+                          layer: below
+                          line:
+                            width: 0
+                        - type: rect
+                          xref: paper
+                          yref: y1
+                          x0: 0
+                          x1: 1
+                          y1: 200
+                          y0: 150
+                          fillcolor: "#cc0033"
+                          opacity: 0.2
+                          layer: below
+                          line:
+                            width: 0
+                        - type: rect
+                          xref: paper
+                          yref: y1
+                          x0: 0
+                          x1: 1
+                          y1: 300
+                          y0: 200
+                          fillcolor: "#660099"
+                          opacity: 0.2
+                          layer: below
+                          line:
+                            width: 0
+                        - type: rect
+                          xref: paper
+                          yref: y1
+                          x0: 0
+                          x1: 1
+                          y1: 500
+                          y0: 300
+                          fillcolor: "#7e0023"
+                          opacity: 0.2
+                          layer: below
+                          line:
+                            width: 0
+                    config:
+                      scrollZoom: false

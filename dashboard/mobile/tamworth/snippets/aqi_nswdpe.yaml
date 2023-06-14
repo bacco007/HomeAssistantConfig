@@ -73,82 +73,132 @@ cards:
                     name: Min
                   - entity: sensor.nsw_air_quality_tamworth_max_aqi
                     name: Max
-          - type: custom:apexcharts-card
-            graph_span: 72h
-            card_mod:
-              style: |
-                ha-card {
-                  box-shadow: none;
-                  border: 0;
-                }
-            span:
-              end: hour
-            header:
-              show: false
-              title: "NSW AQI (72 Hours)"
-              show_states: true
-              colorize_states: true
-
-            apex_config:
-              chart:
-                {
-                  type: "area",
-                  height: 300,
-                  toolbar: { show: true, tools: { reset: true } },
-                  zoom: { type: "x", enabled: true, autoScaleYaxis: true },
-                }
-              stroke: { show: true, width: 2.5, curve: smooth }
-              legend: { show: false }
-              dataLabels: { enabled: false }
-              fill:
-                {
-                  type: "gradient",
-                  gradient:
-                    {
-                      shadeIntensity: 1,
-                      inverseColors: false,
-                      opacityFrom: 0.45,
-                      opacityTo: 0.05,
-                      stops: [20, 100, 100, 100],
-                    },
-                }
-              xaxis:
-                {
-                  type: "datetime",
-                  labels: { datetimeFormatter: { month: "ddd", day: "ddd" } },
-                }
-              yaxis: { max: 200, min: 0 }
-              annotations:
-                positions: back
-                yaxis:
-                  - y: 34
-                    y2: 0
-                    strokeDashArray: 0
-                    fillColor: "#31add3"
-                  - y: 67
-                    y2: 34
-                    strokeDashArray: 0
-                    fillColor: "#99b964"
-                  - y: 67
-                    y2: 100
-                    strokeDashArray: 0
-                    fillColor: "#ec783a"
-                  - y: 100
-                    y2: 150
-                    strokeDashArray: 0
-                    fillColor: "#782d49"
-                  - y: 200
-                    y2: 150
-                    strokeDashArray: 0
-                    fillColor: "#d04730"
-
-            series:
-              - entity: sensor.nsw_air_quality_tamworth
-                type: area
-                name: Air Quality
-                # extend_to_end: false
-                curve: smooth
-                color: black
-                group_by:
-                  func: last
-                  duration: 1h
+          - type: custom:vertical-stack-in-card
+            cards:
+              - type: custom:mushroom-template-card
+                primary: NSW AQI (72 Hours)
+                fill_container: true
+                icon: mdi:chart-bubble
+                icon_color: red
+              - type: custom:plotly-graph
+                hours_to_show: 72
+                entities:
+                  - entity: sensor.nsw_air_quality_tamworth
+                    name: Max
+                    legendgroup: 1
+                    connectgaps: true
+                    show_value: true
+                    x: $fn ({xs}) => xs
+                    "y": $fn ({ys}) => ys
+                    fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+                    fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+                    filters:
+                      - force_numeric
+                      - resample: 30m
+                    texttemplate: <b>%{y:,01f}</b>
+                    line:
+                      width: 3
+                      color: rgba(255,255,255, 0.8)
+                      shape: spline
+                refresh_interval: auto
+                layout:
+                  showlegend: false
+                  height: 300
+                  margin:
+                    autoexpand: true
+                    l: 40
+                    r: 20
+                  xaxis:
+                    showline: true
+                    autorange: true
+                    tickformat: "%H:%M"
+                    showgrid: false
+                    showticklabels: true
+                    linecolor: rgb(204,204,204)
+                    linewidth: 2
+                    autotick: true
+                    ticks: outside
+                    tickwidth: 2
+                    ticklen: 5
+                    tickfont:
+                      family: Roboto
+                      size: 12
+                      color: rgb(204,204,204)
+                  yaxis:
+                    title: ""
+                    autorange: false
+                    fixedrange: true
+                    range:
+                      - 0
+                      - $fn ({vars}) => vars.maxy1 + 0.5
+                    zeroline: true
+                    linecolor: rgb(204,204,204)
+                    linewidth: 2
+                    tickfont:
+                      family: Roboto
+                      size: 12
+                      color: rgb(204,204,204)
+                  dragmode: false
+                  shapes:
+                    - type: rect
+                      xref: paper
+                      yref: y1
+                      x0: 0
+                      x1: 1
+                      y1: 34
+                      y0: 0
+                      fillcolor: "#31add3"
+                      opacity: 0.2
+                      layer: below
+                      line:
+                        width: 0
+                    - type: rect
+                      xref: paper
+                      yref: y1
+                      x0: 0
+                      x1: 1
+                      y1: 67
+                      y0: 34
+                      fillcolor: "#99b964"
+                      opacity: 0.2
+                      layer: below
+                      line:
+                        width: 0
+                    - type: rect
+                      xref: paper
+                      yref: y1
+                      x0: 0
+                      x1: 1
+                      y1: 100
+                      y0: 67
+                      fillcolor: "#ec783a"
+                      opacity: 0.2
+                      layer: below
+                      line:
+                        width: 0
+                    - type: rect
+                      xref: paper
+                      yref: y1
+                      x0: 0
+                      x1: 1
+                      y1: 150
+                      y0: 100
+                      fillcolor: "#782d49"
+                      opacity: 0.2
+                      layer: below
+                      line:
+                        width: 0
+                    - type: rect
+                      xref: paper
+                      yref: y1
+                      x0: 0
+                      x1: 1
+                      y1: 200
+                      y0: 150
+                      fillcolor: "#d04730"
+                      opacity: 0.2
+                      layer: below
+                      line:
+                        width: 0
+                config:
+                  scrollZoom: false
