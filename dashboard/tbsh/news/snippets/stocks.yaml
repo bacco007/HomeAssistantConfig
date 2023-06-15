@@ -1,0 +1,81 @@
+---
+type: custom:stack-in-card
+mode: vertical
+cards:
+  - type: custom:mushroom-template-card
+    primary: ASX Stocks
+    icon: mdi:currency-usd
+    icon_color: red
+    fill_container: true
+  - type: custom:auto-entities
+    unique: true
+    show_empty: true
+    card:
+      type: custom:stack-in-card
+      mode: vertical
+      card_mod:
+        style:
+          hui-vertical-stack-card$:
+            .: |
+              #root *:not(:last-child)::after {
+                content: "";
+                display: block;
+                height: 1.25px;
+                background: rgba(var(--rgb-disabled), 0.2);
+                margin-left: calc(var(--mush-icon-size) + var(--mush-spacing) * 2);
+                margin-right: var(--mush-spacing);
+              }
+    card_param: cards
+    filter:
+      template: >
+        {% for s in
+        states|selectattr('entity_id','search','sensor.yahoofinance') | selectattr('entity_id','search','_ax') |
+            sort(attribute="attributes.friendly_name")  -%}
+            {% if s.attributes.quoteType != "INDEX" -%}
+          {{
+          {
+             "type": "horizontal-stack",
+             "cards": [
+                {
+                   "type": "custom:mushroom-template-card",
+                   "entity": s.entity_id,
+                   "primary": "{{state_attr(entity, 'symbol')}}",
+                   "secondary": "{{state_attr(entity, 'friendly_name')}}",
+                   "icon": "{{state_attr(entity,\"icon\")}}",
+                   "icon_color": "{% if state_attr(entity, 'trending') == \"up\" %}green{% else %}red{% endif %}\n",
+                   "card_mod": {
+                      "style": "ha-card {\n  border: 0;\n}\n"
+                   }
+                },
+                {
+                   "type": "custom:mushroom-template-card",
+                   "entity": s.entity_id,
+                   "primary": "{% if state_attr(entity, 'currencySymbol') == none %}${%else%}{{state_attr(entity, 'currencySymbol')}}{%endif%}{{states(entity)}}\n",
+                   "tap_action": {
+                      "action": "more-info"
+                   },
+                   "secondary": "{% if state_attr(entity, 'trending') == \"up\" %}+{% endif\n%}{{state_attr(entity,'regularMarketChangePercent')}}%\n",
+                   "card_mod": {
+                      "style": {
+                         "mushroom-state-info$": "* {\n  text-align: end;\n}\n",
+                         ".": "ha-card {\n  margin: 3px 8px 0px 0px;\n  border: 0;\n  --secondary-text-color: {% if state_attr(config.entity, 'trending') == \"up\" %}rgba(var(--rgb-green)){% else %}rgba(var(--rgb-red)){% endif %};\n}\n"
+                      }
+                   }
+                }
+             ]
+          }
+          }},
+        {%- endif %}
+        {%- endfor %}
+card_mod:
+  style:
+    hui-vertical-stack-card$:
+      .: |
+        #root *:not(:last-child)::after {
+          content: "";
+          display: block;
+          height: 1.25px;
+          background: rgba(var(--rgb-disabled), 0.2);
+          margin-left: calc(var(--mush-icon-size) + var(--mush-spacing) * 2);
+          margin-right: var(--mush-spacing);
+        }

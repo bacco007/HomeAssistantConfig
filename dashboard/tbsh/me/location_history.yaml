@@ -1,0 +1,186 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:stack-in-card
+    mode: horizontal
+    card_mod:
+      style: |
+        ha-card {
+          border: 0;
+          box-shadow: none;
+          background: none;
+        }
+    cards:
+      - type: custom:mushroom-template-card
+        secondary: Home
+        primary: |
+          {{ states(config.entity) }} Hrs
+        layout: horizontal
+        icon: mdi:bed
+        entity: sensor.historystats_tom_home
+        icon_color: red
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+            }
+      - type: custom:mushroom-template-card
+        secondary: Work
+        primary: |
+          {{ states(config.entity) }} Hrs
+        layout: horizontal
+        icon: mdi:briefcase
+        entity: sensor.historystats_tom_work
+        icon_color: green
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+            }
+      - type: custom:mushroom-template-card
+        secondary: Away
+        primary: |
+          {{ states(config.entity) }} Hrs
+        layout: horizontal
+        icon: mdi:map-marker
+        entity: sensor.historystats_tom_away
+        icon_color: blue
+        tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              border: 0;
+              box-shadow: none;
+            }
+  - type: custom:tabbed-card
+    options: {}
+    styles:
+      "--mdc-theme-primary": var(--aurora-red)
+      "--mdc-tab-text-label-color-default": var(--aurora-red)
+    tabs:
+      - attributes:
+          label: 7 Days
+          isMinWidthIndicator: true
+        card:
+          type: custom:plotly-graph
+          hours_to_show: 7d
+          entities:
+            - entity: sensor.historystats_tom_home
+              name: Home
+              texttemplate: <b>%{y:,.1f}</b>
+              line:
+                color: red
+              legendgroup: 1
+            - entity: sensor.historystats_tom_work
+              name: Work
+              texttemplate: <b>%{y:,.1f}</b>
+              line:
+                color: green
+              legendgroup: 2
+            - entity: sensor.historystats_tom_away
+              name: Away
+              texttemplate: <b>%{y:,.1f}</b>
+              line:
+                color: blue
+              legendgroup: 3
+          refresh_interval: auto
+          defaults:
+            entity:
+              connectgaps: true
+              show_value: true
+              filters:
+                - force_numeric
+                - resample: 1h
+              line:
+                width: 3
+                color: rgba(255,155,255, 0.8)
+                shape: spline
+          layout:
+            showlegend: true
+            height: 300
+            margin:
+              autoexpand: true
+              l: 30
+              r: 40
+            xaxis:
+              showline: true
+              tickformat: "%a"
+              showgrid: false
+              showticklabels: true
+              linecolor: rgb(204,204,204)
+              linewidth: 2
+              autotick: false
+              ticks: outside
+              tickwidth: 2
+              ticklen: 5
+              tickfont:
+                family: Roboto
+                size: 12
+                color: rgb(204,204,204)
+            yaxis:
+              title: ''
+              autorange: true
+              zeroline: true
+              fixedrange: true
+              linecolor: rgb(204,204,204)
+              linewidth: 2
+              tickfont:
+                family: Roboto
+                size: 12
+                color: rgb(204,204,204)
+            dragmode: false
+          config:
+            scrollZoom: false
+
+      - attributes:
+          label: Today
+          isMinWidthIndicator: true
+        card:
+          type: custom:apexcharts-card
+          graph_span: 1d
+          span:
+            end: day
+          header:
+            show: false
+            show_states: true
+            colorize_states: true
+          chart_type: pie
+          apex_config:
+            chart:
+              height: 300
+          all_series_config:
+            stroke_width: 2
+            opacity: 0.4
+            type: area
+            curve: smooth
+            extend_to: now
+            group_by:
+              func: last
+              duration: 1d
+          series:
+            - entity: sensor.historystats_tom_home
+              name: Home
+              color: var(--label-badge-red)
+            - entity: sensor.historystats_tom_work
+              name: Work
+              color: var(--label-badge-green)
+            - entity: sensor.historystats_tom_away
+              name: Away
+              color: var(--label-badge-blue)
+          card_mod:
+            style: |
+              ha-card {
+                border: 0;
+              }
+card_mod:
+  style: |
+    ha-card {
+      margin: 10px 10px !important;
+    }

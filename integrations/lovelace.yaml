@@ -9,10 +9,10 @@ lovelace:
     #   title: Dashboard
     #   filename: dashboard/ui-lovelace.yaml
     #   mode: yaml
-    mobile-dashboard:
+    tbsh-dashboard:
       require_admin: false
       show_in_sidebar: true
       icon: mdi:google-downasaur
-      title: Dashboard
-      filename: dashboard/mobile-ui-lovelace.yaml
+      title: tbSH
+      filename: dashboard/ui-lovelace.yaml
       mode: yaml

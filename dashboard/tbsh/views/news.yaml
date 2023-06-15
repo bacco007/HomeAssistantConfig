@@ -1,0 +1,109 @@
+---
+theme: noctis
+icon: mdi:news
+subview: true
+path: news
+title: News
+type: custom:grid-layout
+layout: !include ../includes/grid-3col.yaml
+badges: []
+cards:
+  ### Sidebar - Menu
+  - !include ../includes/menu.yaml
+
+  ### Header - Left
+  - !include ../includes/header-left.yaml
+
+  ### Header - Right
+  - !include ../includes/header-right.yaml
+
+  ### Footer
+  - !include ../includes/footer.yaml
+
+  # Mobile Only
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: mobile
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+
+        cards:
+          - !include ../news/snippets/stocks.yaml
+          - !include ../news/snippets/stocks_international.yaml
+          - !include ../news/snippets/indicies.yaml
+          - !include ../news/snippets/exchange_rates.yaml
+          # - type: custom:tabbed-card
+          #   options: {}
+          #   styles:
+          #     --mdc-theme-primary: var(--label-badge-blue)
+          #     --mdc-tab-text-label-color-default: var(--label-badge-red)
+          #   tabs:
+          #     - attributes:
+          #         label: Sonarr
+          #         isMinWidthIndicator: true
+          #       card: !include tv-movies/partial_sonarr.yaml
+          #     - attributes:
+          #         label: Radarr
+          #         isMinWidthIndicator: true
+          #       card: !include tv-movies/partial_radarr.yaml
+          #     - attributes:
+          #         label: Plex
+          #         isMinWidthIndicator: true
+          #       card: !include tv-movies/partial_plex.yaml
+
+  # Column 1, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c1r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include ../news/snippets/stocks.yaml
+
+  # Column 2, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c2r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include ../news/snippets/stocks_international.yaml
+
+  # Column 3, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c3r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include ../news/snippets/indicies.yaml
+          - !include ../news/snippets/exchange_rates.yaml
+
+  # Column 1, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c1r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 2, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c2r2
+      show:
+        mediaquery: "(min-width: 801px)"
+
+  # Column 3, Row 2
+  - type: custom:gap-card
+    view_layout:
+      grid=area: c3r2
+      show:
+        mediaquery: "(min-width: 801px)"

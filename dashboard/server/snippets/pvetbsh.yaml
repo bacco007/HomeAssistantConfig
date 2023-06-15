@@ -1,0 +1,257 @@
+---
+type: vertical-stack
+cards:
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:vertical-stack-in-card
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none !important;
+                border: 0;
+              }
+          cards:
+            - type: custom:mushroom-template-card
+              card_mod:
+                style: |
+                  ha-card {
+                    box-shadow: none !important;
+                    border: 0;
+                  }
+              primary: pveTBSH
+              secondary: >
+                {% from 'easy_time.jinja' import custom_relative_time%} Up Since
+                {{ custom_relative_time(states('sensor.node_pvetbsh_uptime'),
+                values='week, day, hour')}}
+              icon: si:proxmox
+              icon_color: >
+                {% if is_state('binary_sensor.node_pvetbsh_status', 'on') %}
+                green
+
+                {%else%}
+
+                red
+
+                {% endif %}
+              tap_action:
+                action: more-info
+            - type: custom:layout-card
+              layout_type: masonry
+              layout:
+                width: 106
+                max_cols: 1
+                height: auto
+                padding: 0px
+                card_margin: var(--masonry-view-card-margin, -10px 8px 15px)
+              cards: null
+            - type: custom:mushroom-chips-card
+              chips:
+                - type: entity
+                  entity: button.node_pvetbsh_reboot
+                  content_info: none
+                - type: entity
+                  entity: button.node_pvetbsh_shutdown
+                  content_info: none
+                - type: entity
+                  entity: button.node_pvetbsh_start_all
+                  content_info: none
+                - type: entity
+                  entity: button.node_pvetbsh_stop_all
+                  content_info: none
+              alignment: center
+              card_mod:
+                style: |
+                  ha-card {
+                    margin: -4px 0px 11px;
+                    --chip-background: rgba(var(--rgb-disabled), 0.15);
+                    --chip-border-width: 0;
+                    --chip-border-radius: 12px;
+                    --chip-height: 43px;
+                    --chip-padding: 10px;
+                    --chip-spacing: 10px;
+                  }
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            card_param: cards
+            filter:
+              include:
+                - device: Node pveTBSH
+                  options:
+                    type: custom:mushroom-entity-card
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-icon-size: 28px;
+                          --mush-card-primary-font-size: 12px;
+                          --mush-card-secondary-font-size: 12px;
+                        }
+                        ha-card {
+                          box-shadow: none;
+                        }
+                    icon_color: orange
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+              exclude:
+                - domain: button
+            card:
+              type: grid
+              columns: 2
+              square: false
+              card_mod:
+                style: |
+                  ha-card {
+                    margin: -8px 0px 0px 0px;
+                    box-shadow: none;
+                  }
+            sort:
+              method: friendly_name
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:vertical-stack-in-card
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none !important;
+                border: 0;
+              }
+          cards:
+            - type: custom:mushroom-template-card
+              card_mod:
+                style: |
+                  ha-card {
+                    box-shadow: none !important;
+                    border: 0;
+                  }
+              primary: 100 - tbsh1
+              secondary: >
+                {% from 'easy_time.jinja' import custom_relative_time%} Up Since
+                {{
+                custom_relative_time(states('sensor.qemu_tbsh1_100_uptime'),
+                values='week, day, hour')}}
+              icon: si:proxmox
+              icon_color: >
+                {% if is_state('binary_sensor.qemu_tbsh1_100_status',
+                'on') %} green
+
+                {%else%}
+
+                red
+
+                {% endif %}
+              tap_action:
+                action: more-info
+            - type: custom:layout-card
+              layout_type: masonry
+              layout:
+                width: 106
+                max_cols: 1
+                height: auto
+                padding: 0px
+                card_margin: var(--masonry-view-card-margin, -10px 8px 15px)
+              cards: null
+            - type: custom:mushroom-chips-card
+              chips:
+                - type: entity
+                  entity: button.qemu_tbsh1_100_reboot
+                  content_info: none
+                - type: entity
+                  entity: button.qemu_tbsh1_100_reset
+                  content_info: none
+                - type: entity
+                  entity: button.qemu_tbsh1_100_resume
+                  content_info: none
+                - type: entity
+                  entity: button.qemu_tbsh1_100_shutdown
+                  content_info: none
+                - type: entity
+                  entity: button.qemu_tbsh1_100_start
+                  content_info: none
+                - type: entity
+                  entity: button.qemu_tbsh1_100_stop
+                  content_info: none
+                - type: entity
+                  entity: button.qemu_tbsh1_100_suspend
+                  content_info: none
+              alignment: center
+              card_mod:
+                style: |
+                  ha-card {
+                    margin: -4px 0px 11px;
+                    --chip-background: rgba(var(--rgb-disabled), 0.15);
+                    --chip-border-width: 0;
+                    --chip-border-radius: 12px;
+                    --chip-height: 43px;
+                    --chip-padding: 10px;
+                    --chip-spacing: 10px;
+                  }
+        padding: 0
+        entities:
+          - type: custom:auto-entities
+            card_param: cards
+            filter:
+              include:
+                - device: QEMU tbsh1 (100)
+                  options:
+                    type: custom:mushroom-entity-card
+                    card_mod:
+                      style: |
+                        :host {
+                          --mush-icon-size: 28px;
+                          --mush-card-primary-font-size: 12px;
+                          --mush-card-secondary-font-size: 12px;
+                        }
+                        ha-card {
+                          box-shadow: none;
+                        }
+                    icon_color: orange
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+              exclude:
+                - domain: button
+            card:
+              type: grid
+              columns: 2
+              square: false
+              card_mod:
+                style: |
+                  ha-card {
+                    margin: -8px 0px 0px 0px;
+                    box-shadow: none;
+                  }
+            sort:
+              method: friendly_name

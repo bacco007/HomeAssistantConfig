@@ -1,0 +1,141 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary_info: name
+    secondary_info: none
+    primary: Temperature Comparison
+    fill_container: true
+    icon: mdi:thermometer
+    icon_color: red
+  - type: custom:plotly-graph
+    hours_to_show: 48
+    time_offset: |-
+      $fn () =>  {
+        now = new Date();
+        tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0,0,0,0);                                           // midnight
+        HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
+        return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
+      }
+    entities:
+      - entity: sensor.tamworth_airport_temp
+        name: Airport
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        x: $fn ({xs}) => xs
+        "y": $fn ({ys}) => ys
+        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+        texttemplate: <b>%{y:,.1f}</b>
+        line:
+          width: 1.5
+          color: lightgray
+          shape: spline
+      - entity: sensor.tempest_st_00056115_temperature
+        name: Thomas
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        x: $fn ({xs}) => xs
+        "y": $fn ({ys}) => ys
+        fnmin: $fn ({ ys, vars }) => {vars.miny1 = Math.min(...ys.filter(Number))}
+        fnmax: $fn ({ ys, vars }) => {vars.maxy1 = Math.max(...ys.filter(Number))}
+        texttemplate: <b>%{y:,.1f}</b>
+        line:
+          width: 1.5
+          color: red
+          shape: spline
+      - entity: sensor.weather_aidan_temp
+        name: Aidan
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,.1f}</b>
+        line:
+          width: 1.5
+          color: hotpink
+          shape: spline
+      - entity: sensor.wunder_lachy_temperature
+        name: Lachy
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,.1f}</b>
+        line:
+          width: 1.5
+          color: orange
+          shape: spline
+      - entity: sensor.wunder_nicko_temperature
+        name: Nicko
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+        texttemplate: <b>%{y:,.1f}</b>
+        line:
+          width: 1.5
+          color: green
+          shape: spline
+      - entity: weather.east_tamworth_hourly
+        legendgroup: 2
+        name: Forecast
+        line:
+          color: lightgray
+          dash: dot
+          shape: spline
+        unit_of_measurement: °C
+        filters:
+          - fn: |-
+              ({ meta }) => ({
+                xs: meta.forecast.map(({ datetime }) => new Date(datetime)),
+                ys: meta.forecast.map(({ temperature }) => temperature),
+              })
+    refresh_interval: auto
+    layout:
+      showlegend: true
+      height: 500
+      margin:
+        autoexpand: true
+        l: 30
+        r: 20
+      xaxis:
+        showline: true
+        tickformat: "%a %H"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        autorange: true
+        zeroline: true
+        fixedrange: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false

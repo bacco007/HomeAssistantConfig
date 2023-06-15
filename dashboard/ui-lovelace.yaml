@@ -1,0 +1,8 @@
+---
+kiosk_mode:
+  kiosk: false
+title: Mobile
+button_card_templates: !include_dir_merge_named button-card
+decluttering_templates: !include_dir_merge_named decluttering
+apexcharts_card_templates: !include apexcharts.yaml
+views: !include_dir_list ./views/
