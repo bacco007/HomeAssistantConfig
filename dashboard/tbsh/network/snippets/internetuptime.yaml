@@ -1,0 +1,73 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.unifi_gateway_wan_uptimeavail_stats
+    name: Internet Uptime
+    fill_container: true
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 7d
+    entities:
+      - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+        yaxis: y1
+        legendgroup: 1
+        name: Uptime
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 5m
+          - sliding_window_moving_average:
+              window_size: 10
+              extended: true
+              centered: true
+        line:
+          width: 3
+          color: rgba(255,155,255, 0.8)
+          shape: step
+    layout:
+      showlegend: false
+      height: 200
+      margin:
+        autoexpand: true
+        l: 55
+        r: 20
+      grid:
+        rows: 1
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        showline: true
+        tickformat: "%a"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: false
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+    defaults:
+      yaxes:
+        side: left
+        overlaying: "y"
+        visible: true

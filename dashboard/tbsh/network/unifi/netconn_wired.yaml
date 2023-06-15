@@ -1,0 +1,79 @@
+---
+type: entities
+card_mod:
+  style:
+    fold-entity-row$: |
+      ha-icon {
+        color: rgb(var(--rgb-disabled-color));
+        margin-right: 24px;
+      }
+    .: |
+      .card-content {
+        padding: 0;
+      }
+entities:
+  - type: custom:fold-entity-row
+    head:
+      type: custom:mushroom-template-card
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none !important;
+            border: 0;
+          }
+      icon: mdi:ethernet
+      primary: Network - Ethernet Connected Devices
+      secondary: >
+        Count: {{states.device_tracker| rejectattr('attributes.essid',
+        'defined') | selectattr('state', 'eq', 'home') | selectattr('attributes.source_type', 'eq', 'router')| list |
+        count }}
+      icon_color: green
+      tap_action:
+        action: toggle
+    padding: 0
+    entities:
+      - type: custom:auto-entities
+        card_param: cards
+        card:
+          type: grid
+          columns: 1
+          square: false
+          card_mod:
+            style: |
+              ha-card {
+                margin: -8px 0px 0px 0px;
+                box-shadow: none;
+              }
+        unique: true
+        show_empty: true
+        filter:
+          include:
+            - entity_id: device_tracker.*
+              attributes:
+                ip: "*.*"
+              sort:
+                method: name
+              options:
+                type: custom:mushroom-template-card
+                primary: "{{ state_attr(entity , 'friendly_name') }}"
+                secondary: |
+                  IP: {{ state_attr(entity , 'ip') }}
+                icon: |
+                  {% if state_attr(entity , 'icon') is none %}
+                    mdi:devices
+                  {% else %}
+                    {{ state_attr(entity , 'icon') }}
+                  {% endif %}
+                icon_color: green
+                multiline_secondary: true
+                tap_action:
+                  action: more-info
+                badge_icon: mdi:ethernet
+                badge_color: green
+          exclude:
+            - attributes:
+                essid: "*"
+        sort:
+          method: attribute
+          attribute: ip
+          ip: true

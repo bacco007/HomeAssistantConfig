@@ -1,0 +1,38 @@
+---
+type: horizontal-stack
+cards:
+  - type: custom:mushroom-entity-card
+    entity: switch.adguard_protection
+    icon_color: orange
+    layout: vertical
+    tap_action:
+      action: toggle
+    name: AdGuard
+    fill_container: true
+    card_mod:
+      style: |
+        :host {
+          --mush-icon-border-radius: 12px;
+          --mush-card-primary-font-size: 12px;
+          --mush-card-secondary-font-size: 11px;
+        }
+  - type: vertical-stack
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.adguard_dns_queries
+        name: DNS Queries
+        card_mod:
+          style: |
+            :host {
+              --mush-card-primary-font-size: 12px;
+              --mush-card-secondary-font-size: 11px;
+            }
+      - type: custom:mushroom-entity-card
+        entity: sensor.adguard_dns_queries_blocked_ratio
+        name: Blocked Ratio
+        card_mod:
+          style: |
+            :host {
+              --mush-card-primary-font-size: 12px;
+              --mush-card-secondary-font-size: 11px;
+            }

@@ -1,0 +1,222 @@
+---
+type: custom:stack-in-card
+mode: horizontal
+cards:
+  - type: vertical-stack
+    cards:
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        experimental:
+          color_threshold: true
+        series:
+          - entity: sensor.speedtest_download
+            color_threshold:
+              - value: 5
+                color: rgb(244, 67, 54)
+              - value: 7.5
+                color: rgb(255, 87, 34)
+              - value: 10
+                color: rgb(255, 152, 0)
+              - value: 12.5
+                color: rgb(255, 193, 7)
+              - value: 15
+                color: rgb(255, 235, 59)
+              - value: 17.5
+                color: rgb(205, 220, 57)
+              - value: 20
+                color: rgb(129, 915, 74)
+              - value: 25
+                color: rgb(76, 175, 80)
+              - value: 30
+                color: rgb(78, 175, 80)
+            max: 30
+            show:
+              legend_value: false
+        apex_config:
+          plotOptions:
+            radialBar:
+              offsetY: 0
+              startAngle: -108
+              endAngle: 108
+              hollow:
+                size: 80%
+              dataLabels:
+                name:
+                  show: false
+                value:
+                  show: false
+              track:
+                strokeWidth: 70%
+                margin: 0
+          fill:
+            type: gradient
+          legend:
+            show: false
+          chart:
+            height: 130
+        card_mod:
+          style: |
+            ha-card {
+              box-shadow: none;
+              background: none;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.speedtest_download
+        primary: |
+          {{states('sensor.speedtest_download')|round(1)}} Mbps
+        secondary: Download
+        icon: mdi:download
+        icon_color: |-
+          {% set value = states('sensor.speedtest_download') | int %}
+          {% if value < 5.0 %}
+            red
+          {% elif value < 7.5 %}
+            deep-orange
+          {% elif value < 10.0 %}
+            orange
+          {% elif value < 12.5 %}
+            amber
+          {% elif value < 15.0 %}
+            yellow
+          {% elif value < 17.5 %}
+            lime
+          {% elif value < 20.0 %}
+            light-green
+          {% elif value < 22.5 %}
+            green
+          {% else %}
+            green
+          {% endif %}
+        layout: vertical
+        card_mod:
+          style: |
+            ha-card {
+              margin-top: -65px;
+              margin-left: auto;
+              margin-right: auto;
+              margin-bottom: 2px;
+              box-shadow: none;
+              background: none;
+            }
+  - type: vertical-stack
+    cards:
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        experimental:
+          color_threshold: true
+        series:
+          - entity: sensor.speedtest_upload
+            color_threshold:
+              - value: 0.5
+                color: rgb(244, 67, 54)
+              - value: 1
+                color: rgb(255, 87, 34)
+              - value: 1.5
+                color: rgb(255, 152, 0)
+              - value: 2
+                color: rgb(255, 193, 7)
+              - value: 2.5
+                color: rgb(255, 235, 59)
+              - value: 3
+                color: rgb(205, 220, 57)
+              - value: 3.5
+                color: rgb(129, 915, 74)
+              - value: 4
+                color: rgb(76, 175, 80)
+              - value: 5
+                color: rgb(78, 175, 80)
+            max: 5
+            show:
+              legend_value: false
+        apex_config:
+          plotOptions:
+            radialBar:
+              offsetY: 0
+              startAngle: -108
+              endAngle: 108
+              hollow:
+                size: 80%
+              dataLabels:
+                name:
+                  show: false
+                value:
+                  show: false
+              track:
+                strokeWidth: 70%
+                margin: 0
+          fill:
+            type: gradient
+          legend:
+            show: false
+          chart:
+            height: 130
+        card_mod:
+          style: |
+            ha-card {
+              box-shadow: none;
+              background: none;
+            }
+      - type: custom:mushroom-template-card
+        entity: sensor.speedtest_upload
+        primary: |
+          {{states('sensor.speedtest_upload')|round(1)}} Mbps
+        secondary: Upload
+        icon: mdi:upload
+        icon_color: |-
+          {% set value = states('sensor.speedtest_upload') | int %}
+          {% if value < 0.5 %}
+            red
+          {% elif value < 1 %}
+            deep-orange
+          {% elif value < 2 %}
+            orange
+          {% elif value < 3 %}
+            amber
+          {% elif value < 3.5 %}
+            yellow
+          {% elif value < 4 %}
+            lime
+          {% elif value < 4.5 %}
+            light-green
+          {% elif value < 5 %}
+            green
+          {% else %}
+            green
+          {% endif %}
+        layout: vertical
+        card_mod:
+          style: |
+            ha-card {
+              margin-top: -65px;
+              margin-left: auto;
+              margin-right: auto;
+              margin-bottom: 2px;
+              box-shadow: none;
+              background: none;
+            }
+  - type: vertical-stack
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.speedtest_ping
+        primary_info: state
+        secondary_info: name
+        name: Ping
+        icon_color: teal
+        icon: mdi:wan
+        layout: vertical
+        card_mod:
+          style: |
+            ha-card {
+              margin-top: 20px;
+              margin-left: auto;
+              margin-right: auto;
+              margin-bottom: 2px;
+              box-shadow: none;
+              background: none;
+            }
+card_mod:
+  style: |
+    ha-card {
+      box-shadow: none;
+      background: none;
+    }
