@@ -96,7 +96,7 @@ cards:
           shape: spline
       yaxes:
         side: left
-        overlaying: 'y'
+        overlaying: "y"
         visible: true
         zeroline: true
         linecolor: rgb(204,204,204)
@@ -113,4 +113,3 @@ cards:
         dragmode: false
     config:
       scrollZoom: false
-  
