@@ -1,7 +1,7 @@
 ---
 theme: noctis
-title: ../home
-path: ../home
+title: home
+path: home
 type: custom:grid-layout
 layout: !include ../includes/grid-3col.yaml
 badges: []

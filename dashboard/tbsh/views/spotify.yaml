@@ -54,7 +54,7 @@ cards:
             source: icon
             sound_mode: icon
             artwork: material
-          - !include spotify/playlist.yaml
+          - !include ../spotify/playlist.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -99,7 +99,7 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - !include spotify/playlist.yaml
+          - !include ../spotify/playlist.yaml
 
   # Column 3, Row 1
   - type: custom:gap-card

@@ -78,16 +78,16 @@ cards:
                 card:
                   type: vertical-stack
                   cards:
-                    - !include tamworth/snippets/sun_moon.yaml
-                    - !include tamworth/snippets/uv.yaml
+                    - !include ../tamworth/snippets/sun_moon.yaml
+                    - !include ../tamworth/snippets/uv.yaml
               - attributes:
                   label: Air Quality
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include tamworth/snippets/aqi_nswdpe.yaml
-                    - !include tamworth/snippets/aqi_waqi.yaml
+                    - !include ../tamworth/snippets/aqi_nswdpe.yaml
+                    - !include ../tamworth/snippets/aqi_waqi.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -142,10 +142,10 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - !include tamworth/snippets/sun_moon.yaml
-          - !include tamworth/snippets/uv.yaml
-          - !include tamworth/snippets/aqi_nswdpe.yaml
-          - !include tamworth/snippets/aqi_waqi.yaml
+          - !include ../tamworth/snippets/sun_moon.yaml
+          - !include ../tamworth/snippets/uv.yaml
+          - !include ../tamworth/snippets/aqi_nswdpe.yaml
+          - !include ../tamworth/snippets/aqi_waqi.yaml
 
   # Column 1, Row 2
   - type: custom:gap-card
