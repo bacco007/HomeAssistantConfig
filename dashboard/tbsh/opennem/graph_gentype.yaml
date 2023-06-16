@@ -2,7 +2,7 @@
 type: custom:vertical-stack-in-card
 cards:
   - type: custom:mushroom-template-card
-    primary: Demand (All Regions)
+    primary: Generation Type (All Regions)
     fill_container: true
     icon: mdi:meter-electric-outline
     icon_color: yellow
@@ -10,32 +10,102 @@ cards:
     hours_to_show: 7d
     entities:
       - entity: sensor.opennem_nsw
-        attribute: demand
+        attribute: fossilfuel
         yaxis: y1
-        name: NSW
+        name: Fossil Fuel
+        legendgroup: 1
+        line:
+          color: rgba(255, 255, 255, 0.8)
+      - entity: sensor.opennem_nsw
+        attribute: renewables
+        yaxis: y1
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
       - entity: sensor.opennem_qld
-        attribute: demand
+        attribute: fossilfuel
+        showlegend: false
         yaxis: y2
         name: Qld
+        legendgroup: 1
+        line:
+          color: rgba(255, 255, 255, 0.8)
+      - entity: sensor.opennem_qld
+        attribute: renewables
+        showlegend: false
+        yaxis: y2
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
       - entity: sensor.opennem_sa
-        attribute: demand
+        attribute: fossilfuel
+        showlegend: false
         yaxis: y3
         name: SA
+        line:
+          color: rgba(255, 255, 255, 0.8)
+        legendgroup: 1
+      - entity: sensor.opennem_sa
+        attribute: renewables
+        showlegend: false
+        yaxis: y3
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
       - entity: sensor.opennem_tas
-        attribute: demand
+        attribute: fossilfuel
+        showlegend: false
         yaxis: y4
         name: Tas
+        legendgroup: 1
+        line:
+          color: rgba(255, 255, 255, 0.8)
+      - entity: sensor.opennem_tas
+        attribute: renewables
+        showlegend: false
+        yaxis: y4
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
       - entity: sensor.opennem_vic
-        attribute: demand
+        attribute: fossilfuel
+        showlegend: false
         yaxis: y5
         name: Vic
+        line:
+          color: rgba(255, 255, 255, 0.8)
+        legendgroup: 1
+      - entity: sensor.opennem_vic
+        attribute: renewables
+        showlegend: false
+        yaxis: y5
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
       - entity: sensor.opennem_wa
-        attribute: demand
+        attribute: fossilfuel
+        showlegend: false
         yaxis: y6
         name: WA
+        line:
+          color: rgba(255, 255, 255, 0.8)
+        legendgroup: 1
+      - entity: sensor.opennem_wa
+        attribute: renewables
+        showlegend: false
+        yaxis: y6
+        name: Renewables
+        legendgroup: 2
+        line:
+          color: rgba(0, 255, 0, 0.8)
     layout:
-      showlegend: false
-      height: 1000
+      showlegend: true
+      height: 600
       margin:
         autoexpand: true
         l: 55
@@ -48,6 +118,7 @@ cards:
         autorange: true
         showline: true
         showgrid: false
+        zeroline: true
         tickformat: "%a"
         showticklabels: true
         linecolor: rgb(204,204,204)
@@ -80,7 +151,6 @@ cards:
           text: WA
     defaults:
       entity:
-        legendgroup: 1
         connectgaps: true
         show_value: true
         filters:

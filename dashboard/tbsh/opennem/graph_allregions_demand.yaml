@@ -1,0 +1,108 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Demand (All Regions)
+    fill_container: true
+    icon: mdi:meter-electric-outline
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 7d
+    entities:
+      - entity: sensor.opennem_nsw
+        attribute: demand
+        yaxis: y1
+        name: NSW
+      - entity: sensor.opennem_qld
+        attribute: demand
+        yaxis: y2
+        name: Qld
+      - entity: sensor.opennem_sa
+        attribute: demand
+        yaxis: y3
+        name: SA
+      - entity: sensor.opennem_tas
+        attribute: demand
+        yaxis: y4
+        name: Tas
+      - entity: sensor.opennem_vic
+        attribute: demand
+        yaxis: y5
+        name: Vic
+    layout:
+      showlegend: false
+      height: 500
+      margin:
+        autoexpand: true
+        l: 55
+        r: 20
+      grid:
+        rows: 5
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        autorange: true
+        showline: true
+        showgrid: false
+        tickformat: "%a"
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title:
+          text: NSW
+      yaxis2:
+        title:
+          text: Qld
+      yaxis3:
+        title:
+          text: SA
+      yaxis4:
+        title:
+          text: Tas
+      yaxis5:
+        title:
+          text: Vic
+    defaults:
+      entity:
+        legendgroup: 1
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 30m
+          - sliding_window_moving_average:
+              window_size: 10
+              extended: true
+              centered: true
+        line:
+          width: 3
+          color: rgba(255,155,255, 0.8)
+          shape: spline
+      yaxes:
+        side: left
+        overlaying: "y"
+        visible: true
+        zeroline: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+        dragmode: false
+    config:
+      scrollZoom: false

@@ -24,6 +24,22 @@ bushfire_danger_level:
         type: conditional
       - card:
           entity: "[[entity]]"
+          image: /local/icons/fire_danger/fdr-no-rating.svg
+          show_name: false
+          show_state: false
+          type: picture-entity
+          card_mod:
+            style: |
+              ha-card {
+                background: none !important;
+                box-shadow: none !important;
+              }
+        conditions:
+          - entity: "[[entity]]"
+            state: Unknown
+        type: conditional
+      - card:
+          entity: "[[entity]]"
           image: /local/icons/fire_danger/fdr-moderate.svg
           show_name: false
           show_state: false

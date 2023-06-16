@@ -1,0 +1,19 @@
+---
+trigger:
+  - platform: state
+    entity_id: binary_sensor.front_house_person_detected
+    from: "off"
+    to: "on"
+sensor:
+  - name: camera_front_house_detections
+    unique_id: camera_front_house_detections
+    icon: mdi:cctv
+    state: "{{ now().timestamp() | timestamp_custom() }}"
+    attributes:
+      cycles: >
+        {% set current = this.attributes.get('openings', []) %}
+        {% set new = [{
+          "stopped": (trigger.from_state.last_changed | as_local).isoformat(),
+          "started": now().isoformat(),
+          "duration": (now() - trigger.from_state.last_changed).total_seconds() | int(0) }] %}
+        {{ ((new + current) | sort(reverse=true, attribute='duration'))[:5] }}

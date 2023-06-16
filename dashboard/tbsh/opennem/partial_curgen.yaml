@@ -1,6 +1,123 @@
 ---
-type: custom:stack-in-card
+type: custom:vertical-stack-in-card
 cards:
+  - type: custom:mushroom-template-card
+    entity: sensor.opennem_nsw
+    primary: Generation (NSW)
+    fill_container: true
+    icon: mdi:transmission-tower-export
+    icon_color: red
+  - type: custom:plotly-graph
+    entities:
+      - entity: sensor.opennem_nsw
+        attribute: fossilfuel
+        line:
+          color: rgba(0,0,0)
+        name: Fossil Fuels
+      - entity: sensor.opennem_nsw
+        attribute: renewables
+        line:
+          color: rgb(82,188,163)
+        name: Renewables
+      - entity: sensor.opennem_nsw
+        attribute: coal_black
+        line:
+          color: rgba(98,98,98,1)
+        name: Coal (Black)
+      - entity: sensor.opennem_nsw
+        attribute: gas_ccgt
+        line:
+          color: rgb(253,180,98)
+        name: Gas (Combined Cycle Power Plant)
+      - entity: sensor.opennem_nsw
+        attribute: gas_ocgt
+        line:
+          color: rgb(255,205,150)
+        name: Gas (Open Cycle Gas Turbines)
+      - entity: sensor.opennem_nsw
+        attribute: hydro
+        line:
+          color: rgb(69,130,180)
+        name: Hydro
+      - entity: sensor.opennem_nsw
+        attribute: solar_utility
+        line:
+          color: rgb(251,213,0)
+        name: Solar (Utility)
+      - entity: sensor.opennem_nsw
+        attribute: solar_rooftop
+        line:
+          color: rgb(255,224,61)
+        name: Solar (Rooftop)
+      - entity: sensor.opennem_nsw
+        attribute: wind
+        line:
+          color: rgb(65,117,5)
+        name: Wind
+      - entity: sensor.opennem_nsw
+        attribute: distillate
+        line:
+          color: rgb(243,80,32)
+        name: Distillate
+      - entity: sensor.opennem_nsw
+        attribute: imports
+        line:
+          color: rgb(68,20,111)
+        name: Imports
+      - entity: sensor.opennem_nsw
+        line:
+          attribute: exports
+        color: rgb(151,122,177)
+        name: Exports
+    hours_to_show: 1w
+    refresh_interval: auto
+    defaults:
+      entity:
+        connectgaps: true
+        filters:
+          - force_numeric
+          - resample: 30m
+          - sliding_window_moving_average:
+              window_size: 10
+              extended: false
+              centered: true
+        texttemplate: <b>%{y:,.1f}</b>
+        line:
+          width: 2
+          shape: spline
+    layout:
+      showlegend: true
+      height: 300
+      margin:
+        autoexpand: false
+        l: 50
+        r: 20
+      xaxis:
+        showline: true
+        showgrid: false
+        tickformat: "%a"
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: false
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        title: ""
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: true
   - type: custom:config-template-card
     variables:
       - states['sensor.opennem_nsw'].state
@@ -8,7 +125,6 @@ cards:
       - sensor.opennem_nsw
     card:
       type: entities
-      title: Generation Breakdown
       style: |
         ha-card {
           padding-bottom: 10px;
@@ -33,10 +149,7 @@ cards:
         ha-icon {
           color: var(--dwains-theme-accent) !important;
         }
-
       entities:
-        - entity: sensor.opennem_nsw
-          name: New South Wales
         - type: custom:bar-card
           entity_row: true
           height: 4
@@ -60,7 +173,7 @@ cards:
             bar-card-name, bar-card-value {
               margin: 0;
             }
-          max: "${vars[0]}"
+          max: ${vars[0]}
           color: rgb(26,204,147,0.33)
           entities:
             - entity: sensor.opennem_nsw

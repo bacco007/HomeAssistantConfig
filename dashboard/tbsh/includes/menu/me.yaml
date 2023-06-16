@@ -1,0 +1,27 @@
+---
+# Me
+type: custom:mushroom-template-card
+primary: Me
+secondary: ""
+multiline_secondary: true
+icon: mdi:account
+icon_color: grey
+layout: horizontal
+tap_action:
+  action: navigate
+  navigation_path: me
+hold_action:
+  action: none
+double_tap_action:
+  action: none
+card_mod:
+  style:
+    mushroom-state-info$: |
+      .container {
+        display: table !important;
+      }
+      .secondary {
+        display: table-cell;
+        text-align: right;
+        width: 100%;
+      }

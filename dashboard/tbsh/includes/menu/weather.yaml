@@ -1,0 +1,27 @@
+---
+# Weather
+type: custom:mushroom-template-card
+primary: Weather
+secondary: ""
+multiline_secondary: true
+icon: mdi:weather-cloudy-alert
+icon_color: grey
+layout: horizontal
+tap_action:
+  action: navigate
+  navigation_path: weather
+hold_action:
+  action: none
+double_tap_action:
+  action: none
+card_mod:
+  style:
+    mushroom-state-info$: |
+      .container {
+        display: table !important;
+      }
+      .secondary {
+        display: table-cell;
+        text-align: right;
+        width: 100%;
+      }

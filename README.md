@@ -46,32 +46,32 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, June 16th 2023_
+_Stats as at 05:00, Saturday, June 17th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.1 | 463     | 4105         | 2811 | 99 |
+| 2023.6.2 | 463     | 3684         | 2597 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 226
+Binary Sensor | 174
 Camera | 5
-Device Tracker | 128
+Device Tracker | 121
 Group | 3
 Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 9
-Media Player | 16
+Media Player | 17
 Person | 1
 Scene | 0
 Script | 2
-Sensor | 2811
+Sensor | 2597
 Sun | 1
-Switch | 173
+Switch | 172
 Weather | 7
 Zone | 3
 
@@ -255,7 +255,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
@@ -409,6 +408,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.openweathermap](https://www.home-assistant.io/components/sensor.openweathermap) |
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
+| [sensor.proxmoxve](https://www.home-assistant.io/components/sensor.proxmoxve) |
 | [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
