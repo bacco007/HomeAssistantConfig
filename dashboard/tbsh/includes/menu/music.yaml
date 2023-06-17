@@ -8,7 +8,7 @@ cards:
     cards:
       - type: custom:mushroom-template-card
         primary: Music
-        secondary: ""
+        secondary: ">"
         multiline_secondary: true
         icon: mdi:music
         icon_color: grey

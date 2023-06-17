@@ -1,5 +1,5 @@
 ---
-grid-template-columns: 15% 1fr 1fr 1fr 1fr
+grid-template-columns: 17% 1fr 1fr 1fr 1fr
 grid-template-rows: 50px auto auto 50px
 grid-gap: 0px 0px
 grid-template-areas: |

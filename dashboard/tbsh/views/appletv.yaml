@@ -1,0 +1,82 @@
+---
+theme: Backend-selected
+title: Apple TV
+path: appletv
+icon: phu:apple-tv-box
+subview: true
+type: custom:grid-layout
+layout: !include ../includes/grid-1col.yaml
+badges: []
+cards:
+  ### Sidebar - Menu
+  - !include ../includes/menu.yaml
+
+  ### Header - Left
+  - !include ../includes/header-left.yaml
+
+  ### Header - Right
+  - !include ../includes/header-right.yaml
+
+  ### Footer
+  - !include ../includes/footer.yaml
+
+  # Mobile Only
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: mobile
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:mini-media-player
+                entity: media_player.bedroom_apple_tv
+                name: Apple TV (Bedroom)
+                volume_stateless: false
+                group: false
+                artwork: cover
+                source: icon
+                info: scroll
+
+  # Column 1, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c1r1
+    states:
+      "(min-width: 801px)":
+        type: custom:easy-layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 20% auto
+          grid-template-rows: auto auto
+          grid-gap: 0px 0px
+          grid-template-areas: |
+            "media media"
+            "remote apps"
+        cards:
+          - type: vertical-stack
+            view_layout:
+              grid-area: media
+            cards:
+              - type: custom:mini-media-player
+                entity: media_player.bedroom_apple_tv
+                name: Apple TV (Bedroom)
+                volume_stateless: false
+                group: false
+                artwork: cover
+                source: icon
+                info: scroll
+          - type: vertical-stack
+            view_layout:
+              grid-area: remote
+            cards:
+              - !include ../appletv/remote.yaml
+          - type: vertical-stack
+            view_layout:
+              grid-area: apps
+            cards:
+              - !include ../appletv/appgrid.yaml

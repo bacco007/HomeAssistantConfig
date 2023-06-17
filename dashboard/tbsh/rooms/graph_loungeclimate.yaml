@@ -108,11 +108,13 @@ cards:
         columns: 1
         roworder: top to bottom
       xaxis:
+        showline: true
+        tickformat: "%a"
         showgrid: false
         showticklabels: true
         linecolor: rgb(204,204,204)
         linewidth: 2
-        autotick: true
+        autotick: false
         ticks: outside
         tickwidth: 2
         ticklen: 5

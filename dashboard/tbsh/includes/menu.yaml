@@ -9,7 +9,7 @@ cards:
         icon: mdi:home
         tap_action:
           action: navigate
-          navigation_path: /mobile-dashboard
+          navigation_path: /tbsh-dashboard
       - type: template
         double_tap_action:
           action: none
@@ -52,7 +52,7 @@ cards:
       style: |
         ha-card {height: 42px}
   - type: grid
-    columns: 1
+    columns: 2
     square: false
     style: |
       ha-card {

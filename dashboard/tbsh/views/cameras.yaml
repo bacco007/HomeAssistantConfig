@@ -36,6 +36,7 @@ cards:
           - !include ../cameras/front_gate.yaml
           - !include ../cameras/front_door.yaml
           - !include ../cameras/back_door.yaml
+
   # Column 1, Row 1
   - type: custom:state-switch
     entity: mediaquery

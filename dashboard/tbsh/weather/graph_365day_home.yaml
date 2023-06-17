@@ -1,0 +1,157 @@
+---
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Climate Stats (Home) - This Year
+    fill_container: true
+    icon: mdi:weather-sunny-alert
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 1y
+    refresh_interval: auto
+    entities:
+      - entity: sensor.archive_homeoutsidetemp_max_365day
+        yaxis: y1
+        legendgroup: 1
+        name: High
+        connectgaps: true
+        show_value: false
+        period: day
+        texttemplate: <b>%{y:,.0f}</b>
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_homeoutsidetemp_max_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(255,20,20, 0.8)
+          shape: step
+      - entity: sensor.archive_homeoutsidetemp_min_365day
+        yaxis: y1
+        legendgroup: 1
+        name: Low
+        connectgaps: true
+        show_value: false
+        period: day
+        texttemplate: <b>%{y:,.0f}</b>
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_homeoutsidetemp_min_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+        line:
+          width: 2
+          color: rgba(120,120,255, 0.8)
+          shape: step
+      - entity: sensor.archive_homerain_365day
+        yaxis: y2
+        legendgroup: 1
+        name: Rainfall
+        connectgaps: true
+        show_value: false
+        period: day
+        type: bar
+        textposition: none
+        texttemplate: <b>%{y:,.0f}</b>
+        filters:
+          - fn: |-
+              ({xs, ys, hass}) => {
+                let xx = [];
+                let yy = [];
+                for (const [key, value] of Object.entries(hass.states["sensor.archive_homerain_365day"].attributes)) {
+                    let d = new Date(key).getTime();
+                    if (d > 0) {
+                        xx.push(d);
+                        yy.push(value);
+                    }
+                }
+                return {
+                  xs: xx,
+                  ys: yy
+                };
+              }
+    layout:
+      dragmode: true
+      showlegend: false
+      height: 600
+      margin:
+        autoexpand: true
+        l: 55
+        r: 20
+      grid:
+        rows: 2
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        zeroline: true
+        showgrid: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: "Temperature (°C)"
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+      yaxis2:
+        zeroline: true
+        showgrid: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text: "Rainfall (mm)"
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+    defaults:
+      yaxes:
+        side: left
+        overlaying: "y"
+        visible: true

@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, June 17th 2023_
+_Stats as at 05:00, Sunday, June 18th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.2 | 463     | 3684         | 2597 | 99 |
+| 2023.6.2 | 463     | 3675         | 2592 | 99 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 17
 Person | 1
 Scene | 0
 Script | 2
-Sensor | 2597
+Sensor | 2592
 Sun | 1
 Switch | 172
 Weather | 7
@@ -584,7 +584,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -668,6 +668,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
 - [Search Card](https://github.com/postlund/search-card)
 - [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row)
+- [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat)
 - [Sonos Card](https://github.com/johanfrick/custom-sonos-card)
 - [Spotify Lovelace Card](https://github.com/custom-cards/spotify-card)
 - [Stack In Card](https://github.com/custom-cards/stack-in-card)

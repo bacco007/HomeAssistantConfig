@@ -1,0 +1,93 @@
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-template-card
+    primary: Rainfall - Tamworth Airport
+    fill_container: true
+    icon: mdi:gauge
+    icon_color: yellow
+  - type: custom:plotly-graph
+    hours_to_show: 24
+    time_offset: |-
+      $fn ({ getFromConfig }) => {
+        const ms_to_show = getFromConfig('hours_to_show') * 60 * 60 * 1000;
+        const now_utc = Date.now() - new Date().getTimezoneOffset() * 60 * 1000;
+        return ms_to_show - now_utc % ms_to_show + 'ms'
+      }
+    entities:
+      - entity: sensor.tamworth_airport_rain_since_9am
+        yaxis: y1
+        legendgroup: 1
+        name: Rain Today
+        connectgaps: true
+        show_value: true
+        filters:
+          - force_numeric
+          - resample: 5m
+        line:
+          width: 3
+          color: rgba(128,128,255, 0.8)
+          shape: spline
+
+      - entity: sensor.tamworth_airport_rain_since_9am
+        yaxis: y1
+        legendgroup: 2
+        name: Rain Yesterday
+        connectgaps: true
+        time_offset: 1d
+        filters:
+          - force_numeric
+          - resample: 5m
+        line:
+          width: 1
+          color: rgba(128,128,255, 0.8)
+          shape: spline
+
+    layout:
+      height: 300
+      dragmode: false
+      margin:
+        autoexpand: true
+        l: 35
+        r: 20
+      grid:
+        rows: 1
+        columns: 1
+        roworder: top to bottom
+      xaxis:
+        showline: true
+        autorange: true
+        tickformat: "%H:%M"
+        showgrid: false
+        showticklabels: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        autotick: true
+        ticks: outside
+        tickwidth: 2
+        ticklen: 5
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+      yaxis:
+        zeroline: true
+        showgrid: true
+        linecolor: rgb(204,204,204)
+        linewidth: 2
+        tickfont:
+          family: Roboto
+          size: 12
+          color: rgb(204,204,204)
+        title:
+          text:
+          font:
+            family: Roboto
+            size: 12
+            color: rgb(204,204,204)
+    config:
+      scrollZoom: false
+    defaults:
+      yaxes:
+        side: left
+        overlaying: "y"
+        visible: true
