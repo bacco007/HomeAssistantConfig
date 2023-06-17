@@ -149,6 +149,7 @@ cards:
           color: rgb(204,204,204)
       yaxis:
         zeroline: true
+        showgrid: true
         linecolor: rgb(204,204,204)
         linewidth: 2
         tickfont:
@@ -163,6 +164,7 @@ cards:
             color: rgb(204,204,204)
       yaxis2:
         zeroline: true
+        showgrid: true
         linecolor: rgb(204,204,204)
         linewidth: 2
         tickfont:

@@ -93,6 +93,7 @@ cards:
         overlaying: "y"
         visible: true
         zeroline: true
+        showgrid: true
         linecolor: rgb(204,204,204)
         linewidth: 2
         tickfont:

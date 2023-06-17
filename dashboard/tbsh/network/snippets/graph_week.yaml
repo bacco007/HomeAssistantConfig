@@ -17,7 +17,7 @@ cards:
         show_value: true
         filters:
           - force_numeric
-          - resample: 15m
+          - resample: 1h
           - sliding_window_moving_average:
               window_size: 10
               extended: true
@@ -35,7 +35,7 @@ cards:
         show_value: true
         filters:
           - force_numeric
-          - resample: 15m
+          - resample: 1h
           - sliding_window_moving_average:
               window_size: 10
               extended: true
@@ -53,7 +53,7 @@ cards:
         show_value: true
         filters:
           - force_numeric
-          - resample: 15m
+          - resample: 1h
           - sliding_window_moving_average:
               window_size: 10
               extended: true
@@ -74,11 +74,13 @@ cards:
         columns: 1
         roworder: top to bottom
       xaxis:
+        showline: true
+        tickformat: "%a"
         showgrid: false
         showticklabels: true
         linecolor: rgb(204,204,204)
         linewidth: 2
-        autotick: true
+        autotick: false
         ticks: outside
         tickwidth: 2
         ticklen: 5
@@ -90,6 +92,7 @@ cards:
         zeroline: true
         linecolor: rgb(204,204,204)
         linewidth: 2
+        showgrid: true
         tickfont:
           family: Roboto
           size: 12
@@ -104,6 +107,7 @@ cards:
         zeroline: true
         linecolor: rgb(204,204,204)
         linewidth: 2
+        showgrid: true
         tickfont:
           family: Roboto
           size: 12
@@ -118,6 +122,7 @@ cards:
         zeroline: true
         linecolor: rgb(204,204,204)
         linewidth: 2
+        showgrid: true
         tickfont:
           family: Roboto
           size: 12
@@ -128,6 +133,9 @@ cards:
             family: Roboto
             size: 12
             color: rgb(204,204,204)
+      dragmode: false
+    config:
+      scrollZoom: false
     defaults:
       yaxes:
         side: left
