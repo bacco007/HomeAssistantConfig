@@ -1,14 +1,14 @@
 import logging
 import requests
+import warnings
 from urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 import ssl
 from enum import Enum
-
 from pyunifi import controller
 
-
 _LOGGER = logging.getLogger(__name__)
+
+warnings.filterwarnings("ignore", category=InsecureRequestWarning)
 
 def create_client( host, port, username, password, site, cert, udm):
     '''create a controller and return a error code if any'''
