@@ -56,6 +56,18 @@ PROXMOX_SENSOR_NODES: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         suggested_display_precision=1,
     ),
     ProxmoxSensorEntityDescription(
+        key="disk_free",
+        name="Disk free",
+        icon="mdi:harddisk",
+        native_unit_of_measurement=UnitOfInformation.BYTES,
+        value_fn=lambda x: (x.disk_total - x.disk_used),
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        suggested_unit_of_measurement=UnitOfInformation.GIGABYTES,
+        entity_registry_enabled_default=False,
+    ),
+    ProxmoxSensorEntityDescription(
         key="disk_free_perc",
         name="Disk free percentage",
         icon="mdi:harddisk",
@@ -187,6 +199,17 @@ PROXMOX_SENSOR_NODES: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         entity_registry_enabled_default=False,
     ),
     ProxmoxSensorEntityDescription(
+        key="swap_used",
+        name="Swap used",
+        icon="mdi:memory",
+        native_unit_of_measurement=UnitOfInformation.BYTES,
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        suggested_unit_of_measurement=UnitOfInformation.GIGABYTES,
+        entity_registry_enabled_default=False,
+    ),    
+    ProxmoxSensorEntityDescription(
         key="swap_used_perc",
         name="Swap used percentage",
         icon="mdi:memory",
@@ -209,6 +232,27 @@ PROXMOX_SENSOR_NODES: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
 
 
 PROXMOX_SENSOR_VM: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
+    ProxmoxSensorEntityDescription(
+        key=ProxmoxKeyAPIParse.CPU,
+        name="CPU used",
+        icon="mdi:cpu-64-bit",
+        native_unit_of_measurement=PERCENTAGE,
+        conversion_fn=lambda x: (x * 100) if x >= 0 else 0,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+    ),
+    ProxmoxSensorEntityDescription(
+        key="disk_free",
+        name="Disk free",
+        icon="mdi:harddisk",
+        native_unit_of_measurement=UnitOfInformation.BYTES,
+        value_fn=lambda x: (x.disk_total - x.disk_used),
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        suggested_unit_of_measurement=UnitOfInformation.GIGABYTES,
+        entity_registry_enabled_default=False,
+    ),
     ProxmoxSensorEntityDescription(
         key="disk_free_perc",
         name="Disk free percentage",
@@ -248,15 +292,6 @@ PROXMOX_SENSOR_VM: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x > 0 else 0,
         value_fn=lambda x: x.disk_used / x.disk_total if x.disk_total > 0 else 0,
-        state_class=SensorStateClass.MEASUREMENT,
-        suggested_display_precision=1,
-    ),
-    ProxmoxSensorEntityDescription(
-        key=ProxmoxKeyAPIParse.CPU,
-        name="CPU used",
-        icon="mdi:cpu-64-bit",
-        native_unit_of_measurement=PERCENTAGE,
-        conversion_fn=lambda x: (x * 100) if x >= 0 else 0,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
     ),
@@ -432,7 +467,7 @@ async def async_setup_entry(
                             node=node,
                         ),
                         description=description,
-                        vm_id=None,
+                        resource_id=node,
                         config_entry=config_entry,
                     )
                 )
@@ -454,7 +489,7 @@ async def async_setup_entry(
                             vm_id=vm_id,
                         ),
                         description=description,
-                        vm_id=vm_id,
+                        resource_id=vm_id,
                         config_entry=config_entry,
                     )
                 )
@@ -476,7 +511,7 @@ async def async_setup_entry(
                             vm_id=ct_id,
                         ),
                         description=description,
-                        vm_id=ct_id,
+                        resource_id=ct_id,
                         config_entry=config_entry,
                     )
                 )
@@ -489,13 +524,13 @@ def create_sensor(
     info_device: DeviceInfo,
     description: ProxmoxSensorEntityDescription,
     config_entry: ConfigEntry,
-    vm_id: str | None = None,
+    resource_id: str | None = None,
 ) -> ProxmoxSensorEntity:
     """Create a sensor based on the given data."""
     return ProxmoxSensorEntity(
         coordinator=coordinator,
         description=description,
-        unique_id=f"{config_entry.entry_id}_{vm_id}_{description.key}",
+        unique_id=f"{config_entry.entry_id}_{resource_id}_{description.key}",
         info_device=info_device,
     )
 
