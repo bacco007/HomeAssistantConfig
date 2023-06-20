@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, June 20th 2023_
+_Stats as at 05:00, Wednesday, June 21st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.2 | 463     | 3673         | 2595 | 99 |
+| 2023.6.2 | 463     | 3707         | 2596 | 99 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 18
 Person | 1
 Scene | 0
 Script | 2
-Sensor | 2595
+Sensor | 2596
 Sun | 1
-Switch | 163
+Switch | 164
 Weather | 7
 Zone | 3
 
@@ -584,7 +584,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -717,7 +717,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - ESPHome (2023.5.5)
 - eufy-security-ws (1.5.2)
 - Glances (0.19.2)
-- Home Assistant Google Drive Backup (0.110.4)
+- Home Assistant Google Drive Backup (0.111.1)
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
