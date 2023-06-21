@@ -46,7 +46,7 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, June 21st 2023_
+_Stats as at 05:00, Thursday, June 22nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
@@ -73,7 +73,7 @@ Sensor | 2596
 Sun | 1
 Switch | 164
 Weather | 7
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -585,7 +585,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
 - [Icloud3](https://github.com/gcobb321/icloud3)
-- [Icloud3 Device Tracker, Version 3 (Ha Integration)](https://github.com/gcobb321/icloud3_v3)
+- [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
 - [Iphone Device Tracker](https://github.com/mudape/iphonedetect)
