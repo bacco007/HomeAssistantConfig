@@ -500,7 +500,7 @@ def _get_devdata_useable_status(Device, data_source):
     gps_accuracy    = round(RawData.gps_accuracy)
     time_str        = f"{secs_to_time(loc_secs)}"
     if gps_accuracy_ok is False:
-        time_str += f"#/±{gps_accuracy}m"
+        time_str += f"/±{gps_accuracy}m"
     useable_data    = (loc_time_ok and gps_accuracy_ok)
 
     return useable_data, loc_time_ok, gps_accuracy_ok, loc_secs, gps_accuracy, time_str

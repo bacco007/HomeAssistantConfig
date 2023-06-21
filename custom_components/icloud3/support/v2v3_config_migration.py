@@ -112,7 +112,7 @@ CONF_SENSORS_OTHER_LIST             = ['gps_accuracy', 'vertical_accuracy', 'alt
 
 from ..helpers.common       import (instr, )
 from ..helpers.messaging    import (_traceha, log_info_msg, log_warning_msg, log_exception,
-                                    open_ic3_debug_log_file, write_ic3_debug_log_recd, )
+                                    open_ic3_log_file, write_ic3_log_recd, )
 from ..helpers.time_util    import (time_str_to_secs, datetime_now, )
 from ..support              import start_ic3
 from .                      import config_file
@@ -199,16 +199,16 @@ class iCloud3_v2v3ConfigMigration(object):
         config_file.write_storage_icloud3_configuration_file()
         self.migration_log_file.close()
 
-        write_ic3_debug_log_recd(f"Profile:\n{DEBUG_LOG_LINE_TABS}{Gb.conf_profile}")
-        write_ic3_debug_log_recd(f"General Configuration:\n{DEBUG_LOG_LINE_TABS}{Gb.conf_general}")
-        write_ic3_debug_log_recd(f"{DEBUG_LOG_LINE_TABS}{Gb.ha_location_info}")
-        write_ic3_debug_log_recd("")
+        write_ic3_log_recd(f"Profile:\n{DEBUG_LOG_LINE_TABS}{Gb.conf_profile}")
+        write_ic3_log_recd(f"General Configuration:\n{DEBUG_LOG_LINE_TABS}{Gb.conf_general}")
+        write_ic3_log_recd(f"{DEBUG_LOG_LINE_TABS}{Gb.ha_location_info}")
+        write_ic3_log_recd("")
 
         for conf_device in Gb.conf_devices:
-            write_ic3_debug_log_recd(   f"{Gb.conf_device[CONF_FNAME]}, {Gb.conf_device[CONF_IC3_DEVICENAME]}:\n"
+            write_ic3_log_recd(   f"{Gb.conf_device[CONF_FNAME]}, {Gb.conf_device[CONF_IC3_DEVICENAME]}:\n"
                                         f"{DEBUG_LOG_LINE_TABS}{Gb.conf_device}")
-        write_ic3_debug_log_recd("")
-        write_ic3_debug_log_recd("iCloud3 - Migration Complete")
+        write_ic3_log_recd("")
+        write_ic3_log_recd("iCloud3 - Migration Complete")
 
 
     #-------------------------------------------------------------------------

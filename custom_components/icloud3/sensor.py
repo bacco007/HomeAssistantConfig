@@ -45,8 +45,10 @@ from .helpers.time_util import (time_to_12hrtime, time_remove_am_pm, secs_to_tim
 from .helpers.dist_util import (km_to_mi, )
 from .helpers           import entity_io
 from .support           import start_ic3
+from .support           import recorder_prefilter
 
 from homeassistant.components.sensor    import SensorEntity
+from homeassistant.helpers.entityfilter import convert_include_exclude_filter
 from homeassistant.config_entries       import ConfigEntry
 from homeassistant.helpers.entity       import DeviceInfo
 from homeassistant.helpers.device_registry import DeviceEntryType
@@ -112,6 +114,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
         if NewSensors != []:
             async_add_entities(NewSensors, True)
+            _setup_recorder_exclude_sensor_filter(NewSensors)
 
     except Exception as err:
         log_exception(err)
@@ -330,6 +333,21 @@ def _excluded_sensors_list():
     return [sensor_fname.split('(')[1][:-1]
                         for sensor_fname in Gb.conf_sensors['excluded_sensors']
                         if instr(sensor_fname, '(')]
+
+#--------------------------------------------------------------------
+def _setup_recorder_exclude_sensor_filter(NewSensors):
+
+    exclude_entities = []
+
+    for Sensor in NewSensors:
+        if Sensor.history_exclude_flag:
+            exclude_entities.append(Sensor.entity_id)
+
+    if exclude_entities != []:
+        recorder_prefilter.update_prefilter(exclude_entities)
+
+    return
+
 #--------------------------------------------------------------------
 def _strip_sensor_def_table_item_prefix(sensor):
     '''
@@ -414,14 +432,15 @@ class SensorBase(SensorEntity):
             self.current_state_value = ''
 
             # Add this sensor to the HA Recorder history exclude entity list
-            try:
-                if instr(self.sensor_type, 'ha_history_exclude'):
-                    ha_history_recorder = Gb.hass.data['recorder_instance']
-                    ha_history_recorder.entity_filter._exclude_e.add(self.entity_id)
+            self.history_exclude_flag = instr(self.sensor_type, 'ha_history_exclude')
+            # try:
+            #     if instr(self.sensor_type, 'ha_history_exclude'):
+            #         ha_history_recorder = Gb.hass.data['recorder_instance']
+            #         ha_history_recorder.entity_filter._exclude_e.add(self.entity_id)
 
-            except Exception as err:
-                log_exception(err)
-                pass
+            # except Exception as err:
+            #     log_exception(err)
+            #     pass
 
             Gb.sensors_created_cnt += 1
             log_debug_msg(f'Sensor entity created: {self.entity_id}, #{Gb.sensors_created_cnt}')
@@ -1149,16 +1168,17 @@ class Support_SensorBase(SensorEntity):
         self._unsub_dispatcher = None
         self._device           = f"{DOMAIN}"
         self.current_state_value = ''
+        self.history_exclude_flag = True
 
         Gb.sensors_created_cnt += 1
         log_debug_msg(f'Sensor entity created: {self.entity_id}, #{Gb.sensors_created_cnt}')
 
         # Add this sensor to the Recorder history exclude entity list
-        try:
-            ha_history_recorder = Gb.hass.data['recorder_instance']
-            ha_history_recorder.entity_filter._exclude_e.add(self.entity_id)
-        except:
-            pass
+        # try:
+        #     ha_history_recorder = Gb.hass.data['recorder_instance']
+        #     ha_history_recorder.entity_filter._exclude_e.add(self.entity_id)
+        # except:
+        #     pass
 
     @property
     def name(self):

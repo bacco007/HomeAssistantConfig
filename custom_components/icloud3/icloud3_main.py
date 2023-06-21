@@ -35,7 +35,7 @@ from homeassistant import config_entries
 
 from .global_variables  import GlobalVariables as Gb
 from .const             import (VERSION,
-                                HOME, NOT_HOME, NOT_SET, HIGH_INTEGER, RARROW, RARROW2,
+                                HOME, NOT_HOME, NOT_SET, HIGH_INTEGER, RARROW, RARROW2, CRLF,
                                 STATIONARY, TOWARDS,
                                 ICLOUD, ICLOUD_FNAME, TRACKING_NORMAL,
                                 CMD_RESET_PYICLOUD_SESSION, NEAR_DEVICE_DISTANCE,
@@ -62,9 +62,9 @@ from .helpers.common    import (instr, is_zone, is_statzone, isnot_statzone, isn
                                 zone_display_as, )
 from .helpers.messaging import (broadcast_info_msg,
                                 post_event, post_error_msg, post_monitor_msg, post_internal_error,
-                                open_ic3_debug_log_file,
+                                open_ic3_log_file,
                                 log_info_msg, log_exception, log_start_finish_update_banner,
-                                log_debug_msg, close_reopen_ic3_debug_log_file, archive_debug_log_file,
+                                log_debug_msg, close_reopen_ic3_log_file, archive_log_file,
                                 _trace, _traceha, )
 from .helpers.time_util import (time_now_secs, secs_to_time,  secs_to, secs_since,
                                 secs_to_time, secs_to_time_str, secs_to_age_str,
@@ -92,22 +92,18 @@ class iCloud3:
         self.pyicloud_refresh_time         = {}     # Last time Pyicloud was refreshed for the trk method
         self.pyicloud_refresh_time[FMF]    = 0
         self.pyicloud_refresh_time[FAMSHR] = 0
+        self.attributes_initialized_flag   = False
+        self.e_seconds_local_offset_secs   = 0
 
         Gb.authenticated_time              = 0
         Gb.icloud_acct_error_cnt           = 0
         Gb.authentication_error_retry_secs = HIGH_INTEGER
-
-        Gb.evlog_trk_monitors_flag       = False
-        # Gb.log_debug_flag                = False
-        # Gb.log_rawdata_flag              = False
-
-        Gb.any_device_was_updated_reason = ''
-
-        Gb.start_icloud3_inprocess_flag  = False
-        Gb.restart_icloud3_request_flag  = False
-
-        self.attributes_initialized_flag = False
-        self.e_seconds_local_offset_secs = 0
+        Gb.evlog_trk_monitors_flag         = False
+        Gb.any_device_was_updated_reason   = ''
+        Gb.start_icloud3_inprocess_flag    = False
+        Gb.restart_icloud3_request_flag    = False
+        Gb.reinitialize_icloud_devices_flag= False     # Set when no devices are tracked and iC3 needs to automatically restart
+        Gb.reinitialize_icloud_devices_cnt = 0
 
         self.initialize_5_sec_loop_control_flags()
 
@@ -166,13 +162,14 @@ class iCloud3:
                         second=[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55])
 
             start_ic3_control.stage_3_setup_configured_devices()
-            if start_ic3_control.stage_4_setup_data_sources() is False:
+            stage_4_success = start_ic3_control.stage_4_setup_data_sources()
+            if stage_4_success is False:
                 start_ic3_control.stage_4_setup_data_sources(retry=True)
 
             start_ic3_control.stage_5_configure_tracked_devices()
             start_ic3_control.stage_6_initialization_complete()
             start_ic3_control.stage_7_initial_locate()
-            close_reopen_ic3_debug_log_file(closed_by='iCloud3 Initialization')
+            close_reopen_ic3_log_file(closed_by='iCloud3 Initialization')
 
             Gb.trace_prefix = ''
             Gb.EvLog.display_user_message('', clear_alert=True)
@@ -354,6 +351,37 @@ class iCloud3:
                         "iOSApp monitoring stopped. iCloud monitoring will be used.")
             post_event(devicename, event_msg)
             return
+
+        # If the iOS App is the primary data source next_update time is reached, get the
+        # old location threshold. Send a location request to the iosapp device if the
+        # data is older than the threshold, the next_update is newer than the iosapp data
+        # and the next_update and data time is after the last request was sent.
+        if Device.primary_data_source == IOSAPP and Device.iosapp_data_updated_flag is False:
+            if Device.next_update_secs <= Gb.this_update_secs and Device.interval_secs > 30:
+                Device.calculate_old_location_threshold()
+                # _trace=(f"Next-{secs_to_time(Device.next_update_secs)}, "
+                #     f"locData-{secs_to_time(Device.loc_data_secs)}, "
+                #     f"iosappData-{secs_to_time(Device.iosapp_data_secs)}, "
+                #     f"MsgSent-{secs_to_time(Device.iosapp_request_loc_sent_secs)}, "
+                #     #f"Interval-{Device.interval_secs}/"
+                #     #f"{((Gb.this_update_secs - Device.next_update_secs) % Device.interval_secs)}"
+                #     f"NextAlive-{secs_to_time(Device.next_update_secs+Device.interval_secs)}, "
+                #     f"{CRLF}"
+                #     f"Loc>Thresh-{secs_since(Device.loc_data_secs) > Device.old_loc_threshold_secs}, "
+                #     f"Next>loc-{Device.next_update_secs > Device.loc_data_secs}, "
+                #     f" IntervalMsg-{((Gb.this_update_secs - Device.next_update_secs) % Device.interval_secs == 0)}, "
+                #     # f"Alive%secs-{secs_since(Device.iosapp_request_loc_first_secs) % Gb.iosapp_alive_interval_secs == 0}"
+                # )
+                #post_monitor_msg(Device.devicename, _trace)
+
+                if  (secs_since(Device.loc_data_secs) > Device.old_loc_threshold_secs
+                        and Device.next_update_secs > Device.loc_data_secs
+                        and Device.next_update_secs > Device.iosapp_request_loc_sent_secs):
+                    iosapp_interface.request_location(Device, is_alive_check=False, force_request=True)
+
+                elif ((Gb.this_update_secs - Device.next_update_secs) % Device.interval_secs == 0
+                        and Device.interval_secs >= 900):
+                    iosapp_interface.request_location(Device, is_alive_check=False, force_request=True)
 
         # The iosapp may be entering or exiting another Device's Stat Zone. If so,
         # reset the iosapp information to this Device's Stat Zone and continue.
@@ -549,9 +577,6 @@ class iCloud3:
         # At midnight
         if Gb.this_update_time == '00:00:00':
             self._timer_tasks_midnight()
-            if Gb.conf_general[CONF_LOG_LEVEL] == 'debug-auto-reset':
-                start_ic3.set_log_level('info')
-                start_ic3.update_conf_file_log_level('info')
 
         # At 1am
         elif Gb.this_update_time == '01:00:00':
@@ -562,6 +587,8 @@ class iCloud3:
 
         # Every minute
         if time_now_ss == '00':
+            close_reopen_ic3_log_file()
+
             for Device in Gb.Devices_by_devicename.values():
                 Device.display_info_msg(Device.format_info_msg, new_base_msg=True)
                 if (Device.iosapp_monitor_flag
@@ -570,8 +597,10 @@ class iCloud3:
                         and Device.iosapp_data_state_secs < (Gb.this_update_secs - 120)):
                     iosapp_interface.request_location(Device)
 
-            close_reopen_ic3_debug_log_file()
 
+        # Every 30-secs
+        if time_now_ss == '30':
+            close_reopen_ic3_log_file()
 
         # Every 15-minutes
         if time_now_mm in ['00', '15', '30', '45']:
@@ -583,7 +612,7 @@ class iCloud3:
         if time_now_mm in ['00', '30']:
             for devicename, Device in Gb.Devices_by_devicename.items():
                 if Device.dist_apart_msg:
-                    event_msg =(f"Nearby Devices (<{NEAR_DEVICE_DISTANCE}m) > "
+                    event_msg =(f"Nearby Devices > (<{NEAR_DEVICE_DISTANCE}m), "
                                 f"{Device.dist_apart_msg}, "
                                 f"Checked-{secs_to_time(Device.near_device_checked_secs)}")
                     post_event(devicename, event_msg)
@@ -695,7 +724,6 @@ class iCloud3:
         if Gb.any_device_was_updated_reason == '':
             Gb.any_device_was_updated_reason = f'{Device.icloud_update_reason}, {Device.fname_devtype}'
 
-        # Device.last_data_update_secs      = time_now_secs()
         Device.icloud_update_retry_flag     = False
         Device.iosapp_request_loc_last_secs = 0
 
@@ -1172,7 +1200,7 @@ class iCloud3:
     def _is_statzone_timer_reached(self, Device):
         '''
         Check the Device's Stationary Zone expired timer and distance moved:
-            Udate the Device's Stat Zone distance moved
+            Update the Device's Stat Zone distance moved
             Reset the timer if the Device has moved further than the distance limit
             Move Device into the Stat Zone if it has not moved further than the limit
         '''
@@ -1185,7 +1213,7 @@ class iCloud3:
         # See if moved less than the stationary zone movement limit
         # If updating via the ios app and the current state is stationary,
         # make sure it is kept in the stationary zone
-        if Device.statzone_timer_reached is False:
+        if Device.statzone_timer_reached is False or Device.is_location_old_or_gps_poor:
             return
 
         if Device.statzone_move_limit_exceeded:
@@ -1360,86 +1388,13 @@ class iCloud3:
             post_monitor_msg(Device.devicename, device_monitor_msg)
 
 
-#--------------------------------------------------------------------
-    def _display_usage_counts(self, Device, force_display=False):
-        return
-
-        try:
-            total_count =   Device.count_update_icloud + \
-                            Device.count_update_iosapp + \
-                            Device.count_discarded_update + \
-                            Device.count_state_changed + \
-                            Device.count_trigger_changed + \
-                            Device.iosapp_request_loc_cnt
-
-            pyi_avg_time_per_call = 0
-            if Gb.pyicloud_location_update_cnt > 0:
-                pyi_avg_time_per_call = Gb.pyicloud_calls_time / \
-                    (Gb.pyicloud_authentication_cnt + Gb.pyicloud_location_update_cnt)
-
-            # Verify average and counts, reset counts if average time > 1 min
-            if pyi_avg_time_per_call > 60:
-                pyi_avg_time_per_call           = 0
-                Gb.pyicloud_calls_time          = 0
-                Gb.pyicloud_authentication_cnt  = 0
-                Gb.pyicloud_location_update_cnt = 0
-
-            # If updating the devicename's info_msg, only add to the event log
-            # and info_msg if the counter total is divisible by 5.
-            hour = int(dt_util.now().strftime('%H'))
-            if force_display:
-                pass
-            elif (hour % 3) != 0:
-                return
-            elif total_count == 0:
-                return
-
-            #    ¤s=<table>                         Table start, Row start
-            #    ¤e=</table>                        Row end, Table end
-            #    §=</tr><tr>                        Row end, next row start
-            #    »   =</td></tr>
-            #    «LT- =<tr><td style='width: 28%'>    Col start, 40% width
-            #    ¦LC-=</td><td style='width: 8%'>   Col end, next col start-width 40%
-            #    ¦RT-=</td><td style='width: 28%'>   Col end, next col start-width 10%
-            #    ¦RC-=</td><td style='width: 8%'>   Col end, next col start-width 40%
-
-            count_msg =  (f"¤s")
-            state_trig_count = Device.count_state_changed + Device.count_trigger_changed
-
-            if Device.is_data_source_ICLOUD:
-                count_msg +=(f"«HS¦LH-Device Counts¦RH-iCloud Counts»HE"
-                            f"«LT-State/Trigger Chgs¦LC-{state_trig_count}¦"
-                            f"RT-Authentications¦RC-{Gb.pyicloud_authentication_cnt}»"
-                            f"«LT-iCloud Updates¦LC-{Device.count_update_icloud}¦"
-                            f"RT-Total iCloud Loc Rqsts¦RC-{Gb.pyicloud_location_update_cnt}»"
-                            f"«LT-iOS App Updates¦LC-{Device.count_update_iosapp}¦"
-                            f"RT-Time/Locate (secs)¦RC-{round(pyi_avg_time_per_call, 2)}»")
-            else:
-                count_msg +=(f"«HS¦LH-Device Counts¦RH-iOS App Counts»HE"
-                            f"«LT-State/Triggers Chgs¦LC-{state_trig_count}¦"
-                            f"RT-iOS Locate Requests¦RC-{Device.iosapp_request_loc_cnt}»"
-                            f"«LT-iCloud Updates¦LC-{Device.count_update_icloud}¦"
-                            f"RT-iOS App Updates¦RC-{Device.count_update_iosapp}»")
-
-            count_msg     +=(f"«LT-Discarded¦LC-{Device.count_discarded_update}¦"
-                            f"RT-Waze Routes¦RC-{Device.count_waze_locates}»"
-                            f"¤e")
-
-            post_event(Device.devicename, f"{count_msg}")
-
-        except Exception as err:
-            log_exception(err)
-
-        return
-
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
 #   Perform tasks on a regular time schedule
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     def _timer_tasks_every_hour(self):
-        for Device in Gb.Devices_by_devicename.values():
-            self._display_usage_counts(Device)
+        pass
 
 #--------------------------------------------------------------------
     def _timer_tasks_midnight(self):
@@ -1447,7 +1402,6 @@ class iCloud3:
             Gb.pyicloud_authentication_cnt  = 0
             Gb.pyicloud_location_update_cnt = 0
             Gb.pyicloud_calls_time          = 0.0
-            Device.initialize_usage_counters()
 
         if Gb.WazeHist:
             Gb.WazeHist.wazehist_delete_invalid_rcords()
@@ -1457,14 +1411,12 @@ class iCloud3:
                 Gb.wazehist_recalculate_time_dist_flag = False
                 Gb.WazeHist.wazehist_recalculate_time_dist_all_zones()
 
-        # Close the current debug log file. Open a new file if still logging
-        if Gb.iC3DebugLogFile:
-            Gb.iC3DebugLogFile.close()
-            archive_debug_log_file()
-            Gb.iC3DebugLogFile = None
-            Gb.ic3_debug_log_update_flag = False
-            if Gb.log_debug_flag:
-                open_ic3_debug_log_file(new_debug_log=True)
+        if Gb.conf_general[CONF_LOG_LEVEL] == 'debug-auto-reset':
+                start_ic3.set_log_level('info')
+                start_ic3.update_conf_file_log_level('info')
+
+        # Close log file, rename to '-1', open a new log file
+        archive_log_file()
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #

@@ -3,7 +3,7 @@ from ..global_variables     import GlobalVariables as Gb
 from ..const                import (
                                     APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE,
                                     RARROW, HHMMSS_ZERO, DATETIME_ZERO, NONE_FNAME, INACTIVE_DEVICE,
-                                    ICLOUD, FAMSHR,
+                                    ICLOUD, FAMSHR, FMF,
                                     CONF_PARAMETER_TIME_STR,
                                     CONF_INZONE_INTERVALS, CONF_MAX_INTERVAL, CONF_EXIT_ZONE_INTERVAL,
                                     CONF_IOSAPP_ALIVE_INTERVAL,
@@ -29,7 +29,7 @@ from ..support              import start_ic3
 from ..support              import waze
 from ..helpers.common       import (instr, ordereddict_to_dict, )
 from ..helpers.messaging    import (log_exception, _trace, _traceha, log_info_msg,
-                                    close_reopen_ic3_debug_log_file, )
+                                    close_reopen_ic3_log_file, )
 from ..helpers.time_util    import (datetime_now, )
 
 import os
@@ -122,6 +122,8 @@ def read_storage_icloud3_configuration_file(filename_suffix=''):
             Gb.log_level      = Gb.conf_general[CONF_LOG_LEVEL]
 
             Gb.conf_tracking[CONF_PASSWORD] = decode_password(Gb.conf_tracking[CONF_PASSWORD])
+            if instr(Gb.conf_tracking[CONF_DATA_SOURCE], FMF):
+                Gb.conf_tracking[CONF_DATA_SOURCE].pop(FMF)
 
             try:
                 config_file_add_new_parameters()
@@ -155,13 +157,13 @@ def count_device_tracking_methods_configured():
             if conf_device[CONF_TRACKING_MODE] == INACTIVE_DEVICE:
                 continue
 
-            if conf_device[CONF_FAMSHR_DEVICENAME] != NONE_FNAME:
+            if conf_device[CONF_FAMSHR_DEVICENAME].startswith(NONE_FNAME) is False:
                 Gb.conf_famshr_device_cnt += 1
 
-            if conf_device[CONF_FMF_EMAIL] != NONE_FNAME:
+            if conf_device[CONF_FMF_EMAIL].startswith(NONE_FNAME) is False:
                 Gb.conf_fmf_device_cnt += 1
 
-            if conf_device[CONF_IOSAPP_DEVICE] != NONE_FNAME:
+            if conf_device[CONF_IOSAPP_DEVICE].startswith(NONE_FNAME) is False:
                 Gb.conf_iosapp_device_cnt += 1
 
     except Exception as err:
@@ -393,8 +395,7 @@ def write_storage_icloud3_configuration_file(filename_suffix=''):
 
             Gb.conf_tracking[CONF_PASSWORD] = decoded_password
 
-        if Gb.iC3DebugLogFile:
-            close_reopen_ic3_debug_log_file()
+        close_reopen_ic3_log_file()
 
         return True
 

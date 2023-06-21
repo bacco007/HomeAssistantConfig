@@ -4,7 +4,7 @@
 #
 #------------------------------------------------------------------------------
 from .global_variables  import GlobalVariables as Gb
-from .const             import (DEVICE_TRACKER, DEVICE_TRACKER_DOT, CIRCLE_STAR2, LT, GT,
+from .const             import (DEVICE_TRACKER, DEVICE_TRACKER_DOT, CIRCLE_STAR2, LTE, GTE,
                                 NOTIFY, DISTANCE_TO_DEVICES, NEAR_DEVICE_DISTANCE,
                                 DISTANCE_TO_OTHER_DEVICES, DISTANCE_TO_OTHER_DEVICES_DATETIME,
                                 HOME, HOME_FNAME, NOT_HOME, NOT_SET, UNKNOWN, DOT, RARROW, INFO_SEPARATOR,
@@ -181,7 +181,7 @@ class iCloud3_Device(TrackerEntity):
         self.is_data_source_FMF      = False
         self.is_data_source_ICLOUD   = True
         self.is_data_source_FAMSHR_FMF = True
-        self.is_data_source_IOSAP    = True
+        self.is_data_source_IOSAPP   = True
 
         # Device location & gps fields
         self.old_loc_poor_gps_cnt    = 0
@@ -200,19 +200,13 @@ class iCloud3_Device(TrackerEntity):
         self.last_device_monitor_msg = ''
         self.iosapp_statzone_action_msg_cnt = 0
 
-        # Device Counters
-        self.count_update_icloud     = 0
-        self.count_update_iosapp     = 0
-        self.count_discarded_update  = 0
-        self.count_state_changed     = 0
-        self.count_trigger_changed   = 0
-        self.count_waze_locates      = 0
         self.time_waze_calls         = 0.0
 
         # Device iOSApp message fields
-        self.iosapp_request_loc_first_secs = 0
-        self.iosapp_request_loc_last_secs  = 0
+        self.iosapp_request_loc_first_secs = 0    # Used for checking if alive and user request
+        self.iosapp_request_loc_last_secs  = 0    # Used for checking if alive and user request
         self.iosapp_request_loc_cnt        = 0
+        self.iosapp_request_loc_sent_secs  = 0    # Used for tracking in 5-sec loop when the data source is iosapp
 
         # iOSApp state variables
         self.iosapp_monitor_flag           = False
@@ -564,7 +558,7 @@ class iCloud3_Device(TrackerEntity):
                 Zone = Gb.Zones_by_zone[zone]
                 if Zone.passive:
                     idx = self.track_from_zones.index(zone)
-                    self.track_from_zones[idx] = f"{LT}{zone}-Passive>"
+                    self.track_from_zones[idx] = f"{LTE}{zone}-Passive{GTE}"
                     continue
 
                 if zone in old_DeviceFmZones_by_zone:
@@ -995,6 +989,13 @@ class iCloud3_Device(TrackerEntity):
     @property
     def wasnot_in_statzone(self):
         return (is_statzone(self.sensors[ZONE]) is False)
+
+    @property
+    def in_statzone_interval_secs(self):
+        if self.DeviceFmZoneHome.calc_dist < 180 or self.iosapp_monitor_flag is False:
+            return self.statzone_inzone_interval_secs
+
+        return Gb.max_interval_secs / 2
 
     # Return the seconds left before the phone should be moved into a Stationary Zone
     @property
@@ -1926,17 +1927,6 @@ class iCloud3_Device(TrackerEntity):
 #   INFO MESSAGES AND OTHER SUPPORT FUNCTIONSS
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    def initialize_usage_counters(self):
-        self.count_update_icloud    = 0
-        self.count_update_iosapp    = 0
-        self.count_discarded_update = 0
-        self.count_state_changed    = 0
-        self.count_trigger_changed  = 0
-        self.count_waze_locates     = 0
-        self.iosapp_request_loc_cnt = 0
-        self.time_waze_calls        = 0.0
-
-#--------------------------------------------------------------------------------
     @property
     def format_info_msg(self):
         """
@@ -1976,10 +1966,10 @@ class iCloud3_Device(TrackerEntity):
             if self.sensors[FROM_ZONE] and self.sensors[FROM_ZONE] != NOT_SET and self.sensors[FROM_ZONE] != HOME:
                 from_zone = self.sensors[FROM_ZONE]
                 Zone = Gb.Zones_by_zone[from_zone]
-                info_msg += f"TrackFmZone-{Zone.display_as}, "
+                info_msg += f"FromZone-{Zone.display_as}, "
 
-            if self.DeviceFmZoneNextToUpdate is not self.DeviceFmZoneHome:
-                info_msg += f"NextUpdateFor-{self.DeviceFmZoneNextToUpdate.from_zone_display_as[:8]}, "
+            # if self.DeviceFmZoneNextToUpdate is not self.DeviceFmZoneHome:
+            #     info_msg += f"NextUpdateFor-{self.DeviceFmZoneNextToUpdate.from_zone_display_as[:8]}, "
 
             if self.NearDeviceUsed:
                 info_msg +=(f"UsedNearbyDevice-{self.NearDeviceUsed.fname}, "

@@ -24,7 +24,13 @@ from .const     import (DISTANCE_TO_DEVICES,
                         TFZ_ZONE_INFO, TFZ_DISTANCE, TFZ_ZONE_DISTANCE, TFZ_TRAVEL_TIME,
                         TFZ_TRAVEL_TIME_MIN, TFZ_DIR_OF_TRAVEL,
                         TOWARDS, AWAY_FROM, TOWARDS_HOME, AWAY_FROM_HOME, INZONE, INZONE_HOME, INZONE_STATIONARY,
+                        SENSOR_EVENT_LOG_NAME, SENSOR_WAZEHIST_TRACK_NAME,
                         )
+
+HA_EXCLUDE_SENSORS =    [SENSOR_EVENT_LOG_NAME, SENSOR_WAZEHIST_TRACK_NAME, ]
+                        # '*_zone_datetime', '*_trigger', '*_info',
+                        # '*_next_update', '*_last_update', '*_last_located', '*_interval',
+                        # ]
 
 SENSOR_LIST_DEVICE =    [NAME, BADGE, BATTERY, BATTERY_STATUS,
                         TRIGGER, INTERVAL, LAST_LOCATED,

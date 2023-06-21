@@ -201,27 +201,19 @@ def display_authentication_msg(PyiCloud):
     if authentication_method == '':
         return
 
-    last_authenticated_time = Gb.authenticated_time
-    last_authenticated_age  = time_secs() - last_authenticated_time
-    #if last_authenticated_age <= 1 or authentication_took_secs > 360:
-    #    authentication_took_secs = 0
+    last_authenticated_time = last_authenticated_age = Gb.authenticated_time
+    if last_authenticated_time > 0:
+        last_authenticated_age = time_secs() - last_authenticated_time
 
     Gb.authenticated_time = time_secs()
     Gb.pyicloud_authentication_cnt += 1
-    #Gb.pyicloud_auth_started_secs = 0
 
     event_msg =(f"iCloud Acct Auth "
                 f"#{Gb.pyicloud_authentication_cnt} > {authentication_method}, "
-                f"Last-")
-    if last_authenticated_time == 0:
-        event_msg += "Initial"
-    else:
-        event_msg += (f"{secs_to_time(last_authenticated_time)} "
-                    f" ({format_age(last_authenticated_age)})")
-    # event_msg += f", Method-{authentication_method}"
-    # event_msg += f", By-{Gb.PyiCloud.update_requested_by}"
-    #if authentication_took_secs > 2:
-    #    event_msg += f", Took-{secs_to_time_str(authentication_took_secs)}"
+                f"Last-{secs_to_time(last_authenticated_time)}")
+    if instr(authentication_method, 'Password') is False:
+        event_msg += f" ({format_age(last_authenticated_age)})"
+
     post_event(event_msg)
 
 #--------------------------------------------------------------------

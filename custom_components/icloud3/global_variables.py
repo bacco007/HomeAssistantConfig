@@ -82,7 +82,7 @@ class GlobalVariables(object):
     EvLog           = None
     EvLogSensor     = None
     HALogger        = None
-    iC3DebugLogFile = None
+    iC3_LogFile     = None
     Sensors         = None
     iC3EntityPlatform = None    # iCloud3 Entity Platform (homeassistant.helpers.entity_component)
     PyiCloud        = None      # iCloud Account service
@@ -150,11 +150,15 @@ class GlobalVariables(object):
     polling_5_sec_loop_running      = False     # Indicates the 5-sec polling loop is set up
     start_icloud3_inprocess_flag    = False
     restart_icloud3_request_flag    = False     # iC3 needs to be restarted, set when a new_2fa code is needed in pyicloud_ic3_interface
-    initial_icloud3_loading_flag    = False
     evlog_disable_refresh_flag      = False
     any_device_was_updated_reason   = ''
     evlog_action_request            = ''
     startup_alerts                  = []
+
+    stage_4_no_devices_found_cnt    = 0         # Retry count to connect to iCloud and retrieve FamShr devices
+    reinitialize_icloud_devices_flag= False         # Set when no devices are tracked and iC3 needs to automatically restart
+    reinitialize_icloud_devices_cnt = 0
+    initial_icloud3_loading_flag    = False
 
 
     # Debug and trace flags
@@ -164,14 +168,16 @@ class GlobalVariables(object):
     log_debug_flag_restart       = None
     log_rawdata_flag_restart     = None
     evlog_trk_monitors_flag      = False
-    ic3_debug_log_file_last_write_secs = 0
-    ic3_debug_log_update_flag    = False
-    ic3_debug_log_new_file_secs  = 0
+    ic3_log_file_update_flag     = False
+    ic3_log_file_create_secs     = 0
+    ic3_log_file_last_write_secs = 0
     info_notification            = ''
     ha_notification              = {}
     trace_prefix                 = ''
     trace_text_change_1          = ''
     trace_text_change_2          = ''
+    debug_flag                   = False
+    debug_integer                = 0
 
     # Startup variables
     startup_log_msgs          = ''
@@ -320,6 +326,10 @@ class GlobalVariables(object):
     famshr_device_verified_cnt   = 0
     iosapp_device_verified_cnt   = 0
     authentication_alert_displayed_flag = False
+
+    unverified_Devices           = []               # Devices that have not been verified in start_ic3.check_unverified_devices
+    unverified_devices_cnt       = 0                #
+    unverified_devices_retry_cnt = 0                # Decreased in icloud_data_handler. Retry verify until cnt=0
 
     # Waze History for DeviceFmZone
     wazehist_zone_id            = {}

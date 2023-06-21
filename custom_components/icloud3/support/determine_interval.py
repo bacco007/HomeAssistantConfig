@@ -19,7 +19,7 @@
 
 
 from ..global_variables     import GlobalVariables as Gb
-from ..const                import (HOME, NOT_HOME, AWAY, NOT_SET, HIGH_INTEGER, CHECK_MARK, CIRCLE_X,
+from ..const                import (HOME, NOT_HOME, AWAY, NOT_SET, HIGH_INTEGER, CHECK_MARK, CIRCLE_X, LTE, LT,
                                     STATIONARY, STATIONARY_FNAME, WATCH, IOSAPP_FNAME,
                                     AWAY_FROM, TOWARDS, PAUSED, INZONE, NEAR, NEAR_HOME,
                                     ERROR,
@@ -162,12 +162,23 @@ def determine_interval(Device, DeviceFmZone):
 
     #--------------------------------------------------------------------------------
     #if more than 3km(1.8mi) then assume driving
-
+    last_went_3km = Device.went_3km
     if DeviceFmZone is Device.DeviceFmZoneLast:
+        if dist_from_zone_km > 3:
+            oldway_went_3km = True
+        elif dist_from_zone_km < .03:    # back in the zone, reset flag
+           oldway_went_3km = False
+
+    #--------------------------------------------------------------------------------
+    #if more than 3km(1.8mi) then assume driving
+    if DeviceFmZone is Device.DeviceFmZoneHome:     #Device.DeviceFmZoneLast:
         if dist_from_zone_km > 3:
             Device.went_3km = True
         elif dist_from_zone_km < .03:    # back in the zone, reset flag
             Device.went_3km = False
+
+    # if last_went_3km != Device.went_3km:
+    #         _trace(devicename, f"New went_3k {DeviceFmZone=} {Device.DeviceFmZoneHome=} {dist_from_zone_km=} {Device.went_3km=} {oldway_went_3km=}")
 
     #--------------------------------------------------------------------------------
     interval        = 15
@@ -175,25 +186,14 @@ def determine_interval(Device, DeviceFmZone):
     interval_method = ''
     interval_multiplier = 1
 
-    # _trace(devicename, f"{Gb.primary_data_source_ICLOUD}/{Device.is_data_source_ICLOUD is False}")
-    # if Gb.primary_data_source_ICLOUD is False or Device.is_data_source_ICLOUD is False:
-    # if Device.is_data_source_ICLOUD is False:
-    #     interval_method = IOSAPP_FNAME
-    #     interval = 0
-
-    # elif Device.state_change_flag:
     if Device.state_change_flag:
         if inzone_flag:
-            if Device.is_in_statzone:
-                interval_method = "1.StatZone"
-                interval        = Device.statzone_inzone_interval_secs
-
             #inzone & old location
-            elif Device.is_location_old_or_gps_poor and battery10_flag is False:
+            if Device.is_location_old_or_gps_poor and battery10_flag is False:
                 interval_method = '1.OldLocPoorGPS'
                 interval        = _get_interval_for_error_retry_cnt(Device, OLD_LOC_POOR_GPS_CNT)
 
-            else:
+            elif Device.isnot_in_statzone:
                 interval_method = "1.EnterZone"
                 interval        = Device.inzone_interval_secs
 
@@ -240,10 +240,9 @@ def determine_interval(Device, DeviceFmZone):
         interval_method = '3.OldLocPoorGPS'
         interval        = _get_interval_for_error_retry_cnt(Device, OLD_LOC_POOR_GPS_CNT)
 
-    # elif is_statzone(Device.loc_data_zone):
-    elif Device.is_in_statzone:
-        interval_method = "3.StatZone"
-        interval        = Device.statzone_inzone_interval_secs
+    # elif Device.is_in_statzone:
+    #    interval_method = "3.StatZone"
+    #    interval        = Device.statzone_inzone_interval_secs
 
     elif battery10_flag and dist_from_zone_km > 1:
         interval_method = "3.Battery10%"
@@ -327,9 +326,9 @@ def determine_interval(Device, DeviceFmZone):
 
     #15-sec interval (close to zone) and may be going into a stationary zone,
     #increase the interval
-    elif interval == 15 and Gb.this_update_secs >= Device.statzone_timer+45:
-        interval_method += '+6.StatTimer+45'
-        interval = 30
+    # elif interval == 15 and Gb.this_update_secs >= Device.statzone_timer+45:
+    #     interval_method += '+6.StatTimer+45'
+    #     interval = 30
 
     #Turn off waze close to zone flag to use waze after leaving zone or getting more than 1km from it
     if Gb.Waze.waze_close_to_zone_pause_flag:
@@ -361,13 +360,29 @@ def determine_interval(Device, DeviceFmZone):
         interval, x  = divmod(interval, 5)
         interval     = interval * 5
 
-        #check for max interval
-        if interval > Gb.max_interval_secs and not_inzone_flag:
-            interval_method += (f", 7.Max")
-            interval_str = (f"{secs_to_time_str(Gb.max_interval_secs)} (max)")
-            interval = Gb.max_interval_secs
-        else:
-            interval_str = secs_to_time_str(interval)
+        #check for max interval, override in zone times
+        #_trace(f"{Device.devicename} {interval=} {interval_method=} {Gb.max_interval_secs=} {Device.statzone_inzone_interval_secs} {Device.inzone_interval_secs=}")
+        if interval > Gb.max_interval_secs:
+            if Device.is_in_statzone:
+                interval = Device.in_statzone_interval_secs
+                interval_method = f"7.inZoneMax"
+            elif inzone_flag:
+                pass
+                # interval = Gb.max_interval_secs / 2
+                # interval_method = f"7.inZoneMax"
+            else:
+                interval = Gb.max_interval_secs
+                interval_method = f"7.Max"
+
+        #  Use interval if > StatZone interval unless the StatZone interval is the device's
+        # inzone interval
+        elif (Device.is_in_statzone
+                and Device.statzone_inzone_interval_secs >= interval):
+            interval_method = "7.StatZone"
+            interval        = Device.in_statzone_interval_secs
+        #_trace(f"{Device.devicename} {interval=} {interval_method=} ")
+
+        interval_str = secs_to_time_str(interval)
 
         if interval_multiplier > 1:
             interval_method += (f"x{interval_multiplier}")
@@ -415,7 +430,7 @@ def determine_interval(Device, DeviceFmZone):
         dist_from_zone_km      = DeviceFmZone.zone_dist
         dist_from_zone_m       = DeviceFmZone.zone_dist_m
         waze_dist_from_zone_km = DeviceFmZone.waze_dist
-        calc_dist_from_zone_km = DeviceFmZone.calc_dist
+        p_from_zone_km = DeviceFmZone.calc_dist
         waze_time_from_zone    = DeviceFmZone.waze_time
 
     else:
@@ -485,7 +500,7 @@ def post_results_message_to_event_log(Device, DeviceFmZone):
     '''
     Device.last_update_msg_secs = time_now()
     event_msg = (f"Results: From-{DeviceFmZone.from_zone_display_as} > ")
-    # if Device.is_tracked and DeviceFmZone.interval_method != IOSAPP_FNAME:
+
     if Device.is_tracked:
         event_msg += (  f"NextUpdate-{DeviceFmZone.next_update_time}, "
                         f"Interval-{DeviceFmZone.interval_str}, ")
@@ -501,7 +516,8 @@ def post_results_message_to_event_log(Device, DeviceFmZone):
     if Device.dev_data_battery_level > 0:
         event_msg +=    f"Battery-{Device.dev_data_battery_level}%, "
     if Gb.log_debug_flag and DeviceFmZone.interval_method and Device.is_tracked:
-        event_msg +=    f"Method-{DeviceFmZone.interval_method}, "
+        event_msg +=    (f"Method-{DeviceFmZone.interval_method}, "
+                        f"{'Went3km, ' if Device.went_3km else ''}")
     post_event(Device.devicename, event_msg[:-2])
 
     if Device.is_tracked:
@@ -582,7 +598,6 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
         interval, error_cnt, max_error_cnt = get_error_retry_interval(Device, counter)
 
         # Pause tracking when the max count is exceeded, send paused msg when the cnt is reached
-        #if interval < 0:
         if error_cnt >= max_error_cnt:
             Device.pause_tracking()
 
@@ -621,7 +636,7 @@ def determine_interval_after_error(Device, counter=OLD_LOC_POOR_GPS_CNT):
                     and secs_since(Device.DeviceFmZoneHome.next_update_secs) < \
                         (Device.DeviceFmZoneHome.interval_secs + 5))
                 or Device.outside_no_exit_trigger_flag):
-            Device.count_discarded_update += 1
+            pass
 
         elif counter == AUTH_ERROR_CNT:
             event_msg =(f"Results > RetryCounter-{Gb.icloud_acct_error_cnt}, "
@@ -744,29 +759,14 @@ def _update_next_update_fields_and_sensors(Device_DfZ, interval):
 
     if Device_DfZ:
         Device = Device_DfZ if Device_DfZ in Gb.Devices else Device_DfZ.Device
-        # data_source_ICLOUD = Gb.primary_data_source_ICLOUD and Device.is_data_source_ICLOUD
         data_source_ICLOUD = Device.is_data_source_ICLOUD
     else:
-        # data_source_ICLOUD = Gb.conf_data_source_ICLOUD
         data_source_ICLOUD = Gb.primary_data_source_ICLOUD
-
-    # _trace(f"{Device_DfZ=} Gb-{Gb.primary_data_source_ICLOUD} Dev-{data_source_ICLOUD}")
 
     sensors[INTERVAL]             = secs_to_time_str(interval)
     sensors[NEXT_UPDATE_DATETIME] = secs_to_datetime(next_update_secs)
     sensors[NEXT_UPDATE_TIME]     = next_update_time
     sensors[NEXT_UPDATE]          = next_update_time
-    # if data_source_ICLOUD:
-    #     sensors[INTERVAL]             = secs_to_time_str(interval)
-    #     sensors[NEXT_UPDATE_DATETIME] = secs_to_datetime(next_update_secs)
-    #     sensors[NEXT_UPDATE_TIME]     = next_update_time
-    #     sensors[NEXT_UPDATE]          = next_update_time
-    # else:
-    #     Device_DfZ.interval_method    = IOSAPP_FNAME
-    #     sensors[INTERVAL]             = 0
-    #     sensors[NEXT_UPDATE_DATETIME] = IOSAPP_FNAME
-    #     sensors[NEXT_UPDATE_TIME]     = IOSAPP_FNAME
-    #     sensors[NEXT_UPDATE]          = IOSAPP_FNAME
 
     sensors[LAST_UPDATE_DATETIME] = datetime_now()
     sensors[LAST_UPDATE_TIME]     = time_now()
@@ -783,7 +783,7 @@ def _update_next_update_fields_and_sensors(Device_DfZ, interval):
     Device_DfZ.last_update_time = time_to_12hrtime(Gb.this_update_time)
 
     Device_DfZ.sensors.update(sensors)
-    # _traceha(f"{sensors=}")
+
     return sensors
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -1070,20 +1070,19 @@ def copy_near_device_results(Device, DeviceFmZone):
 
     DeviceFmZone.sensors.update(NearDeviceFmZone.sensors)
 
-    # if Gb.primary_data_source_ICLOUD is False or Device.is_data_source_ICLOUD is False:
-    # if Device.is_data_source_ICLOUD is False:
-    #     _update_next_update_fields_and_sensors(DeviceFmZone, 0)
-    # elif Device.is_inzone:
-    if Device.is_inzone:
-        _update_next_update_fields_and_sensors(DeviceFmZone, Device.inzone_interval_secs)
-    elif Device.is_in_statzone:
-        _update_next_update_fields_and_sensors(DeviceFmZone, Device.statzone_inzone_interval_secs)
+    if Device.is_in_statzone:
+        interval_secs = Device.in_statzone_interval_secs
+    elif Device.is_inzone:
+        interval_secs = Device.inzone_interval_secs
     else:
-        _update_next_update_fields_and_sensors(DeviceFmZone, NearDeviceFmZone.interval_secs)
+        interval_secs = NearDeviceFmZone.interval_secs
+
+    _update_next_update_fields_and_sensors(DeviceFmZone, interval_secs)
 
     Device.StatZone                = NearDevice.StatZone
     Device.statzone_timer          = NearDevice.statzone_timer
     Device.statzone_dist_moved_km  = NearDevice.statzone_dist_moved_km
+    Device.iosapp_request_loc_sent_secs = Gb.this_update_secs
 
     log_rawdata(f"{Device.devicename} - {from_zone}", DeviceFmZone.sensors)
 
@@ -1123,7 +1122,7 @@ def update_nearby_device_info(Device):
                 and dist_m < NEAR_DEVICE_DISTANCE):
             useable_symbol = '×'
         elif dist_m > NEAR_DEVICE_DISTANCE:
-            useable_symbol = '»'
+            useable_symbol = '>'
         elif min_gps_accuracy > NEAR_DEVICE_DISTANCE:
             useable_symbol = '±'
         elif display_text == '0m/±0m':
@@ -1154,7 +1153,7 @@ def update_nearby_device_info(Device):
                 Device.NearDevice = _Device
                 Device.near_device_distance = dist_m
 
-    monitor_msg = f"Nearby Devices (<{NEAR_DEVICE_DISTANCE}m) > {Device.dist_apart_msg}"
+    monitor_msg = f"Nearby Devices > ({LT}{NEAR_DEVICE_DISTANCE}m), {Device.dist_apart_msg}"
     post_monitor_msg(Device.devicename, monitor_msg)
 
     return

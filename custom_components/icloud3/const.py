@@ -4,7 +4,7 @@
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-VERSION                         = '3.0.0b17'
+VERSION                         = '3.0.0b18.5'
 
 DOMAIN                          = 'icloud3'
 ICLOUD3                         = 'iCloud3'
@@ -25,8 +25,8 @@ EVLOG_CARD_WWW_DIRECTORY        = 'www/icloud3'
 EVLOG_CARD_WWW_JS_PROG          = 'icloud3-event-log-card.js'
 WAZE_LOCATION_HISTORY_DATABASE  = 'icloud3.waze_location_history.db'
 SENSOR_WAZEHIST_TRACK_NAME      = 'icloud3_wazehist_track'
-IC3LOGGER_FILENAME              = 'icloud3-debug.log'
-DEBUG_LOG_FILENAME              = 'icloud3-debug.log'
+IC3LOGGER_FILENAME              = 'icloud3-0.log'
+IC3_LOG_FILENAME                = 'icloud3-0.log'
 
 DEVICE_TRACKER                  = 'device_tracker'
 DEVICE_TRACKER_DOT              = 'device_tracker.'
@@ -51,8 +51,6 @@ NEAR_HOME                       = 'NearHome'
 NOT_SET                         = 'not_set'
 NOT_SET_FNAME                   = 'NotSet'
 UNKNOWN                         = 'Unknown'
-# STATIONARY                      = 'stationary'
-# STATIONARY_FNAME                = 'Stationary'
 STATIONARY                      = 'statzone'
 STATIONARY_FNAME                = 'StatZone'
 AWAY_FROM                       = 'AwayFrom'
@@ -256,13 +254,18 @@ HDOT              = '◦ '
 HDOT2             = '◦'
 LT                = '&lt;'
 GT                = '&gt;'
+LTE               = '≤'
+GTE               = '≥'
 CRLF_DOT          = f'{CRLF}{NBSP3}•{NBSP2}'
 CRLF_X            = f'{CRLF}{NBSP3}×{NBSP2}'
 CRLF_HDOT         = f'{CRLF}{NBSP6}◦{NBSP2}'
 CRLF_CHK          = f'{CRLF}{NBSP3}✓{NBSP}'
 CTRL_STAR         = f'{CRLF}{NBSP2}✪{NBSP}'
+CRLF_STAR         = f'{CRLF}{NBSP2}✪{NBSP}'
 CRLF_CIRCLE_X     = f'{CRLF}{NBSP2}ⓧ{NBSP}'
-CRLF_SP3_DOT      = f'{CRLF}{NBSP3}◦{NBSP}'
+CRLF_SP3_DOT      = f'{CRLF}{NBSP3}•{NBSP}'
+CRLF_SP5_DOT      = f'{CRLF}{NBSP5}•{NBSP}'
+CRLF_SP3_HDOT     = f'{CRLF}{NBSP3}◦{NBSP}'
 CRLF_SP3_STAR     = f'{CRLF}{NBSP3}✪{NBSP}'
 
 NEARBY_DEVICE_USEABLE_SYM = '✓'
@@ -656,6 +659,7 @@ WAZE_DISTANCE                 = "waze_distance"
 CALC_DISTANCE                 = "calc_distance"
 
 CONF_EXCLUDED_SENSORS         = "excluded_sensors"
+
 
 DISTANCE           = 'distance'
 CONF_SENSORS_ZONE  = 'zone'

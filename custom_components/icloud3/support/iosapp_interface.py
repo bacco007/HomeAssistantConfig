@@ -228,10 +228,10 @@ def request_location(Device, is_alive_check=False, force_request=False):
                         f"LastLocated-{secs_to_time_age_str(Device.iosapp_data_secs)}")
         post_event(devicename, event_msg)
 
-        Device.iosapp_request_loc_cnt += 1
         if Device.iosapp_request_loc_first_secs == 0:
             Device.iosapp_request_loc_first_secs = Gb.this_update_secs
         Device.iosapp_request_loc_last_secs = Gb.this_update_secs
+        Device.iosapp_request_loc_sent_secs = Gb.this_update_secs
         message = {"message": "request_location_update"}
         return_code = send_message_to_device(Device, message)
 

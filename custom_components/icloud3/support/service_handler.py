@@ -22,10 +22,10 @@ from ..support              import start_ic3
 from ..support              import determine_interval as det_interval
 from ..helpers.common       import (instr, )
 from ..helpers.messaging    import (post_event, post_error_msg, post_monitor_msg,
-                                    write_ic3_debug_log_recd,
+                                    write_ic3_log_recd,
                                     log_info_msg, log_debug_msg, log_exception,
-                                    open_ic3_debug_log_file, close_ic3_debug_log_file,
-                                    close_reopen_ic3_debug_log_file,
+                                    open_ic3_log_file, close_ic3_log_file,
+                                    close_reopen_ic3_log_file, delete_open_log_file,
                                     _trace, _traceha, )
 from ..helpers.time_util    import (secs_to_time, time_str_to_secs, datetime_now, secs_since, time_now, )
 # from ..config_flow          import ActionSettingsFlowManager
@@ -261,6 +261,7 @@ def update_service_handler(action_entry=None, action_fname=None, devicename=None
             Devices = [Gb.Devices_by_devicename[devicename]]
         else:
             Devices = [Device for Device in Gb.Devices_by_devicename.values()]
+
         if action == CMD_PAUSE:
             if devicename is None:
                 Gb.all_tracking_paused_flag = True
@@ -281,6 +282,10 @@ def update_service_handler(action_entry=None, action_fname=None, devicename=None
         elif action == CMD_REQUEST_LOCATION:
             for Device in Devices:
                 _handle_action_device_location_iosapp(Device)
+
+        elif action == 'delete_log':
+            delete_open_log_file()
+
 
     if devicename == 'startup_log':
         pass
@@ -305,10 +310,10 @@ def _handle_global_action(global_action, action_option):
         Gb.log_rawdata_flag_restart   = Gb.log_rawdata_flag
         Gb.restart_icloud3_request_flag = True
         Gb.EvLog.display_user_message('iCloud3 is Restarting', clear_alert=True)
-        if Gb.log_debug_flag:
-            close_ic3_debug_log_file()
-            open_ic3_debug_log_file(new_debug_log=True)
-            write_ic3_debug_log_recd(f"\n{'-'*25} Opened by Event Log > Actions > Restart {'-'*25}")
+
+        close_ic3_log_file()
+        open_ic3_log_file()
+        write_ic3_log_recd(f"\n{'-'*25} Opened by Event Log > Actions > Restart {'-'*25}")
         return
 
     elif global_action == CMD_EXPORT_EVENT_LOG:
@@ -355,6 +360,10 @@ def _handle_global_action(global_action, action_option):
 #--------------------------------------------------------------------
 def handle_action_log_level(action_option, change_conf_log_level=True):
 
+    if instr(action_option, 'monitor'):
+        Gb.evlog_trk_monitors_flag = (not Gb.evlog_trk_monitors_flag)
+        return
+
     new_log_debug_flag   = Gb.log_debug_flag
     new_log_rawdata_flag = Gb.log_rawdata_flag
 
@@ -366,36 +375,22 @@ def handle_action_log_level(action_option, change_conf_log_level=True):
         new_log_rawdata_flag = (not Gb.log_rawdata_flag)
         new_log_debug_flag   = new_log_rawdata_flag
 
-    if instr(action_option, 'monitor'):
-        Gb.evlog_trk_monitors_flag = (not Gb.evlog_trk_monitors_flag)
-
     if new_log_rawdata_flag is False:
         Gb.log_rawdata_flag_unfiltered = False
 
-    new_log_level = 'rawdata' if new_log_rawdata_flag else 'debug-auto-reset' if new_log_debug_flag else 'info'
+    new_log_level = 'rawdata' if new_log_rawdata_flag \
+        else 'debug-auto-reset' if new_log_debug_flag \
+        else 'info'
 
     start_ic3.set_log_level(new_log_level)
     start_ic3.update_conf_file_log_level(new_log_level)
 
-    event_msg = f"Debug Log Level > {new_log_level.replace('-', ' ').title()}"
+    log_level_fname = new_log_level.replace('-', ' ').title()
+    event_msg = f"Debug Log Level > {log_level_fname}"
     post_event(event_msg)
 
-    # Create a new debug.log file if the current one was created over 24-hours ago
-    if new_log_debug_flag:
-        new_debug_log_file = (Gb.ic3_debug_log_new_file_secs == 0
-                            or secs_since(Gb.ic3_debug_log_new_file_secs) > 80000)
-
-        open_ic3_debug_log_file(new_debug_log=new_debug_log_file)
-        write_ic3_debug_log_recd(f"\n{'-'*25} Opened by Event Log > Actions {'-'*25}")
-        write_ic3_debug_log_recd(event_msg)
-
-    elif Gb.iC3DebugLogFile is not None:
-        write_ic3_debug_log_recd(event_msg)
-        write_ic3_debug_log_recd(f"{'-'*25} Closed by Event Log > Actions {'-'*25}\n")
-        close_ic3_debug_log_file()
-
-    # Gb.log_debug_flag   = new_log_debug_flag
-    # Gb.log_rawdata_flag = new_log_rawdata_flag
+    open_ic3_log_file()
+    write_ic3_log_recd(f"\n{'-'*25} Change Log Level to: {log_level_fname} {'-'*25}")
 
 def _on_off_text(condition):
     return 'On' if condition else 'Off'

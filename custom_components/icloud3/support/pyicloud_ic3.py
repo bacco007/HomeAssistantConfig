@@ -26,18 +26,18 @@ VERSION = '3.0.0'
 from ..global_variables     import GlobalVariables as Gb
 from ..const                import (AIRPODS_FNAME, NONE_FNAME,
                                     EVLOG_NOTICE, EVLOG_ALERT,
-                                    HHMMSS_ZERO, RARROW, CRLF, CRLF_DOT, CTRL_STAR, CRLF_CHK, CHECK_MARK,
+                                    HHMMSS_ZERO, RARROW, CRLF, CRLF_DOT, CRLF_STAR, CRLF_CHK, CRLF_HDOT,
                                     FMF, FAMSHR, FMF_FNAME, FAMSHR_FNAME, NAME, ID,
                                     APPLE_SPECIAL_ICLOUD_SERVER_COUNTRY_CODE,
                                     ICLOUD_HORIZONTAL_ACCURACY,
                                     LOCATION, TIMESTAMP, LOCATION_TIME, DATA_SOURCE,
                                     ICLOUD_BATTERY_STATUS, BATTERY_STATUS_REFORMAT, ICLOUD_DEVICE_STATUS,
-                                    CONF_PASSWORD,
-                                    CONF_IC3_DEVICENAME, CONF_FAMSHR_DEVICENAME, CONF_FMF_EMAIL,
+                                    CONF_PASSWORD, CONF_MODEL_DISPLAY_NAME, CONF_RAW_MODEL,
+                                    CONF_IC3_DEVICENAME, CONF_FNAME, CONF_FAMSHR_DEVICENAME, CONF_FMF_EMAIL,
                                     )
 from ..helpers.time_util    import (time_now_secs, secs_to_time, timestamp_to_time_utcsecs, )
 from ..helpers.common       import (instr, obscure_field, list_to_str, delete_file, )
-from ..helpers.messaging    import (post_event, post_monitor_msg, _trace, _traceha,
+from ..helpers.messaging    import (post_event, post_monitor_msg, post_startup_alert, _trace, _traceha,
                                     log_info_msg, log_error_msg, log_debug_msg, log_warning_msg, log_rawdata, log_exception)
 from .config_file            import (encode_password, decode_password)
 
@@ -1230,11 +1230,9 @@ class PyiCloud_FamilySharing():
         if devices_not_set_up == '':
             return
 
-        log_msg = ( f"{EVLOG_NOTICE}iCloud3 Notice > Some FamShr devices were not "
-                    f"initialized, data was not received from iCloud "
-                    f"Location Services. Retrying..."
-                    f"{devices_not_set_up}")
-        post_event(log_msg)
+        # log_msg = ( f"FamShr Device not found > Retrying initialization for:"
+        #             f"{devices_not_set_up}")
+        # post_event(log_msg)
 
         if self.PyiCloud.called_from == 'init':
             self.PyiCloud.init_step_needed.append('FamShr')
@@ -1244,11 +1242,12 @@ class PyiCloud_FamilySharing():
 
         devices_not_set_up = self._conf_famshr_devices_not_set_up()
         if devices_not_set_up == '':
-            log_msg = f"{EVLOG_NOTICE}Family Sharing initialization retry successful"
-            post_event(log_msg)
             return
 
-        log_msg = ( f"{EVLOG_ALERT}iCLOUD ALERT > Family Sharing initialization retry failed. "
+        post_startup_alert(f"FamShr Device Config Error > Device Not found{devices_not_set_up.replace(CRLF_STAR, CRLF_HDOT)}")
+        log_msg = ( f"{EVLOG_ALERT}iCloud3 Alert > Some FamShr devices were not initialized. "
+                    f"Check the FamShr Device Name assigned to the iCloud3 device "
+                    f"in the iCloud3 Configuration."
                     f"{devices_not_set_up}")
         post_event(log_msg)
 
@@ -1263,7 +1262,10 @@ class PyiCloud_FamilySharing():
         Return with a list of famshr devices in the conf_devices that are not in
         _RawData
         '''
-        devices_not_set_up = [f"{conf_device[CONF_IC3_DEVICENAME]} ({conf_device[CONF_FAMSHR_DEVICENAME]})"
+        devices_not_set_up = [  (f"{conf_device[CONF_FAMSHR_DEVICENAME]} > "
+                                f"AssignedTo-{conf_device[CONF_FNAME]}/"
+                                f"{conf_device[CONF_IC3_DEVICENAME]}")
+                                # f"{conf_device[CONF_MODEL_DISPLAY_NAME]} ({conf_device[CONF_RAW_MODEL]})"
                     for conf_device in Gb.conf_devices
                     if (conf_device[CONF_FAMSHR_DEVICENAME] != NONE_FNAME
                         and conf_device[CONF_FAMSHR_DEVICENAME] not in self.device_id_by_device_fname)]
@@ -1271,7 +1273,7 @@ class PyiCloud_FamilySharing():
         if devices_not_set_up == []:
             return ""
         else:
-            return list_to_str(devices_not_set_up, CRLF_DOT)
+            return list_to_str(devices_not_set_up, CRLF_STAR)
 
 #----------------------------------------------------------------------------
     @property
@@ -1351,9 +1353,9 @@ class PyiCloud_FamilySharing():
                     if device_id not in self.devices_without_location_data:
                         self.devices_without_location_data.append(device_id)
                         if device_info[ICLOUD_DEVICE_STATUS] == 203:
-                            monitor_msg += f"{CTRL_STAR}OFFLINE > "
+                            monitor_msg += f"{CRLF_STAR}OFFLINE > "
                         else:
-                            monitor_msg += f"{CTRL_STAR}NO LOCATION > "
+                            monitor_msg += f"{CRLF_STAR}NO LOCATION > "
                         monitor_msg += (f"{device_data_name}/{device_id[:8]}, "
                                         f"{device_info['modelDisplayName']} "
                                         f"({device_info['rawDeviceModel']})")

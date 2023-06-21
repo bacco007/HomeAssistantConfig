@@ -12,7 +12,7 @@
 
 from ..global_variables     import GlobalVariables as Gb
 from ..const                import (HOME,
-                                    HHMMSS_ZERO, HIGH_INTEGER, NONE,
+                                    HHMMSS_ZERO, HIGH_INTEGER, NONE, IOSAPP,
                                     EVLOG_TABLE_MAX_CNT_BASE, EVENT_LOG_CLEAR_SECS,
                                     EVENT_LOG_CLEAR_CNT, EVLOG_TABLE_MAX_CNT_ZONE,
                                     EVLOG_TIME_RECD, EVLOG_HIGHLIGHT, EVLOG_MONITOR,
@@ -623,6 +623,11 @@ class EventLog(object):
         # Device = Gb.Devices_by_devicename.get(devicename)
         el_devicename_check = ['*', '**', 'nodevices', devicename]
 
+        if Device := Gb.Devices_by_devicename.get(devicename):
+            primary_data_source_IOSAPP = (Device.primary_data_source == IOSAPP)
+        else:
+            primary_data_source_IOSAPP = False
+
         # Select devicename recds, keep time & test elements, drop devicename
         try:
             devicename_recds = [el_recd for el_recd in self.evlog_table
@@ -632,9 +637,13 @@ class EventLog(object):
             if Gb.evlog_trk_monitors_flag:
                 return [el_recd[1:3] for el_recd in devicename_recds]
 
+            elif primary_data_source_IOSAPP:
+                return [el_recd[1:3] for el_recd in devicename_recds
+                                                if (el_recd[ELR_TEXT].startswith(EVLOG_MONITOR) is False
+                                                    and self._iosapp_filter(el_recd[ELR_TEXT]))]
             else:
                 return [el_recd[1:3] for el_recd in devicename_recds
-                                                if el_recd[ELR_TEXT].startswith(EVLOG_MONITOR) is False]
+                                                if (el_recd[ELR_TEXT].startswith(EVLOG_MONITOR) is False)]
 
         except IndexError:
             for el_recd in self.evlog_table:
@@ -646,6 +655,22 @@ class EventLog(object):
                     log_info_msg(f"{el_recd}")
 
         return []
+
+#--------------------------------------------------------------------
+    @staticmethod
+    def _iosapp_filter(el_recd_text):
+        '''
+        File icloud account records from events  for a device when its primary
+        data source it's the ios app
+
+        Return True if the record should be displayed
+        '''
+
+        if el_recd_text.startswith('iCloud Acct'):
+            return False
+
+        return True
+
 
 #--------------------------------------------------------------------
     def _export_ic3_event_log_reformat_recds(self, devicename, el_records):

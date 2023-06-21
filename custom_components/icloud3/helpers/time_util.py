@@ -421,10 +421,16 @@ def format_time_age(time_secs):
 #--------------------------------------------------------------------
 def format_age(secs):
     """ Secs to `52.3y ago` """
+    if secs == 0:
+        return 'Never'
+
     return f"{secs_to_time_str(secs)} ago"
 
 #--------------------------------------------------------------------
 def format_age_ts(time_secs):
+    if time_secs == 0:
+        return 'Never'
+
     return (f"{secs_to_time_str(secs_since(time_secs))} ago")
 
 #########################################################

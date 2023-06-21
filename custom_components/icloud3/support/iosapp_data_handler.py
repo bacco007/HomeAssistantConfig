@@ -228,7 +228,6 @@ def check_iosapp_state_trigger_change(Device):
 
         # trigger time is after last locate
         elif Device.iosapp_data_secs > Device.located_secs_plus_5:
-            Device.count_trigger_changed += 1
             Device.iosapp_data_change_reason = (f"{Device.iosapp_data_trigger}@"
                                                 f"{Device.iosapp_data_time}")
                                                 # f"{Device.iosapp_data_trigger_time}")
@@ -242,7 +241,6 @@ def check_iosapp_state_trigger_change(Device):
         # iOSAPP location changed and State changed more than 5-secs after last locate
         elif Device.iosapp_data_secs > Device.located_secs_plus_5:
             Device.iosapp_data_change_reason = (f"Location Change")
-            Device.count_state_changed += 1
             Device.iosapp_data_trigger = (f"Location Change, "
                     f"GPS-{Device.iosapp_data_fgps}")
 
@@ -335,7 +333,7 @@ def check_if_iosapp_is_alive(Device):
                 or Device.iosapp_entity[NOTIFY] == ''):
             return
 
-        # Send a location request if the iosapp data is more than 1-hour old
+        # Send a location request if the iosapp data is more than 'alive Interval'
         # and the check for request sent > 1 hr ago. Only send once an hour.
         if (secs_since(Device.iosapp_request_loc_first_secs) % Gb.iosapp_alive_interval_secs == 0
                 and secs_since(Device.iosapp_data_secs) > Gb.iosapp_alive_interval_secs

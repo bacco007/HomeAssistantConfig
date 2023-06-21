@@ -64,7 +64,7 @@ from .const             import (DOMAIN, DATETIME_FORMAT,
                                 )
 from .const_sensor      import (SENSOR_GROUPS )
 from .helpers.common    import (instr, isnumber, obscure_field, zone_display_as, list_to_str, str_to_list, )
-from .helpers.messaging import (log_exception, log_debug_msg, _traceha, _trace, post_event, close_reopen_ic3_debug_log_file, )
+from .helpers.messaging import (log_exception, log_debug_msg, _traceha, _trace, post_event, close_reopen_ic3_log_file, )
 from .helpers           import entity_io
 from .                  import sensor as ic3_sensor
 from .                  import device_tracker as ic3_device_tracker
@@ -262,7 +262,7 @@ RESTART_NOW_LATER_ACTIONS = [
 #         }
 DATA_SOURCE_ICLOUD_ITEMS_KEY_TEXT = {
         'famshr':   'Family Sharing List members from the iCloud Account (FamShr)',
-        'fmf':      'Friends/Contacts who are sharing their location with you (FmF)'
+        # 'fmf':      'Friends/Contacts who are sharing their location with you (FmF)'
         }
 DATA_SOURCE_IOSAPP_ITEMS_KEY_TEXT = {
         'iosapp':   'HA iOS Companion App device_tracker and sensor entities are monitored (iosapp)'
@@ -479,7 +479,7 @@ class iCloud3_ConfigFlow(config_entries.ConfigFlow, FlowHandler, domain=DOMAIN):
             return self.async_abort(reason="disabled")
 
         if self.hass.data.get(DOMAIN):
-            close_reopen_ic3_debug_log_file()
+            close_reopen_ic3_log_file()
 
             _CF_LOGGER.info(f"Aborting iCloud3 Integration, Already set up")
             return self.async_abort(reason="already_configured")
@@ -492,7 +492,7 @@ class iCloud3_ConfigFlow(config_entries.ConfigFlow, FlowHandler, domain=DOMAIN):
 
             start_ic3.initialize_directory_filenames()
             config_file.load_storage_icloud3_configuration_file()
-            start_ic3.set_icloud_username_password()
+            start_ic3.initialize_icloud_data_source()
 
             # Convert the .storage/icloud3.configuration file if it is at a default
             # state or has never been updated via config_flow using 'HA Integrations > iCloud3'
@@ -603,7 +603,7 @@ class iCloud3_ConfigFlow(config_entries.ConfigFlow, FlowHandler, domain=DOMAIN):
                 PyiCloud.new_2fa_code_already_requested_flag = False
 
                 Gb.authenticated_time = time.time()
-                close_reopen_ic3_debug_log_file()
+                close_reopen_ic3_log_file()
                 return self.async_abort(reason="verification_code_accepted")
 
             else:
@@ -894,7 +894,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
 
 
             self.config_flow_updated_parms = {''}
-            close_reopen_ic3_debug_log_file()
+            close_reopen_ic3_log_file()
             data = {}
             data = {'added': dt_util.now().strftime(DATETIME_FORMAT)[0:19]}
             log_debug_msg(f"Exit Configuration Wizard, UpdateParms-{Gb.config_flow_updated_parms}")
@@ -1453,7 +1453,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             service_handler.handle_action_log_level('rawdata', change_conf_log_level=False)
 
         elif action_item == 'commit':
-            close_reopen_ic3_debug_log_file(closed_by='Configurator')
+            close_reopen_ic3_log_file(closed_by='Configurator')
 
         if self.header_msg is None:
             self.header_msg = 'action_completed'
@@ -3172,7 +3172,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
 
 #-------------------------------------------------------------------------------------------
     def _create_sensor_entity(self, devicename, conf_device, new_sensors_list):
-        """ Add sensors that were just checkeds """
+        """ Add sensors that were just checked """
 
         if new_sensors_list == []:
             return
@@ -3188,6 +3188,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             return
 
         Gb.async_add_entities_sensor(NewSensors, True)
+        ic3_sensor._setup_recorder_exclude_sensor_filter(NewSensors)
 
 #-------------------------------------------------------------------------------------------
     def _get_all_sensors_list(self):
@@ -3880,7 +3881,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required(CONF_INZONE_INTERVAL,
                             default=self._parm_or_device(CONF_INZONE_INTERVAL, CONF_DEVICES)):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Required(CONF_TRACK_FROM_BASE_ZONE,
                             default=self._option_parm_to_text(CONF_TRACK_FROM_BASE_ZONE, self.zone_name_key_text, conf_device=True)):
                             selector.SelectSelector(selector.SelectSelectorConfig(
@@ -4076,7 +4077,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required(CONF_OFFLINE_INTERVAL,
                             default=Gb.conf_general[CONF_OFFLINE_INTERVAL]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=1, max=240, step=1, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Required(CONF_TFZ_TRACKING_MAX_DISTANCE,
                             default=Gb.conf_general[CONF_TFZ_TRACKING_MAX_DISTANCE]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
@@ -4102,27 +4103,27 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(IPHONE,
                             default=Gb.conf_general[CONF_INZONE_INTERVALS][IPHONE]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Optional(IPAD,
                             default=Gb.conf_general[CONF_INZONE_INTERVALS][IPAD]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Optional(WATCH,
                             default=Gb.conf_general[CONF_INZONE_INTERVALS][WATCH]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Optional(AIRPODS,
                             default=Gb.conf_general[CONF_INZONE_INTERVALS][AIRPODS]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Optional(NO_IOSAPP,
                             default=Gb.conf_general[CONF_INZONE_INTERVALS][NO_IOSAPP]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Optional(OTHER,
                             default=Gb.conf_general[CONF_INZONE_INTERVALS][OTHER]):
                             selector.NumberSelector(selector.NumberSelectorConfig(
-                                min=5, max=240, step=5, unit_of_measurement='minutes')),
+                                min=1, max=300, step=1, unit_of_measurement='minutes')),
                 vol.Optional(CONF_CENTER_IN_ZONE,
                             default=Gb.conf_general[CONF_CENTER_IN_ZONE]):
                             selector.BooleanSelector(),

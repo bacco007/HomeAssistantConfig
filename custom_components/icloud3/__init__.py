@@ -1,8 +1,8 @@
 """GitHub Custom Component."""
 import asyncio
 
-from homeassistant.components import history
-from homeassistant.const import CONF_DOMAINS, CONF_ENTITIES, CONF_EXCLUDE, CONF_INCLUDE
+# from homeassistant.components import history
+# from homeassistant.const import CONF_DOMAINS, CONF_ENTITIES, CONF_EXCLUDE, CONF_INCLUDE
 
 
 from homeassistant.config_entries   import ConfigEntry
@@ -10,20 +10,22 @@ from homeassistant.core             import CoreState, HomeAssistant
 from homeassistant.helpers.typing   import ConfigType
 from homeassistant.const            import EVENT_HOMEASSISTANT_STARTED, EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers import collection, storage
+# from homeassistant.helpers import collection, storage
 import homeassistant.util.location  as ha_location_info
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
-import voluptuous as vol
+# import voluptuous as vol
 import os
 
 from .const import (DOMAIN, PLATFORMS, MODE_PLATFORM, MODE_INTEGRATION, CONF_VERSION,
                     CONF_SETUP_ICLOUD_SESSION_EARLY,
-                    EVLOG_IC3_STARTING, VERSION, EVLOG_IC3_STAGE_HDR, )
+                    EVLOG_IC3_STARTING, VERSION, )
+
+from .const_sensor import (HA_EXCLUDE_SENSORS, )
 
 from .global_variables              import GlobalVariables as Gb
 from .helpers.common                import (instr, )
-from .helpers.messaging             import (_traceha, open_ic3_debug_log_file,
+from .helpers.messaging             import (_traceha, open_ic3_log_file,
                                             log_info_msg, log_debug_msg, log_error_msg, log_exception)
 from .support.v2v3_config_migration import iCloud3_v2v3ConfigMigration
 from .support                       import start_ic3
@@ -32,13 +34,13 @@ from .support                       import restore_state
 from .support                       import service_handler
 from .support                       import pyicloud_ic3_interface
 from .support                       import event_log
+from .support                       import recorder_prefilter
 from .icloud3_main                  import iCloud3
 from .                              import config_flow
 
 import logging
 # _LOGGER = logging.getLogger(__name__)
-Gb.HALogger = logging.getLogger("icloud3")
-# Gb.HALogger = logging.basicConfig(filename='icloud3.log', filemode='w')
+Gb.HALogger = _LOGGER = logging.getLogger('icloud3')
 
 successful_startup = True
 
@@ -63,9 +65,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     await async_get_ha_location_info()
     start_ic3.initialize_directory_filenames()
     config_file.load_storage_icloud3_configuration_file()
-    start_ic3.set_icloud_username_password()
-    if Gb.log_debug_flag:
-        open_ic3_debug_log_file(new_debug_log=True)
+    start_ic3.initialize_icloud_data_source()
+
+    open_ic3_log_file()
 
     # Convert the .storage/icloud3.configuration file if it is at a default
     # state or has never been updated via config_flow using 'HA Integrations > iCloud3'
@@ -120,6 +122,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
         log_info_msg(f"Setting up iCloud3 {VERSION} - Using Integration method")
 
+        recorder_prefilter.add_prefilter(hass, 'icloud3_*') #HA_EXCLUDE_SENSORS)
+
         Gb.PyiCloud       = None
         Gb.EvLog          = event_log.EventLog(Gb.hass)
         Gb.start_icloud3_inprocess_flag = True
@@ -128,10 +132,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         start_ic3.initialize_directory_filenames()
         config_file.load_storage_icloud3_configuration_file()
         start_ic3.set_log_level(Gb.log_level)
-        if Gb.log_debug_flag:
-            open_ic3_debug_log_file(new_debug_log=True)
 
-        start_ic3.set_icloud_username_password()
+        open_ic3_log_file(new_log_file=Gb.log_debug_flag)
+
+        start_ic3.initialize_icloud_data_source()
         restore_state.load_storage_icloud3_restore_state_file()
 
         # Create device_tracker and sensor entities
@@ -145,7 +149,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             v2v3_config_migration = iCloud3_v2v3ConfigMigration()
             v2v3_config_migration.convert_v2_config_files_to_v3()
             config_file.load_storage_icloud3_configuration_file()
-            open_ic3_debug_log_file()
+            open_ic3_log_file()
             Gb.v2v3_config_migrated = True
 
         # Do not start if loading/initialization failed

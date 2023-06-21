@@ -41,7 +41,6 @@ class Waze(object):
 
         self.waze_manual_pause_flag        = False  #If Paused via iCloud command
         self.waze_close_to_zone_pause_flag = False  #pause if dist from zone < 1 flag
-        self.count_waze_locates            = {}
         self.WazeRouteCalc                 = None
 
         try:
@@ -130,8 +129,6 @@ class Waze(object):
                 route_dist_km     = 0
                 dist_moved_km     = 0
                 wazehist_save_msg = ''
-
-                waze_all_timer    = time.perf_counter()
                 waze_source_msg   = ""
                 location_id       = 0
 
@@ -180,7 +177,6 @@ class Waze(object):
                     route_time = 0
 
                 # Get distance moved since last update
-                waze_moved_timer = time.perf_counter()
                 if Device.loc_data_dist_moved_km < .5:
                     dist_moved_km = Device.loc_data_dist_moved_km
                 else:
@@ -192,8 +188,6 @@ class Waze(object):
                                                     Device.loc_data_latitude,
                                                     Device.loc_data_longitude,
                                                     "moved")
-
-                waze_moved_timer_took = time.perf_counter() - waze_moved_timer
 
             except Exception as err:
                 post_internal_error('Waze Route Info', traceback.format_exc)
@@ -216,15 +210,12 @@ class Waze(object):
                 route_time        = 0
                 waze_source_msg   = 'Error'
 
-            waze_all_timer_took = time.perf_counter() - waze_all_timer
-
             event_msg =(f"Waze Route Info > {waze_source_msg}")
             if waze_source_msg == "":
                 event_msg += (  f"TravTime-{self.waze_mins_to_time_str(route_time)}, "
                                 f"Dist-{format_dist_km(route_dist_km)}, "
                                 f"WazeMoved-{format_dist_km(dist_moved_km)}, "
                                 f"CalcMoved-{format_dist_km(Device.loc_data_dist_moved_km)}, "
-                                f"Took-{waze_all_timer_took:0.2f} secs "
                                 f"{wazehist_save_msg}")
             post_event(Device.devicename, event_msg)
 
@@ -317,7 +308,6 @@ class Waze(object):
             while retry_cnt < 3:
                 try:
                     retry_msg = '' if retry_cnt == 0 else (f" (#{retry_cnt})")
-                    waze_call_start_time = time_now_secs()
 
                     route_time, route_dist_km = \
                             self.WazeRouteCalc.calc_route_info(from_lat, from_long, to_lat, to_long)
@@ -327,9 +317,6 @@ class Waze(object):
 
                     route_time    = round(route_time, 2)
                     route_dist_km = route_dist_km
-
-                    Device.count_waze_locates += 1
-                    Device.time_waze_calls += (time_now_secs() - waze_call_start_time)
 
                     self.connection_error_displayed = False
                     return (WAZE_USED, route_time, route_dist_km)
