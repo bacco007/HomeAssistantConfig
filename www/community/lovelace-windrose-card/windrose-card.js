@@ -212,11 +212,12 @@ class WindSpeedEntity {
 }
 
 class WindDirectionEntity {
-    constructor(entity, useStatistics, directionUnit, directionCompensation) {
+    constructor(entity, useStatistics, directionUnit, directionCompensation, directionLetters) {
         this.entity = entity;
         this.useStatistics = useStatistics;
         this.directionUnit = directionUnit;
         this.directionCompensation = directionCompensation;
+        this.directionLetters = directionLetters;
     }
 }
 
@@ -326,7 +327,8 @@ class CardConfigWrapper {
             const useStatistics = this.checkBooleanDefaultFalse(entityConfig.use_statistics);
             const directionUnit = this.checkWindDirectionUnit(entityConfig.direction_unit);
             const directionCompensation = this.checkDirectionCompensation(entityConfig.direction_compensation);
-            return new WindDirectionEntity(entity, useStatistics, directionUnit, directionCompensation);
+            const directionLetters = this.checkDirectionLetters(directionUnit, entityConfig.direction_letters);
+            return new WindDirectionEntity(entity, useStatistics, directionUnit, directionCompensation, directionLetters);
         }
         throw new Error("WindRoseCard: No wind_direction_entity configured.");
     }
@@ -378,6 +380,22 @@ class CardConfigWrapper {
             return directionCompensation;
         }
         return 0;
+    }
+    checkDirectionLetters(directionUnit, directionLetters) {
+        if (directionLetters) {
+            if (directionUnit === 'letters') {
+                if (directionLetters && directionLetters.length === 5) {
+                    return directionLetters.toUpperCase();
+                }
+                else {
+                    throw new Error('WindRoseCard: direction_letters config should be 5 letters.');
+                }
+            }
+            else {
+                throw new Error('WindRoseCard: config direction_letters should only be use in combination with direction_unit letters.');
+            }
+        }
+        return undefined;
     }
     checkwindRoseDrawNorthOffset() {
         if (this.cardConfig.windrose_draw_north_offset && isNaN(this.cardConfig.windrose_draw_north_offset)) {
@@ -1137,10 +1155,11 @@ class WindSpeedConverter {
 }
 
 class WindRoseConfig {
-    constructor(centerRadius, windDirectionCount, windDirectionUnit, leaveArc, cardinalDirectionLetters, directionCompensation, windRoseDrawNorthOffset, roseLinesColor, roseDirectionLettersColor, rosePercentagesColor) {
+    constructor(centerRadius, windDirectionCount, windDirectionUnit, windDirectionLetters, leaveArc, cardinalDirectionLetters, directionCompensation, windRoseDrawNorthOffset, roseLinesColor, roseDirectionLettersColor, rosePercentagesColor) {
         this.centerRadius = centerRadius;
         this.windDirectionCount = windDirectionCount;
         this.windDirectionUnit = windDirectionUnit;
+        this.windDirectionLetters = windDirectionLetters;
         this.leaveArc = leaveArc;
         this.cardinalDirectionLetters = cardinalDirectionLetters;
         this.directionCompensation = directionCompensation;
@@ -1173,7 +1192,7 @@ class WindRoseConfigFactory {
         this.cardConfig = cardConfig;
     }
     createWindRoseConfig() {
-        return new WindRoseConfig(25, this.cardConfig.windDirectionCount, this.cardConfig.windDirectionEntity.directionUnit, (360 / this.cardConfig.windDirectionCount) - 8, this.cardConfig.cardinalDirectionLetters, this.cardConfig.windDirectionEntity.directionCompensation, this.cardConfig.windRoseDrawNorthOffset, this.cardConfig.cardColor.roseLines, this.cardConfig.cardColor.roseDirectionLetters, this.cardConfig.cardColor.rosePercentages);
+        return new WindRoseConfig(25, this.cardConfig.windDirectionCount, this.cardConfig.windDirectionEntity.directionUnit, this.cardConfig.windDirectionEntity.directionLetters, (360 / this.cardConfig.windDirectionCount) - 8, this.cardConfig.cardinalDirectionLetters, this.cardConfig.windDirectionEntity.directionCompensation, this.cardConfig.windRoseDrawNorthOffset, this.cardConfig.cardColor.roseLines, this.cardConfig.cardColor.roseDirectionLetters, this.cardConfig.cardColor.rosePercentages);
     }
     createWindBarConfigs() {
         const windBarConfigs = [];
@@ -1253,7 +1272,9 @@ class DimensionsCalculator {
 }
 
 class WindDirectionConverter {
-    constructor() {
+    constructor(windDirectionLetters) {
+        this.windDirectionLetters = windDirectionLetters;
+        this.defaultLetters = ['N', 'E', 'S', 'W'];
         this.directions = {
             N: 0,
             NXE: 11.25,
@@ -1276,7 +1297,7 @@ class WindDirectionConverter {
             SSW: 202.5,
             SWXS: 213.75,
             SW: 225,
-            SWxW: 236.25,
+            SWXW: 236.25,
             WSW: 247.5,
             WXS: 258.75,
             W: 270,
@@ -1290,8 +1311,23 @@ class WindDirectionConverter {
             CALM: 0
         };
     }
-    getDirection(designation) {
-        return this.directions[designation.toUpperCase()];
+    getDirection(direction) {
+        let convertedDirection = direction.toUpperCase();
+        if (this.windDirectionLetters) {
+            convertedDirection = this.convertDirectionLetters(direction);
+        }
+        return this.directions[convertedDirection];
+    }
+    convertDirectionLetters(direction) {
+        let convertedDirection = '';
+        for (let i = 0; i < direction.length; i++) {
+            const index = this.windDirectionLetters.indexOf(direction[i]);
+            if (index < 0) {
+                Log.info('Could not translate cardinal direction, letters not found in config wind_direction_entity.direction_letters');
+            }
+            convertedDirection += this.defaultLetters[index];
+        }
+        return convertedDirection;
     }
 }
 
@@ -1335,11 +1371,11 @@ class WindDirection {
 
 class MeasurementCounter {
     constructor(config, windSpeedConverter) {
-        this.windDirectionConverter = new WindDirectionConverter();
         this.windDirections = [];
         this.windData = new WindCounts();
         this.config = config;
         this.windSpeedConverter = windSpeedConverter;
+        this.windDirectionConverter = new WindDirectionConverter(config.windDirectionLetters);
         this.speedRangeFunction = this.windSpeedConverter.getRangeFunction();
         const leaveDegrees = 360 / config.windDirectionCount;
         for (let i = 0; i < config.windDirectionCount; i++) {
@@ -2005,7 +2041,7 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 1.0.2 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.1.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();
