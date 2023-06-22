@@ -1,0 +1,169 @@
+top_nav:
+  show_icon: none
+  show_name: none
+  show_state: none
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-areas: |
+          "weather doors home_hub"
+      - grid-template-columns: 1fr 1fr 1fr
+      - align-items: center
+      - height: 48px
+      - padding: 8px 16px
+    card:
+      - background: transparent
+      - border-radius: 0px
+      - box-shadow: none
+      - box-sizing: border-box
+      - padding: 0px
+  custom_fields:
+    weather:
+      card:
+        type: "custom:button-card"
+        styles:
+          card:
+            - align-self: flex-start
+        template:
+          - weather
+        entity: weather.forecast
+    doors:
+      card:
+        type: "custom:button-card"
+        template:
+          - doors
+        entity: binary_sensor.hallway_front_door
+        state:
+    home_hub:
+      card:
+        type: "custom:button-card"
+        styles:
+          card:
+            - align-self: flex-end
+        template:
+          - home_hub
+        entity: sensor.home_hub_battery
+
+weather:
+  show_icon: true
+  show_name: false
+  show_state: true
+  icon: >
+    [[[
+      if (entity) {
+        if (entity.state === 'partlycloudy') {
+          return 'mdi:weather-partly-cloudy';
+        } else if (entity.state === 'clear-night') {
+          return 'mdi:weather-night';
+        } else if (entity.state === 'cloudy') {
+          return 'mdi:weather-cloudy';
+        } else if (entity.state === 'exceptional') {
+          return 'mdi:alert-circle-outline';
+        } else if (entity.state === 'fog') {
+          return 'mdi:weather-fog';
+        } else if (entity.state === 'hail') {
+          return 'mdi:weather-hail';
+        } else if (entity.state === 'lightning') {
+          return 'mdi:weather-lightning';
+        } else if (entity.state === 'lightning-rainy') {
+          return 'mdi:weather-lightning-rainy';
+        } else if (entity.state === 'pouring') {
+          return 'mdi:weather-pouring';
+        } else if (entity.state === 'rainy') {
+          return 'mdi:weather-rainy';
+        } else if (entity.state === 'snowy') {
+          return 'mdi:weather-snowy';
+        } else if (entity.state === 'snowy-rainy') {
+          return 'mdi:weather-snowy-rainy';
+        } else if (entity.state === 'sunny') {
+          return 'mdi:weather-sunny';
+        } else if (entity.state === 'windy') {
+          return 'mdi:weather-windy';
+        } else if (entity.state === 'windy-variant') {
+          return 'mdi:weather-windy-variant';
+        } else {
+          return 'mdi:cloud';
+        }
+      }
+    ]]]
+  state_display: >
+    [[[
+      if (entity) {
+        return `${entity.attributes.temperature} ${entity.attributes.temperature_unit}`;
+      }
+
+      return null;
+    ]]]
+  styles:
+    grid:
+      - display: flex
+      - gap: 6px
+    card:
+      - background: transparent
+      - box-shadow: none
+      - border-radius: 0px
+      - padding: 0px
+    img_cell:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - width: 32px
+    icon:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - height: 32px
+      - width: 32px
+    state:
+      - font-size: 16px
+      - font-weight: 600
+
+doors:
+  show_icon: true
+  show_name: false
+  show_state: false
+  styles:
+    grid:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+    card:
+      - background: transparent
+      - box-shadow: none
+      - border-radius: 0px
+      - padding: 0px
+    icon:
+      - color: var(--primary-text-color)
+      - width: 32px
+
+home_hub:
+  show_icon: true
+  show_name: false
+  show_state: true
+  styles:
+    grid:
+      - display: flex
+      - flex-direction: row-reverse
+      - gap: 6px
+      - justify-content: flex-start
+    card:
+      - background: transparent
+      - box-shadow: none
+      - border-radius: 0px
+      - padding: 0px
+    img_cell:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - width: 32px
+    name:
+      - display: none
+    icon:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - height: 32px
+      - width: 32px
+    state:
+      - font-size: 16px
+      - font-weight: 600

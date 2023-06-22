@@ -1,0 +1,39 @@
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: Updates
+    card_mod:
+      style:
+        .:
+    content:
+      type: custom:mod-card
+      card_mod:
+        style:
+          hui-grid-card:
+            $: |
+              button-card:nth-child(2) {
+                margin: 0.6em 0 2.1em 0.8em;
+              }
+              button-card:nth-child(4) {
+                margin: 0.6em 0 0.5em 0.8em;
+              }
+              #root {
+                grid-gap: 0 !important;
+                padding: var(--tablet-popup-content-padding);
+              }
+      card:
+        type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: sensor.current_version
+            template:
+              - updates_hass
+            variables:
+              available: sensor.template_updates
+              latest: sensor.docker_hub
+              latest_beta: sensor.docker_hub_beta
+              release_notes: sensor.hass_release_notes
+              release_notes_beta: sensor.hass_release_notes_beta

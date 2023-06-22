@@ -1,0 +1,84 @@
+base_updates:
+  show_state: true
+  show_icon: false
+  show_name: false
+  styles:
+    state:
+      - text-align: left
+      - justify-self: left
+      - white-space: normal
+    card:
+      - cursor: default
+  tap_action:
+    href:
+  extra_styles: |
+    ha-icon {
+      width: 1.4em;
+      vertical-align: 12%;
+      opacity: 0.5;
+      padding-right: 2px;
+    }
+    .title {
+      font-size: 1.3em;
+      font-weight: 500;
+    }
+    .subtitle {
+      font-size: 0.95em;
+      line-height: 0.7em;
+      padding-left: 3px;
+      padding-bottom: 10px;
+      font-weight: 500;
+      color: #828383;
+    }
+    a {
+      color: var(--primary-color);
+    }
+    ul {
+      margin-top: -0.6em;
+      font-size: 0.88em;
+      letter-spacing: 0.5px;
+      line-height: 1.6em;
+    }
+    code {
+      background-color: var(--secondary-background-color);
+    }
+
+updates_hass:
+  template:
+    - base_updates
+    - settings
+  state_display: |
+    [[[
+      if (entity) {
+        let available = states[variables.available].attributes.home_assistant;
+
+        let links = new RegExp('<a href="([^"]+)"', "g"),
+            installed = entity.state,
+            hass_version_latest = states[variables.latest],
+            hass_version_latest_beta = states[variables.latest_beta],
+            hass_release_notes = states[variables.release_notes],
+            hass_release_notes_beta = states[variables.release_notes_beta];
+
+        let latest = installed.includes('b')
+            ? hass_version_latest_beta.state
+            : hass_version_latest.state;
+
+        let release_notes = installed.includes('b')
+            ? marked.parse(hass_release_notes.attributes.body)
+            : marked.parse(hass_release_notes_beta.attributes.body);
+
+        let subtitle = available === 0
+            ? `${variables.translate_no_updates} <b>&larr;</b> ${installed}`
+            : `${installed} <b>&rarr;</b> ${latest} ${variables.translate_available} ${String.fromCodePoint("0x1f389")}`;
+
+        let output = available === 0
+            ? '<ul></ul>'
+            : release_notes.replace(links, '<a href="#" onclick="window.open(\'$1\')"');
+
+        return `
+          <ha-icon icon="mdi:home-assistant"></ha-icon> <span class="title">Home Assistant</span><br>
+          <p class="subtitle">${subtitle}</p>
+          ${output}
+        `;
+      }
+    ]]]

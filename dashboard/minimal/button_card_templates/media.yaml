@@ -1,0 +1,470 @@
+base_media:
+  show_icon: false
+  show_name: false
+  show_state: false
+  variables:
+    media_on: >
+      [[[ return !entity || ['on', 'playing'].indexOf(entity.state) !== -1; ]]]
+    media_off: >
+      [[[ return !entity || ['off', 'standby', 'unknown', 'unavailable', 'paused', 'idle'].indexOf(entity.state) !== -1; ]]]
+    media_icon: >
+      [[[ return entity && entity.attributes.media_icon; ]]]
+    media_source: >
+      [[[ return entity && entity.attributes.media_source; ]]]
+  tap_action:
+    action: call-service
+    service: >
+      [[[
+        return variables.media_on
+          ? 'media_player.media_play_pause'
+          : 'media_player.toggle'
+      ]]]
+    service_data:
+      entity_id: '[[[ return variables.entity_id; ]]]'
+  double_tap_action:
+    action: more-info
+  hold_action:
+    action: call-service
+    service: media_player.turn_off
+    service_data:
+      entity_id: '[[[ return variables.entity_id; ]]]'
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-areas: |
+          "metadata controls extracontrols"
+      - grid-template-columns: repeat(3, minmax(0, 1fr))
+      - grid-template-rows: auto
+      - gap: 0px
+      - height: 120px
+      - max-height: 120px
+      - padding: 0px
+    card:
+      - background: var(--sidebar-background-color)
+      - border-top: 1px solid var(--sidebar-border-color)
+      - border-radius: 0px
+      - box-shadow: none
+      - box-sizing: border-box
+      - height: 120px
+      - max-height: 120px
+      - padding: 0px
+  custom_fields:
+    metadata:
+      card:
+        type: "custom:button-card"
+        entity: '[[[ return variables.entity_picture; ]]]'
+        variables:
+          media_icon: '[[[ return variables.media_icon; ]]]'
+          media_source: '[[[ return variables.media_source; ]]]'
+          entity_picture: '[[[ return variables.entity_picture; ]]]'
+        template:
+          - section_media
+          - metadata_media
+        styles:
+          grid:
+            - padding: 0px
+    controls:
+      card:
+        type: "custom:button-card"
+        variables:
+          entity_id: '[[[ return variables.entity_id ]]]'
+        template:
+          - section_media
+          - controls_media
+    extracontrols:
+      card:
+        type: "custom:button-card"
+        template:
+          - section_media
+
+section_media:
+  show_name: false
+  show_state: false
+  show_icon: false
+  styles:
+    grid:
+      - box-sizing: border-box
+      - padding: 12px
+      - overflow: hidden
+    card:
+      - box-sizing: border-box
+      - border-radius: 0px
+      - box-shadow: none
+      - height: 120px
+      - padding: 0px
+      - overflow: hidden
+
+metadata_media:
+  tap_action:
+    action: none
+  double_tap_action:
+    action: none
+  hold_action:
+    action: none
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-areas: |
+          "artwork information"
+      - grid-template-columns: 96px auto
+      - gap: 16px
+      - padding: 12px
+      - overflow: hidden
+      - width: 100%
+    card:
+      - box-sizing: border-box
+      - overflow: hidden
+      - padding: 12px
+    custom_fields:
+      artwork:
+        - box-sizing: border-box
+        - overflow: hidden
+      information:
+        - box-sizing: border-box
+        - overflow: hidden
+        - width: 100%
+  custom_fields:
+    artwork:
+      card:
+        type: "custom:button-card"
+        entity: '[[[ return entity.entity_id; ]]]'
+        variables:
+          media_icon: '[[[ return variables.media_icon; ]]]'
+          media_source: '[[[ return variables.media_source; ]]]'
+          entity_picture: '[[[ return variables.entity_picture; ]]]'
+        template:
+          - artwork_media
+    information:
+      card:
+        type: "custom:button-card"
+        entity: '[[[ return entity.entity_id; ]]]'
+        variables:
+          media_icon: '[[[ return variables.media_icon; ]]]'
+          media_source: '[[[ return variables.media_source; ]]]'
+          entity_picture: '[[[ return variables.entity_picture; ]]]'
+        template:
+          - information_media
+
+artwork_media:
+  show_name: false
+  show_state: false
+  icon: '[[[ return variables.media_icon ]]]'
+  styles:
+    card:
+      - aspect-ratio: 1
+      - background-image: >
+          [[[
+            if (
+              entity
+              && states[variables.entity_picture].attributes.entity_picture
+              && states[variables.entity_picture].attributes.entity_picture !== ''
+            ) {
+              let artwork = states[variables.entity_picture].attributes.entity_picture;
+
+              if (artwork.includes('cache=https://')) {
+                artwork = artwork.split('cache=').pop();
+              }
+
+              artwork = artwork.replace('{w}x{h}{c}.{f}', '300x300bb.jpg');
+              artwork = artwork.replace('{w}x{h}bb.{f}', '300x300bb.jpg');
+
+              return `url('${artwork}')`;
+            }
+
+            return 'none';
+          ]]]
+      - background-size: cover
+      - background-position: center
+      - background-repeat: no-repeat
+      - background-color: var(--primary-background-color)
+      - box-sizing: border-box
+      - border: 1px solid rgba(255, 255, 255, 0.5)
+      - border-radius: 8px
+      - box-shadow: none
+      - height: 96px
+      - width: 96px
+    icon:
+      - color: var(--secondary-text-color)
+      - display: >
+          [[[
+            if (
+              entity
+              && variables.entity_picture
+              && states[variables.entity_picture].attributes.entity_picture
+              && states[variables.entity_picture].attributes.entity_picture !== ''
+              && states[variables.entity_picture].attributes.entity_picture !== undefined
+            ) {
+              return 'none';
+            }
+
+            return 'initial';
+          ]]]
+
+information_media:
+  show_name: false
+  show_state: false
+  show_icon: false
+  styles:
+    grid:
+      - grid-template-areas: |
+          "mediatitle"
+          "mediaartist"
+          "mediasource"
+      - grid-template-columns: 100%
+      - grid-template-rows: auto
+      - gap: 2px
+      - overflow: hidden
+      - width: 100%
+    card:
+      - background: transparent
+      - box-sizing: border-box
+      - border-radius: 0px
+      - box-shadow: none
+      - padding: 0px
+      - overflow: hidden
+  custom_fields:
+    mediatitle:
+      card:
+        type: "custom:button-card"
+        variables:
+          field_text: '[[[ return entity.attributes.media_title; ]]]'
+        template:
+          - marquee_field
+        styles:
+          grid:
+            - height: 20px
+          state:
+            - color: var(--primary-text-color)
+            - font-size: 16px
+            - font-weight: 600
+    mediaartist:
+      card:
+        type: "custom:button-card"
+        variables:
+          field_text: >
+            [[[
+              if (entity.attributes.media_album) {
+                return `${entity.attributes.media_artist} – ${entity.attributes.media_album}`;
+              }
+
+              return entity.attributes.media_artist;
+            ]]]
+        template:
+          - marquee_field
+    mediasource:
+      card:
+        type: "custom:button-card"
+        icon: '[[[ return states[variables.media_icon].attributes.media_icon; ]]]'
+        name: '[[[ return states[variables.media_source].attributes.media_source; ]]]'
+        styles:
+          card:
+            - margin-top: 2px
+          name:
+            - color: var(--secondary-text-color)
+            - font-size: 10px
+            - font-weight: 600
+            - text-transform: uppercase
+        template:
+          - information_item_media
+
+information_item_media:
+  styles:
+    grid:
+      - box-sizing: border-box
+      - display: flex
+      - justify-content: flex-start
+      - text-align: left
+      - gap: 2px
+      - width: 100%
+    icon:
+      - color: var(--secondary-text-color)
+      - height: 24px
+      - width: 24px
+    img_cell:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - flex-shrink: 0
+      - width: 32px
+    state:
+      - width: auto
+      - white-space: nowrap
+    card:
+      - box-sizing: border-box
+      - border-radius: 0px
+      - box-shadow: none
+      - padding: 0px
+      - overflow: hidden
+      - width: 100%
+
+marquee_field:
+  show_name: false
+  show_icon: false
+  show_state: true
+  variables:
+    field_text:
+  state_display: >
+    [[[
+      if (variables.field_text && variables.field_text !== null) {
+        const parentElem = this.shadowRoot;
+        const fieldText = variables.field_text;
+
+        let output = fieldText;
+
+        function marquee() {
+          const stateEl = parentElem.getElementById("state");
+          const containerEl = parentElem.getElementById("container");
+
+          if (stateEl && containerEl) {
+            stateEl.innerHTML = output;
+
+            stateEl.classList.remove("ellipsis");
+
+            const resizeObserver = new ResizeObserver(entries => {
+              const spacer = "&nbsp;".repeat(3);
+              const state = entries[0];
+              const container = entries[1];
+              const resize = state && state.contentRect &&
+                container && container.contentRect &&
+                state.contentRect.width !== 0 &&
+                container.contentRect.width !== 0;
+
+              if (resize && state.contentRect.width < container.contentRect.width) {
+                stateEl.classList.remove("marquee");
+              } else if (resize && state.contentRect.width >= container.contentRect.width) {
+                stateEl.innerHTML = `${output} ${spacer} ${output} ${spacer}&nbsp;`;
+                stateEl.classList.add("marquee");
+              }
+            });
+
+            resizeObserver.observe(stateEl);
+            resizeObserver.observe(containerEl);
+          }
+        }
+
+        setTimeout(marquee, 100);
+
+        return output;
+      }
+
+      return null;
+    ]]]
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-areas: |
+          "s"
+      - grid-template-columns: 1fr
+      - position: relative
+      - overflow: hidden
+      - height: 16px
+    card:
+      - box-sizing: border-box
+      - border-radius: 0px
+      - box-shadow: none
+      - display: block
+      - padding: 0px
+    state:
+      - box-sizing: border-box
+      - overflow: visible
+      - text-overflow: clip
+      - white-space: nowrap
+      - display: flex
+      - align-self: center
+      - justify-self: flex-start
+      - position: absolute
+      - text-align: left
+      - left: "0"
+      - width: auto
+      - min-width: auto
+      - max-width: 1000000px
+      - color: var(--secondary-text-color)
+      - font-size: 14px
+      - font-weight: 500
+      - padding-left: 4px
+  extra_styles: |
+    .marquee {
+      animation: marquee 20s linear infinite;
+      text-overflow: clip !important;
+      overflow: inital !important;
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0%);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+
+controls_media:
+  styles:
+    grid:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - gap: 16px
+  custom_fields:
+    previous:
+      card:
+        type: "custom:button-card"
+        icon: mdi:skip-previous
+        template:
+          - controls_button_media
+        tap_action:
+          action: call-service
+          service: media_player.media_previous_track
+          service_data:
+            entity_id: '[[[ return variables.entity_id ]]]'
+    play_pause:
+      card:
+        type: "custom:button-card"
+        template:
+          - controls_button_media
+        icon: '[[[ return states[variables.entity_id].state === "playing" ? "mdi:pause" : "mdi:play" ]]]'
+        tap_action:
+          action: call-service
+          service: media_player.media_play_pause
+          service_data:
+            entity_id: '[[[ return variables.entity_id ]]]'
+    next:
+      card:
+        type: "custom:button-card"
+        icon: mdi:skip-next
+        template:
+          - controls_button_media
+        tap_action:
+          action: call-service
+          service: media_player.media_next_track
+          service_data:
+            entity_id: '[[[ return variables.entity_id ]]]'
+
+controls_button_media:
+  styles:
+    grid:
+      - grid-template-areas: "icon"
+      - grid-template-columns: 48px
+      - grid-template-rows: 48px
+    card:
+      - border-radius: 6px
+      - box-shadow: none
+      - box-sizing: border-box
+      - padding: 0px
+    icon:
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - height: 48px
+      - width: 48px
+
+conditional_media:
+  template:
+    - base
+    - base_media
+  variables:
+    media_source: '[[[ return variables.media_source ]]]'
+    entity_picture: '[[[ return entity.entity_id ]]]'
+    entity_id: '[[[ return entity.entity_id ]]]'

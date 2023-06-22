@@ -16,3 +16,10 @@ lovelace:
       title: tbSH
       filename: dashboard/ui-lovelace.yaml
       mode: yaml
+    zz-minimal:
+      require_admin: false
+      show_in_sidebar: true
+      icon: mdi:rocket-launch
+      title: minimal
+      filename: dashboard/minimal/ui-lovelace.yaml
+      mode: yaml

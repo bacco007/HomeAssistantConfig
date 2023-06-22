@@ -71,8 +71,7 @@ file.log
 solcast.json
 rtsp*
 sonos_playlist.yaml
-icloud3-debug.log
-icloud3-migration.log
+icloud3*.log
 
 node-red/*
 !node-red/flows.json

@@ -1,0 +1,121 @@
+utilities:
+  show_name: false
+  show_icon: false
+  show_state: false
+
+  styles:
+    grid:
+      - grid-template-areas: |
+          "electricity waste"
+      - grid-template-columns: 1fr 1fr
+      - grid-gap: 1px
+    card:
+      - border-radius: 12px
+      - box-shadow: none
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - gap: 1px
+      - display: flex
+      - padding: 0
+      - overflow: hidden
+
+  custom_fields:
+    electricity:
+      card:
+        type: "custom:button-card"
+        show_icon: false
+        entity: sensor.nordpool_kwh_price
+        template:
+          - utility
+          - icon_lightning
+    waste:
+      card:
+        type: "custom:button-card"
+        show_icon: false
+        template:
+          - utility
+          - icon_trash_can
+        entity: sensor.template_waste_collection
+
+utility:
+  show_state: true
+  state_display: |
+    [[[
+      if (entity) {
+        var value = states[entity.entity_id];
+
+        if (
+          value
+          && value.attributes
+          && value.attributes.unit_of_measurement
+          && value.attributes.unit_of_measurement === "EUR/kWh")
+        {
+          var formattedState = Number(value.state);
+          return `${formattedState.toFixed(2)} €/kWh`;
+        }
+
+        return `${value.state}`;
+      }
+
+      return null;
+    ]]]
+  styles:
+    grid:
+      - box-sizing: border-box
+      - grid-template-columns: 32px auto
+      - grid-template-areas: |
+          "icon value"
+          "icon name"
+      - grid-template-rows: 19px 13px
+      - column-gap: 4px
+      - row-gap: 0px
+      - padding-right: 8px
+      - padding-left: 8px
+      - padding-top: 8px
+      - padding-bottom: 8px
+
+
+    img_cell:
+      - display: none
+      - box-sizing: border-box
+
+    custom_fields:
+      icon:
+        - box-sizing: border-box
+        - color: "var(--secondary-text-color)"
+        - height: 32px
+
+    state:
+      - box-sizing: border-box
+      - display: flex
+      - align-items: end;
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - color: "var(--primary-text-color)"
+      - grid-area: value
+      - font-size: 12px
+      - line-height: 15px
+      - font-weight: 600
+      - text-align: left
+      - width: 100%
+      - align-self: end
+
+    name:
+      - box-sizing: border-box
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - grid-area: name
+      - color: "var(--secondary-text-color)"
+      - font-size: 8px
+      - font-weight: 700
+      - line-height: 11px
+      - text-align: left
+      - width: 100%
+      - align-self: start
+
+    card:
+      - background: "var(--primary-background-color)"
+      - box-sizing: border-box
+      - display: flex
+      - border-radius: 0px
+      - box-shadow: none
+      - padding: 0 0 0 0
+      - align-items: center
+      - justify-content: center

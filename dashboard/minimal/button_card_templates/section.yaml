@@ -1,0 +1,56 @@
+section_title:
+  show_icon: false
+  show_state: false
+  variables:
+    temperature: null
+    humidity: null
+  styles:
+    grid:
+      - display: flex
+      - gap: 10px
+      - justify-content: space-between
+      - align-items: center
+    card:
+      - background: transparent
+      - border-radius: 0px
+      - box-shadow: none
+      - box-sizing: border-box
+      - padding: 0px 12px
+      - margin-bottom: 16px
+    name:
+      - font-weight: 500
+      - font-size: 22px
+  tap_action:
+    action: none
+  custom_fields:
+    info:
+      card:
+        type: "custom:button-card"
+        show_icon: false
+        show_name: true
+        show_state: false
+        icon: mdi:temperature
+        tap_action:
+          action: none
+        name: >
+          [[[
+            if (variables.temperature && variables.humidity) {
+              return `${Number(variables.temperature).toFixed(1)}°C / ${Number(variables.humidity).toFixed(2)}%`;
+            } else if (variables.temperature) {
+              return `${Number(variables.temperature).toFixed(1)}°C`;
+            } else if (variables.humidity) {
+              return `${Number(variables.humidity).toFixed(2)}%`;
+            } else {
+              return null;
+            }
+          ]]]
+        styles:
+          card:
+            - background: transparent
+            - border-radius: 0px
+            - box-shadow: none
+            - box-sizing: border-box
+            - padding: 0px
+          name:
+            - color: var(--secondary-text-color)
+

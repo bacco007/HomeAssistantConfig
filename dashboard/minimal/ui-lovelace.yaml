@@ -1,0 +1,10 @@
+---
+button_card_templates: !include_dir_merge_named button_card_templates
+
+title: "Home Assistant"
+theme: "Minimal"
+
+kiosk_mode:
+  hide_header: true
+
+views: !include_dir_merge_list "views/"

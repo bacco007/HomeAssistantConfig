@@ -1,0 +1,90 @@
+sidebar:
+  show_state: false
+  show_icon: false
+  show_name: false
+  styles:
+    grid:
+      - grid-template-areas: |
+          "clock"
+          "date"
+          "warnings"
+          "."
+          "people"
+          "tesla"
+          "utilities"
+      - grid-template-columns: 1fr
+      - grid-template-rows: min-content min-content min-content auto min-content min-content min-content
+      - gap: 8px
+    card:
+      - background: "var(--sidebar-background-color)"
+      - border-radius: 0
+      - border-right: "1px solid var(--sidebar-border-color)"
+      - box-shadow: none
+      - color: "#F0F0F0"
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Roboto, sans-serif
+      - height: "calc(100vh - 64px)"
+      - padding: 32px 16px 16px
+
+  custom_fields:
+    clock:
+      card:
+        type: "custom:button-card"
+        template: clock
+        entity: sensor.time
+        styles:
+          card:
+            - box-sizing: border-box
+            - border-radius: 0px
+    date:
+      card:
+        type: "custom:button-card"
+        template: date
+        entity: sensor.date
+        styles:
+          card:
+            - box-sizing: border-box
+            - border-radius: 0px
+    warnings:
+      card:
+        type: "conditional"
+        conditions:
+          - entity: binary_sensor.meteoalarm
+            state: "on"
+        card:
+          type: "custom:button-card"
+          entity: binary_sensor.meteoalarm
+          template:
+            - meteocard
+    tesla:
+      card:
+        type: "custom:button-card"
+        template:
+          - tesla_card
+        entity: device_tracker.starship
+    people:
+      card:
+        type: "custom:button-card"
+        template: persons
+        custom_fields:
+          person1:
+            card:
+              type: "custom:button-card"
+              template:
+                - person
+              entity: person.thomas_baxter
+          # person2:
+          #   card:
+          #     type: "custom:button-card"
+          #     template:
+          #       - person
+          #     entity: person.natalja
+          # person3:
+          #   card:
+          #     type: "custom:button-card"
+          #     template:
+          #       - person
+          #     entity: person.jens
+    utilities:
+      card:
+        type: "custom:button-card"
+        template: utilities

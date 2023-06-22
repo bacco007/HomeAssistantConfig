@@ -1,0 +1,12 @@
+settings:
+  variables:
+    entity_tablet: switch.galaxy_tab_a_screensaver
+    entity_browser_mod: media_player.tablet
+    translate_unknown: Unknown
+    translate_idle: Inactive
+    translate_home: Home
+    translate_not_home: Away
+    translate_available: Available
+    translate_no_updates: No updates
+    translate_update_available: update available
+    translate_updates_available: updates available

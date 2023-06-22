@@ -1,0 +1,20 @@
+date:
+  show_icon: false
+  tap_action:
+    action: none
+  styles:
+    card:
+      - background: "transparent"
+      - box-shadow: "none"
+      - font-family: ui-rounded, system-ui, "SF Pro Text", Robot, sans-serif
+      - font-size: 20px
+      - font-weight: 500
+      - padding: 0
+  triggers_update: "all"
+  name: >
+    [[[
+      const event = new Date();
+      const options = {weekday: 'long', day: 'numeric', month: 'long',  };
+      let formatted_date = event.toLocaleDateString("en", options);
+      return formatted_date;
+    ]]]
