@@ -221,11 +221,20 @@ class WindDirectionEntity {
     }
 }
 
+class DataPeriod {
+    constructor(hourstoShow, fromHourOfDay) {
+        this.hourstoShow = hourstoShow;
+        this.fromHourOfDay = fromHourOfDay;
+    }
+}
+
 class CardConfigWrapper {
     static exampleConfig() {
         return {
             title: 'Wind direction',
-            hours_to_show: GlobalConfig.defaultHoursToShow,
+            data_period: {
+                hours_to_show: GlobalConfig.defaultHoursToShow
+            },
             max_width: 400,
             refresh_interval: GlobalConfig.defaultRefreshInterval,
             windspeed_bar_location: GlobalConfig.defaultWindspeedBarLocation,
@@ -260,7 +269,7 @@ class CardConfigWrapper {
         this.cardConfig = cardConfig;
         this.speedRanges = [];
         this.title = this.cardConfig.title;
-        this.hoursToShow = this.checkHoursToShow();
+        this.dataPeriod = this.checkDataPeriod(cardConfig.hours_to_show, cardConfig.data_period);
         this.refreshInterval = this.checkRefreshInterval();
         this.maxWidth = this.checkMaxWidth();
         this.windDirectionEntity = this.checkWindDirectionEntity();
@@ -287,14 +296,39 @@ class CardConfigWrapper {
     windBarCount() {
         return this.windspeedEntities.length;
     }
-    checkHoursToShow() {
-        if (this.cardConfig.hours_to_show && isNaN(this.cardConfig.hours_to_show)) {
-            throw new Error('WindRoseCard: Invalid hours_to_show, should be a number.');
+    checkDataPeriod(oldHoursToShow, dataPeriod) {
+        const oldHoursToShowCheck = this.checkHoursToShow(oldHoursToShow);
+        const hoursToShowCheck = this.checkHoursToShow(dataPeriod === null || dataPeriod === void 0 ? void 0 : dataPeriod.hours_to_show);
+        const fromHourOfDayCheck = this.checkFromHourOfDay(dataPeriod === null || dataPeriod === void 0 ? void 0 : dataPeriod.from_hour_of_day);
+        if (oldHoursToShowCheck) {
+            Log.warn('WindRoseCard: hours_to_show config is deprecated, use the data_period object.');
+            return new DataPeriod(oldHoursToShow, undefined);
         }
-        else if (this.cardConfig.hours_to_show) {
-            return this.cardConfig.hours_to_show;
+        if (hoursToShowCheck && fromHourOfDayCheck) {
+            throw new Error('WindRoseCard: Only one is allowed: hours_to_show or from_hour_of_day');
         }
-        return GlobalConfig.defaultHoursToShow;
+        if (!hoursToShowCheck && !fromHourOfDayCheck) {
+            throw new Error('WindRoseCard: One config option object data_period should be filled.');
+        }
+        return new DataPeriod(dataPeriod.hours_to_show, dataPeriod.from_hour_of_day);
+    }
+    checkHoursToShow(hoursToShow) {
+        if (hoursToShow && isNaN(hoursToShow)) {
+            throw new Error('WindRoseCard: Invalid hours_to_show, should be a number above 0.');
+        }
+        else if (hoursToShow) {
+            return true;
+        }
+        return false;
+    }
+    checkFromHourOfDay(fromHourOfDay) {
+        if (fromHourOfDay && (isNaN(fromHourOfDay) || fromHourOfDay < 0 || fromHourOfDay > 23)) {
+            throw new Error('WindRoseCard: Invalid hours_to_show, should be a number between 0 and 23, hour of the day..');
+        }
+        else if (fromHourOfDay != null && fromHourOfDay >= 0) {
+            return true;
+        }
+        return false;
     }
     checkRefreshInterval() {
         if (this.cardConfig.refresh_interval && isNaN(this.cardConfig.refresh_interval)) {
@@ -1956,8 +1990,7 @@ class HomeAssistantMeasurementProvider {
         if (this.rawEntities.length === 0) {
             return Promise.resolve({});
         }
-        const startTime = new Date();
-        startTime.setHours(startTime.getHours() - this.cardConfig.hoursToShow);
+        const startTime = this.calculateStartTime(this.cardConfig.dataPeriod);
         const endTime = new Date();
         const historyMessage = {
             "type": "history/history_during_period",
@@ -1973,8 +2006,7 @@ class HomeAssistantMeasurementProvider {
         if (this.statsEntities.length === 0) {
             return Promise.resolve({});
         }
-        const startTime = new Date();
-        startTime.setHours(startTime.getHours() - this.cardConfig.hoursToShow);
+        const startTime = this.calculateStartTime(this.cardConfig.dataPeriod);
         const statisticsMessage = {
             "type": "recorder/statistics_during_period",
             "start_time": startTime,
@@ -1983,6 +2015,23 @@ class HomeAssistantMeasurementProvider {
             "types": ["mean"]
         };
         return this.hass.callWS(statisticsMessage);
+    }
+    calculateStartTime(dataPeriod) {
+        const startTime = new Date();
+        if (dataPeriod.hourstoShow) {
+            startTime.setHours(startTime.getHours() - dataPeriod.hourstoShow);
+        }
+        else if ((dataPeriod.fromHourOfDay && dataPeriod.fromHourOfDay > 0) || dataPeriod.fromHourOfDay === 0) {
+            if (startTime.getHours() < dataPeriod.fromHourOfDay) {
+                startTime.setDate(startTime.getDate() - 1);
+            }
+            startTime.setHours(dataPeriod.fromHourOfDay, 0, 0, 0);
+        }
+        else {
+            throw new Error("No data period config option available.");
+        }
+        Log.info('Using start time for data query', startTime);
+        return startTime;
     }
 }
 
@@ -2041,7 +2090,7 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 1.1.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.2.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();
