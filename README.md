@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, June 23rd 2023_
+_Stats as at 05:00, Saturday, June 24th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.2 | 463     | 3713         | 2621 | 99 |
+| 2023.6.2 | 465     | 3737         | 2621 | 99 |
 
 Type | Qty
 -- | --
@@ -161,6 +161,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [calendar.google](https://www.home-assistant.io/components/calendar.google) |
 | [calendar.holidays](https://www.home-assistant.io/components/calendar.holidays) |
 | [calendar.ical](https://www.home-assistant.io/components/calendar.ical) |
+| [calendar.local_calendar](https://www.home-assistant.io/components/calendar.local_calendar) |
 | [camera](https://www.home-assistant.io/components/camera) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
 | [camera.eufy_security](https://www.home-assistant.io/components/camera.eufy_security) |
@@ -264,6 +265,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [light.group](https://www.home-assistant.io/components/light.group) |
 | [light.mqtt](https://www.home-assistant.io/components/light.mqtt) |
 | [light.zha](https://www.home-assistant.io/components/light.zha) |
+| [local_calendar](https://www.home-assistant.io/components/local_calendar) |
 | [local_ip](https://www.home-assistant.io/components/local_ip) |
 | [lock](https://www.home-assistant.io/components/lock) |
 | [lock.eufy_security](https://www.home-assistant.io/components/lock.eufy_security) |
@@ -584,7 +586,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
