@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, June 24th 2023_
+_Stats as at 05:00, Sunday, June 25th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.2 | 465     | 3737         | 2621 | 99 |
+| 2023.6.2 | 467     | 3717         | 2627 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 175
+Binary Sensor | 174
 Camera | 5
 Device Tracker | 121
 Group | 3
@@ -69,11 +69,11 @@ Media Player | 18
 Person | 1
 Scene | 0
 Script | 2
-Sensor | 2621
+Sensor | 2627
 Sun | 1
 Switch | 172
 Weather | 7
-Zone | 3
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -201,6 +201,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [device_tracker.zha](https://www.home-assistant.io/components/device_tracker.zha) |
 | [dhcp](https://www.home-assistant.io/components/dhcp) |
 | [diagnostics](https://www.home-assistant.io/components/diagnostics) |
+| [discovery](https://www.home-assistant.io/components/discovery) |
 | [dyson_local](https://www.home-assistant.io/components/dyson_local) |
 | [energy](https://www.home-assistant.io/components/energy) |
 | [esphome](https://www.home-assistant.io/components/esphome) |
@@ -256,7 +257,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [input_number](https://www.home-assistant.io/components/input_number) |
 | [input_select](https://www.home-assistant.io/components/input_select) |
 | [input_text](https://www.home-assistant.io/components/input_text) |
-| [intent](https://www.home-assistant.io/components/intent) |
 | [ios](https://www.home-assistant.io/components/ios) |
 | [iss](https://www.home-assistant.io/components/iss) |
 | [lastfm](https://www.home-assistant.io/components/lastfm) |
@@ -319,6 +319,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
 | [plex](https://www.home-assistant.io/components/plex) |
+| [powercalc](https://www.home-assistant.io/components/powercalc) |
 | [profiler](https://www.home-assistant.io/components/profiler) |
 | [proximity](https://www.home-assistant.io/components/proximity) |
 | [proxmoxve](https://www.home-assistant.io/components/proxmoxve) |
@@ -411,6 +412,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.openweathermap](https://www.home-assistant.io/components/sensor.openweathermap) |
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
+| [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
 | [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
@@ -586,7 +588,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -601,6 +603,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem)
 - [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor)
+- [Powercalc](https://github.com/bramstroker/homeassistant-powercalc)
 - [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve)
 - [Pyscript](https://github.com/custom-components/pyscript)
 - [Qbittorrent Custom](https://github.com/radsonpatrick/qbittorrent_custom_component)

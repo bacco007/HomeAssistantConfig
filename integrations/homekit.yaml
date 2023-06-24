@@ -1,23 +1,3 @@
 ---
-homekit:
-  name: Home Assistant
-  filter:
-    include_domains:
-      - light
-    include_entities:
-      - media_player.office_sonos
-      - sensor.zha_bedroom_temperature
-      - sensor.zha_office_temperature
-      - sensor.zha_lounge_weather_temperature
-      - sensor.weatherflow_air_temperature
-  entity_config:
-    light.bedroom_lamp:
-      name: Bedroom Lamp
-    light.office_lamp:
-      name: Office Lamp
-    media_player.office_sonos:
-      feature_list:
-        - feature: on_off
-        - feature: play_pause
-        - feature: play_stop
-        - feature: toggle_mute
+# https://www.home-assistant.io/integrations/homekit/
+homekit: !include_dir_list ../entities/homekit
