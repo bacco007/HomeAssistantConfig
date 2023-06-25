@@ -1,0 +1,224 @@
+---
+sensor:
+  - unique_id: active_media_players
+    name: "Active Media Players"
+    state: >
+      {% set media_players = [
+        states.media_player.bedroom_apple_tv,
+        states.media_player.bedroom_symfonisk,
+        states.media_player.homepod_mini_bedroom_left,
+        states.media_player.homepod_mini_bedroom_right,
+        states.media_player.office_sonos,
+        states.media_player.spotify_thomas_baxter
+      ] %}
+
+      {% macro media(state) %}
+      {% set state = media_players | selectattr('state','eq',state) | list %}
+      {% set last_changed = '0' if state | length == 0 else state | map(attribute='last_changed') | list | max %}
+        {{ state | selectattr('last_changed','eq', last_changed) | map(attribute='name') | list | join }}
+      {% endmacro %}
+
+      {% set playing = media_players | selectattr('state','eq','playing') | list %}
+      {% set paused = media_players | selectattr('state','eq','paused') | list %}
+
+      {% if playing %}
+        playing
+      {% elif paused %}
+        paused
+      {% else %}
+        {{ media_players | selectattr('state','search','(playing|paused)') | list | count }}
+      {% endif %}
+    attributes:
+      active: >
+        {% set media_players = [
+          states.media_player.bedroom_apple_tv,
+          states.media_player.bedroom_symfonisk,
+          states.media_player.homepod_mini_bedroom_left,
+          states.media_player.homepod_mini_bedroom_right,
+          states.media_player.office_sonos,
+          states.media_player.spotify_thomas_baxter
+        ] %}
+
+        {%- set media_players_playing = media_players | selectattr('state','eq','playing') | list %}
+        {%- set media_player_id_playing = media_players_playing | map(attribute='entity_id') | join(', ') %}
+
+        {%- set media_players_paused = media_players | selectattr('state','eq','paused') | list %}
+        {%- set media_player_id_paused = media_players_paused | map(attribute='entity_id') | join(', ') %}
+
+        {%- if (media_players_playing | length > 0) -%}
+          {{ media_player_id_playing }}
+        {%- elif (media_players_paused | length > 0) -%}
+          {{ media_player_id_paused }}
+        {%- endif -%}
+      app: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {% if 'plex' in players[0] %}
+              plex
+            {% else %}
+              {% set app = state_attr(players[0], 'app_name') | lower %}
+              {% if app not in ['unavailable','undefined','unknown','none','null'] %}
+                {{ app }}
+              {% else %}
+                {% set app = state_attr(players[0], 'app_id') | lower %}
+                {% if app not in ['unavailable','undefined','unknown','none','null'] %}
+                  {{ app }}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      media_title: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {% if 'plex' in players[0] or state_attr('sensor.active_media_players', 'app') == 'plex' %}
+              {% if state_attr(players[0], 'media_content_type') == 'video' %}
+                Next media screen
+              {% elif state_attr(players[0], 'media_content_type') == 'tvshow' %}
+                {% set season = state_attr(players[0], 'media_season') | replace('S','') %}
+                {% set episode = state_attr(players[0], 'media_episode') | replace('E','') %}
+                {% set season = '0' + season if season | int(0) < 10 else season %}
+                {% set episode = '0' + episode if episode | int(0) < 10 else episode %}
+                {{ state_attr(players[0], 'media_series_title') }} · S{{ season }}E{{ episode }}
+              {% elif state_attr(players[0], 'media_title') %}
+                {{ state_attr(players[0], 'media_title') }}
+              {% else %}
+                Media paused
+              {% endif %}
+            {% else %}
+              {{ state_attr(players[0], 'media_title') }}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      media_artist: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {{ state_attr(players[0], 'media_artist') }}
+          {% endif %}
+        {% endif %}
+      media_album: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {{ state_attr(players[0], 'media_album_name') }}
+          {% endif %}
+        {% endif %}
+      media_content_type: >
+        {% if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {% if 'plex' in players[0] or state_attr('sensor.active_media_players', 'app') == 'plex' %}
+              {% if state_attr(players[0], 'media_content_type') %}
+                {{ state_attr(players[0], 'media_content_type') }}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      media_duration: >
+        {% if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {% if 'plex' in players[0] or state_attr('sensor.active_media_players', 'app') == 'plex' %}
+              {% if state_attr(players[0], 'media_duration') %}
+                {{ state_attr(players[0], 'media_duration') | int(0) }}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      media_position: >
+        {% if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {% if 'plex' in players[0] or state_attr('sensor.active_media_players', 'app') == 'plex' %}
+              {% if state_attr(players[0], 'media_position') %}
+                {{ state_attr(players[0], 'media_position') | int(0) }}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      media_position_updated_at: >
+        {% if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {% if 'plex' in players[0] or state_attr('sensor.active_media_players', 'app') == 'plex' %}
+              {% if state_attr(players[0], 'media_position_updated_at') %}
+                {{ (state_attr(players[0], 'media_position_updated_at')).isoformat() }}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      media_source: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {{ state_attr(players[0], 'friendly_name') }}
+          {% endif %}
+        {% endif %}
+      media_icon: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {% set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {{ state_attr(players[0], 'icon') }}
+          {% endif %}
+        {% endif %}
+      entity_picture: >
+        {%- if this.state not in ['unavailable','undefined','unknown','none','null','0'] %}
+          {%- set players = (state_attr('sensor.active_media_players', 'active')).split(', ') %}
+          {% if players[0] is defined %}
+            {%- set entitypic = state_attr(players[0],'entity_picture') %}
+            {%- set app_name = state_attr('sensor.active_media_players','app') | lower %}
+            {%- set app = state_attr(players[0], 'app_id') | lower %}
+            {%- set artist = state_attr('sensor.active_media_players', 'media_artist') | lower %}
+            {%- set media_content_type = state_attr(players[0], 'media_content_type') | lower %}
+            {%- if app is defined %}
+              {% if 'plex' in app %} /local/images/Plex_bg.png
+              {% elif 'infuse' in app %} /local/images/Plex_bg.png
+              {% elif 'com.apple.tvwatchlist' in app %} /local/images/ATVPlus_bg.jpg
+              {% elif 'airplay' in app %}
+                {% if media_content_type is defined %}
+                  {% if 'video' in media_content_type %} /local/images/media/AirPlay2.jpg
+                  {% else %} /local/images/media/AirPlay.jpg
+                  {% endif %}
+                {% else %} /local/images/media/AirPlay.jpg
+                {% endif %}
+              {% elif 'com.amazon' in app %} /local/images/AmazonPrime_bg.jpg
+              {% elif 'disneyplus' in app %} /local/images/dp_bg.jpg
+              {% elif 'youtube' in app %} /local/images/media/YouTube.jpg
+              {% elif 'tv2' in app %} /local/images/tv2play_bg.jpg
+              {% elif 'hbo' in app %} /local/images/HBOMax_bg.jpg
+              {% elif 'netflix' in app %} /local/images/netflix_bg.jpg
+              {% elif 'nrk' in app %} /local/images/nrk_bg.jpg
+              {% elif 'viasat' in app %} /local/images/ViaPlay_bg.jpg
+              {% elif 'viaplay' in app %} /local/images/ViaPlay_bg.jpg
+              {% elif 'viafree' in app %} /local/images/ViaFree_bg.jpg
+              {% elif 'kanal5' in app %} /local/images/discovery_bg.jpg
+              {% elif 'twitch' in app %} /local/images/twitch_bg.jpg
+              {% elif 'de.telekom.entertaintv-iphone' in app %}
+                {% if 'prosieben' in artist %} /local/images/media/prosieben.png
+                {% elif 'sat.1' in artist %} /local/images/media/sat1.jpg
+                {% elif 'das erste' in artist %} /local/images/media/das-erste.jpg
+                {% elif 'zdf' in artist %} /local/images/media/zdf.jpg
+                {% elif 'rtlzwei' in artist %} /local/images/media/rtlzwei.jpg
+                {% elif 'super rtl' in artist %} /local/images/media/super-rtl.jpg
+                {% elif 'rtl' in artist %} /local/images/media/rtl.jpg
+                {% elif 'vox' in artist %} /local/images/media/vox.jpg
+                {% elif '3sat' in artist %} /local/images/media/3sat.jpg
+                {% elif 'kika' in artist %} /local/images/media/kika.jpg
+                {% elif 'welt' in artist %} /local/images/media/welt.jpg
+                {% elif 'n-tv' in artist %} /local/images/media/n-tv.jpg
+                {% elif 'kabel eins' in artist %} /local/images/media/kabel-eins.jpg
+                {% else %} /local/images/media/magenta_tv.png
+                {% endif %}
+              {% else %}
+                {{ entitypic }}
+              {% endif %}
+            {%- elif 'plex' in players %}
+              {{ '/local/images/Plex_bg.png' }}
+            {%- else %}
+              {{ entitypic }}
+            {%- endif %}
+          {%- endif %}
+        {%- endif %}

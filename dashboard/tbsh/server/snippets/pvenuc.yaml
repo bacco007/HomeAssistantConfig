@@ -31,14 +31,14 @@ cards:
                     box-shadow: none !important;
                     border: 0;
                   }
-              primary: pveTBSH
+              primary: pvenuc
               secondary: >
                 {% from 'easy_time.jinja' import custom_relative_time%} Up Since
-                {{ custom_relative_time(states('sensor.node_pvetbsh_uptime'),
+                {{ custom_relative_time(states('sensor.node_pvenuc_uptime'),
                 values='week, day, hour')}}
               icon: si:proxmox
               icon_color: >
-                {% if is_state('binary_sensor.node_pvetbsh_status', 'on') %}
+                {% if is_state('binary_sensor.node_pvenuc_status', 'on') %}
                 green
 
                 {%else%}
@@ -60,17 +60,25 @@ cards:
             - type: custom:mushroom-chips-card
               chips:
                 - type: entity
-                  entity: button.node_pvetbsh_reboot
+                  entity: button.node_pvenuc_reboot
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.node_pvetbsh_shutdown
+                  entity: button.node_pvenuc_shutdown
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.node_pvetbsh_start_all
+                  entity: button.node_pvenuc_start_all
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.node_pvetbsh_stop_all
+                  entity: button.node_pvenuc_stop_all
                   content_info: none
+                  tap_action:
+                    action: toggle
               alignment: center
               card_mod:
                 style: |
@@ -89,7 +97,7 @@ cards:
             card_param: cards
             filter:
               include:
-                - device: Node pveTBSH
+                - device: Node pvenuc
                   options:
                     type: custom:mushroom-entity-card
                     card_mod:
@@ -153,15 +161,15 @@ cards:
                     box-shadow: none !important;
                     border: 0;
                   }
-              primary: 100 - tbsh1
+              primary: 100 - tbsh2
               secondary: >
                 {% from 'easy_time.jinja' import custom_relative_time%} Up Since
                 {{
-                custom_relative_time(states('sensor.qemu_tbsh1_100_uptime'),
+                custom_relative_time(states('sensor.qemu_tbsh2_100_uptime'),
                 values='week, day, hour')}}
               icon: si:proxmox
               icon_color: >
-                {% if is_state('binary_sensor.qemu_tbsh1_100_status',
+                {% if is_state('binary_sensor.qemu_tbsh2_100_status',
                 'on') %} green
 
                 {%else%}
@@ -183,26 +191,40 @@ cards:
             - type: custom:mushroom-chips-card
               chips:
                 - type: entity
-                  entity: button.qemu_tbsh1_100_reboot
+                  entity: button.qemu_tbsh2_100_reboot
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.qemu_tbsh1_100_reset
+                  entity: button.qemu_tbsh2_100_reset
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.qemu_tbsh1_100_resume
+                  entity: button.qemu_tbsh2_100_resume
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.qemu_tbsh1_100_shutdown
+                  entity: button.qemu_tbsh2_100_shutdown
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.qemu_tbsh1_100_start
+                  entity: button.qemu_tbsh2_100_start
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.qemu_tbsh1_100_stop
+                  entity: button.qemu_tbsh2_100_stop
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
-                  entity: button.qemu_tbsh1_100_suspend
+                  entity: button.qemu_tbsh2_100_suspend
                   content_info: none
+                  tap_action:
+                    action: toggle
               alignment: center
               card_mod:
                 style: |
@@ -221,7 +243,7 @@ cards:
             card_param: cards
             filter:
               include:
-                - device: QEMU tbsh1 (100)
+                - device: QEMU tbsh2 (100)
                   options:
                     type: custom:mushroom-entity-card
                     card_mod:

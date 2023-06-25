@@ -28,21 +28,21 @@ cards:
 
   - type: vertical-stack
     cards:
-      - type: custom:button-card
-        template: header_card
-        variables:
-          name: >
-            <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
-            icon='mdi:account-alert'></ha-icon> ME
-          label: More
-          link: /mobile-dashboard/weather
-        view_layout:
-          grid-column: 1/-1
-        card_mod:
-          style: |
-            ha-card {
-              box-shadow: none;
-            }
+      # - type: custom:button-card
+      #   template: header_card
+      #   variables:
+      #     name: >
+      #       <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+      #       icon='mdi:account-alert'></ha-icon> ME
+      #     label: More
+      #     link: /mobile-dashboard/weather
+      #   view_layout:
+      #     grid-column: 1/-1
+      #   card_mod:
+      #     style: |
+      #       ha-card {
+      #         box-shadow: none;
+      #       }
       - square: false
         columns: 2
         type: grid
@@ -129,65 +129,69 @@ cards:
 
   - type: vertical-stack
     cards:
-      - type: custom:button-card
-        template: header_card
-        variables:
-          name: >
-            <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
-            icon='mdi:network-outline'></ha-icon> NETWORK
-          label: More
-          link: /mobile-dashboard/network
-        view_layout:
-          grid-column: 1/-1
-        card_mod:
-          style: |
-            ha-card {
-              box-shadow: none;
-            }
+      # - type: custom:button-card
+      #   template: header_card
+      #   variables:
+      #     name: >
+      #       <ha-icon style='--mdc-icon-size: var(--h4-font-size)'
+      #       icon='mdi:network-outline'></ha-icon> NETWORK
+      #     label: More
+      #     link: /mobile-dashboard/network
+      #   view_layout:
+      #     grid-column: 1/-1
+      #   card_mod:
+      #     style: |
+      #       ha-card {
+      #         box-shadow: none;
+      #       }
 
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.unifi_gateway_wan_uptimeavail_stats
-          - colour: "#8694E7"
-          - title: Internet Uptime
-          - icon: mdi:timelapse
-          - line_width: 3
+      - square: false
+        columns: 1
+        type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: mushroom_entity_graph
+            variables:
+              - entity: sensor.unifi_gateway_wan_uptimeavail_stats
+              - colour: "#8694E7"
+              - title: Internet Uptime
+              - icon: mdi:timelapse
+              - line_width: 3
 
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.unifi_networkstats_connected_devices
-          - colour: "#8694E7"
-          - title: Network Connected Devices
-          - icon: mdi:download-network
-          - line_width: 3
+          - type: custom:decluttering-card
+            template: mushroom_entity_graph
+            variables:
+              - entity: sensor.unifi_networkstats_connected_devices
+              - colour: "#8694E7"
+              - title: Network Connected Devices
+              - icon: mdi:download-network
+              - line_width: 3
 
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.speedtest_download
-          - colour: "#8694E7"
-          - title: Download
-          - icon: mdi:download-network
-          - line_width: 3
+          - type: custom:decluttering-card
+            template: mushroom_entity_graph
+            variables:
+              - entity: sensor.speedtest_download
+              - colour: "#8694E7"
+              - title: Download
+              - icon: mdi:download-network
+              - line_width: 3
 
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.speedtest_upload
-          - colour: "#8694E7"
-          - title: Upload
-          - icon: mdi:upload-network
-          - line_width: 3
+          - type: custom:decluttering-card
+            template: mushroom_entity_graph
+            variables:
+              - entity: sensor.speedtest_upload
+              - colour: "#8694E7"
+              - title: Upload
+              - icon: mdi:upload-network
+              - line_width: 3
 
-      - type: custom:decluttering-card
-        template: mushroom_entity_graph
-        variables:
-          - entity: sensor.speedtest_ping
-          - colour: "#8694E7"
-          - title: Ping
-          - icon: mdi:web
-          - line_width: 3
+          - type: custom:decluttering-card
+            template: mushroom_entity_graph
+            variables:
+              - entity: sensor.speedtest_ping
+              - colour: "#8694E7"
+              - title: Ping
+              - icon: mdi:web
+              - line_width: 3
 
       - !include ../tamworth/nbn_fttnupgrade.yaml

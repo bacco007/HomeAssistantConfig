@@ -67,16 +67,22 @@ cards:
                   icon: mdi:video-switch
                   content_info: none
                   icon_color: "{{ 'green' if states(entity) == 'on' else 'red' }}"
+                  tap_action:
+                    action: toggle
                 - type: template
                   entity: switch.front_door_auto_nightvision
                   content_info: none
                   icon: "{{state_attr(entity, 'icon')}}"
                   icon_color: "{{ 'green' if states(entity) == 'on' else 'red' }}"
+                  tap_action:
+                    action: toggle
                 - type: template
                   entity: switch.front_door_microphone
                   content_info: none
                   icon: "{{state_attr(entity, 'icon')}}"
                   icon_color: "{{ 'green' if states(entity) == 'on' else 'red' }}"
+                  tap_action:
+                    action: toggle
               alignment: center
               card_mod:
                 style: |

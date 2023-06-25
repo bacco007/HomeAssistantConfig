@@ -1,0 +1,17 @@
+---
+grid-template-columns: 17% 1fr
+grid-template-rows: 50px 1fr 50px
+grid-gap: 0px 0px
+grid-template-areas: |
+  "sidebar header"
+  "sidebar content"
+  "sidebar footer"
+mediaquery:
+  "(max-width: 800px)":
+    grid-template-columns: 100%
+    grid-template-rows: auto
+    grid-template-areas: |
+      "header"
+      "sidebar"
+      "content"
+      "footer"

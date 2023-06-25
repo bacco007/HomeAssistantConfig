@@ -20,14 +20,14 @@ base_media:
           : 'media_player.toggle'
       ]]]
     service_data:
-      entity_id: '[[[ return variables.entity_id; ]]]'
+      entity_id: "[[[ return variables.entity_id; ]]]"
   double_tap_action:
     action: more-info
   hold_action:
     action: call-service
     service: media_player.turn_off
     service_data:
-      entity_id: '[[[ return variables.entity_id; ]]]'
+      entity_id: "[[[ return variables.entity_id; ]]]"
   styles:
     grid:
       - box-sizing: border-box
@@ -40,7 +40,12 @@ base_media:
       - max-height: 120px
       - padding: 0px
     card:
-      - background: var(--sidebar-background-color)
+      # - background: >
+      #     [[[
+      #       if (states['media_player.currently_playing'].state == 'playing')
+      #         return `linear-gradient(135deg, rgba(states['sensor.dark_vibrant_color'], 0.3), rgba(states['sensor.dark_muted_color'] }}, 0.3))`;
+      #       return `var(--sidebar-background-color)`;
+      #     ]]]
       - border-top: 1px solid var(--sidebar-border-color)
       - border-radius: 0px
       - box-shadow: none
@@ -52,11 +57,11 @@ base_media:
     metadata:
       card:
         type: "custom:button-card"
-        entity: '[[[ return variables.entity_picture; ]]]'
+        entity: "[[[ return variables.entity_picture; ]]]"
         variables:
-          media_icon: '[[[ return variables.media_icon; ]]]'
-          media_source: '[[[ return variables.media_source; ]]]'
-          entity_picture: '[[[ return variables.entity_picture; ]]]'
+          media_icon: "[[[ return variables.media_icon; ]]]"
+          media_source: "[[[ return variables.media_source; ]]]"
+          entity_picture: "[[[ return variables.entity_picture; ]]]"
         template:
           - section_media
           - metadata_media
@@ -67,7 +72,7 @@ base_media:
       card:
         type: "custom:button-card"
         variables:
-          entity_id: '[[[ return variables.entity_id ]]]'
+          entity_id: "[[[ return variables.entity_id ]]]"
         template:
           - section_media
           - controls_media
@@ -127,28 +132,28 @@ metadata_media:
     artwork:
       card:
         type: "custom:button-card"
-        entity: '[[[ return entity.entity_id; ]]]'
+        entity: "[[[ return entity.entity_id; ]]]"
         variables:
-          media_icon: '[[[ return variables.media_icon; ]]]'
-          media_source: '[[[ return variables.media_source; ]]]'
-          entity_picture: '[[[ return variables.entity_picture; ]]]'
+          media_icon: "[[[ return variables.media_icon; ]]]"
+          media_source: "[[[ return variables.media_source; ]]]"
+          entity_picture: "[[[ return variables.entity_picture; ]]]"
         template:
           - artwork_media
     information:
       card:
         type: "custom:button-card"
-        entity: '[[[ return entity.entity_id; ]]]'
+        entity: "[[[ return entity.entity_id; ]]]"
         variables:
-          media_icon: '[[[ return variables.media_icon; ]]]'
-          media_source: '[[[ return variables.media_source; ]]]'
-          entity_picture: '[[[ return variables.entity_picture; ]]]'
+          media_icon: "[[[ return variables.media_icon; ]]]"
+          media_source: "[[[ return variables.media_source; ]]]"
+          entity_picture: "[[[ return variables.entity_picture; ]]]"
         template:
           - information_media
 
 artwork_media:
   show_name: false
   show_state: false
-  icon: '[[[ return variables.media_icon ]]]'
+  icon: "[[[ return variables.media_icon ]]]"
   styles:
     card:
       - aspect-ratio: 1
@@ -227,7 +232,7 @@ information_media:
       card:
         type: "custom:button-card"
         variables:
-          field_text: '[[[ return entity.attributes.media_title; ]]]'
+          field_text: "[[[ return entity.attributes.media_title; ]]]"
         template:
           - marquee_field
         styles:
@@ -254,8 +259,8 @@ information_media:
     mediasource:
       card:
         type: "custom:button-card"
-        icon: '[[[ return states[variables.media_icon].attributes.media_icon; ]]]'
-        name: '[[[ return states[variables.media_source].attributes.media_source; ]]]'
+        icon: "[[[ return states[variables.media_icon].attributes.media_icon; ]]]"
+        name: "[[[ return states[variables.media_source].attributes.media_source; ]]]"
         styles:
           card:
             - margin-top: 2px
@@ -399,7 +404,6 @@ marquee_field:
       }
     }
 
-
 controls_media:
   styles:
     grid:
@@ -418,7 +422,7 @@ controls_media:
           action: call-service
           service: media_player.media_previous_track
           service_data:
-            entity_id: '[[[ return variables.entity_id ]]]'
+            entity_id: "[[[ return variables.entity_id ]]]"
     play_pause:
       card:
         type: "custom:button-card"
@@ -429,7 +433,7 @@ controls_media:
           action: call-service
           service: media_player.media_play_pause
           service_data:
-            entity_id: '[[[ return variables.entity_id ]]]'
+            entity_id: "[[[ return variables.entity_id ]]]"
     next:
       card:
         type: "custom:button-card"
@@ -440,7 +444,7 @@ controls_media:
           action: call-service
           service: media_player.media_next_track
           service_data:
-            entity_id: '[[[ return variables.entity_id ]]]'
+            entity_id: "[[[ return variables.entity_id ]]]"
 
 controls_button_media:
   styles:
@@ -465,6 +469,6 @@ conditional_media:
     - base
     - base_media
   variables:
-    media_source: '[[[ return variables.media_source ]]]'
-    entity_picture: '[[[ return entity.entity_id ]]]'
-    entity_id: '[[[ return entity.entity_id ]]]'
+    media_source: "[[[ return variables.media_source ]]]"
+    entity_picture: "[[[ return entity.entity_id ]]]"
+    entity_id: "[[[ return entity.entity_id ]]]"

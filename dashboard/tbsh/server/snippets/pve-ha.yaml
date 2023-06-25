@@ -62,15 +62,23 @@ cards:
                 - type: entity
                   entity: button.node_pve_ha_reboot
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.node_pve_ha_shutdown
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.node_pve_ha_start_all
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.node_pve_ha_stop_all
                   content_info: none
+                  tap_action:
+                    action: toggle
               alignment: center
               card_mod:
                 style: |
@@ -185,24 +193,38 @@ cards:
                 - type: entity
                   entity: button.qemu_homeassistant_100_reboot
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.qemu_homeassistant_100_reset
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.qemu_homeassistant_100_resume
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.qemu_homeassistant_100_shutdown
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.qemu_homeassistant_100_start
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.qemu_homeassistant_100_stop
                   content_info: none
+                  tap_action:
+                    action: toggle
                 - type: entity
                   entity: button.qemu_homeassistant_100_suspend
                   content_info: none
+                  tap_action:
+                    action: toggle
               alignment: center
               card_mod:
                 style: |

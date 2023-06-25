@@ -1,5 +1,7 @@
 ---
 type: custom:swipe-card
+view_layout:
+  grid-area: header-left
 parameters:
   direction: vertical
   autoHeight: true

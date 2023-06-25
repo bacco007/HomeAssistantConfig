@@ -28,3 +28,15 @@ require_confirmation:
     text: >-
       [[[ return `Are you sure you want to toggle
       ${entity.attributes.friendly_name}?` ]]]
+
+base:
+  variables:
+    state: >
+      [[[ return entity === undefined || entity.state; ]]]
+    entity_id: >
+      [[[ return entity === undefined || entity.entity_id ]]]
+    entity_picture: >
+      [[[ return entity === undefined || entity.attributes.entity_picture; ]]]
+  aspect-ratio: 1/1
+  show_state: true
+  show_icon: false

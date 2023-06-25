@@ -3,12 +3,15 @@ name: Home Assistant
 filter:
   include_domains:
     - light
+    - climate
+    - fan
   include_entities:
     - media_player.office_sonos
     - sensor.zha_bedroom_temperature
     - sensor.zha_office_temperature
     - sensor.zha_lounge_weather_temperature
     - sensor.weatherflow_air_temperature
+    - media_player.currently_playing
 entity_config:
   light.bedroom_lamp:
     name: Bedroom Lamp

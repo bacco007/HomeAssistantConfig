@@ -1,0 +1,155 @@
+---
+# lovelace_gen
+theme: noctis
+icon: mdi:timelapse
+subview: true
+path: uptime
+title: Uptime
+type: custom:grid-layout
+layout: !include ../includes/grid-1col.yaml
+badges: []
+cards:
+  ### Sidebar - Menu
+  - !include ../includes/menu.yaml
+
+  ### Header - Left
+  - !include ../includes/header-left.yaml
+
+  ### Header - Right
+  - !include ../includes/header-right.yaml
+
+  ### Footer
+  - !include ../includes/footer.yaml
+
+  # Mobile Only
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: mobile
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+
+        cards:
+          - type: custom:auto-entities
+            card_param: cards
+            filter:
+              include:
+                - integration: uptime_kuma
+                  domain: binary_sensor
+                  options:
+                    type: custom:uptime-card
+                    card_mod:
+                      style: |
+                        .name > span {
+                          font-size: 1em !important;
+                        }
+                        .footer {
+                          font-size: 0.8em !important;
+                          font-weight: 600
+                        }
+                    hours_to_show: 168
+                    status_adaptive_color: true
+                    icon_adaptive_color: true
+                    title_adaptive_color: true
+                    alias:
+                      ok: Up
+                      ko: Down
+                    color:
+                      icon: grey
+                    show:
+                      footer: true
+                      header: true
+                      title: true
+                      icon: true
+                      status: false
+                      timeline: true
+                      average: true
+                    bar:
+                      height: 20
+                      amount: 42
+                    init: {}
+                    tooltip:
+                      hour24: true
+                    tap_action: {}
+                    alignment:
+                      icon_first: false
+                    blink: {}
+                    clip: {}
+            card:
+              square: false
+              type: grid
+              columns: 1
+              card_mod:
+                style: |
+                  ha-card {
+                    box-shadow: none;
+                  }
+            sort:
+              method: friendly_name
+
+  # Column 1, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
+    view_layout:
+      grid-area: c1r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - type: custom:auto-entities
+            card_param: cards
+            filter:
+              include:
+                - integration: uptime_kuma
+                  domain: binary_sensor
+                  options:
+                    type: custom:uptime-card
+                    card_mod:
+                      style: |
+                        .name > span {
+                          font-size: 1em !important;
+                        }
+                        .footer {
+                          font-size: 0.8em !important;
+                          font-weight: 600
+                        }
+                    hours_to_show: 168
+                    status_adaptive_color: true
+                    icon_adaptive_color: true
+                    title_adaptive_color: true
+                    alias:
+                      ok: Up
+                      ko: Down
+                    color:
+                      icon: grey
+                    show:
+                      footer: true
+                      header: true
+                      title: true
+                      icon: true
+                      status: false
+                      timeline: true
+                      average: true
+                    bar:
+                      height: 20
+                      amount: 42
+                    init: {}
+                    tooltip:
+                      hour24: true
+                    tap_action: {}
+                    alignment:
+                      icon_first: false
+                    blink: {}
+                    clip: {}
+            card:
+              square: false
+              type: grid
+              columns: 4
+              card_mod:
+                style: |
+                  ha-card {
+                    box-shadow: none;
+                  }
+            sort:
+              method: friendly_name

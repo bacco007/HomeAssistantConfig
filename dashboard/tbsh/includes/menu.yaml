@@ -51,12 +51,53 @@ cards:
     card_mod:
       style: |
         ha-card {height: 42px}
-  - type: grid
-    columns: 2
-    square: false
-    style: |
-      ha-card {
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-    cards: !include_dir_list menu/
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(max-width: 800px)":
+        type: custom:expander-card
+        cards:
+          - type: grid
+            columns: 2
+            square: false
+            style: |
+              ha-card {
+                padding-left: 5px;
+                padding-right: 5px;
+              }
+            cards: !include_dir_list menu/
+        title-card:
+          type: custom:mushroom-template-card
+          primary: Menu
+          secondary: ""
+          icon: mdi:menu
+          fill_container: true
+        expanded: false
+        clear: true
+        title-card-button-overlay: true
+        child-padding: "0"
+        #padding: "0"
+
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(min-width: 801px) and (max-width: 1500px)":
+        type: grid
+        columns: 1
+        square: false
+        style: |
+          ha-card {
+            padding-left: 5px;
+            padding-right: 5px;
+          }
+        cards: !include_dir_list menu/
+      "(min-width: 1501px)":
+        type: grid
+        columns: 2
+        square: false
+        style: |
+          ha-card {
+            padding-left: 5px;
+            padding-right: 5px;
+          }
+        cards: !include_dir_list menu/
