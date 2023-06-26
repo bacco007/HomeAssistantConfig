@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, June 26th 2023_
+_Stats as at 05:00, Tuesday, June 27th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.3 | 467     | 3711         | 2620 | 99 |
+| 2023.6.3 | 467     | 3807         | 2696 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 174
+Binary Sensor | 179
 Camera | 5
 Device Tracker | 121
 Group | 3
@@ -69,7 +69,7 @@ Media Player | 18
 Person | 1
 Scene | 0
 Script | 2
-Sensor | 2620
+Sensor | 2696
 Sun | 1
 Switch | 172
 Weather | 7
@@ -732,6 +732,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
 - Zigbee2MQTT (1.31.2-1)
+- Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
