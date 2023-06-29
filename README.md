@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, June 29th 2023_
+_Stats as at 05:00, Friday, June 30th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.6.3 | 467     | 3796         | 2686 | 99 |
+| 2023.7.0b0 | 469     | 3812         | 2705 | 99 |
 
 Type | Qty
 -- | --
@@ -65,15 +65,15 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 9
-Media Player | 19
+Media Player | 20
 Person | 1
 Scene | 0
-Script | 2
-Sensor | 2686
+Script | 3
+Sensor | 2705
 Sun | 1
-Switch | 158
+Switch | 172
 Weather | 7
-Zone | 4
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -249,6 +249,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ibeacon](https://www.home-assistant.io/components/ibeacon) |
 | [ical](https://www.home-assistant.io/components/ical) |
 | [icloud3](https://www.home-assistant.io/components/icloud3) |
+| [image](https://www.home-assistant.io/components/image) |
+| [image.mqtt](https://www.home-assistant.io/components/image.mqtt) |
 | [image_upload](https://www.home-assistant.io/components/image_upload) |
 | [influxdb](https://www.home-assistant.io/components/influxdb) |
 | [input_boolean](https://www.home-assistant.io/components/input_boolean) |
@@ -459,7 +461,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
 | [sensor.worlds_air_quality_index](https://www.home-assistant.io/components/sensor.worlds_air_quality_index) |
 | [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
-| [sensor.youtube](https://www.home-assistant.io/components/sensor.youtube) |
 | [sensor.zha](https://www.home-assistant.io/components/sensor.zha) |
 | [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
@@ -538,6 +539,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [version](https://www.home-assistant.io/components/version) |
 | [watchman](https://www.home-assistant.io/components/watchman) |
 | [water_heater](https://www.home-assistant.io/components/water_heater) |
+| [water_heater.mqtt](https://www.home-assistant.io/components/water_heater.mqtt) |
 | [water_heater.smartthinq_sensors](https://www.home-assistant.io/components/water_heater.smartthinq_sensors) |
 | [weather](https://www.home-assistant.io/components/weather) |
 | [weather.astroweather](https://www.home-assistant.io/components/weather.astroweather) |
