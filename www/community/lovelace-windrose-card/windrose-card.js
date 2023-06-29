@@ -1674,6 +1674,7 @@ class WindRoseDirigent {
         if (this.initReady) {
             Log.debug('refreshData()');
             return this.measurementProvider.getMeasurements().then((matchedGroups) => {
+                this.windRoseData = [];
                 Log.debug('Matched measurements:', matchedGroups);
                 for (let i = 0; i < matchedGroups.length; i++) {
                     this.measurementCounter.init(this.cardConfig.windspeedEntities[i].speedUnit);
@@ -2090,7 +2091,7 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 1.2.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.2.1 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();
