@@ -1,0 +1,50 @@
+---
+sensor:
+  - platform: filter
+    name: "office_airquality_temperature_filtered"
+    entity_id: sensor.office_airquality_temperature
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"
+
+  - platform: filter
+    name: "office_airquality_humidity_filtered"
+    entity_id: sensor.office_airquality_humidity
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"
+
+  - platform: filter
+    name: "office_airquality_co2_filtered"
+    entity_id: sensor.office_airquality_co2
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"
+
+  - platform: filter
+    name: "office_airquality_voc_filtered"
+    entity_id: sensor.office_airquality_voc
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"
+
+  - platform: filter
+    name: "office_airquality_formaldehyd_filtered"
+    entity_id: sensor.office_airquality_formaldehyd
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"
+
+  - platform: filter
+    name: "office_airquality_pm25_filtered"
+    entity_id: sensor.office_airquality_pm25
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"
+
+  - platform: filter
+    name: "office_airquality_linkquality_filtered"
+    entity_id: sensor.office_airquality_linkquality
+    filters:
+      - filter: time_throttle
+        window_size: "00:01"

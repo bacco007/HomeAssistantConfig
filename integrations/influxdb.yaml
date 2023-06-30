@@ -83,6 +83,13 @@ influxdb:
       - sensor.last_fm_top_albums
       - sensor.last_fm_top_artists
       - sensor.last_fm_top_tracks
+      - sensor.office_airquality_temperature
+      - sensor.office_airquality_humidity
+      - sensor.office_airquality_co2
+      - sensor.office_airquality_voc
+      - sensor.office_airquality_formaldehyd
+      - sensor.office_airquality_pm25
+      - sensor.office_airquality_linkquality
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*

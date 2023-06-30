@@ -10,15 +10,15 @@ iaquk:
       - iaq_index
   office:
     sources:
-      temperature: sensor.office_airquality_temperature
-      humidity: sensor.office_airquality_humidity
-      co2: sensor.office_airquality_co2
+      temperature: sensor.office_airquality_temperature_filtered
+      humidity: sensor.office_airquality_humidity_filtered
+      co2: sensor.office_airquality_co2_filtered
       #co:
       #no2:
-      tvoc: sensor.office_airquality_voc
-      hcho: sensor.office_airquality_formaldehyd
+      tvoc: sensor.office_airquality_voc_filtered
+      hcho: sensor.office_airquality_formaldehyd_filtered
       #radon:
-      pm: sensor.office_airquality_pm25
+      pm: sensor.office_airquality_pm25_filtered
     sensors:
       - iaq_level
       - iaq_index

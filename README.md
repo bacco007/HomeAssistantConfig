@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, June 30th 2023_
+_Stats as at 05:00, Saturday, July 1st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0b0 | 469     | 3812         | 2705 | 99 |
+| 2023.7.0b2 | 470     | 3841         | 2711 | 99 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 20
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2705
+Sensor | 2711
 Sun | 1
 Switch | 172
 Weather | 7
@@ -380,6 +380,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.fastdotcom](https://www.home-assistant.io/components/sensor.fastdotcom) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
+| [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
 | [sensor.forecast_solar](https://www.home-assistant.io/components/sensor.forecast_solar) |
 | [sensor.garbage_collection](https://www.home-assistant.io/components/sensor.garbage_collection) |
 | [sensor.gdacs](https://www.home-assistant.io/components/sensor.gdacs) |
@@ -428,7 +429,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
-| [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
@@ -461,6 +461,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.worldclock](https://www.home-assistant.io/components/sensor.worldclock) |
 | [sensor.worlds_air_quality_index](https://www.home-assistant.io/components/sensor.worlds_air_quality_index) |
 | [sensor.yahoofinance](https://www.home-assistant.io/components/sensor.yahoofinance) |
+| [sensor.youtube](https://www.home-assistant.io/components/sensor.youtube) |
 | [sensor.zha](https://www.home-assistant.io/components/sensor.zha) |
 | [shell_command](https://www.home-assistant.io/components/shell_command) |
 | [simpleicons](https://www.home-assistant.io/components/simpleicons) |
@@ -721,7 +722,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.2)
-- ESPHome (2023.5.5)
+- ESPHome (2023.6.3)
 - eufy-security-ws (1.5.2)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.111.1)
