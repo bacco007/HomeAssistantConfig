@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, July 1st 2023_
+_Stats as at 05:00, Sunday, July 2nd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0b2 | 470     | 3841         | 2711 | 99 |
+| 2023.7.0b2 | 473     | 3839         | 2705 | 99 |
 
 Type | Qty
 -- | --
@@ -65,13 +65,13 @@ Input Boolean | 0
 Input Datetime | 0
 Input Text | 3
 Light | 9
-Media Player | 20
+Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2711
+Sensor | 2705
 Sun | 1
-Switch | 172
+Switch | 166
 Weather | 7
 Zone | 3
 
@@ -96,6 +96,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alarm_control_panel.zha](https://www.home-assistant.io/components/alarm_control_panel.zha) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
+| [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
 | [anniversaries](https://www.home-assistant.io/components/anniversaries) |
 | [api](https://www.home-assistant.io/components/api) |
 | [apple_tv](https://www.home-assistant.io/components/apple_tv) |
@@ -280,6 +281,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [map](https://www.home-assistant.io/components/map) |
 | [media_player](https://www.home-assistant.io/components/media_player) |
 | [media_player.androidtv](https://www.home-assistant.io/components/media_player.androidtv) |
+| [media_player.androidtv_remote](https://www.home-assistant.io/components/media_player.androidtv_remote) |
 | [media_player.apple_tv](https://www.home-assistant.io/components/media_player.apple_tv) |
 | [media_player.browser_mod](https://www.home-assistant.io/components/media_player.browser_mod) |
 | [media_player.cast](https://www.home-assistant.io/components/media_player.cast) |
@@ -333,6 +335,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [readme](https://www.home-assistant.io/components/readme) |
 | [recorder](https://www.home-assistant.io/components/recorder) |
 | [remote](https://www.home-assistant.io/components/remote) |
+| [remote.androidtv_remote](https://www.home-assistant.io/components/remote.androidtv_remote) |
 | [remote.apple_tv](https://www.home-assistant.io/components/remote.apple_tv) |
 | [remote.harmony](https://www.home-assistant.io/components/remote.harmony) |
 | [remote.samsungtv](https://www.home-assistant.io/components/remote.samsungtv) |
@@ -685,6 +688,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Tabbed Card](https://github.com/kinghat/tabbed-card)
 - [Team Tracker Card](https://github.com/vasqued2/ha-teamtracker-card)
 - [Template Entity Row](https://github.com/thomasloven/lovelace-template-entity-row)
+- [Tv Remote Card (With Touchpad And Haptic Feedback)](https://github.com/usernein/tv-card)
 - [Uptime Card](https://github.com/dylandoamaral/uptime-card)
 - [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card)
 - [Weather Card](https://github.com/bramkragten/weather-card)

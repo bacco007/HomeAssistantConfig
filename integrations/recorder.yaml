@@ -124,6 +124,7 @@ recorder:
       - sensor.192_168_1_131_*
       - sensor.tempest_st_00056115_wind*
       - sensor.qemu*
+      - sensor.*icloud3*
     domains:
       - anniversaries
       - automation
