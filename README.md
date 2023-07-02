@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, July 2nd 2023_
+_Stats as at 05:00, Monday, July 3rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0b2 | 473     | 3839         | 2705 | 99 |
+| 2023.7.0b3 | 467     | 3765         | 2643 | 99 |
 
 Type | Qty
 -- | --
@@ -59,7 +59,7 @@ Alert | 0
 Automation | 99
 Binary Sensor | 182
 Camera | 5
-Device Tracker | 121
+Device Tracker | 122
 Group | 3
 Input Boolean | 0
 Input Datetime | 0
@@ -69,9 +69,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2705
+Sensor | 2643
 Sun | 1
-Switch | 166
+Switch | 152
 Weather | 7
 Zone | 3
 
@@ -123,7 +123,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
-| [binary_sensor.radarr](https://www.home-assistant.io/components/binary_sensor.radarr) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.sensibo](https://www.home-assistant.io/components/binary_sensor.sensibo) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
@@ -374,7 +373,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
-| [sensor.custom_qbittorrent](https://www.home-assistant.io/components/sensor.custom_qbittorrent) |
 | [sensor.daily](https://www.home-assistant.io/components/sensor.daily) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
@@ -419,12 +417,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
-| [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
-| [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
-| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.sensibo](https://www.home-assistant.io/components/sensor.sensibo) |
@@ -488,7 +483,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch](https://www.home-assistant.io/components/switch) |
 | [switch.adaptive_lighting](https://www.home-assistant.io/components/switch.adaptive_lighting) |
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
-| [switch.custom_qbittorrent](https://www.home-assistant.io/components/switch.custom_qbittorrent) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.eufy_security](https://www.home-assistant.io/components/switch.eufy_security) |
@@ -738,7 +732,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - Samba share (10.0.2)
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
-- Zigbee2MQTT (1.31.2-1)
+- Zigbee2MQTT (1.32.0-2)
 - Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
