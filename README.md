@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, July 3rd 2023_
+_Stats as at 05:00, Tuesday, July 4th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0b3 | 467     | 3765         | 2643 | 99 |
+| 2023.7.0b3 | 470     | 3776         | 2659 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 182
+Binary Sensor | 179
 Camera | 5
 Device Tracker | 122
 Group | 3
@@ -69,9 +69,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2643
+Sensor | 2659
 Sun | 1
-Switch | 152
+Switch | 157
 Weather | 7
 Zone | 3
 
@@ -123,6 +123,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
 | [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
+| [binary_sensor.radarr](https://www.home-assistant.io/components/binary_sensor.radarr) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.sensibo](https://www.home-assistant.io/components/binary_sensor.sensibo) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
@@ -417,6 +418,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
+| [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
@@ -427,6 +429,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.smartthinq_sensors](https://www.home-assistant.io/components/sensor.smartthinq_sensors) |
 | [sensor.snmp](https://www.home-assistant.io/components/sensor.snmp) |
 | [sensor.solcast_solar](https://www.home-assistant.io/components/sensor.solcast_solar) |
+| [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
 | [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
