@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, July 4th 2023_
+_Stats as at 05:00, Wednesday, July 5th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0b3 | 470     | 3776         | 2659 | 99 |
+| 2023.7.0b3 | 471     | 3818         | 2674 | 99 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2659
+Sensor | 2674
 Sun | 1
-Switch | 157
+Switch | 161
 Weather | 7
 Zone | 3
 
@@ -418,10 +418,12 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
+| [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
 | [sensor.rest](https://www.home-assistant.io/components/sensor.rest) |
 | [sensor.rocketlaunchlive](https://www.home-assistant.io/components/sensor.rocketlaunchlive) |
+| [sensor.sabnzbd](https://www.home-assistant.io/components/sensor.sabnzbd) |
 | [sensor.satellitetracker](https://www.home-assistant.io/components/sensor.satellitetracker) |
 | [sensor.season](https://www.home-assistant.io/components/sensor.season) |
 | [sensor.sensibo](https://www.home-assistant.io/components/sensor.sensibo) |
@@ -432,7 +434,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
-| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -723,6 +724,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.2)
+- Cloudflared (4.1.9)
 - ESPHome (2023.6.3)
 - eufy-security-ws (1.5.2)
 - Glances (0.19.2)
