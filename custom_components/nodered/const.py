@@ -2,7 +2,7 @@
 # Base component constants
 DOMAIN = "nodered"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 ISSUE_URL = "https://github.com/zachowj/hass-node-red/issues"
 
@@ -21,6 +21,7 @@ CONF_ENTITY_PICTURE = "entity_picture"
 CONF_LAST_RESET = "last_reset"
 CONF_NAME = "name"
 CONF_NODE_ID = "node_id"
+CONF_NUMBER = "number"
 CONF_OUTPUT_PATH = "output_path"
 CONF_PAYLOAD = "payload"
 CONF_REMOVE = "remove"
@@ -30,8 +31,11 @@ CONF_SKIP_CONDITION = "skip_condition"
 CONF_STATE_CLASS = "state_class"
 CONF_SUB_TYPE = "sub_type"
 CONF_SWITCH = "switch"
+CONF_TEXT = "text"
 CONF_TRIGGER_ENTITY_ID = "trigger_entity_id"
 CONF_VERSION = "version"
+
+EVENT_VALUE_CHANGE = "value_change"
 
 NODERED_DISCOVERY = "nodered_discovery"
 NODERED_DISCOVERY_NEW = "nodered_discovery_new_{}"
