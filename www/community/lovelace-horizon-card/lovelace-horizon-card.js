@@ -2977,17 +2977,80 @@ LitElement.shadowRootOptions = { mode: 'open' };
 var _templateObject$7;
 var cardStyles = i$1(_templateObject$7 || (_templateObject$7 = _taggedTemplateLiteral(["\n  .horizon-card {\n    --horizon-card-primary: var(--primary-text-color, #000000);\n    --horizon-card-secondary: var(--secondary-text-color, #828282);\n    --horizon-card-accent: #d7d7d7;\n\n    --horizon-card-lines: var(--horizon-card-accent);\n    --horizon-card-field-name-color: var(--horizon-card-secondary);\n    --horizon-card-field-value-color: var(--horizon-card-primary);\n\n    --horizon-card-stop-invisible: rgb(0,0,0,0);\n    --horizon-card-stop-sun-color: #f9d05e;\n    --horizon-card-stop-dawn-color: #393b78;\n    --horizon-card-stop-day-color: #8ebeeb;\n    --horizon-card-stop-dusk-color: #393b78;\n\n    padding: 0.5rem;\n    font-family: var(--primary-font-family);\n  }\n\n  .horizon-card.horizon-card-dark {\n    --horizon-card-primary: #ffffff;\n    --horizon-card-secondary: #828282;\n    --horizon-card-accent: #464646;\n  }\n\n  .horizon-card-field-row {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1rem;\n  }\n\n  .horizon-card-text-container {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .horizon-card-field-name {\n    color: var(--horizon-card-field-name-color);\n  }\n\n  .horizon-card-field-value {\n    color: var(--horizon-card-field-value-color);\n    font-size: 1.3em;\n    line-height: 1.1em;\n  }\n\n  .horizon-card-header {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1rem;\n    margin-bottom: -1rem;\n  }\n\n  .horizon-card-header .horizon-card-text-container {\n    font-size: 1.3rem;\n  }\n\n  .horizon-card-footer {\n    margin-bottom: 1rem;\n  }\n\n  .horizon-card-title {\n    margin: 1rem 1rem 2rem 1rem;\n    font-size: 1.5rem;\n    color: var(--horizon-card-primary);\n  }\n\n  .horizon-card-graph {\n    shape-rendering=\"geometricPrecision\";\n    margin: 1rem 0 1rem 0;\n  }\n\n  .horizon-card-graph .sunInitialStop {\n    stop-color: var(--horizon-card-stop-sun-color);\n  }\n\n  .horizon-card-graph .sunMiddleStop {\n    stop-color: var(--horizon-card-stop-sun-color);\n  }\n\n  .horizon-card-graph .sunEndStop {\n    stop-color: var(--horizon-card-stop-invisible);\n  }\n\n  .horizon-card-graph .dawnInitialStop {\n    stop-color: var(--horizon-card-stop-dawn-color);\n  }\n\n  .horizon-card-graph .dawnMiddleStop {\n    stop-color: var(--horizon-card-stop-dawn-color);\n  }\n\n  .horizon-card-graph .dawnEndStop {\n    stop-color: var(--horizon-card-stop-invisible);\n  }\n\n  .horizon-card-graph .dayInitialStop {\n    stop-color: var(--horizon-card-stop-day-color);\n  }\n\n  .horizon-card-graph .dayMiddleStop {\n    stop-color: var(--horizon-card-stop-day-color);\n  }\n\n  .horizon-card-graph .dayEndStop {\n    stop-color: var(--horizon-card-stop-invisible);\n  }\n\n  .horizon-card-graph .duskInitialStop {\n    stop-color: var(--horizon-card-stop-dusk-color);\n  }\n\n  .horizon-card-graph .duskMiddleStop {\n    stop-color: var(--horizon-card-stop-dusk-color);\n  }\n\n  .horizon-card-graph .duskEndStop {\n    stop-color: var(--horizon-card-stop-invisible);\n  }\n\n  .card-config ul {\n    list-style: none;\n    padding: 0 0 0 1.5rem;\n  }\n\n  .card-config li {\n    padding: 0.5rem 0;\n  }\n"])));
 
-var azimuth$t = "Азимут";
-var dawn$t = "Зора";
-var dusk$t = "Здрач";
-var elevation$t = "Височина";
-var noon$t = "Пладне";
-var sunrise$t = "Изгрев";
-var sunset$t = "Залез";
-var errors$t = {
+var azimuth$w = "Азимут";
+var dawn$w = "Зора";
+var dusk$w = "Здрач";
+var elevation$w = "Височина";
+var noon$w = "Пладне";
+var sunrise$w = "Изгрев";
+var sunset$w = "Залез";
+var errors$w = {
 	SunIntegrationNotFound: "Интеграцията Sun не е намерена"
 };
 var bg = {
+	azimuth: azimuth$w,
+	dawn: dawn$w,
+	dusk: dusk$w,
+	elevation: elevation$w,
+	noon: noon$w,
+	sunrise: sunrise$w,
+	sunset: sunset$w,
+	errors: errors$w
+};
+
+var azimuth$v = "Azimut";
+var dawn$v = "Alba";
+var dusk$v = "Capvespre";
+var elevation$v = "Elevació";
+var noon$v = "Migdia solar";
+var sunrise$v = "Sortida del sol";
+var sunset$v = "Posta del sol";
+var errors$v = {
+	SunIntegrationNotFound: "No s'ha trobat la integració Sun"
+};
+var ca = {
+	azimuth: azimuth$v,
+	dawn: dawn$v,
+	dusk: dusk$v,
+	elevation: elevation$v,
+	noon: noon$v,
+	sunrise: sunrise$v,
+	sunset: sunset$v,
+	errors: errors$v
+};
+
+var azimuth$u = "Azimut";
+var dawn$u = "Svítání";
+var dusk$u = "Soumrak";
+var elevation$u = "Výška";
+var noon$u = "Sluneční poledne";
+var sunrise$u = "Východ slunce";
+var sunset$u = "Západ slunce";
+var errors$u = {
+	SunIntegrationNotFound: "Integrace Sun nenalezena"
+};
+var cs = {
+	azimuth: azimuth$u,
+	dawn: dawn$u,
+	dusk: dusk$u,
+	elevation: elevation$u,
+	noon: noon$u,
+	sunrise: sunrise$u,
+	sunset: sunset$u,
+	errors: errors$u
+};
+
+var azimuth$t = "Azimut";
+var dawn$t = "Daggry";
+var dusk$t = "Skumring";
+var elevation$t = "Højde";
+var noon$t = "Middag";
+var sunrise$t = "Solopgang";
+var sunset$t = "Solnedgang";
+var errors$t = {
+	SunIntegrationNotFound: "kunne ikke finde integrationen for Sol"
+};
+var da = {
 	azimuth: azimuth$t,
 	dawn: dawn$t,
 	dusk: dusk$t,
@@ -2999,16 +3062,16 @@ var bg = {
 };
 
 var azimuth$s = "Azimut";
-var dawn$s = "Alba";
-var dusk$s = "Capvespre";
-var elevation$s = "Elevació";
-var noon$s = "Migdia solar";
-var sunrise$s = "Sortida del sol";
-var sunset$s = "Posta del sol";
+var dawn$s = "Morgendämmerung";
+var dusk$s = "Abenddämmerung";
+var elevation$s = "Zenitwinkel";
+var noon$s = "Zenit";
+var sunrise$s = "Sonnenaufgang";
+var sunset$s = "Sonnenuntergang";
 var errors$s = {
-	SunIntegrationNotFound: "No s'ha trobat la integració Sun"
+	SunIntegrationNotFound: "Sun integration not found"
 };
-var ca = {
+var de = {
 	azimuth: azimuth$s,
 	dawn: dawn$s,
 	dusk: dusk$s,
@@ -3019,17 +3082,17 @@ var ca = {
 	errors: errors$s
 };
 
-var azimuth$r = "Azimut";
-var dawn$r = "Svítání";
-var dusk$r = "Soumrak";
-var elevation$r = "Výška";
-var noon$r = "Sluneční poledne";
-var sunrise$r = "Východ slunce";
-var sunset$r = "Západ slunce";
+var azimuth$r = "Azimuth";
+var dawn$r = "Dawn";
+var dusk$r = "Dusk";
+var elevation$r = "Elevation";
+var noon$r = "Solar noon";
+var sunrise$r = "Sunrise";
+var sunset$r = "Sunset";
 var errors$r = {
-	SunIntegrationNotFound: "Integrace Sun nenalezena"
+	SunIntegrationNotFound: "Sun integration not found"
 };
-var cs = {
+var en = {
 	azimuth: azimuth$r,
 	dawn: dawn$r,
 	dusk: dusk$r,
@@ -3041,16 +3104,16 @@ var cs = {
 };
 
 var azimuth$q = "Azimut";
-var dawn$q = "Daggry";
-var dusk$q = "Skumring";
-var elevation$q = "Højde";
-var noon$q = "Middag";
-var sunrise$q = "Solopgang";
-var sunset$q = "Solnedgang";
+var dawn$q = "Amanecer";
+var dusk$q = "Anochecer";
+var elevation$q = "Elevación";
+var noon$q = "Mediodía solar";
+var sunrise$q = "Salida del sol";
+var sunset$q = "Atardecer";
 var errors$q = {
-	SunIntegrationNotFound: "kunne ikke finde integrationen for Sol"
+	SunIntegrationNotFound: "No se encontró la integración de Sun"
 };
-var da = {
+var es = {
 	azimuth: azimuth$q,
 	dawn: dawn$q,
 	dusk: dusk$q,
@@ -3061,17 +3124,17 @@ var da = {
 	errors: errors$q
 };
 
-var azimuth$p = "Azimut";
-var dawn$p = "Morgendämmerung";
-var dusk$p = "Abenddämmerung";
-var elevation$p = "Zenitwinkel";
-var noon$p = "Zenit";
-var sunrise$p = "Sonnenaufgang";
-var sunset$p = "Sonnenuntergang";
+var azimuth$p = "Asimuut";
+var dawn$p = "Koidik";
+var dusk$p = "Hämarik";
+var elevation$p = "Kõrgus";
+var noon$p = "Keskpäev";
+var sunrise$p = "Päikesetõus";
+var sunset$p = "Päikeseloojang";
 var errors$p = {
 	SunIntegrationNotFound: "Sun integration not found"
 };
-var de = {
+var et = {
 	azimuth: azimuth$p,
 	dawn: dawn$p,
 	dusk: dusk$p,
@@ -3082,17 +3145,17 @@ var de = {
 	errors: errors$p
 };
 
-var azimuth$o = "Azimuth";
-var dawn$o = "Dawn";
-var dusk$o = "Dusk";
-var elevation$o = "Elevation";
-var noon$o = "Solar noon";
-var sunrise$o = "Sunrise";
-var sunset$o = "Sunset";
+var azimuth$o = "Atsimuutti";
+var dawn$o = "Sarastus";
+var dusk$o = "Hämärä";
+var elevation$o = "Korkeus";
+var noon$o = "Keskipäivä";
+var sunrise$o = "Auringonnousu";
+var sunset$o = "Auringonlasku";
 var errors$o = {
 	SunIntegrationNotFound: "Sun integration not found"
 };
-var en = {
+var fi = {
 	azimuth: azimuth$o,
 	dawn: dawn$o,
 	dusk: dusk$o,
@@ -3104,16 +3167,16 @@ var en = {
 };
 
 var azimuth$n = "Azimut";
-var dawn$n = "Amanecer";
-var dusk$n = "Anochecer";
-var elevation$n = "Elevación";
-var noon$n = "Mediodía solar";
-var sunrise$n = "Salida del sol";
-var sunset$n = "Atardecer";
+var dawn$n = "Aube";
+var dusk$n = "Crépuscule";
+var elevation$n = "Élévation";
+var noon$n = "Midi solaire";
+var sunrise$n = "Lever du soleil";
+var sunset$n = "Coucher du soleil";
 var errors$n = {
-	SunIntegrationNotFound: "No se encontró la integración de Sun"
+	SunIntegrationNotFound: "Sun integration not found"
 };
-var es = {
+var fr = {
 	azimuth: azimuth$n,
 	dawn: dawn$n,
 	dusk: dusk$n,
@@ -3124,17 +3187,17 @@ var es = {
 	errors: errors$n
 };
 
-var azimuth$m = "Asimuut";
-var dawn$m = "Koidik";
-var dusk$m = "Hämarik";
-var elevation$m = "Kõrgus";
-var noon$m = "Keskpäev";
-var sunrise$m = "Päikesetõus";
-var sunset$m = "Päikeseloojang";
+var azimuth$m = "אזימוט";
+var dawn$m = "עלות השחר";
+var dusk$m = "בין הערבים";
+var elevation$m = "גובה";
+var noon$m = "אמצע היום";
+var sunrise$m = "זריחה";
+var sunset$m = "שקיעה";
 var errors$m = {
-	SunIntegrationNotFound: "Sun integration not found"
+	SunIntegrationNotFound: "אינטגרצית שמש לא נמצאה"
 };
-var et = {
+var he = {
 	azimuth: azimuth$m,
 	dawn: dawn$m,
 	dusk: dusk$m,
@@ -3145,17 +3208,17 @@ var et = {
 	errors: errors$m
 };
 
-var azimuth$l = "Atsimuutti";
-var dawn$l = "Sarastus";
-var dusk$l = "Hämärä";
-var elevation$l = "Korkeus";
-var noon$l = "Keskipäivä";
-var sunrise$l = "Auringonnousu";
-var sunset$l = "Auringonlasku";
+var azimuth$l = "Azimut";
+var dawn$l = "Zora";
+var dusk$l = "Sumrak";
+var elevation$l = "Visina";
+var noon$l = "Sunčano podne";
+var sunrise$l = "Izlazak sunca";
+var sunset$l = "Zalazak sunca";
 var errors$l = {
-	SunIntegrationNotFound: "Sun integration not found"
+	SunIntegrationNotFound: "Sun integracija nije pronađena"
 };
-var fi = {
+var hr = {
 	azimuth: azimuth$l,
 	dawn: dawn$l,
 	dusk: dusk$l,
@@ -3167,16 +3230,16 @@ var fi = {
 };
 
 var azimuth$k = "Azimut";
-var dawn$k = "Aube";
-var dusk$k = "Crépuscule";
-var elevation$k = "Élévation";
-var noon$k = "Midi solaire";
-var sunrise$k = "Lever du soleil";
-var sunset$k = "Coucher du soleil";
+var dawn$k = "Hajnal";
+var dusk$k = "Szürkület";
+var elevation$k = "Magasság";
+var noon$k = "Dél";
+var sunrise$k = "Napkelte";
+var sunset$k = "Napnyugta";
 var errors$k = {
 	SunIntegrationNotFound: "Sun integration not found"
 };
-var fr = {
+var hu = {
 	azimuth: azimuth$k,
 	dawn: dawn$k,
 	dusk: dusk$k,
@@ -3187,17 +3250,17 @@ var fr = {
 	errors: errors$k
 };
 
-var azimuth$j = "אזימוט";
-var dawn$j = "עלות השחר";
-var dusk$j = "בין הערבים";
-var elevation$j = "גובה";
-var noon$j = "אמצע היום";
-var sunrise$j = "זריחה";
-var sunset$j = "שקיעה";
+var azimuth$j = "Áttarhorn";
+var dawn$j = "Dögun";
+var dusk$j = "Rökkur";
+var elevation$j = "Hækkun";
+var noon$j = "Sólarhádegi";
+var sunrise$j = "Sólarupprás";
+var sunset$j = "Sólsetur";
 var errors$j = {
-	SunIntegrationNotFound: "אינטגרצית שמש לא נמצאה"
+	SunIntegrationNotFound: "Sólar eining fannst ekki"
 };
-var he = {
+var is = {
 	azimuth: azimuth$j,
 	dawn: dawn$j,
 	dusk: dusk$j,
@@ -3208,17 +3271,17 @@ var he = {
 	errors: errors$j
 };
 
-var azimuth$i = "Azimut";
-var dawn$i = "Hajnal";
-var dusk$i = "Szürkület";
-var elevation$i = "Magasság";
-var noon$i = "Dél";
-var sunrise$i = "Napkelte";
-var sunset$i = "Napnyugta";
+var azimuth$i = "Azimuth";
+var dawn$i = "Aurora";
+var dusk$i = "Crepuscolo";
+var elevation$i = "Elevazione";
+var noon$i = "Mezzogiorno solare";
+var sunrise$i = "Alba";
+var sunset$i = "Tramonto";
 var errors$i = {
 	SunIntegrationNotFound: "Sun integration not found"
 };
-var hu = {
+var it = {
 	azimuth: azimuth$i,
 	dawn: dawn$i,
 	dusk: dusk$i,
@@ -3229,17 +3292,17 @@ var hu = {
 	errors: errors$i
 };
 
-var azimuth$h = "Áttarhorn";
-var dawn$h = "Dögun";
-var dusk$h = "Rökkur";
-var elevation$h = "Hækkun";
-var noon$h = "Sólarhádegi";
-var sunrise$h = "Sólarupprás";
-var sunset$h = "Sólsetur";
+var azimuth$h = "方位角";
+var dawn$h = "明け方";
+var dusk$h = "夕";
+var elevation$h = "仰俯角";
+var noon$h = "太陽の正午";
+var sunrise$h = "日出";
+var sunset$h = "日沒";
 var errors$h = {
-	SunIntegrationNotFound: "Sólar eining fannst ekki"
+	SunIntegrationNotFound: "インテグレーション Sun は検索できません"
 };
-var is = {
+var ja = {
 	azimuth: azimuth$h,
 	dawn: dawn$h,
 	dusk: dusk$h,
@@ -3250,17 +3313,17 @@ var is = {
 	errors: errors$h
 };
 
-var azimuth$g = "Azimuth";
-var dawn$g = "Aurora";
-var dusk$g = "Crepuscolo";
-var elevation$g = "Elevazione";
-var noon$g = "Mezzogiorno solare";
-var sunrise$g = "Alba";
-var sunset$g = "Tramonto";
+var azimuth$g = "방위각";
+var dawn$g = "새벽";
+var dusk$g = "저녁";
+var elevation$g = "태양 고도";
+var noon$g = "태양 정오";
+var sunrise$g = "해돋이";
+var sunset$g = "해넘이";
 var errors$g = {
-	SunIntegrationNotFound: "Sun integration not found"
+	SunIntegrationNotFound: "태양 통합구성요소를 찾을 수 없습니다"
 };
-var it = {
+var ko = {
 	azimuth: azimuth$g,
 	dawn: dawn$g,
 	dusk: dusk$g,
@@ -3271,17 +3334,17 @@ var it = {
 	errors: errors$g
 };
 
-var azimuth$f = "方位角";
-var dawn$f = "明け方";
-var dusk$f = "夕";
-var elevation$f = "仰俯角";
-var noon$f = "太陽の正午";
-var sunrise$f = "日出";
-var sunset$f = "日沒";
+var azimuth$f = "Azimutas";
+var dawn$f = "Aušra";
+var dusk$f = "Prieblanda";
+var elevation$f = "Pakilimas";
+var noon$f = "Vidurdienis";
+var sunrise$f = "Saulėtekis";
+var sunset$f = "Saulėlydis";
 var errors$f = {
-	SunIntegrationNotFound: "インテグレーション Sun は検索できません"
+	SunIntegrationNotFound: "Sun integration not found"
 };
-var ja = {
+var lt = {
 	azimuth: azimuth$f,
 	dawn: dawn$f,
 	dusk: dusk$f,
@@ -3292,17 +3355,17 @@ var ja = {
 	errors: errors$f
 };
 
-var azimuth$e = "Azimutas";
-var dawn$e = "Aušra";
-var dusk$e = "Prieblanda";
-var elevation$e = "Pakilimas";
-var noon$e = "Vidurdienis";
-var sunrise$e = "Saulėtekis";
-var sunset$e = "Saulėlydis";
+var azimuth$e = "Azimuth";
+var dawn$e = "Fajar";
+var dusk$e = "Senja";
+var elevation$e = "Ketinggian";
+var noon$e = "Tengahari";
+var sunrise$e = "Fajar";
+var sunset$e = "Senja";
 var errors$e = {
-	SunIntegrationNotFound: "Sun integration not found"
+	SunIntegrationNotFound: "Integrasi Sun tidak ditemui."
 };
-var lt = {
+var ms = {
 	azimuth: azimuth$e,
 	dawn: dawn$e,
 	dusk: dusk$e,
@@ -3671,11 +3734,14 @@ _defineProperty(Constants, "LOCALIZATION_LANGUAGES", {
   fi: fi,
   fr: fr,
   he: he,
+  hr: hr,
   hu: hu,
   is: is,
   it: it,
   ja: ja,
+  ko: ko,
   lt: lt,
+  ms: ms,
   nb: nb,
   nl: nl,
   nn: nn,
