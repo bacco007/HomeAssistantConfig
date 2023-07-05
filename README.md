@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, July 5th 2023_
+_Stats as at 05:00, Thursday, July 6th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0b3 | 471     | 3818         | 2674 | 99 |
+| 2023.7.0b5 | 474     | 3803         | 2665 | 99 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2674
+Sensor | 2665
 Sun | 1
-Switch | 161
+Switch | 175
 Weather | 7
 Zone | 3
 
@@ -374,6 +374,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.cert_expiry](https://www.home-assistant.io/components/sensor.cert_expiry) |
 | [sensor.co2signal](https://www.home-assistant.io/components/sensor.co2signal) |
 | [sensor.command_line](https://www.home-assistant.io/components/sensor.command_line) |
+| [sensor.custom_qbittorrent](https://www.home-assistant.io/components/sensor.custom_qbittorrent) |
 | [sensor.daily](https://www.home-assistant.io/components/sensor.daily) |
 | [sensor.doomsday_clock](https://www.home-assistant.io/components/sensor.doomsday_clock) |
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
@@ -434,6 +435,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
+| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -487,6 +489,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch](https://www.home-assistant.io/components/switch) |
 | [switch.adaptive_lighting](https://www.home-assistant.io/components/switch.adaptive_lighting) |
 | [switch.adguard](https://www.home-assistant.io/components/switch.adguard) |
+| [switch.custom_qbittorrent](https://www.home-assistant.io/components/switch.custom_qbittorrent) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
 | [switch.eufy_security](https://www.home-assistant.io/components/switch.eufy_security) |
@@ -732,7 +735,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.2.2)
+- Node-RED (14.3.0)
 - phpMyAdmin (0.8.6)
 - Samba share (10.0.2)
 - SunGather (0.1.3)
