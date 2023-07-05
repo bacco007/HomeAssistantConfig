@@ -2,7 +2,7 @@
 # Base component constants
 DOMAIN = "nodered"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 
 ISSUE_URL = "https://github.com/zachowj/hass-node-red/issues"
 
@@ -22,9 +22,11 @@ CONF_LAST_RESET = "last_reset"
 CONF_NAME = "name"
 CONF_NODE_ID = "node_id"
 CONF_NUMBER = "number"
+CONF_OPTIONS = "options"
 CONF_OUTPUT_PATH = "output_path"
 CONF_PAYLOAD = "payload"
 CONF_REMOVE = "remove"
+CONF_SELECT = "select"
 CONF_SENSOR = "sensor"
 CONF_SERVER_ID = "server_id"
 CONF_SKIP_CONDITION = "skip_condition"
@@ -48,6 +50,7 @@ SERVICE_TRIGGER = "trigger"
 # Defaults
 NAME = "Node-RED Companion"
 SWITCH_ICON = "mdi:electric-switch-closed"
+SELECT_ICON = "mdi:format-list-bulleted"
 
 STARTUP_MESSAGE = f"""
 -------------------------------------------------------------------
