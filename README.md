@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, July 7th 2023_
+_Stats as at 05:00, Saturday, July 8th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0 | 474     | 3808         | 2672 | 99 |
+| 2023.7.0 | 472     | 3810         | 2673 | 99 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2672
+Sensor | 2673
 Sun | 1
-Switch | 179
+Switch | 180
 Weather | 7
 Zone | 3
 
@@ -435,7 +435,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
-| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -526,7 +525,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [unifics](https://www.home-assistant.io/components/unifics) |
 | [update](https://www.home-assistant.io/components/update) |
-| [update.esphome](https://www.home-assistant.io/components/update.esphome) |
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
 | [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
