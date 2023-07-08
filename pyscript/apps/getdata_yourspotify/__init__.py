@@ -9,7 +9,7 @@ def getdata_yourspotify():
     START_ALL = "2012-05-20T21:13:17.000Z"
 
     # Top Artists (alltime)
-    URL_USE = "http://192.168.1.131:2222/spotify/top/artists?start=" + START_ALL + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/artists?start=" + START_ALL + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -39,7 +39,7 @@ def getdata_yourspotify():
     # Top Artists (Today)
     date = datetime.datetime.now()
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -68,7 +68,7 @@ def getdata_yourspotify():
     # Top Artists (This Week)
     date = datetime.datetime.now() - datetime.timedelta(days=7)
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -97,7 +97,7 @@ def getdata_yourspotify():
     # Top Artists (This Month, 30 days)
     date = datetime.datetime.now() - datetime.timedelta(days=30)
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -126,7 +126,7 @@ def getdata_yourspotify():
     # Top Artists (This Year)
     date = datetime.datetime.now() - datetime.timedelta(days=365)
     date_string = date.strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    URL_USE = "http://192.168.1.131:2222/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/artists?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -153,7 +153,7 @@ def getdata_yourspotify():
     state.set("sensor.yourspotify_topartists_thisyear", value=DATA[0]["artist"], new_attributes=attr)
 
     # Top Songs (alltime)
-    URL_USE = "http://192.168.1.131:2222/spotify/top/songs?start=" + START_ALL + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/songs?start=" + START_ALL + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -187,7 +187,7 @@ def getdata_yourspotify():
     # Top Songs (Today)
     date = datetime.datetime.now()
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -221,7 +221,7 @@ def getdata_yourspotify():
     # Top Songs (This Week)
     date = datetime.datetime.now() - datetime.timedelta(days=7)
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -255,7 +255,7 @@ def getdata_yourspotify():
     # Top Songs (This Month (30 Days))
     date = datetime.datetime.now() - datetime.timedelta(days=30)
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -289,7 +289,7 @@ def getdata_yourspotify():
     # Top Songs (This Year)
     date = datetime.datetime.now() - datetime.timedelta(days=365)
     date_string = date.strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    URL_USE = "http://192.168.1.131:2222/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/songs?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -321,7 +321,7 @@ def getdata_yourspotify():
     state.set("sensor.yourspotify_topsongs_thisyear", value=DATA[0]["trackartist"], new_attributes=attr)
 
     # Top Albums (alltime)
-    URL_USE = "http://192.168.1.131:2222/spotify/top/albums?start=" + START_ALL + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/albums?start=" + START_ALL + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -357,7 +357,7 @@ def getdata_yourspotify():
     # Top Albums (Today)
     date = datetime.datetime.now()
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -393,7 +393,7 @@ def getdata_yourspotify():
     # Top Albums (This Week)
     date = datetime.datetime.now() - datetime.timedelta(days=7)
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -429,7 +429,7 @@ def getdata_yourspotify():
     # Top Albums (This Month (30 Days))
     date = datetime.datetime.now() - datetime.timedelta(days=30)
     date_string = date.strftime("%Y-%m-%d")+"T00:00:00.000Z"
-    URL_USE = "http://192.168.1.131:2222/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -465,7 +465,7 @@ def getdata_yourspotify():
     # Top Albums (This Year)
     date = datetime.datetime.now() - datetime.timedelta(days=365)
     date_string = date.strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    URL_USE = "http://192.168.1.131:2222/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/top/albums?start=" + date_string + "&end=&nb=30&offset=0&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     if r is not None:
@@ -499,7 +499,7 @@ def getdata_yourspotify():
     state.set("sensor.yourspotify_topalbums_thisyear", value=DATA[0]["albumartist"], new_attributes=attr)
 
     # Music by Hour (alltime)
-    URL_USE = "http://192.168.1.131:2222/spotify/time_per_hour_of_day?start=" + START_ALL + "&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/time_per_hour_of_day?start=" + START_ALL + "&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA = []
     maxval = 0
@@ -527,7 +527,7 @@ def getdata_yourspotify():
     date_start = date_end - datetime.timedelta(days=30)
     date_end_string = date_end.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     date_start_string = date_start.strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    URL_USE = "http://192.168.1.131:2222/spotify/time_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/time_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA1 = []
     if r is not None:
@@ -540,7 +540,7 @@ def getdata_yourspotify():
                         "time_listening_ms": row['count'],
                 })
 
-    URL_USE2 = "http://192.168.1.131:2222/spotify/songs_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE2 = "https://yourspotify.tbsmartho.me/api/spotify/songs_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r2 = task.executor(requests.get, URL_USE2).json()
     DATA2 = []
     if r2 is not None:
@@ -570,7 +570,7 @@ def getdata_yourspotify():
     date_start = date_end - datetime.timedelta(days=365)
     date_end_string = date_end.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     date_start_string = date_start.strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    URL_USE = "http://192.168.1.131:2222/spotify/time_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE = "https://yourspotify.tbsmartho.me/api/spotify/time_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r = task.executor(requests.get, URL_USE).json()
     DATA1 = []
     if r is not None:
@@ -583,7 +583,7 @@ def getdata_yourspotify():
                         "time_listening_ms": row['count'],
                 })
 
-    URL_USE2 = "http://192.168.1.131:2222/spotify/songs_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=794cf22d-7476-44c5-b1e0-2063f2581a55"
+    URL_USE2 = "https://yourspotify.tbsmartho.me/api/spotify/songs_per?start=" + date_start_string + "&end=" + date_end_string + "&timeSplit=day&token=0e4ed19b-8315-4c0b-90ec-8830b0d9c439"
     r2 = task.executor(requests.get, URL_USE2).json()
     DATA2 = []
     if r2 is not None:
