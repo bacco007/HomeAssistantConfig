@@ -1,0 +1,13 @@
+set:
+  description: Set the schedule.
+  fields:
+    entity_id:
+      description: Entity id of the daily_schedule that should be set.
+      example: daily_schedule.lights
+    schedule:
+      description: List of the ON time ranges.
+      example:
+        [
+          { from: "03:00:00", to: "04:30:00" },
+          { from: "14:45:00", to: "19:00:00" },
+        ]

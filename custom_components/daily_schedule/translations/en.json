@@ -1,0 +1,47 @@
+{
+    "config": {
+        "error": {
+            "duplicated": "The name should be unique.",
+            "overlap": "Time ranges can't overlap. Enter the new time range again.",
+            "length": "The length of a time range should be positive. Enter the new time range again."
+        },
+        "step": {
+            "user": {
+                "title": "Add Daily Schedule Sensor",
+                "description": "Create a binary sensor which turns on according to a daily schedule.",
+                "data": {
+                    "name": "Name",
+                    "add_range": "Add a time range",
+                    "utc": "UTC time instead of local (don't use if unsure)"
+                }
+            },
+            "time_range": {
+                "title": "Add Time Range",
+                "description": "Set a time range when the sensor will be on.",
+                "data": {
+                    "from": "From",
+                    "to": "To",
+                    "add_range": "Add an additional time range"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "overlap": "Time ranges can't overlap. Enter the new time range again.",
+            "length": "The length of a time range should be positive. Enter the new time range again."
+        },
+        "step": {
+            "init": {
+                "title": "Edit Daily Schedule Sensor",
+                "description": "Modify the time ranges in the daily schedule.",
+                "data": {
+                    "add_range": "Add a new time range",
+                    "from": "From (new)",
+                    "to": "To (new)",
+                    "utc": "UTC time instead of local (don't use if unsure)"
+                }
+            }
+        }
+    }
+}
