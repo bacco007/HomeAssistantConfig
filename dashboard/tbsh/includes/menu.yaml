@@ -76,7 +76,7 @@ cards:
         clear: true
         title-card-button-overlay: true
         child-padding: "0"
-        #padding: "0"
+        # padding: "0"
 
   - type: custom:state-switch
     entity: mediaquery

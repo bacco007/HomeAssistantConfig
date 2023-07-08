@@ -13,11 +13,11 @@ iaquk:
       temperature: sensor.office_airquality_temperature_filtered
       humidity: sensor.office_airquality_humidity_filtered
       co2: sensor.office_airquality_co2_filtered
-      #co:
-      #no2:
+      # co:
+      # no2:
       tvoc: sensor.office_airquality_voc_filtered
       hcho: sensor.office_airquality_formaldehyd_filtered
-      #radon:
+      # radon:
       pm: sensor.office_airquality_pm25_filtered
     sensors:
       - iaq_level

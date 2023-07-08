@@ -72,9 +72,6 @@ entities:
                   action: more-info
                 badge_icon: mdi:wifi
                 badge_color: green
-          # exclude:
-          #   - attributes:
-          #       essid: '*'
         sort:
           method: attribute
           attribute: ip
