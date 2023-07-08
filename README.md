@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, July 8th 2023_
+_Stats as at 05:00, Sunday, July 9th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.0 | 472     | 3810         | 2673 | 99 |
+| 2023.7.1 | 474     | 3839         | 2694 | 99 |
 
 Type | Qty
 -- | --
@@ -69,9 +69,9 @@ Media Player | 22
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2673
+Sensor | 2694
 Sun | 1
-Switch | 180
+Switch | 184
 Weather | 7
 Zone | 3
 
@@ -435,6 +435,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
+| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -525,6 +526,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [unifi](https://www.home-assistant.io/components/unifi) |
 | [unifics](https://www.home-assistant.io/components/unifics) |
 | [update](https://www.home-assistant.io/components/update) |
+| [update.esphome](https://www.home-assistant.io/components/update.esphome) |
 | [update.hacs](https://www.home-assistant.io/components/update.hacs) |
 | [update.hassio](https://www.home-assistant.io/components/update.hassio) |
 | [update.hdhomerun](https://www.home-assistant.io/components/update.hdhomerun) |
@@ -578,6 +580,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Climacell Weather Provider](https://github.com/r-renato/ha-climacell-weather)
 - [Cupertino Icons](https://github.com/menahishayan/HomeAssistant-Cupertino-Icons)
 - [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates)
+- [Daily Schedule](https://github.com/amitfin/daily_schedule)
 - [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor)
 - [Eufy Security](https://github.com/fuatakgun/eufy_security)
 - [Feedparser](https://github.com/custom-components/feedparser)
@@ -593,7 +596,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -724,7 +727,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (15.0.2)
+- Advanced SSH & Web Terminal (15.0.3)
 - Cloudflared (4.1.9)
 - ESPHome (2023.6.4)
 - eufy-security-ws (1.5.2)
@@ -734,11 +737,11 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
 - Node-RED (14.3.0)
-- phpMyAdmin (0.8.6)
+- phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - SunGather (0.1.3)
 - WeatherFlow to MQTT (3.1.6)
-- Zigbee2MQTT (1.32.0-2)
+- Zigbee2MQTT (1.32.1-1)
 - Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
