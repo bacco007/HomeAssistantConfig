@@ -25,16 +25,14 @@ from .const             import (DOMAIN, DATETIME_FORMAT,
                                 IOSAPP, NO_IOSAPP,
                                 TRACK_DEVICE, MONITOR_DEVICE, INACTIVE_DEVICE,
                                 NAME,  FRIENDLY_NAME, FNAME, TITLE, BATTERY,
-                                ZONE, HOME_DISTANCE, PASSIVE,
-                                WAZE_SERVERS_BY_COUNTRY_CODE, WAZE_SERVERS_FNAME,
-                                CONF_VERSION, CONF_EVLOG_CARD_DIRECTORY,
+                                ZONE, HOME_DISTANCE, WAZE_SERVERS_FNAME,
+                                CONF_VERSION, CONF_EVLOG_CARD_DIRECTORY, CONF_HA_CONFIG_IC3_URL,
                                 CONF_USERNAME, CONF_PASSWORD, CONF_DEVICES, CONF_SETUP_ICLOUD_SESSION_EARLY,
                                 CONF_DATA_SOURCE, CONF_VERIFICATION_CODE,
                                 CONF_TRACK_FROM_ZONES, CONF_TRACK_FROM_BASE_ZONE, CONF_TRACK_FROM_HOME_ZONE,
                                 CONF_NO_IOSAPP,
                                 CONF_PICTURE, CONF_DEVICE_TYPE, CONF_INZONE_INTERVALS,
                                 CONF_RAW_MODEL, CONF_MODEL, CONF_MODEL_DISPLAY_NAME, CONF_FAMSHR_DEVICE_ID,
-                                CONF_EVLOG_DISPLAY_ORDER,
                                 CONF_UNIT_OF_MEASUREMENT, CONF_TIME_FORMAT,
                                 CONF_MAX_INTERVAL, CONF_OFFLINE_INTERVAL, CONF_EXIT_ZONE_INTERVAL, CONF_IOSAPP_ALIVE_INTERVAL,
                                 CONF_GPS_ACCURACY_THRESHOLD, CONF_OLD_LOCATION_THRESHOLD, CONF_OLD_LOCATION_ADJUSTMENT,
@@ -303,9 +301,10 @@ DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT_BASE = {
 LOG_LEVEL_ITEMS_KEY_TEXT = {
         'info':     'Info - Log General Information',
         'debug':    'Debug - Log Internal Tracking Monitors',
-        'debug-auto-reset': 'Debug - Log Internal Tracking Monitors (Reset at 12:00am)',
-        'rawdata':  'Rawdata - Log raw data received from iCloud Location Servers. Filter unused data items.',
-        'unfiltered':  'Rawdata (Unfiltered) - Log raw data received from iCloud Location Servers. Display all data items.',
+        'debug-auto-reset': 'Debug (AutoReset) - Debug logging that resets to Info at midnight',
+        'rawdata':  'Rawdata - Log raw data received from iCloud Location Servers. Filter unused data items',
+        'rawdata-auto-reset':  'Rawdata (AutoReset) - RawData logging that resets to Info at midnight',
+        'unfiltered':  'Rawdata (Unfiltered) - Log raw data received from iCloud Location Servers. Display all data items',
         }
 DISTANCE_METHOD_ITEMS_KEY_TEXT = {
         'waze':     'Waze - Waze Route Service provides travel time & distance information',
@@ -341,6 +340,8 @@ CONF_SENSORS_TRACKING_UPDATE_KEY_TEXT = {
 CONF_SENSORS_TRACKING_TIME_KEY_TEXT = {
         'travel_time':      'travel_time > Waze Travel time to Home or closest Track-from-Zone zone',
         'travel_time_min':  'travel_time_min > Waze Travel time to Home or closest Track-from-Zone zone in minutes',
+        'travel_time_hhmm': 'travel_time_hhmm > Waze Travel time to a Zone in hours:minutes',
+        'arrival_time':     'arrival_time > Home Zone arrival time based on Waze Travel time',
         }
 CONF_SENSORS_TRACKING_DISTANCE_KEY_TEXT = {
         'home_distance':    'home_distance > Distance to the Home zone',
@@ -349,12 +350,11 @@ CONF_SENSORS_TRACKING_DISTANCE_KEY_TEXT = {
         'moved_distance':   'moved_distance > Distance moved from the last location',
         }
 CONF_SENSORS_TRACK_FROM_ZONES_KEY_TEXT = {
-        'tfz_zone_info':    'zone_info_[zone] > Summary sensor with all zone distance & time attributes',
-        'tfz_travel_time':  'travel_time_[zone] > Waze Travel time to a Track-from-Zone',
-        'tfz_travel_time_min': 'travel_time_min_[zone] > Waze Travel time to a Track-from-Zone in minutes',
-        'tfz_distance':     'distance_[zone] > Distance from the Track-from-Zone ',
-        'tfz_dir_of_travel':'dir_of_travel_[zone] > Direction of Travel from the Track-from-Zone (Towards, AwayFrom, inZone, etc)',
+        'general_sensors':  'Include General Sensors (zone_info)',
+        'time_sensors':     'Include Travel Time Sensors (travel_time, travel_time_mins, travel_time_hhmm, arrival_time',
+        'distance_sensors': 'Include Zone Distance Sensors (zone_distance, distance, dir_of_travel)',
         }
+CONF_SENSORS_TRACK_FROM_ZONES_KEYS = ['general_sensors', 'time_sensors', 'distance_sensors']
 CONF_SENSORS_TRACKING_OTHER_KEY_TEXT = {
         'trigger':          'trigger > Last action that triggered a location update',
         'waze_distance':    'waze_distance > Waze distance from a TrackFrom zone',
@@ -406,7 +406,7 @@ PASSTHRU_ZONE_HEADER =     ("You may be driving through a non-tracked zone but n
                             "App issues an Enter Zone trigger when the device enters the zone and changes the "
                             "device_tracker entity state to the Zone. iCloud3 does not process the Enter Zone "
                             "trigger until the delay time has passed. This prevents processing a Zone Enter "
-                            "trigger that is immediately followed by an Exit Zone trigger.")
+                            "trig[er that is immediately followed by an Exit Zone trigger.")
 STAT_ZONE_HEADER =         ("A Stationary Zone is automatically created if the device remains in the same location "
                             "(store, friends house, doctor`s office, etc.) for an extended period of time")
 STAT_ZONE_BASE_HEADER =    ("The Stationary Zone is moved to it's 'Base Location' when it is not used by the device. "
@@ -811,7 +811,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                 self.config_flow_updated_parms = {''}
                 data = {}
                 data = {'updated': dt_util.now().strftime(DATETIME_FORMAT)[0:19]}
-                log_debug_msg(f"Exit Configuration Wizard, UpdateParms-{Gb.config_flow_updated_parms}")
+                log_debug_msg(f"Exit Configure Settings, UpdateParms-{Gb.config_flow_updated_parms}")
 
                 return self.async_create_entry(title="iCloud3", data={})
 
@@ -897,7 +897,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             close_reopen_ic3_log_file()
             data = {}
             data = {'added': dt_util.now().strftime(DATETIME_FORMAT)[0:19]}
-            log_debug_msg(f"Exit Configuration Wizard, UpdateParms-{Gb.config_flow_updated_parms}")
+            log_debug_msg(f"Exit Configure Settings, UpdateParms-{Gb.config_flow_updated_parms}")
 
             return self.async_create_entry(title="iCloud3", data={})
 
@@ -1201,6 +1201,15 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
 
         if HOME_DISTANCE not in user_input[CONF_SENSORS_TRACKING_DISTANCE]:
             user_input[CONF_SENSORS_TRACKING_DISTANCE].append(HOME_DISTANCE)
+
+        tfz_sensors_base = ['zone_info']
+        tfz_sensors_base.extend(user_input[CONF_SENSORS_TRACKING_TIME])
+        tfz_sensors_base.extend(user_input[CONF_SENSORS_TRACKING_DISTANCE])
+        tfz_sensors = []
+        for sensor in tfz_sensors_base:
+            if sensor in SENSOR_GROUPS['track_from_zone']:
+                tfz_sensors.append(f"tfz_{sensor}")
+        user_input[CONF_SENSORS_TRACK_FROM_ZONES] = tfz_sensors
 
         if action_item == 'exclude_sensors':
             self.excluded_sensors = Gb.conf_sensors[CONF_EXCLUDED_SENSORS].copy()
@@ -1545,6 +1554,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         '''
         The display_zone_format may contain '(Example: ...). If so, strip it off.
         '''
+        user_input[CONF_HA_CONFIG_IC3_URL] = user_input[CONF_HA_CONFIG_IC3_URL].strip()
         return user_input
 
 #-------------------------------------------------------------------------------------------
@@ -1978,7 +1988,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         if request_verification_code:
             event_msg = f"{EVLOG_NOTICE}Requesting Apple ID Verification Code"
         else:
-            event_msg =(f"{EVLOG_NOTICE}Logging into iCloud Account with Configuration Wizard, "
+            event_msg =(f"{EVLOG_NOTICE}Logging into iCloud Account with Configure Settings, "
                         f"{CRLF_DOT}New iCloud Account > {obscure_field(self.username)}, "
                         f"{CRLF_DOT}iCloud Account Currently Used > {obscure_field(Gb.username)}")
         post_event(event_msg)
@@ -2938,7 +2948,6 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
 
     def _remove_and_create_sensors(self, user_input):
         """ Remove unchecked sensor entities and create newly checked sensor entities """
-
 
         new_sensors_list, remove_sensors_list = \
                 self._sensor_form_identify_new_and_removed_sensors(user_input)
@@ -4043,10 +4052,6 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         elif step_id == 'tracking_parameters':
             self.actions_list = ACTION_LIST_ITEMS_BASE.copy()
             return vol.Schema({
-                # vol.Required(CONF_LOG_LEVEL,
-                #             default=self._option_parm_to_text(CONF_LOG_LEVEL, LOG_LEVEL_ITEMS_KEY_TEXT)):
-                #             selector.SelectSelector(selector.SelectSelectorConfig(
-                #                 options=dict_value_to_list(LOG_LEVEL_ITEMS_KEY_TEXT), mode='dropdown')),
                 vol.Required(CONF_DISTANCE_BETWEEN_DEVICES,
                             default=Gb.conf_general[CONF_DISTANCE_BETWEEN_DEVICES]):
                             selector.BooleanSelector(),
@@ -4090,6 +4095,9 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                             default=self._parm_or_error_msg(CONF_EVLOG_CARD_DIRECTORY, conf_group=CF_PROFILE)):
                             selector.SelectSelector(selector.SelectSelectorConfig(
                                 options=dict_value_to_list(self.opt_www_directory_list), mode='dropdown')),
+                vol.Optional(CONF_HA_CONFIG_IC3_URL,
+                            default=self._parm_or_error_msg(CONF_HA_CONFIG_IC3_URL, conf_group=CF_PROFILE)):
+                            selector.TextSelector(),
 
                 vol.Required('action_items',
                             default=self.action_default_text('save')):
@@ -4278,9 +4286,9 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required(CONF_SENSORS_OTHER,
                             default=Gb.conf_sensors[CONF_SENSORS_OTHER]):
                             cv.multi_select(CONF_SENSORS_OTHER_KEY_TEXT),
-                vol.Required(CONF_SENSORS_TRACK_FROM_ZONES,
-                            default=Gb.conf_sensors[CONF_SENSORS_TRACK_FROM_ZONES]):
-                            cv.multi_select(CONF_SENSORS_TRACK_FROM_ZONES_KEY_TEXT),
+                # vol.Required(CONF_SENSORS_TRACK_FROM_ZONES,
+                #             default=Gb.conf_sensors[CONF_SENSORS_TRACK_FROM_ZONES]):
+                #             cv.multi_select(CONF_SENSORS_TRACK_FROM_ZONES_KEY_TEXT),
                 vol.Required(CONF_SENSORS_MONITORED_DEVICES,
                             default=Gb.conf_sensors[CONF_SENSORS_MONITORED_DEVICES]):
                             cv.multi_select(CONF_SENSORS_MONITORED_DEVICES_KEY_TEXT),
@@ -4351,50 +4359,3 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             pass
 
         return schema
-
-
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#
-#       ICLOUD3 CONFIG FLOW - CONFIG SETTINGS SERVICE CALL HANDLER
-#
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-class ActionSettingsFlowHandler(iCloud3_ConfigFlow):
-    '''
-    Dummy class to tie the Settings Handler to the actual config_flow
-    '''
-    pass
-
-class ActionSettingsFlowManager(data_entry_flow.FlowManager):
-    '''
-    Action Settings Flow Manager - Create the flow (__init__) and load the main menu
-    (service_handler)
-    '''
-
-    async def async_create_flow(self, handler_key: str, *,
-                                context = None, data = None, ) -> ActionSettingsFlowHandler:
-        '''
-        The flow is created in __init__ when iCloud3 is being set up
-        '''
-        Gb.SettingsOptionsFlowHandler = ActionSettingsFlowHandler()
-        Gb.SettingsOptionsFlowHandler.async_get_options_flow(config_entry=None)
-        return Gb.SettingsOptionsFlowHandler
-
-
-    async def async_show_menu_handler(self):
-        '''
-        This is called from service_handler._handle_action_config_flow function that is called
-        when the EvLog Settings icon is clicked
-        '''
-
-        return await Gb.OptionsFlowHandler.async_step_menu()
-        # return await Gb.OptionsFlowHandler.async_show_form(step_id='menu',
-        #                     data_schema=Gb.OptionsFlowHandler.form_schema('menu'),
-        #                     errors={},
-        #                     last_step=False)
-
-    async def async_finish_flow(self,
-                                flow=Gb.SettingsFlowManager,
-                                result=None):
-                                # result: data_entry_flow.FlowResult):    # -> data_entry_flow.FlowResult:
-        result = None
-        return result

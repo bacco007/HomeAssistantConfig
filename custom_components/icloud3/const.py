@@ -4,7 +4,7 @@
 #
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-VERSION                         = '3.0.0b18.5'
+VERSION                         = '3.0.0b19.1'
 
 DOMAIN                          = 'icloud3'
 ICLOUD3                         = 'iCloud3'
@@ -27,6 +27,7 @@ WAZE_LOCATION_HISTORY_DATABASE  = 'icloud3.waze_location_history.db'
 SENSOR_WAZEHIST_TRACK_NAME      = 'icloud3_wazehist_track'
 IC3LOGGER_FILENAME              = 'icloud3-0.log'
 IC3_LOG_FILENAME                = 'icloud3-0.log'
+HA_CONFIG_IC3_URL               = '/config/integrations/integration/icloud3'
 
 DEVICE_TRACKER                  = 'device_tracker'
 DEVICE_TRACKER_DOT              = 'device_tracker.'
@@ -125,6 +126,7 @@ UM_FNAME        = {'mi': 'Miles', 'km': 'Kilometers'}
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 DATETIME_ZERO   = '0000-00-00 00:00:00'
 HHMMSS_ZERO     = '00:00:00'
+HHMM_ZERO       = '00:00'
 HIGH_INTEGER    = 9999999999
 
 # Device Tracking Status
@@ -511,6 +513,7 @@ CONF_VERSION                    = 'version'
 CONF_IC3_VERSION                = 'ic3_version'
 CONF_VERSION_INSTALL_DATE       = 'version_install_date'
 CONF_UPDATE_DATE                = 'config_update_date'
+CONF_HA_CONFIG_IC3_URL          = 'ha_config_ic3_url'
 CONF_EVLOG_CARD_DIRECTORY       = 'event_log_card_directory'
 CONF_EVLOG_CARD_PROGRAM         = 'event_log_card_program'
 
@@ -633,6 +636,9 @@ NEXT_UPDATE                    = "next_update"
 CONF_SENSORS_TRACKING_TIME     = 'tracking_time'
 TRAVEL_TIME                    = "travel_time"
 TRAVEL_TIME_MIN                = "travel_time_min"
+TRAVEL_TIME_HHMM               = "travel_time_hhmm"
+ARRIVAL_TIME                   = "arrival_time"
+
 
 CONF_SENSORS_TRACKING_DISTANCE = 'tracking_distance'
 ZONE_DISTANCE_M                = 'meters_distance'
@@ -651,6 +657,8 @@ TFZ_DISTANCE                  = 'tfz_distance'
 TFZ_ZONE_DISTANCE             = 'tfz_zone_distance'
 TFZ_TRAVEL_TIME               = 'tfz_travel_time'
 TFZ_TRAVEL_TIME_MIN           = 'tfz_travel_time_min'
+TFZ_TRAVEL_TIME_HHMM          = "tfz_travel_time_hhmm"
+TFZ_ARRIVAL_TIME              = "tfz_arrival_time"
 TFZ_DIR_OF_TRAVEL             = 'tfz_dir_of_travel'
 
 CONF_SENSORS_TRACKING_OTHER   = 'tracking_other'
@@ -695,6 +703,7 @@ DEFAULT_PROFILE_CONF = {
         CONF_UPDATE_DATE: DATETIME_ZERO,
         CONF_EVLOG_CARD_DIRECTORY: EVLOG_CARD_WWW_DIRECTORY,
         CONF_EVLOG_CARD_PROGRAM: EVLOG_CARD_WWW_JS_PROG,
+        CONF_HA_CONFIG_IC3_URL: HA_CONFIG_IC3_URL,
 }
 
 DEFAULT_TRACKING_CONF = {
@@ -848,14 +857,20 @@ DEFAULT_SENSORS_CONF = {
                 NEXT_UPDATE, ],
         CONF_SENSORS_TRACKING_TIME: [
                 TRAVEL_TIME,
-                TRAVEL_TIME_MIN, ],
+                TRAVEL_TIME_MIN,
+                ARRIVAL_TIME, ],
         CONF_SENSORS_TRACKING_DISTANCE: [
                 HOME_DISTANCE,
                 ZONE_DISTANCE,
                 MOVED_DISTANCE,
                 DIR_OF_TRAVEL, ],
         CONF_SENSORS_TRACK_FROM_ZONES: [
-                TFZ_ZONE_INFO, ],
+                TFZ_ZONE_INFO,
+                TFZ_TRAVEL_TIME,
+                TFZ_TRAVEL_TIME_MIN,
+                TFZ_ARRIVAL_TIME,
+                TFZ_ZONE_DISTANCE,
+                TFZ_DIR_OF_TRAVEL,],
         CONF_SENSORS_TRACKING_OTHER: [],
         CONF_SENSORS_ZONE: [
                 ZONE_NAME],
@@ -1020,7 +1035,7 @@ LOG_RAWDATA_FIELDS = [
         TIMESTAMP, TIMESTAMP_SECS, TIMESTAMP_TIME, LOCATION_TIME, DATETIME, AGE,
         TRIGGER, BATTERY, BATTERY_LEVEL, BATTERY_STATUS,
         INTERVAL, ZONE_DISTANCE, HOME_DISTANCE, CALC_DISTANCE, WAZE_DISTANCE,
-        TRAVEL_TIME, TRAVEL_TIME_MIN, DIR_OF_TRAVEL, MOVED_DISTANCE,
+        TRAVEL_TIME, TRAVEL_TIME_MIN, TRAVEL_TIME_HHMM, ARRIVAL_TIME, DIR_OF_TRAVEL, MOVED_DISTANCE,
         DEVICE_STATUS, LOW_POWER_MODE,
         TRACKING, DEVICENAME_IOSAPP,
         AUTHENTICATED,
