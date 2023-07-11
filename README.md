@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, July 11th 2023_
+_Stats as at 05:00, Wednesday, July 12th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.1 | 474     | 3997         | 2836 | 99 |
+| 2023.7.1 | 476     | 3993         | 2836 | 99 |
 
 Type | Qty
 -- | --
@@ -241,6 +241,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [holidays](https://www.home-assistant.io/components/holidays) |
 | [homeassistant](https://www.home-assistant.io/components/homeassistant) |
 | [homeassistant_alerts](https://www.home-assistant.io/components/homeassistant_alerts) |
+| [homeassistant_hardware](https://www.home-assistant.io/components/homeassistant_hardware) |
+| [homeassistant_sky_connect](https://www.home-assistant.io/components/homeassistant_sky_connect) |
 | [homekit](https://www.home-assistant.io/components/homekit) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
@@ -596,7 +598,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
