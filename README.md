@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, July 13th 2023_
+_Stats as at 05:00, Friday, July 14th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.1 | 476     | 3991         | 2829 | 99 |
+| 2023.7.1 | 476     | 4043         | 2864 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 201
+Binary Sensor | 205
 Camera | 5
 Device Tracker | 123
 Group | 3
@@ -69,9 +69,9 @@ Media Player | 23
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2829
+Sensor | 2864
 Sun | 1
-Switch | 177
+Switch | 176
 Weather | 7
 Zone | 3
 
