@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, July 14th 2023_
+_Stats as at 05:00, Saturday, July 15th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.1 | 476     | 4043         | 2864 | 99 |
+| 2023.7.1 | 474     | 4013         | 2840 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 205
+Binary Sensor | 202
 Camera | 5
 Device Tracker | 123
 Group | 3
@@ -69,9 +69,9 @@ Media Player | 23
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2864
+Sensor | 2840
 Sun | 1
-Switch | 176
+Switch | 184
 Weather | 7
 Zone | 3
 
@@ -241,8 +241,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [holidays](https://www.home-assistant.io/components/holidays) |
 | [homeassistant](https://www.home-assistant.io/components/homeassistant) |
 | [homeassistant_alerts](https://www.home-assistant.io/components/homeassistant_alerts) |
-| [homeassistant_hardware](https://www.home-assistant.io/components/homeassistant_hardware) |
-| [homeassistant_sky_connect](https://www.home-assistant.io/components/homeassistant_sky_connect) |
 | [homekit](https://www.home-assistant.io/components/homekit) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
