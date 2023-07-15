@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, July 15th 2023_
+_Stats as at 05:00, Sunday, July 16th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.1 | 474     | 4013         | 2840 | 99 |
+| 2023.7.2 | 477     | 3953         | 2790 | 99 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
 Automation | 99
-Binary Sensor | 202
+Binary Sensor | 201
 Camera | 5
 Device Tracker | 123
 Group | 3
@@ -69,9 +69,9 @@ Media Player | 23
 Person | 1
 Scene | 0
 Script | 3
-Sensor | 2840
+Sensor | 2790
 Sun | 1
-Switch | 184
+Switch | 185
 Weather | 7
 Zone | 3
 
@@ -241,6 +241,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [holidays](https://www.home-assistant.io/components/holidays) |
 | [homeassistant](https://www.home-assistant.io/components/homeassistant) |
 | [homeassistant_alerts](https://www.home-assistant.io/components/homeassistant_alerts) |
+| [homeassistant_hardware](https://www.home-assistant.io/components/homeassistant_hardware) |
+| [homeassistant_sky_connect](https://www.home-assistant.io/components/homeassistant_sky_connect) |
 | [homekit](https://www.home-assistant.io/components/homekit) |
 | [http](https://www.home-assistant.io/components/http) |
 | [humidifier](https://www.home-assistant.io/components/humidifier) |
@@ -561,6 +563,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [youtube](https://www.home-assistant.io/components/youtube) |
 | [zeroconf](https://www.home-assistant.io/components/zeroconf) |
 | [zha](https://www.home-assistant.io/components/zha) |
+| [zha_toolkit](https://www.home-assistant.io/components/zha_toolkit) |
 | [zone](https://www.home-assistant.io/components/zone) |
 </details>
 
@@ -582,14 +585,13 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Custom Templates](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Custom-Templates)
 - [Daily Schedule](https://github.com/amitfin/daily_schedule)
 - [Daily Sensor](https://github.com/jeroenterheerdt/HADailySensor)
+- [Dyson](https://github.com/libdyson-wg/ha-dyson)
 - [Eufy Security](https://github.com/fuatakgun/eufy_security)
 - [Feedparser](https://github.com/custom-components/feedparser)
 - [Fontawesome](https://github.com/thomasloven/hass-fontawesome)
 - [Garbage Collection](https://github.com/bruxy70/Garbage-Collection)
 - [Generate Readme](https://github.com/custom-components/readme)
 - [Gtfs Realtime](https://github.com/mark1foley/ha-gtfs-rt-v2)
-- [Ha Dyson](https://github.com/shenxn/ha-dyson)
-- [Ha Dyson Cloud](https://github.com/shenxn/ha-dyson-cloud)
 - [HACS](https://github.com/hacs/integration)
 - [Hass Favicon](https://github.com/thomasloven/hass-favicon)
 - [Hdhomerun](https://github.com/uvjim/hass_hdhomerun)
@@ -728,7 +730,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.3)
-- Cloudflared (4.1.9)
+- Cloudflared (4.2.0)
 - ESPHome (2023.6.5)
 - eufy-security-ws (1.5.2)
 - Glances (0.19.2)

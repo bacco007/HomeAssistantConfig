@@ -30,7 +30,7 @@ observations:
     prob_given_false: 0.2
     platform: "state"
     to_state: "on"
-  - entity_id: binary_sensor.aqara_fp1_presence
+  - entity_id: binary_sensor.zha_bedroom_motion_occupancy
     prob_given_true: 0.75
     prob_given_false: 0.15
     platform: "state"

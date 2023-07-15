@@ -32,7 +32,7 @@ sensor:
     name: xiaomibedroom_min_temp
     state_characteristic: value_min
     sampling_size: 150
-    entity_id: sensor.zha_bedroom_temperature
+    entity_id: sensor.z2m_bedroom_climate_temperature
     max_age:
       hours: 24
 
@@ -40,7 +40,7 @@ sensor:
     name: xiaomibedroom_max_temp
     state_characteristic: value_max
     sampling_size: 150
-    entity_id: sensor.zha_bedroom_temperature
+    entity_id: sensor.z2m_bedroom_climate_temperature
     max_age:
       hours: 24
 
@@ -48,7 +48,7 @@ sensor:
     name: xiaomibedroom_change_temp
     state_characteristic: change
     sampling_size: 150
-    entity_id: sensor.zha_bedroom_temperature
+    entity_id: sensor.z2m_bedroom_climate_temperature
     max_age:
       hours: 24
 
@@ -56,7 +56,7 @@ sensor:
     name: xiaomioffice_min_temp
     state_characteristic: value_min
     sampling_size: 150
-    entity_id: sensor.zha_office_temperature
+    entity_id: sensor.z2m_office_airquality_temperature_filtered
     max_age:
       hours: 24
 
@@ -64,7 +64,7 @@ sensor:
     name: xiaomioffice_max_temp
     state_characteristic: value_max
     sampling_size: 150
-    entity_id: sensor.zha_office_temperature
+    entity_id: sensor.z2m_office_airquality_temperature_filtered
     max_age:
       hours: 24
 
@@ -72,6 +72,6 @@ sensor:
     name: xiaomioffice_change_temp
     state_characteristic: change
     sampling_size: 150
-    entity_id: sensor.zha_office_temperature
+    entity_id: sensor.z2m_office_airquality_temperature_filtered
     max_age:
       hours: 24
