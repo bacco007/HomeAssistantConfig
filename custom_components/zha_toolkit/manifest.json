@@ -1,0 +1,17 @@
+{
+    "codeowners": [
+        "@mdeweerd"
+    ],
+    "dependencies": [
+        "zha"
+    ],
+    "documentation": "https://github.com/mdeweerd/zha-toolkit",
+    "domain": "zha_toolkit",
+    "iot_class": "local_polling",
+    "issue_tracker": "https://github.com/mdeweerd/zha-toolkit/issues",
+    "name": "\ud83e\uddf0 ZHA Toolkit",
+    "requirements": [
+        "pytz"
+    ],
+    "version": "v0.9.4"
+}
