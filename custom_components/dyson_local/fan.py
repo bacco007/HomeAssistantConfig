@@ -4,7 +4,7 @@ import logging
 import math
 from typing import Any, Callable, List, Mapping, Optional
 
-from libdyson import DysonPureCool, DysonPureCoolLink, MessageType
+from .vendor.libdyson import DysonPureCool, DysonPureCoolLink, MessageType
 import voluptuous as vol
 
 from homeassistant.components.fan import (
@@ -67,8 +67,8 @@ async def async_setup_entry(
         entity = DysonPureCoolLinkEntity(device, name)
     elif isinstance(device, DysonPureCool):
         entity = DysonPureCoolEntity(device, name)
-    else:  # DysonPureHumidityCool
-        entity = DysonPureHumidifyCoolEntity(device, name)
+    else:  # DysonPurifierHumidifyCool
+        entity = DysonPurifierHumidifyCoolEntity(device, name)
     async_add_entities([entity])
 
     platform = entity_platform.current_platform.get()
@@ -243,7 +243,7 @@ class DysonPureCoolEntity(DysonFanEntity):
         self._device.enable_oscillation(angle_low, angle_high)
 
 
-class DysonPureHumidifyCoolEntity(DysonFanEntity):
+class DysonPurifierHumidifyCoolEntity(DysonFanEntity):
     """Dyson Pure Humidify+Cool entity."""
 
     @property
