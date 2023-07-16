@@ -3,6 +3,6 @@ platform: average
 name: indoor_average_temperature
 unique_id: indoor_average_temperature
 entities:
-  - sensor.zha_bedroom_temperature
-  - sensor.zha_lounge_weather_temperature
-  - sensor.zha_office_temperature
+  - sensor.z2m_bedroom_climate_temperature
+  - sensor.z2m_lounge_climate_temperature
+  - sensor.z2m_office_airquality_temperature_filtered

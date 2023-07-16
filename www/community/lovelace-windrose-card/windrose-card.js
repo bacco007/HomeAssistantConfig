@@ -277,6 +277,7 @@ class CardConfigWrapper {
         this.windRoseDrawNorthOffset = this.checkwindRoseDrawNorthOffset();
         this.windspeedBarLocation = this.checkWindspeedBarLocation();
         this.windspeedBarFull = this.checkBooleanDefaultTrue(cardConfig.windspeed_bar_full);
+        this.hideWindspeedBar = this.checkBooleanDefaultFalse(cardConfig.hide_windspeed_bar);
         this.centerCalmPercentage = this.checkBooleanDefaultTrue(cardConfig.center_calm_percentage);
         this.cardinalDirectionLetters = this.checkCardinalDirectionLetters();
         this.windDirectionCount = this.checkWindDirectionCount();
@@ -294,6 +295,9 @@ class CardConfigWrapper {
         Log.info('Config check OK');
     }
     windBarCount() {
+        if (this.hideWindspeedBar) {
+            return 0;
+        }
         return this.windspeedEntities.length;
     }
     checkDataPeriod(oldHoursToShow, dataPeriod) {
@@ -1648,9 +1652,11 @@ class WindRoseDirigent {
             this.windRoseRenderer = new WindRoseRendererStandaard(windRoseConfig, this.windSpeedConverter.getSpeedRanges());
         }
         this.windBarRenderers = [];
-        const barConfigs = this.configFactory.createWindBarConfigs();
-        for (let i = 0; i < cardConfig.windBarCount(); i++) {
-            this.windBarRenderers.push(new WindBarRenderer(barConfigs[i], this.windSpeedConverter.getOutputSpeedUnit()));
+        if (!cardConfig.hideWindspeedBar) {
+            const barConfigs = this.configFactory.createWindBarConfigs();
+            for (let i = 0; i < cardConfig.windBarCount(); i++) {
+                this.windBarRenderers.push(new WindBarRenderer(barConfigs[i], this.windSpeedConverter.getOutputSpeedUnit()));
+            }
         }
         this.windRoseData = [];
     }

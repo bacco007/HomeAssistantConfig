@@ -46,13 +46,13 @@ recorder:
       - sensor.systemuptime
       - sensor.unknown_unavailable_none_entities
       - sensor.tautulli_activity
-      - sensor.office_airquality_temperature
-      - sensor.office_airquality_humidity
-      - sensor.office_airquality_co2
-      - sensor.office_airquality_voc
-      - sensor.office_airquality_formaldehyd
-      - sensor.office_airquality_pm25
-      - sensor.office_airquality_linkquality
+      - sensor.z2m_office_airquality_temperature
+      - sensor.z2m_office_airquality_humidity
+      - sensor.z2m_office_airquality_co2
+      - sensor.z2m_office_airquality_voc
+      - sensor.z2m_office_airquality_formaldehyd
+      - sensor.z2m_office_airquality_pm25
+      - sensor.z2m_office_airquality_linkquality
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*

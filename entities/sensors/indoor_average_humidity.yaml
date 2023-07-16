@@ -3,6 +3,6 @@ platform: average
 name: indoor_average_humidity
 unique_id: indoor_average_humidity
 entities:
-  - sensor.zha_bedroom_humidity
-  - sensor.zha_lounge_weather_humidity
-  - sensor.zha_office_humidity
+  - sensor.z2m_bedroom_climate_humidity
+  - sensor.z2m_lounge_climate_humidity
+  - sensor.z2m_office_airquality_humidity_filtered
