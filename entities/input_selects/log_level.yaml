@@ -1,6 +1,7 @@
 ---
 log_level:
   name: Log Level
+  icon: mdi:format-indent-decrease
   options:
     - critical
     - fatal

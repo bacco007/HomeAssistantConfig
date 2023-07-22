@@ -1,0 +1,8 @@
+---
+battery_alert_threshold:
+  name: "Battery Alert Threshold"
+  icon: mdi:battery-alert
+  min: 0
+  max: 100
+  step: 1
+  unit_of_measurement: "%"

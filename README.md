@@ -46,22 +46,22 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Saturday, July 22nd 2023_
+_Stats as at 05:00, Sunday, July 23rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.2 | 459     | 3928         | 2742 | 100 |
+| 2023.7.3 | 460     | 3949         | 2742 | 106 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 0
-Automation | 100
+Automation | 106
 Binary Sensor | 196
 Camera | 5
 Device Tracker | 113
-Group | 3
-Input Boolean | 0
+Group | 4
+Input Boolean | 1
 Input Datetime | 0
 Input Text | 3
 Light | 8
@@ -71,7 +71,7 @@ Scene | 0
 Script | 4
 Sensor | 2742
 Sun | 1
-Switch | 183
+Switch | 193
 Weather | 9
 Zone | 3
 
@@ -425,6 +425,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
+| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -580,7 +581,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)

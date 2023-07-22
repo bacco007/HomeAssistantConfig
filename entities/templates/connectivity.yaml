@@ -1,0 +1,21 @@
+---
+trigger:
+  - platform: homeassistant
+    event: start
+
+  - platform: event
+    event_type: event_template_reloaded
+
+  - platform: state
+    entity_id: sensor.time
+binary_sensor:
+  - name: "Connected - MQTT"
+    unique_id: connected_mqtt
+    icon: mdi:sort-clock-descending
+    device_class: connectivity
+    state: "{{ integration_entities('mqtt')|select('has_value')|list|count > 0 }}"
+  - name: "Connected - Uptime Kuma"
+    unique_id: connected_uptime_kuma
+    icon: mdi:sort-clock-descending
+    device_class: connectivity
+    state: "{{ integration_entities('uptime_kuma')|select('has_value')|list|count > 0 }}"
