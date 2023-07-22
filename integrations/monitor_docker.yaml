@@ -104,8 +104,8 @@ monitor_docker:
       your_spotify_server: Your Spotify - Server
       youtubedl: YouTube DL
 
-  - name: TBSH03_monitordocker
-    url: tcp://192.168.1.65:2375
+  - name: TBSH3_monitordocker
+    url: tcp://192.168.1.132:2375
     scan_interval: 60
     monitored_conditions:
       - allinone
@@ -128,6 +128,12 @@ monitor_docker:
       readsb: ADS-B
       tar1090: tar1090
 
+  - name: TBSH5_monitordocker
+    url: tcp://192.168.1.133:2375
+    scan_interval: 60
+    monitored_conditions:
+      - allinone
+
   - name: PI4SRV_monitordocker
     url: tcp://192.168.1.64:2375
     scan_interval: 60
@@ -139,22 +145,3 @@ monitor_docker:
       dockercleanup: Docker Cleanup
       dockerproxy: Docker Proxy
       watchtower: Watchtower
-
-  - name: vmTBSHS02_monitordocker
-    url: tcp://192.168.1.62:2375
-    scan_interval: 60
-    monitored_conditions:
-      - allinone
-    rename:
-      chronograf: Chronograf
-      dockergc: Docker Garbage Cleanup
-      dozzle: Dozzle
-      duplicati: Duplicati
-      influxdb: InfluxDB
-      kapacitor: Kapacitor
-      ouroboros: Ouroboros
-      portainer: Portainer
-      suspicious_golick: Glances
-      telegraf: Telegraf
-      unifipoller: UniFi Poller
-      wud: What's Up Docker?

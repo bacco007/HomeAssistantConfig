@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - Playlists
+alias: "[Sonos, Playlist] Playlists"
 description: Play Playlists on Sonos
 id: Playlists
 trigger:

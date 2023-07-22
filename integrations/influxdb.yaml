@@ -72,7 +72,6 @@ influxdb:
       - sensor.lastfm_user_topartists
       - sensor.lastfm_user_toptracks
       - sensor.sungrowsolar_alldata
-      - binary_sensor.espresense_bedroom
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
       - sensor.unknown_unavailable_none_entities
@@ -87,9 +86,7 @@ influxdb:
       - sensor.z2m_office_airquality_humidity
       - sensor.z2m_office_airquality_co2
       - sensor.z2m_office_airquality_voc
-      - sensor.z2m_office_airquality_formaldehyd
       - sensor.z2m_office_airquality_pm25
-      - sensor.z2m_office_airquality_linkquality
     entity_globs:
       - binary_sensor.vmtbsh03*
       - sensor.192_168_1_50*
@@ -174,3 +171,4 @@ influxdb:
       - sensor.openweathermap*
       - sensor.yourspotify_*
       - sensor.qemu*
+      - sensor.current_weather*

@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - BBC World Service News
+alias: "[Sonos, Playlist] BBC World Service News"
 description: Play BBC World Service News on Sonos
 id: BBC_World_Service_News
 trigger:

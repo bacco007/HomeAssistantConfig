@@ -1,4 +1,4 @@
 ---
 ignored_unavailable_entities:
   entities:
-    - sensor.unavailable_entities
+    - sensor.time

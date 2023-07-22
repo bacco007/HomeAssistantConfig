@@ -41,10 +41,3 @@ sensor:
     filters:
       - filter: time_throttle
         window_size: "00:01"
-
-  - platform: filter
-    name: "z2m_office_airquality_linkquality_filtered"
-    entity_id: sensor.z2m_office_airquality_linkquality
-    filters:
-      - filter: time_throttle
-        window_size: "00:01"

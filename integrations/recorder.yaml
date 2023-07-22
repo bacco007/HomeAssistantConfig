@@ -38,7 +38,6 @@ recorder:
       - sensor.lastfm_user_recenttracks
       - sensor.lastfm_user_weeklytrackchart
       - sensor.sungrowsolar_alldata
-      - binary_sensor.espresense_bedroom
       - sensor.hub_hb_00045437_status
       - sensor.plane_overhead
       - sensor.uptime_sensor
@@ -50,9 +49,7 @@ recorder:
       - sensor.z2m_office_airquality_humidity
       - sensor.z2m_office_airquality_co2
       - sensor.z2m_office_airquality_voc
-      - sensor.z2m_office_airquality_formaldehyd
       - sensor.z2m_office_airquality_pm25
-      - sensor.z2m_office_airquality_linkquality
     entity_globs:
       - sensor.browser_*
       - binary_sensor.vmtbsh03*
@@ -125,6 +122,7 @@ recorder:
       - sensor.tempest_st_00056115_wind*
       - sensor.qemu*
       - sensor.*icloud3*
+      - sensor.current_weather*
     domains:
       - anniversaries
       - automation

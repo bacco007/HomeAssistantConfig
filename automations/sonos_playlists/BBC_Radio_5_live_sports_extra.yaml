@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - BBC Radio 5 live sports extra
+alias: "[Sonos, Playlist] BBC Radio 5 live sports extra"
 description: Play BBC Radio 5 live sports extra on Sonos
 id: BBC_Radio_5_live_sports_extra
 trigger:

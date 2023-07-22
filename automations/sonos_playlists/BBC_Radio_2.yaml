@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - BBC Radio 2
+alias: "[Sonos, Playlist] BBC Radio 2"
 description: Play BBC Radio 2 on Sonos
 id: BBC_Radio_2
 trigger:

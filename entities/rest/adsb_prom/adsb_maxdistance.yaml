@@ -1,5 +1,5 @@
 ---
-resource: http://192.168.1.65:9090/api/v1/query?query=readsb_distance_max
+resource: http://192.168.1.133:9090/api/v1/query?query=readsb_distance_max
 sensor:
   name: flighttracker_distance_max
   unique_id: flighttracker_distance_max

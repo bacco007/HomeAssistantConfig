@@ -1,0 +1,21 @@
+---
+alias: "[Sonos, Playlist] triple j Hottest"
+description: Play triple j Hottest on Sonos
+id: triple_j_Hottest
+trigger:
+  - platform: webhook
+    webhook_id: sonos_triple_j_Hottest
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+action:
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.office_sonos
+      source: "triple j Hottest"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: "triple j Hottest"

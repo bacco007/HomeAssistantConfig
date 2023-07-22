@@ -1,0 +1,12 @@
+---
+platform: template
+name: tempest_daily
+condition_template: "{{ states('sensor.hub_hb_00045437_weather') }}"
+# condition_template: "{{ states('tempest_st_00056115_current_conditions') }}" # Local Only Option
+temperature_template: "{{ states('sensor.tempest_st_00056115_temperature') | float}}"
+humidity_template: "{{ states('sensor.tempest_st_00056115_humidity')| int }}"
+pressure_template: "{{ states('sensor.tempest_st_00056115_sea_level_pressure')| float }}"
+wind_speed_template: "{{ ( states('sensor.tempest_st_00056115_wind_speed_avg') | float * 18 / 5 ) | round(2) }}"
+wind_bearing_template: "{{ states('sensor.tempest_st_00056115_wind_bearing_avg')| int }}"
+visibility_template: "{{ states('sensor.tempest_st_00056115_visibility')| float }}"
+forecast_template: "{{ state_attr('sensor.hub_hb_00045437_weather', 'daily_forecast') }}"

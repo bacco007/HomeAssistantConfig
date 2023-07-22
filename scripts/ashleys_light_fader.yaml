@@ -1,0 +1,722 @@
+---
+alias: Ashley’s Light Fader
+description: >
+  Fades a lamp over time. If you have any questions or comments about this
+  script, feel free to tweet Ashley Bischoff at @FriendlyAshley. Released under
+  the Apache 2.0 license. (v1.1)
+fields:
+  light:
+    name: 💡 Light
+    description: entity_id of the lamp.
+    selector:
+      entity:
+        domain: light
+    example: light.kitchen
+    required: true
+  lampBrightnessScale:
+    name: The lamp’s internal brightness scale
+    description: >
+      Most lamps seem to internally use a 0 to 255 brightness scale, but some
+      lamps internally use a 0% to 100% brightness scale. Either of these
+      settings will still fade the lamp, but if you happen to match this setting
+      to the lamp’s internal brightness scale, the resulting fade may be
+      smoother. (If you’re not sure, you can just leave this as is.)
+    advanced: true
+    required: true
+    selector:
+      select:
+        options:
+          - label: 0% to 100%
+            value: zeroToOneHundred
+          - label: 0 to 255
+            value: zeroToTwoFiftyFive
+    default: zeroToTwoFiftyFive
+  transitionTime:
+    name: ⏱ Fade time
+    description: Fade duration.
+    selector:
+      duration: null
+    required: true
+  easingTypeInput:
+    name: Easing type
+    description: >-
+      The easing function that you’d like the fade to use. As a starting
+      point—you can’t go wrong with any of the “Ease-In-Out X” easings as those
+      will always look pretty good whenever you’re fading between two nonzero
+      brightness values. As well, the “Ease-Out X” easings often tend to look
+      good if you might be fading up very quickly from zero to another
+      brightness, and the “Ease-In X” easings are mostly only included for
+      completeness as those tend to only look good if you might be fading down
+      to zero very quickly. (See also https://easings.net for visual demos of
+      each of these easing types.)
+    selector:
+      select:
+        mode: list
+        options:
+          - label: Try to automatically select the easing type
+            value: auto
+          - label: Ease-In-Out Sine [a good all-rounder]
+            value: easeInOutSine
+          - label: Ease-In-Out Quad
+            value: easeInOutQuad
+          - label: Ease-In-Out Cubic
+            value: easeInOutCubic
+          - label: Ease-In-Out Quart
+            value: easeInOutQuart
+          - label: Ease-Out Sine
+            value: easeOutSine
+          - label: Ease-Out Quad
+            value: easeOutCubic
+          - label: Ease-Out Cubic
+            value: easeOutCubic
+          - label: Ease-Out Quart
+            value: easeOutQuart
+          - label: Ease-In Sine
+            value: easeInSine
+          - label: Ease-In Quad
+            value: easeInCubic
+          - label: Ease-In Cubic
+            value: easeInCubic
+          - label: Ease-In Quart
+            value: easeInQuart
+          - label: Linear [somewhat unnatural to the human eye; not recommended]
+            value: linear
+    default: auto
+    required: true
+  endBrightnessPercent:
+    name: End brightness level
+    description: Percentage from 0 to 100 representing the final brightness level.
+    selector:
+      number:
+        min: 0
+        max: 100
+        step: 1
+        mode: slider
+        unit_of_measurement: "%"
+    default: 50
+    example: "50"
+    required: true
+  autoCancelThreshold:
+    name: 🚫 (optional) Brightness-change threshold that auto-cancels the fade
+    description: >-
+      You can optionally have the script automatically cancel its fade if the
+      lamp’s brightness were to be manually changed by a certain amount. For
+      example, let’s suppose that you were to set this value to 5% and then you
+      were to run this script. If there comes a point within the fade where this
+      script is expecting the lamp to be at, say, 22% brightness—but you’ve just
+      manually set that lamp to 30% brightness—this script will automatically
+      cancel its fade since that 8% difference is >= 5%. Note—if you use this,
+      Ashley doesn’t recommend setting this to anything less than about 3;
+      that’s just because it can be normal for there to be an occasional
+      difference of 1 or 2 since not all lamps instantly reflect newly assigned
+      brightness values due to processing lag and other factors. In Ashley’s
+      home, she personally uses a value of about 5 for this.
+    selector:
+      number:
+        min: 2
+        max: 100
+        step: 1
+        mode: slider
+        unit_of_measurement: "%"
+    default: 10
+    example: "10"
+    required: false
+  endBrightnessEntity:
+    name: (optional) Use an entity instead for the end-brightness value?
+    description: >-
+      You can optionally have the script ignore the end-brightness value above
+      and instead use the numeric value of another entity that you select here,
+      such as an input-number helper, an input-select helper, an input-text
+      helper, or a numeric sensor.
+    selector:
+      entity:
+        domain:
+          - input_number
+          - input_select
+          - input_text
+          - sensor
+    example: input_number.dining_room_entertaining_level
+    required: false
+    advanced: true
+  endBrightnessEntityScale:
+    name: The end-brightness entity’s brightness scale (if used)
+    description: >-
+      If you enable the “Use an entity for the end-brightness value instead”
+      option, select here whether your chosen entity represents brightness with
+      a 0% to 100% scale or a 0 to 255 scale. (Note—in either case, this script
+      will expect that entity to solely have an integer value without any
+      nonnumeric characters such as “%”.)
+    advanced: true
+    selector:
+      select:
+        options:
+          - label: 0% to 100%
+            value: zeroToOneHundred
+          - label: 0 to 255
+            value: zeroToTwoFiftyFive
+    default: zeroToOneHundred
+    required: true
+  stopEntity:
+    name: 🛑 (optional) Stop if a certain entity is turned on during the fade?
+    description: >-
+      You can optionally have the script keep an eye on an input boolean or a
+      binary sensor. And if that entity is then turned on during the
+      fade, the script will automatically stop. So for example, if you create a
+      “Stop Everything” input boolean, and if you set that entity here, you can
+      stop your fade at any time by turning on that “Stop Everything” entity.
+    selector:
+      entity:
+        domain:
+          - input_boolean
+          - binary_sensor
+    example: input_boolean.stop_everything
+    required: false
+    advanced: true
+  shouldResetTheStopEntityToOffAtStart:
+    name: >-
+      (optional) Reset that stop entity to “off” just before starting the fade?
+    description: >-
+      If you make use of the stop entity (above), you can also optionally have
+      the script automatically reset that entity to “off” at the start of the
+      fade. (By default, the script won’t change the value of the stop entity.)
+    selector:
+      boolean: null
+    advanced: true
+    required: true
+    default: false
+  minimumStepDelayInMilliseconds:
+    name: Minimum delay per step
+    description: >-
+      The minimum delay between sending each brightness command. Some lamps only
+      accept commands every X milliseconds—so while you can probably leave this
+      as is, if by chance your lamp were to behave strangely, you might try
+      bumping up this number by another ten or twenty milliseconds.
+    advanced: true
+    required: true
+    selector:
+      number:
+        min: 50
+        max: 1000
+        step: 10
+        mode: slider
+        unit_of_measurement: ms
+    default: 100
+    example: "100"
+  isDebugMode:
+    name: 🐛 Enable debugging mode?
+    description: >-
+      If this is enabled, the script will output status messages to your Home
+      Assistant log along the way. Unless something were to be acting weirdly,
+      you can leave this off.
+    selector:
+      boolean: null
+    advanced: true
+    required: true
+    default: false
+mode: parallel
+sequence:
+  - variables:
+      lightFriendlyName: "{{ state_attr(light, 'friendly_name') }}"
+      startTimestamp: "{{ as_timestamp(now()) }}"
+      transitionTimeInSeconds: >
+        {{ ((transitionTime.hours | int) * 60 * 60) + ((transitionTime.minutes |
+        int) * 60) + (transitionTime.seconds | int) }}
+      endTimestamp: "{{ startTimestamp + transitionTimeInSeconds }}"
+      transitionTimeInMilliseconds: "{{ transitionTimeInSeconds * 1000 }}"
+      ignoreTheEndBrightnessValueAndUseAnEntityForTheEndBrightnessInstead: >
+        {% if (endBrightnessEntity is defined) and
+        (has_value(endBrightnessEntity)) %}
+          {{ true }}
+        {% else %}
+          {{ false }}
+        {% endif %}
+      stopEntityIsEnabled: |
+        {% if (stopEntity is defined) and (has_value(stopEntity)) %}
+          {{ true }}
+        {% else %}
+          {{ false }}
+        {% endif %}
+      stopEntityIsEditable: |
+        {% if stopEntityIsEnabled %}
+          {% set stopEntityEditableAttribute = state_attr(stopEntity, 'editable') %}
+          {% if stopEntityEditableAttribute %}
+            {{ true}}
+          {% else %}
+            {{ false }}
+          {% endif %}
+        {% else %}
+          {{ false }}
+        {% endif %}
+      stopEntityFriendlyName: |
+        {% if stopEntityIsEnabled %}
+          {{ state_attr(stopEntity, 'friendly_name') }}
+        {% else %}
+          {{ "" }}
+        {% endif %}
+      startBrightness: "{% set rawLightLevel = state_attr(light, 'brightness') %}\n{## If a light is off, its brightness will return \"None\"? So first check if there's a valid brightness before setting the value ##} {% if rawLightLevel %}\n\t{% set currentLightLevel = rawLightLevel | int %}\n{% else %}\n\t{% set currentLightLevel = 0 %}\n{% endif %} {% if lampBrightnessScale == \"zeroToOneHundred\" %}\n  {% set currentLightLevel = (currentLightLevel / 2.55) | round(0) %}\n{% endif %} {{ currentLightLevel }}\n"
+      endBrightness: "{% if ignoreTheEndBrightnessValueAndUseAnEntityForTheEndBrightnessInstead %}\n\n  {% set entityBrightnessValue = states(endBrightnessEntity) | round (0) %}\n  {% if (endBrightnessEntityScale == lampBrightnessScale) %}\n    {% set endBrightness = entityBrightnessValue %}\n  {% elif (lampBrightnessScale == \"zeroToTwoFiftyFive\") and (endBrightnessEntityScale == \"zeroToOneHundred\") %}\n    {% set endBrightness = (entityBrightnessValue * 2.55) | round(0) %}\n  {% elif (lampBrightnessScale == \"zeroToOneHundred\") and (endBrightnessEntityScale == \"zeroToTwoFiftyFive\") %}\n    {% set endBrightness = (entityBrightnessValue / 2.55) | round(0) %}\n  {% endif %}\n{% else %}\n  {## branch for ignoreTheEndBrightnessValueAndUseAnEntityForTheEndBrightnessInstead being off ##}\n  {% if lampBrightnessScale == \"zeroToOneHundred\" %}\n  \t{% set endBrightness = endBrightnessPercent %}\n  {% else %}\n    {% set endBrightness = (endBrightnessPercent * 2.55) | round(0) %}\n  {% endif %}\n{% endif %} {{ endBrightness }}\n"
+      brightnessSpan: "{{ endBrightness - startBrightness }}"
+      absoluteBrightnessSpan: "{{ brightnessSpan | abs }}"
+      autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged: >
+        {% if (autoCancelThreshold is defined) and
+        (is_number(autoCancelThreshold)) %}
+          {{ true }}
+        {% else %}
+          {{ false }}
+        {% endif %}
+      normalizedAutoCancelThreshold: |
+        {% if not autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged %}
+          {## exit early if autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged isn’t even enabled ##}
+          {{ 255 }}
+        {% elif (lampBrightnessScale == "zeroToTwoFiftyFive") %}
+          {{ (autoCancelThreshold * 2.55) | round (0) }}
+        {% else %}
+          {{ autoCancelThreshold }}
+        {% endif %}
+      expectedBrightness: "{{ startBrightness }}"
+  - if:
+      - condition: template
+        value_template: >
+          {{ stopEntityIsEnabled and stopEntityIsEditable and
+          shouldResetTheStopEntityToOffAtStart }}
+    then:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: "{{ stopEntity }}"
+  - if:
+      - condition: template
+        value_template: |
+          {{ (absoluteBrightnessSpan | int) == 0 }}
+    then:
+      - variables:
+          stopMessage: >
+            {% set stopMessage = "Stopped Ashley’s Fader because " +
+            (lightFriendlyName | string) + "’s starting brightness is the same
+            as its ending brightness." %} {{ stopMessage }}
+      - if:
+          - condition: template
+            value_template: |
+              {{ isDebugMode }}
+        then:
+          - service: system_log.write
+            data_template:
+              message: |
+                {{ stopMessage }}
+              level: warning
+      - stop: |
+          {{ stopMessage }}
+  - if:
+      - condition: template
+        value_template: >
+          {## init ##} {% set stopEntityStatus = false %} {% if
+          stopEntityIsEnabled %}
+            {% if bool(states(stopEntity), false) %}
+              {% set stopEntityStatus = true %}
+            {% endif %}
+          {% endif %} {{ stopEntityStatus }}
+    then:
+      - variables:
+          stopMessage: >
+            {% set stopMessage = "Stopped Ashley’s Fader because " +
+            (stopEntityFriendlyName | string) + " is on." %} {{ stopMessage }}
+      - if:
+          - condition: template
+            value_template: |
+              {{ isDebugMode }}
+        then:
+          - service: system_log.write
+            data_template:
+              message: |
+                {{ stopMessage }}
+              level: warning
+      - stop: |
+          {{ stopMessage }}
+  - variables:
+      timestampBeforeServiceCall: "{{ as_timestamp(now()) }}"
+  - if:
+      - condition: template
+        value_template: |
+          {{ (lampBrightnessScale == "zeroToTwoFiftyFive") }}
+    then:
+      - service: light.turn_on
+        target:
+          entity_id: "{{ light }}"
+        data:
+          brightness: "{{ expectedBrightness }}"
+    else:
+      - service: light.turn_on
+        target:
+          entity_id: "{{ light }}"
+        data:
+          brightness_pct: "{{ expectedBrightness }}"
+  - variables:
+      processingDelayInMilliseconds: "{{ (as_timestamp(now()) -  timestampBeforeServiceCall) * 1000 }}"
+      easingType: |
+        {% if "auto" in easingTypeInput %}
+          {% if (startBrightness == 0) and (transitionTimeInSeconds <= 20) %}
+            {{ "easeOutCubic" }}
+          {% elif (startBrightness == 0) and (transitionTimeInSeconds <= 55) %}
+            {{ "easeOutQuad" }}
+          {% elif (endBrightness == 0) and (transitionTimeInSeconds <= 20) %}
+            {{ "easeInCubic" }}
+          {% elif (endBrightness == 0) and (transitionTimeInSeconds <= 55) %}
+            {{ "easeInQuad" }}
+          {% else %}
+            {{ "easeInOutSine" }}
+          {% endif %}
+        {% else %}
+          {{ easingTypeInput }}
+        {% endif %}
+      remainingTimeInMilliseconds: >
+        {% set nowTimestamp = as_timestamp(now()) %} {{ (endTimestamp -
+        nowTimestamp) * 1000 }}
+      delayInMilliseconds: >
+        {% set totalExpectedRemainingProcessingDelay =
+        processingDelayInMilliseconds * absoluteBrightnessSpan %} {% set
+        idealDelay = ((remainingTimeInMilliseconds -
+        totalExpectedRemainingProcessingDelay) / absoluteBrightnessSpan) |
+        round(0) %}
+
+        {% if "auto" in easingType %}
+          {% if (startBrightness == 0) and (transitionTimeInSeconds < 20) %}
+            {% set easingType = "easeOutCubic" %}
+          {% elif (endBrightness == 0) and (transitionTimeInSeconds < 20) %}
+            {% set easingType = "easeInCubic" %}
+          {% else %}
+            {% set easingType = "easeInOutQuad" %}
+          {% endif %}
+        {% endif %}
+
+        {% if "Circ" in easingType %}
+          {## Four as many frames for Circ-type easing ##}
+          {% set idealDelay = (idealDelay / 4) | round(0) %}
+        {% elif ("Cubic" in easingType) or ("Quart" in easingType) %}
+          {## Three as many frames for Cubic-type or Quart-type easing ##}
+          {% set idealDelay = (idealDelay / 3) | round(0) %}
+        {% elif "ease" in easingType %}
+          {## Twice as many frames for other easing types ##}
+          {% set idealDelay = (idealDelay / 2) | round(0) %}
+        {% endif %}
+
+        {## Make sure that the delay isn’t below the minimum delay ##} {% if
+        idealDelay < minimumStepDelayInMilliseconds %}
+          {{ minimumStepDelayInMilliseconds }}
+        {% else %}
+          {{ idealDelay }}
+        {% endif %}
+  - if:
+      - condition: template
+        value_template: |
+          {{ isDebugMode }}
+    then:
+      - service: system_log.write
+        data_template:
+          message: >
+            {{ easingType }} easing type with {{ delayInMilliseconds | int }} ms
+            delay. remainingTimeInMilliseconds = {{ remainingTimeInMilliseconds
+            | round(0) }}, and absoluteBrightnessSpan = {{
+            absoluteBrightnessSpan }}
+          level: warning
+      - service: system_log.write
+        data_template:
+          message: >
+            startBrightness = {{ startBrightness }}, endBrightness = {{
+            endBrightness }}, and  processingDelayInMilliseconds = {{
+            processingDelayInMilliseconds | int }}
+          level: warning
+  - repeat:
+      sequence:
+        - variables:
+            timestampBeforeServiceCall: "{{ as_timestamp(now()) }}"
+            percentageOfTimeCompleted: >
+              {% set nowTimestamp = as_timestamp(now()) %} {% set
+              percentageOfTimeCompleted = ((nowTimestamp - startTimestamp) /
+              transitionTimeInSeconds) %} {% if (percentageOfTimeCompleted < 0)
+              %}
+                {% set percentageOfTimeCompleted = 0 %}
+              {% elif (percentageOfTimeCompleted > 1) %}
+                {% set percentageOfTimeCompleted = 1 %}
+              {% endif %} {{ percentageOfTimeCompleted }}
+            easingAdjustedPercentageCompleted: >
+              {% set percentageOfTimeCompleted = percentageOfTimeCompleted |
+              float(0) %} {% if easingType == "easeInSine" %}
+                {## https://easings.net/#easeInSine ##}
+                {{  1 - cos((percentageOfTimeCompleted * pi) / 2) }}
+
+              {% elif easingType == "easeInQuad" %}
+                {## https://easings.net/#easeInQuad ##}
+                {{ percentageOfTimeCompleted * percentageOfTimeCompleted }}
+
+              {% elif easingType == "easeInCubic" %}
+                {## https://easings.net/#easeInCubic ##}
+                {{ percentageOfTimeCompleted * percentageOfTimeCompleted * percentageOfTimeCompleted }}
+
+              {% elif easingType == "easeInQuart" %}
+                {## https://easings.net/#easeInQuart ##}
+                {{ percentageOfTimeCompleted * percentageOfTimeCompleted * percentageOfTimeCompleted * percentageOfTimeCompleted }}
+
+              {% elif easingType == "easeOutSine" %}
+                {## https://easings.net/#easeOutSine ##}
+                {{ sin((percentageOfTimeCompleted * pi) / 2) }}
+
+              {% elif easingType == "easeOutQuad" %}
+                {## https://easings.net/#easeOutQuad ##}
+                {{ 1 - (1 - percentageOfTimeCompleted)* (1 - percentageOfTimeCompleted) }}
+
+              {% elif easingType == "easeOutCubic" %}
+                {## https://easings.net/#easeOutCubic ##}
+                {{ 1 - ((1 - percentageOfTimeCompleted) ** 3) }}
+
+              {% elif easingType == "easeOutQuart" %}
+                {## https://easings.net/#easeOutQuart ##}
+                {{ 1 - ((1 - percentageOfTimeCompleted) ** 4) }}
+
+              {% elif easingType == "easeInOutSine" %}
+                {## https://easings.net/#easeInOutSine ##}
+                {{ -1 * ((cos(pi * percentageOfTimeCompleted) - 1) / 2) }}
+
+              {% elif easingType == "easeInOutQuad" %}
+                {## https://easings.net/#easeInOutQuad ##}
+                {% if (percentageOfTimeCompleted < 0.5) %}
+                  {{ 2 * percentageOfTimeCompleted * percentageOfTimeCompleted }}
+                {% else %}
+                  {{ 1- (((-2 * percentageOfTimeCompleted + 2) ** 2) / 2) }}
+                {% endif %}
+
+              {% elif easingType == "easeInOutCubic" %}
+                {## https://easings.net/#easeInOutCubic ##}
+                {% if (percentageOfTimeCompleted < 0.5) %}
+                  {{ 4 * percentageOfTimeCompleted * percentageOfTimeCompleted * percentageOfTimeCompleted }}
+                {% else %}
+                  {{ 1- (((-2 * percentageOfTimeCompleted + 2) ** 3) / 2) }}
+                {% endif %}
+
+              {% elif easingType == "easeInOutQuart" %}
+                {## https://easings.net/#easeInOutQuart ##}
+                {% if (percentageOfTimeCompleted < 0.5) %}
+                  {{ 8 * percentageOfTimeCompleted * percentageOfTimeCompleted * percentageOfTimeCompleted * percentageOfTimeCompleted }}
+                {% else %}
+                  {{ 1 - (((-2 * percentageOfTimeCompleted + 2) ** 4) / 2) }}
+                {% endif %}
+              {% else %}
+                {## linear ##}
+                {{ percentageOfTimeCompleted }}
+              {% endif %}
+            expectedBrightness: >
+              {% set startBrightness = startBrightness | int %} {% set
+              brightnessSpan = brightnessSpan | int %} {% set
+              easingAdjustedPercentageCompleted =
+              easingAdjustedPercentageCompleted | float(0) %}
+
+              {% set calculatedBrightness = (startBrightness + (brightnessSpan *
+              easingAdjustedPercentageCompleted)) | round(0) %}
+
+              {% if (calculatedBrightness < 0) %}
+                {% set calculatedBrightness = 0 %}
+              {% elif (calculatedBrightness > 255) %}
+                {% set calculatedBrightness = 255 %}
+              {% endif %}
+
+              {% if (endBrightness >= startBrightness) and (calculatedBrightness
+              > endBrightness) %}
+                {% set calculatedBrightness = endBrightness %}
+              {% elif (endBrightness < startBrightness) and
+              (calculatedBrightness < endBrightness) %}
+                {% set calculatedBrightness = endBrightness %}
+              {% endif %}
+
+              {{ calculatedBrightness }}
+            linearExpectedBrightness: >
+              {% set startBrightness = startBrightness | int %} {% set
+              brightnessSpan = brightnessSpan | int %} {% set
+              percentageOfTimeCompleted = percentageOfTimeCompleted | float(0)
+              %}
+
+              {% set calculatedBrightness = (startBrightness + (brightnessSpan *
+              percentageOfTimeCompleted)) | round(0) %}
+
+              {% if (calculatedBrightness < 0) %}
+                {% set calculatedBrightness = 0 %}
+              {% elif (calculatedBrightness > 255) %}
+                {% set calculatedBrightness = 255 %}
+              {% endif %}
+
+              {% if (endBrightness >= startBrightness) and (calculatedBrightness
+              > endBrightness) %}
+                {% set calculatedBrightness = endBrightness %}
+              {% elif (endBrightness < startBrightness) and
+              (calculatedBrightness < endBrightness) %}
+                {% set calculatedBrightness = endBrightness %}
+              {% endif %}
+
+              {{ calculatedBrightness }}
+            currentBrightness: >
+              {% set rawLightLevel = state_attr(light, 'brightness') %}
+
+              {## If a light is off, its brightness will return 'None'. So first
+              check if there's a valid brightness before getting the value ##}
+
+              {% if rawLightLevel %}
+                {% set currentLightLevel = rawLightLevel | int %}
+              {% else %}
+                {% set currentLightLevel = 0 %}
+              {% endif %} {% if lampBrightnessScale == "zeroToOneHundred" %}
+                {% set currentLightLevel = (currentLightLevel / 2.55) | round(0) %}
+              {% endif %} {{ currentLightLevel }}
+        - if:
+            - condition: template
+              value_template: |
+                {{ (currentBrightness | int) != (endBrightness | int) }}
+          then:
+            - if:
+                - condition: template
+                  value_template: |
+                    {{ (lampBrightnessScale == "zeroToTwoFiftyFive") }}
+              then:
+                - service: light.turn_on
+                  target:
+                    entity_id: "{{ light }}"
+                  data:
+                    brightness: "{{ expectedBrightness }}"
+              else:
+                - service: light.turn_on
+                  target:
+                    entity_id: "{{ light }}"
+                  data:
+                    brightness_pct: "{{ expectedBrightness }}"
+            - if:
+                - condition: template
+                  value_template: |
+                    {{ isDebugMode }}
+              then:
+                - service: system_log.write
+                  data_template:
+                    message: >
+                      Set {{ lightFriendlyName }} to {{ expectedBrightness | int
+                      }} brightness. (Linear brightness would have been {{
+                      linearExpectedBrightness | int }}.) Delay is {{
+                      delayInMilliseconds | int }} ms. Elapsed time is {{
+                      (as_timestamp(now()) - startTimestamp) | round(2) }}
+                      seconds. (endBrightness is {{ endBrightness}}.)
+                    level: warning
+        - delay:
+            milliseconds: "{{ delayInMilliseconds | float(0) }}"
+        - variables:
+            currentBrightness: "{% set rawLightLevel = state_attr(light, 'brightness') %} {## If a light is off, its brightness will return \"None\"? So first check if there's a valid brightness before getting the value ##} {% if rawLightLevel %}\n\t{% set currentLightLevel = rawLightLevel | int %}\n{% else %}\n\t{% set currentLightLevel = 0 %}\n{% endif %} {% if lampBrightnessScale == \"zeroToOneHundred\" %}\n  {% set currentLightLevel = (currentLightLevel / 2.55) | round(0) %}\n{% endif %} {{ currentLightLevel }}\n"
+            brightnessDifferenceFromExpected: >
+              {{ ( (currentBrightness | int) - (expectedBrightness | int) ) |
+              abs }}
+            isBrightnessDifferenceAboveAutoCancelThreshold: |
+              {% if autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged %}
+                {{ (brightnessDifferenceFromExpected | int) >= (normalizedAutoCancelThreshold | int) }}
+              {% else %}
+                {{ false }}
+              {% endif %}
+        - if:
+            - condition: template
+              value_template: >
+                {{ autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged and
+                isBrightnessDifferenceAboveAutoCancelThreshold }}
+          then:
+            - variables:
+                stopMessage: >
+                  {% if lampBrightnessScale == "zeroToTwoFiftyFive" %}
+                    {% set currentBrightnessAsPercentage = (currentBrightness / 2.55) | round(0) %}
+                    {% set expectedBrightnessAsPercentage = (expectedBrightness / 2.55) | round(0) %}
+                    {% set differenceFromExpectedAsPercentage = (brightnessDifferenceFromExpected / 2.55) | round(0) %}
+                  {% else %}
+                    {% set currentBrightnessAsPercentage = currentBrightness %}
+                    {% set expectedBrightnessAsPercentage = expectedBrightness %}
+                    {% set differenceFromExpectedAsPercentage = brightnessDifferenceFromExpected %}
+                  {% endif %}
+
+                  {% set stopMessage = "Stopped Ashley’s Fader because " +
+                  (lightFriendlyName | string) + " was found to be at " +
+                  (currentBrightnessAsPercentage | string) + "%, a difference of
+                  " + (differenceFromExpectedAsPercentage | string) + "
+                  percentage points from the expected brightness of " +
+                  (expectedBrightnessAsPercentage | string) + "%, which is
+                  higher than the auto-cancel threshold of " +
+                  (autoCancelThreshold | string) + " percentage points." %} {{
+                  stopMessage }}
+            - if:
+                - condition: template
+                  value_template: |
+                    {{ isDebugMode }}
+              then:
+                - service: system_log.write
+                  data_template:
+                    message: |
+                      {{ stopMessage }}
+                    level: warning
+            - stop: |
+                {{ stopMessage }}
+        - if:
+            - condition: template
+              value_template: >
+                {## init ##} {% set stopEntityStatus = false %} {% if
+                stopEntityIsEnabled %}
+                  {% if bool(states(stopEntity), false) %}
+                    {% set stopEntityStatus = true %}
+                  {% endif %}
+                {% endif %} {{ stopEntityStatus }}
+          then:
+            - variables:
+                stopMessage: >
+                  {% set stopMessage = "Stopped Ashley’s Fader because " +
+                  (stopEntityFriendlyName | string) + " is on." %} {{
+                  stopMessage }}
+            - if:
+                - condition: template
+                  value_template: |
+                    {{ isDebugMode }}
+              then:
+                - service: system_log.write
+                  data_template:
+                    message: |
+                      {{ stopMessage }}
+                    level: warning
+            - stop: |
+                {{ stopMessage }}
+      until:
+        - condition: template
+          value_template: |
+            {{ (as_timestamp(now()) >= endTimestamp)
+              or ((endBrightness >= startBrightness) and (expectedBrightness >= endBrightness))
+              or ((endBrightness < startBrightness) and (expectedBrightness <= endBrightness)) }}
+  - variables:
+      currentBrightness: "{% set rawLightLevel = state_attr(light, 'brightness') %}\n{## If a light is off, its brightness will return 'None'. So first check if there's a valid brightness before getting the value ##} {% if rawLightLevel %}\n\t{% set currentLightLevel = rawLightLevel | int %}\n{% else %}\n\t{% set currentLightLevel = 0 %}\n{% endif %} {% if lampBrightnessScale == \"zeroToOneHundred\" %}\n  {% set currentLightLevel = (currentLightLevel / 2.55) | round(0) %}\n{% endif %} {{ currentLightLevel }}\n"
+      brightnessDifferenceFromExpected: |
+        {{ ( (currentBrightness | int) - (endBrightness | int) ) | abs }}
+      isBrightnessDifferenceAboveAutoCancelThreshold: |
+        {% if autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged %}
+          {{ (brightnessDifferenceFromExpected | int) > (normalizedAutoCancelThreshold | int) }}
+        {% else %}
+          {{ false }}
+        {% endif %}
+  - if:
+      - condition: template
+        value_template: >
+          {{ ((currentBrightness | int) != (endBrightness | int))  and ((not
+          autoCancelTheFadeIfTheLampBrightnessIsManuallyChanged) or (not
+          isBrightnessDifferenceAboveAutoCancelThreshold)) }}
+    then:
+      - if:
+          - condition: template
+            value_template: |
+              {{ (lampBrightnessScale == "zeroToTwoFiftyFive") }}
+        then:
+          - service: light.turn_on
+            target:
+              entity_id: "{{ light }}"
+            data:
+              brightness: "{{ endBrightness }}"
+        else:
+          - service: light.turn_on
+            target:
+              entity_id: "{{ light }}"
+            data:
+              brightness_pct: "{{ endBrightness }}"
+max: 10
+icon: mdi:lightbulb-on-50

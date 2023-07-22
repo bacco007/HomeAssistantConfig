@@ -3,9 +3,9 @@ theme: noctis
 icon: mdi:docker
 subview: true
 path: docker
-title: docker
+title: Docker
 type: custom:grid-layout
-layout: !include ../includes/grid-4col.yaml
+layout: !include ../includes/grid-5col.yaml
 badges: []
 cards:
   ### Sidebar - Menu
@@ -52,12 +52,19 @@ cards:
                   cards:
                     - !include ../docker/tbsh2.yaml
               - attributes:
-                  label: tbsh03
+                  label: tbsh3
                   isMinWidthIndicator: true
                 card:
                   type: vertical-stack
                   cards:
-                    - !include ../docker/tbsh03.yaml
+                    - !include ../docker/tbsh3.yaml
+              - attributes:
+                  label: tbsh5
+                  isMinWidthIndicator: true
+                card:
+                  type: vertical-stack
+                  cards:
+                    - !include ../docker/tbsh5.yaml
               - attributes:
                   label: pi4-srv
                   isMinWidthIndicator: true
@@ -98,7 +105,7 @@ cards:
         type: vertical-stack
 
         cards:
-          - !include ../docker/pi4-srv.yaml
+          - !include ../docker/tbsh3.yaml
 
   # Column 4, Row 1
   - type: custom:state-switch
@@ -110,32 +117,16 @@ cards:
         type: vertical-stack
 
         cards:
-          - !include ../docker/tbsh03.yaml
+          - !include ../docker/pi4-srv.yaml
 
-  # Column 1, Row 2
-  - type: custom:gap-card
+  # Column 5, Row 1
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
-      grid=area: c1r2
-      show:
-        mediaquery: "(min-width: 801px)"
+      grid-area: c5r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
 
-  # Column 2, Row 2
-  - type: custom:gap-card
-    view_layout:
-      grid=area: c2r2
-      show:
-        mediaquery: "(min-width: 801px)"
-
-  # Column 3, Row 2
-  - type: custom:gap-card
-    view_layout:
-      grid=area: c3r2
-      show:
-        mediaquery: "(min-width: 801px)"
-
-  # Column 4, Row 2
-  - type: custom:gap-card
-    view_layout:
-      grid=area: c4r2
-      show:
-        mediaquery: "(min-width: 801px)"
+        cards:
+          - !include ../docker/tbsh5.yaml

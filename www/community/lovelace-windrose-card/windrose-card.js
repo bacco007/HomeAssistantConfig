@@ -203,10 +203,11 @@ class Log {
 Log.level = 0;
 
 class WindSpeedEntity {
-    constructor(entity, name, useStatistics, speedUnit) {
+    constructor(entity, name, useStatistics, renderRelativeScale, speedUnit) {
         this.entity = entity;
         this.name = name;
         this.useStatistics = useStatistics;
+        this.renderRelativeScale = renderRelativeScale;
         this.speedUnit = speedUnit;
     }
 }
@@ -391,7 +392,8 @@ class CardConfigWrapper {
             const name = entityConfig.name;
             const useStatistics = this.checkBooleanDefaultFalse(entityConfig.use_statistics);
             const inputSpeedUnit = this.checkInputSpeedUnit(entityConfig.speed_unit);
-            entities.push(new WindSpeedEntity(entity, name, useStatistics, inputSpeedUnit));
+            const renderRelativeScale = this.checkBooleanDefaultTrue(entityConfig.render_relative_scale);
+            entities.push(new WindSpeedEntity(entity, name, useStatistics, renderRelativeScale, inputSpeedUnit));
         }
         return entities;
     }
@@ -801,7 +803,7 @@ class WindBarRenderer {
         canvasContext.textBaseline = 'middle';
         let posY = this.dimensions.posY;
         for (let i = 0; i < highestRangeMeasured; i++) {
-            if (i === highestRangeMeasured - 1) {
+            if (!this.config.renderRelativeScale || i === highestRangeMeasured - 1) {
                 length = lengthMaxRange * -1;
             }
             else {
@@ -865,7 +867,7 @@ class WindBarRenderer {
         canvasContext.textBaseline = 'top';
         let posX = this.dimensions.posX;
         for (let i = 0; i < highestRangeMeasured; i++) {
-            if (i === highestRangeMeasured - 1) {
+            if (!this.config.renderRelativeScale || i === highestRangeMeasured - 1) {
                 length = lengthMaxRange;
             }
             else {
@@ -1209,12 +1211,11 @@ class WindRoseConfig {
 }
 
 class WindBarConfig {
-    constructor(label, orientation, full, inputUnit, outputUnit, outputUnitLabel, speedRangeBeaufort, barBorderColor, barUnitNameColor, barNameColor, barUnitValuesColor, barPercentagesColor) {
+    constructor(label, orientation, full, renderRelativeScale, outputUnitLabel, speedRangeBeaufort, barBorderColor, barUnitNameColor, barNameColor, barUnitValuesColor, barPercentagesColor) {
         this.label = label;
         this.orientation = orientation;
         this.full = full;
-        this.inputUnit = inputUnit;
-        this.outputUnit = outputUnit;
+        this.renderRelativeScale = renderRelativeScale;
         this.outputUnitLabel = outputUnitLabel;
         this.speedRangeBeaufort = speedRangeBeaufort;
         this.barBorderColor = barBorderColor;
@@ -1238,10 +1239,10 @@ class WindRoseConfigFactory {
             const entity = this.cardConfig.windspeedEntities[i];
             let windBarConfig;
             if (this.cardConfig.windspeedBarLocation === 'bottom') {
-                windBarConfig = new WindBarConfig(entity.name, 'horizontal', this.cardConfig.windspeedBarFull, entity.speedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.speedRangeBeaufort, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
+                windBarConfig = new WindBarConfig(entity.name, 'horizontal', this.cardConfig.windspeedBarFull, entity.renderRelativeScale, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.speedRangeBeaufort, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
             }
             else if (this.cardConfig.windspeedBarLocation === 'right') {
-                windBarConfig = new WindBarConfig(entity.name, 'vertical', this.cardConfig.windspeedBarFull, entity.speedUnit, this.cardConfig.outputSpeedUnit, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.speedRangeBeaufort, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
+                windBarConfig = new WindBarConfig(entity.name, 'vertical', this.cardConfig.windspeedBarFull, entity.renderRelativeScale, this.cardConfig.outputSpeedUnitLabel, this.cardConfig.speedRangeBeaufort, this.cardConfig.cardColor.barBorder, this.cardConfig.cardColor.barUnitName, this.cardConfig.cardColor.barName, this.cardConfig.cardColor.barUnitValues, this.cardConfig.cardColor.barPercentages);
             }
             else {
                 throw Error('Unknown windspeed bar location: ' + this.cardConfig.windspeedBarLocation);
@@ -2097,7 +2098,7 @@ window.customCards.push({
     description: 'A card to show wind speed and direction in a windrose.',
 });
 /* eslint no-console: 0 */
-console.info(`%c  WINROSE-CARD  %c Version 1.2.1 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(`%c  WINROSE-CARD  %c Version 1.4.0 `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 let WindRoseCard = class WindRoseCard extends s {
     static getStubConfig() {
         return CardConfigWrapper.exampleConfig();

@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - ABC Sport
+alias: "[Sonos, Playlist] ABC Sport"
 description: Play ABC Sport on Sonos
 id: ABC_Sport
 trigger:

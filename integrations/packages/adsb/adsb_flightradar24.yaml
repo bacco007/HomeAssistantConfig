@@ -20,7 +20,7 @@ binary_sensor:
 sensor:
   - platform: rest
     name: ADSB FR24 Feeder
-    resource: http://192.168.1.65:8754/monitor.json
+    resource: http://192.168.1.132:8754/monitor.json
     value_template: "{{ value_json.feed_alias }}"
     method: GET
     scan_interval: 60

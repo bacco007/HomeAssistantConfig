@@ -1,0 +1,19 @@
+---
+sensor:
+  - name: "Backup Size Status"
+    unique_id: backup_size_status
+    icon: mdi:backup-restore
+    state: >
+      {% set state = state_attr('sensor.backup_state','size_in_home_assistant') %}
+      {% if state != none %}
+        {% set size = state[:-2]|float(-1) %}
+        {% set unit = state[-2:] %}
+        {% if not is_number(size) or size == -1 %} error
+        {% elif size < 15 or unit != 'GB'%} ok
+        {% elif size < 20 %} minor
+        {% elif size < 30 %} warning
+        {% elif size < 40 %} severe
+        {% else %} critical
+        {% endif %}
+      {% else %} {{ none }}
+      {% endif %}

@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - TripleM 2000s
+alias: "[Sonos, Playlist] TripleM 2000s"
 description: Play TripleM 2000s on Sonos
 id: TripleM_2000s
 trigger:

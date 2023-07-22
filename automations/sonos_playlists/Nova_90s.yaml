@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - Nova 90s
+alias: "[Sonos, Playlist] Nova 90s"
 description: Play Nova 90s on Sonos
 id: Nova_90s
 trigger:

@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - Virgin Radio UK
+alias: "[Sonos, Playlist] Virgin Radio UK"
 description: Play Virgin Radio UK on Sonos
 id: Virgin_Radio_UK
 trigger:

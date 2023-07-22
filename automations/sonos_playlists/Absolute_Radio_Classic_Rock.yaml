@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - Absolute Radio Classic Rock
+alias: "[Sonos, Playlist] Absolute Radio Classic Rock"
 description: Play Absolute Radio Classic Rock on Sonos
 id: Absolute_Radio_Classic_Rock
 trigger:

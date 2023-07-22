@@ -4,12 +4,12 @@
 sensor:
   - name: "Unavailable Entities"
     unique_id: unavailable_entities
-    icon: "{{ 'mdi:alert-circle' if states('sensor.unavailable_entities')|int(0) > 0 else 'mdi:check-circle' }}"
+    icon: "{{ iif(states(this.entity_id)|int(-1) > 0,'mdi:alert-circle','mdi:check-circle') }}"
+    state_class: measurement
     unit_of_measurement: entities
     state: >
-      {%- if state_attr('sensor.unavailable_entities','entity_id') != none %}
-        {{ state_attr('sensor.unavailable_entities','entity_id')|count }}
-      {%- endif %}
+      {% set entities = state_attr(this.entity_id,'entity_id') %}
+      {{ entities|count if entities != none else none }}
     attributes:
       entity_id: >
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
@@ -54,41 +54,41 @@ sensor:
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
           {%- set ignore_seconds = 60 %}
           {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {%- set unknown = states|selectattr('state','eq','unknown')|map(attribute='entity_id')|list %}
+          {%- set unknown = states|selectattr('state','eq','unknown')|rejectattr('domain','in',['group','button','media_player','device_tracker','camera', 'update', 'remote'])|map(attribute='entity_id')|list %}
           {{ unknown|list }}
         {%- endif %}
       unknown_count: >
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
           {%- set ignore_seconds = 60 %}
           {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {%- set unknown = states|selectattr('state','eq','unknown')|map(attribute='entity_id')|list %}
+          {%- set unknown = states|selectattr('state','eq','unknown')|rejectattr('domain','in',['group','button','media_player','device_tracker','camera', 'update', 'remote'])|map(attribute='entity_id')|list %}
           {{ unknown|count }}
         {%- endif %}
       unavailable: >
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
           {%- set ignore_seconds = 60 %}
           {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {%- set unknown = states|selectattr('state','eq','unavailable')|map(attribute='entity_id')|list %}
+          {%- set unknown = states|selectattr('state','eq','unavailable')|rejectattr('domain','in',['group','button','media_player','device_tracker','camera', 'update', 'remote'])|map(attribute='entity_id')|list %}
           {{ unknown|list }}
         {%- endif %}
       unavailable_count: >
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
           {%- set ignore_seconds = 60 %}
           {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {%- set unknown = states|selectattr('state','eq','unavailable')|map(attribute='entity_id')|list %}
+          {%- set unknown = states|selectattr('state','eq','unavailable')|rejectattr('domain','in',['group','button','media_player','device_tracker','camera', 'update', 'remote'])|map(attribute='entity_id')|list %}
           {{ unknown|count }}
         {%- endif %}
       none: >
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
           {%- set ignore_seconds = 60 %}
           {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {%- set unknown = states|selectattr('state','eq','none')|map(attribute='entity_id')|list %}
+          {%- set unknown = states|selectattr('state','eq','none')|rejectattr('domain','in',['group','button','media_player','device_tracker','camera', 'update', 'remote'])|map(attribute='entity_id')|list %}
           {{ unknown|list }}
         {%- endif %}
       none_count: >
         {%- if state_attr('group.ignored_unavailable_entities','entity_id') != none %}
           {%- set ignore_seconds = 60 %}
           {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-          {%- set unknown = states|selectattr('state','eq','none')|map(attribute='entity_id')|list %}
+          {%- set unknown = states|selectattr('state','eq','none')|rejectattr('domain','in',['group','button','media_player','device_tracker','camera', 'update', 'remote'])|map(attribute='entity_id')|list %}
           {{ unknown|count }}
         {%- endif %}

@@ -1,0 +1,17 @@
+---
+id: ha_automations_reloaded
+alias: "[HA] Log Automation Reload"
+trigger:
+  - platform: event
+    event_type: automation_reloaded
+action:
+  - service: system_log.write
+    data:
+      logger: "{{ this.entity_id }}"
+      level: critical
+      message: "**** Automations have been reloaded. ****"
+
+  - service: browser_mod.notification
+    data:
+      duration: 30000
+      message: "**** Automations have been reloaded. ****"

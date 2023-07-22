@@ -8,7 +8,7 @@ cards:
         type: "custom:button-card"
         template: header_card_no_link
         variables:
-          name: TBSH03
+          name: TBSH3
         view_layout:
           grid-column: 1/-1
 
@@ -31,9 +31,9 @@ cards:
         head:
           type: custom:mushroom-template-card
           icon: mdi:docker
-          primary: TBSH03 Docker - Updates
+          primary: TBSH3 Docker - Updates
           secondary: >
-            Count: {{states|selectattr('entity_id', 'search', 'update.wud_container_tbsh03_') | selectattr('state', 'eq', 'on') | list | count }}
+            Count: {{states|selectattr('entity_id', 'search', 'update.wud_container_tbsh3_') | selectattr('state', 'eq', 'on') | list | count }}
           card_mod:
             style: |
               ha-card {
@@ -48,7 +48,7 @@ cards:
           - type: custom:auto-entities
             filter:
               include:
-                - entity_id: update.wud_container_tbsh03_*
+                - entity_id: update.wud_container_tbsh3_*
                   state: "on"
                   options:
                     type: custom:mushroom-update-card
@@ -83,17 +83,17 @@ cards:
     cards:
       - type: custom:config-template-card
         entities:
-          - sensor.tbsh03_monitordocker_containers_total
+          - sensor.tbsh3_monitordocker_containers_total
         card:
           type: custom:stack-in-card
           cards:
             - type: custom:apexcharts-card
               chart_type: radialBar
               series:
-                - entity: sensor.tbsh03_monitordocker_containers_running
+                - entity: sensor.tbsh3_monitordocker_containers_running
                   color: green
                   max: >-
-                    ${Number(states['sensor.tbsh03_monitordocker_containers_total'].state)}
+                    ${Number(states['sensor.tbsh3_monitordocker_containers_total'].state)}
                   show:
                     legend_value: false
               apex_config:
@@ -117,7 +117,7 @@ cards:
                 chart:
                   height: 170px
             - type: custom:mushroom-entity-card
-              entity: sensor.tbsh03_monitordocker_containers_running
+              entity: sensor.tbsh3_monitordocker_containers_running
               primary_info: name
               secondary_info: state
               name: Running
@@ -135,17 +135,17 @@ cards:
               }
       - type: custom:config-template-card
         entities:
-          - sensor.tbsh03_monitordocker_containers_total
+          - sensor.tbsh3_monitordocker_containers_total
         card:
           type: custom:stack-in-card
           cards:
             - type: custom:apexcharts-card
               chart_type: radialBar
               series:
-                - entity: sensor.tbsh03_monitordocker_containers_paused
+                - entity: sensor.tbsh3_monitordocker_containers_paused
                   color: orange
                   max: >-
-                    ${Number(states['sensor.tbsh03_monitordocker_containers_total'].state)}
+                    ${Number(states['sensor.tbsh3_monitordocker_containers_total'].state)}
                   show:
                     legend_value: false
               apex_config:
@@ -169,7 +169,7 @@ cards:
                 chart:
                   height: 170px
             - type: custom:mushroom-entity-card
-              entity: sensor.tbsh03_monitordocker_containers_paused
+              entity: sensor.tbsh3_monitordocker_containers_paused
               primary_info: name
               secondary_info: state
               name: Paused
@@ -187,17 +187,17 @@ cards:
               }
       - type: custom:config-template-card
         entities:
-          - sensor.tbsh03_monitordocker_containers_total
+          - sensor.tbsh3_monitordocker_containers_total
         card:
           type: custom:stack-in-card
           cards:
             - type: custom:apexcharts-card
               chart_type: radialBar
               series:
-                - entity: sensor.tbsh03_monitordocker_containers_stopped
+                - entity: sensor.tbsh3_monitordocker_containers_stopped
                   color: red
                   max: >-
-                    ${Number(states['sensor.tbsh03_monitordocker_containers_total'].state)}
+                    ${Number(states['sensor.tbsh3_monitordocker_containers_total'].state)}
                   show:
                     legend_value: false
               apex_config:
@@ -221,7 +221,7 @@ cards:
                 chart:
                   height: 170px
             - type: custom:mushroom-entity-card
-              entity: sensor.tbsh03_monitordocker_containers_stopped
+              entity: sensor.tbsh3_monitordocker_containers_stopped
               primary_info: name
               secondary_info: state
               name: Stopped
@@ -256,7 +256,7 @@ cards:
     filter:
       template: >
         {% for s in
-        states|selectattr('entity_id','search','sensor.tbsh03_monitordocker_')
+        states|selectattr('entity_id','search','sensor.tbsh3_monitordocker_')
             |rejectattr('entity_id','search','_1cpu')
             |rejectattr('entity_id','search','_containers_')
             |rejectattr('entity_id','search','_cpu')

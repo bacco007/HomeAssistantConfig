@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - ESPN Radio
+alias: "[Sonos, Playlist] ESPN Radio"
 description: Play ESPN Radio on Sonos
 id: ESPN_Radio
 trigger:

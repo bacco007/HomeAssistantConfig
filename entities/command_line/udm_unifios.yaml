@@ -42,7 +42,8 @@ sensor:
         #"internet": data["internet"],
         "uptime": datetime.fromtimestamp(data["startup_timestamp"]).isoformat(),
         "availability": round(data["uptime_stats"]["WAN"]["availability"],3),
-        "version": data["displayable_version"]
+        "version": data["displayable_version"],
+        "last_wan_ip": data["last_wan_ip"]
     }))
     EOF
   command_timeout: 180

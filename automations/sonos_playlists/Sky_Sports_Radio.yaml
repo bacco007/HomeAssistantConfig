@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - Sky Sports Radio
+alias: "[Sonos, Playlist] Sky Sports Radio"
 description: Play Sky Sports Radio on Sonos
 id: Sky_Sports_Radio
 trigger:

@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - CNN International
+alias: "[Sonos, Playlist] CNN International"
 description: Play CNN International on Sonos
 id: CNN_International
 trigger:

@@ -1,0 +1,43 @@
+---
+alias: "[HA] Shutdown"
+id: ha_shutdown
+trigger:
+  - platform: homeassistant
+    event: shutdown
+action:
+  - service: system_log.write
+    data:
+      logger: "{{ this.entity_id }}"
+      level: critical
+      message: "**** HOME ASSISTANT STOP ****"
+  - if:
+      - condition: state
+        entity_id: input_boolean.alerts_ha
+        state: "on"
+    then:
+      - service: notify.tbsmarthome
+        data_template:
+          message: "Home Assistant Stopped"
+          target: "#tbsmarthome"
+          data:
+            blocks:
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: "*Home Assistant Stopped*"
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: Home Assistant Stopped
+      - service: notify.mobile_app_tbiphone13pro
+        data:
+          message: Home Assistant has Stopped
+          title: Home Assistant Stopped
+          data:
+            push:
+              badge: 1
+              sound: none
+              interruption-level: time-sensitive
+            presentation_options:
+              - alert
+              - badge

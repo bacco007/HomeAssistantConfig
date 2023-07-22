@@ -16,6 +16,7 @@ export function initCardData(c) {
     c.color = [];
     c.timeouts = [];
     c.possessionOp = [];
+    c.winner = [];
 }
 
 //
@@ -66,11 +67,13 @@ export function setDefaults(t, lang, stateObj, c, o, sport, team, oppo) {
     c.name[team] = stateObj.attributes.team_name;
     c.rank[team] = stateObj.attributes.team_rank;
     c.record[team] = stateObj.attributes.team_record;
+    c.winner[team] = stateObj.attributes.team_winner || false;
     c.logo[oppo] = stateObj.attributes.opponent_logo;
     c.logoBG[oppo] = stateObj.attributes.opponent_logo;
     c.name[oppo] = stateObj.attributes.opponent_name;
     c.rank[oppo] = stateObj.attributes.opponent_rank;
     c.record[oppo] = stateObj.attributes.opponent_record;
+    c.winner[oppo] = stateObj.attributes.opponent_winner || false;
     c.playClock = stateObj.attributes.clock;
     if (o.showLeague) {
         c.logoBG[team] = stateObj.attributes.league_logo
@@ -80,13 +83,13 @@ export function setDefaults(t, lang, stateObj, c, o, sport, team, oppo) {
     c.score[team] = stateObj.attributes.team_score;
     c.score[oppo] = stateObj.attributes.opponent_score;
 
-    c.scoreOp[1] = 1;
-    c.scoreOp[2] = 1;
-    if (Number(c.score[1]) < Number(c.score[2])) {
-        c.scoreOp[1] = 0.6;
+    c.scoreOp[1] = .6;
+    c.scoreOp[2] = .6;
+    if (c.winner[team]) {
+        c.scoreOp[team] = 1;
     }
-    if (Number(c.score[2]) < Number(c.score[1])) {
-        c.scoreOp[2] = 0.6;
+    if (c.winner[oppo]) {
+        c.scoreOp[oppo] = 1;
     }
 
     if (stateObj.attributes.team_homeaway == 'home') {

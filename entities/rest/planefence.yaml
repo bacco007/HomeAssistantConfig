@@ -1,9 +1,8 @@
 ---
-resource: http://192.168.1.65:8083/plane-alert/pa_query.php?lon=^150&type=json
+resource: http://192.168.1.132:8083/plane-alert/pa_query.php?lon=^150&type=json
 sensor:
   name: flighttracker_planefence_aircraft
-  value_template: >
-    {{ value_json[-1:].tail }}
+  value_template: "ADS-B"
   json_attributes_path: "$.[-1:]"
   json_attributes:
     - hex_id

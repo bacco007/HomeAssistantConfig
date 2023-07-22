@@ -1,0 +1,71 @@
+---
+alias: "[HA] Startup"
+id: ha_startup
+trigger:
+  - platform: homeassistant
+    event: start
+action:
+  - service: system_log.write
+    data:
+      logger: "{{ this.entity_id }}"
+      level: critical
+      message: "**** HOME ASSISTANT START ****"
+  - service: persistent_notification.create
+    data:
+      title: "Automation Startup"
+      message: "Waiting for startup to complete."
+      notification_id: hass_restart
+  - if:
+      - condition: state
+        entity_id: input_boolean.alerts_ha
+        state: "on"
+    then:
+      - service: notify.tbsmarthome
+        data_template:
+          message: "Home Assistant Started"
+          target: "#tbsmarthome"
+          data:
+            blocks:
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: "*Home Assistant Started*"
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: Home Assistant Started
+      - service: notify.mobile_app_tbiphone13pro
+        data:
+          message: Home Assistant has Started
+          title: Home Assistant Started
+          data:
+            push:
+              badge: 1
+              sound: none
+              interruption-level: time-sensitive
+            presentation_options:
+              - alert
+              - badge
+  # Bounce Docker Containers
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id:
+        - switch.tbsh5_monitordocker_sungather
+        - switch.tbsh5_monitordocker_weatherflow2mqtt
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id:
+        - switch.tbsh5_monitordocker_sungather
+        - switch.tbsh5_monitordocker_weatherflow2mqtt
+  - service: system_log.write
+    data:
+      logger: "{{ this.entity_id }}"
+      level: critical
+      message: "**** HOME ASSISTANT STARTUP COMPLETE ****"

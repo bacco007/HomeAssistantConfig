@@ -1,5 +1,5 @@
 ---
-resource: http://192.168.1.65:9090/api/v1/query?query=readsb_aircraft_total
+resource: http://192.168.1.133:9090/api/v1/query?query=readsb_aircraft_total
 sensor:
   name: flighttracker_aircraft_total
   unique_id: flighttracker_aircraft_total

@@ -1,0 +1,13 @@
+---
+- name: Planefinder Aircraft List
+  resource: http://192.168.1.132:8084/ajax/aircraft
+  verify_ssl: false
+  sensor:
+    - unique_id: flighttracker_planefinder_aircraft_list
+      name: flighttracker_planefinder_aircraft_list
+      icon: mdi:plane
+      value_template: "ADS-B"
+      attributes:
+        - name: Aircraft
+          value_template: >
+            {{ value_json.aircraft[0] }}

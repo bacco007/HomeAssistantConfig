@@ -70,14 +70,9 @@ export function setBasketball(t, stateObj, c, team, oppo) {
 //    in2 = quarter;
 //    score = split score into 2 parts
 //    record = set to second part of split score
-//    scoreOP = adjust opacity based on total runs
 
 export function setCricket(t, stateObj, c, team, oppo) {
-    var runs_substring = [];
-    var runs = [];
-    var total_runs = [];
     var subscores = [];
-    var i = 0;
 
     c.timeoutsDisplay = 'none';
     c.barDisplay = "none";
@@ -100,37 +95,6 @@ export function setCricket(t, stateObj, c, team, oppo) {
             if (subscores[2].length > 1) {
                 c.record[2] = "(" + subscores[2][1];
             }
-
-            if (stateObj.state == 'POST') {
-                runs_substring[1] = c.score[1].split("/");
-                runs_substring[2] = c.score[2].split("/");
-
-                runs[1] = runs_substring[1][0].split("&");
-                runs[2] = runs_substring[2][0].split("&");
-
-                total_runs[1] = 0;
-                total_runs[2] = 0;
-
-                i = 0;
-                while (i < runs[1].length) {
-                    total_runs[1] = total_runs[1] + Number(runs[1][i]);
-                    i = i + 1;
-                }
-                i = 0;
-                while (i < runs[2].length) {
-                    total_runs[2] = total_runs[2] + Number(runs[2][i]);
-                    i = i + 1;
-                }
-
-                if (total_runs[1] > total_runs[2]) {
-                    c.scoreOp[1] = 1.0;
-                    c.scoreOp[2] = 0.6;
-                }
-                if (total_runs[1] < total_runs[2]) {
-                    c.scoreOp[1] = 0.6;
-                    c.scoreOp[2] = 1.0;
-                }
-            }
         }
     }
 }
@@ -144,7 +108,6 @@ export function setCricket(t, stateObj, c, team, oppo) {
 //   barLabel = team_total_shots, opponent_total_shots
 //   finalTerm = clock
 //   timeoutsDisplay = 'none';
-//   scoreOp = adjust opacity to show lowest score as winner
 //
 export function setGolf(t, stateObj, c, team, oppo) {
     c.title = c.title || stateObj.attributes.event_name;
@@ -156,14 +119,6 @@ export function setGolf(t, stateObj, c, team, oppo) {
     c.finalTerm = stateObj.attributes.clock;
     c.timeoutsDisplay = 'none';
 
-    if (Number(c.score[1]) < Number(c.score[2])) {
-        c.scoreOp[1] = 1.0;
-        c.scoreOp[2] = 0.6;
-    }
-    if (Number(c.score[2]) < Number(c.score[1])) {
-        c.scoreOp[1] = 0.6;
-        c.scoreOp[2] = 1.0;
-    }
 }
 
 //
@@ -206,7 +161,6 @@ export function setMMA(t, stateObj, c, team, oppo) {
 //    timeoutsDisplay = 'none';
 //    barLength = team_total_shots, opponent_total_shots (laps)
 //    barLabel = (laps)
-//   scoreOp = adjust opacity to show lowest score as winner
 //    If NASCAR, remove logos and use initials
 //
 export function setRacing(t, stateObj, c, team, oppo) {
@@ -222,15 +176,6 @@ export function setRacing(t, stateObj, c, team, oppo) {
     c.barLength[oppo] = stateObj.attributes.team_total_shots;
     c.barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
     c.barLabel[oppo] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
-
-    if (Number(c.score[1]) < Number(c.score[2])) {
-        c.scoreOp[1] = 1.0;
-        c.scoreOp[2] = 0.6;
-    }
-    if (Number(c.score[2]) < Number(c.score[1])) {
-        c.scoreOp[1] = 0.6;
-        c.scoreOp[2] = 1.0;
-    }
 
     if (stateObj.attributes.league.includes("NASCAR")) {
         c.logo[team] = null;

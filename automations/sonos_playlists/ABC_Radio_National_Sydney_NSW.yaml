@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - ABC Radio National (Sydney, NSW)
+alias: "[Sonos, Playlist] ABC Radio National (Sydney, NSW)"
 description: Play ABC Radio National (Sydney, NSW) on Sonos
 id: ABC_Radio_National_Sydney_NSW
 trigger:

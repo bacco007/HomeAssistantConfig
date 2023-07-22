@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - MSNBC
+alias: "[Sonos, Playlist] MSNBC"
 description: Play MSNBC on Sonos
 id: MSNBC
 trigger:

@@ -3,11 +3,7 @@ homeassistant:
   customize:
     sensor.tbsh1_package_updates:
       icon: mdi:upload-network-outline
-    sensor.tbsh03_package_updates:
-      icon: mdi:upload-network-outline
     sensor.tbsh1_security_updates:
-      icon: mdi:security-network
-    sensor.tbsh03_security_updates:
       icon: mdi:security-network
 
 command_line:
@@ -26,19 +22,3 @@ command_line:
       scan_interval: 300
       command_timeout: 30
       command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.91 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 2
-
-  - sensor:
-      unique_id: tbsh03_package_updates
-      name: TBSH03 Package Updates
-      unit_of_measurement: "Updates"
-      scan_interval: 300
-      command_timeout: 30
-      command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.65 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 1
-
-  - sensor:
-      unique_id: tbsh03_security_updates
-      name: TBSH03 Security Updates
-      unit_of_measurement: "Updates"
-      scan_interval: 300
-      command_timeout: 30
-      command: ssh -i /config/.ssh/id_rsa -o 'StrictHostKeyChecking=no' tbsmarthome@192.168.1.65 -T /usr/lib/update-notifier/apt-check 2>&1 | cut -d ';' -f 2

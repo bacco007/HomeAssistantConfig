@@ -1,0 +1,21 @@
+---
+id: ha_templates_reloaded
+alias: "[HA] Log Template Reload"
+trigger:
+  - platform: event
+    event_type: event_template_reloaded
+action:
+  - service: system_log.write
+    data:
+      logger: "{{ this.entity_id }}"
+      level: critical
+      message: "**** Templates have been reloaded. ****"
+
+  - service: browser_mod.notification
+    data:
+      duration: 30000
+      message: "**** Templates have been reloaded. ****"
+
+  #BUG cards, template selects not refreshing after template reload
+  - delay: 1
+  - service: browser_mod.refresh #BUGFIX

@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - ABC New England North West
+alias: "[Sonos, Playlist] ABC New England North West"
 description: Play ABC New England North West on Sonos
 id: ABC_New_England_North_West
 trigger:

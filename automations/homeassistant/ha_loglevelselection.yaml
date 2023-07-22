@@ -1,0 +1,22 @@
+---
+id: ha_log_level_selection
+alias: "[HA] Log Level Selection"
+variables:
+  level: "{{ states('input_select.log_level') }}"
+trigger:
+  - platform: homeassistant
+    event: start
+
+  - platform: state
+    entity_id: input_select.log_level
+    to: ~
+action:
+  - service: logger.set_default_level
+    data:
+      level: "{{ level }}"
+
+  - service: system_log.write
+    data:
+      logger: "{{ this.entity_id }}"
+      level: critical
+      message: "***** HASS LOG LEVEL SET TO : {{ level }} *****"

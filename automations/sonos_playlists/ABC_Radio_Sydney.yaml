@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - ABC Radio Sydney
+alias: "[Sonos, Playlist] ABC Radio Sydney"
 description: Play ABC Radio Sydney on Sonos
 id: ABC_Radio_Sydney
 trigger:

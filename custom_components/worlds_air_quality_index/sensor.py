@@ -38,10 +38,6 @@ from .const import (
     DEFAULT_NAME,
     SENSORS,
     SW_VERSION,
-    WIND_DIRECTION,
-    WIND_DIRECTION_PREFIX,
-    WIND_DIRECTION_SUFFIX,
-    WIND_DIRECTION_FOLDER,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -170,22 +166,6 @@ class WorldsAirQualityIndexSensor(SensorEntity):
         if self._resType != 'wg':
             return SENSORS[self._resType][2]
     
-    @property
-    def entity_picture(self) -> str | None:
-        _LOGGER.debug("Check:")
-        _LOGGER.debug(self._resType)
-        if SENSORS[self._resType][2] == 'custom' and self._resType == 'wg':
-            val = float(self._data["data"]["iaqi"]["wg"]["v"])
-            _LOGGER.debug(val)
-            for res in WIND_DIRECTION:
-                if val > float(res["min"]):
-                    _LOGGER.debug(res["val"])
-                    _LOGGER.debug("matched")
-                    return WIND_DIRECTION_FOLDER + WIND_DIRECTION_PREFIX + res["val"] + WIND_DIRECTION_SUFFIX
-            return WIND_DIRECTION_FOLDER + WIND_DIRECTION_PREFIX + WIND_DIRECTION[0]["val"] + WIND_DIRECTION_SUFFIX
-        else:
-            return None
-
     def update(self) -> None:
         #Fetch new state data for the sensor.
         #This is the only method that should fetch new data for Home Assistant.

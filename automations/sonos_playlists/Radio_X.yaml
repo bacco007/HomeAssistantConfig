@@ -1,5 +1,5 @@
 ---
-alias: Sonos - Playlist - Radio X
+alias: "[Sonos, Playlist] Radio X"
 description: Play Radio X on Sonos
 id: Radio_X
 trigger:
