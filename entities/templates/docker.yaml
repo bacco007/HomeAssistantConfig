@@ -31,4 +31,18 @@ sensor:
           + states('sensor.tbsh5_monitordocker_images') | int(default=0)
           + states('sensor.pi4srv_monitordocker_images') | int(default=0) }}
       containers_updatable: >
-        {{ states | selectattr('domain', 'eq', 'update') | selectattr('state', 'eq', 'on') | selectattr('entity_id','search','update.wud_*') | list | count }}
+        {{ states.update | selectattr('state', 'eq', 'on') | selectattr('entity_id','search','update.wud_*') | list | count }}
+
+binary_sensor:
+  - name: updates_docker
+    unique_id: updates_docker
+    icon: mdi:docker
+    state: >
+      {{ states.update  | selectattr('state', 'eq', 'on')  | selectattr('entity_id','search','wud_*') |list|count|int(-1) > 0 }}
+    attributes:
+      details: >
+        {%- for upd in states.update | selectattr('state', 'eq', 'on')  | selectattr('entity_id','search','wud_*') | sort(attribute="attributes.friendly_name") | list %}
+        * {{upd.attributes.friendly_name}} ({{upd.attributes.image_name}}): {{upd.attributes.installed_version}} > {{upd.attributes.latest_version}}
+        {%- endfor %}
+      availability: >
+        {{ states.update  | selectattr('state', 'eq', 'on')  | selectattr('entity_id','search','wud_*') |list|count|int(-1) > 0 }}

@@ -16,6 +16,6 @@ action:
       duration: 30000
       message: "**** Templates have been reloaded. ****"
 
-  # BUG cards, template selects not refreshing after template reload
   - delay: 1
-  - service: browser_mod.refresh #BUGFIX
+
+  - service: browser_mod.refresh

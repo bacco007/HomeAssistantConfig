@@ -1,0 +1,17 @@
+---
+sensor:
+  - name: "temptrend_outdoor_trend"
+    unique_id: temptrend_outdoor_trend
+    icon: >
+      {% if is_state('binary_sensor.temptrend_outdoor_rising','on') %} mdi:thermometer-chevron-up
+      {% elif is_state('binary_sensor.temptrend_outdoor_falling','on') %} mdi:thermometer-chevron-down
+      {% else %} mdi:thermometer
+      {% endif %}
+    state: >
+      {% if is_state('binary_sensor.temptrend_outdoor_rising','on') %} Rising
+      {% elif is_state('binary_sensor.temptrend_outdoor_falling','on') %} Falling
+      {% else %} Steady
+      {% endif %}
+    availability: >
+      {{ has_value('binary_sensor.temptrend_outdoor_rising')
+          and has_value('binary_sensor.temptrend_outdoor_falling') }}
