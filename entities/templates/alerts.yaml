@@ -1,0 +1,57 @@
+---
+binary_sensor:
+  - name: "alerts_wan_offline"
+    unique_id: alert_wan_offline
+    icon: mdi:wan
+    device_class: problem
+    delay_on: 60
+    state: >
+      {{ is_state('binary_sensor.connected_wan','off')
+          and is_state('input_boolean.alerts_network','on') }}
+
+  - name: "alerts_backup"
+    unique_id: alerts_backup
+    icon: mdi:cloud-upload-outline
+    device_class: problem
+    delay_on: 60
+    state: >
+      {% if is_state('input_boolean.alerts_ha','on') %}
+        {{ states('sensor.backup_size_status') in ['severe','critical','error']
+            or is_state('binary_sensor.home_assistant_google_drive_backup_running','off') }}
+      {% endif %}
+
+  - name: "alerts_connect_weatherflow_cloud"
+    unique_id: alerts_connect_weatherflow_cloud
+    icon: mdi:weather-lightning-rainy
+    device_class: problem
+    delay_on: 60
+    state: >
+      {{ is_state('binary_sensor.weatherflow_cloud_connected','off')
+          and is_state('input_boolean.alerts_weather','on') }}
+
+  - name: "alerts_connect_weatherflow_local"
+    unique_id: alerts_connect_weatherflow_local
+    icon: mdi:weather-lightning-rainy
+    device_class: problem
+    delay_on: 60
+    state: >
+      {{ is_state('binary_sensor.weatherflow_local_connected','off')
+          and is_state('input_boolean.alerts_weather','on') }}
+
+  - name: "alerts_connect_openuv"
+    unique_id: alerts_connect_openuv
+    icon: mdi:weather-sunny-alert
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.connected_openuv','off')
+          and is_state('input_boolean.alerts_weather','on') }}
+
+  - name: "alerts_connect_waqi"
+    unique_id: alerts_connect_wqai
+    icon: mdi:smog
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.connected_waqi','off')
+          and is_state('input_boolean.alerts_weather','on') }}

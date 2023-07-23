@@ -15,9 +15,23 @@ sensor:
   - name: Tamworth Airport Hourly Forecast Wind Speed Increasing
     state: >
       {{ iif (state_attr('weather.east_tamworth_hourly', 'wind_speed') < ((state_attr('weather.east_tamworth_hourly', 'forecast') | map(attribute='wind_speed') | slice(6) | first() | sum / 4)), 'Increasing', 'Decreasing') }}
-  - name: Outside Hourly Forecast Temperature Rising
-    state: >
-      {{ iif (state_attr('weather.weatherflow_hourly_based_forecast', 'temperature') < ((state_attr('weather.weatherflow_hourly_based_forecast', 'forecast') | map(attribute='temperature') | slice(6) | first() | sum / 4)), 'Rising', 'Falling') }}
   - name: Outside Hourly Forecast Wind Speed Increasing
     state: >
       {{ iif (state_attr('weather.weatherflow_hourly_based_forecast', 'wind_speed') < ((state_attr('weather.weatherflow_hourly_based_forecast', 'forecast') | map(attribute='wind_speed') | slice(6) | first() | sum / 4)), 'Increasing', 'Decreasing') }}
+
+sensor:
+  - name: "temptrend_outdoor_trend"
+    unique_id: temptrend_outdoor_trend
+    icon: >
+      {% if is_state('binary_sensor.temptrend_outdoor_rising','on') %} mdi:thermometer-chevron-up
+      {% elif is_state('binary_sensor.temptrend_outdoor_falling','on') %} mdi:thermometer-chevron-down
+      {% else %} mdi:thermometer
+      {% endif %}
+    state: >
+      {% if is_state('binary_sensor.temptrend_outdoor_rising','on') %} Rising
+      {% elif is_state('binary_sensor.temptrend_outdoor_falling','on') %} Falling
+      {% else %} Steady
+      {% endif %}
+    availability: >
+      {{ has_value('binary_sensor.temptrend_outdoor_rising')
+          and has_value('binary_sensor.temptrend_outdoor_falling') }}

@@ -1,0 +1,10 @@
+---
+resource: http://192.168.1.133:9090/api/v1/query?query=adguard_protection_enabled
+sensor:
+  name: adguard_protection
+  unique_id: adguard_protection
+  value_template: >
+    {{ value_json.data.result[0].value[1] | int }}
+  state_class: measurement
+  icon: si:adguard
+scan_interval: 10

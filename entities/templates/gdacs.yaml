@@ -1,0 +1,33 @@
+---
+binary_sensor:
+  - name: "GDACS Alert Active"
+    unique_id: gdacs_alert_active
+    icon: mdi:pulse
+    state: "{{ states.geo_location|selectattr('attributes.source','eq','gdacs')|list|count|int(-1) > 0 }}"
+    attributes:
+      last_alert: > # sensor can be > 0 but no geo_location entities
+        {% if states.geo_location|selectattr('attributes.source','eq','gdacs')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','gdacs')
+              |sort(reverse=true,attribute='attributes.from_date')
+              |map(attribute='attributes.friendly_name')|first }}
+        {% endif %}
+      last_alert_desc: >
+        {% if states.geo_location|selectattr('attributes.source','eq','gdacs')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','gdacs')
+              |sort(reverse=true,attribute='attributes.from_date')
+              |map(attribute='attributes.description')|first }}
+        {% endif %}
+      last_alert_date: >
+        {% if states.geo_location|selectattr('attributes.source','eq','gdacs')|list|count|int(-1) > 0 %}
+          {% set last_date = states.geo_location|selectattr('attributes.source','eq','gdacs')
+              |sort(reverse=true,attribute='attributes.from_date')
+              |map(attribute='attributes.from_date')|first %}
+          {{ last_date|as_timestamp(none)|timestamp_custom('%Y-%m-%d',true,none) }}
+        {% endif %}
+      last_alert_severity: >
+        {% if states.geo_location|selectattr('attributes.source','eq','gdacs')|list|count|int(-1) > 0 %}
+          {{ states.geo_location|selectattr('attributes.source','eq','gdacs')
+              |sort(reverse=true, attribute='attributes.from_date')
+              |map(attribute='attributes.alert_level')|first }}
+        {% endif %}
+    availability: "{{ states.geo_location|selectattr('attributes.source','eq','gdacs')|list|count|int(-1) > 0 }}"

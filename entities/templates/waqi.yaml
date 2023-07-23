@@ -1,0 +1,73 @@
+---
+binary_sensor:
+  - name: "WAQI - Air Quality Alert"
+    unique_id: waqi_air_quality_alert
+    icon: mdi:smog
+    state: >
+      {{ states('sensor.waqi_aqi_risk_level') in ['Very Unhealthy','Unhealthy','Unhealthy Sensitive Groups','Moderate']
+          and is_state('input_boolean.alerts_weather','on') }}
+    availability: "{{ has_value('sensor.waqi_aqi_risk_level') }}"
+
+sensor:
+  - name: "WAQI - Air Quality Index"
+    unique_id: waqi_air_quality_index
+    icon: mdi:smog
+    device_class: aqi
+    state_class: measurement
+    unit_of_measurement: AQI
+    state: "{{ states('sensor.waqi_tamworth_north_west_slopes')|float('unknown') }}"
+    availability: "{{ is_number(states('sensor.waqi_tamworth_north_west_slopes')) }}"
+
+  - name: "WAQI - AQI Risk Level"
+    unique_id: waqi_aqi_risk_level
+    icon: mdi:smog
+    state: >
+      {% set level = states('sensor.waqi_air_quality_index')|int(-1) %}
+      {% if level < 51 %} Good
+      {% elif level < 101 %} Moderate
+      {% elif level < 101 %} Unhealthy Sensitive Groups
+      {% elif level < 201 %} Unhealthy
+      {% elif level < 301 %} Very Unhealthy
+      {% else %} Hazardous
+      {% endif %}
+    availability: "{{ is_number(states('sensor.waqi_air_quality_index')) }}"
+
+  # - name: "Ozone"
+  #   unique_id: ozone
+  #   #ISSUE device_class: ozone
+  #   state_class: measurement
+  #   unit_of_measurement: AQI
+  #   state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','ozone') }}"
+  #   availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','ozone')) }}"
+
+  # - name: "Carbon Monoxide"
+  #   unique_id: carbon_monoxide
+  #   #ISSUE device_class: carbon_monoxide
+  #   state_class: measurement
+  #   unit_of_measurement: AQI
+  #   state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','co') }}"
+  #   availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','co')) }}"
+
+  # - name: "Nitrogen Dioxide"
+  #   unique_id: nitrogen_dioxide
+  #   #ISSUE device_class: nitrogen_dioxide
+  #   state_class: measurement
+  #   unit_of_measurement: AQI
+  #   state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide') }}"
+  #   availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','nitrogen_dioxide')) }}"
+
+  # - name: "Sulphur Dioxide"
+  #   unique_id: sulphur_dioxide
+  #   #ISSUE device_class: sulphur_dioxide
+  #   state_class: measurement
+  #   unit_of_measurement: AQI
+  #   state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','sulfur_dioxide') }}"
+  #   availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','sulfur_dioxide')) }}"
+
+  # - name: "Particulate Matter 2.5"
+  #   unique_id: particulate_matter_2_5
+  #   #ISSUE device_class: pm25
+  #   state_class: measurement
+  #   unit_of_measurement: AQI
+  #   state: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5') }}"
+  #   availability: "{{ is_number(state_attr('sensor.waqi_tamworth_north_west_slopes','pm_2_5')) }}"

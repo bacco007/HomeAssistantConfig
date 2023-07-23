@@ -1,0 +1,4 @@
+---
+alerts_ha:
+  name: "[Alerts] Home Assistant"
+  icon: mdi:alert

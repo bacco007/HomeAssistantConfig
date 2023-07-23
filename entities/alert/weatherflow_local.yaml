@@ -1,0 +1,11 @@
+---
+weatherflow_local:
+  name: "Weatherflow (Local) Connected"
+  entity_id: binary_sensor.alerts_connect_weatherflow_local
+  state: "on"
+  notifiers:
+    - log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: weatherflow_local_connected

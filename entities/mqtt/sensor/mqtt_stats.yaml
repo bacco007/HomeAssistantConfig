@@ -1,7 +1,7 @@
 ---
 # MQTT Version
 - name: "mqtt_version"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/version"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/version"
 
 # # MQTT Load Messages Received 15m
 # - name: "mqtt_load_messages_received_15m"
@@ -35,66 +35,66 @@
 
 # MQTT Total Messages Received
 - name: "mqtt_total_messages_received"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/metrics/messages/received"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/metrics/messages/received"
   unit_of_measurement: "Msg"
   value_template: >-
-    {{"{:,}".format(value|int)}}
+    {{value|int}}
 
 # MQTT Total Messages Sent
 - name: "mqtt_total_messages_sent"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/metrics/messages/sent"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/metrics/messages/sent"
   unit_of_measurement: "Msg"
   value_template: >-
-    {{"{:,}".format(value|int)}}
+    {{value|int}}
 
 # MQTT Total Messages Delivered
 - name: "mqtt_total_messages_delivered"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/metrics/messages/delivered"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/metrics/messages/delivered"
   unit_of_measurement: "Msg"
   value_template: >-
-    {{"{:,}".format(value|int)}}
+    {{value|int}}
 
 # MQTT Total Subscription Count
 - name: "mqtt_subscription_count"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/stats/subscriptions/count"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/stats/subscriptions/count"
   unit_of_measurement: "Subs"
   value_template: >-
-    {{"{:,}".format(value|int)}}
+    {{value|int}}
 
 # MQTT Total Bytes Received
 - name: "mqtt_total_bytes_received"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/metrics/bytes/received"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/metrics/bytes/received"
   value_template: >-
-    {{"{:,}".format(value|int)}}
+    {{value|int}}
 
 # MQTT Total Mibibytes Received
 - name: "mqtt_total_mib_received"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/metrics/bytes/received"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/metrics/bytes/received"
   unit_of_measurement: MiB
   value_template: >-
     {{(((value | int)/1024)/1024) | round(1)}}
 
 # MQTT Total Mibibytes Sent
 - name: "mqtt_total_mib_sent"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/metrics/bytes/sent"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/metrics/bytes/sent"
   unit_of_measurement: MiB
   value_template: >-
     {{(((value | int)/1024)/1024) | round(1)}}
 
 # MQTT uptime
 - name: "mqtt_uptime"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/uptime"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/uptime"
   unit_of_measurement: Days
   value_template: >-
-    {{((value| regex_replace(find=' seconds',replace="")|int )//86400) }}
+    {{((value|int)//86400) }}
 
 # MQTT uptime seconds
 - name: "mqtt_uptime_seconds"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/uptime"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/uptime"
   value_template: >-
-    {{"{:,}".format(value|regex_replace(find=' seconds',replace="")|int)}}
+    {{value|int}}
 
 # MQTT Total Clients
 - name: "mqtt_total_clients"
-  state_topic: "$SYS/brokers/eqmx@127.0.0.1/stats/connections/count"
+  state_topic: "$SYS/brokers/emqx@127.0.0.1/stats/connections/count"
   unit_of_measurement: "Clients"

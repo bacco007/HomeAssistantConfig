@@ -19,3 +19,13 @@ binary_sensor:
     icon: mdi:sort-clock-descending
     device_class: connectivity
     state: "{{ integration_entities('uptime_kuma')|select('has_value')|list|count > 0 }}"
+  - name: "Connected - OpenUV"
+    unique_id: connected_openuv
+    icon: mdi:weather-sunny-alert
+    device_class: connectivity
+    state: "{{ integration_entities('openuv')|select('has_value')|list|count > 0 }}"
+  - name: "Connected - WAQI"
+    unique_id: connected_waqi
+    icon: mdi:smog
+    device_class: connectivity
+    state: "{{ integration_entities('waqi')|select('has_value')|list|count > 0 }}"

@@ -47,27 +47,6 @@ sensor:
 
   - platform: template
     sensors:
-      waqi_tamworth_airpollev:
-        friendly_name: Air Quality Level
-        icon_template: mdi:chemical-weapon
-        value_template: >
-          {% set index = states('sensor.waqi_tamworth_north_west_slopes') | float(-1) %}
-          {% if index > 300 %}
-            Hazardous
-          {% elif index > 200 %}
-            Very Unhealthy
-          {% elif index > 150 %}
-            Unhealthy
-          {% elif index > 100 %}
-            Unhealthy for Sensitive Groups
-          {% elif index > 50 %}
-            Moderate
-          {% elif index >= 0 %}
-            Good
-          {% else %}
-            Unavailable
-          {% endif %}
-
       waqi_tamworth_pm10:
         friendly_name: "AQI - PM10"
         value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_10') }}"

@@ -17,3 +17,17 @@ sensors:
     friendly_name: Temp Trend - Tamworth Airport
     max_samples: 60
     sample_duration: 10800
+
+  # 0.25 deg change over 30min (0.25/(30*60))
+  temptrend_outdoor_rising:
+    entity_id: sensor.tempest_st_00056115_temperature
+    min_gradient: 0.00014
+    sample_duration: 1800
+    max_samples: 120
+    device_class: heat
+  temptrend_outdoor_falling:
+    entity_id: sensor.tempest_st_00056115_temperature
+    min_gradient: -0.00014
+    sample_duration: 1800
+    max_samples: 120
+    device_class: cold

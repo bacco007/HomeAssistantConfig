@@ -36,9 +36,7 @@ action:
     data_template:
       object_id: media_players
       entities: >-
-        {%-
-          for state in states.media_player
-        %}
+        {%- for state in states.media_player %}
         {{ state.entity_id }}{%- if not loop.last -%}, {%- endif -%}
         {%- endfor %}
 
@@ -47,7 +45,12 @@ action:
       object_id: lights
       entities: >
         {{ states.light
-            |selectattr('attributes.type','defined')
-            |selectattr('attributes.type','in',['dimmer','switch','bulb','group'])
-            |rejectattr('attributes.rgb_light','in',['control','slave'])
+            |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: alert_controls
+      entities: >
+        {{ states
+            |selectattr('entity_id','search','input_boolean.alerts_*')
             |map(attribute='entity_id')|list|sort }}

@@ -30,13 +30,16 @@ cards:
           }
     filter:
       template: >
-        {%- set dev = namespace() %} {%- set dev.name = '' %} {%- set
-        dev.running = '' %} {%- set dev.newest_version = '' %} {%- set
-        dev.version = '' %} {%- set dev.cpu_percent = '' %} {%- set
-        dev.memory_percent = '' %} {%- set dev.update = '' %}
+        {%- set dev = namespace() %}
+        {%- set dev.name = '' %}
+        {%- set dev.running = '' %}
+        {%- set dev.newest_version = '' %}
+        {%- set dev.version = '' %}
+        {%- set dev.cpu_percent = '' %}
+        {%- set dev.memory_percent = '' %}
+        {%- set dev.update = '' %}
 
-        {%- for devid in (integration_entities('Supervisor') | map('device_id')
-        | unique) %}
+        {%- for devid in (integration_entities('Supervisor') | map('device_id') | unique) | sort %}
           {%- set dev.name = device_attr(devid, "name") %}
           {%- for ent in device_entities(devid) %}
             {%- if (ent.find("running") | int>=0) %}

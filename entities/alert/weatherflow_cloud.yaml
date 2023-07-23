@@ -1,0 +1,11 @@
+---
+weatherflow_cloud:
+  name: "Weatherflow (Cloud) Connected"
+  entity_id: binary_sensor.alerts_connect_weatherflow_cloud
+  state: "on"
+  notifiers:
+    - log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: weatherflow_cloud_connected

@@ -1,0 +1,4 @@
+---
+alerts_weather:
+  name: "[Alerts] Weather"
+  icon: mdi:weather-lightning-rainy

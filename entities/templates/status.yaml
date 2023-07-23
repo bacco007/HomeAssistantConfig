@@ -1,0 +1,17 @@
+---
+sensor:
+  - name: "[Status] Network"
+    unique_id: status_network
+    icon: mdi:lan-check
+    state: >
+      {% if is_state('binary_sensor.connected_wan','off') %} critical
+      {% elif is_state('sensor.adguard_running', 0) %} severe
+      {% elif is_state('sensor.adguard_protection', 0)
+          or states('sensor.speedtest_download')|float(-1) < 15
+          or states ('sensor.speedtest_upload')|float(-1) < 2
+          or states('sensor.speedtest_ping')|float(-1) > 50 %} warning
+      {% elif states('sensor.speedtest_download')|float(-1) < 19
+          or states ('sensor.speedtest_upload')|float(-1) < 3
+          or states('sensor.speedtest_ping')|float(-1) > 25 %} minor
+      {% else %} ok
+      {% endif %}

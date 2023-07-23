@@ -1,0 +1,8 @@
+---
+- name: status_zigbee2mqtt
+  state_topic: "zigbee2mqtt/bridge/state"
+  payload_on: "online"
+  payload_off: "offline"
+  device_class: connectivity
+  icon: mdi:zigbee
+  qos: 1

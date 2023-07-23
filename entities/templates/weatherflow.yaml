@@ -1,0 +1,32 @@
+---
+binary_sensor:
+  - name: "Weatherflow Local Connected"
+    unique_id: weatherflow_local_connected
+    icon: mdi:weather-lightning-rainy
+    device_class: connectivity
+    state: "{{ has_value('sensor.tempest_st_00056115_status') }}"
+
+  - name: "Weatherflow Cloud Connected"
+    unique_id: weatherflow_cloud_connected
+    icon: mdi:weather-lightning-rainy
+    device_class: connectivity
+    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
+
+sensor:
+  - name: "Tempest ST 00056115 Precipitation Probability"
+    unique_id: tempest_st_00056115_precipitation_probability
+    icon: mdi:weather-rainy
+    unit_of_measurement: "%"
+    state: "{{ state_attr('weather.tempest_hourly','forecast')[0]['precipitation_probability']|int(-1) }}"
+    availability: >
+      {{ state_attr('weather.tempest_hourly','forecast')[0] is defined
+          and is_number(state_attr('weather.tempest_hourly','forecast')[0]['precipitation_probability']) }}
+
+  - name: "WeatherFlow Precipitation Probability"
+    unique_id: weatherflow_precipitation_probability
+    icon: mdi:weather-rainy
+    unit_of_measurement: "%"
+    state: "{{ state_attr('weather.weatherflow_hourly_based_forecast','forecast')[0]['precipitation_probability']|int(-1) }}"
+    availability: >
+      {{ state_attr('weather.weatherflow_hourly_based_forecast','forecast')[0] is defined
+          and is_number(state_attr('weather.weatherflow_hourly_based_forecast','forecast')[0]['precipitation_probability']) }}
