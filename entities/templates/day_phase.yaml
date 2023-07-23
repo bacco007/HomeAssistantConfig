@@ -27,3 +27,8 @@ sensor:
       {%- else %}
         Night
       {%- endif %}
+
+  - name: "Day Night"
+    unique_id: day_night
+    icon: "{{ 'mdi:weather-sunny' if is_state('sun.sun','above_horizon') else 'mdi:weather-night' }}"
+    state: "{{ 'Day' if is_state('sun.sun','above_horizon') else 'Night' }}"
