@@ -1,0 +1,6 @@
+---
+alias: "[Zigbee2MQTT] Restart"
+sequence:
+  - service: mqtt.publihs
+    data:
+      topic: zigbee2mqtt/bridge/request/restart

@@ -46,34 +46,34 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, July 23rd 2023_
+_Stats as at 05:00, Monday, July 24th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.3 | 460     | 3949         | 2742 | 106 |
+| 2023.7.3 | 468     | 4235         | 3038 | 102 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
-Alert | 0
-Automation | 106
-Binary Sensor | 196
+Alert | 1
+Automation | 102
+Binary Sensor | 216
 Camera | 5
-Device Tracker | 113
-Group | 4
-Input Boolean | 1
+Device Tracker | 110
+Group | 5
+Input Boolean | 3
 Input Datetime | 0
 Input Text | 3
-Light | 8
+Light | 9
 Media Player | 20
 Person | 1
 Scene | 0
 Script | 4
-Sensor | 2742
+Sensor | 3038
 Sun | 1
-Switch | 193
-Weather | 9
-Zone | 3
+Switch | 194
+Weather | 13
+Zone | 4
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -93,6 +93,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
 | [alarm_control_panel.eufy_security](https://www.home-assistant.io/components/alarm_control_panel.eufy_security) |
 | [alarm_control_panel.mqtt](https://www.home-assistant.io/components/alarm_control_panel.mqtt) |
+| [alert](https://www.home-assistant.io/components/alert) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
 | [androidtv](https://www.home-assistant.io/components/androidtv) |
 | [androidtv_remote](https://www.home-assistant.io/components/androidtv_remote) |
@@ -297,6 +298,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [notify.ios](https://www.home-assistant.io/components/notify.ios) |
 | [notify.mobile_app](https://www.home-assistant.io/components/notify.mobile_app) |
 | [notify.slack](https://www.home-assistant.io/components/notify.slack) |
+| [notify.syslog](https://www.home-assistant.io/components/notify.syslog) |
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
 | [number](https://www.home-assistant.io/components/number) |
@@ -312,6 +314,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [persistent_notification](https://www.home-assistant.io/components/persistent_notification) |
 | [person](https://www.home-assistant.io/components/person) |
 | [ping](https://www.home-assistant.io/components/ping) |
+| [pirateweather](https://www.home-assistant.io/components/pirateweather) |
 | [plex](https://www.home-assistant.io/components/plex) |
 | [powercalc](https://www.home-assistant.io/components/powercalc) |
 | [profiler](https://www.home-assistant.io/components/profiler) |
@@ -405,6 +408,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.openweathermap](https://www.home-assistant.io/components/sensor.openweathermap) |
+| [sensor.pirateweather](https://www.home-assistant.io/components/sensor.pirateweather) |
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
@@ -439,6 +443,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.template](https://www.home-assistant.io/components/sensor.template) |
 | [sensor.thermal_comfort](https://www.home-assistant.io/components/sensor.thermal_comfort) |
 | [sensor.time_date](https://www.home-assistant.io/components/sensor.time_date) |
+| [sensor.tomorrowio](https://www.home-assistant.io/components/sensor.tomorrowio) |
 | [sensor.transport_nsw](https://www.home-assistant.io/components/sensor.transport_nsw) |
 | [sensor.unifi](https://www.home-assistant.io/components/sensor.unifi) |
 | [sensor.unifics](https://www.home-assistant.io/components/sensor.unifics) |
@@ -505,6 +510,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [thermal_comfort](https://www.home-assistant.io/components/thermal_comfort) |
 | [thread](https://www.home-assistant.io/components/thread) |
 | [timer](https://www.home-assistant.io/components/timer) |
+| [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
 | [trace](https://www.home-assistant.io/components/trace) |
 | [trakt_tv](https://www.home-assistant.io/components/trakt_tv) |
 | [tts](https://www.home-assistant.io/components/tts) |
@@ -537,7 +543,9 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [weather.astroweather](https://www.home-assistant.io/components/weather.astroweather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.openweathermap](https://www.home-assistant.io/components/weather.openweathermap) |
+| [weather.pirateweather](https://www.home-assistant.io/components/weather.pirateweather) |
 | [weather.template](https://www.home-assistant.io/components/weather.template) |
+| [weather.tomorrowio](https://www.home-assistant.io/components/weather.tomorrowio) |
 | [weather.weatherflow](https://www.home-assistant.io/components/weather.weatherflow) |
 | [weatherflow](https://www.home-assistant.io/components/weatherflow) |
 | [webhook](https://www.home-assistant.io/components/webhook) |
@@ -596,6 +604,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Nsw Rural Fire Service   Fire Danger](https://github.com/exxamalte/home-assistant-custom-components-nsw-rural-fire-service-fire-danger)
 - [Opennem (Au) Data](https://github.com/bacco007/sensor.opennem)
 - [Passive Ble Monitor Integration](https://github.com/custom-components/ble_monitor)
+- [Pirate Weather](https://github.com/alexander0042/pirate-weather-ha)
 - [Powercalc](https://github.com/bramstroker/homeassistant-powercalc)
 - [Proxmox Ve](https://github.com/dougiteixeira/proxmoxve)
 - [Pyscript](https://github.com/custom-components/pyscript)
@@ -712,7 +721,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (15.0.4)
+- Advanced SSH & Web Terminal (15.0.5)
 - Cloudflared (4.2.1)
 - ESPHome (2023.7.0)
 - eufy-security-ws (1.5.2-1)
@@ -721,10 +730,9 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.4.0)
+- Node-RED (14.4.1)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
-- Zigbee2MQTT (1.32.1-1)
 - Zigbee2MQTT Edge (edge)
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
