@@ -1,7 +1,7 @@
 """Utility functions for adaptation commands."""
+import logging
 from collections.abc import AsyncGenerator
 from dataclasses import dataclass
-import logging
 from typing import Any, Literal
 
 from homeassistant.components.light import (
@@ -40,10 +40,10 @@ ServiceData = dict[str, Any]
 
 
 def _split_service_call_data(service_data: ServiceData) -> list[ServiceData]:
-    """Splits the service data by the adapted attributes, i.e., into separate data
-    items for brightness and color.
-    """
+    """Splits the service data by the adapted attributes.
 
+    i.e., into separate data items for brightness and color.
+    """
     common_attrs = {ATTR_ENTITY_ID}
     common_data = {k: service_data[k] for k in common_attrs if k in service_data}
 
@@ -61,7 +61,7 @@ def _split_service_call_data(service_data: ServiceData) -> list[ServiceData]:
 
     # Distribute the transition duration across all service calls
     if service_datas and (transition := service_data.get(ATTR_TRANSITION)) is not None:
-        transition = service_data[ATTR_TRANSITION] / len(service_datas)
+        transition /= len(service_datas)
 
         for service_data in service_datas:
             service_data[ATTR_TRANSITION] = transition
@@ -69,33 +69,31 @@ def _split_service_call_data(service_data: ServiceData) -> list[ServiceData]:
     return service_datas
 
 
-def _filter_service_data(service_data: ServiceData, state: State | None) -> ServiceData:
+def _remove_redundant_attributes(
+    service_data: ServiceData,
+    state: State,
+) -> ServiceData:
     """Filter service data by removing attributes that already equal the given state.
 
     Removes all attributes from service call data whose values are already present
-    in the target entity's state."""
-
-    if not state:
-        return service_data
-
-    filtered_service_data = {
-        k: service_data[k]
-        for k in service_data.keys()
-        if k not in state.attributes or service_data[k] != state.attributes[k]
+    in the target entity's state.
+    """
+    return {
+        k: v
+        for k, v in service_data.items()
+        if k not in state.attributes or v != state.attributes[k]
     }
-
-    return filtered_service_data
 
 
 def _has_relevant_service_data_attributes(service_data: ServiceData) -> bool:
     """Determines whether the service data justifies an adaptation service call.
 
     A service call is not justified for data which does not contain any entries that
-    change relevant attributes of an adapting entity, e.g., brightness or color."""
+    change relevant attributes of an adapting entity, e.g., brightness or color.
+    """
     common_attrs = {ATTR_ENTITY_ID, ATTR_TRANSITION}
-    relevant_attrs = set(service_data) - common_attrs
 
-    return bool(relevant_attrs)
+    return any(attr not in common_attrs for attr in service_data)
 
 
 async def _create_service_call_data_iterator(
@@ -112,14 +110,16 @@ async def _create_service_call_data_iterator(
     at the time when the service data is read instead of up front. This gives greater
     flexibility because entity states can change while the items are iterated.
     """
-
     for service_data in service_datas:
         if filter_by_state and (entity_id := service_data.get(ATTR_ENTITY_ID)):
             current_entity_state = hass.states.get(entity_id)
 
             # Filter data to remove attributes that equal the current state
-            if current_entity_state:
-                service_data = _filter_service_data(service_data, current_entity_state)
+            if current_entity_state is not None:
+                service_data = _remove_redundant_attributes(  # noqa: PLW2901
+                    service_data,
+                    state=current_entity_state,
+                )
 
             # Emit service data if it still contains relevant attributes (else try next)
             if _has_relevant_service_data_attributes(service_data):
@@ -145,11 +145,11 @@ class AdaptationData:
         return await anext(self.service_call_datas, None)
 
 
-class NoColorOrBrightnessInServiceData(Exception):
+class NoColorOrBrightnessInServiceDataError(Exception):
     """Exception raised when no color or brightness attributes are found in service data."""
 
 
-def is_color_brightness_or_both(
+def _identify_lighting_type(
     service_data: ServiceData,
 ) -> Literal["brightness", "color", "both"]:
     """Extract the 'which' attribute from the service data."""
@@ -162,7 +162,7 @@ def is_color_brightness_or_both(
     if has_color:
         return "color"
     msg = f"Invalid service_data, no brightness or color attributes found: {service_data=}"
-    raise NoColorOrBrightnessInServiceData(msg)
+    raise NoColorOrBrightnessInServiceDataError(msg)
 
 
 def prepare_adaptation_data(
@@ -181,23 +181,29 @@ def prepare_adaptation_data(
         entity_id,
         service_data,
     )
-    service_datas = (
-        [service_data] if not split else _split_service_call_data(service_data)
-    )
+    service_datas = _split_service_call_data(service_data) if split else [service_data]
 
-    sleep_time = (
-        transition / max(1, len(service_datas)) if transition is not None else 0
-    ) + split_delay
+    service_datas_length = len(service_datas)
+
+    if transition is not None:
+        transition_duration_per_data = transition / max(1, service_datas_length)
+        sleep_time = transition_duration_per_data + split_delay
+    else:
+        sleep_time = split_delay
 
     service_data_iterator = _create_service_call_data_iterator(
-        hass, service_datas, filter_by_state
+        hass,
+        service_datas,
+        filter_by_state,
     )
 
+    lighting_type = _identify_lighting_type(service_data)
+
     return AdaptationData(
-        entity_id,
-        context,
+        entity_id=entity_id,
+        context=context,
         sleep_time=sleep_time,
         service_call_datas=service_data_iterator,
-        max_length=len(service_datas),
-        which=is_color_brightness_or_both(service_data),
+        max_length=service_datas_length,
+        which=lighting_type,
     )
