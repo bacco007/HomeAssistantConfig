@@ -1,6 +1,6 @@
 ---
 id: "1653186204936"
-alias: Adaptive Lighting - Turn off Sleep Mode at Sunrise
+alias: "[Adaptive Lighting] - Turn off Sleep Mode at Sunrise"
 description: ""
 trigger:
   - platform: sun

@@ -1,8 +1,18 @@
 ---
-name: zigbee2mqtt_networkmap
-icon: mdi:zigbee
-state_topic: zigbee2mqtt/bridge/response/networkmap
-value_template: >-
-  {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
-json_attributes_topic: zigbee2mqtt/bridge/response/networkmap
-json_attributes_template: "{{ value_json.data.value | tojson }}"
+- name: zigbee2mqtt_networkmap
+  icon: mdi:zigbee
+  state_topic: zigbee2mqtt/bridge/response/networkmap
+  value_template: >-
+    {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+  json_attributes_topic: zigbee2mqtt/bridge/response/networkmap
+  json_attributes_template: "{{ value_json.data.value | tojson }}"
+
+- name: "Zigbee2MQTT Version"
+  state_topic: "zigbee2mqtt/bridge/info"
+  value_template: "{{ value_json.version }}"
+  icon: mdi:zigbee
+
+- name: "Zigbee2MQTT Coordinator Version"
+  state_topic: "zigbee2mqtt/bridge/info"
+  value_template: "{{ value_json.coordinator.meta.revision }}"
+  icon: mdi:chip

@@ -46,34 +46,34 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, July 24th 2023_
+_Stats as at 05:00, Tuesday, July 25th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.7.3 | 468     | 4235         | 3038 | 102 |
+| 2023.7.3 | 467     | 4178         | 2998 | 103 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
-Alert | 1
-Automation | 102
-Binary Sensor | 216
+Alert | 4
+Automation | 103
+Binary Sensor | 212
 Camera | 5
-Device Tracker | 110
+Device Tracker | 109
 Group | 5
 Input Boolean | 3
 Input Datetime | 0
 Input Text | 3
 Light | 9
-Media Player | 20
+Media Player | 18
 Person | 1
 Scene | 0
-Script | 4
-Sensor | 3038
+Script | 5
+Sensor | 2998
 Sun | 1
-Switch | 194
+Switch | 196
 Weather | 13
-Zone | 4
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -412,7 +412,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
-| [sensor.proxmoxve](https://www.home-assistant.io/components/sensor.proxmoxve) |
 | [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
@@ -730,7 +729,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.4.1)
+- Node-RED (14.4.2)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - Zigbee2MQTT Edge (edge)

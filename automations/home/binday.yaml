@@ -1,0 +1,29 @@
+---
+alias: "[Home] Bin Day Notification"
+description: ""
+trigger:
+  - platform: time
+    at: "17:00:00"
+condition:
+  - condition: template
+    value_template: >-
+      {{ states.sensor | selectattr('entity_id','search','binday_') |
+      selectattr('attributes.days', 'equalto', 1) |
+      map(attribute='attributes.friendly_name')| list | join(', ') | length > 0
+      }}
+action:
+  - service: notify.alert
+    data:
+      title: Tomorrow is Bin Day!
+      message: >-
+        Don't forget to put the following bins out: {{ states.sensor |
+        selectattr('entity_id','search','binday_') |
+        selectattr('attributes.days',       'equalto', 1) |
+        map(attribute='attributes.friendly_name')| list | join(', ') }}
+      data:
+        push:
+          badge: 1
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge

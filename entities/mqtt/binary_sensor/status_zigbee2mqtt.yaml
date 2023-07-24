@@ -1,6 +1,8 @@
 ---
 - name: status_zigbee2mqtt
+  unique_id: status_zigbee2mqtt
   state_topic: "zigbee2mqtt/bridge/state"
+  value_template: "{{ value_json.state }}"
   payload_on: "online"
   payload_off: "offline"
   device_class: connectivity
