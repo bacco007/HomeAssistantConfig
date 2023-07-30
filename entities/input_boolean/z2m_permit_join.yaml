@@ -1,5 +1,5 @@
 ---
 z2m_permit_join:
   name: "[Zigbee2MQTT] Permit Join"
-  initial: off
+  initial: false
   icon: mdi:zigbee
