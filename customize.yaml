@@ -12,10 +12,10 @@ alert.docker_sungather:
 alert.docker_weatherflow2mqtt:
   icon: mdi:docker
   category: homeassistant
-alert.gdacs:
+alert.gdacs_connected:
   icon: mdi:home-flood
   category: weather
-alert.pirateweather:
+alert.pirateweather_connected:
   icon: mdi:weather-partly-rainy
   category: weather
 alert.weather_high_temperature:
@@ -24,37 +24,40 @@ alert.weather_high_temperature:
 alert.weather_low_temperature:
   icon: mdi:snowflake-alert
   category: weather
+alert.weather_storm_approaching:
+  icon: mdi:weather-partly-lightning
+  category: weather
 alert.weatherflow_cloud:
   icon: mdi:weather-partly-rainy
   category: weather
 alert.weatherflow_local:
   icon: mdi:weather-partly-rainy
   category: weather
-alert.adguard:
+alert.adguard_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.apple_tv:
+alert.apple_tv_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.bureau_of_meteorology:
+alert.bureau_of_meteorology_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.eufy_security:
+alert.eufy_security_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.hdhomerun:
+alert.hdhomerun_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.lg_smartthinq:
+alert.lg_smartthinq_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.solcast_solar:
+alert.solcast_solar_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.spotify:
+alert.spotify_connected:
   icon: mdi:alert-decagram
   category: homeassistant
-alert.synology:
+alert.synology_connected:
   icon: mdi:alert-decagram
   category: homeassistant
 

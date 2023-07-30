@@ -46,32 +46,32 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, July 30th 2023_
+_Stats as at 05:00, Monday, July 31st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.0b1 | 462     | 4300         | 3007 | 118 |
+| 2023.8.0b1 | 465     | 3882         | 2804 | 116 |
 
 Type | Qty
 -- | --
-Alarm Control Panel | 2
-Alert | 7
-Automation | 118
-Binary Sensor | 216
-Camera | 5
-Device Tracker | 142
+Alarm Control Panel | 0
+Alert | 22
+Automation | 116
+Binary Sensor | 200
+Camera | 0
+Device Tracker | 141
 Group | 6
 Input Boolean | 6
 Input Datetime | 0
 Input Text | 3
 Light | 9
-Media Player | 20
+Media Player | 18
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3007
+Sensor | 2804
 Sun | 1
-Switch | 208
+Switch | 159
 Weather | 13
 Zone | 3
 
@@ -403,9 +403,11 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.nsw_air_quality](https://www.home-assistant.io/components/sensor.nsw_air_quality) |
 | [sensor.nsw_fuel_station](https://www.home-assistant.io/components/sensor.nsw_fuel_station) |
 | [sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/sensor.nsw_rural_fire_service_fire_danger) |
+| [sensor.opennem](https://www.home-assistant.io/components/sensor.opennem) |
 | [sensor.opensky](https://www.home-assistant.io/components/sensor.opensky) |
 | [sensor.openuv](https://www.home-assistant.io/components/sensor.openuv) |
 | [sensor.openweathermap](https://www.home-assistant.io/components/sensor.openweathermap) |
+| [sensor.pirateweather](https://www.home-assistant.io/components/sensor.pirateweather) |
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
@@ -538,6 +540,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [weather.astroweather](https://www.home-assistant.io/components/weather.astroweather) |
 | [weather.bureau_of_meteorology](https://www.home-assistant.io/components/weather.bureau_of_meteorology) |
 | [weather.openweathermap](https://www.home-assistant.io/components/weather.openweathermap) |
+| [weather.pirateweather](https://www.home-assistant.io/components/weather.pirateweather) |
 | [weather.template](https://www.home-assistant.io/components/weather.template) |
 | [weather.tomorrowio](https://www.home-assistant.io/components/weather.tomorrowio) |
 | [weather.weatherflow](https://www.home-assistant.io/components/weather.weatherflow) |
@@ -666,6 +669,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Mini Media Player](https://github.com/kalkih/mini-media-player)
 - [Multiple Entity Row](https://github.com/benct/lovelace-multiple-entity-row)
 - [Mushroom](https://github.com/piitaya/lovelace-mushroom)
+- [Number Box](https://github.com/htmltiger/numberbox-card)
 - [Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row)
 - [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card)
 - [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card)

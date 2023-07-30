@@ -11,11 +11,11 @@ cards:
     type: grid
     cards:
       - type: custom:mushroom-entity-card
-        entity: binary_sensor.weatherflow_cloud_connected
+        entity: binary_sensor.connected_weatherflow_cloud
         layout: vertical
         name: '[Connected] Cloud'
       - type: custom:mushroom-entity-card
-        entity: binary_sensor.weatherflow_local_connected
+        entity: binary_sensor.connected_weatherflow_local
         layout: vertical
         name: '[Connected] Local'
     columns: 2

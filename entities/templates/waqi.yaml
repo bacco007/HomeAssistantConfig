@@ -5,7 +5,7 @@ binary_sensor:
     icon: mdi:smog
     state: >
       {{ states('sensor.waqi_aqi_risk_level') in ['Very Unhealthy','Unhealthy','Unhealthy Sensitive Groups','Moderate']
-          and is_state('input_boolean.weather_alerts','on') }}
+          and is_state('input_boolean.alerts_weather','on') }}
     availability: "{{ has_value('sensor.waqi_aqi_risk_level') }}"
 
 sensor:

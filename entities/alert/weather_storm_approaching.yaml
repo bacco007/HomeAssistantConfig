@@ -1,0 +1,34 @@
+
+---
+weather_storm_approaching:
+  name: "Storm Approaching"
+  title: "Storm Approaching"
+  message: >
+    {%- set dist = states('sensor.weather_nearest_storm_distance')|float('unknown') -%}
+    {%- if is_number(dist) -%}
+    There is a {{ states('sensor.weather_precipitation_type') }} storm
+    {%- if dist >= 1 %} {{ dist|int(0) }} {{ 'kilometer' if dist|int(0) == 1 else 'kilometers' }} away
+    {%- if has_value('sensor.weather_storm_full_direction') %}, approaching from the {{ states('sensor.weather_storm_full_direction') }} {% endif -%}.
+    {%- else %} in the immediate vicinity.
+    {%- endif -%}
+    {%- endif -%}
+    The current forecast is {{ states('sensor.pirateweather_minutely_summary')|replace('<',' less than ')|replace('>','greater than')|lower }}
+  done_message: clear_notification
+  entity_id: binary_sensor.weather_storm_approaching_alert
+  state: "on"
+  repeat: 1440
+  notifiers: alert
+  data:
+    tag: weather_storm_approaching
+    notification_id: weather_storm_approaching
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_weather_storm_approaching

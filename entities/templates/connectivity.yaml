@@ -30,6 +30,13 @@ binary_sensor:
     state: "{{ integration_entities('openuv')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+  - name: "[Connected] GDACS"
+    unique_id: connected_gdacs
+    icon: mdi:home-flood
+    device_class: connectivity
+    state: "{{ integration_entities('gdacs')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
   - name: "[Connected] WAQI"
     unique_id: connected_waqi
     icon: mdi:smog

@@ -21,7 +21,7 @@ cards:
           type: custom:mushroom-template-card
           primary: Air Quality - wAQI
           secondary: |
-            {{states('sensor.waqi_tamworth_airpollev') }}
+            {{states('sensor.waqi_tamworth_north_west_slopes') }}, {{states('sensor.waqi_aqi_risk_level') }}
           icon: mdi:chart-bubble
           icon_color: yellow
           card_mod:
@@ -35,27 +35,34 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: entities
+            card_mod:
+              style: |
+                #states {
+                  padding-top: 0 !important;
+                }
+                #states > * {
+                  margin: 0 !important;
+                }
             entities:
+              - entity: binary_sensor.waqi_air_quality_alert
+                name: Air Quality Alert
+              - entity: sensor.waqi_aqi_risk_level
+                card_mod:
+                  style: |
+                    :host {
+                      --paper-item-icon-color:
+                        {% set level = states('sensor.waqi_air_quality_index')|float(0) %}
+                        {% if level < 50 %} var(--entity-ok-color)
+                        {% elif level < 100 %} var(--entity-minor-color)
+                        {% elif level < 150 %} var(--entity-warning-color)
+                        {% elif level < 300 %} var(--entity-severe-color)
+                        {% elif level >= 300 %} var(--entity-critical-color)
+                        {% else %} var(--state-icon-color);
+                        {% endif %}
+                      ;
+                    }
               - entity: sensor.waqi_tamworth_north_west_slopes
                 name: Tamworth
-                type: custom:multiple-entity-row
-                styles:
-                  white-space: normal
-                style:
-                  hui-generic-entity-row:
-                    $: |
-                      .info, .info > * {
-                        white-space: normal !important;
-                      }
-                entities:
-                  - attribute: pm_10
-                    name: PM10
-                    unit: AQI
-                  - attribute: pm_2_5
-                    name: PM2.5
-                    unit: AQI
-                secondary_info:
-                  entity: sensor.waqi_tamworth_airpollev
               - entity: sensor.waqi_tamworth_change_aqi
                 type: custom:multiple-entity-row
                 styles:
@@ -73,6 +80,29 @@ cards:
                     name: Min
                   - entity: sensor.waqi_tamworth_max_aqi
                     name: Max
+              - type: section
+              - type: custom:fold-entity-row
+                head:
+                  type: custom:template-entity-row
+                  entity: sensor.waqi_tamworth_north_west_slopes
+                  name: Individual Measures
+                  state: ''
+                  card_mod:
+                    style: |
+                      #measures > * {
+                        margin: 0 !important;
+                      }
+                padding: 0
+                entities:
+                  - entity: sensor.waqi_nitrogen_dioxide
+                    name: Nitrogen Dioxide
+                  - entity: sensor.waqi_ozone
+                    name: Ozone
+                  - entity: sensor.waqi_particulate_matter_10
+                    name: PM10
+                  - entity: sensor.waqi_particulate_matter_2_5
+                    name: PM2.5
+
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:vertical-stack-in-card

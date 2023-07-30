@@ -1,5 +1,5 @@
 ---
-alias: "Weather - Lightning Notification"
+alias: "[Weather] Lightning Notification"
 id: weather_lightningnotification
 mode: single
 
@@ -13,11 +13,10 @@ condition:
     below: 10
 
 action:
-  - service: notify.mobile_app_tbiphone13pro
+  - service: notify.alert
     data:
       title: Weather Alert
       message: Lightning within 10km of home!
       data:
         tag: "weather-lightning"
         subtitle: "⚡️ Lightning within 10km ⚡"
-        # url: "/dwains-dashboard/more_page_addon_lightning"

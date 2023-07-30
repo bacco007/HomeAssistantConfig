@@ -35,19 +35,42 @@ cards:
         entities:
           - type: custom:hui-element
             card_type: entities
+            card_mod:
+              style: |
+                #states {
+                  padding-top: 0 !important;
+                }
+                #states > * {
+                  margin: 0 !important;
+                }
             entities:
-              - binary_sensor.protection_window
-              - type: custom:multiple-entity-row
-                entity: sensor.current_uv_index
-                secondary_info:
-                  entity: sensor.current_uv_level
-              - sensor.max_uv_index
-              - sensor.current_ozone_level
-              - sensor.skin_type_1_safe_exposure_time
-              - sensor.skin_type_2_safe_exposure_time
-              - sensor.skin_type_3_safe_exposure_time
-              - sensor.skin_type_4_safe_exposure_time
-              - sensor.skin_type_5_safe_exposure_time
+              - entity: binary_sensor.protection_window
+                name: Protection Window
+              - entity: binary_sensor.uv_risk_alert
+                name: UV Risk Alert
+              - type: section
+              - entity: sensor.current_uv_level
+              - entity: sensor.current_uv_index
+                name: Current Index
+              - entity: sensor.uv_risk_today
+                name: Today Level
+              - entity: sensor.max_uv_index
+                name: Today Index
+              - entity: sensor.current_ozone_level
+                name: Current Ozone
+              - type: section
+              - entity: sensor.skin_type_1_safe_exposure_time
+                name: Skin Type 1
+              - entity: sensor.skin_type_2_safe_exposure_time
+                name: Skin Type 2
+              - entity: sensor.skin_type_3_safe_exposure_time
+                name: Skin Type 3
+              - entity: sensor.skin_type_4_safe_exposure_time
+                name: Skin Type 4
+              - entity: sensor.skin_type_5_safe_exposure_time
+                name: Skin Type 5
+              - entity: sensor.skin_type_6_safe_exposure_time
+                name: Skin Type 6
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:mushroom-template-card

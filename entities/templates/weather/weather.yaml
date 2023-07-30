@@ -583,22 +583,3 @@ sensor:
     attributes:
       provider: Pirate Weather
     availability: "{{ is_number(states('sensor.pirateweather_cloud_coverage')) }}"
-
-  - name: "[Weather] Rain Soon (12Hr Lookahead)"
-    unique_id: weather_rain_soon
-    icon: mdi:weather-pouring
-    state: >
-      {% set found = namespace(value=0) %}
-      {% if is_state('sensor.weather_precipitation_type','rain') %}
-        {% set threshold = 25 %}
-        {% set forecast = state_attr('weather.tempest_hourly','forecast') %}
-        {% for item in forecast %}
-          {% if loop.index0 < 12 and item.precipitation_probability|int(-1) >= threshold %}
-            {% set found.value = 1 %}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-      {{ found.value == 1 }}
-    availability: >
-      {{ state_attr('weather.tempest_hourly','forecast') != none
-          and state_attr('weather.tempest_hourly','forecast')[0] is defined }}

@@ -6,10 +6,6 @@ trigger:
   - platform: sun
     event: sunset
     offset: "-00:05:00"
-condition:
-  - condition: state
-    entity_id: person.thomas_baxter
-    state: not_home
 action:
   - service: notify.alert
     data:
