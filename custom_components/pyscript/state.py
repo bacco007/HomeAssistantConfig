@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 from homeassistant.core import Context
-from homeassistant.helpers.restore_state import RestoreStateData
+from homeassistant.helpers.restore_state import DATA_RESTORE_STATE
 from homeassistant.helpers.service import async_get_all_descriptions
 
 from .const import LOGGER_PATH
@@ -217,7 +217,8 @@ class State:
     async def register_persist(cls, var_name):
         """Register pyscript state variable to be persisted with RestoreState."""
         if var_name.startswith("pyscript.") and var_name not in cls.persisted_vars:
-            restore_data = await RestoreStateData.async_get_instance(cls.hass)
+            # this is a hack accessing hass internals; should re-implement using RestoreEntity
+            restore_data = cls.hass.data[DATA_RESTORE_STATE]
             this_entity = PyscriptEntity()
             this_entity.entity_id = var_name
             cls.persisted_vars[var_name] = this_entity
@@ -289,6 +290,7 @@ class State:
                     for keyword, typ, default in [
                         ("context", [Context], Function.task2context.get(curr_task, None)),
                         ("blocking", [bool], None),
+                        ("return_response", [bool], None),
                         ("limit", [float, int], None),
                     ]:
                         if keyword in kwargs and type(kwargs[keyword]) in typ:
@@ -305,7 +307,9 @@ class State:
                         kwargs[param_name] = args[0]
                     elif len(args) != 0:
                         raise TypeError(f"service {domain}.{service} takes no positional arguments")
-                    await cls.hass.services.async_call(domain, service, kwargs, **hass_args)
+
+                    # return await Function.hass_services_async_call(domain, service, kwargs, **hass_args)
+                    return await cls.hass.services.async_call(domain, service, kwargs, **hass_args)
 
                 return service_call
 

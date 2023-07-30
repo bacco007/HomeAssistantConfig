@@ -11,6 +11,7 @@ import io
 import keyword
 import logging
 import sys
+import time
 import weakref
 
 import yaml
@@ -25,6 +26,7 @@ from .const import (
     DOMAIN,
     LOGGER_PATH,
     SERVICE_JUPYTER_KERNEL_START,
+    SERVICE_RESPONSE_NONE,
 )
 from .function import Function
 from .state import State
@@ -377,6 +379,7 @@ class EvalFunc:
             "time_trigger": {"kwargs": {dict}},
             "task_unique": {"kill_me": {bool, int}},
             "time_active": {"hold_off": {int, float}},
+            "service": {"supports_response": {str}},
             "state_trigger": {
                 "kwargs": {dict},
                 "state_hold": {int, float},
@@ -485,11 +488,14 @@ class EvalFunc:
                         func_args.update(call.data)
 
                         async def do_service_call(func, ast_ctx, data):
-                            await func.call(ast_ctx, **data)
+                            retval = await func.call(ast_ctx, **data)
                             if ast_ctx.get_exception_obj():
                                 ast_ctx.get_logger().error(ast_ctx.get_exception_long())
+                            return retval
 
-                        Function.create_task(do_service_call(func, ast_ctx, func_args))
+                        task = Function.create_task(do_service_call(func, ast_ctx, func_args))
+                        await task
+                        return task.result()
 
                     return pyscript_service_handler
 
@@ -500,7 +506,11 @@ class EvalFunc:
                     if name in (SERVICE_RELOAD, SERVICE_JUPYTER_KERNEL_START):
                         raise SyntaxError(f"{exc_mesg}: @service conflicts with builtin service")
                     Function.service_register(
-                        trig_ctx_name, domain, name, pyscript_service_factory(func_name, self)
+                        trig_ctx_name,
+                        domain,
+                        name,
+                        pyscript_service_factory(func_name, self),
+                        dec_kwargs.get("supports_response", SERVICE_RESPONSE_NONE),
                     )
                     async_set_service_schema(Function.hass, domain, name, service_desc)
                     self.trigger_service.add(srv_name)
@@ -1698,16 +1708,16 @@ class AstEval:
         if isinstance(arg.op, ast.And):
             val = True
             for arg1 in arg.values:
-                this_val = await self.aeval(arg1)
-                if not this_val:
-                    return this_val
-                val = this_val
+                val = await self.aeval(arg1)
+                if not val:
+                    return val
             return val
+        val = False
         for arg1 in arg.values:
             val = await self.aeval(arg1)
             if val:
                 return val
-        return 0
+        return val
 
     async def eval_elt_list(self, elts):
         """Evaluate and star list elements."""
@@ -1921,6 +1931,13 @@ class AstEval:
         if asyncio.iscoroutinefunction(func):
             return await func(*args, **kwargs)
         if callable(func):
+            if func == time.sleep:  # pylint: disable=comparison-with-callable
+                _LOGGER.warning(
+                    "%s line %s calls blocking time.sleep(); replaced with asyncio.sleep()",
+                    self.filename,
+                    self.lineno,
+                )
+                return await asyncio.sleep(*args, **kwargs)
             return func(*args, **kwargs)
         raise TypeError(f"'{func_name}' is not callable (got {func})")
 

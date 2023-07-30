@@ -6,7 +6,7 @@ import traceback
 
 from homeassistant.core import Context
 
-from .const import LOGGER_PATH
+from .const import LOGGER_PATH, SERVICE_RESPONSE_NONE, SERVICE_RESPONSE_ONLY
 
 _LOGGER = logging.getLogger(LOGGER_PATH + ".function")
 
@@ -324,14 +324,14 @@ class Function:
         for keyword, typ, default in [
             ("context", [Context], cls.task2context.get(curr_task, None)),
             ("blocking", [bool], None),
-            ("limit", [float, int], None),
+            ("return_response", [bool], None),
         ]:
             if keyword in kwargs and type(kwargs[keyword]) in typ:
                 hass_args[keyword] = kwargs.pop(keyword)
             elif default:
                 hass_args[keyword] = default
 
-        await cls.hass.services.async_call(domain, name, kwargs, **hass_args)
+        return await cls.hass_services_async_call(domain, name, kwargs, **hass_args)
 
     @classmethod
     async def service_completions(cls, root):
@@ -394,7 +394,7 @@ class Function:
                 for keyword, typ, default in [
                     ("context", [Context], cls.task2context.get(curr_task, None)),
                     ("blocking", [bool], None),
-                    ("limit", [float, int], None),
+                    ("return_response", [bool], None),
                 ]:
                     if keyword in kwargs and type(kwargs[keyword]) in typ:
                         hass_args[keyword] = kwargs.pop(keyword)
@@ -404,11 +404,34 @@ class Function:
                 if len(args) != 0:
                     raise TypeError(f"service {domain}.{service} takes only keyword arguments")
 
-                await cls.hass.services.async_call(domain, service, kwargs, **hass_args)
+                return await cls.hass_services_async_call(domain, service, kwargs, **hass_args)
 
             return service_call
 
         return service_call_factory(domain, service)
+
+    @classmethod
+    async def hass_services_async_call(cls, domain, service, kwargs, **hass_args):
+        """Call a hass async service."""
+        if SERVICE_RESPONSE_ONLY is None:
+            # backwards compatibility < 2023.7
+            await cls.hass.services.async_call(domain, service, kwargs, **hass_args)
+        else:
+            # allow service responses >= 2023.7
+            if (
+                "return_response" in hass_args
+                and hass_args["return_response"]
+                and "blocking" not in hass_args
+            ):
+                hass_args["blocking"] = True
+            elif (
+                "return_response" not in hass_args
+                and cls.hass.services.supports_response(domain, service) == SERVICE_RESPONSE_ONLY
+            ):
+                hass_args["return_response"] = True
+                if "blocking" not in hass_args:
+                    hass_args["blocking"] = True
+            return await cls.hass.services.async_call(domain, service, kwargs, **hass_args)
 
     @classmethod
     async def run_coro(cls, coro, ast_ctx=None):
@@ -450,7 +473,9 @@ class Function:
         return cls.hass.loop.create_task(cls.run_coro(coro, ast_ctx=ast_ctx))
 
     @classmethod
-    def service_register(cls, global_ctx_name, domain, service, callback):
+    def service_register(
+        cls, global_ctx_name, domain, service, callback, supports_response=SERVICE_RESPONSE_NONE
+    ):
         """Register a new service callback."""
         key = f"{domain}.{service}"
         if key not in cls.service_cnt:
@@ -462,7 +487,12 @@ class Function:
                 f"{global_ctx_name}: can't register service {key}; already defined in {cls.service2global_ctx[key]}"
             )
         cls.service_cnt[key] += 1
-        cls.hass.services.async_register(domain, service, callback)
+        if SERVICE_RESPONSE_ONLY is None:
+            # backwards compatibility < 2023.7
+            cls.hass.services.async_register(domain, service, callback)
+        else:
+            # allow service responses >= 2023.7
+            cls.hass.services.async_register(domain, service, callback, supports_response=supports_response)
 
     @classmethod
     def service_remove(cls, global_ctx_name, domain, service):
