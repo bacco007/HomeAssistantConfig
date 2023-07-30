@@ -1,0 +1,25 @@
+---
+id: pause_alert
+alias: "[Notifications] Pause Alert"
+mode: parallel
+variables:
+  alert: "{{ trigger.event.data['action'][12:] }}"
+trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+condition: "{{ trigger.event.data['action'][:11] == 'pause_alert' }}"
+action:
+  - service: automation.turn_off
+    target:
+      entity_id: automation.notifications_clear_alert
+    data:
+      stop_actions: false
+
+  - service: alert.turn_off
+    target:
+      entity_id: "alert.{{ alert }}"
+    continue_on_error: true
+
+  - service: automation.turn_on
+    target:
+      entity_id: automation.notifications_clear_alert

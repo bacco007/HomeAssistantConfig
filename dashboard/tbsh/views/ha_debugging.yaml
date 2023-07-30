@@ -1,0 +1,284 @@
+---
+theme: noctis
+title: "Debugging"
+icon: mdi:bug-check
+path: debugging
+type: custom:vertical-layout
+layout:
+  max_cols: 4
+cards:
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: variable
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Variable Values"
+      show_header_toggle: false
+
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: counter
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Counter Values"
+      show_header_toggle: false
+
+  - type: entities
+    title: "Text Values"
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_text
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: "Input Text Values"
+          padding: 0
+
+  - type: entities
+    title: "Number Values"
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_number
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: "Input Number Values"
+          padding: 0
+
+  - type: entities
+    title: "Select Values"
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: input_select
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: "Select Text Values"
+          padding: 0
+
+  - type: entities
+    title: "Groups"
+    state_color: true
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - domain: group
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: "Groups"
+          padding: 0
+
+  - type: custom:layout-break
+
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: timer
+      exclude:
+        - state: "idle"
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Running Timers"
+      show_header_toggle: false
+      state_color: true
+
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: alert
+      exclude:
+        - state: "idle"
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Active Alerts"
+      show_header_toggle: false
+      state_color: true
+
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            icon: mdi:alert
+            name: "Media Player Default Volumes"
+          padding: 0
+        filter:
+          include:
+            - entity_id: "input_number.*_default_volume"
+          exclude:
+            - entity_id: input_number.media_default_volume
+        sort:
+          method: name
+          ignore_case: true
+
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            icon: mdi:alert
+            name: "Media Player Current Volumes"
+          padding: 0
+        filter:
+          include:
+            - entity_id: "input_number.*_current_volume"
+        sort:
+          method: name
+          ignore_case: true
+
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            icon: mdi:alert
+            name: "Phone Restore Volumes"
+          padding: 0
+        filter:
+          include:
+            - entity_id: "input_number.*_phone"
+        sort:
+          method: name
+          ignore_case: true
+
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            icon: mdi:alert
+            name: "Alarm Clock Restore Volumes"
+          padding: 0
+        filter:
+          include:
+            - entity_id: "input_number.*_alarm_clock"
+        sort:
+          method: name
+          ignore_case: true
+
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: custom:auto-entities
+        filter:
+          include:
+            - entity_id: "input_number.*_tts"
+        sort:
+          method: name
+          ignore_case: true
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            icon: mdi:alert
+            name: "TTS Restore Volumes"
+          padding: 0
+
+  - type: custom:layout-break
+
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: automation
+      exclude:
+        - state: "on"
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Disabled Automations"
+      show_header_toggle: false
+      state_color: true
+
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: automation
+          attributes:
+            current: "> 0"
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Running Automations"
+      show_header_toggle: false
+      state_color: true
+
+  - type: custom:auto-entities
+    show_empty: true
+    filter:
+      include:
+        - domain: script
+      exclude:
+        - state: "off"
+    sort:
+      method: name
+      ignore_case: true
+    card:
+      type: entities
+      title: "Running Scripts"
+      show_header_toggle: false
+      state_color: true

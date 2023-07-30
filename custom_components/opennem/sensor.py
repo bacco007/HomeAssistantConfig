@@ -5,21 +5,14 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import OpenNEMDataUpdateCoordinator
-
-from .const import (
-    ATTRIBUTION,
-    DEFAULT_NAME,
-    DEFAULT_FORCE_UPDATE,
-    DEFAULT_ICON,
-    DEVICE_CLASS,
-    DOMAIN,
-)
+from .const import (ATTRIBUTION, DEFAULT_FORCE_UPDATE, DEFAULT_ICON,
+                    DEFAULT_NAME, DEVICE_CLASS, DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,7 +54,7 @@ class OpenNEMSensor(CoordinatorEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.config.entry_id)},
             default_name=f"{DEFAULT_NAME} {self._region.upper()}",
-            default_mode=f"{self._region.upper()}",
+            #default_mode=f"{self._region.upper()}",
             name=self._name,
             entry_type=DeviceEntryType.SERVICE,
             configuration_url="https://opennem.org.au/",

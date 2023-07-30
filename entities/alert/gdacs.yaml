@@ -1,0 +1,10 @@
+---
+gdacs_connected:
+  name: "GDACS Connected"
+  entity_id: binary_sensor.connected_gdacs
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: gdacs_connected

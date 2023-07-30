@@ -1,22 +1,17 @@
 ---
-alias: OpenUV - Update During Day
+alias: "[OpenUV] Update During Day"
 id: 003780ee-c3a1-475a-b54f-8f2ef3a5c2dcß
 trigger:
   - platform: time_pattern
     minutes: "/20"
 condition:
-  - condition: sun
+  - condition: state
+    entity_id: binary_sensor.connected_wan
+    state: "on"
+  - condition: sun # only run between sunrise and sunset
     after: sunrise
+  - condition: sun
     before: sunset
-    before_offset: "+00:45:00"
-  - condition: template
-    value_template: >-
-      {{
-        state_attr('automation.openuv_update_during_day', 'last_triggered') == None
-        or (
-          now() - state_attr('automation.openuv_update_during_day', 'last_triggered')
-        ) >= timedelta(hours = 0, minutes = 40)
-      }}
 action:
   service: homeassistant.update_entity
   target:

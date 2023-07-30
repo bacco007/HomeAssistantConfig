@@ -9,23 +9,129 @@ trigger:
   - platform: state
     entity_id: sensor.time
 binary_sensor:
-  - name: "Connected - MQTT"
+  - name: "[Connected] MQTT"
     unique_id: connected_mqtt
     icon: mdi:sort-clock-descending
     device_class: connectivity
     state: "{{ integration_entities('mqtt')|select('has_value')|list|count > 0 }}"
-  - name: "Connected - Uptime Kuma"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Uptime Kuma"
     unique_id: connected_uptime_kuma
     icon: mdi:sort-clock-descending
     device_class: connectivity
     state: "{{ integration_entities('uptime_kuma')|select('has_value')|list|count > 0 }}"
-  - name: "Connected - OpenUV"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] OpenUV"
     unique_id: connected_openuv
     icon: mdi:weather-sunny-alert
     device_class: connectivity
     state: "{{ integration_entities('openuv')|select('has_value')|list|count > 0 }}"
-  - name: "Connected - WAQI"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] WAQI"
     unique_id: connected_waqi
     icon: mdi:smog
     device_class: connectivity
     state: "{{ integration_entities('waqi')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Weatherflow Local"
+    unique_id: weatherflow_local_connected
+    icon: mdi:weather-lightning-rainy
+    device_class: connectivity
+    state: "{{ has_value('sensor.tempest_st_00056115_status') }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Weatherflow Cloud"
+    unique_id: weatherflow_cloud_connected
+    icon: mdi:weather-lightning-rainy
+    device_class: connectivity
+    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Docker Sungather"
+    unique_id: connected_docker_sungather
+    icon: mdi:docker
+    device_class: connectivity
+    state: "{{ 'True' if is_state('sensor.tbsh5_monitordocker_sungather', 'running') else 'False' }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Docker Weatherflow2MQTT"
+    unique_id: connected_docker_weatherflow2mqtt
+    icon: mdi:docker
+    device_class: connectivity
+    state: "{{ 'True' if is_state('sensor.tbsh5_monitordocker_weatherflow2mqtt', 'running') else 'False' }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] PirateWeather"
+    unique_id: connected_pirateweather
+    icon: mdi:weather-sunny-alert
+    device_class: connectivity
+    state: "{{ integration_entities('pirateweather')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Eufy Security"
+    unique_id: connected_eufysecurity
+    icon: mdi:cctv-off
+    device_class: connectivity
+    state: "{{ integration_entities('eufy_security')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Bureau of Meteorology"
+    unique_id: connected_bureauofmeteorology
+    icon: mdi:weather-lightning-rainy
+    device_class: connectivity
+    state: "{{ integration_entities('bureau_of_meteorology')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] AdGuard"
+    unique_id: connected_adguard
+    icon: mdi:shield-account
+    device_class: connectivity
+    state: "{{ integration_entities('adguard')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Solcast Solar"
+    unique_id: connected_solcast_solar
+    icon: mdi:solar-power-variant
+    device_class: connectivity
+    state: "{{ integration_entities('solcast_solar')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] LG SmartThinq"
+    unique_id: connected_lg_smartthinq
+    icon: si:lg
+    device_class: connectivity
+    state: "{{ integration_entities('smartthinq_sensors')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Synology"
+    unique_id: connected_synology_dsm
+    icon: mdi:nas
+    device_class: connectivity
+    state: "{{ integration_entities('synology_dsm')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Spotify"
+    unique_id: connected_spotify
+    icon: mdi:spotify
+    device_class: connectivity
+    state: "{{ integration_entities('spotify')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Apple TV"
+    unique_id: connected_apple_tv
+    icon: mdi:apple
+    device_class: connectivity
+    state: "{{ integration_entities('apple_tv')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] HDHomeRun"
+    unique_id: connected_hdhomerun
+    icon: mdi:television-box
+    device_class: connectivity
+    state: "{{ integration_entities('hdhomerun')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant

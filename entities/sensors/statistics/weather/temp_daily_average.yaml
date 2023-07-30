@@ -1,0 +1,10 @@
+---
+platform: statistics
+name: "[Weather] Temperature Daily Average"
+unique_id: weather_temperature_daily_average
+entity_id: sensor.weather_temperature
+state_characteristic: mean
+sampling_size: 5000
+max_age:
+  days: 1
+precision: 1

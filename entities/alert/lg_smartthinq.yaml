@@ -1,0 +1,10 @@
+---
+lg_smartthinq_connected:
+  name: "LG SmartThinq Connected"
+  entity_id: binary_sensor.connected_lg_smartthinq
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: lg_smartthinq_connected

@@ -15,3 +15,43 @@ sensor:
           or states('sensor.speedtest_ping')|float(-1) > 25 %} minor
       {% else %} ok
       {% endif %}
+    attributes:
+      category: network
+
+  - name: "[Status] Status for Notifications"
+    unique_id: status_notification
+    icon: mdi:list-status
+    state: 0
+    attributes:
+      category: notifications
+      updates_docker_count: >
+        {{ states.update|selectattr('entity_id','search','wud_*')|selectattr('state','eq','on')|map(attribute='entity_id')|list|count }}
+      updates_docker: >
+        {%- if states.update|selectattr('entity_id','search','wud_*')|selectattr('state','eq','on')|map(attribute='entity_id')|list|count > 0 %}
+        {%- for upd in states.update|selectattr('entity_id','search','wud_*')|selectattr('state','eq','on')|map(attribute='entity_id')|list %}
+        {{state_attr(upd,'display_name')}} ({{state_attr(upd,'watcher')}}): {{state_attr(upd,'installed_version')}}
+        {%- endfor %}
+        {%- else %}
+        No Docker Updates
+        {%- endif %}
+      updates_hacs_count: >
+        {{expand(integration_entities('hacs'))|selectattr('domain', 'eq', 'update')|selectattr('state','eq','on')|map(attribute='entity_id')|list|count }}
+      updates_hacs: >
+        {%- if expand(integration_entities('hacs'))|selectattr('domain', 'eq', 'update')|selectattr('state','eq','on')|map(attribute='entity_id')|list|count > 0 %}
+        {%- for upd in expand(integration_entities('hacs'))|selectattr('domain', 'eq', 'update')|selectattr('state','eq','on')|map(attribute='entity_id')|list %}
+        {{state_attr(upd,'display_name')}} ({{state_attr(upd,'watcher')}}): {{state_attr(upd,'installed_version')}}
+        {%- endfor %}
+        {%- else %}
+        No HACS Updates
+        {%- endif %}
+      updates_supervisor_count: >
+        {{expand(integration_entities('supervisor'))|selectattr('domain', 'eq', 'update')|selectattr('state','eq','on')|map(attribute='entity_id')|list|count }}
+      updates_supervisor: >
+        {%- if expand(integration_entities('supervisor'))|selectattr('domain', 'eq', 'update')|selectattr('state','eq','on')|map(attribute='entity_id')|list|count > 0 %}
+        {%- for upd in expand(integration_entities('supervisor'))|selectattr('domain', 'eq', 'update')|selectattr('state','eq','on')|map(attribute='entity_id')|list %}
+        {{state_attr(upd,'display_name')}} ({{state_attr(upd,'watcher')}}): {{state_attr(upd,'installed_version')}}
+        {%- endfor %}
+        {%- else %}
+        No Supervisor Addon Updates
+        {%- endif %}
+

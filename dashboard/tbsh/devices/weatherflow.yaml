@@ -1,0 +1,289 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:button-card
+    template: header_card_no_link
+    variables:
+      name: WeatherFlow Tempest Monitor
+    view_layout:
+      grid-column: 1/-1
+  - square: false
+    type: grid
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: binary_sensor.weatherflow_cloud_connected
+        layout: vertical
+        name: '[Connected] Cloud'
+      - type: custom:mushroom-entity-card
+        entity: binary_sensor.weatherflow_local_connected
+        layout: vertical
+        name: '[Connected] Local'
+    columns: 2
+  - type: custom:mushroom-entity-card
+    entity: sensor.weatherflow_station_information
+  - type: custom:mushroom-entity-card
+    entity: sensor.hub_hb_00045437_status
+    name: Tempest Hub Status
+  - type: custom:mushroom-entity-card
+    entity: sensor.tempest_st_00056115_status
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.tempest_st_00056115_battery
+      - colour: '#8694E7'
+      - title: Battery Level
+      - icon: mdi:battery-alert
+      - line_width: 3
+  - type: custom:decluttering-card
+    template: mushroom_entity_graph
+    variables:
+      - entity: sensor.tempest_st_00056115_voltage
+      - colour: '#8694E7'
+      - title: Voltage
+      - line_width: 3
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+              }
+          primary: WeatherFlow (Cloud)
+          icon: mdi:solar-panel-large
+          icon_color: orange
+          tap_action:
+            action: toggle
+        padding: 0
+        entities:
+          - entity: weather.weatherflow_day_based_forecast
+          - entity: weather.weatherflow_hourly_based_forecast
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.weatherflow_air_temperature
+              name: Temperature
+            entities:
+              - entity: sensor.weatherflow_air_temperature
+              - entity: sensor.weatherflow_feels_like_temperature
+              - entity: sensor.weatherflow_heat_index
+              - entity: sensor.weatherflow_wind_chill
+              - entity: sensor.weatherflow_wet_bulb_temperature
+              - entity: sensor.weatherflow_dewpoint
+              - entity: sensor.weatherflow_delta_t
+              - entity: sensor.weatherflow_freezing_line
+              - entity: binary_sensor.weatherflow_is_freezing
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.weatherflow_relative_humidity
+              name: Humidity
+            entities:
+              - entity: sensor.weatherflow_absolute_humidity
+              - entity: sensor.weatherflow_air_density
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: binary_sensor.weatherflow_is_raining
+              name: Precipitation
+            entities:
+              - entity: sensor.weatherflow_precipitation_duration_today
+              - entity: sensor.weatherflow_precipitation_duration_yesterday
+              - entity: sensor.weatherflow_precipitation_intensity
+              - entity: sensor.weatherflow_precipitation_last_hour
+              - entity: sensor.weatherflow_precipitation_rate
+              - entity: sensor.weatherflow_precipitation_today
+              - entity: sensor.weatherflow_precipitation_yesterday
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: binary_sensor.weatherflow_is_lightning
+              name: Lightning
+            entities:
+              - entity: sensor.weatherflow_lightning_strike_count
+              - entity: sensor.weatherflow_lightning_strike_count_last_3_hours
+              - entity: sensor.weatherflow_lightning_strike_count_last_hour
+              - entity: sensor.weatherflow_last_lightning_strike_distance
+              - entity: sensor.weatherflow_last_lightning_strike
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.weatherflow_barometric_pressure
+              name: Pressure
+            entities:
+              - entity: sensor.weatherflow_pressure_trend
+              - entity: sensor.weatherflow_sea_level_pressure
+              - entity: sensor.weatherflow_station_pressure
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.weatherflow_brightness
+              name: Illuminance
+            entities:
+              - entity: sensor.weatherflow_solar_radiation
+              - entity: sensor.weatherflow_uv_description
+              - entity: sensor.weatherflow_uv_index
+              - entity: sensor.weatherflow_visibility
+              - entity: sensor.weatherflow_cloud_base
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.weatherflow_wind_speed_km_h
+              name: Wind Speed
+            entities:
+              - entity: sensor.weatherflow_wind_cardinal
+              - entity: sensor.weatherflow_wind_direction
+              - entity: sensor.weatherflow_wind_gust
+              - entity: sensor.weatherflow_wind_gust_km_h
+              - entity: sensor.weatherflow_wind_gust_knots
+              - entity: sensor.weatherflow_wind_lull
+              - entity: sensor.weatherflow_wind_lull_km_h
+              - entity: sensor.weatherflow_wind_lull_knots
+              - entity: sensor.weatherflow_wind_speed
+              - entity: sensor.weatherflow_wind_speed_knots
+              - entity: sensor.weatherflow_beaufort
+              - entity: sensor.weatherflow_beaufort_description
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.weatherflow_station_information
+              name: WeatherFlow Status
+            entities:
+              - entity: sensor.weatherflow_voltage_tempest
+              - entity: sensor.weatherflow_station_information
+        show_header_toggle: false
+  - type: entities
+    card_mod:
+      style:
+        fold-entity-row$: |
+          ha-icon {
+            color: rgb(var(--rgb-disabled-color));
+            margin-right: 24px;
+          }
+        .: |
+          .card-content {
+            padding: 0;
+          }
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          type: custom:mushroom-template-card
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+              }
+          primary: WeatherFlow (Local)
+          icon: mdi:solar-panel-large
+          icon_color: orange
+          tap_action:
+            action: toggle
+        padding: 0
+        entities:
+          - entity: weather.tempest_daily
+          - entity: weather.tempest_hourly
+          - entity: sensor.hub_hb_00045437_weather
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_temperature
+              name: Temperature
+            entities:
+              - entity: sensor.tempest_st_00056115_temperature_level
+              - entity: sensor.tempest_st_00056115_wet_bulb_globe_temperature
+              - entity: sensor.tempest_st_00056115_wet_bulb_temperature
+              - entity: sensor.tempest_st_00056115_dew_point
+              - entity: sensor.tempest_st_00056115_dewpoint_comfort_level
+              - entity: sensor.tempest_st_00056115_feels_like_temperature
+              - entity: sensor.tempest_st_00056115_delta_t
+              - entity: sensor.tempest_st_00056115_freezing_level_altitude
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_humidity
+              name: Humidity
+            entities:
+              - entity: sensor.tempest_st_00056115_absolute_humidity
+              - entity: sensor.tempest_st_00056115_air_density
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_precipitation_type
+              name: Precipitation
+            entities:
+              - entity: sensor.tempest_st_00056115_rain_today
+              - entity: sensor.tempest_st_00056115_last_rain_start
+              - entity: sensor.tempest_st_00056115_rain_intensity
+              - entity: sensor.tempest_st_00056115_rain_rate
+              - entity: sensor.tempest_st_00056115_rain_yesterday
+              - entity: sensor.tempest_st_00056115_rain_duration_today
+              - entity: sensor.tempest_st_00056115_rain_duration_yesterday
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_lightning_count
+              name: Lightning
+            entities:
+              - entity: sensor.tempest_st_00056115_last_lightning_strike
+              - entity: sensor.tempest_st_00056115_lightning_count_3_hours
+              - entity: sensor.tempest_st_00056115_lightning_count_last_hour
+              - entity: sensor.tempest_st_00056115_lightning_count_today
+              - entity: sensor.tempest_st_00056115_lightning_distance
+              - entity: sensor.tempest_st_00056115_lightning_energy
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_sea_level_pressure
+              name: Pressure
+            entities:
+              - entity: sensor.tempest_st_00056115_pressure_trend
+              - entity: sensor.tempest_st_00056115_station_pressure
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_wind_speed
+              name: Wind Speed
+            entities:
+              - entity: sensor.tempest_st_00056115_wind_speed_avg
+              - entity: sensor.tempest_st_00056115_wind_gust
+              - entity: sensor.tempest_st_00056115_wind_lull
+              - entity: sensor.tempest_st_00056115_wind_bearing
+              - entity: sensor.tempest_st_00056115_wind_bearing_avg
+              - entity: sensor.tempest_st_00056115_wind_direction
+              - entity: sensor.tempest_st_00056115_wind_direction_avg
+              - entity: sensor.tempest_st_00056115_beaufort_scale
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.tempest_st_00056115_illuminance
+              name: Illuminance
+            entities:
+              - entity: sensor.tempest_st_00056115_uv_index
+              - entity: sensor.tempest_st_00056115_uv_level
+              - entity: sensor.tempest_st_00056115_solar_radiation
+              - entity: sensor.tempest_st_00056115_visibility
+              - entity: sensor.tempest_st_00056115_cloud_base_altitude
+          - type: custom:fold-entity-row
+            padding: 0
+            head:
+              entity: sensor.hub_hb_00045437_status
+              name: WeatherFlow Status
+            entities:
+              - entity: sensor.tempest_st_00056115_status
+              - type: custom:battery-state-entity
+                entity: sensor.tempest_st_00056115_battery
+              - entity: sensor.tempest_st_00056115_battery_mode
+              - entity: sensor.tempest_st_00056115_voltage

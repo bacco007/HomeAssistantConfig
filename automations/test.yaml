@@ -1,0 +1,15 @@
+---
+id: test_testing
+alias: "[Test] Testing"
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: test_action
+action:
+  - service: persistent_notification.create
+    data_template:
+      title: Testing Action from Notification
+      message: Testing Action from Notification
+      notification_id: test_notification

@@ -7,11 +7,21 @@ zigbee_network:
   entity_id: binary_sensor.status_zigbee2mqtt
   state: "on"
   repeat: 60
+  skip_first: true
   notifiers: alert
   data:
+    tag: zigbee_network
+    notification_id: zigbee_network
     push:
       badge: 1
+      sound: none
       interruption-level: time-sensitive
     presentation_options:
       - alert
       - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_zigbee_network
+      - title: "Restart Container"
+        action: notify_action_restart_zigbee2mqtt

@@ -1,0 +1,10 @@
+---
+apple_tv_connected:
+  name: "Apple TV Connected"
+  entity_id: binary_sensor.connected_apple_tv
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: apple_tv_connected

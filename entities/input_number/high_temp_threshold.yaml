@@ -1,0 +1,8 @@
+---
+high_temperature_threshold:
+  name: "High Temperature Threshold"
+  icon: mdi:thermometer-lines
+  min: 10
+  max: 50
+  step: 1
+  unit_of_measurement: °C

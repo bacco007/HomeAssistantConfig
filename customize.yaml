@@ -1,4 +1,64 @@
 ---
+## Alerts
+alert.air_quality:
+  icon: mdi:smog
+  category: weather
+alert.backup_alert:
+  icon: mdi:backup-restore
+  category: homeassistant
+alert.docker_sungather:
+  icon: mdi:docker
+  category: homeassistant
+alert.docker_weatherflow2mqtt:
+  icon: mdi:docker
+  category: homeassistant
+alert.gdacs:
+  icon: mdi:home-flood
+  category: weather
+alert.pirateweather:
+  icon: mdi:weather-partly-rainy
+  category: weather
+alert.weather_high_temperature:
+  icon: mdi:thermometer-alert
+  category: weather
+alert.weather_low_temperature:
+  icon: mdi:snowflake-alert
+  category: weather
+alert.weatherflow_cloud:
+  icon: mdi:weather-partly-rainy
+  category: weather
+alert.weatherflow_local:
+  icon: mdi:weather-partly-rainy
+  category: weather
+alert.adguard:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.apple_tv:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.bureau_of_meteorology:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.eufy_security:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.hdhomerun:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.lg_smartthinq:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.solcast_solar:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.spotify:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.synology:
+  icon: mdi:alert-decagram
+  category: homeassistant
+
+## Sensor
 sensor.yahoofinance_amx_ax:
   friendly_name: Aerometrex
 sensor.yahoofinance_aord:

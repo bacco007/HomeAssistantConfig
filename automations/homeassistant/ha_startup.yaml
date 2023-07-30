@@ -10,11 +10,50 @@ action:
       logger: "{{ this.entity_id }}"
       level: critical
       message: "**** HOME ASSISTANT START ****"
+
   - service: persistent_notification.create
     data:
       title: "Automation Startup"
       message: "Waiting for startup to complete."
       notification_id: hass_restart
+
+  # Bounce Docker Containers
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id:
+        - switch.tbsh5_monitordocker_sungather
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id:
+        - switch.tbsh5_monitordocker_weatherflow2mqtt
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id:
+        - switch.tbsh5_monitordocker_sungather
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id:
+        - switch.tbsh5_monitordocker_weatherflow2mqtt
+
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.ha_startup_pending
+
+  - service: persistent_notification.create
+    data:
+      title: &start_title "Home Assistant Started"
+      message: &start_message "HA started at {{ now().strftime('%-I:%M %p') }}."
+      notification_id: hass_restart
+
   - if:
       - condition: state
         entity_id: input_boolean.alerts_ha
@@ -22,22 +61,23 @@ action:
     then:
       - service: notify.tbsmarthome
         data_template:
-          message: "Home Assistant Started"
+          message: *start_title
           target: "#tbsmarthome"
           data:
             blocks:
               - type: section
                 text:
                   type: mrkdwn
-                  text: "*Home Assistant Started*"
+                  text: *start_title
               - type: section
                 text:
                   type: mrkdwn
-                  text: Home Assistant Started
+                  text: *start_message
+
       - service: notify.mobile_app_tbiphone13pro
         data:
-          message: Home Assistant has Started
-          title: Home Assistant Started
+          message: *start_message
+          title: *start_title
           data:
             push:
               badge: 1
@@ -46,24 +86,11 @@ action:
             presentation_options:
               - alert
               - badge
-  # Bounce Docker Containers
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id:
-        - switch.tbsh5_monitordocker_sungather
-        - switch.tbsh5_monitordocker_weatherflow2mqtt
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 10
-      milliseconds: 0
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id:
-        - switch.tbsh5_monitordocker_sungather
-        - switch.tbsh5_monitordocker_weatherflow2mqtt
+
+  - service: persistent_notification.dismiss
+    data:
+      notification_id: hass_restart
+
   - service: system_log.write
     data:
       logger: "{{ this.entity_id }}"

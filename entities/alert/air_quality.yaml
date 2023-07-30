@@ -1,0 +1,25 @@
+---
+air_quality:
+  name: "Air Quality"
+  title: "Air Quality Alert"
+  message: "Air Quality Risk Level: {{ states('sensor.waqi_aqi_risk_level') }}"
+  done_message: clear_notification
+  entity_id: binary_sensor.waqi_air_quality_alert
+  state: "on"
+  skip_first: true
+  repeat: 10800
+  notifiers: alert
+  data:
+    tag: air_quality_alert
+    notification_id: air_quality_alert
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_air_quality_alert

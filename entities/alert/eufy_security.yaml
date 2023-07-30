@@ -1,0 +1,10 @@
+---
+eufy_security_connected:
+  name: "Eufy Security Connected"
+  entity_id: binary_sensor.connected_eufy_security
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: eufy_security_connected

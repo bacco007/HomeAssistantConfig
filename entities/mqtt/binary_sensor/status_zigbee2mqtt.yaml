@@ -7,4 +7,3 @@
   payload_off: "offline"
   device_class: connectivity
   icon: mdi:zigbee
-  qos: 1

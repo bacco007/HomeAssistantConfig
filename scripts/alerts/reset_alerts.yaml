@@ -1,0 +1,8 @@
+---
+alias: reset_alerts
+description: Turn on all disabled alerts
+icon: mdi:alert
+sequence:
+  - service: alert.turn_on
+    target:
+      entity_id: "{{ states.alert|selectattr('state','eq','off')|map(attribute='entity_id')|list }}"

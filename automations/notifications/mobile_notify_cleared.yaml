@@ -1,0 +1,33 @@
+---
+id: alert_mobile_cleared
+alias: "[Notifications] Mobile Notification Cleared"
+mode: parallel
+# variables:
+# device: >
+#   {% if trigger.event.data['device_id'] == '9e09ff6838383746ba31fe9914a10e47' %} mobile_app_jtablet
+#   {% elif trigger.event.data['device_id'] == 'a19e6cef95aa2710caafa1235d82aef9' %} mobile_app_jphone
+#   {% else %} {{ none }}
+#   {% endif %}
+trigger:
+  - platform: event
+    event_type: mobile_app_notification_cleared
+condition:
+  # - "{{ device != none }}"
+  - "{{ trigger.event.data.tag is defined  }}"
+action:
+  - service: automation.turn_off
+    target:
+      entity_id: automation.notifications_mobile_notification_cleared
+    data:
+      stop_actions: false
+
+  - service: notify.alert
+    data:
+      message: clear_notification
+      data:
+        tag: "{{ trigger.event.data['tag'] }}"
+    continue_on_error: true
+
+  - service: automation.turn_on
+    target:
+      entity_id: automation.notifications_mobile_notification_cleared

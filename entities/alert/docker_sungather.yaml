@@ -1,0 +1,26 @@
+---
+docker_sungather:
+  name: "Docker Sungather"
+  title: "Docker Sungather Not Running"
+  message: "Sungather Docker Container is not running"
+  done_message: clear_notification
+  entity_id: binary_sensor.alerts_docker_sungather
+  state: "on"
+  repeat: 1440
+  notifiers: alert
+  data:
+    tag: docker_sungather
+    notification_id: docker_sungather
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_docker_sungather
+      - title: "Start Docker Container"
+        action: notify_action_start_sungather

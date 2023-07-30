@@ -1,0 +1,10 @@
+---
+waqi_connected:
+  name: "WAQI Connected"
+  entity_id: binary_sensor.connected_waqi
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: waqi_connected

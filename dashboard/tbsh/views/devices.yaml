@@ -37,6 +37,11 @@ cards:
               --mdc-tab-text-label-color-default: var(--label-badge-red)
             tabs:
               - attributes:
+                  label: Zigbee2MQTT
+                  isMinWidthIndicator: true
+                card:
+                  - !include ../devices/zigbee2mqtt.yaml
+              - attributes:
                   label: Synology
                   isMinWidthIndicator: true
                 card:
@@ -46,6 +51,11 @@ cards:
                   isMinWidthIndicator: true
                 card:
                   - !include ../devices/hdhomerun.yaml
+              - attributes:
+                  label: WeatherFlow
+                  isMinWidthIndicator: true
+                card:
+                  - !include ../devices/weatherflow.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
@@ -56,7 +66,7 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - !include ../devices/synology.yaml
+          - !include ../devices/zigbee2mqtt.yaml
 
   # Column 2, Row 1
   - type: custom:state-switch
@@ -67,14 +77,19 @@ cards:
       "(min-width: 801px)":
         type: vertical-stack
         cards:
-          - !include ../devices/hdhomerun.yaml
+          - !include ../devices/synology.yaml
 
   # Column 3, Row 1
-  - type: custom:gap-card
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
-      grid=area: c3r1
-      show:
-        mediaquery: "(min-width: 801px)"
+      grid-area: c3r1
+    states:
+      "(min-width: 801px)":
+        type: vertical-stack
+        cards:
+          - !include ../devices/hdhomerun.yaml
+          - !include ../devices/weatherflow.yaml
 
   # Column 1, Row 2
   - type: custom:gap-card

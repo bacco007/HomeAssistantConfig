@@ -1,0 +1,25 @@
+---
+weather_high_temperature:
+  name: "High Temperature"
+  title: "High Temperature Alert"
+  message: "Current Temperature: {{ states('sensor.weather_temperature') }}"
+  done_message: clear_notification
+  entity_id: binary_sensor.weather_high_temperature_alert
+  state: "on"
+  skip_first: true
+  repeat: 10800
+  notifiers: alert
+  data:
+    tag: weather_high_temperature
+    notification_id: weather_high_temperature
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_weather_high_temperature

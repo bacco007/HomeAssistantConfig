@@ -1,17 +1,4 @@
 ---
-binary_sensor:
-  - name: "Weatherflow Local Connected"
-    unique_id: weatherflow_local_connected
-    icon: mdi:weather-lightning-rainy
-    device_class: connectivity
-    state: "{{ has_value('sensor.tempest_st_00056115_status') }}"
-
-  - name: "Weatherflow Cloud Connected"
-    unique_id: weatherflow_cloud_connected
-    icon: mdi:weather-lightning-rainy
-    device_class: connectivity
-    state: "{{ integration_entities('weatherflow')|select('has_value')|list|count > 0 }}"
-
 sensor:
   - name: "Tempest ST 00056115 Precipitation Probability"
     unique_id: tempest_st_00056115_precipitation_probability

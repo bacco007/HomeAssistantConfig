@@ -1,0 +1,10 @@
+---
+adguard_connected:
+  name: "AdGuard Connected"
+  entity_id: binary_sensor.connected_adguard
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: adguard_connected

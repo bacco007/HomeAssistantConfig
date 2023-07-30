@@ -14,6 +14,8 @@ backup_alert:
   repeat: 1440
   notifiers: alert
   data:
+    tag: backup_alert
+    notification_id: backup_alert
     push:
       badge: 1
       sound: none
@@ -21,3 +23,9 @@ backup_alert:
     presentation_options:
       - alert
       - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_backup_alert
+      - title: "Start Google Drive Backup"
+        action: notify_action_restart_gdbackup

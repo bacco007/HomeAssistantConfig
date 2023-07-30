@@ -1,0 +1,10 @@
+---
+pirateweather_connected:
+  name: "Pirate Weather Connected"
+  entity_id: binary_sensor.connected_pirateweather
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: pirateweather_connected

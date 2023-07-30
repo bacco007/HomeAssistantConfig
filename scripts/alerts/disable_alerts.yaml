@@ -1,0 +1,8 @@
+---
+alias: disable_alerts
+description: Disable Alerts
+icon: mdi:alert
+sequence:
+  - service: alert.turn_on
+    target:
+      entity_id: "{{ states.alert|selectattr('state','eq','on')|map(attribute='entity_id')|list }}"

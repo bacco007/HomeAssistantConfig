@@ -3,8 +3,8 @@ platform: group
 name: alert
 services:
   - service: thomas_all
-  - service: persistent_notification
-    data_template:
-      message: "{{ message }}"
-      title: "{{ title }}"
-      target: "{{ notification_id }}"
+  # - service: persistent_notification
+  #   data_template:
+  #     message: "{{ message }}"
+  #     title: "{{ title }}"
+  #     target: "{{ notification_id }}"

@@ -29,9 +29,9 @@ entities:
     entities:
       - type: custom:config-template-card
         variables:
-          - states['sensor.count_all_entities_9'].state
+          - states['sensor.entities'].state
         entities:
-          - sensor.count_all_entities_9
+          - sensor.entities
         card:
           type: custom:auto-entities
           card:
@@ -52,12 +52,11 @@ entities:
             numeric: true
           filter:
             exclude:
-              - entity_id: sensor.count_all_components
-              - entity_id: sensor.count_all_entities_9
-              - entity_id: sensor.count_yaml_lines
-              - entity_id: sensor.count_yaml_files
+              - entity_id: sensor.entities
+
             include:
-              - entity_id: sensor.count_*
+              - integration: spook
+                domain: sensor
                 options:
                   type: custom:bar-card
                   style: |

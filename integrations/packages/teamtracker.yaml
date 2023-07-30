@@ -21,12 +21,6 @@ sensor:
   - platform: teamtracker
     league_id: XXX
     sport_path: cricket
-    league_path: 8266
-    team_id: NSW
-    name: teamtracker_cricketnswodi
-  - platform: teamtracker
-    league_id: XXX
-    sport_path: cricket
     league_path: 8043
     team_id: NSW
     name: teamtracker_cricketnswss

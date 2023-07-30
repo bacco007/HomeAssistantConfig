@@ -1,0 +1,5 @@
+---
+ha_startup_pending:
+  name: "Startup Pending"
+  icon: mdi:restart-alert
+  initial: true

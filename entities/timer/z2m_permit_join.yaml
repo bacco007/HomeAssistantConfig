@@ -1,0 +1,4 @@
+---
+z2m_permit_join:
+  name: "[Zigbee2MQTT] Permit Join Time Remaining"
+  duration: 600

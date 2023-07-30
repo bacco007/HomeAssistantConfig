@@ -1,0 +1,24 @@
+---
+alias: "[Home] Sunset Notification"
+description: ""
+mode: single
+trigger:
+  - platform: sun
+    event: sunset
+    offset: "-00:05:00"
+condition:
+  - condition: state
+    entity_id: person.thomas_baxter
+    state: not_home
+action:
+  - service: notify.alert
+    data:
+      title: The Sun has gone down and the moon has come up
+      message: Sunset in 5 minutes!
+      data:
+        push:
+          badge: 1
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge

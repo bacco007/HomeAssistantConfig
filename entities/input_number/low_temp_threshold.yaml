@@ -1,0 +1,8 @@
+---
+low_temperature_threshold:
+  name: "Low Temperature Threshold"
+  icon: mdi:snowflake-alert
+  min: -10
+  max: 20
+  step: 1
+  unit_of_measurement: °C

@@ -54,3 +54,11 @@ action:
         {{ states
             |selectattr('entity_id','search','input_boolean.alerts_*')
             |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: connectivity_monitors
+      entities: >
+        {{ states
+            |selectattr('entity_id','search','binary_sensor.connected_*')
+            |map(attribute='entity_id')|list|sort }}

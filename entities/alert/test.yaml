@@ -1,0 +1,26 @@
+---
+test_alert:
+  name: "Test Alert"
+  title: "Test Alert"
+  message: "Test Alert"
+  done_message: clear_notification
+  entity_id: input_boolean.alerts_test
+  state: "on"
+  repeat: 5
+  notifiers: alert
+  data:
+    tag: test_alert
+    notification_id: test_alert
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_test_alert
+      - title: "Test Action"
+        action: test_action
