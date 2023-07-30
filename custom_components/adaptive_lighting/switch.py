@@ -21,6 +21,8 @@ import voluptuous as vol
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP_KELVIN,
+    ATTR_EFFECT,
+    ATTR_FLASH,
     ATTR_RGB_COLOR,
     ATTR_SUPPORTED_COLOR_MODES,
     ATTR_TRANSITION,
@@ -291,7 +293,7 @@ def _switches_with_lights(
         entry = data.get(config.entry_id)
         if entry is None:  # entry might be disabled and therefore missing
             continue
-        switch = data[config.entry_id]["instance"]
+        switch = data[config.entry_id][SWITCH_DOMAIN]
         switch._expand_light_groups()
         # Check if any of the lights are in the switch's lights
         if set(switch.lights) & set(all_check_lights):
@@ -365,7 +367,7 @@ def _switches_from_service_call(
             ent_entry = ent_reg.async_get(entity_id)
             assert ent_entry is not None
             config_id = ent_entry.config_entry_id
-            switches.append(hass.data[DOMAIN][config_id]["instance"])
+            switches.append(hass.data[DOMAIN][config_id][SWITCH_DOMAIN])
         return switches
 
     if lights:
@@ -495,9 +497,6 @@ async def async_setup_entry(  # noqa: PLR0915
         adapt_color_switch,
         adapt_brightness_switch,
     )
-
-    # save our switch instance, allows us to make switch's entity_id optional in service calls.
-    hass.data[DOMAIN][config_entry.entry_id]["instance"] = switch
 
     data[config_entry.entry_id][SLEEP_MODE_SWITCH] = sleep_mode_switch
     data[config_entry.entry_id][ADAPT_COLOR_SWITCH] = adapt_color_switch
@@ -1014,6 +1013,23 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
             _LOGGER.debug("%s: Cancelled '_setup_listeners'", self._name)
             return
 
+        while not all(
+            sw._state is not None
+            for sw in [
+                self.sleep_mode_switch,
+                self.adapt_brightness_switch,
+                self.adapt_color_switch,
+            ]
+        ):
+            # Waits until `async_added_to_hass` is done, which in SimpleSwitch
+            # is when `_state` is set to `True` or `False`.
+            # Fixes first issue in https://github.com/basnijholt/adaptive-lighting/issues/682
+            _LOGGER.debug(
+                "%s: Waiting for simple switches to be initialized",
+                self._name,
+            )
+            await asyncio.sleep(0.1)
+
         assert not self.remove_listeners
 
         self._update_time_interval_listener()
@@ -1450,6 +1466,7 @@ class AdaptiveSwitch(SwitchEntity, RestoreEntity):
                         context.id,
                     )
                 else:
+                    # Need to fire manual control event because of significant_change
                     _fire_manual_control_event(self, light, context)
             else:
                 _LOGGER.debug(
@@ -2000,6 +2017,9 @@ class AdaptiveLightingManager:
         if is_our_context(call.context):
             return
 
+        if ATTR_EFFECT in data[CONF_PARAMS] or ATTR_FLASH in data[CONF_PARAMS]:
+            return
+
         entity_ids = self._get_entity_list(data)
 
         # For simplicity, only service calls affecting a single entity are currently handled.
@@ -2371,8 +2391,11 @@ class AdaptiveLightingManager:
             and not force
         ):
             keys = turn_on_event.data[ATTR_SERVICE_DATA].keys()
-            if (adapt_color and COLOR_ATTRS.intersection(keys)) or (
-                adapt_brightness and BRIGHTNESS_ATTRS.intersection(keys)
+            if (
+                (adapt_color and COLOR_ATTRS.intersection(keys))
+                or (adapt_brightness and BRIGHTNESS_ATTRS.intersection(keys))
+                or (ATTR_FLASH in keys)
+                or (ATTR_EFFECT in keys)
             ):
                 # Light was already on and 'light.turn_on' was not called by
                 # the adaptive_lighting integration.
