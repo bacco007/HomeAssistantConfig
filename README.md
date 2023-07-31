@@ -46,32 +46,32 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, July 31st 2023_
+_Stats as at 05:00, Tuesday, August 1st 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.0b1 | 465     | 3882         | 2804 | 116 |
+| 2023.8.0b2 | 473     | 4121         | 2900 | 116 |
 
 Type | Qty
 -- | --
-Alarm Control Panel | 0
-Alert | 22
+Alarm Control Panel | 2
+Alert | 23
 Automation | 116
-Binary Sensor | 200
-Camera | 0
+Binary Sensor | 229
+Camera | 5
 Device Tracker | 141
 Group | 6
 Input Boolean | 6
 Input Datetime | 0
 Input Text | 3
 Light | 9
-Media Player | 18
+Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2804
+Sensor | 2900
 Sun | 1
-Switch | 159
+Switch | 205
 Weather | 13
 Zone | 3
 
@@ -91,6 +91,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [adaptive_lighting](https://www.home-assistant.io/components/adaptive_lighting) |
 | [adguard](https://www.home-assistant.io/components/adguard) |
 | [alarm_control_panel](https://www.home-assistant.io/components/alarm_control_panel) |
+| [alarm_control_panel.eufy_security](https://www.home-assistant.io/components/alarm_control_panel.eufy_security) |
 | [alarm_control_panel.mqtt](https://www.home-assistant.io/components/alarm_control_panel.mqtt) |
 | [alert](https://www.home-assistant.io/components/alert) |
 | [analytics](https://www.home-assistant.io/components/analytics) |
@@ -112,6 +113,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.browser_mod](https://www.home-assistant.io/components/binary_sensor.browser_mod) |
 | [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud) |
 | [binary_sensor.dyson_local](https://www.home-assistant.io/components/binary_sensor.dyson_local) |
+| [binary_sensor.eufy_security](https://www.home-assistant.io/components/binary_sensor.eufy_security) |
 | [binary_sensor.hassio](https://www.home-assistant.io/components/binary_sensor.hassio) |
 | [binary_sensor.hdhomerun](https://www.home-assistant.io/components/binary_sensor.hdhomerun) |
 | [binary_sensor.mobile_app](https://www.home-assistant.io/components/binary_sensor.mobile_app) |
@@ -143,6 +145,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [bureau_of_meteorology](https://www.home-assistant.io/components/bureau_of_meteorology) |
 | [button](https://www.home-assistant.io/components/button) |
 | [button.esphome](https://www.home-assistant.io/components/button.esphome) |
+| [button.eufy_security](https://www.home-assistant.io/components/button.eufy_security) |
 | [button.hdhomerun](https://www.home-assistant.io/components/button.hdhomerun) |
 | [button.mqtt](https://www.home-assistant.io/components/button.mqtt) |
 | [button.plex](https://www.home-assistant.io/components/button.plex) |
@@ -158,6 +161,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [calendar.local_calendar](https://www.home-assistant.io/components/calendar.local_calendar) |
 | [camera](https://www.home-assistant.io/components/camera) |
 | [camera.browser_mod](https://www.home-assistant.io/components/camera.browser_mod) |
+| [camera.eufy_security](https://www.home-assistant.io/components/camera.eufy_security) |
 | [camera.mqtt](https://www.home-assistant.io/components/camera.mqtt) |
 | [camera.synology_dsm](https://www.home-assistant.io/components/camera.synology_dsm) |
 | [cast](https://www.home-assistant.io/components/cast) |
@@ -300,6 +304,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [nsw_fuel_station](https://www.home-assistant.io/components/nsw_fuel_station) |
 | [nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/nsw_rural_fire_service_fire_danger) |
 | [number](https://www.home-assistant.io/components/number) |
+| [number.eufy_security](https://www.home-assistant.io/components/number.eufy_security) |
 | [number.mqtt](https://www.home-assistant.io/components/number.mqtt) |
 | [number.sensibo](https://www.home-assistant.io/components/number.sensibo) |
 | [number.sonos](https://www.home-assistant.io/components/number.sonos) |
@@ -346,6 +351,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [season](https://www.home-assistant.io/components/season) |
 | [select](https://www.home-assistant.io/components/select) |
 | [select.dyson_local](https://www.home-assistant.io/components/select.dyson_local) |
+| [select.eufy_security](https://www.home-assistant.io/components/select.eufy_security) |
 | [select.harmony](https://www.home-assistant.io/components/select.harmony) |
 | [select.hdhomerun](https://www.home-assistant.io/components/select.hdhomerun) |
 | [select.mqtt](https://www.home-assistant.io/components/select.mqtt) |
@@ -369,6 +375,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.dyson_local](https://www.home-assistant.io/components/sensor.dyson_local) |
 | [sensor.energy](https://www.home-assistant.io/components/sensor.energy) |
 | [sensor.esphome](https://www.home-assistant.io/components/sensor.esphome) |
+| [sensor.eufy_security](https://www.home-assistant.io/components/sensor.eufy_security) |
 | [sensor.fastdotcom](https://www.home-assistant.io/components/sensor.fastdotcom) |
 | [sensor.feedparser](https://www.home-assistant.io/components/sensor.feedparser) |
 | [sensor.filter](https://www.home-assistant.io/components/sensor.filter) |
@@ -483,6 +490,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [switch.custom_qbittorrent](https://www.home-assistant.io/components/switch.custom_qbittorrent) |
 | [switch.dyson_local](https://www.home-assistant.io/components/switch.dyson_local) |
 | [switch.esphome](https://www.home-assistant.io/components/switch.esphome) |
+| [switch.eufy_security](https://www.home-assistant.io/components/switch.eufy_security) |
 | [switch.harmony](https://www.home-assistant.io/components/switch.harmony) |
 | [switch.monitor_docker](https://www.home-assistant.io/components/switch.monitor_docker) |
 | [switch.mqtt](https://www.home-assistant.io/components/switch.mqtt) |
@@ -587,7 +595,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
+- [Icloud3](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -724,7 +732,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
 - Advanced SSH & Web Terminal (15.0.5)
-- Cloudflared (4.2.1)
+- Cloudflared (4.2.2)
 - ESPHome (2023.7.0)
 - eufy-security-ws (1.5.2-1)
 - Glances (0.19.2)

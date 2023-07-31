@@ -1,4 +1,13 @@
 ---
+binary_sensor:
+  - name: "[Status] People Home"
+    unique_id: status_people_home
+    icon: mdi:account-multiple-check
+    state: >
+      {{is_state('person.thomas_baxter', 'home')}}
+    attributes:
+      category: status
+
 sensor:
   - name: "[Status] Network"
     unique_id: status_network

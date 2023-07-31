@@ -1,0 +1,40 @@
+---
+binary_sensor:
+  - name: "[Z2M] Mesh Health"
+    unique_id: z2m_mesh_health
+    state: >-
+      {%- macro CheckDroppedZigbee() -%}
+      {% for state in states.sensor -%}
+        {%- if ("linkquality" in state.name and state_attr(state.entity_id, "last_seen") != None and (as_timestamp(now()) - as_timestamp(state_attr(state.entity_id, "last_seen")) > (24 * 60 * 60))) -%}
+        {{ state.name }}
+        {%- endif -%}
+      {%- endfor %}
+      {%- endmacro -%}
+      {% set output = CheckDroppedZigbee() %}
+      {%- if output | trim == "" %}
+      False
+      {%- else -%}
+      True
+      {% endif %}
+    availability: >
+      {{states.sensor | selectattr('entity_id', 'search', '.*_last_seen$')|list|count > 0}}
+    attributes:
+      category: "zigbee"
+      count: >-
+        {%- set lapsed_hours = 36 %}
+        {%- set ns = namespace(count=0) %}
+        {%- for state in states.sensor | selectattr('entity_id', 'search', '.*_last_seen$')  %}
+          {%- if states(state.entity_id) == 'unavailable' or ((as_timestamp(now()) - as_timestamp(states(state.entity_id),0)) > ((lapsed_hours | int) * 60 * 60)) %}
+            {%- set ns.count = ns.count + 1 %}
+          {%- endif %}
+        {%- endfor %}
+        {{ ns.count }}
+      devices: >-
+        {%- macro GetDroppedZigbee() -%}
+        {% for state in states.sensor -%}
+          {%- if ("linkquality" in state.name and state_attr(state.entity_id, "last_seen") != None and (as_timestamp(now()) - as_timestamp(state_attr(state.entity_id, "last_seen")) > (24 * 60 * 60))) -%}
+          {{ state.name | regex_replace(find=' linkquality', replace='', ignorecase=False) }} - {{ relative_time(strptime(state_attr(state.entity_id, "last_seen"), '%Y-%m-%dT%H:%M:%S%z')) }} ago {{- '\n' -}}
+          {%- endif -%}
+        {%- endfor %}
+        {%- endmacro -%}
+        {{ GetDroppedZigbee() }}
