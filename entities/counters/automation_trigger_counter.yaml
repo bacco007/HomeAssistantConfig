@@ -1,0 +1,6 @@
+---
+automation_trigger_counter:
+  name: Automations Triggered
+  icon: mdi:flash-auto
+  step: 1
+  initial: 0

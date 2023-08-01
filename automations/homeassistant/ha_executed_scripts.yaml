@@ -1,0 +1,12 @@
+---
+alias: "[HA] Count Executed Scripts"
+id: ha_count_executed_scripts
+mode: parallel
+max: 25
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: script_started
+action:
+  - service: counter.increment
+    entity_id: counter.scripts_executed_counter

@@ -1,0 +1,44 @@
+---
+alias: "[Notifications] Updates Available"
+id: notifications_updates_available
+mode: single
+trigger:
+  - platform: time_pattern
+    hours: /3
+condition:
+  - condition: time
+    after: "06:00:00"
+    before: "20:00:00"
+action:
+  - service: notify.alert
+    data:
+      title: Updates Available
+      message: >-
+        {%- for upd in states.update %}
+        {%- set ignore = ['unknown', 'unavailable', 'none', '']  %}
+        {%- if upd.state == 'on' and
+              state_attr(upd.entity_id, 'latest_version') is defined and
+              state_attr(upd.entity_id, 'installed_version') is defined and
+              state_attr(upd.entity_id, 'latest_version') is not in ignore %}
+        {%- if is_state_attr(upd.entity_id, 'display_icon', 'mdi:docker') %}
+        {%- set name = state_attr(upd.entity_id, 'display_name') + " (" + state_attr(upd.entity_id, 'watcher') + ")" %}
+        {%- else %}
+        {%- set name = state_attr(upd.entity_id, 'title') %}
+        {%- endif %}
+        {{name}}: {{state_attr(upd.entity_id, 'installed_version')}} -> {{state_attr(upd.entity_id, 'latest_version')}}
+        {%- endif %}
+        {%- endfor %}
+      data:
+        tag: updates_available
+        notification_id: updates_available
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge
+        group: alerts
+        actions:
+          - title: "Pause Alert"
+            action: pause_alert_updates_available

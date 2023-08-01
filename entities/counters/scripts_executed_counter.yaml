@@ -1,0 +1,6 @@
+---
+scripts_executed_counter:
+  name: Executed Scripts
+  icon: mdi:flash-auto
+  step: 1
+  initial: 0

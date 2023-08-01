@@ -7,6 +7,13 @@ trigger:
       - sensor.bacco007_homeassistantconfig_stars
       - sensor.bacco007_sensor_opennem_stars
       - sensor.bacco007_sensor_waternsw_stars
+condition:
+  - condition: template
+    value_template: >
+      {% set ignore = ['unknown', 'unavailable', 'none','0'] %}
+      {{ trigger.from_state.state not in ignore and
+        trigger.to_state.state not in ignore and
+        trigger.to_state.state != trigger.from_state.state }}
 mode: restart
 action:
   - service: persistent_notification.create
