@@ -1,7 +1,7 @@
 """Sensor platform for MastodonProfileStats."""
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
+from homeassistant.components.sensor import SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.const import CONF_URL
 
 from .const import DOMAIN
@@ -14,16 +14,19 @@ ENTITY_DESCRIPTIONS = (
         key="followers_count",
         name="Followers",
         icon="mdi:counter",
+        state_class = SensorStateClass.TOTAL,
     ),
     SensorEntityDescription(
         key="following_count",
         name="Following",
         icon="mdi:counter",
+        state_class = SensorStateClass.TOTAL,
     ),
     SensorEntityDescription(
         key="statuses_count",
         name="Statuses",
         icon="mdi:counter",
+        state_class = SensorStateClass.TOTAL,
     ),
 )
 

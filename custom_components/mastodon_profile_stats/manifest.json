@@ -6,10 +6,10 @@
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/andrew-codechimp/ha-mastodon_profile_stats",
+  "documentation": "https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/andrew-codechimp/ha-mastodon_profile_stats/issues",
+  "issue_tracker": "https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats/issues",
   "requirements": [],
-  "version": "1.0.4"
+  "version": "1.0.6"
 }
