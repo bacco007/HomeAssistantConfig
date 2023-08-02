@@ -9,9 +9,9 @@ trigger:
     event_type: automation_triggered
 condition:
   - condition: template
-    value_template: "{{ not 'ha_count_triggered_automations' in (trigger.event.data.name|string) }}"
-  - condition: template
-    value_template: "{{ not 'system_esphome_ble_advert' in (trigger.event.data.name|string) }}"
+    value_template: "{{ not 'automation.ha_count_triggered_automations' in (trigger.event.data.entity_id|string) }}"
+  # - condition: template
+  #   value_template: "{{ not 'system_esphome_ble_advert' in (trigger.event.data.name|string) }}"
 action:
   - service: counter.increment
     entity_id: counter.automation_trigger_counter

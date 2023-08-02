@@ -56,3 +56,5 @@ logger:
       - "Unexpected error fetching sensor data"
     custom_components.waternsw.sensor:
       - "Cannot retrieve date, check config"
+    py.warnings:
+      - "InsecureRequestWarning: Unverified HTTPS request is being made to host"

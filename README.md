@@ -46,18 +46,18 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Wednesday, August 2nd 2023_
+_Stats as at 05:00, Thursday, August 3rd 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.0b2 | 473     | 4151         | 2900 | 116 |
+| 2023.8.0b4 | 477     | 4333         | 3040 | 119 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 23
-Automation | 116
-Binary Sensor | 229
+Automation | 119
+Binary Sensor | 246
 Camera | 5
 Device Tracker | 141
 Group | 6
@@ -69,7 +69,7 @@ Media Player | 19
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 2900
+Sensor | 3040
 Sun | 1
 Switch | 205
 Weather | 13
@@ -112,6 +112,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.ble_monitor](https://www.home-assistant.io/components/binary_sensor.ble_monitor) |
 | [binary_sensor.browser_mod](https://www.home-assistant.io/components/binary_sensor.browser_mod) |
 | [binary_sensor.cloud](https://www.home-assistant.io/components/binary_sensor.cloud) |
+| [binary_sensor.command_line](https://www.home-assistant.io/components/binary_sensor.command_line) |
 | [binary_sensor.dyson_local](https://www.home-assistant.io/components/binary_sensor.dyson_local) |
 | [binary_sensor.eufy_security](https://www.home-assistant.io/components/binary_sensor.eufy_security) |
 | [binary_sensor.hassio](https://www.home-assistant.io/components/binary_sensor.hassio) |
@@ -122,6 +123,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.nsw_rural_fire_service_fire_danger](https://www.home-assistant.io/components/binary_sensor.nsw_rural_fire_service_fire_danger) |
 | [binary_sensor.openuv](https://www.home-assistant.io/components/binary_sensor.openuv) |
 | [binary_sensor.ping](https://www.home-assistant.io/components/binary_sensor.ping) |
+| [binary_sensor.proxmoxve](https://www.home-assistant.io/components/binary_sensor.proxmoxve) |
 | [binary_sensor.radarr](https://www.home-assistant.io/components/binary_sensor.radarr) |
 | [binary_sensor.satellitetracker](https://www.home-assistant.io/components/binary_sensor.satellitetracker) |
 | [binary_sensor.sensibo](https://www.home-assistant.io/components/binary_sensor.sensibo) |
@@ -149,6 +151,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [button.hdhomerun](https://www.home-assistant.io/components/button.hdhomerun) |
 | [button.mqtt](https://www.home-assistant.io/components/button.mqtt) |
 | [button.plex](https://www.home-assistant.io/components/button.plex) |
+| [button.proxmoxve](https://www.home-assistant.io/components/button.proxmoxve) |
 | [button.sensibo](https://www.home-assistant.io/components/button.sensibo) |
 | [button.smartthinq_sensors](https://www.home-assistant.io/components/button.smartthinq_sensors) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
@@ -418,6 +421,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.plex](https://www.home-assistant.io/components/sensor.plex) |
 | [sensor.plex_recently_added](https://www.home-assistant.io/components/sensor.plex_recently_added) |
 | [sensor.powercalc](https://www.home-assistant.io/components/sensor.powercalc) |
+| [sensor.proxmoxve](https://www.home-assistant.io/components/sensor.proxmoxve) |
 | [sensor.qbittorrent](https://www.home-assistant.io/components/sensor.qbittorrent) |
 | [sensor.radarr](https://www.home-assistant.io/components/sensor.radarr) |
 | [sensor.radarr_upcoming_media](https://www.home-assistant.io/components/sensor.radarr_upcoming_media) |
@@ -595,7 +599,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -731,16 +735,16 @@ Here is a list of all the integrations I use, including any Custom Components (w
 ### Addons
 
 Here are the addons I use inside Home Assistant, some of the other things I run can be done inside Home Assistant, but I've elected not to do so.
-- Advanced SSH & Web Terminal (15.0.5)
+- Advanced SSH & Web Terminal (15.0.6)
 - Cloudflared (4.2.2)
-- ESPHome (2023.7.0)
-- eufy-security-ws (1.5.2-1)
+- ESPHome (2023.7.1)
+- eufy-security-ws (1.6.0)
 - Glances (0.19.2)
 - Home Assistant Google Drive Backup (0.111.1)
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.4.2)
+- Node-RED (14.4.3)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - Zigbee2MQTT Edge (edge)
