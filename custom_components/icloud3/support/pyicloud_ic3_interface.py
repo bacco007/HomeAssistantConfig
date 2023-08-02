@@ -12,7 +12,7 @@ from ..support.pyicloud_ic3 import (PyiCloudService, PyiCloudFailedLoginExceptio
                                     PyiCloudAPIResponseException, PyiCloud2FARequiredException,)
 
 from ..helpers.common       import (instr, list_to_str, delete_file, )
-from ..helpers.messaging    import (post_event, post_error_msg, post_monitor_msg, log_debug_msg,
+from ..helpers.messaging    import (post_event, post_error_msg, post_monitor_msg, post_startup_alert, log_debug_msg,
                                     log_info_msg, log_exception, log_error_msg, internal_error_msg2, _trace, _traceha, )
 from ..helpers.time_util    import (time_secs, secs_to_time, secs_to_datetime, secs_to_time_str, format_age,
                                     secs_to_time_age_str, )
@@ -170,11 +170,19 @@ def authenticate_icloud_account(PyiCloud, called_from='unknown', initial_setup=F
                     f"{CRLF_DOT}Your network or wifi is down, or"
                     f"{CRLF_DOT}Apple iCloud servers are down"
                     f"{CRLF}Error-{err}")
+        post_startup_alert('Error occurred logging into the iCloud Account')
 
     except PyiCloudFailedLoginException as err:
         event_msg =(f"{EVLOG_ALERT}iCloud3 Error > An error occurred logging into the iCloud Account. "
                     f"Authentication Process/Error-{Gb.PyiCloud.authenticate_method[2:]})")
         post_error_msg(event_msg)
+        post_startup_alert('Username/Password error logging into the iCloud Account')
+
+        if instr(Gb.PyiCloud.authenticate_method, 'Invalid username/password'):
+            Gb.PyiCloud = PyiCloud = None
+            Gb.username = Gb.password = ''
+            return False
+
         check_all_devices_online_status()
         return False
 
@@ -374,12 +382,13 @@ def delete_pyicloud_cookies_session_files(cookie_filename=None):
     cookie_filename   = cookie_filename or Gb.PyiCloud.cookie_filename
     session_directory = f"{cookie_directory}/session"
 
-    delete_msg = f"{EVLOG_ALERT}"
-    delete_msg += delete_file('iCloud Acct tokenpw', session_directory, f"{cookie_filename}.tpw")
-    delete_msg += CRLF
-    delete_msg += delete_file('iCloud Acct session', session_directory, cookie_filename, delete_old_sv_file=True)
-    delete_msg += CRLF
-    delete_msg += delete_file('iCloud Acct cookies', cookie_directory,  cookie_filename, delete_old_sv_file=True)
+    delete_msg =  f"Deleting iCloud Cookie & Session Files > ({cookie_directory})"
+    delete_msg += f"{CRLF_DOT}Cookies ({cookie_filename})"
+    delete_file('iCloud Acct cookies', cookie_directory,  cookie_filename, delete_old_sv_file=True)
+    delete_msg += f"{CRLF_DOT}Token Password ({cookie_filename}.tpw)"
+    delete_file('iCloud Acct tokenpw', session_directory, f"{cookie_filename}.tpw")
+    delete_msg += f"{CRLF_DOT}Session (/session/{cookie_filename})"
+    delete_file('iCloud Acct session', session_directory, cookie_filename, delete_old_sv_file=True)
     post_monitor_msg(delete_msg)
 
 #--------------------------------------------------------------------

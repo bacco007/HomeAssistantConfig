@@ -26,7 +26,8 @@ from .const             import (DOMAIN, DATETIME_FORMAT,
                                 TRACK_DEVICE, MONITOR_DEVICE, INACTIVE_DEVICE,
                                 NAME,  FRIENDLY_NAME, FNAME, TITLE, BATTERY,
                                 ZONE, HOME_DISTANCE, WAZE_SERVERS_FNAME,
-                                CONF_VERSION, CONF_EVLOG_CARD_DIRECTORY, CONF_HA_CONFIG_IC3_URL,
+                                CONF_VERSION, CONF_EVLOG_CARD_DIRECTORY,
+                                CONF_EVLOG_BTNCONFIG_URL,
                                 CONF_USERNAME, CONF_PASSWORD, CONF_DEVICES, CONF_SETUP_ICLOUD_SESSION_EARLY,
                                 CONF_DATA_SOURCE, CONF_VERIFICATION_CODE,
                                 CONF_TRACK_FROM_ZONES, CONF_TRACK_FROM_BASE_ZONE, CONF_TRACK_FROM_HOME_ZONE,
@@ -38,7 +39,7 @@ from .const             import (DOMAIN, DATETIME_FORMAT,
                                 CONF_GPS_ACCURACY_THRESHOLD, CONF_OLD_LOCATION_THRESHOLD, CONF_OLD_LOCATION_ADJUSTMENT,
                                 CONF_TRAVEL_TIME_FACTOR, CONF_TFZ_TRACKING_MAX_DISTANCE,
                                 CONF_PASSTHRU_ZONE_TIME, CONF_LOG_LEVEL,
-                                CONF_DISPLAY_ZONE_FORMAT, CONF_DISPLAY_GPS_LAT_LONG,
+                                CONF_DISPLAY_ZONE_FORMAT, CONF_DEVICE_TRACKER_STATE_SOURCE, CONF_DISPLAY_GPS_LAT_LONG,
                                 CONF_CENTER_IN_ZONE, CONF_DISCARD_POOR_GPS_INZONE,
                                 CONF_DISTANCE_BETWEEN_DEVICES,
                                 CONF_WAZE_USED, CONF_WAZE_SERVER, CONF_WAZE_MAX_DISTANCE, CONF_WAZE_MIN_DISTANCE,
@@ -62,7 +63,8 @@ from .const             import (DOMAIN, DATETIME_FORMAT,
                                 )
 from .const_sensor      import (SENSOR_GROUPS )
 from .helpers.common    import (instr, isnumber, obscure_field, zone_display_as, list_to_str, str_to_list, )
-from .helpers.messaging import (log_exception, log_debug_msg, _traceha, _trace, post_event, close_reopen_ic3_log_file, )
+from .helpers.messaging import (log_exception, log_debug_msg, _traceha, _trace,
+                                post_event, post_monitor_msg, close_reopen_ic3_log_file, )
 from .helpers           import entity_io
 from .                  import sensor as ic3_sensor
 from .                  import device_tracker as ic3_device_tracker
@@ -293,11 +295,16 @@ TIME_FORMAT_ITEMS_KEY_TEXT = {
         }
 DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT = {}
 DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT_BASE = {
-        'fname':    'HA Zone Friendly Name, (Home, Away, TheShores)',
+        'fname':    'HA Zone Friendly Name (Home, Away, TheShores) →→→ PREFERRED',
         'zone':     'HA Zone entity_id (home, not_home, the_shores)',
         'name':     'iCloud3 reformated Zone entity_id (zone.the_shores → TheShores)',
         'title':    'iCloud3 reformated Zone entity_id (zone.the_shores → The Shores)'
         }
+DEVICE_TRACKER_STATE_SOURCE_ITEMS_KEY_TEXT = {
+        'ic3_fname': 'iCloud3 Determines the Zone - Set to Zone Friendly Name (gps & accuracy)',
+        'ic3_evlog': 'iCloud3 Determines the Zone - Set to EvLog Zone Display Name (gps & accuracy)',
+        'ha_gps':    'HA Determines the Zone - Based on gps coordinates (except Stationary Zones)'
+}
 LOG_LEVEL_ITEMS_KEY_TEXT = {
         'info':     'Info - Log General Information',
         'debug':    'Debug - Log Internal Tracking Monitors',
@@ -546,11 +553,6 @@ class iCloud3_ConfigFlow(config_entries.ConfigFlow, FlowHandler, domain=DOMAIN):
         if Gb.OptionsFlowHandler is None:
             Gb.OptionsFlowHandler = iCloud3_OptionsFlowHandler()
         OptFlow = Gb.OptionsFlowHandler
-        OptFlow_PyiCloud = OptFlow.PyiCloud
-        if Gb.PyiCloud:
-            PyiCloud = Gb.PyiCloud
-        elif OptFlow_PyiCloud:
-            PyiCloud = OptFlow.PyiCloud
 
         self.step_id = 'reauth'
         self.errors = errors or {}
@@ -570,24 +572,17 @@ class iCloud3_ConfigFlow(config_entries.ConfigFlow, FlowHandler, domain=DOMAIN):
             return self.async_abort(reason="verification_code_cancelled")
 
         if action_item == 'request_verification_code':
-            await Gb.hass.async_add_executor_job(pyicloud_ic3_interface.delete_pyicloud_cookies_session_files)
-            user_input[CONF_USERNAME] = Gb.username
-            user_input[CONF_PASSWORD] = Gb.password
-
-            await OptFlow._log_into_icloud_account(
-                            user_input, called_from_step_id='cf_reauth', request_verification_code=True)
-            PyiCloud = OptFlow.PyiCloud
-
-            if PyiCloud:
-                PyiCloud.new_2fa_code_already_requested_flag = True
-                self.errors['base'] = 'verification_code_requested2'
+            await Gb.hass.async_add_executor_job(
+                                        pyicloud_ic3_interface.pyicloud_reset_session,
+                                        Gb.PyiCloud)
+            self.errors['base'] = 'verification_code_requested2'
 
         elif (action_item == 'send_verification_code'
                 and CONF_VERIFICATION_CODE in user_input
                 and user_input[CONF_VERIFICATION_CODE]):
 
             valid_code = await Gb.hass.async_add_executor_job(
-                                    PyiCloud.validate_2fa_code,
+                                    Gb.PyiCloud.validate_2fa_code,
                                     user_input[CONF_VERIFICATION_CODE])
 
             # Do not restart iC3 right now if the username/password was changed on the
@@ -597,10 +592,10 @@ class iCloud3_ConfigFlow(config_entries.ConfigFlow, FlowHandler, domain=DOMAIN):
                 post_event( f"{EVLOG_NOTICE}The Verification Code was accepted ({user_input[CONF_VERIFICATION_CODE]})")
                 post_event(f"{EVLOG_NOTICE}iCLOUD ALERT > Apple ID Verification complete")
 
-                Gb.EvLog.clear_alert_events()
+                Gb.EvLog.clear_alert()
                 Gb.EvLog.update_event_log_display("")
                 start_ic3.set_primary_data_source(FAMSHR)
-                PyiCloud.new_2fa_code_already_requested_flag = False
+                Gb.PyiCloud.new_2fa_code_already_requested_flag = False
 
                 Gb.authenticated_time = time.time()
                 close_reopen_ic3_log_file()
@@ -676,17 +671,14 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         # in case the username/password is changed and another account is accessed. These will not
         # intefer with ones already in use by iC3. The Global Gb variables will be set to the local
         # variables if they were changes and a iC3 Restart was selected when finishing the config setup.
+
         self.PyiCloud                 = None
-        self.username                 = None
-        self.password                 = None
+        if Gb.PyiCloud: self.PyiCloud = Gb.PyiCloud
+        self.username                 = Gb.username or Gb.conf_tracking[CONF_USERNAME]
+        self.password                 = Gb.password or Gb.conf_tracking[CONF_PASSWORD]
         self.obscure_username         = ''
         self.obscure_password         = ''
         self.show_username_password   = False
-
-        if Gb.PyiCloud:
-            self.PyiCloud             = Gb.PyiCloud
-            self.username             = Gb.username
-            self.password             = Gb.password
 
         # Variables used for device selection and update on the device_list and device_update forms
         self.form_devices_list_all         = []         # List of the devices in the Gb.conf_tracking[DEVICES] parameter
@@ -993,7 +985,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
 
         log_debug_msg(f"{self.step_id} ({action_item}) > UserInput-{user_input}, Errors-{errors}")
 
-        post_event(f"Configuration Updated > Type-{self.step_id.replace('_', ' ').title()}")
+        post_event(f"Configuration Changed > Type-{self.step_id.replace('_', ' ').title()}")
         self._update_configuration_file(user_input)
 
         # Redisplay the menu if there were no errors
@@ -1518,7 +1510,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
             if pname in Gb.conf_profile:
                 if Gb.conf_profile[pname] != pvalue:
                     Gb.conf_profile[pname] = pvalue
-                    updated_parms.update(['profile'])   #, 'restart'])
+                    updated_parms.update(['profile', 'evlog'])   #, 'restart'])
 
         if updated_parms != {''}:
             # If default or converted file, update version so the
@@ -1539,12 +1531,14 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         The display_zone_format may contain '(Example: ...). If so, strip it off.
         '''
         user_input = self._option_text_to_parm(user_input, CONF_DISPLAY_ZONE_FORMAT, DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT)
+        user_input = self._option_text_to_parm(user_input, CONF_DEVICE_TRACKER_STATE_SOURCE, DEVICE_TRACKER_STATE_SOURCE_ITEMS_KEY_TEXT)
         user_input = self._option_text_to_parm(user_input, CONF_UNIT_OF_MEASUREMENT, UNIT_OF_MEASUREMENT_ITEMS_KEY_TEXT)
         user_input = self._option_text_to_parm(user_input, CONF_TIME_FORMAT, TIME_FORMAT_ITEMS_KEY_TEXT)
         user_input = self._option_text_to_parm(user_input, CONF_LOG_LEVEL, LOG_LEVEL_ITEMS_KEY_TEXT)
         user_input = self._strip_special_text_from_user_input(user_input)
 
-        if Gb.display_zone_format != user_input[CONF_DISPLAY_ZONE_FORMAT]:
+        if (Gb.display_zone_format != user_input[CONF_DISPLAY_ZONE_FORMAT]):
+                # or Gb.device_tracker_state_source != user_input[CONF_DEVICE_TRACKER_STATE_SOURCE]):
             self.config_flow_updated_parms.update(['zone_formats'])
 
         return user_input
@@ -1552,9 +1546,10 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
 #-------------------------------------------------------------------------------------------
     def _validate_tracking_parameters(self, user_input):
         '''
-        The display_zone_format may contain '(Example: ...). If so, strip it off.
+        Update the profile parameters
         '''
-        user_input[CONF_HA_CONFIG_IC3_URL] = user_input[CONF_HA_CONFIG_IC3_URL].strip()
+        user_input[CONF_EVLOG_BTNCONFIG_URL] = user_input[CONF_EVLOG_BTNCONFIG_URL].strip()
+
         return user_input
 
 #-------------------------------------------------------------------------------------------
@@ -1803,6 +1798,12 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                             or user_input[CONF_PASSWORD] != Gb.conf_tracking[CONF_PASSWORD])):
                     await self._log_into_icloud_account(user_input, called_from_step_id='icloud_account')
 
+                    if action_item == 'save' and self.PyiCloud != Gb.PyiCloud:
+                        Gb.PyiCloud = Gb.PyiCloudInit = self.PyiCloud
+                        Gb.username = self.username
+                        Gb.password = self.password
+
+
                     if (self.PyiCloud and self.PyiCloud.requires_2fa):
                         errors = {'base': 'verification_code_needed'}
                         return await self.async_step_reauth(user_input=None,
@@ -1903,8 +1904,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                 post_event( f"{EVLOG_NOTICE}The Verification Code was accepted ({user_input[CONF_VERIFICATION_CODE]})")
                 post_event(f"{EVLOG_NOTICE}iCLOUD ALERT > Apple ID Verification complete")
 
-                Gb.EvLog.clear_alert_events()
-                Gb.EvLog.update_event_log_display("")
+                Gb.EvLog.clear_alert()
                 Gb.force_icloud_update_flag = True
                 PyiCloud.new_2fa_code_already_requested_flag = False
 
@@ -2225,7 +2225,7 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
         """ Delete the device_tracker entity and associated ic3 configuration """
 
         devicename = self.conf_device_selected[CONF_IC3_DEVICENAME]
-        event_msg = (f"Configuration Updated > DeleteDevice-{devicename}, "
+        event_msg = (f"Configuration Changed > DeleteDevice-{devicename}, "
                     f"{self.conf_device_selected[CONF_FNAME]}/"
                     f"{DEVICE_TYPE_FNAME[self.conf_device_selected[CONF_DEVICE_TYPE]]}")
         post_event(event_msg)
@@ -2384,12 +2384,12 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                     self.device_list_page_selected_idx[self.device_list_page_no] = \
                         self.conf_device_selected_idx
 
-                    event_msg = (f"Configuration Updated > AddDevice-{ui_devicename}, "
+                    event_msg = (f"Configuration Changed > AddDevice-{ui_devicename}, "
                                     f"{self.conf_device_selected[CONF_FNAME]}/"
                                     f"{DEVICE_TYPE_FNAME[self.conf_device_selected[CONF_DEVICE_TYPE]]}")
                     post_event(event_msg)
                 else:
-                    event_msg = (f"Configuration Updated > ChangeDevice-{ui_devicename}, "
+                    event_msg = (f"Configuration Changed > ChangeDevice-{ui_devicename}, "
                                     f"{self.conf_device_selected[CONF_FNAME]}/"
                                     f"{DEVICE_TYPE_FNAME[self.conf_device_selected[CONF_DEVICE_TYPE]]}")
                     post_event(event_msg)
@@ -3953,6 +3953,10 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                             default=self._option_parm_to_text(CONF_DISPLAY_ZONE_FORMAT, DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT)):
                             selector.SelectSelector(selector.SelectSelectorConfig(
                                 options=dict_value_to_list(DISPLAY_ZONE_FORMAT_ITEMS_KEY_TEXT), mode='dropdown')),
+                vol.Required(CONF_DEVICE_TRACKER_STATE_SOURCE,
+                            default=self._option_parm_to_text(CONF_DEVICE_TRACKER_STATE_SOURCE, DEVICE_TRACKER_STATE_SOURCE_ITEMS_KEY_TEXT)):
+                            selector.SelectSelector(selector.SelectSelectorConfig(
+                                options=dict_value_to_list(DEVICE_TRACKER_STATE_SOURCE_ITEMS_KEY_TEXT), mode='dropdown')),
                 vol.Required(CONF_UNIT_OF_MEASUREMENT,
                             default=self._option_parm_to_text(CONF_UNIT_OF_MEASUREMENT, UNIT_OF_MEASUREMENT_ITEMS_KEY_TEXT)):
                             selector.SelectSelector(selector.SelectSelectorConfig(
@@ -4095,8 +4099,8 @@ class iCloud3_OptionsFlowHandler(config_entries.OptionsFlow):
                             default=self._parm_or_error_msg(CONF_EVLOG_CARD_DIRECTORY, conf_group=CF_PROFILE)):
                             selector.SelectSelector(selector.SelectSelectorConfig(
                                 options=dict_value_to_list(self.opt_www_directory_list), mode='dropdown')),
-                vol.Optional(CONF_HA_CONFIG_IC3_URL,
-                            default=self._parm_or_error_msg(CONF_HA_CONFIG_IC3_URL, conf_group=CF_PROFILE)):
+                vol.Optional(CONF_EVLOG_BTNCONFIG_URL,
+                            default=f"{self._parm_or_error_msg(CONF_EVLOG_BTNCONFIG_URL, conf_group=CF_PROFILE)} "):
                             selector.TextSelector(),
 
                 vol.Required('action_items',
