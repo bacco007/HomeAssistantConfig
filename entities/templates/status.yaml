@@ -30,7 +30,7 @@ sensor:
   - name: "[Status] Status for Notifications"
     unique_id: status_notification
     icon: mdi:list-status
-    state: 0
+    state: "0"
     attributes:
       category: notifications
       updates_docker_count: >

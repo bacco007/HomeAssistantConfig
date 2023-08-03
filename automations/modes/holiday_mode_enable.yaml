@@ -1,0 +1,24 @@
+---
+alias: "[Modes] Holiday Mode - Auto Enable"
+id: modes_holiday_mode_auto_enable
+trigger:
+  platform: state
+  entity_id: group.people
+  from: home
+  to: not_home
+  for: "24:00:00"
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.holiday_mode
+  - service: notify.alerts
+    data:
+      message: Holiday Mode Enabled
+      title: Holiday Mode Auto Enabled
+      data:
+        push:
+          badge: 1
+          sound: none
+          interruption-level: time-sensitive
+        presentation_options:
+          - alert
+          - badge

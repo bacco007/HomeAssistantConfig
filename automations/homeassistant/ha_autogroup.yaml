@@ -62,3 +62,9 @@ action:
         {{ states
             |selectattr('entity_id','search','binary_sensor.connected_*')
             |map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: people
+      entities: >
+        {{ states.person|map(attribute='entity_id')|list|sort }}
