@@ -219,9 +219,6 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the device."""
-        # if self.entity_description.key == "total_kwh_forecast_d5":
-        #     s = dt.now().replace(minute=0, second=0, microsecond=0).date() + timedelta(days=5)
-        #     return s.strftime("%A")
         return f"{self.entity_description.name}"
 
     @property
@@ -262,9 +259,10 @@ class SolcastSensor(CoordinatorEntity, SensorEntity):
         """Handle updated data from the coordinator."""
         self._sensor_data = self.coordinator.get_sensor_value(self.entity_description.key)
         self.async_write_ha_state()
+        
+        
 class RooftopSensor(CoordinatorEntity, SensorEntity):
     """Representation of a Seplos Sensor device."""
-
 
     def __init__(
         self,
@@ -300,7 +298,7 @@ class RooftopSensor(CoordinatorEntity, SensorEntity):
             #"hw_version": entry.options[CONF_RESOURCE_ID],
         }
 
-        self._unique_id = f"solcast_api_{entity_description.name}"
+        self._unique_id = f"solcast_api_{entity_description.key}"
 
     @property
     def name(self):

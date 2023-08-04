@@ -9,7 +9,7 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONST_DISABLEAUTOPOLL, DOMAIN
+from .const import DOMAIN #,CONST_DISABLEAUTOPOLL
 
 
 class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -35,7 +35,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
                 data = {},
                 options={
                     CONF_API_KEY: user_input[CONF_API_KEY],
-                    CONST_DISABLEAUTOPOLL: user_input[CONST_DISABLEAUTOPOLL],
+                    #CONST_DISABLEAUTOPOLL: user_input[CONST_DISABLEAUTOPOLL],
                 },
             )
 
@@ -44,7 +44,7 @@ class SolcastSolarFlowHandler(ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_API_KEY, default=""): str,
-                    vol.Required(CONST_DISABLEAUTOPOLL,default=False): bool,
+                    #vol.Required(CONST_DISABLEAUTOPOLL,default=False): bool,
                 }
             ),
         )
@@ -72,10 +72,10 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         CONF_API_KEY,
                         default=self.config_entry.options.get(CONF_API_KEY),
                     ): str,
-                    vol.Required(
-                        CONST_DISABLEAUTOPOLL,
-                        default=self.config_entry.options.get(CONST_DISABLEAUTOPOLL),
-                    ): bool,
+                    # vol.Required(
+                    #     CONST_DISABLEAUTOPOLL,
+                    #     default=self.config_entry.options.get(CONST_DISABLEAUTOPOLL),
+                    # ): bool,
                 }
             ),
         )

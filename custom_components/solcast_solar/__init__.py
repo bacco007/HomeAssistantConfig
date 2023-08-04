@@ -9,8 +9,10 @@ from homeassistant.const import CONF_API_KEY, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.device_registry import async_get as device_registry
+from homeassistant.util import dt as dt_util
 
-from .const import (CONST_DISABLEAUTOPOLL, DOMAIN, SERVICE_ACTUALS_UPDATE,
+
+from .const import (DOMAIN,
                     SERVICE_CLEAR_DATA, SERVICE_UPDATE, SOLCAST_URL)
 from .coordinator import SolcastUpdateCoordinator
 from .solcastapi import ConnectionOptions, SolcastApi
@@ -28,15 +30,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         options = ConnectionOptions(
             entry.options[CONF_API_KEY],
             SOLCAST_URL,
-            hass.config.path('solcast.json')
+            hass.config.path('solcast.json'),
+            dt_util.get_time_zone(hass.config.time_zone)
         )
 
         solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options)
         await solcast.sites_data()
         await solcast.load_saved_data()
         
-        autopolldisabled = entry.options[CONST_DISABLEAUTOPOLL]
-        coordinator = SolcastUpdateCoordinator(hass, solcast, autopolldisabled)
+        coordinator = SolcastUpdateCoordinator(hass, solcast) 
         await coordinator.setup()
 
         await coordinator.async_config_entry_first_refresh()
@@ -50,8 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         try:
             integration = await loader.async_get_integration(hass, DOMAIN)
             _VERSION = str(integration.version)
-            _LOGGER.debug(f"Solcast Integration version number: {_VERSION}")
-            #_LOGGER.error(f"Solcast Integration path: {integration.file_path}")
+            _LOGGER.info(f"Solcast Integration version number: {_VERSION}")
         except loader.IntegrationNotFound:
             _VERSION = ""
 
@@ -59,6 +60,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _VERSION = ""
 
         coordinator._version = _VERSION
+        
+        _LOGGER.info(f"SOLCAST - Solcast API data UTC times are converted to {hass.config.time_zone}")
 
         #hass.config_entries.async_setup_platforms(entry, PLATFORMS)
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -68,10 +71,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.info(f"SOLCAST - Service call: {SERVICE_UPDATE}")
             await coordinator.service_event_update()
 
-        async def handle_service_update_forecast_actuals(call):
-            """Handle service call"""
-            _LOGGER.info(f"SOLCAST - Service call: {SERVICE_ACTUALS_UPDATE}")
-            await coordinator.service_event_update_actuals()
+        # async def handle_service_update_forecast_actuals(call):
+        #     """Handle service call"""
+        #     _LOGGER.info(f"SOLCAST - Service call: {SERVICE_ACTUALS_UPDATE}")
+        #     await coordinator.service_event_update_actuals()
 
         async def handle_service_clear_solcast_data(call):
             """Handle service call"""
@@ -82,9 +85,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             DOMAIN, SERVICE_UPDATE, handle_service_update_forecast
         )
 
-        hass.services.async_register(
-            DOMAIN, SERVICE_ACTUALS_UPDATE, handle_service_update_forecast_actuals
-        )
+        # hass.services.async_register(
+        #     DOMAIN, SERVICE_ACTUALS_UPDATE, handle_service_update_forecast_actuals
+        # )
         
         hass.services.async_register(
             DOMAIN, SERVICE_CLEAR_DATA, handle_service_clear_solcast_data
@@ -93,7 +96,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return True
 
     except Exception as err:
-        _LOGGER.error("SOLCAST - async_setup_entry: %s - Err Msg: %s",traceback.format_exc(), err.message)
+        _LOGGER.error("SOLCAST - async_setup_entry: %s - Err Msg: %s",traceback.format_exc(), err)
         return False
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -104,7 +107,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.data[DOMAIN].pop(entry.entry_id)
 
         hass.services.async_remove(DOMAIN, SERVICE_UPDATE)
-        hass.services.async_remove(DOMAIN, SERVICE_ACTUALS_UPDATE)
+        # hass.services.async_remove(DOMAIN, SERVICE_ACTUALS_UPDATE)
         hass.services.async_remove(DOMAIN, SERVICE_CLEAR_DATA)
 
         return unload_ok
@@ -116,47 +119,42 @@ async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEnt
         device_registry(hass).async_remove_device(device.id)
         return True
     except Exception as err:
-        _LOGGER.error("SOLCAST - async_remove_config_entry_device: %s - Err Msg: %s",traceback.format_exc(), err.message)
+        _LOGGER.error("SOLCAST - async_remove_config_entry_device: %s - Err Msg: %s",traceback.format_exc(), err)
 
-async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Handle removal of an entry."""
-    try:
-        coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-        if coordinator._auto_fetch_tracker:
-            coordinator._auto_fetch_tracker()
-            coordinator._auto_fetch_tracker = None
+# async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+#     """Handle removal of an entry."""
+#     try:
+#         
 
-    except Exception as err:
-        _LOGGER.error("SOLCAST - async_remove_entry: %s - Err Msg: %s",traceback.format_exc(), err.message)
+#     except Exception as err:
+#         _LOGGER.error("SOLCAST - async_remove_entry: %s - Err Msg: %s",traceback.format_exc(), err.message)
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
     """Reload entry if options change."""
     try:
         _LOGGER.debug("Reloading entry %s", entry.entry_id)
-        if not entry.options[CONST_DISABLEAUTOPOLL]:
-            coordinator: SolcastUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-            if coordinator._auto_fetch_tracker:
-                coordinator._auto_fetch_tracker()
-                coordinator._auto_fetch_tracker = None
 
         await hass.config_entries.async_reload(entry.entry_id)
     except Exception as err:
-        _LOGGER.error("SOLCAST - async_update_options: %s - Err Msg: %s",traceback.format_exc(), err.message)
+        _LOGGER.error("SOLCAST - async_update_options: %s - Err Msg: %s",traceback.format_exc(), err)
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Migrate old entry."""
     try:
         _LOGGER.debug("Solcast Config Migrating from version %s", config_entry.version)
 
-        if config_entry.version == 2:
-            #new_data = {**config_entry.options}
-            new_data = {**config_entry.options, CONST_DISABLEAUTOPOLL: False}
+        #remove this when it ever changes again
+        config_entry.version = 3
+        
+        # if config_entry.version == 2:
+        #     #new_data = {**config_entry.options}
+        #     new_data = {**config_entry.options, CONST_DISABLEAUTOPOLL: False}
 
-            config_entry.version = 3
-            hass.config_entries.async_update_entry(config_entry, options=new_data)
+        #     config_entry.version = 3
+        #     hass.config_entries.async_update_entry(config_entry, options=new_data)
 
         _LOGGER.debug("Solcast Config Migration to version %s successful", config_entry.version)
         return True
     except Exception as err:
-        _LOGGER.error("SOLCAST - async_migrate_entry error:  %s - Err Msg: %s",traceback.format_exc(), err.message)
+        _LOGGER.error("SOLCAST - async_migrate_entry error:  %s - Err Msg: %s",traceback.format_exc(), err)
         return False

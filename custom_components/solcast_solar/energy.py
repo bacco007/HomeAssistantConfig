@@ -29,7 +29,7 @@ async def async_get_solar_forecast(hass: HomeAssistant, config_entry_id: str):
         c = OrderedDict(sorted(c.items()))
         c = {"wh_hours": c}
     except Exception as e:
-        _LOGGER.warn(f"SOLCAST - async_get_solar_forecast {e}")
+        _LOGGER.warning(f"SOLCAST - error is creating the energy graphing data in async_get_solar_forecast {e}")
         k={}
         c = {"wh_hours": k}
         
