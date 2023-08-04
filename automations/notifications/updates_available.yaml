@@ -5,6 +5,18 @@ mode: single
 trigger:
   - platform: time_pattern
     hours: /3
+  - platform: state
+    entity_id:
+      - update.home_assistant_core_update
+    to: "on"
+  - platform: state
+    entity_id:
+      - update.home_assistant_operating_system_update
+    to: "on"
+  - platform: state
+    entity_id:
+      - update.hacs_update
+    to: "on"
 condition:
   - condition: time
     after: "06:00:00"
@@ -13,7 +25,7 @@ action:
   - service: notify.alert
     data:
       title: Updates Available
-      message: >-
+      message: &update-message >-
         {%- for upd in states.update %}
         {%- set ignore = ['unknown', 'unavailable', 'none', '']  %}
         {%- if upd.state == 'on' and
@@ -23,10 +35,10 @@ action:
         {%- if is_state_attr(upd.entity_id, 'display_icon', 'mdi:docker') %}
         {%- set name = state_attr(upd.entity_id, 'display_name') + " (" + state_attr(upd.entity_id, 'watcher') + ")" %}
         {%- else %}
-        {%- set name = state_attr(upd.entity_id, 'title') %}
+        {%- set name = iif(state_attr(upd.entity_id, 'title') == "null", state_attr(upd.entity_id, 'title'), state_attr(upd.entity_id, 'friendly_name')) %}
         {%- endif %}
-        {{name}}: {{state_attr(upd.entity_id, 'installed_version')}} -> {{state_attr(upd.entity_id, 'latest_version')}}
-        {%- endif %}
+        - {{name}}: {{state_attr(upd.entity_id, 'installed_version')}} -> {{state_attr(upd.entity_id, 'latest_version')}}
+        {% endif %}
         {%- endfor %}
       data:
         tag: updates_available
@@ -42,3 +54,8 @@ action:
         actions:
           - title: "Pause Alert"
             action: pause_alert_updates_available
+  - service: persistent_notification.create
+    data:
+      notification_id: update-alert
+      title: Updates Available
+      message: *update-message

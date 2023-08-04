@@ -46,22 +46,22 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Friday, August 4th 2023_
+_Stats as at 05:00, Saturday, August 5th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.0 | 477     | 4347         | 3049 | 119 |
+| 2023.8.0 | 478     | 4372         | 3055 | 122 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 23
-Automation | 119
-Binary Sensor | 247
+Automation | 122
+Binary Sensor | 248
 Camera | 5
 Device Tracker | 141
-Group | 6
-Input Boolean | 6
+Group | 8
+Input Boolean | 7
 Input Datetime | 0
 Input Text | 3
 Light | 9
@@ -69,9 +69,9 @@ Media Player | 20
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3049
+Sensor | 3055
 Sun | 1
-Switch | 205
+Switch | 208
 Weather | 13
 Zone | 3
 
@@ -248,6 +248,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [ical](https://www.home-assistant.io/components/ical) |
 | [icloud3](https://www.home-assistant.io/components/icloud3) |
 | [image](https://www.home-assistant.io/components/image) |
+| [image.eufy_security](https://www.home-assistant.io/components/image.eufy_security) |
 | [image.mqtt](https://www.home-assistant.io/components/image.mqtt) |
 | [image.unifi](https://www.home-assistant.io/components/image.unifi) |
 | [image_upload](https://www.home-assistant.io/components/image_upload) |

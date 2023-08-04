@@ -1,0 +1,80 @@
+---
+- name: "[WAQI] Forecast"
+  resource: !secret waqi_forecast_url
+  scan_interval: 14440
+  sensor:
+      - unique_id: waqi_dailyforecast_ozone
+        name: "[WAQI] Daily Forecast - Ozone"
+        value_template: '{{ value_json.data.iaqi.o3.v }}'
+        icon: mdi:weather-windy
+        device_class: ozone
+        state_class: measurement
+        unit_of_measurement: AQI
+        attributes:
+          # avg, min, max
+          - name: 2d_ago
+            value_template: '{{ value_json.data.forecast.daily.o3[0].avg }}'
+          - name: 1d_ago
+            value_template: '{{ value_json.data.forecast.daily.o3[1].avg }}'
+          - name: 0d
+            value_template: '{{ value_json.data.forecast.daily.o3[2].avg }}'
+          - name: 1d
+            value_template: '{{ value_json.data.forecast.daily.o3[3].avg }}'
+          - name: 2d
+            value_template: '{{ value_json.data.forecast.daily.o3[4].avg }}'
+          - name: 3d
+            value_template: '{{ value_json.data.forecast.daily.o3[5].avg }}'
+          - name: 4d
+            value_template: '{{ value_json.data.forecast.daily.o3[6].avg }}'
+          - name: 5d
+            value_template: '{{ value_json.data.forecast.daily.o3[7].avg }}'
+
+      - unique_id: waqi_dailyforecast_pm10
+        name: "[WAQI] Daily Forecast - PM10"
+        value_template: '{{ value_json.data.iaqi.pm10.v }}'
+        icon: mdi:weather-windy
+        device_class: pm10
+        state_class: measurement
+        unit_of_measurement: AQI
+        attributes:
+          - name: 2d_ago
+            value_template: '{{ value_json.data.forecast.daily.pm10[0].avg }}'
+          - name: 1d_ago
+            value_template: '{{ value_json.data.forecast.daily.pm10[1].avg }}'
+          - name: 0d
+            value_template: '{{ value_json.data.forecast.daily.pm10[2].avg }}'
+          - name: 1d
+            value_template: '{{ value_json.data.forecast.daily.pm10[3].avg }}'
+          - name: 2d
+            value_template: '{{ value_json.data.forecast.daily.pm10[4].avg }}'
+          - name: 3d
+            value_template: '{{ value_json.data.forecast.daily.pm10[5].avg }}'
+          - name: 4d
+            value_template: '{{ value_json.data.forecast.daily.pm10[6].avg }}'
+          - name: 5d
+            value_template: '{{ value_json.data.forecast.daily.pm10[7].avg }}'
+
+      - unique_id: waqi_dailyforecast_pm25
+        name: "[WAQI] Daily Forecast - PM2.5"
+        value_template: '{{ value_json.data.iaqi.pm25.v }}'
+        icon: mdi:weather-windy
+        device_class: pm25
+        state_class: measurement
+        unit_of_measurement: AQI
+        attributes:
+          - name: 2d_ago
+            value_template: '{{ value_json.data.forecast.daily.pm25[0].avg }}'
+          - name: 1d_ago
+            value_template: '{{ value_json.data.forecast.daily.pm25[1].avg }}'
+          - name: 0d
+            value_template: '{{ value_json.data.forecast.daily.pm25[2].avg }}'
+          - name: 1d
+            value_template: '{{ value_json.data.forecast.daily.pm25[3].avg }}'
+          - name: 2d
+            value_template: '{{ value_json.data.forecast.daily.pm25[4].avg }}'
+          - name: 3d
+            value_template: '{{ value_json.data.forecast.daily.pm25[5].avg }}'
+          - name: 4d
+            value_template: '{{ value_json.data.forecast.daily.pm25[6].avg }}'
+          - name: 5d
+            value_template: '{{ value_json.data.forecast.daily.pm25[7].avg }}'

@@ -1,0 +1,17 @@
+---
+alias: "[Solcast] Update During Day"
+id: solcast_update
+trigger:
+  - platform: time_pattern
+    hours: /2
+condition:
+  - condition: state
+    entity_id: binary_sensor.connected_wan
+    state: "on"
+  - condition: sun # only run between sunrise and sunset
+    before: sunset
+    after: sunrise
+action:
+  - service: solcast_solar.update_forecasts
+    data: {}
+mode: single

@@ -68,3 +68,12 @@ action:
       object_id: people
       entities: >
         {{ states.person|map(attribute='entity_id')|list|sort }}
+
+  - service: group.set
+    data:
+      object_id: waqi
+      entities: >
+        {{ states
+          |selectattr('entity_id','search','waqi*')
+          |rejectattr('entity_id','search','alert*')
+          |map(attribute='entity_id')|list|sort }}
