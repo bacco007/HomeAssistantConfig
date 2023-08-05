@@ -27,12 +27,15 @@ esp32:
   framework:
     type: arduino
 
+# external_components:
+#   - source:
+#       type: git
+#       url: https://github.com/atomicmike/esphome.git
+#       ref: waveshare-color-2022.6
+#     components: [waveshare_epaper]
+
 external_components:
-  - source:
-      type: git
-      url: https://github.com/atomicmike/esphome.git
-      ref: waveshare-color-2022.6
-    components: [waveshare_epaper]
+  - source: my_components_waveshare75
 
 logger:
 
