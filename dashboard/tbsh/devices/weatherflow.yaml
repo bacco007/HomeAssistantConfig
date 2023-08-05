@@ -68,10 +68,24 @@ cards:
           tap_action:
             action: toggle
         padding: 0
+        card_mod:
+          style: &style |
+              #items {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+              }
+              #measure {
+                padding-top: 0 !important;
+              }
+              #measure > * {
+                margin: 0 !important;
+              }
         entities:
           - entity: weather.weatherflow_day_based_forecast
           - entity: weather.weatherflow_hourly_based_forecast
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: sensor.weatherflow_air_temperature
@@ -87,6 +101,8 @@ cards:
               - entity: sensor.weatherflow_freezing_line
               - entity: binary_sensor.weatherflow_is_freezing
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: sensor.weatherflow_relative_humidity
@@ -95,6 +111,8 @@ cards:
               - entity: sensor.weatherflow_absolute_humidity
               - entity: sensor.weatherflow_air_density
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: binary_sensor.weatherflow_is_raining
@@ -108,6 +126,8 @@ cards:
               - entity: sensor.weatherflow_precipitation_today
               - entity: sensor.weatherflow_precipitation_yesterday
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: binary_sensor.weatherflow_is_lightning
@@ -119,6 +139,8 @@ cards:
               - entity: sensor.weatherflow_last_lightning_strike_distance
               - entity: sensor.weatherflow_last_lightning_strike
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: sensor.weatherflow_barometric_pressure
@@ -128,6 +150,8 @@ cards:
               - entity: sensor.weatherflow_sea_level_pressure
               - entity: sensor.weatherflow_station_pressure
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: sensor.weatherflow_brightness
@@ -139,6 +163,8 @@ cards:
               - entity: sensor.weatherflow_visibility
               - entity: sensor.weatherflow_cloud_base
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: sensor.weatherflow_wind_speed_km_h
@@ -157,6 +183,8 @@ cards:
               - entity: sensor.weatherflow_beaufort
               - entity: sensor.weatherflow_beaufort_description
           - type: custom:fold-entity-row
+            card_mod:
+              style: *style
             padding: 0
             head:
               entity: sensor.weatherflow_station_information
@@ -191,13 +219,26 @@ cards:
           icon_color: orange
           tap_action:
             action: toggle
-        padding: 0
+        padding: 5
+        card_mod:
+          style: &style |
+              #items {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+              }
+              #measure {
+                padding-top: 0 !important;
+              }
+              #measure > * {
+                margin: 0 !important;
+              }
         entities:
           - entity: weather.tempest_daily
           - entity: weather.tempest_hourly
           - entity: sensor.hub_hb_00045437_weather
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_temperature
               name: Temperature
@@ -211,7 +252,8 @@ cards:
               - entity: sensor.tempest_st_00056115_delta_t
               - entity: sensor.tempest_st_00056115_freezing_level_altitude
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_humidity
               name: Humidity
@@ -219,7 +261,8 @@ cards:
               - entity: sensor.tempest_st_00056115_absolute_humidity
               - entity: sensor.tempest_st_00056115_air_density
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_precipitation_type
               name: Precipitation
@@ -232,7 +275,8 @@ cards:
               - entity: sensor.tempest_st_00056115_rain_duration_today
               - entity: sensor.tempest_st_00056115_rain_duration_yesterday
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_lightning_count
               name: Lightning
@@ -244,7 +288,8 @@ cards:
               - entity: sensor.tempest_st_00056115_lightning_distance
               - entity: sensor.tempest_st_00056115_lightning_energy
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_sea_level_pressure
               name: Pressure
@@ -252,7 +297,8 @@ cards:
               - entity: sensor.tempest_st_00056115_pressure_trend
               - entity: sensor.tempest_st_00056115_station_pressure
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_wind_speed
               name: Wind Speed
@@ -266,7 +312,8 @@ cards:
               - entity: sensor.tempest_st_00056115_wind_direction_avg
               - entity: sensor.tempest_st_00056115_beaufort_scale
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.tempest_st_00056115_illuminance
               name: Illuminance
@@ -277,7 +324,8 @@ cards:
               - entity: sensor.tempest_st_00056115_visibility
               - entity: sensor.tempest_st_00056115_cloud_base_altitude
           - type: custom:fold-entity-row
-            padding: 0
+            card_mod:
+              style: *style
             head:
               entity: sensor.hub_hb_00045437_status
               name: WeatherFlow Status

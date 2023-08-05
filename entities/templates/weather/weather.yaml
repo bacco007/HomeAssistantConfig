@@ -1,5 +1,23 @@
 ---
 sensor:
+  - name: "[Weather] Temperature Trend"
+    unique_id: weather_temperature_trend
+    icon: >
+      {% if is_state('binary_sensor.weather_high_temperature_alert','on') %} mdi:snowflake-thermometer
+      {% elif is_state('binary_sensor.weather_low_temperature_alert','on') %} mdi:sun-thermometer
+      {% elif is_state('binary_sensor.temptrend_outdoor_rising','on') %} mdi:thermometer-chevron-up
+      {% elif is_state('binary_sensor.temptrend_outdoor_falling','on') %} mdi:thermometer-chevron-down
+      {% else %} mdi:thermometer
+      {% endif %}
+    state: >
+      {% if is_state('binary_sensor.temptrend_outdoor_rising','on') %} Rising
+      {% elif is_state('binary_sensor.temptrend_outdoor_falling','on') %} Falling
+      {% else %} Steady
+      {% endif %}
+    availability: >
+      {{ has_value('binary_sensor.temptrend_outdoor_rising')
+          and has_value('binary_sensor.temptrend_outdoor_falling') }}
+
   - name: "[Weather] Current Condition"
     unique_id: weather_current_condition
     icon: mdi:weather-partly-snowy-rainy
@@ -179,6 +197,16 @@ sensor:
       {{ is_number(states('sensor.weatherflow_relative_humidity'))
           or is_number(states('sensor.tempest_st_00056115_humidity'))
           or is_number(states('sensor.tamworth_airport_humidity')) }}
+
+  - name: "[Weather] Humidity Today"
+    unique_id: weather_humidity_today
+    device_class: humidity
+    state_class: measurement
+    unit_of_measurement: "%"
+    state: "{{ states('sensor.pirateweather_humidity_0d')|int }}"
+    attributes:
+      provider: Pirate Weather
+    availability: "{{ is_number(states('sensor.pirateweather_humidity_0d')) }}"
 
   - name: "[Weather] Precipitation Probability"
     unique_id: weather_precipitation_probability
@@ -448,6 +476,23 @@ sensor:
           or is_number(states('sensor.tempest_st_00056115_wind_speed'))
           or is_number(states('sensor.tamworth_airport_wind_speed_kilometre')) }}
 
+  - name: "[Weather] Wind Speed Today"
+    unique_id: weather_wind_speed_today
+    icon: mdi:weather-windy
+    device_class: wind_speed
+    state_class: measurement
+    unit_of_measurement: km/h
+    state: >
+      {% if state_attr('weather.tempest_daily','forecast')[0] is defined
+          and is_number(state_attr('weather.tempest_daily','forecast')[0].wind_speed) %}
+        {{ state_attr('weather.tempest_daily','forecast')[0].wind_speed|int }}
+      {% endif %}
+    attributes:
+      provider: Daily Forecast
+    availability: >
+      {{ state_attr('weather.tempest_daily','forecast')[0] is defined
+          and is_number(state_attr('weather.tempest_daily','forecast')[0].wind_speed) }}
+
   - name: "[Weather] Wind Gust"
     unique_id: weather_wind_gust
     icon: mdi:weather-windy
@@ -473,6 +518,17 @@ sensor:
       {{ is_number(states('sensor.tempest_st_00056115_wind_gust'))
           or is_number(states('sensor.weatherflow_wind_gust_km_h'))
           or is_number(states('sensor.tamworth_airport_gust_speed_kilometre')) }}
+
+  - name: "[Weather] Wind Gust Today"
+    unique_id: weather_wind_gust_today
+    icon: mdi:weather-windy
+    device_class: wind_speed
+    state_class: measurement
+    unit_of_measurement: km/h
+    state: "{{ states('sensor.pirateweather_wind_gust_0d')|int(none) }}"
+    attributes:
+      provider: Pirate Weather
+    availability: "{{ is_number(states('sensor.pirateweather_wind_gust_0d')) }}"
 
   - name: "[Weather] Wind Lull"
     unique_id: weather_wind_lull
@@ -574,6 +630,18 @@ sensor:
       provider: Pirate Weather
     availability: "{{ is_number(states('sensor.pirateweather_nearest_storm_distance')) }}"
 
+  - name: "[Weather] Storm Full Direction"
+    unique_id: weather_storm_full_direction
+    state: >
+      {% set directions = ['North','North-Northeast','Northeast','East-Northeast','East','East-Southeast',
+          'Southeast','South-Southeast','South','South-Southwest','Southwest','West-Southwest','West',
+          'West-Northwest','Northwest','North-Northwest','North'] %}
+      {% set dir = states('sensor.weather_nearest_storm_bearing') %}
+      {{ iif(is_number(dir),directions[((dir|float(-1)/360)|float*16)|round],'unknown') }}
+    attributes:
+      provider: "{{ state_attr('sensor.weather_nearest_storm_bearing','provider') }}"
+    availability: "{{ is_number(states('sensor.weather_nearest_storm_bearing')) }}"
+
   - name: "[Weather] Cloud Cover"
     unique_id: weather_cloud_cover
     icon: mdi:cloud
@@ -583,3 +651,13 @@ sensor:
     attributes:
       provider: Pirate Weather
     availability: "{{ is_number(states('sensor.pirateweather_cloud_coverage')) }}"
+
+  - name: "[Weather] Cloud Cover Today"
+    unique_id: weather_cloud_cover_today
+    icon: mdi:cloud
+    state_class: measurement
+    unit_of_measurement: "%"
+    state: "{{ states('sensor.pirateweather_cloud_coverage_0d')|int(none) }}"
+    attributes:
+      provider: Pirate Weather
+    availability: "{{ is_number(states('sensor.pirateweather_cloud_coverage_0d')) }}"
