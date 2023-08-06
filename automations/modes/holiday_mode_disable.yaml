@@ -13,7 +13,7 @@ condition:
 action:
   - service: input_boolean.turn_off
     entity_id: input_boolean.holiday_mode
-  - service: notify.alerts
+  - service: notify.alert
     data:
       message: Holiday Mode Disabled
       title: Holiday Mode Auto Disabled

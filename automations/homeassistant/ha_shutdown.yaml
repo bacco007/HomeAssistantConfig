@@ -7,7 +7,8 @@ trigger:
 action:
   - service: system_log.write
     data:
-      logger: "{{ this.entity_id }}"
+      logger: >
+        {{ this.entity_id }}
       level: critical
       message: "**** HOME ASSISTANT STOP ****"
   - if:
@@ -17,7 +18,7 @@ action:
     then:
       - service: notify.tbsmarthome
         data_template:
-          message: "Home Assistant Stopped"
+          message: Home Assistant Stopped
           target: "#tbsmarthome"
           data:
             blocks:

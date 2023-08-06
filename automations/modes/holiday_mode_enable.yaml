@@ -10,7 +10,7 @@ trigger:
 action:
   - service: input_boolean.turn_on
     entity_id: input_boolean.holiday_mode
-  - service: notify.alerts
+  - service: notify.alert
     data:
       message: Holiday Mode Enabled
       title: Holiday Mode Auto Enabled
