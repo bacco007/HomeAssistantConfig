@@ -1,0 +1,24 @@
+---
+binary_sensor:
+  - name: "[Presence] People Home"
+    unique_id: presence_people_home
+    icon: mdi:account-supervisor-circle
+    device_class: presence
+    state: >
+      {{ is_state('binary_sensor.presence_thomas_home', 'on') }}
+    attributes:
+      category: presence
+
+  - name: "[Presence] Thomas Home"
+    unique_id: presence_thomas_home
+    icon: "{{ iif(is_state('binary_sensor.presence_thomas_home','on'),'mdi:account-circle','mdi:account-circle-outline')}}"
+    device_class: presence
+    delay_off: 2
+    delay_on: 2
+    state: >
+      {{ is_state('person.thomas_baxter','home') }}
+    attributes:
+      just_arrived: >
+        {{ is_state('binary_sensor.presence_thomas_home','on')
+            and now() - states.binary_sensor.presence_thomas_home.last_changed < timedelta(minutes=15) }}
+      category: presence

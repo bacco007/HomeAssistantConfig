@@ -1,0 +1,10 @@
+---
+unifi_connected:
+  name: "Unifi Connected"
+  entity_id: binary_sensor.connected_unifi
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: unifi_connected

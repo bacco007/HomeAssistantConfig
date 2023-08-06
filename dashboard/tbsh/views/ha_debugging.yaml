@@ -3,6 +3,7 @@ theme: noctis
 title: "Debugging"
 icon: mdi:bug-check
 path: debugging
+subview: true
 type: custom:vertical-layout
 layout:
   max_cols: 4

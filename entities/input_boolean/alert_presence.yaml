@@ -1,0 +1,4 @@
+---
+alerts_presence:
+  name: "[Alerts] Presence"
+  icon: mdi:alert

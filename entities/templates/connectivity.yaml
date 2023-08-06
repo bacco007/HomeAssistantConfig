@@ -142,3 +142,17 @@ binary_sensor:
     state: "{{ integration_entities('hdhomerun')|select('has_value')|list|count > 0 }}"
     attributes:
       category: homeassistant
+  - name: "[Connected] Unifi"
+    unique_id: connected_unifi
+    icon: mdi:wifi
+    device_class: connectivity
+    state: "{{ integration_entities('unifi')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant
+  - name: "[Connected] Speedtest"
+    unique_id: connected_speedtest
+    icon: mdi:speedtest
+    device_class: connectivity
+    state: "{{ integration_entities('speedtestdotnet')|select('has_value')|list|count > 0 }}"
+    attributes:
+      category: homeassistant

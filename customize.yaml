@@ -60,6 +60,15 @@ alert.spotify_connected:
 alert.synology_connected:
   icon: mdi:alert-decagram
   category: homeassistant
+alert.speedtest_connected:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.unifi_connected:
+  icon: mdi:alert-decagram
+  category: homeassistant
+alert.uptime_kuma_connected:
+  icon: mdi:alert-decagram
+  category: homeassistant
 
 ## Sensor
 sensor.yahoofinance_amx_ax:

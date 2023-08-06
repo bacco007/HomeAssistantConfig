@@ -15,7 +15,7 @@ mediaquery:
       "header-left"
       "header-right"
       "sidebar"
-      "c1r1"
+      "mobile"
       "footer"
   "(max-width: 1500px)":
     grid-template-columns: 22% 1fr 1fr

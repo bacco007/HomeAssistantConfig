@@ -197,3 +197,36 @@ binary_sensor:
           and is_state('input_boolean.alerts_ha','on') }}
     attributes:
       category: homeassistant
+
+  - name: "alerts_connect_unifi"
+    unique_id: alerts_connect_unifi
+    icon: mdi:wifi
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.connected_unifi','off')
+          and is_state('input_boolean.alerts_ha','on') }}
+    attributes:
+      category: homeassistant
+
+  - name: "alerts_connect_speedtest"
+    unique_id: alerts_connect_speedtest
+    icon: mdi:speedometer
+    device_class: problem
+    delay_on: 300
+    state: >
+      {{ is_state('binary_sensor.connected_speedtest','off')
+          and is_state('input_boolean.alerts_ha','on') }}
+    attributes:
+      category: homeassistant
+
+  - name: "alert_nabucasa_remoteui"
+    unique_id: alert_nabucasa_remoteui
+    device_class: problem
+    delay_on: 60
+    state: >
+      {{ is_state('binary_sensor.remote_ui','off')
+          and is_state('input_boolean.alerts_ha','on')
+          and is_state('input_boolean.ha_startup_pending','off') }}
+    attributes:
+      category: homeassistant

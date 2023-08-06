@@ -1,0 +1,10 @@
+---
+uptime_kuma_connected:
+  name: "Uptime Kuma Connected"
+  entity_id: binary_sensor.connected_uptime_kuma
+  state: "on"
+  notifiers: log
+  skip_first: false
+  repeat: 999999
+  data:
+    tag: uptime_kuma_connected

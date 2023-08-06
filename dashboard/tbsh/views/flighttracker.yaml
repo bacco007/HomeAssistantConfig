@@ -40,19 +40,23 @@ cards:
                   label: Stats
                   isMinWidthIndicator: true
                 card:
-                  - !include ../flighttracker/flightsoverhead.yaml
-                  - !include ../flighttracker/closestplane.yaml
-                  - !include ../flighttracker/planeofinterest.yaml
-                  - !include ../flighttracker/flightaware.yaml
-                  - !include ../flighttracker/flightradar24.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../flighttracker/flightsoverhead.yaml
+                    - !include ../flighttracker/closestplane.yaml
+                    - !include ../flighttracker/planeofinterest.yaml
+                    - !include ../flighttracker/flightaware.yaml
+                    - !include ../flighttracker/flightradar24.yaml
               - attributes:
                   label: Data
                   isMinWidthIndicator: true
                 card:
-                  - !include ../flighttracker/trackedaircraft.yaml
-                  - !include ../flighttracker/flights_tracked.yaml
-                  - !include ../flighttracker/flights_tracked_week.yaml
-                  - !include ../flighttracker/flights_tracked_year.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../flighttracker/trackedaircraft.yaml
+                    - !include ../flighttracker/flights_tracked.yaml
+                    - !include ../flighttracker/flights_tracked_week.yaml
+                    - !include ../flighttracker/flights_tracked_year.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch

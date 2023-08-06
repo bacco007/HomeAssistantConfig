@@ -1,19 +1,22 @@
 ---
-alias: "[Modes] Holiday Mode - Auto Enable"
-id: modes_holiday_mode_auto_enable
+alias: "[Presence] Holiday Mode - Auto Disable"
+id: presence_holiday_mode_auto_disable
 trigger:
   platform: state
   entity_id: group.people
-  from: home
-  to: not_home
-  for: "24:00:00"
+  from: not_home
+  to: home
+condition:
+  - condition: state
+    entity_id: input_boolean.holiday_mode
+    state: "on"
 action:
-  - service: input_boolean.turn_on
+  - service: input_boolean.turn_off
     entity_id: input_boolean.holiday_mode
   - service: notify.alert
     data:
-      message: Holiday Mode Enabled
-      title: Holiday Mode Auto Enabled
+      message: Holiday Mode Disabled
+      title: Holiday Mode Auto Disabled
       data:
         push:
           badge: 1

@@ -30,16 +30,16 @@ cards:
         type: vertical-stack
 
         cards:
-          - type: vertical-stack
-            cards:
-              - type: custom:mini-media-player
-                entity: media_player.bedroom_apple_tv
-                name: Apple TV (Bedroom)
-                volume_stateless: false
-                group: false
-                artwork: cover
-                source: icon
-                info: scroll
+          - type: custom:mini-media-player
+            entity: media_player.bedroom_apple_tv
+            name: Apple TV (Bedroom)
+            volume_stateless: false
+            group: false
+            artwork: cover
+            source: icon
+            info: scroll
+          - !include ../appletv/remote.yaml
+          - !include ../appletv/appgrid.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch

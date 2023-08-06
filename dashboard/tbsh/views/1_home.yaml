@@ -33,11 +33,15 @@ cards:
       - !include ../includes/header-right.yaml
 
   # Mobile Only
-  - type: custom:gap-card
+  - type: custom:state-switch
+    entity: mediaquery
     view_layout:
       grid-area: mobile
-      show:
-        mediaquery: "(max-width: 800px)"
+    states:
+      "(max-width: 800px)":
+        type: vertical-stack
+        cards:
+          - !include ../weather/current_weather.yaml
 
   ### Footer
   - !include ../includes/footer.yaml

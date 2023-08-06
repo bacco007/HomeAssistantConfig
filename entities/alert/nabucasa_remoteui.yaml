@@ -1,0 +1,24 @@
+---
+nabucasa_remoteui:
+  name: "Nabu Casa Remote UI Offline"
+  title: "Nabu Casa Remote UI Offline"
+  message: "Nabu Casa Remote UI access is offline"
+  done_message: clear_notification
+  entity_id: binary_sensor.alert_nabucasa_remoteui
+  state: "on"
+  repeat: 1440
+  notifiers: alert
+  data:
+    tag: nabucasa_remoteui
+    notification_id: nabucasa_remoteui
+    push:
+      badge: 1
+      sound: none
+      interruption-level: time-sensitive
+    presentation_options:
+      - alert
+      - badge
+    group: alerts
+    actions:
+      - title: "Pause Alert"
+        action: pause_alert_nabucasa_remoteui

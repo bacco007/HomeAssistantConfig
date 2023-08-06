@@ -40,22 +40,30 @@ cards:
                   label: Zigbee2MQTT
                   isMinWidthIndicator: true
                 card:
-                  - !include ../devices/zigbee2mqtt.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../devices/zigbee2mqtt.yaml
               - attributes:
                   label: Synology
                   isMinWidthIndicator: true
                 card:
-                  - !include ../devices/synology.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../devices/synology.yaml
               - attributes:
                   label: HDHomeRun
                   isMinWidthIndicator: true
                 card:
-                  - !include ../devices/hdhomerun.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../devices/hdhomerun.yaml
               - attributes:
                   label: WeatherFlow
                   isMinWidthIndicator: true
                 card:
-                  - !include ../devices/weatherflow.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../devices/weatherflow.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch
