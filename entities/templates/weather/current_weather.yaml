@@ -5,7 +5,7 @@ sensor:
     state: >
       {{ (state_attr('weather.tempest_hourly', 'forecast')
         | selectattr('condition', 'in', ['rainy', 'lightning-rainy'])
-        | list | first | default).datetime | default
+        | list | first | default).datetime | default(none)
       }}
 
   - name: current_weather_hourly_next_precipitation_end
@@ -14,7 +14,7 @@ sensor:
       {{ (state_attr('weather.tempest_hourly', 'forecast')
         | rejectattr('condition', 'in', ['rainy', 'lightning-rainy'])
         | selectattr('datetime', '>', states('sensor.current_weather_hourly_next_precipitation_start'))
-        | list | first | default).datetime | default
+        | list | first | default).datetime | default(none)
       }}
 
   - name: current_weather_summary_now

@@ -25,8 +25,7 @@ entities:
       primary: Network - WiFi Connected Devices
       secondary: >
         Count: {{states.device_tracker| selectattr('attributes.essid',
-        'defined') | list |
-        count }}
+        'defined') | list | count }}
       icon_color: green
       tap_action:
         action: toggle
@@ -36,14 +35,15 @@ entities:
         card_param: cards
         card:
           type: grid
-          columns: 1
+          columns: 2
           square: false
           card_mod:
-            style: |
-              ha-card {
-                margin: -8px 0px 0px 0px;
-                box-shadow: none;
-              }
+          style: |
+            ha-card {
+              background: none;
+              border: 0;
+              box-shadow: none;
+            }
         unique: true
         show_empty: true
         filter:
@@ -56,10 +56,18 @@ entities:
                 method: name
               options:
                 type: custom:mushroom-template-card
+                style: |
+                  ha-card {
+                    background: none;
+                    border: 0;
+                    box-shadow: none;
+                  }
                 primary: "{{ state_attr(entity , 'friendly_name') }}"
-                secondary: |
+                secondary: >
                   IP: {{ state_attr(entity , 'ip') }}
-                  SSID: {{ state_attr(entity , 'essid') }}, Protocol: {{ state_attr(entity , 'radio_proto') | upper }}
+
+                  SSID: {{ state_attr(entity , 'essid') }}, Protocol: {{
+                  state_attr(entity , 'radio_proto') | upper }}
                 icon: |
                   {% if state_attr(entity , 'icon') is none %}
                     mdi:devices

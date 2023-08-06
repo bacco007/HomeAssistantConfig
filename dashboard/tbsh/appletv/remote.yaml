@@ -1,149 +1,180 @@
 ---
-type: grid
-columns: 3
-square: false
-cards:
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:power
-    name: "ON"
-    show_name: false
-    aspect_ratio: 4/3.5
+type: picture-elements
+image: local/images/apple-tv-remote_PM.png
+
+elements:
+  # Exit =================================
+  - type: icon
+    icon: none
+    tap_action:
+      action: navigate
+      navigation_path: home
+    style:
+      top: 6%
+      left: 14%
+      transform: translate(-50%, -50%) scale(380%, 380%)
+      opacity: 0
+  # Power =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
-      service: remote.send_command
-      service_data:
-        entity_id: remote.bedroom_apple_tv
-        command: wakeup
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:arrow-up-bold
-    name: UP
-    show_name: false
-    aspect_ratio: 4/3.5
+      service: script.apple_tv_power
+    style:
+      top: 6%
+      left: 85%
+      transform: translate(-50%, -50%) scale(380%, 380%)
+      opacity: 0
+  # Up =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
       service: remote.send_command
       service_data:
         entity_id: remote.bedroom_apple_tv
         command: up
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:power-off
-    name: "OFF"
-    show_name: false
-    aspect_ratio: 4/3.5
-    tap_action:
-      action: call-service
-      service: remote.send_command
-      service_data:
-        entity_id: remote.bedroom_apple_tv
-        command: suspend
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:arrow-left-bold
-    name: LEFT
-    show_name: false
-    aspect_ratio: 4/3.5
-    tap_action:
-      action: call-service
-      service: remote.send_command
-      service_data:
-        entity_id: remote.bedroom_apple_tv
-        command: left
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:camera-control
-    name: ENTER
-    show_name: false
-    aspect_ratio: 4/3.5
-    tap_action:
-      action: call-service
-      service: remote.send_command
-      service_data:
-        entity_id: remote.bedroom_apple_tv
-        command: select
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:arrow-right-bold
-    name: RIGHT
-    show_name: false
-    aspect_ratio: 4/3.5
-    tap_action:
-      action: call-service
-      service: remote.send_command
-      service_data:
-        entity_id: remote.bedroom_apple_tv
-        command: right
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:undo-variant
-    name: BACK
-    show_name: false
-    aspect_ratio: 4/3.5
-    tap_action:
-      action: call-service
-      service: remote.send_command
-      service_data:
-        entity_id: remote.bedroom_apple_tv
-        command: home
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:arrow-down-bold
-    name: DOWN
-    show_name: false
-    aspect_ratio: 4/3.5
+    style:
+      top: 23.5%
+      left: 50%
+      transform: translate(-50%, -50%) scale(600%, 800%)
+      opacity: 0
+  # Down =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
       service: remote.send_command
       service_data:
         entity_id: remote.bedroom_apple_tv
         command: down
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:apple
-    name: HOME
-    show_name: false
-    aspect_ratio: 4/3.5
+    style:
+      top: 62%
+      left: 50%
+      transform: translate(-50%, -50%) scale(600%, 800%)
+      opacity: 0
+  # Left =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
       service: remote.send_command
       service_data:
         entity_id: remote.bedroom_apple_tv
-        command: home
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:play
-    name: PLAY
-    show_name: false
-    aspect_ratio: 4/3.5
+        command: left
+    style:
+      top: 42.6%
+      left: 21%
+      transform: translate(-50%, -50%) scale(600%, 500%)
+      opacity: 0
+  # Right =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
       service: remote.send_command
       service_data:
         entity_id: remote.bedroom_apple_tv
-        command: play
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:pause
-    name: PAUSE
-    show_name: false
-    aspect_ratio: 4/3.5
+        command: right
+    style:
+      top: 42.6%
+      left: 79%
+      transform: translate(-50%, -50%) scale(600%, 500%)
+      opacity: 0
+  # Select =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
       service: remote.send_command
       service_data:
         entity_id: remote.bedroom_apple_tv
-        command: pause
-  - type: custom:button-card
-    entity: remote.bedroom_apple_tv
-    icon: mdi:menu
-    name: MENU
-    show_name: false
-    aspect_ratio: 4/3.5
+        command: select
+    style:
+      top: 42.4%
+      left: 50%
+      transform: translate(-50%, -50%) scale(400%, 400%)
+      opacity: 0
+  # Home =================================
+  - type: icon
+    icon: none
+    tap_action:
+      action: call-service
+      service: remote.send_command
+      service_data:
+        entity_id: remote.bedroom_apple_tv
+        command: top_menu
+    hold_action:
+      action: call-service
+      service: remote.send_command
+      service_data:
+        entity_id: remote.bedroom_apple_tv
+        command: home_hold
+    style:
+      top: 80%
+      left: 15.5%
+      transform: translate(-50%, -50%) scale(380%, 380%)
+      opacity: 0
+  # Play/Pause ============================
+  - type: icon
+    icon: none
+    tap_action:
+      action: call-service
+      service: media_player.media_play_pause
+      service_data:
+        entity_id: media_player.bedroom_apple_tv
+    style:
+      top: 91%
+      left: 15.5%
+      transform: translate(-50%, -50%) scale(380%, 380%)
+      opacity: 0
+  # Back =================================
+  - type: icon
+    icon: none
     tap_action:
       action: call-service
       service: remote.send_command
       service_data:
         entity_id: remote.bedroom_apple_tv
         command: menu
+    style:
+      top: 85.5%
+      left: 50%
+      transform: translate(-50%, -50%) scale(750%, 750%)
+      opacity: 0
+  # Volume Up =============================
+  - type: icon
+    icon: none
+    tap_action:
+      action: call-service
+      service: remote.send_command
+      service_data:
+        entity_id: remote.bedroom_apple_tv
+        command: volume_up
+    style:
+      top: 80%
+      left: 84.5%
+      transform: translate(-50%, -50%) scale(380%, 380%)
+      opacity: 0
+  # Volume Down ===========================
+  - type: icon
+    icon: none
+    tap_action:
+      action: call-service
+      service: remote.send_command
+      service_data:
+        entity_id: remote.bedroom_apple_tv
+        command: volume_down
+    style:
+      top: 91%
+      left: 84.5%
+      transform: translate(-50%, -50%) scale(380%, 380%)
+      opacity: 0
+card_mod:
+  style: |
+    .type-picture-elements {
+      min-height: 500px;
+      max-height: 100vh;
+      min-width: 268px;
+      max-width: min(calc((100vh - 70px) * 1125/2095), 400px);
+    }

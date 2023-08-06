@@ -27,11 +27,11 @@ sensor:
     unit_of_measurement: $/kWh
     state: >
       {%- if states('sensor.energy_timeofuse_tariff_type') in ("Peak") %}
-        0.3556
+        0.4865
       {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Shoulder") %}
-        0.3457
+        0.4693
       {%- elif states('sensor.energy_timeofuse_tariff_type') in ("Off-Peak") %}
-        0.1866
+        0.2920
       {%- endif %}
   - name: energy_solar_tariff
     unique_id: energy_solar_tariff
@@ -48,4 +48,4 @@ sensor:
     icon: mdi:cash-plus
     unit_of_measurement: $/Day
     state: >
-      1.4700
+      1.6036

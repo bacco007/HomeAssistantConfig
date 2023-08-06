@@ -46,34 +46,34 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Sunday, August 6th 2023_
+_Stats as at 05:00, Monday, August 7th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.1 | 477     | 4348         | 3041 | 121 |
+| 2023.8.1 | 478     | 4424         | 3077 | 121 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
-Alert | 23
+Alert | 27
 Automation | 121
-Binary Sensor | 247
+Binary Sensor | 263
 Camera | 5
 Device Tracker | 141
 Group | 8
-Input Boolean | 7
+Input Boolean | 8
 Input Datetime | 0
 Input Text | 3
-Light | 9
-Media Player | 18
+Light | 12
+Media Player | 23
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3041
+Sensor | 3077
 Sun | 1
-Switch | 195
+Switch | 208
 Weather | 13
-Zone | 4
+Zone | 3
 
 <p align="right"><a href="#top" title="Back to top">Top</a></p>
 
@@ -439,6 +439,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [sensor.sonarr](https://www.home-assistant.io/components/sensor.sonarr) |
 | [sensor.sonarr_upcoming_media](https://www.home-assistant.io/components/sensor.sonarr_upcoming_media) |
 | [sensor.sonos](https://www.home-assistant.io/components/sensor.sonos) |
+| [sensor.speedtestdotnet](https://www.home-assistant.io/components/sensor.speedtestdotnet) |
 | [sensor.spook](https://www.home-assistant.io/components/sensor.spook) |
 | [sensor.sql](https://www.home-assistant.io/components/sensor.sql) |
 | [sensor.start_time](https://www.home-assistant.io/components/sensor.start_time) |
@@ -599,7 +600,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Holidays](https://github.com/bruxy70/Holidays)
 - [Home Assistant Dewpoint](https://github.com/miguelangel-nubla/home-assistant-dewpoint)
 - [Ical Sensor](https://github.com/tybritten/ical-sensor-homeassistant)
-- [Icloud3](https://github.com/gcobb321/icloud3)
+- [Icloud3 Device Tracker](https://github.com/gcobb321/icloud3)
 - [Icloud3 V3 Idevice Tracker](https://github.com/gcobb321/icloud3_v3)
 - [Illuminance](https://github.com/pnbruckner/ha-illuminance)
 - [Indoor Air Quality Uk Index](https://github.com/Limych/ha-iaquk)
@@ -670,6 +671,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card)
 - [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
 - [Formula One Card](https://github.com/marcokreeft87/formulaone-card)
+- [Github Entity Row](https://github.com/benct/lovelace-github-entity-row)
 - [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
 - [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card)
 - [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather)

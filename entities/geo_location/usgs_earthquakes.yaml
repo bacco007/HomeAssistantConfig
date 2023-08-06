@@ -1,7 +1,0 @@
----
-platform: usgs_earthquakes_feed
-feed_type: "past_month_all_earthquakes"
-radius: 500
-minimum_magnitude: 0.0
-latitude: !secret zone_home_latitude
-longitude: !secret zone_home_longitude

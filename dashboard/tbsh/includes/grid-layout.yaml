@@ -13,5 +13,5 @@ mediaquery:
     grid-template-areas: |
       "header"
       "sidebar"
-      "content"
+      "mobile"
       "footer"

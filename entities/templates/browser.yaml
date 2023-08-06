@@ -1,0 +1,29 @@
+---
+sensor:
+  - name: "[HA] Connected Browsers"
+    unique_id: ha_connected_browsers
+    icon: mdi:monitor-cellphone
+    state: >
+      {% set entities = state_attr('sensor.ha_connected_browsers','entity_id') %}
+      {{ entities|count if entities != none else entities }}
+    attributes:
+      entity_id: >
+        {{ states.sensor
+            |selectattr('entity_id','search','_browser_user')
+            |rejectattr('entity_id','search','_browser_useragent')
+            |map(attribute='entity_id')
+            |select('has_value')|list|sort }}
+
+  - name: "[HA] Unknown Browsers"
+    unique_id: ha_unknown_browsers
+    state: >
+      {% set entities = state_attr('sensor.ha_unknown_browsers','entity_id') %}
+      {{ entities|count if entities != none else entities }}
+    attributes:
+      entity_id: >
+        {{ states.sensor
+            |selectattr('entity_id','search','_browser_user')
+            |selectattr('attributes.authorized','defined')
+            |selectattr('attributes.authorized','ne',true)
+            |map(attribute='entity_id')
+            |select('has_value')|list|sort }}

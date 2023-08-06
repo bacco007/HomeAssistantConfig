@@ -39,18 +39,18 @@ binary_sensor:
   - name: "[Weather] Temperature Alert"
     unique_id: temperature_alert
     icon: >
-      {% if is_state('binary_sensor.high_temperature_alert','on') %} mdi:thermometer-alert
-      {% elif is_state('binary_sensor.low_temperature_alert','on') %} mdi:thermometer-alert
+      {% if is_state('binary_sensor.weather_high_temperature_alert','on') %} mdi:thermometer-alert
+      {% elif is_state('binary_sensor.weather_low_temperature_alert','on') %} mdi:thermometer-alert
       {% else %} mdi:thermometer
       {% endif %}
     state: >
-      {{ is_state('binary_sensor.high_temperature_alert','on')
-          or is_state('binary_sensor.low_temperature_alert','on') }}
+      {{ is_state('binary_sensor.weather_high_temperature_alert','on')
+          or is_state('binary_sensor.weather_low_temperature_alert','on') }}
     attributes:
       category: weather_alert
       type: >
-        {% if is_state('binary_sensor.high_temperature_alert','on') %} Heat
-        {% elif is_state('binary_sensor.low_temperature_alert','on') %} Cold
+        {% if is_state('binary_sensor.weather_high_temperature_alert','on') %} Heat
+        {% elif is_state('binary_sensor.weather_low_temperature_alert','on') %} Cold
         {% else %} Off
         {% endif %}
 

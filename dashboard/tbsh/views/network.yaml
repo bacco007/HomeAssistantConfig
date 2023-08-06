@@ -41,18 +41,22 @@ cards:
                   label: Adguard
                   isMinWidthIndicator: true
                 card:
-                  - !include ../network/adguard/card.yaml
-                  - !include ../network/adguard/graph_adsblocked.yaml
-                  - !include ../network/adguard/graph_adsblockedpct.yaml
-                  - !include ../network/adguard/graph_procspeed.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../network/adguard/card.yaml
+                    - !include ../network/adguard/graph_adsblocked.yaml
+                    - !include ../network/adguard/graph_adsblockedpct.yaml
+                    - !include ../network/adguard/graph_procspeed.yaml
               - attributes:
                   label: Internet
                   isMinWidthIndicator: true
                 card:
-                  - !include ../network/snippets/internetuptime.yaml
-                  - !include ../network/snippets/speedtest.yaml
-                  - !include ../network/snippets/graph_week.yaml
-                  - !include ../network/snippets/graph_year.yaml
+                  type: vertical-stack
+                  cards:
+                    - !include ../network/snippets/internetuptime.yaml
+                    - !include ../network/snippets/speedtest.yaml
+                    - !include ../network/snippets/graph_week.yaml
+                    - !include ../network/snippets/graph_year.yaml
 
   # Column 1, Row 1
   - type: custom:state-switch

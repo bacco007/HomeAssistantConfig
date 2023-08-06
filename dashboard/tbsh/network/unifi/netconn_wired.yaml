@@ -36,7 +36,7 @@ entities:
         card_param: cards
         card:
           type: grid
-          columns: 1
+          columns: 2
           square: false
           card_mod:
             style: |
@@ -55,6 +55,13 @@ entities:
                 method: name
               options:
                 type: custom:mushroom-template-card
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: none;
+                      border: 0;
+                      box-shadow: none;
+                    }
                 primary: "{{ state_attr(entity , 'friendly_name') }}"
                 secondary: |
                   IP: {{ state_attr(entity , 'ip') }}
