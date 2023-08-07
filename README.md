@@ -46,30 +46,30 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Monday, August 7th 2023_
+_Stats as at 05:00, Tuesday, August 8th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.1 | 478     | 4424         | 3077 | 121 |
+| 2023.8.1 | 477     | 4437         | 3083 | 122 |
 
 Type | Qty
 -- | --
 Alarm Control Panel | 2
 Alert | 27
-Automation | 121
-Binary Sensor | 263
+Automation | 122
+Binary Sensor | 266
 Camera | 5
 Device Tracker | 141
 Group | 8
 Input Boolean | 8
 Input Datetime | 0
 Input Text | 3
-Light | 12
-Media Player | 23
+Light | 13
+Media Player | 24
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3077
+Sensor | 3083
 Sun | 1
 Switch | 208
 Weather | 13
@@ -222,7 +222,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [geo_location.blitzortung](https://www.home-assistant.io/components/geo_location.blitzortung) |
 | [geo_location.gdacs](https://www.home-assistant.io/components/geo_location.gdacs) |
 | [geo_location.nsw_rural_fire_service_feed](https://www.home-assistant.io/components/geo_location.nsw_rural_fire_service_feed) |
-| [geo_location.usgs_earthquakes_feed](https://www.home-assistant.io/components/geo_location.usgs_earthquakes_feed) |
 | [github](https://www.home-assistant.io/components/github) |
 | [glances](https://www.home-assistant.io/components/glances) |
 | [google](https://www.home-assistant.io/components/google) |
@@ -671,7 +670,6 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Flex Table   Highly Customizable, Data Visualization](https://github.com/custom-cards/flex-table-card)
 - [Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
 - [Formula One Card](https://github.com/marcokreeft87/formulaone-card)
-- [Github Entity Row](https://github.com/benct/lovelace-github-entity-row)
 - [Heatmap Card](https://github.com/kandsten/ha-heatmap-card)
 - [Horizon Card](https://github.com/rejuvenate/lovelace-horizon-card)
 - [Hourly Weather Card](https://github.com/decompil3d/lovelace-hourly-weather)
