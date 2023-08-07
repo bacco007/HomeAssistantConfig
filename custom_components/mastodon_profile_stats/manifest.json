@@ -7,9 +7,9 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats",
-  "integration_type": "hub",
+  "integration_type": "device",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/andrew-codechimp/HA-Mastodon-Profile-Stats/issues",
   "requirements": [],
-  "version": "1.0.6"
+  "version": "1.0.7"
 }
