@@ -45,6 +45,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         key="peak_w_time_today",
         name="Peak Time Today",
         icon="mdi:clock",
+        device_class=SensorDeviceClass.TIMESTAMP,
     ),
     "forecast_this_hour": SensorEntityDescription(
         key="forecast_this_hour",
@@ -85,6 +86,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
         key="peak_w_time_tomorrow",
         name="Peak Time Tomorrow",
         icon="mdi:clock",
+        device_class=SensorDeviceClass.TIMESTAMP,
     ),
     "api_counter": SensorEntityDescription(
         key="api_counter",

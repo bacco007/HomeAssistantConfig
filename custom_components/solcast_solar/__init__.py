@@ -2,12 +2,16 @@
 
 import logging
 import traceback
+import dataclasses
 
 from homeassistant import loader
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, Platform
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import aiohttp_client
+from homeassistant.core import (HomeAssistant,
+                                ServiceCall,
+                                ServiceResponse,
+                                SupportsResponse,)
+from homeassistant.helpers import aiohttp_client,service
 from homeassistant.helpers.device_registry import async_get as device_registry
 from homeassistant.util import dt as dt_util
 
@@ -80,6 +84,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             """Handle service call"""
             _LOGGER.info(f"SOLCAST - Service call: {SERVICE_CLEAR_DATA}")
             await coordinator.service_event_delete_old_solcast_json_file()
+            
+        async def handle_service_get_solcast_data(call) -> ServiceResponse:
+            """Handle service call"""
+            _LOGGER.info(f"SOLCAST - Service call: get-forecasts")
+            d = await coordinator.service_get_forecasts()
+            return {
+                "data": [
+                    d
+                ]
+            }
 
         hass.services.async_register(
             DOMAIN, SERVICE_UPDATE, handle_service_update_forecast
@@ -92,6 +106,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.services.async_register(
             DOMAIN, SERVICE_CLEAR_DATA, handle_service_clear_solcast_data
         )
+        
+        hass.services.async_register(
+            DOMAIN, "get_forecasts", handle_service_get_solcast_data,None,SupportsResponse.ONLY,
+        )
+
+        
 
         return True
 

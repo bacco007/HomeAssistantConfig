@@ -78,7 +78,6 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
     async def update_integration_listeners(self,*args):
         try:
-            _LOGGER.debug("SOLCAST - updating sensors")
             self.async_update_listeners()
         except Exception:
             _LOGGER.error("SOLCAST - update_integration_listeners: %s", traceback.format_exc())
@@ -93,6 +92,11 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.info("SOLCAST - Event called to delete the solcast.json file. The data will poll the Solcast API refresh")
         await self.solcast.delete_solcast_file()
 
+    async def service_get_forecasts(self, *args) -> str:
+        _LOGGER.info("SOLCAST - Event called to get list of forecasts")
+        d = await self.solcast.get_forecast_list()
+        return d
+        
     def get_energy_tab_data(self):
         return self.solcast.get_energy_data()
 
@@ -162,17 +166,20 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
         try:
             # start_date = dt_util.now().astimezone().replace(hour=0,minute=0,second=0,microsecond=0) - timedelta(days=7)
             # end_date = dt_util.now().astimezone().replace(hour=23,minute=59,second=59,microsecond=0) - timedelta(days=1)
-            start_date = dt_util.as_utc(dt_util.now().replace(hour=0,minute=0,second=0,microsecond=0)) - timedelta(days=7)
-            end_date = dt_util.as_utc(dt_util.now().replace(hour=23,minute=59,second=59,microsecond=0)) - timedelta(days=1)
             
-            _LOGGER.debug(f"SOLCAST - gethistory: from UTC - {start_date} to - {end_date}")
+            #start_date = dt_util.as_utc(dt_util.now().replace(hour=0,minute=0,second=0,microsecond=0)) - timedelta(days=7)
+            start_date = dt_util.as_utc(dt_util.now().replace(hour=0,minute=0,second=0,microsecond=0)) - timedelta(days=1000)
+            #end_date = dt_util.as_utc(dt_util.now().replace(hour=23,minute=59,second=59,microsecond=0)) - timedelta(days=1)
+            
+            #_LOGGER.debug(f"SOLCAST - gethistory: from UTC - {start_date} to - {end_date}")
+            _LOGGER.debug(f"SOLCAST - gethistory")
 
             lower_entity_id = "sensor.forecast_this_hour"
 
             history_list = history.state_changes_during_period(
                 self._hass,
                 start_time=start_date,
-                end_time=end_date,
+                #end_time=end_date,
                 entity_id=lower_entity_id,
                 no_attributes=True,
                 descending=True,
