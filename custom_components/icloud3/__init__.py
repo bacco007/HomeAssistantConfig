@@ -130,6 +130,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         config_file.load_storage_icloud3_configuration_file()
         start_ic3.set_log_level(Gb.log_level)
         open_ic3_log_file(new_log_file=Gb.log_debug_flag)
+        # config_file.count_lines_of_code(Gb.icloud3_directory)
 
         Gb.evlog_btnconfig_url = Gb.conf_profile[CONF_EVLOG_BTNCONFIG_URL].strip()
         Gb.evlog_version       = Gb.conf_profile['event_log_version']
@@ -140,7 +141,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         try:
-            # _traceha(f"hass.data=")
+            # _traceha(f"{Gb.hass.data.keys()=}")
 
             pass
 
