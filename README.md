@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Tuesday, August 8th 2023_
+_Stats as at 05:00, Wednesday, August 9th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.1 | 477     | 4437         | 3083 | 122 |
+| 2023.8.1 | 477     | 4418         | 3065 | 122 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 24
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3083
+Sensor | 3065
 Sun | 1
 Switch | 208
 Weather | 13
@@ -744,7 +744,7 @@ Here are the addons I use inside Home Assistant, some of the other things I run 
 - JupyterLab (0.11.1)
 - MariaDB (2.6.1)
 - Mosquitto broker (6.2.1)
-- Node-RED (14.4.3)
+- Node-RED (14.4.4)
 - phpMyAdmin (0.8.7)
 - Samba share (10.0.2)
 - Zigbee2MQTT Edge (edge)
