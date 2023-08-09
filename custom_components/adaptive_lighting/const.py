@@ -77,6 +77,18 @@ DOCS[CONF_ONLY_ONCE] = (
     "(`false`). 🔄"
 )
 
+CONF_ADAPT_ONLY_ON_BARE_TURN_ON, DEFAULT_ADAPT_ONLY_ON_BARE_TURN_ON = (
+    "adapt_only_on_bare_turn_on",
+    False,
+)
+DOCS[CONF_ADAPT_ONLY_ON_BARE_TURN_ON] = (
+    "When turning lights on initially. If set to `true`, AL adapts only if `light.turn_on` is "
+    "invoked without specifying color or brightness. ❌🌈 "
+    "This e.g., prevents adaptation when activating a scene. "
+    "If `false`, AL adapts regardless of the presence of color or brightness in the initial `service_data`. "
+    "Needs `take_over_control` enabled. 🕵️ "
+)
+
 CONF_PREFER_RGB_COLOR, DEFAULT_PREFER_RGB_COLOR = "prefer_rgb_color", False
 DOCS[CONF_PREFER_RGB_COLOR] = (
     "Whether to prefer RGB color adjustment over "
@@ -122,10 +134,15 @@ DOCS[
 CONF_SUNRISE_TIME = "sunrise_time"
 DOCS[CONF_SUNRISE_TIME] = "Set a fixed time (HH:MM:SS) for sunrise. 🌅"
 
+CONF_MIN_SUNRISE_TIME = "min_sunrise_time"
+DOCS[
+    CONF_MIN_SUNRISE_TIME
+] = "Set the earliest virtual sunrise time (HH:MM:SS), allowing for later sunrises. 🌅"
+
 CONF_MAX_SUNRISE_TIME = "max_sunrise_time"
 DOCS[CONF_MAX_SUNRISE_TIME] = (
     "Set the latest virtual sunrise time (HH:MM:SS), allowing"
-    " for earlier real sunrises. 🌅"
+    " for earlier sunrises. 🌅"
 )
 
 CONF_SUNSET_OFFSET, DEFAULT_SUNSET_OFFSET = "sunset_offset", 0
@@ -137,9 +154,35 @@ CONF_SUNSET_TIME = "sunset_time"
 DOCS[CONF_SUNSET_TIME] = "Set a fixed time (HH:MM:SS) for sunset. 🌇"
 
 CONF_MIN_SUNSET_TIME = "min_sunset_time"
-DOCS[CONF_MIN_SUNSET_TIME] = (
-    "Set the earliest virtual sunset time (HH:MM:SS), allowing"
-    " for later real sunsets. 🌇"
+DOCS[
+    CONF_MIN_SUNSET_TIME
+] = "Set the earliest virtual sunset time (HH:MM:SS), allowing for later sunsets. 🌇"
+
+CONF_MAX_SUNSET_TIME = "max_sunset_time"
+DOCS[
+    CONF_MAX_SUNSET_TIME
+] = "Set the latest virtual sunset time (HH:MM:SS), allowing for earlier sunsets. 🌇"
+
+CONF_BRIGHTNESS_MODE, DEFAULT_BRIGHTNESS_MODE = "brightness_mode", "default"
+DOCS[CONF_BRIGHTNESS_MODE] = (
+    "Brightness mode to use. Possible values are `default`, `linear`, and `tanh` "
+    "(uses `brightness_mode_time_dark` and `brightness_mode_time_light`). 📈"
+)
+CONF_BRIGHTNESS_MODE_TIME_DARK, DEFAULT_BRIGHTNESS_MODE_TIME_DARK = (
+    "brightness_mode_time_dark",
+    900,
+)
+DOCS[CONF_BRIGHTNESS_MODE_TIME_DARK] = (
+    "(Ignored if `brightness_mode='default'`) The duration in seconds to ramp up/down "
+    "the brightness before/after sunrise/sunset. 📈📉"
+)
+CONF_BRIGHTNESS_MODE_TIME_LIGHT, DEFAULT_BRIGHTNESS_MODE_TIME_LIGHT = (
+    "brightness_mode_time_light",
+    3600,
+)
+DOCS[CONF_BRIGHTNESS_MODE_TIME_LIGHT] = (
+    "(Ignored if `brightness_mode='default'`) The duration in seconds to ramp up/down "
+    "the brightness after/before sunrise/sunset. 📈📉."
 )
 
 CONF_TAKE_OVER_CONTROL, DEFAULT_TAKE_OVER_CONTROL = "take_over_control", True
@@ -186,8 +229,18 @@ CONF_SKIP_REDUNDANT_COMMANDS, DEFAULT_SKIP_REDUNDANT_COMMANDS = (
 DOCS[CONF_SKIP_REDUNDANT_COMMANDS] = (
     "Skip sending adaptation commands whose target state already "
     "equals the light's known state. Minimizes network traffic and improves the "
-    "adaptation responsivity in some situations. "
+    "adaptation responsivity in some situations. 📉"
     "Disable if physical light states get out of sync with HA's recorded state."
+)
+
+CONF_MULTI_LIGHT_INTERCEPT, DEFAULT_MULTI_LIGHT_INTERCEPT = (
+    "multi_light_intercept",
+    True,
+)
+DOCS[CONF_MULTI_LIGHT_INTERCEPT] = (
+    "Intercept and adapt `light.turn_on` calls that target multiple lights. ➗"
+    "⚠️ This might result in splitting up a single `light.turn_on` call "
+    "into multiple calls, e.g., when lights are in different switches."
 )
 
 SLEEP_MODE_SWITCH = "sleep_mode_switch"
@@ -239,17 +292,14 @@ def int_between(min_int, max_int):
 
 VALIDATION_TUPLES = [
     (CONF_LIGHTS, DEFAULT_LIGHTS, cv.entity_ids),
-    (CONF_PREFER_RGB_COLOR, DEFAULT_PREFER_RGB_COLOR, bool),
-    (CONF_INCLUDE_CONFIG_IN_ATTRIBUTES, DEFAULT_INCLUDE_CONFIG_IN_ATTRIBUTES, bool),
-    (CONF_INITIAL_TRANSITION, DEFAULT_INITIAL_TRANSITION, VALID_TRANSITION),
-    (CONF_SLEEP_TRANSITION, DEFAULT_SLEEP_TRANSITION, VALID_TRANSITION),
-    (CONF_TRANSITION, DEFAULT_TRANSITION, VALID_TRANSITION),
-    (CONF_ADAPT_UNTIL_SLEEP, DEFAULT_ADAPT_UNTIL_SLEEP, bool),
     (CONF_INTERVAL, DEFAULT_INTERVAL, cv.positive_int),
+    (CONF_TRANSITION, DEFAULT_TRANSITION, VALID_TRANSITION),
+    (CONF_INITIAL_TRANSITION, DEFAULT_INITIAL_TRANSITION, VALID_TRANSITION),
     (CONF_MIN_BRIGHTNESS, DEFAULT_MIN_BRIGHTNESS, int_between(1, 100)),
     (CONF_MAX_BRIGHTNESS, DEFAULT_MAX_BRIGHTNESS, int_between(1, 100)),
     (CONF_MIN_COLOR_TEMP, DEFAULT_MIN_COLOR_TEMP, int_between(1000, 10000)),
     (CONF_MAX_COLOR_TEMP, DEFAULT_MAX_COLOR_TEMP, int_between(1000, 10000)),
+    (CONF_PREFER_RGB_COLOR, DEFAULT_PREFER_RGB_COLOR, bool),
     (CONF_SLEEP_BRIGHTNESS, DEFAULT_SLEEP_BRIGHTNESS, int_between(1, 100)),
     (
         CONF_SLEEP_RGB_OR_COLOR_TEMP,
@@ -268,28 +318,48 @@ VALIDATION_TUPLES = [
         DEFAULT_SLEEP_RGB_COLOR,
         selector.ColorRGBSelector(selector.ColorRGBSelectorConfig()),
     ),
+    (CONF_SLEEP_TRANSITION, DEFAULT_SLEEP_TRANSITION, VALID_TRANSITION),
+    (CONF_ADAPT_UNTIL_SLEEP, DEFAULT_ADAPT_UNTIL_SLEEP, bool),
     (CONF_SUNRISE_TIME, NONE_STR, str),
+    (CONF_MIN_SUNRISE_TIME, NONE_STR, str),
     (CONF_MAX_SUNRISE_TIME, NONE_STR, str),
     (CONF_SUNRISE_OFFSET, DEFAULT_SUNRISE_OFFSET, int),
     (CONF_SUNSET_TIME, NONE_STR, str),
     (CONF_MIN_SUNSET_TIME, NONE_STR, str),
+    (CONF_MAX_SUNSET_TIME, NONE_STR, str),
     (CONF_SUNSET_OFFSET, DEFAULT_SUNSET_OFFSET, int),
-    (CONF_ONLY_ONCE, DEFAULT_ONLY_ONCE, bool),
+    (
+        CONF_BRIGHTNESS_MODE,
+        DEFAULT_BRIGHTNESS_MODE,
+        selector.SelectSelector(
+            selector.SelectSelectorConfig(
+                options=["default", "linear", "tanh"],
+                multiple=False,
+                mode=selector.SelectSelectorMode.DROPDOWN,
+            ),
+        ),
+    ),
+    (CONF_BRIGHTNESS_MODE_TIME_DARK, DEFAULT_BRIGHTNESS_MODE_TIME_DARK, int),
+    (CONF_BRIGHTNESS_MODE_TIME_LIGHT, DEFAULT_BRIGHTNESS_MODE_TIME_LIGHT, int),
     (CONF_TAKE_OVER_CONTROL, DEFAULT_TAKE_OVER_CONTROL, bool),
     (CONF_DETECT_NON_HA_CHANGES, DEFAULT_DETECT_NON_HA_CHANGES, bool),
-    (CONF_SEPARATE_TURN_ON_COMMANDS, DEFAULT_SEPARATE_TURN_ON_COMMANDS, bool),
-    (CONF_SEND_SPLIT_DELAY, DEFAULT_SEND_SPLIT_DELAY, int_between(0, 10000)),
-    (CONF_ADAPT_DELAY, DEFAULT_ADAPT_DELAY, cv.positive_float),
     (
         CONF_AUTORESET_CONTROL,
         DEFAULT_AUTORESET_CONTROL,
         int_between(0, 365 * 24 * 60 * 60),  # 1 year max
     ),
+    (CONF_ONLY_ONCE, DEFAULT_ONLY_ONCE, bool),
+    (CONF_ADAPT_ONLY_ON_BARE_TURN_ON, DEFAULT_ADAPT_ONLY_ON_BARE_TURN_ON, bool),
+    (CONF_SEPARATE_TURN_ON_COMMANDS, DEFAULT_SEPARATE_TURN_ON_COMMANDS, bool),
+    (CONF_SEND_SPLIT_DELAY, DEFAULT_SEND_SPLIT_DELAY, int_between(0, 10000)),
+    (CONF_ADAPT_DELAY, DEFAULT_ADAPT_DELAY, cv.positive_float),
     (
         CONF_SKIP_REDUNDANT_COMMANDS,
         DEFAULT_SKIP_REDUNDANT_COMMANDS,
         bool,
     ),
+    (CONF_MULTI_LIGHT_INTERCEPT, DEFAULT_MULTI_LIGHT_INTERCEPT, bool),
+    (CONF_INCLUDE_CONFIG_IN_ATTRIBUTES, DEFAULT_INCLUDE_CONFIG_IN_ATTRIBUTES, bool),
 ]
 
 
@@ -307,10 +377,14 @@ EXTRA_VALIDATION = {
     CONF_INTERVAL: (cv.time_period, timedelta_as_int),
     CONF_SUNRISE_OFFSET: (cv.time_period, timedelta_as_int),
     CONF_SUNRISE_TIME: (cv.time, str),
+    CONF_MIN_SUNRISE_TIME: (cv.time, str),
     CONF_MAX_SUNRISE_TIME: (cv.time, str),
     CONF_SUNSET_OFFSET: (cv.time_period, timedelta_as_int),
     CONF_SUNSET_TIME: (cv.time, str),
     CONF_MIN_SUNSET_TIME: (cv.time, str),
+    CONF_MAX_SUNSET_TIME: (cv.time, str),
+    CONF_BRIGHTNESS_MODE_TIME_LIGHT: (cv.time_period, timedelta_as_int),
+    CONF_BRIGHTNESS_MODE_TIME_DARK: (cv.time_period, timedelta_as_int),
 }
 
 
