@@ -10,10 +10,15 @@
     }
   },
   "entity": {
-    "sensor": {
-      "custom_component": {
-        "name": "Custom integrations"
+    "button": {
+      "homeassistant_reload": {
+        "name": "Reload"
       },
+      "homeassistant_restart": {
+        "name": "Restart"
+      }
+    },
+    "sensor": {
       "homeassistant_air_quality": {
         "name": "Air quality"
       },
@@ -44,6 +49,9 @@
       "homeassistant_cover": {
         "name": "Covers"
       },
+      "homeassistant_custom_component": {
+        "name": "Custom integrations"
+      },
       "homeassistant_date": {
         "name": "Dates"
       },
@@ -64,6 +72,9 @@
       },
       "homeassistant_humidifier": {
         "name": "Humidifiers"
+      },
+      "homeassistant_image": {
+        "name": "Images"
       },
       "homeassistant_input_boolean": {
         "name": "Input booleans"
@@ -97,6 +108,9 @@
       },
       "homeassistant_number": {
         "name": "Numbers"
+      },
+      "homeassistant_persistent_notification": {
+        "name": "Persistent notifications"
       },
       "homeassistant_person": {
         "name": "Persons"
