@@ -288,8 +288,35 @@ chips:
           font-size: 11px;
         }
         {% endif %}
-  # - type: template
-  #   icon: mdi:cog
+  - type: template
+    icon: mdi:cog
+    layout: vertical
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          title: Settings
+          content:
+            type: grid
+            square: false
+            columns: 2
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: button.homeassistant_reload
+                name: Reload HA
+                show_state: false
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                entity: button.homeassistant_restart
+                name: Restart HA
   - type: entity
     entity: person.thomas_baxter
     content_info: none

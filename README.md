@@ -46,11 +46,11 @@ This is my Home Assistant config - documentation isn't my strongest skill, so if
 
 ## Stats
 
-_Stats as at 05:00, Thursday, August 10th 2023_
+_Stats as at 05:00, Friday, August 11th 2023_
 
 | HA Version                               | No. Integrations                                        | No. Entities | No. Sensors | No. Automations |
 | ---------------------------------------- | ------------------------------------------------------- | ------------ | ----------- | --------------- |
-| 2023.8.1 | 477     | 4458         | 3090 | 122 |
+| 2023.8.1 | 483     | 4469         | 3093 | 122 |
 
 Type | Qty
 -- | --
@@ -69,7 +69,7 @@ Media Player | 25
 Person | 1
 Scene | 0
 Script | 7
-Sensor | 3090
+Sensor | 3093
 Sun | 1
 Switch | 209
 Weather | 13
@@ -129,6 +129,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [binary_sensor.sensibo](https://www.home-assistant.io/components/binary_sensor.sensibo) |
 | [binary_sensor.smartthinq_sensors](https://www.home-assistant.io/components/binary_sensor.smartthinq_sensors) |
 | [binary_sensor.sonos](https://www.home-assistant.io/components/binary_sensor.sonos) |
+| [binary_sensor.spook](https://www.home-assistant.io/components/binary_sensor.spook) |
 | [binary_sensor.sun2](https://www.home-assistant.io/components/binary_sensor.sun2) |
 | [binary_sensor.synology_dsm](https://www.home-assistant.io/components/binary_sensor.synology_dsm) |
 | [binary_sensor.template](https://www.home-assistant.io/components/binary_sensor.template) |
@@ -154,6 +155,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [button.proxmoxve](https://www.home-assistant.io/components/button.proxmoxve) |
 | [button.sensibo](https://www.home-assistant.io/components/button.sensibo) |
 | [button.smartthinq_sensors](https://www.home-assistant.io/components/button.smartthinq_sensors) |
+| [button.spook](https://www.home-assistant.io/components/button.spook) |
 | [button.synology_dsm](https://www.home-assistant.io/components/button.synology_dsm) |
 | [calendar](https://www.home-assistant.io/components/calendar) |
 | [calendar.anniversaries](https://www.home-assistant.io/components/calendar.anniversaries) |
@@ -311,6 +313,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [number.mqtt](https://www.home-assistant.io/components/number.mqtt) |
 | [number.sensibo](https://www.home-assistant.io/components/number.sensibo) |
 | [number.sonos](https://www.home-assistant.io/components/number.sonos) |
+| [number.spook](https://www.home-assistant.io/components/number.spook) |
 | [onboarding](https://www.home-assistant.io/components/onboarding) |
 | [opennem](https://www.home-assistant.io/components/opennem) |
 | [opensky](https://www.home-assistant.io/components/opensky) |
@@ -359,6 +362,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [select.hdhomerun](https://www.home-assistant.io/components/select.hdhomerun) |
 | [select.mqtt](https://www.home-assistant.io/components/select.mqtt) |
 | [select.sensibo](https://www.home-assistant.io/components/select.sensibo) |
+| [select.spook](https://www.home-assistant.io/components/select.spook) |
 | [sensibo](https://www.home-assistant.io/components/sensibo) |
 | [sensor](https://www.home-assistant.io/components/sensor) |
 | [sensor.adguard](https://www.home-assistant.io/components/sensor.adguard) |
@@ -518,6 +522,8 @@ Here is a list of all the integrations I use, including any Custom Components (w
 | [text.mqtt](https://www.home-assistant.io/components/text.mqtt) |
 | [thermal_comfort](https://www.home-assistant.io/components/thermal_comfort) |
 | [thread](https://www.home-assistant.io/components/thread) |
+| [time](https://www.home-assistant.io/components/time) |
+| [time.spook](https://www.home-assistant.io/components/time.spook) |
 | [timer](https://www.home-assistant.io/components/timer) |
 | [tomorrowio](https://www.home-assistant.io/components/tomorrowio) |
 | [trace](https://www.home-assistant.io/components/trace) |
@@ -686,6 +692,7 @@ Here is a list of all the integrations I use, including any Custom Components (w
 - [Platinum Weather Card](https://github.com/Makin-Things/platinum-weather-card)
 - [Plotly Graph Card](https://github.com/dbuezas/lovelace-plotly-graph-card)
 - [Power Flow Card Plus](https://github.com/flixlix/power-flow-card-plus)
+- [Sankey Chart Card](https://github.com/MindFreeze/ha-sankey-chart)
 - [Search Card](https://github.com/postlund/search-card)
 - [Secondaryinfo Entity Row](https://github.com/custom-cards/secondaryinfo-entity-row)
 - [Simple Thermostat](https://github.com/nervetattoo/simple-thermostat)
