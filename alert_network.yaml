@@ -1,4 +1,0 @@
----
-alerts_network:
-  name: "[Alerts] Network"
-  icon: mdi:lan-pending
